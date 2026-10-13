@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/Rows/ClockOut",
+  "group": "/Form/Rows",
+  "alternatives": [
+    {
+      "operation": "Time(HoursFromTime(Now),MinutesFromTime(Now),SecondsFromTime(Now))"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}

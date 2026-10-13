@@ -236,11 +236,7 @@ private def firstFilledRow (model : FlatModel) (group : GroupPath) (target : Fla
   | some .dateTime, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateTimeFirstFilled?
         (← elaborated "FirstFilledValue" (checkDateTimeFirstFilledComputation model group target.id source)))
-  | some .dateFragment, _ => do
-      stepOf "FirstFilledValue" (CheckedRowComputationStep.ofDateFragmentFirstFilled?
-        (← elaborated "FirstFilledValue" (checkDateFragmentFirstFilledComputation model group target.id
-          source)))
-  | some .fullDate, _ => do
+  | some .dateFragment, _ | some .fullDate, _ => do
       stepOf "FirstFilledValue" (CheckedRowComputationStep.ofFullDateFirstFilled?
         (← elaborated "FirstFilledValue" (checkFullDateFirstFilledComputation model group target.id source)))
   | some .dateRange, _ => do

@@ -34,7 +34,8 @@ The [Number capability owners](../implementation/numeric.md) define current exec
 - `baseline`: [Temporal capabilities](../implementation/temporal.md), [DateRange capabilities](../implementation/date-range.md) and [recursive Having operations](../implementation/repetition-and-paths.md#cap-having-temporal-operations) own represented forms and exact supported profiles.
 - `host-boundary`: below-Gregorian-floor/nonpositive-era dates, additional model zones, formats outside the declaration denominator and imprecise stored DateFragment forms require an explicit calendar/input profile. Unsupported profile information must not become an invented value or Kernel formal error.
 - `remaining`: mixed-Base-Year and remaining recursive difference compositions beyond the shared calendar-expression boundary. Wider partial row-set/filter compositions must preserve exact instant, source format, decoded components and calendar provenance.
-- `evidence-needed`: fixed-target pre-1900 first-filled beside its unchecked control, cross-kind ordering beyond equality, per-row ValueAsDate and additional extractor placements. [The first-filled target observation](../sources/repeatable-temporal-computation-probes.md#src-full-date-repeatable-first-filled) does not calibrate every target placement.
+- `evidence-needed`: Partial-source first-filled runtime completion beyond the source-derived account and internal reader locks in the [Date carrier owner](../implementation/strings-and-enumerations.md#cap-first-filled-value-assurance).
+- `evidence-needed`: cross-kind ordering beyond equality, per-row ValueAsDate and additional extractor placements.
 - `legacy-api`: the flat temporal comparison literal surface is narrower than the shared scalar temporal reader. Keep Time/DateTime literal refusals attached to that API rather than claiming those constructs are absent from maintained validation.
 - `remaining`: DateFromDateTime topology, no-value cause, later-validation and application compositions beyond the [extractor owner](../implementation/temporal.md#cap-date-from-datetime).
 - `diagnostics`: extractor/component and ValueAsDate wrong-kind refusal classes outside measured carrier pairs, plus keyed DateRange refusal precedence. A class on one extractor is not evidence for every format or computation arm.
@@ -63,12 +64,11 @@ The [Number capability owners](../implementation/numeric.md) define current exec
 <a id="gap-sg21"></a>
 ### SG21 — the declared kind/format split across temporal carriers
 
-- `state`: model-load/profile residual; D03/D16.
+- `state`: profile residual; D03/D16.
 - `baseline`: [Temporal coherence](../implementation/temporal.md#cap-document-temporal-coherence), [stored classification](../implementation/temporal.md#cap-full-date-stored-classifier) and [first-filled profiles](../implementation/strings-and-enumerations.md#cap-first-filled-value) own the format-keyed account. The former kind-conjunct and absent-list-site claims are not open obligations.
-- `remaining`: a format-less declaration's default resolution table and exact resolved literal spelling before it reaches the normalized FlatFieldDecl. [The format source](../sources/computation-placement-and-constant-probes.md#src-temporal-value-family-is-the-formats-not-the-kinds) separates static component gates from stored-input parsing.
 - `evidence-needed`: cross-kind stored parsing outside the retained kind/format matrix, additional malformed-component versus out-of-profile date precedence, and formats/zones outside the bounded classifiers.
 - `host-boundary`: DateRange remains a separate format/separator family. Partial precision and Base-Year gates cannot be waived merely because another temporal target reads the declared format.
-- `reopen-when`: an adopted loader accepts format-less declarations or a consumer needs a stored-input profile outside the checked boundary.
+- `reopen-when`: a consumer needs a stored-input profile or kind/format pairing outside the checked boundary.
 - `route-state`: discovery-required
 
 <a id="gap-sg27"></a>

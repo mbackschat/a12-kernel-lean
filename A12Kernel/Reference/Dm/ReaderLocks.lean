@@ -205,4 +205,78 @@ example : [Json.str "outside", toJson (1 : Nat), Json.bool true,
     Json.arr #[], Json.mkObj []].all (fun value => !(readEnumDefault (some value)).isOk) := by
   native_decide
 
+private def temporalPayloadField (typeName : String) (payload : Option Json) : Except String FlatFieldDecl :=
+  readFieldType 0 ["Form"] "Value" [] (Json.mkObj [("fieldType", Json.mkObj (
+    [("type", .str typeName)] ++ payload.toList.map fun value => (typeName, value)))])
+
+private def temporalField (typeName : String) (format : Option Json) : Except String FlatFieldDecl :=
+  temporalPayloadField typeName (some (Json.mkObj (format.toList.map fun value => ("format", value))))
+
+private def temporalProfile (typeName : String) (format : Option Json) : Option (FieldKind × String) := do
+  let field ← (temporalField typeName format).toOption
+  let policy ← field.temporalTargetPolicy
+  pure (field.policy.kind, policy.format)
+
+private def temporalRead (typeName : String) (format : Option Json) (stored : String)
+    (zone : String := "UTC") : Option RawCell := do
+  let field ← (temporalField typeName format).toOption
+  pure (← (classifyStored { fields := [field], timeZoneId := zone } field
+    { field := 0, path := [] } stored).toOption).raw
+
+private def defaultClockRead (format : Option Json) : Option (String × RawCell) := do
+  let field ← (temporalField "TimeType" format).toOption
+  let policy ← field.temporalTargetPolicy
+  let cell ← (classifyStored { fields := [field], timeZoneId := "UTC" } field
+    { field := 0, path := [] } "12:30:00").toOption
+  pure (policy.format, cell.raw)
+
+example : defaultClockRead (some "HH:mm:ss") = some ("HH:mm:ss",
+    .parsed (.temporal (.time { epochMillis := 45000000 } { hour := 12, minute := 30, second := 0, valid := by decide }))) := by
+  native_decide
+
+example : defaultClockRead none = defaultClockRead (some "HH:mm:ss") := by native_decide
+
+example : [("DateType", "yyyy-MM-dd", FieldKind.temporal .date .fullDate),
+    ("TimeType", "HH:mm:ss", .temporal .time .time),
+    ("DateTimeType", "yyyy-MM-dd'T'HH:mm:ss", .temporal .dateTime .now)].all
+      (fun (typeName, format, kind) =>
+        temporalProfile typeName none == some (kind, format) &&
+        temporalProfile typeName (some (.str format)) == some (kind, format)) := by native_decide
+
+example : temporalRead "DateType" none "2024-05-06" =
+      temporalRead "DateType" (some "yyyy-MM-dd") "2024-05-06" ∧
+    (match temporalRead "DateType" none "2024-05-06" with
+      | some (.parsed (.temporal (.date value))) => value.parts == { year := 2024, month := 5, day := 6 }
+      | _ => false) = true ∧
+    temporalRead "DateTimeType" none "2024-05-06T12:30:45" =
+      temporalRead "DateTimeType" (some "yyyy-MM-dd'T'HH:mm:ss") "2024-05-06T12:30:45" ∧
+    (match temporalRead "DateTimeType" none "2024-05-06T12:30:45" with
+      | some (.parsed (.temporal (.dateTime _ date clock _))) =>
+          date == { year := 2024, month := 5, day := 6 } &&
+          (clock.hour, clock.minute, clock.second) == (12, 30, 45)
+      | _ => false) = true := by native_decide
+
+example : temporalProfile "DateType" (some "HH:mm:ss") =
+      some (.temporal .date .time, "HH:mm:ss") ∧
+    temporalRead "DateType" (some "HH:mm:ss") "12:30:00" =
+      (defaultClockRead (some "HH:mm:ss")).map (·.2) := by native_decide
+
+example : !(temporalPayloadField "DateFragmentType" (some (Json.mkObj []))).isOk ∧
+    !(temporalField "DateFragmentType" (some "yyyy-MM")).isOk ∧
+    ((temporalPayloadField "DateFragmentType" (some (Json.mkObj [("formatOfFragment", "yyyy-MM")]))).toOption.bind
+      (·.temporalTargetPolicy) |>.map (·.format)) = some "yyyy-MM" := by native_decide
+
+example : ["DateType", "TimeType", "DateTimeType"].all (fun typeName =>
+    [Json.null, .bool true, toJson (1 : Nat), .arr #[], Json.mkObj []].all
+      (fun value => !(temporalField typeName (some value)).isOk) &&
+    [none, some Json.null, some (.str "yyyy-MM-dd"), some (.bool true),
+      some (toJson (1 : Nat)), some (.arr #[])].all
+      (fun payload => !(temporalPayloadField typeName payload).isOk)) := by native_decide
+
+example : temporalRead "DateType" none "2024-02-30" = some (.rejected .dateFormat) ∧
+    temporalRead "DateType" none "1500-01-01" = some (.rejected .dateInvalid) ∧
+    temporalRead "DateType" (some "yyyy-MM-dd") "2024-02-30" = some (.rejected .dateFormat) ∧
+    temporalRead "DateType" (some "yyyy-MM-dd") "1500-01-01" = some (.rejected .dateInvalid) ∧
+    temporalRead "DateType" (some "yyyy-MM-dd") "2024-05-06" "unsupported-zone" = none := by native_decide
+
 end A12Kernel.Dm.ReaderLocks

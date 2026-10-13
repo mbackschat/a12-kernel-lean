@@ -217,7 +217,6 @@ import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.FirstFilledFieldSource
 import A12Kernel.Elaboration.FirstFilledPlacement
 import A12Kernel.Elaboration.TemporalFirstFilledShape
-import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 import A12Kernel.Elaboration.FullDateFirstFilledComputation

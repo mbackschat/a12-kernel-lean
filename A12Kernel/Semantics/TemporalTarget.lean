@@ -5,7 +5,7 @@ import A12Kernel.Semantics.Observation
 
 /-! # Bounded temporal computation targets
 
-This capsule owns bounded Time, full-Date, DateTime, and DateRange target result domains. Time admits the kernel's exact whole-second format and remains a zone-free clock rather than acquiring the runtime transport date. Full Date admits two exact formats, the universal Date floor, and the optional pre-1900 check; the checked declaration layer admits only FULL precision for computation. DateTime admits the bounded standard whole-second formats and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. DateRange admits the exact ISO/slash and dotted-day/dash target profiles and renders through resolved full-Date endpoints while remaining outside scalar temporal indexing. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
+This capsule owns bounded Time, full-Date, DateTime, and DateRange target result domains. Time admits the kernel's exact whole-second format and remains a zone-free clock rather than acquiring the runtime transport date. Full Date admits three exact formats, the universal Date floor, and the optional pre-1900 check; the checked declaration layer admits only FULL precision for computation. DateTime admits the bounded standard whole-second formats and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. DateRange admits the exact ISO/slash and dotted-day/dash target profiles and renders through resolved full-Date endpoints while remaining outside scalar temporal indexing. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
 -/
 
 namespace A12Kernel
@@ -49,14 +49,16 @@ end TimeTargetFormat
 inductive FullDateTargetFormat where
   | dayMonthYearDots
   | yearMonthDayDashes
+  | yearMonthDayConcatenated
   deriving Repr, DecidableEq
 
 namespace FullDateTargetFormat
 
-/-- Admit only the two exact declaration sources implemented by this renderer. -/
+/-- Admit the three complete Date spellings, including compact target rendering (spec/09). -/
 def ofSource? : String → Option FullDateTargetFormat
   | "dd.MM.yyyy" => some .dayMonthYearDots
   | "yyyy-MM-dd" => some .yearMonthDayDashes
+  | "yyyyMMdd" => some .yearMonthDayConcatenated
   | _ => none
 
 /-- Render one real civil Date. The year is untruncated; day and month are always two digits, matching the kernel's computed-Date store before its later target checks. -/
@@ -69,6 +71,10 @@ def renderPartsText (format : FullDateTargetFormat) (parts : DateParts) : String
   | .yearMonthDayDashes =>
       TemporalTargetText.year parts.year ++ "-" ++
         TemporalTargetText.twoDigits parts.month ++ "-" ++
+        TemporalTargetText.twoDigits parts.day
+
+  | .yearMonthDayConcatenated =>
+      TemporalTargetText.year parts.year ++ TemporalTargetText.twoDigits parts.month ++
         TemporalTargetText.twoDigits parts.day
 
 def renderCivilText (format : FullDateTargetFormat) (date : CivilDate) : String :=
@@ -119,12 +125,23 @@ inductive TimeTargetOutcome where
 /-- Stored text for one checked Date target. -/
 abbrev StoredDate := StoredTemporalText .date
 
+/-- A two-digit rendering is nonempty on both branches. The padded branch has its own literal; the
+unpadded one needs the same digit-expansion fact the year uses. -/
+private theorem TemporalTargetText.twoDigits_ne_empty (value : Nat) :
+    TemporalTargetText.twoDigits value ≠ "" := by
+  unfold TemporalTargetText.twoDigits
+  split
+  · simp
+  · intro contra
+    have := congrArg String.toList contra
+    simp [Nat.repr] at this
+
 namespace FullDateTargetFormat
 
 /-- Render one real civil Date into the exact nonempty attempt that the target basic check will consume. -/
 def renderParts (format : FullDateTargetFormat) (parts : DateParts) : StoredDate :=
   { text := format.renderPartsText parts
-    nonempty := by cases format <;> simp [renderPartsText, TemporalTargetText.twoDigits] }
+    nonempty := by cases format <;> simp [renderPartsText, TemporalTargetText.twoDigits_ne_empty] }
 
 def renderCivil (format : FullDateTargetFormat) (date : CivilDate) : StoredDate :=
   format.renderParts date.parts
@@ -174,17 +191,6 @@ private theorem intRepr_ne_empty (i : Int) : Int.repr i ≠ "" := by
       simp [Nat.repr] at this
   | negSucc n => simp [Int.repr]
 
-/-- A two-digit rendering is nonempty on both branches. The padded branch has its own literal; the
-unpadded one needs the same digit-expansion fact the year uses. -/
-private theorem twoDigits_ne_empty (value : Nat) :
-    TemporalTargetText.twoDigits value ≠ "" := by
-  unfold TemporalTargetText.twoDigits
-  split
-  · simp
-  · intro contra
-    have := congrArg String.toList contra
-    simp [Nat.repr] at this
-
 /-- Render one real civil Date, keeping exactly the components the format names and its own
 separator. Measured: `2024`, `2024-03`, `202403`, `03`, and `03-05` for the same 5 March 2024, with
 the omitted components discarded and nothing reported. A yearless format writes **no year** even
@@ -227,17 +233,17 @@ def renderParts (format : OmittingDateFormat) (parts : DateParts) : StoredDate :
     nonempty := by
       cases format
       case month =>
-        simpa [renderPartsText] using twoDigits_ne_empty parts.month
+        simpa [renderPartsText] using TemporalTargetText.twoDigits_ne_empty parts.month
       case monthDayConcatenated =>
         simp only [renderPartsText]
         intro contra
         exact absurd (String.append_eq_empty_iff.mp contra).1
-          (twoDigits_ne_empty parts.month)
+          (TemporalTargetText.twoDigits_ne_empty parts.month)
       case dayMonthConcatenated =>
         simp only [renderPartsText]
         intro contra
         exact absurd (String.append_eq_empty_iff.mp contra).1
-          (twoDigits_ne_empty parts.day)
+          (TemporalTargetText.twoDigits_ne_empty parts.day)
       all_goals
         simp [renderPartsText, TemporalTargetText.twoDigits,
           TemporalTargetText.year, intRepr_ne_empty parts.year]

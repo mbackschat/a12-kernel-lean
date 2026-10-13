@@ -93,8 +93,8 @@ private def Kind.firstFilled? (kind : Kind) (target : FieldId) (first second : S
   (match kind with
     | .boolean => (checkBooleanFirstFilledComputation model ["Fj"] target list).toOption.bind
         CheckedDocumentComputationStep.ofBooleanFirstFilled?
-    | .fragment => (checkDateFragmentFirstFilledComputation model ["Fj"] target list).toOption.bind
-        CheckedDocumentComputationStep.ofDateFragmentFirstFilled?
+    | .fragment => (checkFullDateFirstFilledComputation model ["Fj"] target list).toOption.bind
+        CheckedDocumentComputationStep.ofFullDateFirstFilled?
     | .time => (checkTimeFirstFilledComputation model ["Fj"] target list).toOption.bind
         CheckedDocumentComputationStep.ofTimeFirstFilled?
     | .dateTime => (checkDateTimeFirstFilledComputation model ["Fj"] target list).toOption.bind
@@ -288,10 +288,10 @@ private def monthValues? (baseYear : Option Int) (m1 m2 : Option String) : Optio
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let guard ← (elaborateNumericTargetComputationTable model ["Pm"] 3
     [(some (.fieldFilled 0), one)]).toOption
-  let firstFilled ← (checkDateFragmentFirstFilledComputation model ["Pm"] 0
+  let firstFilled ← (checkFullDateFirstFilledComputation model ["Pm"] 0
     (.list (entities "M1" "M2"))).toOption
   let plan ← (certifyScalarComputationPlan
-    [.number guard, .document (← CheckedDocumentComputationStep.ofDateFragmentFirstFilled? firstFilled)]).toOption
+    [.number guard, .document (← CheckedDocumentComputationStep.ofFullDateFirstFilled? firstFilled)]).toOption
   let cells := ([(1, m1), (2, m2), (0, some "01")].filterMap fun (id, text) =>
     text.map fun text => (id, text)).filterMap fun (id, text) =>
       (model.fields.find? (·.id == id)).map fun declaration =>

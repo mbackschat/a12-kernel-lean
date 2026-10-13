@@ -1,5 +1,5 @@
-import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
-import A12Kernel.Elaboration.StringComputationRunApplication
+import A12Kernel.Elaboration.FullDateFirstFilledComputation
+import A12Kernel.Elaboration.FullDateInput
 
 /-! # Direct one-star DateFragment `FirstFilledValue` computation locks -/
 
@@ -55,21 +55,32 @@ private def monthDayTarget :=
   fragmentField 13 ["Review"] "FirstMonthDay" [] "MM-dd"
 private def monthDaySource :=
   fragmentField 14 ["Review", "Rows"] "MonthDay" [10] "MM-dd"
+private def compactYearMonthTarget :=
+  fragmentField 15 ["Review"] "CompactYearMonth" [] "yyyyMM"
+private def compactYearMonthSource :=
+  fragmentField 16 ["Review", "Rows"] "CompactYearMonthSource" [10] "yyyyMM"
+
 private def unsupportedTarget :=
-  fragmentField 15 ["Review"] "Unsupported" [] "yyyyMM"
+  fragmentField 18 ["Review"] "Unsupported" [] "yyyy/MM"
 private def unsupportedSource :=
-  fragmentField 16 ["Review", "Rows"] "UnsupportedSource" [10] "yyyyMM"
+  fragmentField 19 ["Review", "Rows"] "UnsupportedSource" [10] "yyyy/MM"
+
+private def checkedYearTarget : FlatFieldDecl := {
+  fragmentField 17 ["Review"] "CheckedYear" [] "yyyy" with
+    temporalTargetPolicy := some { format := "yyyy", youngerThan1900Check := true }
+}
 
 private def model : FlatModel := {
   fields := [
     target, source, yearSource, fullDate, time, repeatedTarget, nestedSource,
     yearTarget, otherGroupTarget, checkedSource, yearMonthTarget,
-    yearMonthSource, monthDayTarget, monthDaySource, unsupportedTarget,
-    unsupportedSource]
+    yearMonthSource, monthDayTarget, monthDaySource, compactYearMonthTarget,
+    compactYearMonthSource, checkedYearTarget, unsupportedTarget, unsupportedSource]
   repeatableGroups := [
     { level := 10, path := ["Review", "Rows"], repeatability := some 4 },
     { level := 20, path := ["Review", "Rows", "Details"],
       repeatability := some 3 }]
+  timeZoneId := "UTC"
 }
 
 private def star (field : String) : SurfaceStarFieldPath := {
@@ -89,7 +100,7 @@ private def nestedStar : SurfaceStarFieldPath := {
 
 private def checkedAt? (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceStarFieldPath) :=
-  (checkDateFragmentFirstFilledComputation
+  (checkFullDateFirstFilledComputation
     model declaringGroup targetField (.star authored)).toOption
 
 private def checked? (targetField : FieldId) (authored : SurfaceStarFieldPath) :=
@@ -100,15 +111,19 @@ private def prepared :
   (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption.get (by native_decide)
 
-private def dateValue (year month day : Nat) : Value :=
-  .temporal (.date {
-    instant := { epochMillis := 0 }
-    parts := { year, month, day }
-    basis := .storedGregorian })
+private def dateRaw (year month day : Nat) : RawCell :=
+  match (CivilDate.ofParts? { year, month, day }).bind
+      ModelZone.ConcreteProfile.utc.resolveStoredDate? with
+  | some date => .parsed (.temporal (.date date))
+  | none => .rejected .dateFormat
 
 private def inputFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
     (sourceInput : Option (String × RawCell)) :
     Option (CheckedDocument model) :=
+  let targetStored := (targetDeclaration.toTemporalTargetPolicy?.bind
+    (fun policy => OmittingDateFormat.ofSource? policy.format)).map
+      (fun format => (format.renderParts { year := 2000, month := 1, day := 1 }).text)
+      |>.getD "2000-01-01"
   let sourceCell := sourceInput.map fun (stored, raw) => {
     address := { field := sourceDeclaration.id, path := [1] }
     stored
@@ -118,32 +133,37 @@ private def inputFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
     instantiatedRows := [{ group := 10, path := [1] }]
     cells := [{
       address := { field := targetDeclaration.id, path := [] }
-      stored := "01"
-      raw := .parsed (dateValue 2000 1 1)
+      stored := targetStored
+      raw := dateRaw 2000 1 1
     }] ++ sourceCell.toList
   }).toOption
 
 private def resultFor? (targetDeclaration sourceDeclaration : FlatFieldDecl)
     (sourceInput : Option (String × RawCell)) :
-    Option TokenComputationResult := do
+    Option FullDateTargetOutcome := do
   let operation ← checked? targetDeclaration.id (star sourceDeclaration.name)
   let input ← inputFor? targetDeclaration sourceDeclaration sourceInput
   let [entry] ← operation.execute input |>.toOption | none
-  pure entry.result
+  pure entry.outcome
 
 private def result? := resultFor? target source
 
+/- A classified Date controls selection even when its stored token intentionally disagrees. -/
+example : result? (some ("01", dateRaw 2000 6 1)) =
+    some (.accepted ⟨"06", by decide⟩) := by
+  native_decide
+
 private def ingressView? (representation : SourceRepresentation)
     (sourceInput : Option (String × RawCell) :=
-      some ("01", .parsed (dateValue 2000 1 1))) :
-    Option (StringComputationRunView FormalCause CellAddr) := do
+      some ("01", dateRaw 2000 1 1)) :
+    Option (FullDateComputationRunView FormalCause CellAddr) := do
   let operation ← checked? target.id (star source.name)
   let input ← inputFor? target source sourceInput
   let data := { input.source with cells := input.source.cells.map fun cell =>
     { cell with sourceRepresentation := representation } }
   let checked ← (checkDocument prepared "en_US" data).toOption
   let result ← operation.executeResult checked ([] : List FormalCause) |>.toOption
-  pure result.string
+  pure result.fullDate
 
 example :
     (ingressView? .classified).map
@@ -167,11 +187,9 @@ example : (do
     let view ← ingressView? .unconvertedText
     let applied ← view.applyTo (fun _ => .absent) |>.toOption
     let address : CellAddr := { field := target.id, path := [] }
-    let value : StoredString := ⟨"01", by decide⟩
-    let reapplied := StringComputationRunView.fromSourcedOutcomes
-      ([] : List FormalCause)
-      [{ targetField := address, outcome := .accepted value,
-         source := applied address }]
+    let value : StoredDate := ⟨"01", by decide⟩
+    let reapplied := FullDateComputationRunView.fromOutcomesAt applied
+      ([] : List FormalCause) [(address, .accepted value)]
     pure (applied address, reapplied.withChanges)) =
       some (.presentValue ⟨"01", by decide⟩, []) ∧
     (do
@@ -186,7 +204,7 @@ private def rootFragmentCell (declaration : FlatFieldDecl)
     (stored : String) (month : Nat) : ClassifiedCellInput := {
   address := { field := declaration.id, path := [] }
   stored
-  raw := .parsed (dateValue 2000 month 1)
+  raw := dateRaw 2000 month 1
 }
 
 private def destinationFor? (targetInput : Option (String × Nat))
@@ -206,8 +224,8 @@ private structure ResultApplicationSummary where
   hasTargetErrors : Bool
   cleared : List FieldId
   residual : List FormalCause
-  targetState : StringTargetState
-  otherState : StringTargetState
+  targetState : FullDateTargetState
+  otherState : FullDateTargetState
   deriving Repr, DecidableEq
 
 private def resultApplicationSummary?
@@ -221,13 +239,13 @@ private def resultApplicationSummary?
   let applied ← result.applyToChecked destination |>.toOption
   pure {
     targetField := result.operation.targetField
-    values := result.string.withoutErrors.map fun item =>
+    values := result.fullDate.withoutErrors.map fun item =>
       (item.targetField.field, item.value.text)
-    changes := result.string.withChanges.map fun item =>
+    changes := result.fullDate.withChanges.map fun item =>
       (item.targetField.field, item.value.text)
-    hasTargetErrors := !result.string.withErrors.isEmpty
-    cleared := result.string.cleared.map (·.field)
-    residual := result.string.formalErrorsInOperands
+    hasTargetErrors := !result.fullDate.withErrors.isEmpty
+    cleared := result.fullDate.cleared.map (·.field)
+    residual := result.fullDate.formalErrorsInOperands
     targetState := applied { field := target.id, path := [] }
     otherState := applied { field := otherGroupTarget.id, path := [] }
   }
@@ -235,21 +253,31 @@ private def resultApplicationSummary?
 /- The externally measured empty selection clears a seeded target, while the filled source yields the measured `MM` token. -/
 example :
     result? none = some .noValue ∧
-      result? (some ("06", .parsed (dateValue 2000 6 1))) =
-        some (.value "06") := by
+      result? (some ("06", dateRaw 2000 6 1)) =
+        some (.accepted ⟨"06", by decide⟩) := by
   native_decide
 
-/- The other statically measured policies reuse the exact-token result domain. Their direct runtime compositions remain external-evidence pending. -/
+/- Each component-omitting target renders the selected Date through its declared format (spec/09). -/
 example :
     resultFor? yearTarget yearSource
-        (some ("2024", .parsed (dateValue 2024 1 1))) =
-      some (.value "2024") ∧
+        (some ("2024", dateRaw 2024 1 1)) =
+      some (.accepted ⟨"2024", by decide⟩) ∧
     resultFor? yearMonthTarget yearMonthSource
-        (some ("2024-03", .parsed (dateValue 2024 3 1))) =
-      some (.value "2024-03") ∧
+        (some ("2024-03", dateRaw 2024 3 1)) =
+      some (.accepted ⟨"2024-03", by decide⟩) ∧
     resultFor? monthDayTarget monthDaySource
-        (some ("03-20", .parsed (dateValue 2000 3 20))) =
-      some (.value "03-20") := by
+        (some ("03-20", dateRaw 2000 3 20)) =
+      some (.accepted ⟨"03-20", by decide⟩) := by
+  native_decide
+
+/- The shared target policy retains rejected rendering, rather than the retired token path's unconditional success (spec/09). -/
+example :
+    resultFor? checkedYearTarget yearSource
+        (some ("1899", dateRaw 1899 1 1)) =
+      some (.errored ⟨"1899", by decide⟩ .before1900) ∧
+    resultFor? checkedYearTarget yearSource
+        (some ("1900", dateRaw 1900 1 1)) =
+      some (.accepted ⟨"1900", by decide⟩) := by
   native_decide
 
 /- A reached formal rejection poisons through the checked cell; this branch remains externally uncalibrated. -/
@@ -258,11 +286,11 @@ example :
       some (.poison .malformed) := by
   native_decide
 
-/- A selected exact token is source-relative changed, retains residual messages, and applies only to its certified target in a separate same-model destination. -/
+/- Rendered selection is source-relative changed, retains residual messages, and applies only to its certified target in a separate same-model destination. -/
 example : (do
     let destination ← destinationFor? (some ("03", 3))
     resultApplicationSummary?
-      (some ("06", .parsed (dateValue 2000 6 1)))
+      (some ("06", dateRaw 2000 6 1))
       destination [.malformed]) = some {
         targetField := target.id
         values := [(target.id, "06")]
@@ -279,7 +307,7 @@ example : (do
 example : (do
     let destination ← destinationFor? (some ("03", 3))
     resultApplicationSummary?
-      (some ("01", .parsed (dateValue 2000 1 1))) destination) = some {
+      (some ("01", dateRaw 2000 1 1)) destination) = some {
         targetField := target.id
         values := [(target.id, "01")]
         changes := []
@@ -322,7 +350,7 @@ example : (do
       } := by
   native_decide
 
-/- The checked boundary admits every measured legal DateFragment policy only when target and direct single-level starred source match exactly. Placement is unconstrained. Declaring at the source's own repeatable group puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
+/- Target compatibility follows year presence, while each source list retains one exact profile (spec/05). Placement is unconstrained. Declaring at the source's own repeatable group puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
 example :
     (checked? target.id (star "Month")).isSome = true ∧
       (checked? target.id (star "Year")).isNone = true ∧
@@ -332,11 +360,11 @@ example :
       (checked? yearMonthTarget.id (star "MonthDay")).isNone = true ∧
       (checked? monthDayTarget.id (star "MonthDay")).isSome = true ∧
       (checked? monthDayTarget.id (star "YearMonth")).isNone = true ∧
-      (checked? unsupportedTarget.id (star "UnsupportedSource")).isNone =
-        true ∧
+      (checked? compactYearMonthTarget.id (star "CompactYearMonthSource")).isSome = true ∧
+      (checked? unsupportedTarget.id (star "UnsupportedSource")).isNone = true ∧
       (checked? target.id (star "Date")).isNone = true ∧
       (checked? target.id (star "Clock")).isNone = true ∧
-      (checked? yearMonthTarget.id (star "CheckedYearMonth")).isNone = true ∧
+      (checked? yearMonthTarget.id (star "CheckedYearMonth")).isSome = true ∧
       (checkedAt? ["Review", "Rows"] target.id (star "Month")).isSome = true ∧
       (checkedAt? [] target.id (star "Month")).isNone = true ∧
       (checkedAt? ["Review", "Rows"] repeatedTarget.id

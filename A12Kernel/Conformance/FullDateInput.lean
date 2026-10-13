@@ -145,9 +145,10 @@ example :
         some (.inr (.rejected .dateInvalid)) := by
   native_decide
 
-/- The compact spelling is a stored-input capability only. Target rendering stays on its separately
-measured vocabulary rather than inheriting a declaration admission that did not observe computation. -/
-example : FullDateTargetFormat.ofSource? "yyyyMMdd" = none := by native_decide
+/- The K11 profile-completion capture separately observes compact target rendering; the unsupported
+separator control remains outside the declared renderer profile. -/
+example : FullDateTargetFormat.ofSource? "yyyyMMdd" = some .yearMonthDayConcatenated ∧
+    FullDateTargetFormat.ofSource? "yyyy/MM/dd" = none := by native_decide
 
 example :
     let path := ["Policy", "EffectiveDate"]

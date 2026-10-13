@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/FragCopy",
+  "group": "/Form",
+  "alternatives": [
+    {
+      "operation": "FirstFilledValue(FragA,FragB)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}

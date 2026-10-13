@@ -1,0 +1,13 @@
+{
+  "target": "computation",
+  "op": "add",
+  "outcome": "preview",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "changed": {
+    "computation": "/Form/Rows/FullCopyComp"
+  },
+  "diagnostics": [],
+  "written": false
+}

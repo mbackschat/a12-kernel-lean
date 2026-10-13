@@ -1,0 +1,70 @@
+{
+  "target": "model",
+  "op": "read",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "rules": {},
+    "computations": {
+      "/Form/Rows/rows_full_cross": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/FullOut"
+      },
+      "/Form/Rows/rows_full_control": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/FullCopy"
+      },
+      "/Form/Rows/rows_fragment_omit": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/FragOut"
+      },
+      "/Form/Rows/rows_fragment_control": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/FragCopy"
+      },
+      "/Form/Rows/rows_full_omit": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/FullToFrag"
+      },
+      "/Form/Rows/rows_world_time": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/ClockOut"
+      },
+      "/Form/fixed_full_cross": {
+        "converted": true,
+        "calculatedField": "/Form/FullOut"
+      },
+      "/Form/fixed_full_control": {
+        "converted": true,
+        "calculatedField": "/Form/FullCopy"
+      },
+      "/Form/fixed_fragment_omit": {
+        "converted": true,
+        "calculatedField": "/Form/FragOut"
+      },
+      "/Form/fixed_fragment_control": {
+        "converted": true,
+        "calculatedField": "/Form/FragCopy"
+      },
+      "/Form/fixed_full_omit": {
+        "converted": true,
+        "calculatedField": "/Form/FullToFrag"
+      },
+      "/Form/fixed_world_time": {
+        "converted": true,
+        "calculatedField": "/Form/ClockOut"
+      }
+    },
+    "summary": {
+      "rules": 0,
+      "convertedRules": 0,
+      "computations": 12,
+      "convertedComputations": 12,
+      "fullyTyped": true
+    }
+  },
+  "diagnostics": [],
+  "written": false
+}

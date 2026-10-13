@@ -1,0 +1,2715 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Temporal_DM.json",
+    "locale": "en_US",
+    "clock": "2024-01-01T12:34:56Z"
+  },
+  "rows": [
+    {
+      "name": "first",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "fixed_fragment_control",
+              "field": "Form/FragCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_fragment_omit",
+              "field": "Form/FragOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_full_control",
+              "field": "Form/FullCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_full_cross",
+              "field": "Form/FullOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_full_omit",
+              "field": "Form/FullToFrag",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullToFrag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_world_time",
+              "field": "Form/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_control",
+              "field": "Form/Rows/FragCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_control",
+              "field": "Form/Rows[2]/FragCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_omit",
+              "field": "Form/Rows/FragOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_omit",
+              "field": "Form/Rows[2]/FragOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_control",
+              "field": "Form/Rows/FullCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_control",
+              "field": "Form/Rows[2]/FullCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_cross",
+              "field": "Form/Rows/FullOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_cross",
+              "field": "Form/Rows[2]/FullOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_omit",
+              "field": "Form/Rows/FullToFrag",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullToFrag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_omit",
+              "field": "Form/Rows[2]/FullToFrag",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullToFrag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows[2]/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/ClockOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-05"
+              },
+              {
+                "field": "Form/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              },
+              {
+                "field": "Form/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "06.05.2024"
+              },
+              {
+                "field": "Form/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-05-06"
+              },
+              {
+                "field": "Form/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-05"
+              },
+              {
+                "field": "Form/Rows/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "06.05.2024"
+              },
+              {
+                "field": "Form/Rows/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-05-06"
+              },
+              {
+                "field": "Form/Rows/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/FragCopy",
+                "value": "2024-05"
+              },
+              {
+                "field": "Form/FragOut",
+                "value": "2024"
+              },
+              {
+                "field": "Form/FullCopy",
+                "value": "06.05.2024"
+              },
+              {
+                "field": "Form/FullOut",
+                "value": "2024-05-06"
+              },
+              {
+                "field": "Form/FullToFrag",
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/FragCopy",
+                "value": "2024-05"
+              },
+              {
+                "field": "Form/Rows/FragOut",
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows/FullCopy",
+                "value": "06.05.2024"
+              },
+              {
+                "field": "Form/Rows/FullOut",
+                "value": "2024-05-06"
+              },
+              {
+                "field": "Form/Rows/FullToFrag",
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "value": "2022"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "ClockOut": "13:34:56",
+                "FragA": "2024-05",
+                "FragB": "2023-12",
+                "FragCopy": "2024-05",
+                "FragOut": "2024",
+                "FullA": "06.05.2024",
+                "FullB": "11.12.2023",
+                "FullCopy": "06.05.2024",
+                "FullOut": "2024-05-06",
+                "FullToFrag": "2024",
+                "Rows": [
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": "2024-05",
+                    "FragB": "2023-12",
+                    "FragCopy": "2024-05",
+                    "FragOut": "2024",
+                    "FullA": "06.05.2024",
+                    "FullB": "11.12.2023",
+                    "FullCopy": "06.05.2024",
+                    "FullOut": "2024-05-06",
+                    "FullToFrag": "2024"
+                  },
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": "2022-09",
+                    "FragB": "2023-12",
+                    "FragCopy": "2022-09",
+                    "FragOut": "2022",
+                    "FullA": "10.09.2022",
+                    "FullB": "11.12.2023",
+                    "FullCopy": "10.09.2022",
+                    "FullOut": "2022-09-10",
+                    "FullToFrag": "2022"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "fixed_fragment_control",
+              "field": "Form/FragCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_fragment_omit",
+              "field": "Form/FragOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_full_control",
+              "field": "Form/FullCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_full_cross",
+              "field": "Form/FullOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_full_omit",
+              "field": "Form/FullToFrag",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullToFrag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_world_time",
+              "field": "Form/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_control",
+              "field": "Form/Rows/FragCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_control",
+              "field": "Form/Rows[2]/FragCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_omit",
+              "field": "Form/Rows/FragOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_omit",
+              "field": "Form/Rows[2]/FragOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_control",
+              "field": "Form/Rows/FullCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_control",
+              "field": "Form/Rows[2]/FullCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_cross",
+              "field": "Form/Rows/FullOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_cross",
+              "field": "Form/Rows[2]/FullOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_omit",
+              "field": "Form/Rows/FullToFrag",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullToFrag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_omit",
+              "field": "Form/Rows[2]/FullToFrag",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullToFrag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows[2]/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/ClockOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-05"
+              },
+              {
+                "field": "Form/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              },
+              {
+                "field": "Form/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "06.05.2024"
+              },
+              {
+                "field": "Form/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-05-06"
+              },
+              {
+                "field": "Form/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-05"
+              },
+              {
+                "field": "Form/Rows/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "06.05.2024"
+              },
+              {
+                "field": "Form/Rows/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2024-05-06"
+              },
+              {
+                "field": "Form/Rows/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/FragCopy",
+                "value": "2024-05"
+              },
+              {
+                "field": "Form/FragOut",
+                "value": "2024"
+              },
+              {
+                "field": "Form/FullCopy",
+                "value": "06.05.2024"
+              },
+              {
+                "field": "Form/FullOut",
+                "value": "2024-05-06"
+              },
+              {
+                "field": "Form/FullToFrag",
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/FragCopy",
+                "value": "2024-05"
+              },
+              {
+                "field": "Form/Rows/FragOut",
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows/FullCopy",
+                "value": "06.05.2024"
+              },
+              {
+                "field": "Form/Rows/FullOut",
+                "value": "2024-05-06"
+              },
+              {
+                "field": "Form/Rows/FullToFrag",
+                "value": "2024"
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "value": "2022"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "ClockOut": "13:34:56",
+                "FragA": "2024-05",
+                "FragB": "2023-12",
+                "FragCopy": "2024-05",
+                "FragOut": "2024",
+                "FullA": "06.05.2024",
+                "FullB": "11.12.2023",
+                "FullCopy": "06.05.2024",
+                "FullOut": "2024-05-06",
+                "FullToFrag": "2024",
+                "Rows": [
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": "2024-05",
+                    "FragB": "2023-12",
+                    "FragCopy": "2024-05",
+                    "FragOut": "2024",
+                    "FullA": "06.05.2024",
+                    "FullB": "11.12.2023",
+                    "FullCopy": "06.05.2024",
+                    "FullOut": "2024-05-06",
+                    "FullToFrag": "2024"
+                  },
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": "2022-09",
+                    "FragB": "2023-12",
+                    "FragCopy": "2022-09",
+                    "FragOut": "2022",
+                    "FullA": "10.09.2022",
+                    "FullB": "11.12.2023",
+                    "FullCopy": "10.09.2022",
+                    "FullOut": "2022-09-10",
+                    "FullToFrag": "2022"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "fallback",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "fixed_fragment_control",
+              "field": "Form/FragCopy",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragCopy"
+              ],
+              "fillToFix": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragCopy"
+              ]
+            },
+            {
+              "code": "fixed_fragment_omit",
+              "field": "Form/FragOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragOut"
+              ],
+              "fillToFix": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragOut"
+              ]
+            },
+            {
+              "code": "fixed_full_control",
+              "field": "Form/FullCopy",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullCopy"
+              ],
+              "fillToFix": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullCopy"
+              ]
+            },
+            {
+              "code": "fixed_full_cross",
+              "field": "Form/FullOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullOut"
+              ],
+              "fillToFix": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullOut"
+              ]
+            },
+            {
+              "code": "fixed_full_omit",
+              "field": "Form/FullToFrag",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullToFrag"
+              ],
+              "fillToFix": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullToFrag"
+              ]
+            },
+            {
+              "code": "fixed_world_time",
+              "field": "Form/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_control",
+              "field": "Form/Rows/FragCopy",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragCopy"
+              ],
+              "fillToFix": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragCopy"
+              ]
+            },
+            {
+              "code": "rows_fragment_control",
+              "field": "Form/Rows[2]/FragCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_omit",
+              "field": "Form/Rows/FragOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragOut"
+              ],
+              "fillToFix": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragOut"
+              ]
+            },
+            {
+              "code": "rows_fragment_omit",
+              "field": "Form/Rows[2]/FragOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_control",
+              "field": "Form/Rows/FullCopy",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullCopy"
+              ],
+              "fillToFix": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullCopy"
+              ]
+            },
+            {
+              "code": "rows_full_control",
+              "field": "Form/Rows[2]/FullCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_cross",
+              "field": "Form/Rows/FullOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullOut"
+              ],
+              "fillToFix": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullOut"
+              ]
+            },
+            {
+              "code": "rows_full_cross",
+              "field": "Form/Rows[2]/FullOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_omit",
+              "field": "Form/Rows/FullToFrag",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullToFrag"
+              ],
+              "fillToFix": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullToFrag"
+              ]
+            },
+            {
+              "code": "rows_full_omit",
+              "field": "Form/Rows[2]/FullToFrag",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullToFrag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows[2]/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/ClockOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-12"
+              },
+              {
+                "field": "Form/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "11.12.2023"
+              },
+              {
+                "field": "Form/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-12-11"
+              },
+              {
+                "field": "Form/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-12"
+              },
+              {
+                "field": "Form/Rows/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "11.12.2023"
+              },
+              {
+                "field": "Form/Rows/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-12-11"
+              },
+              {
+                "field": "Form/Rows/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/FragCopy",
+                "value": "2023-12"
+              },
+              {
+                "field": "Form/FragOut",
+                "value": "2023"
+              },
+              {
+                "field": "Form/FullCopy",
+                "value": "11.12.2023"
+              },
+              {
+                "field": "Form/FullOut",
+                "value": "2023-12-11"
+              },
+              {
+                "field": "Form/FullToFrag",
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/FragCopy",
+                "value": "2023-12"
+              },
+              {
+                "field": "Form/Rows/FragOut",
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows/FullCopy",
+                "value": "11.12.2023"
+              },
+              {
+                "field": "Form/Rows/FullOut",
+                "value": "2023-12-11"
+              },
+              {
+                "field": "Form/Rows/FullToFrag",
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "value": "2022"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "ClockOut": "13:34:56",
+                "FragA": null,
+                "FragB": "2023-12",
+                "FragCopy": "2023-12",
+                "FragOut": "2023",
+                "FullA": null,
+                "FullB": "11.12.2023",
+                "FullCopy": "11.12.2023",
+                "FullOut": "2023-12-11",
+                "FullToFrag": "2023",
+                "Rows": [
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": null,
+                    "FragB": "2023-12",
+                    "FragCopy": "2023-12",
+                    "FragOut": "2023",
+                    "FullA": null,
+                    "FullB": "11.12.2023",
+                    "FullCopy": "11.12.2023",
+                    "FullOut": "2023-12-11",
+                    "FullToFrag": "2023"
+                  },
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": "2022-09",
+                    "FragB": "2023-12",
+                    "FragCopy": "2022-09",
+                    "FragOut": "2022",
+                    "FullA": "10.09.2022",
+                    "FullB": "11.12.2023",
+                    "FullCopy": "10.09.2022",
+                    "FullOut": "2022-09-10",
+                    "FullToFrag": "2022"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "fixed_fragment_control",
+              "field": "Form/FragCopy",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragCopy"
+              ],
+              "fillToFix": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragCopy"
+              ]
+            },
+            {
+              "code": "fixed_fragment_omit",
+              "field": "Form/FragOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragOut"
+              ],
+              "fillToFix": [
+                "Form/FragA",
+                "Form/FragB",
+                "Form/FragOut"
+              ]
+            },
+            {
+              "code": "fixed_full_control",
+              "field": "Form/FullCopy",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullCopy"
+              ],
+              "fillToFix": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullCopy"
+              ]
+            },
+            {
+              "code": "fixed_full_cross",
+              "field": "Form/FullOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullOut"
+              ],
+              "fillToFix": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullOut"
+              ]
+            },
+            {
+              "code": "fixed_full_omit",
+              "field": "Form/FullToFrag",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullToFrag"
+              ],
+              "fillToFix": [
+                "Form/FullA",
+                "Form/FullB",
+                "Form/FullToFrag"
+              ]
+            },
+            {
+              "code": "fixed_world_time",
+              "field": "Form/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_control",
+              "field": "Form/Rows/FragCopy",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragCopy"
+              ],
+              "fillToFix": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragCopy"
+              ]
+            },
+            {
+              "code": "rows_fragment_control",
+              "field": "Form/Rows[2]/FragCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_omit",
+              "field": "Form/Rows/FragOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragOut"
+              ],
+              "fillToFix": [
+                "Form/Rows/FragA",
+                "Form/Rows/FragB",
+                "Form/Rows/FragOut"
+              ]
+            },
+            {
+              "code": "rows_fragment_omit",
+              "field": "Form/Rows[2]/FragOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_control",
+              "field": "Form/Rows/FullCopy",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullCopy"
+              ],
+              "fillToFix": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullCopy"
+              ]
+            },
+            {
+              "code": "rows_full_control",
+              "field": "Form/Rows[2]/FullCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_cross",
+              "field": "Form/Rows/FullOut",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullOut"
+              ],
+              "fillToFix": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullOut"
+              ]
+            },
+            {
+              "code": "rows_full_cross",
+              "field": "Form/Rows[2]/FullOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_omit",
+              "field": "Form/Rows/FullToFrag",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullToFrag"
+              ],
+              "fillToFix": [
+                "Form/Rows/FullA",
+                "Form/Rows/FullB",
+                "Form/Rows/FullToFrag"
+              ]
+            },
+            {
+              "code": "rows_full_omit",
+              "field": "Form/Rows[2]/FullToFrag",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullToFrag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows[2]/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/ClockOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-12"
+              },
+              {
+                "field": "Form/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "11.12.2023"
+              },
+              {
+                "field": "Form/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-12-11"
+              },
+              {
+                "field": "Form/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-12"
+              },
+              {
+                "field": "Form/Rows/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "11.12.2023"
+              },
+              {
+                "field": "Form/Rows/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-12-11"
+              },
+              {
+                "field": "Form/Rows/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/FragCopy",
+                "value": "2023-12"
+              },
+              {
+                "field": "Form/FragOut",
+                "value": "2023"
+              },
+              {
+                "field": "Form/FullCopy",
+                "value": "11.12.2023"
+              },
+              {
+                "field": "Form/FullOut",
+                "value": "2023-12-11"
+              },
+              {
+                "field": "Form/FullToFrag",
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/FragCopy",
+                "value": "2023-12"
+              },
+              {
+                "field": "Form/Rows/FragOut",
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows/FullCopy",
+                "value": "11.12.2023"
+              },
+              {
+                "field": "Form/Rows/FullOut",
+                "value": "2023-12-11"
+              },
+              {
+                "field": "Form/Rows/FullToFrag",
+                "value": "2023"
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "value": "2022"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "ClockOut": "13:34:56",
+                "FragA": null,
+                "FragB": "2023-12",
+                "FragCopy": "2023-12",
+                "FragOut": "2023",
+                "FullA": null,
+                "FullB": "11.12.2023",
+                "FullCopy": "11.12.2023",
+                "FullOut": "2023-12-11",
+                "FullToFrag": "2023",
+                "Rows": [
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": null,
+                    "FragB": "2023-12",
+                    "FragCopy": "2023-12",
+                    "FragOut": "2023",
+                    "FullA": null,
+                    "FullB": "11.12.2023",
+                    "FullCopy": "11.12.2023",
+                    "FullOut": "2023-12-11",
+                    "FullToFrag": "2023"
+                  },
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": "2022-09",
+                    "FragB": "2023-12",
+                    "FragCopy": "2022-09",
+                    "FragOut": "2022",
+                    "FullA": "10.09.2022",
+                    "FullB": "11.12.2023",
+                    "FullCopy": "10.09.2022",
+                    "FullOut": "2022-09-10",
+                    "FullToFrag": "2022"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "poison",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/FragA",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FragA"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/FullA",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/FragA",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FragA"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/FullA",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_world_time",
+              "field": "Form/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_control",
+              "field": "Form/Rows[2]/FragCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_omit",
+              "field": "Form/Rows[2]/FragOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_control",
+              "field": "Form/Rows[2]/FullCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_cross",
+              "field": "Form/Rows[2]/FullOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_omit",
+              "field": "Form/Rows[2]/FullToFrag",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullToFrag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows[2]/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/ClockOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/FragCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FragOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullToFrag",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/FragCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/FragOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/FullCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/FullOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/FullToFrag",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/FragA",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/FragA"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/FullA",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/FullA"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/FragA",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/FragA"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/FullA",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/FullA"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "value": "2022"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "ClockOut": "13:34:56",
+                "FragA": "2024-13",
+                "FragB": "2023-12",
+                "FragCopy": null,
+                "FragOut": null,
+                "FullA": "31.02.2024",
+                "FullB": "11.12.2023",
+                "FullCopy": null,
+                "FullOut": null,
+                "FullToFrag": null,
+                "Rows": [
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": "2024-13",
+                    "FragB": "2023-12",
+                    "FragCopy": null,
+                    "FragOut": null,
+                    "FullA": "31.02.2024",
+                    "FullB": "11.12.2023",
+                    "FullCopy": null,
+                    "FullOut": null,
+                    "FullToFrag": null
+                  },
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": "2022-09",
+                    "FragB": "2023-12",
+                    "FragCopy": "2022-09",
+                    "FragOut": "2022",
+                    "FullA": "10.09.2022",
+                    "FullB": "11.12.2023",
+                    "FullCopy": "10.09.2022",
+                    "FullOut": "2022-09-10",
+                    "FullToFrag": "2022"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/FragA",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FragA"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/FullA",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/FullA"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/FragA",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FragA"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Rows/FullA",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/FullA"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fixed_world_time",
+              "field": "Form/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_control",
+              "field": "Form/Rows[2]/FragCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_fragment_omit",
+              "field": "Form/Rows[2]/FragOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FragA",
+                "Form/Rows[2]/FragB",
+                "Form/Rows[2]/FragOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_control",
+              "field": "Form/Rows[2]/FullCopy",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullCopy"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_cross",
+              "field": "Form/Rows[2]/FullOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_full_omit",
+              "field": "Form/Rows[2]/FullToFrag",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/FullA",
+                "Form/Rows[2]/FullB",
+                "Form/Rows[2]/FullToFrag"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows/ClockOut"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "rows_world_time",
+              "field": "Form/Rows[2]/ClockOut",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Rows[2]/ClockOut"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/FragCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FragOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/FullToFrag",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/FragCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/FragOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/FullCopy",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/FullOut",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows/FullToFrag",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "cleared": false,
+                "errored": false,
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "cleared": false,
+                "errored": false,
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "cleared": false,
+                "errored": false,
+                "value": "2022"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/FragA",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/FragA"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/FullA",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/FullA"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/FragA",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/FragA"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Rows/FullA",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Rows/FullA"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/ClockOut",
+                "value": "13:34:56"
+              },
+              {
+                "field": "Form/Rows[2]/FragCopy",
+                "value": "2022-09"
+              },
+              {
+                "field": "Form/Rows[2]/FragOut",
+                "value": "2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullCopy",
+                "value": "10.09.2022"
+              },
+              {
+                "field": "Form/Rows[2]/FullOut",
+                "value": "2022-09-10"
+              },
+              {
+                "field": "Form/Rows[2]/FullToFrag",
+                "value": "2022"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "ClockOut": "13:34:56",
+                "FragA": "2024-13",
+                "FragB": "2023-12",
+                "FragCopy": null,
+                "FragOut": null,
+                "FullA": "31.02.2024",
+                "FullB": "11.12.2023",
+                "FullCopy": null,
+                "FullOut": null,
+                "FullToFrag": null,
+                "Rows": [
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": "2024-13",
+                    "FragB": "2023-12",
+                    "FragCopy": null,
+                    "FragOut": null,
+                    "FullA": "31.02.2024",
+                    "FullB": "11.12.2023",
+                    "FullCopy": null,
+                    "FullOut": null,
+                    "FullToFrag": null
+                  },
+                  {
+                    "ClockOut": "13:34:56",
+                    "FragA": "2022-09",
+                    "FragB": "2023-12",
+                    "FragCopy": "2022-09",
+                    "FragOut": "2022",
+                    "FullA": "10.09.2022",
+                    "FullB": "11.12.2023",
+                    "FullCopy": "10.09.2022",
+                    "FullOut": "2022-09-10",
+                    "FullToFrag": "2022"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

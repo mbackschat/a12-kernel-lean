@@ -270,16 +270,6 @@ def ofStringFirstFilled? (operation : CheckedStringFirstFilledComputation model)
   firstFilledStep? (.string operation)
     (.stringFirstFilled ∘ .targetRows) (.stringFirstFilled ∘ .targetEnvironment)
 
-/-- A per-row DateFragment `FirstFilledValue` over its checked source. -/
-def ofDateFragmentFirstFilled? (operation : CheckedDateFragmentFirstFilledComputation model) :
-    Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=
-  checked? operation.targetField .dateFragment operation.referencesWith fun _ world _ document =>
-    firstFilledRows operation.target .dateFragment document
-      (.firstFilledSite ∘ .targetRows) (.firstFilledSite ∘ .targetEnvironment) fun target environment => do
-        let entry ← (operation.evaluateAt (world := some world) document document.read target environment).mapError .firstFilledSite
-        let outcome := entry.result.asExactStringTargetOutcome
-        pure (.dateFragment outcome, ← (DocumentComputationReadBack.dateFragment model operation.targetField outcome).mapError .readBack)
-
 /-- A per-row Custom `FirstFilledValue` over its checked source, read back as a String completion is. -/
 def ofCustomFirstFilled? (operation : CheckedCustomFirstFilledComputation model) :
     Option (∀ compilePattern, CheckedRowComputationStep model compilePattern) :=

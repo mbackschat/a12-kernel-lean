@@ -120,7 +120,6 @@ import A12Kernel.Proofs.DateComparison
 import A12Kernel.Proofs.DateConstruction
 import A12Kernel.Proofs.DateConstructionNumeric
 import A12Kernel.Proofs.DateDifference
-import A12Kernel.Proofs.DateFragmentFirstFilledComputation
 import A12Kernel.Proofs.FirstFilledPlacement
 import A12Kernel.Proofs.DateFromDateTime
 import A12Kernel.Proofs.DateNumeric

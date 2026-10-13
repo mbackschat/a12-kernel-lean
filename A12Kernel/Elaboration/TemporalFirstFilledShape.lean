@@ -13,12 +13,8 @@ namespace A12Kernel
 sources allow partial precision because selection completes their earliest day (spec/05, KF508);
 the computation target still owes its separate full-precision target check. -/
 inductive TemporalFirstFilledStarCarrier where
-  | monthFragment
-  | yearFragment
-  | yearMonthFragment
-  | monthDayFragment
-  | fullDateIso
-  | fullDateDotted
+  | dateFragment (format : OmittingDateFormat)
+  | fullDate (format : FullDateTargetFormat)
   | timeHms
   | dateTimeIso
   | dateRangeIsoSlash
@@ -30,13 +26,6 @@ inductive TemporalFirstFilledStarCarrier where
   | dateRangeMonthConcatenated
   | dateRangeDayMonthDotted
   deriving Repr, DecidableEq
-
-/-- Whether one shared temporal first-filled carrier is one of the four exact DateFragment profiles. -/
-def TemporalFirstFilledStarCarrier.isDateFragment :
-    TemporalFirstFilledStarCarrier → Bool
-  | .monthFragment | .yearFragment | .yearMonthFragment |
-      .monthDayFragment => true
-  | _ => false
 
 /-- Classify only the completed temporal declaration profiles.
 
@@ -50,9 +39,10 @@ def TemporalFirstFilledStarCarrier.isDateFragment :
 
     `DATE_RANGE` stays keyed on its kind, and correctly: it is the one kind whose format is
     allowlisted as a `(format, separator)` **pair** rather than as a bare format string, so its
-    profile genuinely cannot be read off a format alone. A declaration carrying the opt-in pre-1900
-    check classifies as no profile: as a source it stays outside, and as a full-Date target its
-    target policy owns the check, read through `firstFilledTargetProfile`.
+    profile genuinely cannot be read off a format alone. Scalar Date sources retain their pre-1900
+    policy for the input classifier; targets apply their own policy after rendering, as the K11
+    profile-completion capture separates source poison from target rejection
+    ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-target-profiles-k11)).
 
     A DateFragment is a component-omitting Date: its declared components are the ones its format
     names, at full precision, as the reader decodes a `DateFragmentType` and as the Kernel reads it
@@ -67,20 +57,15 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
         if policy.format == "HH:mm:ss" then some .timeHms else none
       else if components == TemporalComponents.now then
         if policy.format == "yyyy-MM-dd'T'HH:mm:ss" then some .dateTimeIso else none
-      else if policy.youngerThan1900Check ||
-          (policy.partialMode != .full &&
-            (components != TemporalComponents.fullDate ||
-              (FullDateTargetFormat.ofSource? policy.format).isNone)) then
+      else if policy.partialMode != .full &&
+          (components != TemporalComponents.fullDate ||
+            (FullDateTargetFormat.ofSource? policy.format).isNone) then
         none
       else
-        let carrier? : Option TemporalFirstFilledStarCarrier := match policy.format with
-          | "MM" => some .monthFragment
-          | "yyyy" => some .yearFragment
-          | "yyyy-MM" => some .yearMonthFragment
-          | "MM-dd" => some .monthDayFragment
-          | "yyyy-MM-dd" => some .fullDateIso
-          | "dd.MM.yyyy" => some .fullDateDotted
-          | _ => none
+        let carrier? : Option TemporalFirstFilledStarCarrier :=
+          match FullDateTargetFormat.ofSource? policy.format with
+          | some format => some (.fullDate format)
+          | none => (OmittingDateFormat.ofSource? policy.format).map .dateFragment
         if components == TemporalComponents.ofFormat policy.format then carrier? else none
   | .dateRange, _, some policy =>
       match DateRangeInputFormat.ofPolicy? policy with
@@ -114,20 +99,29 @@ def TemporalFirstFilledStarCarrier.dateRangeComponents? :
   | .dateRangeMonthDayFragment | .dateRangeDayMonthDotted => some .monthDay
   | _ => none
 
-/-- Whether a target carrier accepts a source carrier. A DateRange target accepts every profile exposing its own declared component set, which is the Kernel's own comparability gate; every other carrier requires identity because no crossing is measured for it. -/
+/-- Pure Date profiles retain year presence separately from exact source-list spelling
+(spec/05 comparison gate; K11 target-profile capture). -/
+def TemporalFirstFilledStarCarrier.dateYearPresence? : TemporalFirstFilledStarCarrier → Option Bool
+  | .dateFragment format => some format.carriesYear
+  | .fullDate _ => some true
+  | _ => none
+
+/-- Target compatibility is distinct from the source list's exact-profile gate. Date values
+may change spelling or precision; a Base Year bridges year presence (spec/05). -/
 def TemporalFirstFilledStarCarrier.acceptsSource
-    (target source : TemporalFirstFilledStarCarrier) : Bool :=
-  match target.dateRangeComponents?, source.dateRangeComponents? with
-  | some targetComponents, some sourceComponents =>
-      targetComponents == sourceComponents
-  | _, _ => target == source
+    (target source : TemporalFirstFilledStarCarrier) (hasBaseYear : Bool) : Bool :=
+  match target.dateYearPresence?, source.dateYearPresence? with
+  | some targetYear, some sourceYear => hasBaseYear || targetYear == sourceYear
+  | _, _ => match target.dateRangeComponents?, source.dateRangeComponents? with
+    | some targetComponents, some sourceComponents => targetComponents == sourceComponents
+    | _, _ => target == source
 
 /-- A target declaration as a carrier whose target policy owns the pre-1900 check reads it: that
 policy reports an earlier Date as errored rather than refusing the target, measured for a full-Date
 copy at a fixed target ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join)),
 a Date constant at a repeatable one ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)),
 and this operation at a repeatable one ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-full-date-repeatable-first-filled)).
-A source keeps the check and stays outside. -/
+A source keeps the check for formal input classification before selection. -/
 def FlatFieldDecl.withoutBefore1900Check (declaration : FlatFieldDecl) : FlatFieldDecl :=
   { declaration with temporalTargetPolicy :=
       declaration.temporalTargetPolicy.map ({ · with youngerThan1900Check := false }) }
@@ -149,16 +143,17 @@ inductive TemporalFirstFilledFamily where
 /-- The carrier family a target selects, read off its profile as every carrier reads it: by format
 and never by declared kind, so a DATE declared `HH:mm:ss` is a Time target as the Kernel measures it
 ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)). The
-pre-1900 check is set aside for the choice alone, since a fragment carrying it is still the fragment
-carrier's to refuse. A declaration with no profile falls back on its declared kind, so the carrier
+pre-1900 check is set aside for family choice alone; the source classifier and target policy retain
+its phase-specific meaning. A declaration with no profile falls back on its declared kind, so the carrier
 that kind names states the refusal. -/
 def FlatFieldDecl.temporalFirstFilledFamily? (target : FlatFieldDecl) :
     Option TemporalFirstFilledFamily :=
   match target.withoutBefore1900Check.temporalFirstFilledStarCarrier?, target.policy.kind with
   | some .timeHms, _ => some .time
   | some .dateTimeIso, _ => some .dateTime
-  | some .fullDateIso, _ | some .fullDateDotted, _ => some .fullDate
-  | some carrier, _ => some (if carrier.isDateFragment then .dateFragment else .dateRange)
+  | some (.fullDate _), _ => some .fullDate
+  | some (.dateFragment _), _ => some .dateFragment
+  | some _, _ => some .dateRange
   | none, .temporal .time _ => some .time
   | none, .temporal .dateTime _ => some .dateTime
   | none, .temporal .date _ => some .fullDate
@@ -175,8 +170,8 @@ inductive TemporalFirstFilledSiteElabError where
   deriving Repr, DecidableEq
 
 /-- One placed target, fixed or repeatable, and its source, sharing a completed scalar temporal or
-DateRange carrier. The source's own profile may differ from the target's only where a DateRange
-crossing admits it, and every source declaration repeats it. -/
+DateRange carrier. Every source declaration repeats one exact profile; the target uses the separate
+Date year-presence or DateRange component-set compatibility gate. -/
 structure CheckedTemporalFirstFilledSite (model : FlatModel) where
   private mk ::
   site : CheckedFirstFilledSite model
@@ -188,7 +183,7 @@ structure CheckedTemporalFirstFilledSite (model : FlatModel) where
     (site.target.firstFilledTargetProfile ownsBefore1900).temporalFirstFilledStarCarrier? = some carrier
   sourceCarrier :
     site.source.declarations.all (·.temporalFirstFilledStarCarrier? == some sourceProfile) = true
-  sourceAccepted : carrier.acceptsSource sourceProfile = true
+  sourceAccepted : carrier.acceptsSource sourceProfile model.hasBaseYear = true
   excludesTarget : site.referencesWith site.targetField (·.forbidsTarget site.targetField) = false
 
 namespace CheckedTemporalFirstFilledSite
@@ -217,7 +212,7 @@ def checkTemporalFirstFilledSite (model : FlatModel) (declaringGroup : GroupPath
     | some sourceProfile =>
       if hSource : site.source.declarations.all
           (·.temporalFirstFilledStarCarrier? == some sourceProfile) = true then
-        if hAccepted : carrier.acceptsSource sourceProfile = true then
+        if hAccepted : carrier.acceptsSource sourceProfile model.hasBaseYear = true then
           if let .list _ := site.source then
             if carrier.dateRangeComponents?.isSome then throw (.sourceShape site.target.path)
           if hExcludes : site.referencesWith site.targetField (·.forbidsTarget site.targetField) = false then
@@ -229,12 +224,9 @@ def checkTemporalFirstFilledSite (model : FlatModel) (declaringGroup : GroupPath
           else throw (.targetSelfReference site.target.path)
         else throw (.sourceCarrier first.path)
       else
-        -- A list whose fields do not all repeat the first's profile. Each profile has one format,
-        -- so two differing profiles either differ in format or share one across kinds. The Kernel
-        -- refuses a differing format on the pairs measured (`MVK_VARYING_TYPES_NOT_ALLOWED`,
-        -- docs/sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string)
-        -- and admits a shared one across kinds, which this carrier set does not represent; neither
-        -- claims a Kernel class here.
+        -- Source-list spelling equality remains independent of target rendering compatibility
+        -- (`MVK_VARYING_TYPES_NOT_ALLOWED`,
+        -- docs/sources/static-admission-and-class-probes.md#src-first-filled-reads-the-format-string).
         throw (.sourceCarrier ((site.source.declarations.find?
           (·.temporalFirstFilledStarCarrier? != some sourceProfile)).map (·.path) |>.getD first.path))
 

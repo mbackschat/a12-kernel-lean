@@ -26,7 +26,7 @@
 
 - `state`: evidence residual; D20 additional carrier/profile and producer-chain permutations.
 - `baseline`: [Addressed computation owners](../implementation/repeatable-computations.md) and [mixed plan owners](../implementation/computations.md#cap-mixed-computation-plan) retain each carrier's internal and external assurance separately.
-- `remaining`: DateFragment copy-versus-render calibration; DateRange cross-spelling/profile calibration; DateTime format/zone/source-shape calibration; world-backed Time components; and FULL Date cross-format/target-policy calibration beyond each owner's retained matrix.
+- `remaining`: DateRange cross-spelling/profile calibration, DateTime format/zone/source-shape calibration, and Date first-filled compositions outside the [calibrated matrix](../implementation/strings-and-enumerations.md#cap-first-filled-value-assurance).
 - `remaining`: additional serial Enumeration producer chains, filter-producer kinds and source shapes beyond the existing mixed cascades. A further sibling producer with the same observation domain is not independently a missing mechanism.
 - `diagnostics`: addressed target-self-read classes and operand-message rendering beyond the [fixed-target self-read sweep](../sources/diagnostic-class-vocabulary-and-sweeps.md#src-computation-self-read-sweep).
 - `host-boundary`: the [custom registration route](../sources/inbound-handbacks.md#inbound-2026-09-22-dispositions) supplies declarative validators. Named shipped-validator algorithms and custom conversions remain [SG7](strings-and-messages.md#gap-sg7), not an absence of every Custom observation route.

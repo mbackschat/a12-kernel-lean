@@ -342,14 +342,14 @@ example :
       ] = some "POISON" := by
   native_decide
 
-/- The checked boundary admits either exact full-Date format only when target and direct single-level starred source match. A pre-1900-checked target is admitted, its target policy owning the check as at a row target, while a checked source and wider profiles remain excluded. Placement is unconstrained. Declaring at the source's own repeatable group puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
+/- The checked boundary admits the ISO and dotted source controls into either target spelling (K11 target-profile capture). A pre-1900-checked target is admitted, its target policy owning the check as at a row target, while checked sources retain their formal-input policy and unsupported formats remain excluded. Placement is unconstrained. Declaring at the source's own repeatable group puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
 example :
     (checked? target.id (star "PromiseDate")).isSome = true ∧
-      (checked? target.id (star "DottedDate")).isNone = true ∧
-      (checked? dottedTarget.id (star "PromiseDate")).isNone = true ∧
+      (checked? target.id (star "DottedDate")).isSome = true ∧
+      (checked? dottedTarget.id (star "PromiseDate")).isSome = true ∧
       (checked? dottedTarget.id (star "DottedDate")).isSome = true ∧
-      (checked? target.id (star "CheckedDate")).isNone = true ∧
-      (checked? dottedTarget.id (star "CheckedDottedSource")).isNone = true ∧
+      (checked? target.id (star "CheckedDate")).isSome = true ∧
+      (checked? dottedTarget.id (star "CheckedDottedSource")).isSome = true ∧
       (checked? checkedDottedTarget.id (star "DottedDate")).isSome = true ∧
       (checked? unsupportedFormatTarget.id
         (star "UnsupportedSource")).isNone = true ∧

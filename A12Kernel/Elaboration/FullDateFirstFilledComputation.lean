@@ -1,14 +1,15 @@
 import A12Kernel.Elaboration.TemporalFirstFilledShape
 import A12Kernel.Elaboration.ComputationFormalInput
 import A12Kernel.Elaboration.FullDateComputationApplication
-import A12Kernel.Elaboration.TemporalTargetPolicy
+import A12Kernel.Elaboration.DateConstantTarget
 import A12Kernel.Semantics.FirstFilledDate
 
-/-! # Full-Date `FirstFilledValue` at a fixed or a repeatable target
+/-! # Date `FirstFilledValue` at a fixed or a repeatable target
 
-One carrier serves both address classes through the shared temporal site, including target-bound
-selected entity lists. `FirstFilledPlacement` owns admission and reached-source order. Source and target share one exact full-Date spelling, ISO or dotted, and the target policy
-renders and classifies the selected Date.
+One carrier serves complete and component-omitting Date targets through the shared temporal site,
+including target-bound selected entity lists. `FirstFilledPlacement` owns admission and reached-source
+order. A source list retains one exact profile; the independent target policy renders and classifies
+the selected Date (spec/05 comparison gate and spec/09 target rendering).
 -/
 
 namespace A12Kernel
@@ -16,33 +17,38 @@ namespace A12Kernel
 inductive FullDateFirstFilledComputationElabError where
   | shape (cause : TemporalFirstFilledSiteElabError)
   | targetNotFullDate (path : List String)
-  | targetPolicy (cause : FullDateTargetElabError)
+  | targetPolicy (cause : DateConstantTargetElabError)
+  | unsupportedZone (zone : String)
   deriving Repr, DecidableEq
 
-/-- One full-Date target, fixed or repeatable, and its source sharing one exact spelling. -/
+/-- One complete or component-omitting Date target and its exact-profile source at a checked site. -/
 structure CheckedFullDateFirstFilledComputation (model : FlatModel) where
   private mk ::
   shape : CheckedTemporalFirstFilledSite model
-  fullDate : shape.carrier = .fullDateIso ∨ shape.carrier = .fullDateDotted
-  targetPolicy : CheckedFullDateTarget model
+  dateCarrier : shape.carrier.dateYearPresence?.isSome = true
+  targetPolicy : CheckedDateConstantTarget model (shape.sourceProfile.dateYearPresence?.getD true)
+  profile : ModelZone.ConcreteProfile
+  profileMatches : ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
 
-/-- Check the site, the two exact full-Date spellings, and the target's policy at its own scope, which
-owns the target's pre-1900 check. The ISO composition is externally measured; dotted target rendering
-is measured separately. Wider formats, nesting, validation use, and materialized-document
-reconstruction remain outside. -/
+/-- Check the site's supported Date profiles and the target's own storage policy, including its pre-1900
+check. Year presence is compatible directly or through a declared Base Year; target spelling and
+stored precision are independent of the exact source-list profile (spec/05, K11 target-profile capture). -/
 def checkFullDateFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :
     Except FullDateFirstFilledComputationElabError (CheckedFullDateFirstFilledComputation model) := do
   let shape ← (checkTemporalFirstFilledSite model declaringGroup targetField authored
     (ownsBefore1900 := true)).mapError .shape
-  if fullDate : shape.carrier = .fullDateIso ∨ shape.carrier = .fullDateDotted then
-    let targetPolicy ← (elaborateFullDateTargetIn model shape.site.target.repeatableScope
-      targetField).mapError .targetPolicy
-    pure { shape, fullDate, targetPolicy }
+  if dateCarrier : shape.carrier.dateYearPresence?.isSome = true then
+    let targetPolicy ← (elaborateDateConstantTargetIn model shape.site.target.repeatableScope
+      targetField (shape.sourceProfile.dateYearPresence?.getD true)).mapError .targetPolicy
+    match hProfile : ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+    | some profile => pure { shape, dateCarrier, targetPolicy, profile, profileMatches := hProfile }
+    | none => throw (.unsupportedZone model.timeZoneId)
   else throw (.targetNotFullDate shape.site.target.path)
 
-/-- Project one checked full-Date cell into the typed root computation result consumed by the target policy. Stored text is deliberately not selected here, so the account does not choose copy over decode/render. -/
+/-- Select the checked Date instant before the target renders it; a partial full-Date source is decoded
+under its source spelling (spec/05 selection and spec/09 rendering). -/
 def fullDateFirstFilledCellAt (format : FullDateTargetFormat)
     (profile : ModelZone.ConcreteProfile) (addressed : CheckedAddressedCell) : TemporalComputationResult :=
   match observeCell .computation addressed.cell with
@@ -79,13 +85,13 @@ inductive FullDateFirstFilledComputationFault where
   | target (cause : FullDateTargetEvaluationFault)
   deriving Repr, DecidableEq
 
-/-- One instance's full-Date selection retained under its exact target address. -/
+/-- One instance's rendered Date outcome retained under its exact target address. -/
 structure FullDateFirstFilledComputationOutcome where
   targetField : CellAddr
   outcome : FullDateTargetOutcome
   deriving Repr, DecidableEq
 
-/-- One checked full-Date result backed by the common FullDate channels over exact cell addresses. -/
+/-- One checked Date result backed by the common FullDate channels over exact cell addresses. -/
 structure FullDateFirstFilledComputationRunView (model : FlatModel) (ResidualMessage : Type) where
   private mk ::
   operation : CheckedFullDateFirstFilledComputation model
@@ -117,8 +123,10 @@ def evaluateAt (operation : CheckedFullDateFirstFilledComputation model)
     Except FullDateFirstFilledComputationFault FullDateFirstFilledComputationOutcome := do
   let resolved ← (operation.shape.site.source.resolveAt input read environment world).mapError
     (.site ∘ .source)
-  let outcome ← (operation.targetPolicy.evaluate (evaluateFirstFilledSource resolved .poison (fun resolved =>
-    evalFullDateFirstFilledCells operation.targetPolicy.format operation.targetPolicy.profile resolved.cells))).mapError
+  let outcome ← (operation.targetPolicy.evaluate operation.profile (evaluateFirstFilledSource resolved .poison (fun resolved =>
+    evalFullDateFirstFilledCells (match operation.shape.sourceProfile with
+      | .fullDate format => format
+      | _ => .yearMonthDayDashes) operation.profile resolved.cells))).mapError
     .target
   pure { targetField := target, outcome }
 

@@ -44,7 +44,7 @@ private def run (format literal : String) (baseYear : Option Int := none)
   let (_, step) ← (lowerComputation model .english computation).toOption
   pure ((← (runComputations world prepared checked [step]).toOption).map (·.outcome))
 
-example : [("dd.MM.yyyy", "11.06.2024"), ("yyyy-MM-dd", "2024-06-11"),
+example : [("dd.MM.yyyy", "11.06.2024"), ("yyyy-MM-dd", "2024-06-11"), ("yyyyMMdd", "20240611"),
     ("yyyy", "2024"), ("yyyy-MM", "2024-06"), ("yyyyMM", "202406"),
     ("MM", "06"), ("MM-dd", "06-11"), ("MMdd", "0611"), ("ddMM", "1106"),
     ("dd.MM.", "11.06.")].all

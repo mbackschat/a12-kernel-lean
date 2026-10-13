@@ -1,0 +1,141 @@
+{
+  "model": "Temporal_DM.json",
+  "locale": "en_US",
+  "clock": "2024-01-01T12:34:56Z",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "first",
+      "documentInline": {
+        "Form": {
+          "FullA": "06.05.2024",
+          "FullB": "11.12.2023",
+          "FullOut": "2000-01-01",
+          "FullCopy": "01.01.2000",
+          "FragA": "2024-05",
+          "FragB": "2023-12",
+          "FragOut": "2000",
+          "FragCopy": "2000-01",
+          "FullToFrag": "2000",
+          "ClockOut": "01:02:03",
+          "Rows": [
+            {
+              "FullA": "06.05.2024",
+              "FullB": "11.12.2023",
+              "FullOut": "2000-01-01",
+              "FullCopy": "01.01.2000",
+              "FragA": "2024-05",
+              "FragB": "2023-12",
+              "FragOut": "2000",
+              "FragCopy": "2000-01",
+              "FullToFrag": "2000",
+              "ClockOut": "01:02:03"
+            },
+            {
+              "FullA": "10.09.2022",
+              "FullB": "11.12.2023",
+              "FullOut": "2000-01-01",
+              "FullCopy": "01.01.2000",
+              "FragA": "2022-09",
+              "FragB": "2023-12",
+              "FragOut": "2000",
+              "FragCopy": "2000-01",
+              "FullToFrag": "2000",
+              "ClockOut": "01:02:03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fallback",
+      "documentInline": {
+        "Form": {
+          "FullA": "",
+          "FullB": "11.12.2023",
+          "FullOut": "2000-01-01",
+          "FullCopy": "01.01.2000",
+          "FragA": "",
+          "FragB": "2023-12",
+          "FragOut": "2000",
+          "FragCopy": "2000-01",
+          "FullToFrag": "2000",
+          "ClockOut": "01:02:03",
+          "Rows": [
+            {
+              "FullA": "",
+              "FullB": "11.12.2023",
+              "FullOut": "2000-01-01",
+              "FullCopy": "01.01.2000",
+              "FragA": "",
+              "FragB": "2023-12",
+              "FragOut": "2000",
+              "FragCopy": "2000-01",
+              "FullToFrag": "2000",
+              "ClockOut": "01:02:03"
+            },
+            {
+              "FullA": "10.09.2022",
+              "FullB": "11.12.2023",
+              "FullOut": "2000-01-01",
+              "FullCopy": "01.01.2000",
+              "FragA": "2022-09",
+              "FragB": "2023-12",
+              "FragOut": "2000",
+              "FragCopy": "2000-01",
+              "FullToFrag": "2000",
+              "ClockOut": "01:02:03"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "poison",
+      "documentInline": {
+        "Form": {
+          "FullA": "31.02.2024",
+          "FullB": "11.12.2023",
+          "FullOut": "2000-01-01",
+          "FullCopy": "01.01.2000",
+          "FragA": "2024-13",
+          "FragB": "2023-12",
+          "FragOut": "2000",
+          "FragCopy": "2000-01",
+          "FullToFrag": "2000",
+          "ClockOut": "01:02:03",
+          "Rows": [
+            {
+              "FullA": "31.02.2024",
+              "FullB": "11.12.2023",
+              "FullOut": "2000-01-01",
+              "FullCopy": "01.01.2000",
+              "FragA": "2024-13",
+              "FragB": "2023-12",
+              "FragOut": "2000",
+              "FragCopy": "2000-01",
+              "FullToFrag": "2000",
+              "ClockOut": "01:02:03"
+            },
+            {
+              "FullA": "10.09.2022",
+              "FullB": "11.12.2023",
+              "FullOut": "2000-01-01",
+              "FullCopy": "01.01.2000",
+              "FragA": "2022-09",
+              "FragB": "2023-12",
+              "FragOut": "2000",
+              "FragCopy": "2000-01",
+              "FullToFrag": "2000",
+              "ClockOut": "01:02:03"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

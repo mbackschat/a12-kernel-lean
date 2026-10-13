@@ -3,9 +3,8 @@ import A12Kernel.Semantics.String
 
 namespace A12Kernel
 
-/-- Exact complete-Date formats admitted by the bounded stored-input classifier. This is wider than the
-computed-target renderer by the measured compact spelling, so input certification cannot accidentally
-widen target authoring. -/
+/-- Exact complete-Date formats admitted by the bounded stored-input classifier. Input certification
+retains its own precision and formal gates before a value reaches computed-target rendering. -/
 inductive FullDateInputFormat where
   | dayMonthYearDots
   | yearMonthDayDashes
@@ -21,10 +20,11 @@ def ofSource? : String → Option FullDateInputFormat
   | "yyyyMMdd" => some .yearMonthDayConcatenated
   | _ => none
 
-/-- Embed the narrower computed-target format in the stored-input vocabulary. -/
+/-- Read each computed-target spelling through the corresponding stored-input format. -/
 def ofTarget : FullDateTargetFormat → FullDateInputFormat
   | .dayMonthYearDots => .dayMonthYearDots
   | .yearMonthDayDashes => .yearMonthDayDashes
+  | .yearMonthDayConcatenated => .yearMonthDayConcatenated
 
 end FullDateInputFormat
 

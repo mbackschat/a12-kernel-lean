@@ -166,7 +166,16 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         policy := { kind := .enumeration }
         enumeration := some enumeration }
   | "DateType" | "TimeType" | "DateTimeType" | "DateFragmentType" =>
-      let format ← body.getObjValAs? String (if typeName == "DateFragmentType" then "formatOfFragment" else "format")
+      let body ← fieldType.getObjVal? typeName
+      let _ ← body.getObj?
+      let format ← if typeName == "DateFragmentType" then
+          body.getObjValAs? String "formatOfFragment"
+        else match body.getObjVal? "format" with
+          | .ok value => value.getStr?
+          | .error _ => pure (match typeName with
+            | "TimeType" => "HH:mm:ss"
+            | "DateTimeType" => "yyyy-MM-dd'T'HH:mm:ss"
+            | _ => "yyyy-MM-dd")
       let kind : TemporalKind := match typeName with
         | "TimeType" => .time
         | "DateTimeType" => .dateTime

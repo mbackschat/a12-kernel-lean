@@ -41,6 +41,18 @@ def evaluateCivil (target : CheckedDateConstantTarget model sourceCarriesYear)
   | .complete target _ => target.evaluateCivil date
   | .omittedComponent target => target.evaluateCivil date
 
+/-- Render an already selected Date instant through the same declaration-owned policy used by
+literals. The caller supplies the checked model-zone profile; absent and poison values bypass it. -/
+def evaluate (target : CheckedDateConstantTarget model sourceCarriesYear)
+    (profile : ModelZone.ConcreteProfile) :
+    TemporalComputationResult → Except FullDateTargetEvaluationFault FullDateTargetOutcome
+  | .noValue => pure .noValue
+  | .poison cause => pure (.poison cause)
+  | .value instant =>
+      match profile.calendarLabel? instant with
+      | some label => pure (target.evaluateParts label.parts)
+      | none => throw (.localDateUnavailable instant)
+
 end CheckedDateConstantTarget
 
 inductive DateConstantTargetElabError where

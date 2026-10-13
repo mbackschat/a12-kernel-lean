@@ -1,0 +1,595 @@
+{
+  "header": {
+    "id": "Temporal_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "Temporal_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Group",
+                "id": "/Form/Rows",
+                "name": "Rows",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FullA",
+                      "name": "FullA",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "dd.MM.yyyy"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FullB",
+                      "name": "FullB",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "dd.MM.yyyy"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FullOut",
+                      "name": "FullOut",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FullCopy",
+                      "name": "FullCopy",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "dd.MM.yyyy"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FragA",
+                      "name": "FragA",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateFragmentType",
+                          "DateFragmentType": {
+                            "formatOfFragment": "yyyy-MM"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FragB",
+                      "name": "FragB",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateFragmentType",
+                          "DateFragmentType": {
+                            "formatOfFragment": "yyyy-MM"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FragOut",
+                      "name": "FragOut",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateFragmentType",
+                          "DateFragmentType": {
+                            "formatOfFragment": "yyyy"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FragCopy",
+                      "name": "FragCopy",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateFragmentType",
+                          "DateFragmentType": {
+                            "formatOfFragment": "yyyy-MM"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/StampA",
+                      "name": "StampA",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/StampB",
+                      "name": "StampB",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateTimeType",
+                          "DateTimeType": {
+                            "format": "yyyy-MM-dd'T'HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/ClockOut",
+                      "name": "ClockOut",
+                      "Field": {
+                        "fieldType": {
+                          "type": "TimeType",
+                          "TimeType": {
+                            "format": "HH:mm:ss"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FullToFrag",
+                      "name": "FullToFrag",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateFragmentType",
+                          "DateFragmentType": {
+                            "formatOfFragment": "yyyy"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_full_cross",
+                      "name": "rows_full_cross",
+                      "Computation": {
+                        "computedFieldRelPath": "../FullOut",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FullA,FullB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_full_control",
+                      "name": "rows_full_control",
+                      "Computation": {
+                        "computedFieldRelPath": "../FullCopy",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FullA,FullB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_fragment_omit",
+                      "name": "rows_fragment_omit",
+                      "Computation": {
+                        "computedFieldRelPath": "../FragOut",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FragA,FragB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_fragment_control",
+                      "name": "rows_fragment_control",
+                      "Computation": {
+                        "computedFieldRelPath": "../FragCopy",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FragA,FragB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_full_omit",
+                      "name": "rows_full_omit",
+                      "Computation": {
+                        "computedFieldRelPath": "../FullToFrag",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FullA,FullB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_world_time",
+                      "name": "rows_world_time",
+                      "Computation": {
+                        "computedFieldRelPath": "../ClockOut",
+                        "computationAlternatives": [
+                          {
+                            "operation": "Time(HoursFromTime(Now),MinutesFromTime(Now),SecondsFromTime(Now))"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullA",
+                "name": "FullA",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "dd.MM.yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullB",
+                "name": "FullB",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "dd.MM.yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullOut",
+                "name": "FullOut",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullCopy",
+                "name": "FullCopy",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "dd.MM.yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FragA",
+                "name": "FragA",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateFragmentType",
+                    "DateFragmentType": {
+                      "formatOfFragment": "yyyy-MM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FragB",
+                "name": "FragB",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateFragmentType",
+                    "DateFragmentType": {
+                      "formatOfFragment": "yyyy-MM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FragOut",
+                "name": "FragOut",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateFragmentType",
+                    "DateFragmentType": {
+                      "formatOfFragment": "yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FragCopy",
+                "name": "FragCopy",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateFragmentType",
+                    "DateFragmentType": {
+                      "formatOfFragment": "yyyy-MM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/StampA",
+                "name": "StampA",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/StampB",
+                "name": "StampB",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateTimeType",
+                    "DateTimeType": {
+                      "format": "yyyy-MM-dd'T'HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/ClockOut",
+                "name": "ClockOut",
+                "Field": {
+                  "fieldType": {
+                    "type": "TimeType",
+                    "TimeType": {
+                      "format": "HH:mm:ss"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullToFrag",
+                "name": "FullToFrag",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateFragmentType",
+                    "DateFragmentType": {
+                      "formatOfFragment": "yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_full_cross",
+                "name": "fixed_full_cross",
+                "Computation": {
+                  "computedFieldRelPath": "../FullOut",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FullA,FullB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_full_control",
+                "name": "fixed_full_control",
+                "Computation": {
+                  "computedFieldRelPath": "../FullCopy",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FullA,FullB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_fragment_omit",
+                "name": "fixed_fragment_omit",
+                "Computation": {
+                  "computedFieldRelPath": "../FragOut",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FragA,FragB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_fragment_control",
+                "name": "fixed_fragment_control",
+                "Computation": {
+                  "computedFieldRelPath": "../FragCopy",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FragA,FragB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_full_omit",
+                "name": "fixed_full_omit",
+                "Computation": {
+                  "computedFieldRelPath": "../FullToFrag",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FullA,FullB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_world_time",
+                "name": "fixed_world_time",
+                "Computation": {
+                  "computedFieldRelPath": "../ClockOut",
+                  "computationAlternatives": [
+                    {
+                      "operation": "Time(HoursFromTime(Now),MinutesFromTime(Now),SecondsFromTime(Now))"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

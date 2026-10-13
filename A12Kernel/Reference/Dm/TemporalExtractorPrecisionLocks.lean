@@ -76,6 +76,32 @@ private def compute (text : String) (day : String := "2024-05-00")
   let results ← (runComputations world prepared document [source.2]).toOption
   pure (results.map (·.outcome))
 
+private def loadedTemporalModel (explicit : Bool) : Option FlatModel := do
+  let fields ← [(4, "Full", "DateType", "yyyy-MM-dd"),
+    (5, "Clock", "TimeType", "HH:mm:ss"),
+    (11, "Stamp", "DateTimeType", "yyyy-MM-dd'T'HH:mm:ss")].mapM
+      fun (id, name, typeName, format) =>
+        (readFieldType id ["Form"] name [] (Json.mkObj [("fieldType", Json.mkObj [
+          ("type", .str typeName), (typeName, Json.mkObj
+            (if explicit then [("format", .str format)] else []))])])).toOption
+  pure { model with fields := model.fields.map fun field =>
+    (fields.find? (·.id == field.id)).getD field }
+
+private def loadedExtraction (explicit : Bool) (expression : String) (expected : Nat) :
+    Option (Verdict × List String) := do
+  let fixture ← loadedTemporalModel explicit
+  let verdict ← validate (expression ++ " == " ++ toString expected) (fixture := fixture)
+  let results ← compute expression (fixture := fixture)
+  pure (verdict, results)
+
+example : [("YearFromDate(Full)", 2024), ("HoursFromTime(Clock)", 12),
+    ("YearFromDate(DateFromDateTime(Stamp))", 2024),
+    ("HoursFromTime(TimeFromDateTime(Stamp))", 12)].all (fun (expression, expected) =>
+      loadedExtraction false expression expected ==
+        some (.fired .value, ["value " ++ toString expected]) &&
+      loadedExtraction true expression expected ==
+        loadedExtraction false expression expected) := by native_decide
+
 example : validate "YearFromDate(Full) == 2024" = some (.fired .value) ∧
     compute "HoursFromTime(Clock)" = some ["value 12"] := by native_decide
 

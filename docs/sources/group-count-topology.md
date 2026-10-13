@@ -38,7 +38,7 @@
 - `source`: Kernel `RuntimeController.anzahlAngegebenerEntities` asks iterator relevance before counting and derives growth from the iterator's declared size; `EntityIterator.getAnzahlFelder` delegates to `EbenenIterator.getAnzahlWiederholungen`. The latter multiplies the declared coordinate spans. The partial iterator checks identifier extent and its first instance separately. Runtime rows settle the cross-layer outcomes.
 - `readback`: Maintained reader paths match 1,040 full and 1,040 partial rule pointer/type comparisons, plus 240 computation value/type comparisons. The old terminal-capacity projection caused 24 full, six partial and 24 computation message-type mismatches; numeric values agreed. Computation values also run through the certified mixed plan; implicit types use the checked numeric operation's existing growth/decidability projection.
 - `limit`: Finite two-axis Number groups, seeded scalar computations and the named partial scopes. No claim about arbitrary depth, bound ancestors above two reopened axes, independent axes, indexed groups, filters, over-limit nested rows or unique-entity host profiles.
-- `sync`: [SPEC-2026-10-10-17](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-17) carries the canonical extent clarification.
+- `sync`: [SPEC-2026-10-10-17](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-17) carries the canonical extent clarification.
 
 <a id="src-bound-nested-count"></a>
 #### Capacity-invalid descendants do not mark ancestor groups erroneous, measured locally 2026-10-10
@@ -50,7 +50,7 @@
 - `source`: `CheckCommand` skips fields and groups rejected by `FormalChecker.checkIndices` before cache admission. Those structural findings therefore never enter `ValidationCache.markFieldAsInvalidForValidation` or its ancestor propagation. `EntityUtil.isPruefungsRelevant` reads that cache's group-error flag. Lean now excludes capacity-invalid cell/silent-error addresses from the group-error product and no longer infers an ancestor error merely from excess physical rows.
 - `readback`: 1,120/1,120 full and 1,120/1,120 partial rule pointer/type comparisons match; the old projection failed 14 partial comparisons at two ancestor depths. All 70 complete computation outcome sets agree, including clearing excess targets; 390 in-capacity implicit-message types agree through checked row-scope numeric operations. Values run through the certified mixed plan.
 - `scope`: Number payloads; one bound ancestor above two reopened axes; terminal-star and fixed-below-star counts; excess rows at each level. Physical row-content and structural diagnostic observations remain separate. Arbitrary depth, independent axes, indexed groups, filters and unique-entity host profiles remain outside this matrix.
-- `sync`: [SPEC-2026-10-10-18](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-18) records the canonical cache-error distinction.
+- `sync`: [SPEC-2026-10-10-18](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-18) records the canonical cache-error distinction.
 
 <a id="src-group-count-multiplicity"></a>
 #### Group-count operands preserve multiplicity; later unavailable presence blocks partial counts, measured locally 2026-10-10
@@ -62,7 +62,7 @@
 - `source`: Validation `EntityListOperation` and `GroupedEntityIdList` feed the runtime's group-count walk. The `RuntimeController.anzahlAngegebenerKontexteInternal` loop retains unavailable observations after its first-instance preflight. The generated map is not evidence of operand deduplication: both runtime strategies preserve the repeated operands in this matrix.
 - `readback`: All 2,412 full and 2,412 partial rule pointer/type comparisons agree after correction; all 67 complete computation outcome sets and 536 implicit-message type comparisons agree. The initial 52-row matrix reproduced eight partial mismatches, all caused by reducing later presence to a Boolean content flag.
 - `scope`: Fixed-root rules and computations; finite capacity two; Number content; single-level independent axes; duplicate, mixed and reversed operands. Nested independent axes, filters, indexed groups and unique-entity host profiles remain outside this matrix.
-- `sync`: [SPEC-2026-10-10-19](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-19) records the later-instance undecidability correction.
+- `sync`: [SPEC-2026-10-10-19](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-19) records the later-instance undecidability correction.
 
 <a id="src-mixed-group-predicates"></a>
 #### Mixed group predicates preserve declared-position uncertainty under partial validation, measured locally 2026-10-10
@@ -75,7 +75,7 @@
 - `readback`: Maintained checked-reader paths match all 2,178 full and 2,178 partial rule pointer/type comparisons. The baseline full route already agreed. Partial evaluation had 1,584 structural refusals for mixed/repeated operands and 22 wrong-message comparisons from treating an uncovered absent domain as empty. Sole-terminal descendant relevance is also locked internally and measured through the repeated-terminal carrier.
 - `internal-cost`: Positive reads visit held in-capacity rows; negative reads walk declared coordinates lazily, stopping at an unavailable or filled position. Operand readers retain authored short-circuit order. Internal maximum-capacity locks cover an early positive witness, an uncovered absent position, and a decisive fixed operand in both orders; these are cost guards, not wider Kernel calibration. Fully covered negative scans can remain linear in declared extent.
 - `scope`: Fixed-root validation rules; finite capacity two; one reopened level per operand; Number descendants; two predicates. Nested or bound axes, field/indexed operands, filters, other host profiles and computation remain outside this matrix.
-- `sync`: [SPEC-2026-10-10-20](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-20) records the declared-position and descendant-relevance correction.
+- `sync`: [SPEC-2026-10-10-20](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-20) records the declared-position and descendant-relevance correction.
 
 <a id="src-selected-group-predicates"></a>
 #### Selected field and fixed-group operands share partial predicate presence, measured locally 2026-10-10
@@ -102,7 +102,7 @@
 - `readback`: The maintained checked-reader route matches all 6,996 full and 6,996 partial rule pointer/type comparisons. Full validation already agreed on the initial 153 rows; the partial route structurally refused keyed-star combinations. Internal locks cover all four lower-star shapes, both-order mixtures and unchanged static star refusals.
 - `internal-cost`: Declared-slot coverage partitions coordinates named by relevant patterns and their wildcard remainder. An exhaustive two-level capacity-two matrix covers all 512 subsets of nine patterns; separate checks cover bound/missing parents, unbounded axes and maximum-capacity complete/incomplete queries. This avoids capacity-product allocation in coverage, not the separate fully covered negative group scan.
 - `scope`: Fixed-root validation; String index/key; Number payloads; capacity two; one selected parent above one/two reopened axes. Ordinary outer-rule binding, filters, wider host profiles, arbitrary depth and computation remain outside this matrix.
-- `sync`: [SPEC-2026-10-10-21](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-21) records selected-parent and lower-slot coverage for the two group predicates.
+- `sync`: [SPEC-2026-10-10-21](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-21) records selected-parent and lower-slot coverage for the two group predicates.
 
 <a id="src-group-relevance-union"></a>
 #### Complete concrete descendant coverage supplies full parent-group relevance, measured locally 2026-10-10
@@ -114,7 +114,7 @@
 - `source`: `ValidationCommand.setupFullyRelevantGroups` combines complete child contexts, `compress` accounts for finite repetition capacity, and `filterTotallyRelevantGroups` controls upward propagation. Lean reuses declared-field coverage for this product rather than requiring a single wildcard pattern per descendant.
 - `readback`: Checked-reader execution matches all 1,134 full and 1,134 partial pointer/type comparisons. The old product caused 38 partial mismatches; full validation already agreed. Scalar fixed-count rules use the scalar partial API with group states from the same checked preliminary.
 - `scope`: One fixed parent above two finite repeated levels, Number payloads and fixed-list consumers. Bound outer contexts, unbounded declarations and maximum-capacity cost are internal controls, not additional Kernel calibration. No indexed/filter/computation extension or universal correspondence claim.
-- `sync`: [SPEC-2026-10-10-22](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-22).
+- `sync`: [SPEC-2026-10-10-22](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-22).
 
 <a id="src-bound-keyed-star-predicates"></a>
 #### Keyed-star predicates preserve ordinary outer-row bindings, measured locally 2026-10-10

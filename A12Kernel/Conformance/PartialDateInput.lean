@@ -134,9 +134,11 @@ example :
       classify? .full "2024-06-15" = none := by
   native_decide
 
-/- Compact full-Date input does not widen partial-precision authoring without its own measured omission
-matrix. This is a local coverage boundary, not a claim that the kernel refuses the declaration. -/
-example : classify? .dayOptional "20240600" (format := "yyyyMMdd") = none := by
+/- Compact precision reuses the shared omission classifier (spec/05, KF508). These are internal
+profile-propagation locks, not additional retained Kernel observations. -/
+example : classify? .dayOptional "20240600" (format := "yyyyMMdd") = some .admitted ∧
+    classify? .dayOptional "20240000" (format := "yyyyMMdd") = some (.rejected .dateInvalid) ∧
+    classify? .dayOptional "2024/06/00" (format := "yyyy/MM/dd") = none := by
   native_decide
 
 /- The whole rule is **independent of the declared spelling**. The German `dd.MM.yyyy` declaration

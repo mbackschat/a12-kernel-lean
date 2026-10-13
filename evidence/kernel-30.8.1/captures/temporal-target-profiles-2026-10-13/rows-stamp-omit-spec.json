@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/Rows/FullOut",
+  "group": "/Form/Rows",
+  "alternatives": [
+    {
+      "operation": "FirstFilledValue(StampA,StampB)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}

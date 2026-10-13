@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/Rows/FragOut",
+  "group": "/Form/Rows",
+  "alternatives": [
+    {
+      "operation": "FirstFilledValue(FragA,FragB)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}

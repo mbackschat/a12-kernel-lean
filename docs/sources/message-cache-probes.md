@@ -21,7 +21,7 @@
 - `limits`: Measured String keys, Number payloads, selected group/lower-star references and the existing two-row parent topology. No new partial parallel-rule execution, public reference-output channel, default/cache interaction calibration, custom-type admission, renamed-model hashing or tree-bin profile is claimed. Existing explicit-context handling and host-dependence limits remain intact.
 - `request-bytes`: [Request](../../evidence/kernel-30.8.1/captures/message-cache-partial-2026-10-10/request.json) SHA-256 `985c08278d478fa2cea7e8d0d38ca9a2a708af03ea4a52e03ef25b46110a3744`.
 - `artifact-bytes`: [Artifact](../../evidence/kernel-30.8.1/captures/message-cache-partial-2026-10-10/artifact.json) SHA-256 `3ed8701a698aeb21f013fe7d066e8fb337abe0e26f04264aabf471914e782ba7`; rendered message prose is redacted, codes, pointers and channel membership retained.
-- `sync`: [SPEC-2026-10-10-08](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-08--partial-relevance-filters-message-cache-population) records the new partial-call calibration of [spec/08 §4.3](../../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
+- `sync`: [SPEC-2026-10-10-08](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-10-08--partial-relevance-filters-message-cache-population) records the new partial-call calibration of [spec/08 §4.3](../../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
 
 <a id="src-message-cache-default-and-names"></a>
 #### Late defaults and model-wide name reservations change message-cache associations, measured locally 2026-10-10

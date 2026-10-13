@@ -681,8 +681,9 @@ example :
 /- A temporal target's carrier is chosen by its profile, which the format decides, so a DATE declared
 `HH:mm:ss` is a Time target and a TIME declared `yyyy-MM-dd` a full-Date one, at a fixed target and at
 a row, as the [format-gate checkpoint](../../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)
-measures the target gate. A DateFragment target carrying the pre-1900 check is the fragment
-carrier's to refuse, not the full-Date carrier's. -/
+measures the target gate. A component-omitting Date target carrying the pre-1900 check shares the
+Date target policy and admits the operation, with any rejected rendering retained at runtime
+(spec/09). -/
 example :
     let rows : List RepeatableGroupDecl :=
       [{ level := 10, path := ["Xf", "Rows"], repeatability := some 3 },
@@ -705,15 +706,11 @@ example :
         { group, name := "C", targetRelPath := "../" ++ target, commonPrecondition := none
           alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).map
         fun _ => ()
-    let refusedBy (carrier : String) : Lowering Unit → Bool
-      | .error refusal => (refusal.detail.splitOn carrier).length > 1
-      | .ok _ => false
     [model.fields.all (·.temporalTargetPolicy.isSome),
      (lowered ["Xf"] "ClockDate" "FirstFilledValue(T1, T2)").isOk,
      (lowered ["Xf"] "DayTime" "FirstFilledValue(D1, D2)").isOk,
      (lowered ["Xf", "Rows", "Tasks"] "Target" "FirstFilledValue(../Choices*/Choice)").isOk,
-     refusedBy "DateFragmentFirstFilledComputationElabError"
-       (lowered ["Xf"] "CheckedYear" "FirstFilledValue(Y1, Y2)")].all id := by
+     (lowered ["Xf"] "CheckedYear" "FirstFilledValue(Y1, Y2)").isOk].all id := by
   native_decide
 
 /- Analyze and Translate need authored operand order, including a literal written first. -/

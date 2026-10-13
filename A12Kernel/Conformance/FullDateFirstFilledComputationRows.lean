@@ -64,21 +64,22 @@ private def elabError? (checked : Except
   | .error cause => some cause
   | .ok _ => none
 
-/- A repeatable target admits both same-format FULL Date carriers and a pre-1900-checked target, while rejecting crossed, wrong-family and checked-source shapes. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
+/- A repeatable target admits both FULL Date source profiles into either target spelling and a pre-1900-checked target, while admitting checked sources and rejecting wrong-family shapes (K11 target-profile capture). A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
 example : operation?.isSome = true ∧
     (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] dottedTarget.id
       (.star (siblingStar dottedSource.name))).toOption.isSome = true ∧
-    elabError? (checkFullDateFirstFilledComputation model
+    (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] target.id
-      (.star (siblingStar dottedSource.name))) =
-        some (.shape (.sourceCarrier dottedSource.path)) ∧
+      (.star (siblingStar dottedSource.name))).isOk = true ∧
+    (checkFullDateFirstFilledComputation model
+      ["Projects", "Tasks"] dottedTarget.id
+      (.star (siblingStar source.name))).isOk = true ∧
     elabError? (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] target.id (.star (siblingStar timeSource.name))) =
         some (.shape (.sourceCarrier timeSource.path)) ∧
-    elabError? (checkFullDateFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (.star (siblingStar checkedSource.name))) =
-        some (.shape (.sourceCarrier checkedSource.path)) ∧
+    (checkFullDateFirstFilledComputation model
+      ["Projects", "Tasks"] target.id (.star (siblingStar checkedSource.name))).isOk = true ∧
     elabError? (checkFullDateFirstFilledComputation model
       ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
         some (.shape (.site (.source (.resolve (.aboveRoot 1))))) := by

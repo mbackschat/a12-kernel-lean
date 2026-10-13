@@ -114,7 +114,7 @@ def evaluateAt (operation : CheckedFirstFilledAlternative model) (world : World)
     | .fullDate operation =>
         let address ← targetAddress operation.target environment (.fullDate ∘ .site ∘ .targetEnvironment)
         let entry ← (operation.evaluateAt (world := some world) document document.read address environment).mapError .fullDate
-        pure (.fullDate entry.outcome, ← (DocumentComputationReadBack.fullDate model operation.targetField entry.outcome).mapError .readBack)
+        pure (.fullDate entry.outcome, ← (DocumentComputationReadBack.dateConstant operation.targetPolicy entry.outcome).mapError .readBack)
     | .dateRange operation =>
         let address ← targetAddress operation.target environment (.dateRange ∘ .site ∘ .targetEnvironment)
         let entry ← (operation.evaluateAt (world := some world) document document.read address environment).mapError .dateRange

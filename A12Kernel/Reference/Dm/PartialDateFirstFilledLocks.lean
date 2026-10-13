@@ -6,7 +6,8 @@ open Lean A12Kernel
 
 private def run (mode : TemporalPartialMode) (star : Bool) (first second expected : String)
     (secondMode : Option TemporalPartialMode := none) (directRead : Bool := false)
-    (targetMode : TemporalPartialMode := .full) (format : String := "yyyy-MM-dd") :
+    (targetMode : TemporalPartialMode := .full) (format : String := "yyyy-MM-dd")
+    (targetFormat : Option String := none) :
     Option (Verdict × List String) := do
   let sourceGroup := if star then ["Form", "Rows"] else ["Form"]
   let sourceScope := if star then [10] else []
@@ -23,7 +24,11 @@ private def run (mode : TemporalPartialMode) (star : Bool) (first second expecte
       id := 2, name := "B"
       temporalTargetPolicy := some { format, partialMode := secondMode.getD mode } },
       { full with id := 3, name := "Fallback" },
-      { full with id := 4, name := "Out", temporalTargetPolicy := some { format, partialMode := targetMode } },
+      { full with
+        id := 4, name := "Out"
+        policy := { kind := .temporal .date (TemporalComponents.ofFormat (targetFormat.getD format)) }
+        temporalTargetPolicy := some {
+          format := targetFormat.getD format, partialMode := targetMode } },
       { id := 5, groupPath := ["Form"], name := "Error", policy := { kind := .string } }]
     repeatableGroups := if star then [{ level := 10, path := sourceGroup, repeatability := some 2 }] else [] }
   let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
@@ -142,5 +147,136 @@ example : [false, true].all (fun star =>
       some (.fired .value, ["value 01.06.2024"]) &&
     run .yearOptional star "00.00.0000" "15.06.2024" "15.06.2024" (format := "dd.MM.yyyy") ==
       some (.unknown, ["cleared"])) = true := by native_decide
+
+example : [false, true].all (fun star =>
+    run .full star "06.05.2024" "11.12.2023" "06.05.2024"
+      (format := "dd.MM.yyyy") (targetFormat := some "yyyy-MM-dd") ==
+      some (.fired .value, ["value 2024-05-06"]) &&
+    run .dayOptional star "00.05.2024" "11.12.2023" "01.05.2024"
+      (format := "dd.MM.yyyy") (targetFormat := some "yyyy-MM-dd") ==
+      some (.fired .value, ["value 2024-05-01"])) := by native_decide
+
+example : [false, true].all (fun star =>
+    run .full star "06.05.2024" "11.12.2023" "06.05.2024"
+      (format := "dd.MM.yyyy") (targetFormat := some "yyyy") ==
+      some (.fired .value, ["value 2024"])) := by native_decide
+
+example : run .full false "2024-06-11" "2023-12-11" "2024-06-11"
+    (targetFormat := some "yyyyMMdd") = some (.fired .value, ["value 20240611"]) := by
+  native_decide
+
+private def profileRun (sourceFormat targetFormat first second : String)
+    (baseYear : Option Int := none) (repeated : Bool := false)
+    (sourceChecked : Bool := false) (targetChecked : Bool := false)
+    (clean : String := "2022-07-08") (secondFormat : Option String := none)
+    (downstream : Bool := false) :
+    Option (List (String × String)) := do
+  let group := if repeated then ["Form", "Rows"] else ["Form"]
+  let scope := if repeated then [10] else []
+  let declaration (id : FieldId) (name format : String) (checked : Bool) :=
+    readFieldType id group name scope (Json.mkObj [("fieldType", Json.mkObj [
+      ("type", .str "DateType"), ("DateType", Json.mkObj [
+        ("format", .str format), ("youngerThan1900Check", .bool checked)])])])
+  let a ← (declaration 1 "A" sourceFormat sourceChecked).toOption
+  let b ← (declaration 2 "B" (secondFormat.getD sourceFormat) sourceChecked).toOption
+  let target ← (declaration 3 "Out" targetFormat targetChecked).toOption
+  let fallback ← (declaration 4 "Empty" targetFormat false).toOption
+  let consumer ← (declaration 5 "Next" "yyyy-MM-dd" false).toOption
+  let model : FlatModel := {
+    timeZoneId := "Europe/Berlin", baseYear
+    fields := [a, b, target] ++ if downstream then [fallback, consumer] else []
+    repeatableGroups := if repeated then
+      [{ level := 10, path := group, repeatability := some 2 }] else [] }
+  let dm : DmModel := {
+    flat := model, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
+  let seed := match FullDateTargetFormat.ofSource? targetFormat with
+    | some format => (format.renderParts { year := 1990, month := 1, day := 1 }).text
+    | none => ((OmittingDateFormat.ofSource? targetFormat).map fun format =>
+        (format.renderParts { year := 1990, month := 1, day := 1 }).text).getD "seed"
+  let row (a b : String) := Json.mkObj [("A", .str a), ("B", .str b), ("Out", .str seed)]
+  let data := Json.mkObj [("Form", if repeated then
+    Json.mkObj [("Rows", .arr #[row first second, row clean "bad"])]
+    else row first second)]
+  let input ← (readDocument dm data).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let path := if repeated then "/Form/Rows/" else "/Form/"
+  let (_, step) ← (lowerComputation model .english {
+    group := ["Form"], name := "Selected"
+    targetRelPath := if repeated then "../Rows/Out" else "../Out"
+    commonPrecondition := none
+    alternatives := [{ precondition := none, operation :=
+      "FirstFilledValue(" ++ path ++ "A," ++ path ++ "B)" }]
+    errorCodesToSuppress := [] }).toOption
+  let steps ← if downstream then do
+      let (_, next) ← (lowerComputation model .english {
+        group := ["Form"], name := "ReadReducedPrecision"
+        targetRelPath := if repeated then "../Rows/Next" else "../Next"
+        commonPrecondition := none
+        alternatives := [{ precondition := none, operation :=
+          "FirstFilledValue(" ++ path ++ "Out," ++ path ++ "Empty)" }]
+        errorCodesToSuppress := [] }).toOption
+      pure [next, step]
+    else pure [step]
+  let outcomes ← (runComputations world prepared document steps).toOption
+  pure ((outcomes.filter fun outcome => !downstream || outcome.pointer.endsWith "/Next").map
+    fun outcome => (outcome.pointer, outcome.outcome))
+
+private def expectedProfiles (repeated : Bool) (first clean : String) :
+    Option (List (String × String)) :=
+  some (if repeated then [("Form/Rows/Out", first), ("Form/Rows[2]/Out", clean)]
+    else [("Form/Out", first)])
+
+private def profileOutputs : List (String × String × String) := [
+  ("yyyy-MM-dd", "2024-06-11", "2022-07-08"),
+  ("dd.MM.yyyy", "11.06.2024", "08.07.2022"),
+  ("yyyyMMdd", "20240611", "20220708"),
+  ("yyyy", "2024", "2022"), ("yyyy-MM", "2024-06", "2022-07"),
+  ("yyyyMM", "202406", "202207"), ("MM", "06", "07"),
+  ("MM-dd", "06-11", "07-08"), ("MMdd", "0611", "0708"),
+  ("ddMM", "1106", "0807"), ("dd.MM.", "11.06.", "08.07.")]
+
+example : [false, true].all (fun repeated => profileOutputs.all fun (format, first, clean) =>
+    profileRun "yyyy-MM-dd" format "2024-06-11" "2023-12-11" (some 2023) repeated ==
+      expectedProfiles repeated ("value " ++ first) ("value " ++ clean)) := by native_decide
+
+example : [false, true].all (fun repeated =>
+    profileRun "yyyy-MM-dd" "yyyy-MM-dd" "1899-12-31" "2024-06-11" none repeated
+      (sourceChecked := true) == expectedProfiles repeated "cleared" "value 2022-07-08" &&
+    profileRun "yyyy-MM-dd" "yyyy-MM-dd" "1900-01-01" "bad" none repeated
+      (sourceChecked := true) == expectedProfiles repeated "value 1900-01-01" "value 2022-07-08" &&
+    profileRun "yyyy-MM-dd" "yyyy-MM-dd" "1899-12-31" "2024-06-11" none repeated
+      (targetChecked := true) == expectedProfiles repeated "errored 1899-12-31" "value 2022-07-08") := by native_decide
+
+example : [false, true].all (fun repeated =>
+    profileRun "dd.MM." "yyyy-MM-dd" "11.06." "12.12." (some 2023) repeated
+      (clean := "08.07.") == expectedProfiles repeated "value 2023-06-11" "value 2023-07-08" &&
+    (profileRun "dd.MM." "yyyy-MM-dd" "11.06." "12.12." none repeated
+      (clean := "08.07.")).isNone &&
+    profileRun "yyyy-MM-dd" "ddMM" "2024-02-29" "2024-06-11" (some 2023) repeated ==
+      expectedProfiles repeated "errored 2902" "value 0807" &&
+    profileRun "dd.MM." "yyyy-MM-dd" "29.02." "11.06." (some 2023) repeated
+      (clean := "08.07.") == expectedProfiles repeated "cleared" "value 2023-07-08") := by native_decide
+
+example : [false, true].all (fun repeated =>
+    profileRun "yyyyMMdd" "dd.MM.yyyy" "20240611" "20231211" none repeated
+      (clean := "20220708") == expectedProfiles repeated "value 11.06.2024" "value 08.07.2022" &&
+    (profileRun "yyyyMMdd" "dd.MM.yyyy" "20240611" "2023-12-11" none repeated
+      (clean := "20220708") (secondFormat := some "yyyy-MM-dd")).isNone &&
+    (profileRun "yyyy-MM-dd" "MM-dd" "2024-06-11" "2023-12-11" none repeated).isNone) := by native_decide
+
+example : run .dayOptional false "20240600" "20231211" "20240601"
+    (format := "yyyyMMdd") (targetFormat := some "yyyy-MM-dd") =
+      some (.fired .value, ["value 2024-06-01"]) := by native_decide
+
+example : [("yyyy-MM", "2024-06-01", "2022-07-01"),
+    ("yyyy", "2024-01-01", "2022-01-01")].all (fun (format, first, clean) =>
+    [false, true].all fun repeated =>
+      profileRun "yyyy-MM-dd" format "2024-06-11" "2023-12-11" none repeated
+        (downstream := true) == some (if repeated then
+          [("Form/Rows/Next", "value " ++ first), ("Form/Rows[2]/Next", "value " ++ clean)]
+          else [("Form/Next", "value " ++ first)])) := by native_decide
 
 end A12Kernel.Dm.PartialDateFirstFilledLocks

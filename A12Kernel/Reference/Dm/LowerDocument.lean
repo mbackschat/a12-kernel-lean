@@ -37,10 +37,7 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
   | some .dateTime =>
       let operation ← check (checkDateTimeFirstFilledComputation model group target.id source)
       return ← fixedStep (CheckedDocumentComputationStep.ofDateTimeFirstFilled? operation)
-  | some .dateFragment =>
-      let operation ← check (checkDateFragmentFirstFilledComputation model group target.id source)
-      return ← fixedStep (CheckedDocumentComputationStep.ofDateFragmentFirstFilled? operation)
-  | some .fullDate =>
+  | some .dateFragment | some .fullDate =>
       let operation ← check (checkFullDateFirstFilledComputation model group target.id source)
       return ← fixedStep (CheckedDocumentComputationStep.ofFullDateFirstFilled? operation)
   | some .dateRange =>

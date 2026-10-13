@@ -4,7 +4,6 @@ import A12Kernel.Elaboration.BooleanConstantComputation
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
 import A12Kernel.Elaboration.CustomFirstFilledComputation
 import A12Kernel.Elaboration.DateRangeConstructionComputation
-import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeDayShiftComputation
@@ -646,22 +645,8 @@ private def ofFullDateFirstFilledAtRoot (operation : CheckedFullDateFirstFilledC
   runSelected world _ document := do
     let entry ← (operation.evaluateAt (world := some world) document document.read
       { field := operation.targetField, path := [] } []).mapError .fullDateFirstFilled
-    let cell ← DocumentComputationReadBack.fullDate model operation.targetField entry.outcome
+    let cell ← DocumentComputationReadBack.dateConstant operation.targetPolicy entry.outcome
     pure (.fullDate entry.outcome, cell)
-
-/-- A fixed-target DateFragment `FirstFilledValue` at its single instance. -/
-private def ofDateFragmentFirstFilledAtRoot (operation : CheckedDateFragmentFirstFilledComputation model) :
-    CheckedDocumentComputationStep model where
-  target := operation.targetField
-  family := .dateFragment
-  operationReferencesWith := operation.referencesWith
-  excludesTarget := operation.excludesTarget
-  runSelected world _ document := do
-    let entry ← (operation.evaluateAt (world := some world) document document.read
-      { field := operation.targetField, path := [] } []).mapError .firstFilledSite
-    let outcome := entry.result.asExactStringTargetOutcome
-    let cell ← DocumentComputationReadBack.dateFragment model operation.targetField outcome
-    pure (.dateFragment outcome, cell)
 
 /-- A fixed-target DateRange `FirstFilledValue` over a star, at its single instance, read back through
 the target's own declared range policy. -/
@@ -758,10 +743,6 @@ def ofDateTimeFirstFilled? (operation : CheckedDateTimeFirstFilledComputation mo
 def ofFullDateFirstFilled? (operation : CheckedFullDateFirstFilledComputation model) :
     Option (CheckedDocumentComputationStep model) :=
   fixedTargetOnly operation.target (ofFullDateFirstFilledAtRoot operation)
-
-def ofDateFragmentFirstFilled? (operation : CheckedDateFragmentFirstFilledComputation model) :
-    Option (CheckedDocumentComputationStep model) :=
-  fixedTargetOnly operation.target (ofDateFragmentFirstFilledAtRoot operation)
 
 def ofDateRangeFirstFilled? (operation : CheckedDateRangeFirstFilledComputation model) :
     Option (CheckedDocumentComputationStep model) :=

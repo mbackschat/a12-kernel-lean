@@ -1,0 +1,730 @@
+{
+  "header": {
+    "id": "Profiles_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "Profiles_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false,
+      "baseYear": "2023"
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Group",
+                "id": "/Form/Rows",
+                "name": "Rows",
+                "Group": {
+                  "repeatability": 2,
+                  "elements": [
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FullA",
+                      "name": "FullA",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FullB",
+                      "name": "FullB",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/CheckedA",
+                      "name": "CheckedA",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd",
+                            "youngerThan1900Check": true
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/CheckedB",
+                      "name": "CheckedB",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd",
+                            "youngerThan1900Check": true
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/CheckedOut",
+                      "name": "CheckedOut",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/TargetChecked",
+                      "name": "TargetChecked",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd",
+                            "youngerThan1900Check": true
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FragmentA",
+                      "name": "FragmentA",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "dd.MM."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/FragmentB",
+                      "name": "FragmentB",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "dd.MM."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Restored",
+                      "name": "Restored",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyy-MM-dd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/YearMonth",
+                      "name": "YearMonth",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyyMM"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Compact",
+                      "name": "Compact",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "yyyyMMdd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/MonthDay",
+                      "name": "MonthDay",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "MMdd"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/DayMonth",
+                      "name": "DayMonth",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "ddMM"
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Field",
+                      "id": "/Form/Rows/Dotted",
+                      "name": "Dotted",
+                      "Field": {
+                        "fieldType": {
+                          "type": "DateType",
+                          "DateType": {
+                            "format": "dd.MM."
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_YearMonth",
+                      "name": "rows_YearMonth",
+                      "Computation": {
+                        "computedFieldRelPath": "../YearMonth",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FullA,FullB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_Compact",
+                      "name": "rows_Compact",
+                      "Computation": {
+                        "computedFieldRelPath": "../Compact",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FullA,FullB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_MonthDay",
+                      "name": "rows_MonthDay",
+                      "Computation": {
+                        "computedFieldRelPath": "../MonthDay",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FullA,FullB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_DayMonth",
+                      "name": "rows_DayMonth",
+                      "Computation": {
+                        "computedFieldRelPath": "../DayMonth",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FullA,FullB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_Dotted",
+                      "name": "rows_Dotted",
+                      "Computation": {
+                        "computedFieldRelPath": "../Dotted",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FullA,FullB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_CheckedOut",
+                      "name": "rows_CheckedOut",
+                      "Computation": {
+                        "computedFieldRelPath": "../CheckedOut",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(CheckedA,CheckedB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_TargetChecked",
+                      "name": "rows_TargetChecked",
+                      "Computation": {
+                        "computedFieldRelPath": "../TargetChecked",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FullA,FullB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "Computation",
+                      "id": "/Form/Rows/rows_Restored",
+                      "name": "rows_Restored",
+                      "Computation": {
+                        "computedFieldRelPath": "../Restored",
+                        "computationAlternatives": [
+                          {
+                            "operation": "FirstFilledValue(FragmentA,FragmentB)"
+                          }
+                        ],
+                        "errorMessage": [
+                          {
+                            "locale": "en_US",
+                            "text": "Probe."
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullA",
+                "name": "FullA",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FullB",
+                "name": "FullB",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/CheckedA",
+                "name": "CheckedA",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd",
+                      "youngerThan1900Check": true
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/CheckedB",
+                "name": "CheckedB",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd",
+                      "youngerThan1900Check": true
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/CheckedOut",
+                "name": "CheckedOut",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/TargetChecked",
+                "name": "TargetChecked",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd",
+                      "youngerThan1900Check": true
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FragmentA",
+                "name": "FragmentA",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "dd.MM."
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/FragmentB",
+                "name": "FragmentB",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "dd.MM."
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Restored",
+                "name": "Restored",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YearMonth",
+                "name": "YearMonth",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyyMM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Compact",
+                "name": "Compact",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyyMMdd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MonthDay",
+                "name": "MonthDay",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MMdd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/DayMonth",
+                "name": "DayMonth",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "ddMM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Dotted",
+                "name": "Dotted",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "dd.MM."
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_YearMonth",
+                "name": "fixed_YearMonth",
+                "Computation": {
+                  "computedFieldRelPath": "../YearMonth",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FullA,FullB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_Compact",
+                "name": "fixed_Compact",
+                "Computation": {
+                  "computedFieldRelPath": "../Compact",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FullA,FullB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_MonthDay",
+                "name": "fixed_MonthDay",
+                "Computation": {
+                  "computedFieldRelPath": "../MonthDay",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FullA,FullB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_DayMonth",
+                "name": "fixed_DayMonth",
+                "Computation": {
+                  "computedFieldRelPath": "../DayMonth",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FullA,FullB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_Dotted",
+                "name": "fixed_Dotted",
+                "Computation": {
+                  "computedFieldRelPath": "../Dotted",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FullA,FullB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_CheckedOut",
+                "name": "fixed_CheckedOut",
+                "Computation": {
+                  "computedFieldRelPath": "../CheckedOut",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(CheckedA,CheckedB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_TargetChecked",
+                "name": "fixed_TargetChecked",
+                "Computation": {
+                  "computedFieldRelPath": "../TargetChecked",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FullA,FullB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/fixed_Restored",
+                "name": "fixed_Restored",
+                "Computation": {
+                  "computedFieldRelPath": "../Restored",
+                  "computationAlternatives": [
+                    {
+                      "operation": "FirstFilledValue(FragmentA,FragmentB)"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "computedField": "/Form/Rows/FullCopy",
+  "group": "/Form/Rows",
+  "alternatives": [
+    {
+      "operation": "FirstFilledValue(FullA,FullB)"
+    }
+  ],
+  "messages": [
+    {
+      "locale": "en_US",
+      "text": "Probe."
+    }
+  ]
+}

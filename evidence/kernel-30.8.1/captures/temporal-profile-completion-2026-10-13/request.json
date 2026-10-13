@@ -1,0 +1,286 @@
+{
+  "model": "Profiles_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "ordinary",
+      "documentInline": {
+        "Form": {
+          "FullA": "2024-06-11",
+          "FullB": "2022-12-11",
+          "CheckedA": "1900-01-01",
+          "CheckedB": "2022-12-11",
+          "CheckedOut": "2000-01-01",
+          "TargetChecked": "2000-01-01",
+          "FragmentA": "11.06.",
+          "FragmentB": "10.09.",
+          "Restored": "2000-01-01",
+          "YearMonth": "200001",
+          "Compact": "20000101",
+          "MonthDay": "0101",
+          "DayMonth": "0101",
+          "Dotted": "01.01.",
+          "Rows": [
+            {
+              "FullA": "2024-06-11",
+              "FullB": "2022-12-11",
+              "CheckedA": "1900-01-01",
+              "CheckedB": "2022-12-11",
+              "CheckedOut": "2000-01-01",
+              "TargetChecked": "2000-01-01",
+              "FragmentA": "11.06.",
+              "FragmentB": "10.09.",
+              "Restored": "2000-01-01",
+              "YearMonth": "200001",
+              "Compact": "20000101",
+              "MonthDay": "0101",
+              "DayMonth": "0101",
+              "Dotted": "01.01."
+            },
+            {
+              "FullA": "2022-09-10",
+              "FullB": "2022-12-11",
+              "CheckedA": "2022-09-10",
+              "CheckedB": "2022-12-11",
+              "CheckedOut": "2000-01-01",
+              "TargetChecked": "2000-01-01",
+              "FragmentA": "10.09.",
+              "FragmentB": "10.09.",
+              "Restored": "2000-01-01",
+              "YearMonth": "200001",
+              "Compact": "20000101",
+              "MonthDay": "0101",
+              "DayMonth": "0101",
+              "Dotted": "01.01."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "leap",
+      "documentInline": {
+        "Form": {
+          "FullA": "2024-02-29",
+          "FullB": "2022-12-11",
+          "CheckedA": "2024-02-29",
+          "CheckedB": "2022-12-11",
+          "CheckedOut": "2000-01-01",
+          "TargetChecked": "2000-01-01",
+          "FragmentA": "29.02.",
+          "FragmentB": "10.09.",
+          "Restored": "2000-01-01",
+          "YearMonth": "200001",
+          "Compact": "20000101",
+          "MonthDay": "0101",
+          "DayMonth": "0101",
+          "Dotted": "01.01.",
+          "Rows": [
+            {
+              "FullA": "2024-02-29",
+              "FullB": "2022-12-11",
+              "CheckedA": "2024-02-29",
+              "CheckedB": "2022-12-11",
+              "CheckedOut": "2000-01-01",
+              "TargetChecked": "2000-01-01",
+              "FragmentA": "29.02.",
+              "FragmentB": "10.09.",
+              "Restored": "2000-01-01",
+              "YearMonth": "200001",
+              "Compact": "20000101",
+              "MonthDay": "0101",
+              "DayMonth": "0101",
+              "Dotted": "01.01."
+            },
+            {
+              "FullA": "2022-09-10",
+              "FullB": "2022-12-11",
+              "CheckedA": "2022-09-10",
+              "CheckedB": "2022-12-11",
+              "CheckedOut": "2000-01-01",
+              "TargetChecked": "2000-01-01",
+              "FragmentA": "10.09.",
+              "FragmentB": "10.09.",
+              "Restored": "2000-01-01",
+              "YearMonth": "200001",
+              "Compact": "20000101",
+              "MonthDay": "0101",
+              "DayMonth": "0101",
+              "Dotted": "01.01."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "before1900",
+      "documentInline": {
+        "Form": {
+          "FullA": "1899-12-31",
+          "FullB": "2022-12-11",
+          "CheckedA": "1899-12-31",
+          "CheckedB": "2022-12-11",
+          "CheckedOut": "2000-01-01",
+          "TargetChecked": "2000-01-01",
+          "FragmentA": "31.12.",
+          "FragmentB": "10.09.",
+          "Restored": "2000-01-01",
+          "YearMonth": "200001",
+          "Compact": "20000101",
+          "MonthDay": "0101",
+          "DayMonth": "0101",
+          "Dotted": "01.01.",
+          "Rows": [
+            {
+              "FullA": "1899-12-31",
+              "FullB": "2022-12-11",
+              "CheckedA": "1899-12-31",
+              "CheckedB": "2022-12-11",
+              "CheckedOut": "2000-01-01",
+              "TargetChecked": "2000-01-01",
+              "FragmentA": "31.12.",
+              "FragmentB": "10.09.",
+              "Restored": "2000-01-01",
+              "YearMonth": "200001",
+              "Compact": "20000101",
+              "MonthDay": "0101",
+              "DayMonth": "0101",
+              "Dotted": "01.01."
+            },
+            {
+              "FullA": "2022-09-10",
+              "FullB": "2022-12-11",
+              "CheckedA": "2022-09-10",
+              "CheckedB": "2022-12-11",
+              "CheckedOut": "2000-01-01",
+              "TargetChecked": "2000-01-01",
+              "FragmentA": "10.09.",
+              "FragmentB": "10.09.",
+              "Restored": "2000-01-01",
+              "YearMonth": "200001",
+              "Compact": "20000101",
+              "MonthDay": "0101",
+              "DayMonth": "0101",
+              "Dotted": "01.01."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "fallback",
+      "documentInline": {
+        "Form": {
+          "FullA": "",
+          "FullB": "2022-12-11",
+          "CheckedA": "",
+          "CheckedB": "2022-12-11",
+          "CheckedOut": "2000-01-01",
+          "TargetChecked": "2000-01-01",
+          "FragmentA": "",
+          "FragmentB": "10.09.",
+          "Restored": "2000-01-01",
+          "YearMonth": "200001",
+          "Compact": "20000101",
+          "MonthDay": "0101",
+          "DayMonth": "0101",
+          "Dotted": "01.01.",
+          "Rows": [
+            {
+              "FullA": "",
+              "FullB": "2022-12-11",
+              "CheckedA": "",
+              "CheckedB": "2022-12-11",
+              "CheckedOut": "2000-01-01",
+              "TargetChecked": "2000-01-01",
+              "FragmentA": "",
+              "FragmentB": "10.09.",
+              "Restored": "2000-01-01",
+              "YearMonth": "200001",
+              "Compact": "20000101",
+              "MonthDay": "0101",
+              "DayMonth": "0101",
+              "Dotted": "01.01."
+            },
+            {
+              "FullA": "2022-09-10",
+              "FullB": "2022-12-11",
+              "CheckedA": "2022-09-10",
+              "CheckedB": "2022-12-11",
+              "CheckedOut": "2000-01-01",
+              "TargetChecked": "2000-01-01",
+              "FragmentA": "10.09.",
+              "FragmentB": "10.09.",
+              "Restored": "2000-01-01",
+              "YearMonth": "200001",
+              "Compact": "20000101",
+              "MonthDay": "0101",
+              "DayMonth": "0101",
+              "Dotted": "01.01."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "poison",
+      "documentInline": {
+        "Form": {
+          "FullA": "bad",
+          "FullB": "2022-12-11",
+          "CheckedA": "bad",
+          "CheckedB": "2022-12-11",
+          "CheckedOut": "2000-01-01",
+          "TargetChecked": "2000-01-01",
+          "FragmentA": "bad",
+          "FragmentB": "10.09.",
+          "Restored": "2000-01-01",
+          "YearMonth": "200001",
+          "Compact": "20000101",
+          "MonthDay": "0101",
+          "DayMonth": "0101",
+          "Dotted": "01.01.",
+          "Rows": [
+            {
+              "FullA": "bad",
+              "FullB": "2022-12-11",
+              "CheckedA": "bad",
+              "CheckedB": "2022-12-11",
+              "CheckedOut": "2000-01-01",
+              "TargetChecked": "2000-01-01",
+              "FragmentA": "bad",
+              "FragmentB": "10.09.",
+              "Restored": "2000-01-01",
+              "YearMonth": "200001",
+              "Compact": "20000101",
+              "MonthDay": "0101",
+              "DayMonth": "0101",
+              "Dotted": "01.01."
+            },
+            {
+              "FullA": "2022-09-10",
+              "FullB": "2022-12-11",
+              "CheckedA": "2022-09-10",
+              "CheckedB": "2022-12-11",
+              "CheckedOut": "2000-01-01",
+              "TargetChecked": "2000-01-01",
+              "FragmentA": "10.09.",
+              "FragmentB": "10.09.",
+              "Restored": "2000-01-01",
+              "YearMonth": "200001",
+              "Compact": "20000101",
+              "MonthDay": "0101",
+              "DayMonth": "0101",
+              "Dotted": "01.01."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

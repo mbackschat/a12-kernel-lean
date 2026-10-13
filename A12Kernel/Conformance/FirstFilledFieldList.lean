@@ -1,10 +1,10 @@
 import A12Kernel.Elaboration.BooleanFirstFilledComputation
-import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
 import A12Kernel.Elaboration.DateRangeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeFirstFilledComputation
 import A12Kernel.Elaboration.DateTimeInput
 import A12Kernel.Elaboration.FullDateFirstFilledComputation
 import A12Kernel.Elaboration.FullDateInput
+import A12Kernel.Elaboration.OmittingDateInput
 import A12Kernel.Elaboration.TimeFirstFilledComputation
 import A12Kernel.Elaboration.TimeInput
 
@@ -80,19 +80,18 @@ private def list (names : List String) : SurfaceFirstFilledSource :=
   | first :: rest => .list { first := operand first, rest := rest.map operand }
   | [] => .list { first := operand "", rest := [] }
 
-/-- One fragment cell as the DateFragment conformance builds it: the stored token beside a parsed
-date of that year and month, or the format rejection for a text that is no `yyyy-MM`. -/
-private def fragmentRaw (text : String) : RawCell :=
-  match text.splitOn "-" with
-  | [year, month] =>
-      match year.toNat?, month.toNat? with
-      | some year, some month =>
-          .parsed (.temporal (.date {
-            instant := { epochMillis := 0 }
-            parts := { year := year, month := month, day := 1 }
-            basis := .storedGregorian }))
-      | _, _ => .rejected .dateFormat
-  | _ => .rejected .dateFormat
+/-- The earliest model-zone Date the fragment's declared format denotes. -/
+private def fragmentRaw (declaration : FlatFieldDecl) (text : String) : RawCell :=
+  match certifyOmittingDateInputField declaration, ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+  | .ok checked, some profile =>
+      match checked.classifyStoredForModel model.baseYear text with
+      | .admitted value =>
+          match (value.earliestCivil? model.baseYearOrDefault).bind profile.resolveStoredDate? with
+          | some date => .parsed (.temporal (.date date))
+          | none => .rejected .dateFormat
+      | .rejected cause => .rejected cause
+      | .presentEmpty => .presentEmpty
+  | _, _ => .rejected .dateFormat
 
 private def raw (declaration : FlatFieldDecl) (text : String) : RawCell :=
   match declaration.policy.kind with
@@ -113,8 +112,8 @@ private def raw (declaration : FlatFieldDecl) (text : String) : RawCell :=
         | .ok checked => (checked.classifyStoredForModel model.timeZoneId text).toOption.getD
             (.rejected .dateFormat)
         | .error _ => .rejected .dateFormat
-      else fragmentRaw text
-  | _ => fragmentRaw text
+      else fragmentRaw declaration text
+  | _ => fragmentRaw declaration text
 
 /-- A document from `(field name, stored text)` pairs; an omitted field is absent. -/
 private def input? (cells : List (String × String)) : Option (CheckedDocument model) := do
@@ -129,17 +128,17 @@ private def results? (cells : List (String × String)) : Option (List String) :=
   let input ← input? cells
   let booleanResult ← (checkBooleanFirstFilledComputation model ["Fc"] 2 (list ["B1", "B2"])).toOption
   let fragmentResult ←
-    (checkDateFragmentFirstFilledComputation model ["Fc"] 5 (list ["G1", "G2"])).toOption
+    (checkFullDateFirstFilledComputation model ["Fc"] 5 (list ["G1", "G2"])).toOption
   let clockResult ← (checkTimeFirstFilledComputation model ["Fc"] 8 (list ["T1", "T2"])).toOption
   let momentResult ←
     (checkDateTimeFirstFilledComputation model ["Fc"] 11 (list ["M1", "M2"])).toOption
   let [{ result := b, .. }] ← (booleanResult.execute input).toOption | none
-  let [{ result := g, .. }] ← (fragmentResult.execute input).toOption | none
+  let [{ outcome := g, .. }] ← (fragmentResult.execute input).toOption | none
   let [{ outcome := t, .. }] ← (clockResult.execute input).toOption | none
   let [{ outcome := m, .. }] ← (momentResult.execute input).toOption | none
   pure [
     match b with | .value value => toString value | _ => "-",
-    match g with | .value token => token | _ => "-",
+    match g with | .accepted stored => stored.text | _ => "-",
     match t with | .accepted stored => stored.text | _ => "-",
     match m with | .accepted stored => stored.text | _ => "-"]
 
@@ -223,22 +222,21 @@ example :
   native_decide
 
 /- Every listed field repeats one carrier profile: two full Dates spelled differently, which the Kernel
-refuses `MVK_VARYING_TYPES_NOT_ALLOWED`, two kinds, and an ISO list into a dotted target, whose
-Kernel treatment is unmeasured, are each refused here as a profile mismatch; and the shared shape
+refuses `MVK_VARYING_TYPES_NOT_ALLOWED`, and two kinds are refused here as a profile mismatch; an ISO list into a dotted target
+is admitted through the independent target-rendering policy; and the shared shape
 refuses a list over a DateRange profile, which the direct DateRange carrier owns. -/
 example :
     ((match checkFullDateFirstFilledComputation model ["Fc"] 14 (list ["D1", "DD"]) with
         | .error (.shape (.sourceCarrier path)) => path == ["Fc", "DD"] | _ => false) &&
       (match checkTimeFirstFilledComputation model ["Fc"] 8 (list ["T1", "M1"]) with
         | .error (.shape (.sourceCarrier path)) => path == ["Fc", "M1"] | _ => false) &&
-      (match checkFullDateFirstFilledComputation model ["Fc"] 17 (list ["D1", "D2"]) with
-        | .error (.shape (.sourceCarrier path)) => path == ["Fc", "D1"] | _ => false) &&
+      (checkFullDateFirstFilledComputation model ["Fc"] 17 (list ["D1", "D2"])).isOk &&
       (match checkTemporalFirstFilledSite model ["Fc"] 20 (list ["R1", "R2"]) with
         | .error (.sourceShape path) => path == ["Fc", "RTgt"] | _ => false)) = true := by
   native_decide
 
 /- Each temporal carrier owns its own target-profile gate after the site has paired target and source:
-a full-Date pair admitted by the site is refused by the Time, DateTime, DateFragment and starred
+a full-Date pair admitted by the site is refused by the Time, DateTime and starred
 DateRange carriers under their own target error, and a Time pair by the full-Date carrier. -/
 example :
     let dateStar : SurfaceStarFieldPath :=
@@ -247,8 +245,6 @@ example :
         | .error (.targetNotTime path) => path == ["Fc", "DTgt"] | _ => false) &&
       (match checkDateTimeFirstFilledComputation model ["Fc"] 14 (list ["D1", "D2"]) with
         | .error (.targetNotDateTime path) => path == ["Fc", "DTgt"] | _ => false) &&
-      (match checkDateFragmentFirstFilledComputation model ["Fc"] 14 (list ["D1", "D2"]) with
-        | .error (.targetNotFragment path) => path == ["Fc", "DTgt"] | _ => false) &&
       (match checkDateRangeFirstFilledComputation model ["Fc"] 14 dateStar with
         | .error (.targetNotDateRange path) => path == ["Fc", "DTgt"] | _ => false) &&
       (match checkFullDateFirstFilledComputation model ["Fc"] 8 (list ["T1", "T2"]) with

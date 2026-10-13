@@ -1,6 +1,8 @@
-import A12Kernel.Elaboration.DateFragmentFirstFilledComputation
+import A12Kernel.Elaboration.FullDateFirstFilledComputation
+import A12Kernel.Elaboration.FullDateInput
+import A12Kernel.Elaboration.OmittingDateInput
 
-/-! # Exact-address repeatable DateFragment `FirstFilledValue` locks -/
+/-! # Exact-address repeatable component-omitting Date `FirstFilledValue` locks -/
 
 namespace A12Kernel.Conformance.DateFragmentFirstFilledComputationRows
 
@@ -46,6 +48,7 @@ private def model : FlatModel := {
   fields := [source, target, yearSource, yearTarget, yearMonthSource,
     yearMonthTarget, monthDaySource, monthDayTarget, fixedTarget, unrelated,
     fullDateTarget]
+  timeZoneId := "UTC"
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 3 },
     { level := 20, path := ["Projects", "Choices"], repeatability := some 2,
@@ -66,40 +69,40 @@ private def targetStar : SurfaceStarFieldPath := {
 }
 
 private def operation? :
-    Option (CheckedDateFragmentFirstFilledComputation model) :=
-  (checkDateFragmentFirstFilledComputation model
+    Option (CheckedFullDateFirstFilledComputation model) :=
+  (checkFullDateFirstFilledComputation model
     ["Projects", "Tasks"] target.id (.star (siblingStar source.name))).toOption
 
 private def elabError? (checked : Except
-    DateFragmentFirstFilledComputationElabError
-    (CheckedDateFragmentFirstFilledComputation model)) :=
+    FullDateFirstFilledComputationElabError
+    (CheckedFullDateFirstFilledComputation model)) :=
   match checked with
   | .error cause => some cause
   | .ok _ => none
 
-/- A repeatable target admits all four exact fragment profiles over a sibling star and separates carrier identity and self-reference. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
+/- A repeatable target admits the four fragment controls exercised here over a sibling star and separates carrier identity and self-reference. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
 example : operation?.isSome = true ∧
-    (checkDateFragmentFirstFilledComputation model
+    (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] yearTarget.id
       (.star (siblingStar yearSource.name))).toOption.isSome = true ∧
-    (checkDateFragmentFirstFilledComputation model
+    (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] yearMonthTarget.id
       (.star (siblingStar yearMonthSource.name))).toOption.isSome = true ∧
-    (checkDateFragmentFirstFilledComputation model
+    (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] monthDayTarget.id
       (.star (siblingStar monthDaySource.name))).toOption.isSome = true ∧
-    elabError? (checkDateFragmentFirstFilledComputation model
+    elabError? (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] target.id
       (.star (siblingStar yearSource.name))) =
         some (.shape (.sourceCarrier yearSource.path)) ∧
-    elabError? (checkDateFragmentFirstFilledComputation model
+    elabError? (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] fullDateTarget.id
       (.star (siblingStar source.name))) =
         some (.shape (.sourceCarrier source.path)) ∧
-    elabError? (checkDateFragmentFirstFilledComputation model
+    elabError? (checkFullDateFirstFilledComputation model
       ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
         some (.shape (.site (.source (.resolve (.aboveRoot 1))))) ∧
-    elabError? (checkDateFragmentFirstFilledComputation model
+    elabError? (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] target.id (.star targetStar)) =
         some (.shape (.site (.starPlacement (.targetSelfReference target.id)))) := by
   native_decide
@@ -109,12 +112,18 @@ private def prepared :
   (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption.get (by native_decide)
 
-private def dateValue (month : Nat) : RawCell :=
-  .parsed (.temporal (.date {
-    instant := { epochMillis := 0 }
-    parts := { year := 2000, month, day := 1 }
-    basis := .storedGregorian
-  }))
+private def fragmentRaw (text : String) : RawCell :=
+  match certifyOmittingDateInputField source with
+  | .ok checked =>
+      match checked.classifyStoredForModel model.baseYear text with
+      | .admitted value =>
+          match (value.earliestCivil? model.baseYearOrDefault).bind
+              ModelZone.ConcreteProfile.utc.resolveStoredDate? with
+          | some date => .parsed (.temporal (.date date))
+          | none => .rejected .dateFormat
+      | .rejected cause => .rejected cause
+      | .presentEmpty => .presentEmpty
+  | .error _ => .rejected .dateFormat
 
 private def rows : List RowAddr := [
   { group := 10, path := [1] }, { group := 10, path := [2] },
@@ -144,25 +153,31 @@ private def document? (cells : List ClassifiedCellInput) :
   documentWithRows? rows cells
 
 private def input? : Option (CheckedDocument model) := document? [
-  cell source.id [1, 2] "06" (dateValue 6),
+  cell source.id [1, 2] "06" (fragmentRaw "06"),
   cell source.id [2, 1] "XX" (.rejected .malformed),
-  cell source.id [2, 2] "07" (dateValue 7),
-  cell target.id [1, 1] "06" (dateValue 6),
-  cell target.id [1, 2] "05" (dateValue 5),
-  cell target.id [2, 1] "05" (dateValue 5),
-  cell target.id [3, 1] "05" (dateValue 5)]
+  cell source.id [2, 2] "07" (fragmentRaw "07"),
+  cell target.id [1, 1] "06" (fragmentRaw "06"),
+  cell target.id [1, 2] "05" (fragmentRaw "05"),
+  cell target.id [2, 1] "05" (fragmentRaw "05"),
+  cell target.id [3, 1] "05" (fragmentRaw "05")]
 
-/- Physical target encounter order is preserved, each row scans only its enclosing sibling extent, and DateFragment retains the exact selected stored token. -/
+/- Physical target encounter order is preserved, each row scans only its enclosing sibling extent, and the component-omitting target renders the selected Date. -/
 example : (do
     let operation ← operation?
     let input ← input?
     let outcomes ← operation.execute input |>.toOption
-    pure (outcomes.map fun entry => (entry.targetField, entry.result))) = some [
+    pure (outcomes.map fun entry => (entry.targetField, entry.outcome))) = some [
       (address target.id [2, 2], .poison .malformed),
-      (address target.id [1, 1], .value "06"),
+      (address target.id [1, 1], .accepted ⟨"06", by decide⟩),
       (address target.id [3, 1], .noValue),
       (address target.id [2, 1], .poison .malformed),
-      (address target.id [1, 2], .value "06")] := by
+      (address target.id [1, 2], .accepted ⟨"06", by decide⟩)] := by
+  native_decide
+
+example : (do
+    let operation ← operation?
+    let input ← documentWithRows? [] []
+    operation.execute input |>.toOption) = some [] := by
   native_decide
 
 private structure ResultApplicationSummary where
@@ -171,33 +186,33 @@ private structure ResultApplicationSummary where
   errors : List (CellAddr × String)
   cleared : List CellAddr
   residual : List FormalCause
-  row11 : StringTargetState
-  row12 : StringTargetState
-  row21 : StringTargetState
-  row22 : StringTargetState
-  row31 : StringTargetState
-  unrelatedState : StringTargetState
+  row11 : FullDateTargetState
+  row12 : FullDateTargetState
+  row21 : FullDateTargetState
+  row22 : FullDateTargetState
+  row31 : FullDateTargetState
+  unrelatedState : FullDateTargetState
   deriving Repr, DecidableEq
 
 private def resultApplicationSummary? : Option ResultApplicationSummary := do
   let operation ← operation?
   let input ← input?
   let destination ← document? [
-    cell target.id [1, 1] "04" (dateValue 4),
-    cell target.id [1, 2] "04" (dateValue 4),
-    cell target.id [2, 1] "04" (dateValue 4),
-    cell unrelated.id [] "03" (dateValue 3)]
+    cell target.id [1, 1] "04" (fragmentRaw "04"),
+    cell target.id [1, 2] "04" (fragmentRaw "04"),
+    cell target.id [2, 1] "04" (fragmentRaw "04"),
+    cell unrelated.id [] "03" (fragmentRaw "03")]
   let result ← operation.executeResult input [.malformed] |>.toOption
   let applied ← result.applyToChecked destination |>.toOption
   pure {
-    values := result.string.withoutErrors.map fun item =>
+    values := result.fullDate.withoutErrors.map fun item =>
       (item.targetField, item.value.text)
-    changes := result.string.withChanges.map fun item =>
+    changes := result.fullDate.withChanges.map fun item =>
       (item.targetField, item.value.text)
-    errors := result.string.withErrors.map fun item =>
+    errors := result.fullDate.withErrors.map fun item =>
       (item.targetField, item.attempted.text)
-    cleared := result.string.cleared
-    residual := result.string.formalErrorsInOperands
+    cleared := result.fullDate.cleared
+    residual := result.fullDate.formalErrorsInOperands
     row11 := applied (address target.id [1, 1])
     row12 := applied (address target.id [1, 2])
     row21 := applied (address target.id [2, 1])
@@ -250,28 +265,28 @@ private def formalInputSummary? : Option FormalInputSummary := do
       { group := 20, path := [2, 2] },
       { group := 30, path := [1, 1] },
       { group := 30, path := [2, 1] }] [
-    cell source.id [1, 1] "06" (dateValue 6),
-    cell source.id [2, 1] "07" (dateValue 7),
-    cell source.id [2, 2] "07" (dateValue 7),
-    cell target.id [1, 1] "05" (dateValue 5),
-    cell target.id [2, 1] "05" (dateValue 5)]
+    cell source.id [1, 1] "06" (fragmentRaw "06"),
+    cell source.id [2, 1] "07" (fragmentRaw "07"),
+    cell source.id [2, 2] "07" (fragmentRaw "07"),
+    cell target.id [1, 1] "05" (fragmentRaw "05"),
+    cell target.id [2, 1] "05" (fragmentRaw "05")]
   let result ← operation.executeResultWithFormalInputs input |>.toOption
-  let findings := result.string.formalErrorsInOperands
+  let findings := result.fullDate.formalErrorsInOperands
   pure {
     planOperands := plan.operandFields
     planTargets := plan.computedFields
     findingsExact := findings.length == 2 &&
       findings.contains (formalFinding [2, 1] .duplicateIndex) &&
       findings.contains (formalFinding [2, 2] .duplicateIndex)
-    values := result.string.withoutErrors.map fun item =>
+    values := result.fullDate.withoutErrors.map fun item =>
       (item.targetField, item.value.text)
-    changes := result.string.withChanges.map fun item =>
+    changes := result.fullDate.withChanges.map fun item =>
       (item.targetField, item.value.text)
-    errorsEmpty := result.string.withErrors.isEmpty
-    cleared := result.string.cleared
+    errorsEmpty := result.fullDate.withErrors.isEmpty
+    cleared := result.fullDate.cleared
   }
 
-/- Selected partial-Date index preparation keeps the exact clean token while duplicate keys remain eager findings and poison only the reached parent-local scan. -/
+/- Selected component-omitting Date index preparation keeps the rendered clean value while duplicate keys remain eager findings and poison only the reached parent-local scan. -/
 example : formalInputSummary? = some {
     planOperands := [source.id, target.id, yearTarget.id, yearMonthTarget.id, monthDayTarget.id, fullDateTarget.id]
     planTargets := [target.id]

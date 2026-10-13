@@ -1,0 +1,86 @@
+{
+  "target": "model",
+  "op": "read",
+  "outcome": "read",
+  "ok": true,
+  "verification": "KERNEL_CONFIRMED",
+  "summary": "[redacted]",
+  "data": {
+    "rules": {},
+    "computations": {
+      "/Form/Rows/rows_YearMonth": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/YearMonth"
+      },
+      "/Form/Rows/rows_Compact": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/Compact"
+      },
+      "/Form/Rows/rows_MonthDay": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/MonthDay"
+      },
+      "/Form/Rows/rows_DayMonth": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/DayMonth"
+      },
+      "/Form/Rows/rows_Dotted": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/Dotted"
+      },
+      "/Form/Rows/rows_CheckedOut": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/CheckedOut"
+      },
+      "/Form/Rows/rows_TargetChecked": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/TargetChecked"
+      },
+      "/Form/Rows/rows_Restored": {
+        "converted": true,
+        "calculatedField": "/Form/Rows/Restored"
+      },
+      "/Form/fixed_YearMonth": {
+        "converted": true,
+        "calculatedField": "/Form/YearMonth"
+      },
+      "/Form/fixed_Compact": {
+        "converted": true,
+        "calculatedField": "/Form/Compact"
+      },
+      "/Form/fixed_MonthDay": {
+        "converted": true,
+        "calculatedField": "/Form/MonthDay"
+      },
+      "/Form/fixed_DayMonth": {
+        "converted": true,
+        "calculatedField": "/Form/DayMonth"
+      },
+      "/Form/fixed_Dotted": {
+        "converted": true,
+        "calculatedField": "/Form/Dotted"
+      },
+      "/Form/fixed_CheckedOut": {
+        "converted": true,
+        "calculatedField": "/Form/CheckedOut"
+      },
+      "/Form/fixed_TargetChecked": {
+        "converted": true,
+        "calculatedField": "/Form/TargetChecked"
+      },
+      "/Form/fixed_Restored": {
+        "converted": true,
+        "calculatedField": "/Form/Restored"
+      }
+    },
+    "summary": {
+      "rules": 0,
+      "convertedRules": 0,
+      "computations": 16,
+      "convertedComputations": 16,
+      "fullyTyped": true
+    }
+  },
+  "diagnostics": [],
+  "written": false
+}
