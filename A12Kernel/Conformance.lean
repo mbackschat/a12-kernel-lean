@@ -106,6 +106,7 @@ import A12Kernel.Conformance.IterationLegality
 import A12Kernel.Conformance.TableEnumeration
 import A12Kernel.Conformance.ComputationNormalForm
 import A12Kernel.Conformance.IndexAndSortDeclaration
+import A12Kernel.Conformance.DeclarationReport
 import A12Kernel.Conformance.AddressFormalLegality
 import A12Kernel.Conformance.TemporalConstructorOperand
 import A12Kernel.Conformance.RootGroupConditionLegality

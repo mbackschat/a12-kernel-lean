@@ -17,7 +17,8 @@ theorem rowFieldRefusal_roles_agree_off_tableEnum (role : RowFieldRole) (target 
         match refusal with
         | .nameUnresolved _ => .nameUnresolved role
         | .valueValidationOff _ => .valueValidationOff role
-        | .indexFieldTableEnum => .indexFieldTableEnum) := by
+        | .indexFieldTableEnum => .indexFieldTableEnum
+        | .sortFieldDuplicate => .sortFieldDuplicate) := by
   cases target with
   | unresolved => rfl
   | group => rfl
@@ -45,11 +46,12 @@ theorem rowFieldRefusal_valueValidationOff (role : RowFieldRole) (tableEnumerati
     rowFieldRefusal role (.field true tableEnumeration) = some (.valueValidationOff role) := by
   rfl
 
-/-- A group with no nominations draws nothing, and a group's two roles are independent: the sort
-refusals are exactly those of its sort nominations. -/
-theorem rowFieldDeclarationRefusals_sort_only (sort : List NominatedTarget) :
+/-- A group's two roles are independent: with distinct sort names, the sort refusals are exactly
+those of its sort nominations. A repeated name adds the duplicate class rather than replacing any. -/
+theorem rowFieldDeclarationRefusals_sort_only (sort : List (String × NominatedTarget))
+    (distinct : (sort.map (·.1)).eraseDups.length = sort.length) :
     rowFieldDeclarationRefusals { index := none, sort := sort } =
-      sort.filterMap (rowFieldRefusal .sortField) := by
-  simp [rowFieldDeclarationRefusals]
+      sort.filterMap (rowFieldRefusal .sortField ·.2) := by
+  simp [rowFieldDeclarationRefusals, distinct]
 
 end A12Kernel

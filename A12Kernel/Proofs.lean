@@ -67,6 +67,7 @@ import A12Kernel.Proofs.IterationLegality
 import A12Kernel.Proofs.TableEnumeration
 import A12Kernel.Proofs.ComputationNormalForm
 import A12Kernel.Proofs.IndexAndSortDeclaration
+import A12Kernel.Proofs.DeclarationReport
 import A12Kernel.Proofs.AddressFormalLegality
 import A12Kernel.Proofs.TemporalConstructorOperand
 import A12Kernel.Proofs.RootGroupConditionLegality

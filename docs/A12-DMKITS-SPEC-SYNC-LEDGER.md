@@ -118,3 +118,13 @@ Four corrections are `pending` below and have not been handed off. The 24 termin
 - `basis`: [Generated self-validation replay](sources/model-structure-and-declaration-probes.md#src-generated-self-validation-k14): six retained Kernel 30.8.1 rows of the nested-semantic-index, selected-message-references and index-text-normalization captures type the generated `Sum(… For Key)` mismatch OMISSION for a key matching no row, an empty key and a key differing by a lone carriage return.
 - `acceptance`: Reconcile the selected aggregate's missingness with the value-list absence already recorded. Do not claim `MinValue`, `MaxValue`, `NumberOfDifferentValues` or partial validation, which share the read but are unmeasured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-08"></a>
+### SPEC-2026-10-13-08 — a failed error target withholds the error text beside standing slot classes, and every sort nomination reports
+
+- `status`: pending
+- `canonical`: [Error-target gate](../spec/07-repetition-and-iteration.md), [refused DSL member](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation) and [index and sort nominations](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique).
+- `delta`: A rule whose target names nothing reports its target pair beside `MVK_RULE_NAME_INVALID`, `MVK_ERROR_CODE_MISSING` and `MVK_ERROR_MESSAGE_MISSING`, while the condition's class and every error-text class, `RULE_HAS_NO_ERRORTEXT` included, are withheld. Two different sort fields with value validation off draw the sort class twice, an unresolved nomination does not stop the later ones, and `MVK_SORT_FIELD_DUPLICATE` is reported once beside the repeated field's own class.
+- `basis`: [Declaration-report capture](sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14), 49 `model check` rows. The sort rows contradict peer [KF345](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf345)'s row recording that two different opaque sort fields draw the class once; the target rows settle what KF339 leaves open beyond the DSL members.
+- `acceptance`: Reconcile KF339's open withholding reach and KF345's two-opaque-fields row with these rows. Do not claim the notification order, which interleaves members, or duplicate multiplicity for two different repeated names, which the three-entry sort capacity prevents.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

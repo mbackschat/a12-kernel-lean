@@ -1,0 +1,940 @@
+[
+ {
+  "id": "s-control",
+  "group": "/Form/Items",
+  "sortFields": [
+   "K"
+  ]
+ },
+ {
+  "id": "s-two-opaque",
+  "group": "/Form/Items",
+  "sortFields": [
+   "NVV",
+   "NVV2"
+  ]
+ },
+ {
+  "id": "s-second-opaque",
+  "group": "/Form/Items",
+  "sortFields": [
+   "K",
+   "NVV"
+  ]
+ },
+ {
+  "id": "s-same-opaque-twice",
+  "group": "/Form/Items",
+  "sortFields": [
+   "NVV",
+   "NVV"
+  ]
+ },
+ {
+  "id": "s-same-plain-twice",
+  "group": "/Form/Items",
+  "sortFields": [
+   "K",
+   "K"
+  ]
+ },
+ {
+  "id": "s-two-dup-pairs",
+  "group": "/Form/Items",
+  "sortFields": [
+   "K",
+   "K",
+   "V",
+   "V"
+  ]
+ },
+ {
+  "id": "s-same-plain-thrice",
+  "group": "/Form/Items",
+  "sortFields": [
+   "K",
+   "K",
+   "K"
+  ]
+ },
+ {
+  "id": "s-invalid-then-opaque",
+  "group": "/Form/Items",
+  "sortFields": [
+   "../Value",
+   "NVV"
+  ]
+ },
+ {
+  "id": "s-opaque-then-invalid",
+  "group": "/Form/Items",
+  "sortFields": [
+   "NVV",
+   "../Value"
+  ]
+ },
+ {
+  "id": "s-two-invalid",
+  "group": "/Form/Items",
+  "sortFields": [
+   "../Value",
+   "../Other"
+  ]
+ },
+ {
+  "id": "s-index-and-sort-opaque",
+  "group": "/Form/Items",
+  "sortFields": [
+   "NVV"
+  ],
+  "indexFieldName": "NVV"
+ },
+ {
+  "id": "s-index-opaque-two-sorts-opaque",
+  "group": "/Form/Items",
+  "sortFields": [
+   "NVV",
+   "NVV2"
+  ],
+  "indexFieldName": "NVV"
+ },
+ {
+  "id": "r-control",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-target-bad",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Nope",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-target-bad-cond-bad",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Nope",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Nope)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-target-bad-tab",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Nope",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "a\tb"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-target-bad-name",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/vk_vkProbe",
+   "name": "vk_vkProbe",
+   "Rule": {
+    "errorEntityRelPath": "../Nope",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-target-bad-code",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Nope",
+    "errorCode": " ",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-target-bad-nomsg",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Nope",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR"
+   }
+  }
+ },
+ {
+  "id": "r-target-bad-wsmsg",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Nope",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "   "
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-cond-bad-tab",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Nope)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "a\tb"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-cond-bad-nomsg",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Nope)",
+    "severity": "ERROR"
+   }
+  }
+ },
+ {
+  "id": "r-cond-bad-name-code",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/vk_vkProbe",
+   "name": "vk_vkProbe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": " ",
+    "errorCondition": "FieldFilled(Nope)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-cond-bad-name-code-tab",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/vk_vkProbe",
+   "name": "vk_vkProbe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": " ",
+    "errorCondition": "FieldFilled(Nope)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "a\tb"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-name-code-tab",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/vk_vkProbe",
+   "name": "vk_vkProbe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": " ",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "a\tb"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-nomsg",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR"
+   }
+  }
+ },
+ {
+  "id": "r-wsmsg",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "   "
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-emptymsg",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": ""
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-all-slots",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/vk_vkProbe",
+   "name": "vk_vkProbe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": " ",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR"
+   }
+  }
+ },
+ {
+  "id": "r-relational-tab",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Other)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "a\tb"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-relational-nomsg",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Other)",
+    "severity": "ERROR"
+   }
+  }
+ },
+ {
+  "id": "r-relational-badname",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Other) And FieldFilled(Nope)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-two-defects-name-first",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Nope) And And FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-two-defects-token-first",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value) And And FieldFilled(Nope)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-two-bad-names",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Nope) And FieldFilled(Nope2) And FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-two-params",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "see $Nope$ and $Other$"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "r-tab-and-param",
+  "locales": [
+   "en_US"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "see $Nope$ a\tb"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-both-ws",
+  "locales": [
+   "en_US",
+   "de_DE"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "  "
+     },
+     {
+      "locale": "de_DE",
+      "text": "  "
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-en-de-empty",
+  "locales": [
+   "en_US",
+   "de_DE"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "x"
+     },
+     {
+      "locale": "de_DE",
+      "text": ""
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-en-de-ws",
+  "locales": [
+   "en_US",
+   "de_DE"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "x"
+     },
+     {
+      "locale": "de_DE",
+      "text": " "
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-en-de-absent",
+  "locales": [
+   "en_US",
+   "de_DE"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "x"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-empty-ws",
+  "locales": [
+   "en_US",
+   "de_DE"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": ""
+     },
+     {
+      "locale": "de_DE",
+      "text": " "
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-cond-bad-de-absent",
+  "locales": [
+   "en_US",
+   "de_DE"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Nope)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "x"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "l-en-tab-de-param",
+  "locales": [
+   "en_US",
+   "de_DE"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "a\tb"
+     },
+     {
+      "locale": "de_DE",
+      "text": "see $Other$"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "c-control",
+  "appendToForm": {
+   "type": "Computation",
+   "id": "/Form/Comp",
+   "name": "Comp",
+   "Computation": {
+    "computedFieldRelPath": "../Total",
+    "computationAlternatives": [
+     {
+      "operation": "1"
+     }
+    ],
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "c-op-bad-nomsg",
+  "appendToForm": {
+   "type": "Computation",
+   "id": "/Form/Comp",
+   "name": "Comp",
+   "Computation": {
+    "computedFieldRelPath": "../Total",
+    "computationAlternatives": [
+     {
+      "operation": "[Nope] + 1"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "c-op-bad-tab",
+  "appendToForm": {
+   "type": "Computation",
+   "id": "/Form/Comp",
+   "name": "Comp",
+   "Computation": {
+    "computedFieldRelPath": "../Total",
+    "computationAlternatives": [
+     {
+      "operation": "[Nope] + 1"
+     }
+    ],
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "a\tb"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "c-pre-bad-op-token",
+  "appendToForm": {
+   "type": "Computation",
+   "id": "/Form/Comp",
+   "name": "Comp",
+   "Computation": {
+    "computedFieldRelPath": "../Total",
+    "computationAlternatives": [
+     {
+      "operation": "1 + + 1"
+     }
+    ],
+    "commonPrecondition": "FieldFilled(Nope)",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "c-op-bad-pre-relational",
+  "appendToForm": {
+   "type": "Computation",
+   "id": "/Form/Comp",
+   "name": "Comp",
+   "Computation": {
+    "computedFieldRelPath": "../Total",
+    "computationAlternatives": [
+     {
+      "operation": "[Nope] + 1"
+     }
+    ],
+    "commonPrecondition": "FieldFilled(Value)",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "plain text"
+     }
+    ]
+   }
+  }
+ }
+]

@@ -97,7 +97,7 @@ def notifications (declaration : ExecutableDeclaration) : List DeclarationNotifi
 /-- Read failures and construction failures suppress all declaration verdicts. Check the complete
 batch before projecting any notifications, so a later unreadable declaration cannot leave an
 earlier declaration's apparent verdict behind (peer KF420 and rule-slot competing-defect laws). -/
-def admit (declarations : List ExecutableDeclaration) : Except DeclarationAdmissionFailure Unit := do
+def admitAll (declarations : List ExecutableDeclaration) : Except DeclarationAdmissionFailure Unit := do
   if let some declaration := declarations.find? (fun d => match d.kind with
       | .rule .unreadable => true | _ => false) then
     throw (.unreadable declaration.path "errorCode")

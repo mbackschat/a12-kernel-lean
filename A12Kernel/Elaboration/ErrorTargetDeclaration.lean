@@ -79,8 +79,9 @@ nothing"**: a declared relative path that resolves to no entity lands here too, 
 path draws the missing-declaration class rather than the unknown-name one. Measured — a rule whose
 path names a nonexistent sibling, and a rule whose path is the empty string, both draw the missing
 class ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)). Beside it the Kernel reports
-`MVK_ERROR_FIELD_MISSING`, which this module does not model and whose raising check no row isolates
-([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
+`MVK_ERROR_FIELD_MISSING`, whose raising check no row isolates
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)); `targetClasses`
+reports the pair.
 
 `declared` therefore means an error entity object exists, and `knownToModel` is the narrower second
 question of whether the model's entity container holds its full name. -/
@@ -94,6 +95,14 @@ the unknown-name class and leaves the absent-declaration class standing. -/
 def declarationRefusal (lenient : Bool) : ErrorFieldDeclaration → Option KernelStaticDiagnostic
   | .absent => some .missingErrorField
   | .declared known => if known || lenient then none else some .errorFieldNotValid
+
+/-- Every class the declaration gate's refusal reports: an absent target draws the measured pair
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14)),
+and an unknown one its single class. -/
+def targetClasses (lenient : Bool) (declaration : ErrorFieldDeclaration) : List KernelStaticDiagnostic :=
+  match declaration with
+  | .absent => [.errorFieldMissing, .missingErrorField]
+  | .declared _ => (declarationRefusal lenient declaration).toList
 
 /-- Whether the condition text is parsed at all. The declaration gate throws, so its refusal hides
 every class the condition itself would report — including plain syntax errors. -/

@@ -406,7 +406,7 @@ def readModelWithAdmission (json : Json)
     (graphemeClusters? : Option (String → List String) := none) :
     Except ModelReadFailure DmModel := do
   let (model, declarations) ← (readModelCore json graphemeClusters?).mapError .input
-  (ExecutableDeclaration.admit declarations).mapError .declaration
+  (ExecutableDeclaration.admitAll declarations).mapError .declaration
   pure model
 
 /-- Compatibility projection for replay callers. Consumers explaining a refusal use

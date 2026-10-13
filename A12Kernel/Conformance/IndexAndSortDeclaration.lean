@@ -50,24 +50,35 @@ example :
    A consumer reporting only the first refusal hides the sort defect entirely. -/
 example :
     rowFieldDeclarationRefusals
-        { index := some (.field true false), sort := [.field true false, .field false false] } =
+        { index := some (.field true false), sort := [("NVV", .field true false), ("K", .field false false)] } =
       [.valueValidationOff .indexField, .valueValidationOff .sortField] ∧
       rowFieldDeclarationRefusals { index := some (.field false false), sort := [] } = [] := by
   native_decide
 
 /- Each sort nomination is checked on its own, so the list's refusals track its members positionally
-   rather than collapsing to one. -/
+   rather than collapsing to one: two disqualified fields draw two classes, against a first-only or
+   once-per-class report. A field named twice draws its class beside the list's duplicate class, which
+   is reported once for a name written three times. Kernel rows `s-two-opaque`, `s-invalid-then-opaque`,
+   `s-same-opaque-twice` and `s-same-plain-thrice` of the
+   [declaration-report capture](../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14). -/
 example :
     rowFieldDeclarationRefusals
-        { sort := [.field false false, .unresolved, .field true false] } =
-      [.nameUnresolved .sortField, .valueValidationOff .sortField] := by
+        { sort := [("K", .field false false), ("../Value", .unresolved), ("NVV", .field true false)] } =
+      [.nameUnresolved .sortField, .valueValidationOff .sortField] ∧
+    rowFieldDeclarationRefusals { sort := [("NVV", .field true false), ("NVV2", .field true false)] } =
+      [.valueValidationOff .sortField, .valueValidationOff .sortField] ∧
+    rowFieldDeclarationRefusals { sort := [("NVV", .field true false), ("NVV", .field true false)] } =
+      [.valueValidationOff .sortField, .valueValidationOff .sortField, .sortFieldDuplicate] ∧
+    rowFieldDeclarationRefusals
+        { sort := [("K", .field false false), ("K", .field false false), ("K", .field false false)] } =
+      [.sortFieldDuplicate] := by
   native_decide
 
-/- Five distinct keys across two roles. The index and sort spellings differ by more than a prefix,
+/- Six distinct keys across two roles and the list. The index and sort spellings differ by more than a prefix,
    so a consumer deriving one from the other by substitution gets a key the Kernel never emits. -/
 example :
-    (RowFieldRefusal.all.map (·.catalogKey)).eraseDups.length = 5 ∧
-      RowFieldRefusal.all.length = 5 ∧
+    (RowFieldRefusal.all.map (·.catalogKey)).eraseDups.length = 6 ∧
+      RowFieldRefusal.all.length = 6 ∧
       (RowFieldRefusal.valueValidationOff .indexField).catalogKey =
         "MVK_INDEX_FIELD_NO_VALUE_VALIDATION" ∧
       (RowFieldRefusal.valueValidationOff .sortField).catalogKey =

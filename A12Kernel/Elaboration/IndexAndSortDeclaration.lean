@@ -32,6 +32,9 @@ inductive RowFieldRefusal where
   | valueValidationOff (role : RowFieldRole)
   /-- An index field is a table enumeration. Has no sort-field counterpart. -/
   | indexFieldTableEnum
+  /-- A sort list naming one field more than once. A judgement of the list, so it is reported once
+  however many names repeat. -/
+  | sortFieldDuplicate
   deriving Repr, DecidableEq
 
 namespace RowFieldRefusal
@@ -43,11 +46,12 @@ def catalogKey : RowFieldRefusal → String
   | .valueValidationOff .indexField => "MVK_INDEX_FIELD_NO_VALUE_VALIDATION"
   | .valueValidationOff .sortField => "MVK_SORT_FIELD_NO_VALUE_VALIDATION"
   | .indexFieldTableEnum => "MVK_INDEX_FIELD_NO_TABLE_ENUM"
+  | .sortFieldDuplicate => "MVK_SORT_FIELD_DUPLICATE"
 
 /-- Every class of the family. -/
 def all : List RowFieldRefusal :=
   [.nameUnresolved .indexField, .valueValidationOff .indexField, .indexFieldTableEnum,
-   .nameUnresolved .sortField, .valueValidationOff .sortField]
+   .nameUnresolved .sortField, .valueValidationOff .sortField, .sortFieldDuplicate]
 
 end RowFieldRefusal
 
@@ -106,17 +110,21 @@ def FlatModel.nominatedTarget (model : FlatModel) (dropped : List FieldId)
   | none => pure (if model.hasGroupPath (group ++ [name]) then .group else .unresolved)
 
 /-- A repeatable group's row-key declarations: at most one index nomination, any number of sort
-nominations. -/
+nominations, each sort nomination with the name it is written as. -/
 structure RowFieldDeclarations where
   index : Option NominatedTarget := none
-  sort : List NominatedTarget := []
+  sort : List (String × NominatedTarget) := []
   deriving Repr, DecidableEq
 
-/-- Every refusal the group's declarations draw, index first then the sort nominations in order.
-A list rather than a first match, because the two roles are checked independently and a group can be
-wrong in both. -/
+/-- Every refusal the group's declarations draw: the index nomination's, each sort nomination's in
+order, then one duplicate class for the sort list. A list rather than a first match, because the
+Kernel checks every nomination ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14)):
+two disqualified sort fields draw two classes, and a field named twice draws its own class beside
+the duplicate. A repeated name is the written one, measured on identical spellings. -/
 def rowFieldDeclarationRefusals (declarations : RowFieldDeclarations) : List RowFieldRefusal :=
+  let names := declarations.sort.map (·.1)
   (declarations.index.bind (rowFieldRefusal .indexField)).toList ++
-    declarations.sort.filterMap (rowFieldRefusal .sortField)
+    declarations.sort.filterMap (rowFieldRefusal .sortField ·.2) ++
+    if names.eraseDups.length < names.length then [.sortFieldDuplicate] else []
 
 end A12Kernel

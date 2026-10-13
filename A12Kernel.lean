@@ -242,6 +242,7 @@ import A12Kernel.Elaboration.IterationLegality
 import A12Kernel.Elaboration.TableEnumeration
 import A12Kernel.Elaboration.ComputationNormalForm
 import A12Kernel.Elaboration.IndexAndSortDeclaration
+import A12Kernel.Elaboration.DeclarationReport
 import A12Kernel.Elaboration.AddressFormalLegality
 import A12Kernel.Elaboration.TemporalConstructorOperand
 import A12Kernel.Elaboration.RootGroupConditionLegality

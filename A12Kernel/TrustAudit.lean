@@ -2867,6 +2867,9 @@ run_cmd do
 #print axioms A12Kernel.rowFieldRefusal_names_its_role
 #print axioms A12Kernel.rowFieldRefusal_valueValidationOff
 #print axioms A12Kernel.rowFieldDeclarationRefusals_sort_only
+#print axioms A12Kernel.DeclarationVerdicts.report_of_refusal
+#print axioms A12Kernel.DeclarationVerdicts.report_of_sound
+#print axioms A12Kernel.DeclarationVerdicts.refusal_of_target
 #print axioms A12Kernel.indexPosition_zero
 #print axioms A12Kernel.indexPosition_row_needs_length
 #print axioms A12Kernel.indexPosition_last

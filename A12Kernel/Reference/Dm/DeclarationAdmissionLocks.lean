@@ -89,7 +89,7 @@ example : computation "Ordinary" = some (true, none) := by native_decide
 example : computation "Vk_VkCalculation" = some (false, some (.notifications [
     { declaration := ["Form", "Vk_VkCalculation"], kind := .reservedName }])) := by native_decide
 
-example : (match ExecutableDeclaration.admit [
+example : (match ExecutableDeclaration.admitAll [
     { group := ["Form"], name := "vk_vkRule", kind := .rule (.text "") },
     { group := ["Form"], name := "Other", kind := .rule .unreadable }] with
       | .ok _ => none | .error error => some error) =

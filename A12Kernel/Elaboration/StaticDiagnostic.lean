@@ -266,6 +266,8 @@ inductive KernelStaticDiagnostic where
   | indexFieldInvalid
   /-- The rule declares no error field at all. Reported **before the condition is parsed**, so it hides every syntax class the condition would otherwise draw. -/
   | missingErrorField
+  /-- Beside `missingErrorField` when the rule's error target names nothing. -/
+  | errorFieldMissing
   /-- The rule declares an error field the model does not know. Same pre-grammar stage as the class above, but unlike it this one is suppressed by a lenient parse. -/
   | errorFieldNotValid
   /-- Row iteration paired with an error field the condition reaches only through its root group. An old-world branch: it is guarded on a non-A12 model, and its only catalog entry is an unauthored placeholder rather than a message, so it is named here for the total function's sake and not because a consumer can render it. -/
@@ -458,6 +460,8 @@ inductive KernelStaticDiagnostic where
   | errorMessageAndNoPattern
   /-- A field or rule message that answers one declared locale and leaves another unanswered. -/
   | errorMessageForLanguageMissing
+  /-- A rule or computation message leaving every declared locale without a nonblank text. -/
+  | errorMessageMissing
   | missingMessageCategory
   | lexerStandardError
   | incompleteInput
@@ -600,6 +604,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .multipleIndexFields2 => "MVK_MULTIPLE_INDEX_FIELDS2"
   | .indexFieldInvalid => "MVK_INDEX_FIELD_INVALID"
   | .missingErrorField => "MVK_MISSING_ERROR_FIELD"
+  | .errorFieldMissing => "MVK_ERROR_FIELD_MISSING"
   | .errorFieldNotValid => "MVK_ERROR_FIELD_NOT_VALID"
   | .errorFieldAndZIterationInvalid =>
       "MVK_ERROR_FIELD_AND_ZITERATION_INVALID"
@@ -700,6 +705,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .errorMessageAndPatternInvalid => "MVK_ERROR_MESSAGE_AND_PATTERN_INVALID"
   | .errorMessageAndNoPattern => "MVK_ERROR_MESSAGE_AND_NO_PATTERN"
   | .errorMessageForLanguageMissing => "MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING"
+  | .errorMessageMissing => "MVK_ERROR_MESSAGE_MISSING"
   | .missingMessageCategory => "NO_CATEGORY"
   | .lexerStandardError => "MVK_LEXER_STANDARD_ERROR"
   | .incompleteInput => "MVK_INCOMPLETE_INPUT"
@@ -753,7 +759,7 @@ def all : List KernelStaticDiagnostic :=
     .maxGroupRestrictionToOne, .maxLfdNrRestrictionToOne,
     .entityMoveInA12ModelCondition,
     .entityMoveInA12ModelErrortext, .multipleIndexFields, .multipleIndexFields2,
-    .indexFieldInvalid, .missingErrorField, .errorFieldNotValid,
+    .indexFieldInvalid, .missingErrorField, .errorFieldMissing, .errorFieldNotValid,
     .errorFieldAndZIterationInvalid, .errorFieldGroupIteration4Invalid,
     .errorFieldGroupIteration5Invalid, .refErrorEntityIfFilledNotReferenced,
     .refErrorEntityIfNotFilledNotReferenced,
@@ -788,7 +794,7 @@ def all : List KernelStaticDiagnostic :=
     .messageInvalidRootGroup, .messageInvalidEntity, .messageFieldNameNotUnique,
     .ruleGroupImmediatelyBelowRoot,
     .invalidMessageParameter, .errorMessageAndPatternInvalid, .errorMessageAndNoPattern,
-    .errorMessageForLanguageMissing,
+    .errorMessageForLanguageMissing, .errorMessageMissing,
     .missingMessageCategory,
     .lexerStandardError, .incompleteInput, .expectedTokenNotFound, .unexpectedToken]
 

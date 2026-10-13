@@ -51,7 +51,7 @@ def refuse (construct : String) (detail : String := "") : Lowering α :=
   .error { construct, detail }
 
 def admitDeclarations (declarations : List ExecutableDeclaration) : Lowering Unit :=
-  (ExecutableDeclaration.admit declarations).mapError fun failure =>
+  (ExecutableDeclaration.admitAll declarations).mapError fun failure =>
     { construct := "DeclarationAdmission", detail := toString (repr failure),
       declarationFailure? := some failure }
 

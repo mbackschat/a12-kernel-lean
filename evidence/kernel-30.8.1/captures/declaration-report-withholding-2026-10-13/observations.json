@@ -1,0 +1,569 @@
+[
+ {
+  "case": "s-control",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "s-two-opaque",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION",
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION"
+  ]
+ },
+ {
+  "case": "s-second-opaque",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION"
+  ]
+ },
+ {
+  "case": "s-same-opaque-twice",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION",
+   "MVK_SORT_FIELD_DUPLICATE"
+  ]
+ },
+ {
+  "case": "s-same-plain-twice",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_SORT_FIELD_DUPLICATE"
+  ]
+ },
+ {
+  "case": "s-two-dup-pairs",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "codeless:sort-list-capacity",
+   "MVK_SORT_FIELD_DUPLICATE"
+  ]
+ },
+ {
+  "case": "s-same-plain-thrice",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_SORT_FIELD_DUPLICATE"
+  ]
+ },
+ {
+  "case": "s-invalid-then-opaque",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INVALID_SORT_FIELD",
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION"
+  ]
+ },
+ {
+  "case": "s-opaque-then-invalid",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION",
+   "MVK_INVALID_SORT_FIELD"
+  ]
+ },
+ {
+  "case": "s-two-invalid",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INVALID_SORT_FIELD",
+   "MVK_INVALID_SORT_FIELD"
+  ]
+ },
+ {
+  "case": "s-index-and-sort-opaque",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INDEX_FIELD_NO_VALUE_VALIDATION",
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION"
+  ]
+ },
+ {
+  "case": "s-index-opaque-two-sorts-opaque",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INDEX_FIELD_NO_VALUE_VALIDATION",
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION",
+   "MVK_SORT_FIELD_NO_VALUE_VALIDATION"
+  ]
+ },
+ {
+  "case": "r-control",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "r-target-bad",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_FIELD_MISSING",
+   "MVK_MISSING_ERROR_FIELD"
+  ]
+ },
+ {
+  "case": "r-target-bad-cond-bad",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_FIELD_MISSING",
+   "MVK_MISSING_ERROR_FIELD"
+  ]
+ },
+ {
+  "case": "r-target-bad-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_FIELD_MISSING",
+   "MVK_MISSING_ERROR_FIELD"
+  ]
+ },
+ {
+  "case": "r-target-bad-name",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_FIELD_MISSING",
+   "MVK_RULE_NAME_INVALID",
+   "MVK_MISSING_ERROR_FIELD"
+  ]
+ },
+ {
+  "case": "r-target-bad-code",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_CODE_MISSING",
+   "MVK_ERROR_FIELD_MISSING",
+   "MVK_MISSING_ERROR_FIELD"
+  ]
+ },
+ {
+  "case": "r-target-bad-nomsg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING",
+   "MVK_ERROR_FIELD_MISSING",
+   "MVK_MISSING_ERROR_FIELD"
+  ]
+ },
+ {
+  "case": "r-target-bad-wsmsg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING",
+   "MVK_ERROR_FIELD_MISSING",
+   "MVK_MISSING_ERROR_FIELD"
+  ]
+ },
+ {
+  "case": "r-cond-bad-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "r-cond-bad-nomsg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING",
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "r-cond-bad-name-code",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_CODE_MISSING",
+   "MVK_RULE_NAME_INVALID",
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "r-cond-bad-name-code-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_CODE_MISSING",
+   "MVK_RULE_NAME_INVALID",
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "r-name-code-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_CODE_MISSING",
+   "MVK_RULE_NAME_INVALID",
+   "INVALID_CHARACTERS"
+  ]
+ },
+ {
+  "case": "r-nomsg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING",
+   "RULE_HAS_NO_ERRORTEXT"
+  ]
+ },
+ {
+  "case": "r-wsmsg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING"
+  ]
+ },
+ {
+  "case": "r-emptymsg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING",
+   "RULE_HAS_NO_ERRORTEXT"
+  ]
+ },
+ {
+  "case": "r-all-slots",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_CODE_MISSING",
+   "MVK_ERROR_MESSAGE_MISSING",
+   "MVK_RULE_NAME_INVALID",
+   "RULE_HAS_NO_ERRORTEXT"
+  ]
+ },
+ {
+  "case": "r-relational-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_FIELD_NOT_REFERENCED"
+  ]
+ },
+ {
+  "case": "r-relational-nomsg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING",
+   "MVK_ERROR_FIELD_NOT_REFERENCED"
+  ]
+ },
+ {
+  "case": "r-relational-badname",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "r-two-defects-name-first",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "r-two-defects-token-first",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "case": "r-two-bad-names",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "r-two-params",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "INVALID_ENTITY",
+   "INVALID_FIELD"
+  ]
+ },
+ {
+  "case": "r-tab-and-param",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "INVALID_CHARACTERS"
+  ]
+ },
+ {
+  "case": "l-both-ws",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING"
+  ]
+ },
+ {
+  "case": "l-en-de-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING",
+   "RULE_HAS_NO_ERRORTEXT"
+  ]
+ },
+ {
+  "case": "l-en-de-ws",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING"
+  ]
+ },
+ {
+  "case": "l-en-de-absent",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING",
+   "RULE_HAS_NO_ERRORTEXT"
+  ]
+ },
+ {
+  "case": "l-empty-ws",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING",
+   "RULE_HAS_NO_ERRORTEXT"
+  ]
+ },
+ {
+  "case": "l-cond-bad-de-absent",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING",
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "l-en-tab-de-param",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "INVALID_CHARACTERS",
+   "INVALID_FIELD"
+  ]
+ },
+ {
+  "case": "c-control",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [],
+  "notifications": []
+ },
+ {
+  "case": "c-op-bad-nomsg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INVALID_ENTITY",
+   "MVK_ERROR_MESSAGE_MISSING"
+  ]
+ },
+ {
+  "case": "c-op-bad-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "c-pre-bad-op-token",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ {
+  "case": "c-op-bad-pre-relational",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "severities": [
+   "ERROR"
+  ],
+  "notifications": [
+   "MVK_INVALID_ENTITY"
+  ]
+ }
+]
