@@ -161,11 +161,6 @@ The former SG1 → SG2 → SG4 construction sequence is represented. [Checked-do
 <a id="gap-sg27"></a>
 - [residual record](gaps/numeric-and-temporal.md#gap-sg27)
 
-### SG28 — refusal-class reachability and the shared denominator
-
-<a id="gap-sg28"></a>
-- [residual record](gaps/targets-and-derivation.md#gap-sg28)
-
 ## Cross-family conformance gap
 
 ### SG12 — retained Kernel correspondence coverage

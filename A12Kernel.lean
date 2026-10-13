@@ -134,6 +134,7 @@ import A12Kernel.Elaboration.ValueAsDateTimeComponents
 import A12Kernel.Elaboration.ValueAsDateTimeWorldComponents
 import A12Kernel.Elaboration.ConstructedDateComponents
 import A12Kernel.Semantics.FullDateInputFormat
+import A12Kernel.Semantics.TemporalDeclarationFormat
 import A12Kernel.Semantics.ConstructedDateInputs
 import A12Kernel.Semantics.HavingTemporalTypes
 import A12Kernel.Semantics.HavingDateValidity

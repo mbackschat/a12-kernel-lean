@@ -19,8 +19,8 @@ The names above an element decide what it may report: a path class on a group or
 group-path codeless notification to everything below it and withholds the path class, the `xml` group
 class and the field messages there, and a field carrying a path class of its own reports no type body.
 The result is a list of `(label, element path)` pairs. A model the Kernel cannot build, by an empty
-element name, a blank rule or computation name, a repeated hint-list locale or a row-key nomination
-that binds to no field, yields the one unbuilt-model label and no path. The report is a multiset, so the walk order is not an observation.
+element name, a blank rule or computation name, a repeated hint-list locale, an Enumeration declaring
+no values or a row-key nomination that binds to no field, yields the one unbuilt-model label and no path. The report is a multiset, so the walk order is not an observation.
 
 It is an input adapter, differentially tested by the field-declaration capture rather than proved. A
 condition language other than the two whose tokens are measured, a member of the wrong shape, an
@@ -124,6 +124,13 @@ private def readDeclaration (fieldJson : Json) : Except String FieldTypeDeclarat
       pure (.date { format := ← optionalString body "format"
                     partialMode := ← partialMode? (← optionalString body "datePrecision")
                     youngerThan1900Check := strictFlag body "youngerThan1900Check" })
+  | "TimeType" | "DateTimeType" => pure (.temporal { format := ← optionalString body "format" })
+  | "DateFragmentType" =>
+      pure (.dateFragment { format := ← optionalString body "formatOfFragment"
+                            youngerThan1900Check := strictFlag body "youngerThan1900Check" })
+  | "DateRangeType" =>
+      pure (.dateRange { format := ← optionalString body "format"
+                         separator := ← optionalString body "rangeSeparator" })
   | "EnumerationType" => .enumeration <$> readEnumeration body
   | "UnspecifiedType" => pure .unspecified
   | _ => pure .other
@@ -441,6 +448,26 @@ example :
     reported (nominationModel true [fieldElement "Sub",
       groupElement "Rows" 3 ["Sub"] [groupElement "Sub" 1 [] [fieldElement "X"]]]) =
       some [("codeless:model-not-built", "")] := by
+  native_decide
+
+/-! ## Locks on the DateRange separator default -/
+
+private def dateRangeField (body : String) : Json :=
+  (Json.parse ("{\"fieldType\":{\"type\":\"DateRangeType\",\"DateRangeType\":" ++ body ++ "}}")).toOption.getD .null
+
+private def dateRangeSeparator (body : String) : Option String :=
+  ((readFieldType 0 ["Form"] "R" [] (dateRangeField body)).toOption.bind (·.dateRangePolicy)).map (·.separator)
+
+/- An absent range separator reads as `/`, as an explicit one does, so `yyyy-MM-dd` without one is on
+   the allowlist while `dd.MM.yyyy` without one is read and left to the pair allowlist; an absent format
+   is still refused (tb-range-fmtonly, tb-range-fmtonly-de, tb-range-sepnly). -/
+example :
+    dateRangeSeparator "{\"format\":\"yyyy-MM-dd\"}" = some "/" ∧
+    dateRangeSeparator "{\"format\":\"yyyy-MM-dd\",\"rangeSeparator\":null}" = some "/" ∧
+    dateRangeSeparator "{\"format\":\"dd.MM.yyyy\"}" = some "/" ∧
+    dateRangeSeparator "{\"format\":\"MM\",\"rangeSeparator\":\"\"}" = some "" ∧
+    dateRangeSeparator "{\"rangeSeparator\":\"/\"}" = none ∧
+    dateRangeSeparator "{\"format\":\"yyyy-MM-dd\",\"rangeSeparator\":1}" = none := by
   native_decide
 
 end A12Kernel.Dm

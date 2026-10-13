@@ -278,7 +278,13 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         | some "TO" => pure (some .anchorFinish)
         | some other => throw s!"interpretationOfYear {other}"
       let format ← body.getObjValAs? String "format"
-      let separator ← body.getObjValAs? String "rangeSeparator"
+      -- An absent separator reads as `/`: a format whose allowlisted pair uses `/` is admitted without
+      -- one (capture row `tb-range-fmtonly`), and the pair allowlist refuses any other. An absent
+      -- format stays refused.
+      let separator ← match body.getObjVal? "rangeSeparator" with
+        | .error _ | .ok .null => pure "/"
+        | .ok (.str value) => pure value
+        | .ok other => throw s!"rangeSeparator {other.compress}"
       pure { base with
         policy := { kind := .dateRange }
         dateRangePolicy := some {

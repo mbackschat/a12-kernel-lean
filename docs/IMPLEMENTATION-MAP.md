@@ -131,6 +131,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Model reader declaration surface](implementation/data-and-core.md#cap-model-reader-declaration-surface)
 <a id="cap-model-consistency-rules"></a>
 - [Model consistency rules](implementation/data-and-core.md#cap-model-consistency-rules)
+<a id="cap-declaration-generation-notifications"></a>
+- [Declaration generation notifications](implementation/data-and-core.md#cap-declaration-generation-notifications)
 <a id="cap-group-content-gate"></a>
 - [Group-content gate](implementation/data-and-core.md#cap-group-content-gate)
 

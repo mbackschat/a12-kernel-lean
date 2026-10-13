@@ -36,6 +36,15 @@ private def custom (declaration : CustomTypeDeclaration) : FieldTypeDeclaration 
 
 private def date (declaration : DateTypeDeclaration) : FieldTypeDeclaration := .date declaration
 
+/-- A Time or DateTime body, which carries only a format. -/
+private def temporal (format : Option String) : FieldTypeDeclaration := .temporal { format }
+
+private def fragment (format : Option String) (youngerThan1900Check : Bool := false) :
+    FieldTypeDeclaration := .dateFragment { format, youngerThan1900Check }
+
+private def dateRange (format separator : Option String) : FieldTypeDeclaration :=
+  .dateRange { format, separator }
+
 /-- An Enumeration whose values carry `(locale, text)` labels. -/
 private def enumeration (values : List (String × List (String × String)))
     (rest : EnumerationTypeDeclaration := {}) : FieldTypeDeclaration :=
@@ -458,6 +467,69 @@ example :
     labels (string { messages := [{ locale := "en_US", text := "capitals" }] }) =
       ["MVK_ERROR_MESSAGE_AND_NO_PATTERN"] ∧
     labels (string { pattern := some "[A-Z]+" }) = ["MVK_ERROR_MESSAGE_AND_PATTERN_INVALID"] := by
+  native_decide
+
+/- Law 8, one thirteen-format vocabulary admits a declared format whatever the temporal kind, Date, Time,
+   DateTime and DateFragment alike, and any other format draws one codeless notification per field; a
+   Time field is admitted `yyyy-MM-dd` and refused `HH:mm`, and an absent format is the kind's default
+   (tb-date-ok, tb-date-badfmt, tb-time-badfmt, tb-time-datefmt, tb-dt-badfmt, tb-frag-ok,
+   tb-frag-badfmt). -/
+example :
+    ["yyyy-MM-dd", "dd.MM.yyyy", "yyyyMMdd", "yyyy", "yyyy-MM", "yyyyMM", "MM", "MM-dd", "MMdd",
+        "ddMM", "HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss", "dd.MM."].all (fun format =>
+      labels (date { format := some format }) == [] && labels (temporal (some format)) == [] &&
+        labels (fragment (some format)) == []) = true ∧
+    ["yyyy/MM/dd", "HH:mm", "yyyy-MM-dd HH:mm", "dd.MM", "ddMMyyyy", "dd.MM.yyyy'T'HH:mm:ss",
+        ""].all (fun format =>
+      labels (date { format := some format }) == ["codeless:date-format-invalid"] &&
+        labels (temporal (some format)) == ["codeless:date-format-invalid"] &&
+        labels (fragment (some format)) == ["codeless:date-format-invalid"]) = true ∧
+    labels (date {}) = [] ∧ labels (temporal none) = [] ∧ labels (fragment none) = [] := by
+  native_decide
+
+/- A refused format binds nothing, as a refused member does: the partial-precision and pre-1900 laws
+   that read the Date's components are silent beside it. No row measures the combination. -/
+example :
+    labels (date { format := some "yyyy/MM/dd", partialMode := .dayOptional, youngerThan1900Check := true })
+      = ["codeless:date-format-invalid"] := by
+  native_decide
+
+/- Law 9, a DateFragment with the pre-1900 check needs a year in its format, by the Date law; its
+   precision is not read (tb-frag-1900, tb-frag-1900-ok). -/
+example :
+    labels (fragment (some "dd.MM.") (youngerThan1900Check := true)) =
+      ["MVK_ADDITIONAL_CHECK_INVALID"] ∧
+    labels (fragment (some "dd.MM.yyyy") (youngerThan1900Check := true)) = [] ∧
+    labels (fragment (some "dd.MM.")) = [] ∧
+    labels (fragment (some "dd.MM") (youngerThan1900Check := true)) =
+      ["codeless:date-format-invalid"] := by
+  native_decide
+
+/- Law 10, a DateRange pair must be on the allowlist, an absent separator being `/` and an absent
+   format outside it; the month-only format alone admits the empty separator, and the year and
+   1900 flags add nothing (tb-range-ok, tb-range-fmtonly, tb-range-fmtonly-de, tb-range-badpair,
+   tb-range-badpair2, tb-range-sepnly, tb-range-1900, tb-range-interp). -/
+example :
+    labels (dateRange (some "yyyy-MM-dd") (some "/")) = [] ∧
+    labels (dateRange (some "yyyy-MM-dd") none) = [] ∧
+    labels (dateRange (some "dd.MM.yyyy") none) = ["codeless:date-range-format-invalid"] ∧
+    labels (dateRange (some "dd.MM.yyyy") (some "/")) = ["codeless:date-range-format-invalid"] ∧
+    labels (dateRange (some "dd.MM.yyyy") (some "-")) = [] ∧
+    labels (dateRange (some "yyyyMM") (some "-")) = ["codeless:date-range-format-invalid"] ∧
+    labels (dateRange none (some "/")) = ["codeless:date-range-format-invalid"] ∧
+    labels (dateRange none none) = ["codeless:date-range-format-invalid"] ∧
+    labels (dateRange (some "MM") (some "")) = [] ∧
+    labels (dateRange (some "yyyy-MM-dd") (some "")) = ["codeless:date-range-format-invalid"] ∧
+    labels (dateRange (some "MM") (some "/")) = [] := by
+  native_decide
+
+/- Law 11, an Enumeration declaring no values, or an empty list of them, leaves the model unbuilt
+   (tb-enum-novalues, tb-enum-emptyvalues); Boolean and Confirm fields draw nothing
+   (tb-bool-body, tb-confirm-body). -/
+example :
+    labels (.enumeration {}) = [modelNotBuiltLabel] ∧
+    labels (.enumeration { values := [], sValue := some "A" }) = [modelNotBuiltLabel] ∧
+    labels (enumeration [("A", [])]) = [] ∧ labels .other = [] := by
   native_decide
 
 end A12Kernel.Conformance.FieldTypeDeclarationNotification

@@ -3,6 +3,7 @@ import A12Kernel.Elaboration.EnumerationDeclarationNotification
 import A12Kernel.Elaboration.FieldMessageCheck
 import A12Kernel.Semantics.NumberBound
 import A12Kernel.Semantics.StringPattern
+import A12Kernel.Semantics.TemporalDeclarationFormat
 import A12Kernel.Semantics.TemporalFormat
 
 /-! # A12Kernel.Elaboration.FieldTypeDeclarationNotification — notifications a field's type declaration raises
@@ -13,9 +14,11 @@ The input is a small read-model of the field's body after type-definition resolu
 
 **A member out of range binds nothing.** Each range-checked member is read as unbounded, admitted or refused. A refused member draws its own codeless range notification and every law that reads the member is silent (`r-silence`, `ml-unknown`, `mm-c-oor`, `h-oor`), so a defect that is already named is never named a second time under another class.
 
+**A model with a field the Kernel cannot build has no other notification.** Two hint-list entries for one locale and an Enumeration declaring no values (an absent or empty `values`) each give `FieldTypeJudgement.modelNotBuilt`, which replaces every notification of every field.
+
 Choices no row separates, recorded where they are made: a declared but refused integer count is not replaced by the amount-derived one; two label entries for one value and locale are both counted; a repeated hint-list locale is judged whether or not the model declares it; the label texts of every declared locale are pooled for the tab, pipe and line-break classes, and a text shared by two locales is one notification.
 
-Not claimed: element-name, group, rule, computation and annotation classes ([`ElementNameNotification`](ElementNameNotification.lean) owns them), the Date-fragment and Time partial modes, notification order, a variant-filtered field (the caller does not ask), and the Enumeration invalid-character class under a restricted charset beyond what `EnumerationDeclaration.notifications` already answers.
+Not claimed: element-name, group, rule, computation and annotation classes ([`ElementNameNotification`](ElementNameNotification.lean) owns them), the partial precision of a Time, DateTime or DateFragment, notification order, a variant-filtered field (the caller does not ask), and the Enumeration invalid-character class under a restricted charset beyond what `EnumerationDeclaration.notifications` already answers.
 -/
 
 namespace A12Kernel
@@ -58,6 +61,8 @@ inductive FieldTypeNotificationKind where
   | categoryValueInvalid
   | lineBreak
   | sValueInvalid
+  | dateFormatInvalid
+  | dateRangeFormatInvalid
   deriving Repr, DecidableEq
 
 namespace FieldTypeNotificationKind
@@ -72,7 +77,8 @@ def all : List FieldTypeNotificationKind :=
     arityTooBig, minValueBiggerThanMaxValue, customNameMissing, customNameContent,
     optionalDateTypeInvalid, additionalCheckInvalid, unspecifiedTypeNoCodegen, countOfValuesInvalid,
     internalValuesAndDisplayValues, displayValuesDuplicate, internalValueInvalid,
-    displayValueInvalid, categoryValueInvalid, lineBreak, sValueInvalid]
+    displayValueInvalid, categoryValueInvalid, lineBreak, sValueInvalid, dateFormatInvalid,
+    dateRangeFormatInvalid]
 
 /-- The label the capture gives the class: its Kernel code, or `codeless:` and the class name. -/
 def label : FieldTypeNotificationKind → String
@@ -112,6 +118,8 @@ def label : FieldTypeNotificationKind → String
   | categoryValueInvalid => "MVK_CATEGORY_VALUE_INVALID"
   | lineBreak => "codeless:line-break"
   | sValueInvalid => "MVK_S_VALUE_INVALID"
+  | dateFormatInvalid => "codeless:date-format-invalid"
+  | dateRangeFormatInvalid => "codeless:date-range-format-invalid"
 
 end FieldTypeNotificationKind
 
@@ -189,6 +197,23 @@ structure EnumerationValueDeclaration where
   labels : List EnumerationLabel := []
   deriving Repr, DecidableEq
 
+/-- A Time or DateTime body as authored, whose one member is the format. -/
+structure TemporalTypeDeclaration where
+  format : Option String := none
+  deriving Repr, DecidableEq
+
+/-- A DateFragment body as authored: the format is the `formatOfFragment` member. -/
+structure DateFragmentTypeDeclaration where
+  format : Option String := none
+  youngerThan1900Check : Bool := false
+  deriving Repr, DecidableEq
+
+/-- A DateRange body as authored; an absent separator is `/`. -/
+structure DateRangeTypeDeclaration where
+  format : Option String := none
+  separator : Option String := none
+  deriving Repr, DecidableEq
+
 /-- An ordinary Enumeration body as authored. `sValue` is the default value token and `messages` the invalid-value text. -/
 structure EnumerationTypeDeclaration where
   values : List EnumerationValueDeclaration := []
@@ -203,6 +228,9 @@ inductive FieldTypeDeclaration where
   | number (declaration : NumberTypeDeclaration)
   | custom (declaration : CustomTypeDeclaration)
   | date (declaration : DateTypeDeclaration)
+  | temporal (declaration : TemporalTypeDeclaration)
+  | dateFragment (declaration : DateFragmentTypeDeclaration)
+  | dateRange (declaration : DateRangeTypeDeclaration)
   | enumeration (declaration : EnumerationTypeDeclaration)
   | unspecified
   /-- A field type none of these classes concerns. -/
@@ -448,19 +476,53 @@ private def customNotifications (declaration : CustomTypeDeclaration) : List Fie
       .customNameContent ++
     raiseIf (minExceedsMax minLength maxLength) .customMinLengthBiggerMaxLength
 
+/-- Whether a declared format is outside the vocabulary. An absent format is the kind's own default and
+is admitted. -/
+private def formatRefused (declared : Option String) : Bool :=
+  declared.any fun format => !temporalDeclarationFormatAdmitted format
+
 /-- A partial precision needs a complete pure date, and the year check needs a year. The two are asked
 of the shared policy gate one at a time with the other disabled, because the gate itself returns only
 its first defect and the Kernel reports both (`od-both`). -/
-private def dateNotifications (declaration : DateTypeDeclaration) : List FieldTypeNotification :=
-  let policy : TemporalTargetPolicy := {
-    format := declaration.format.getD "yyyy-MM-dd"
-    partialMode := declaration.partialMode
-    youngerThan1900Check := declaration.youngerThan1900Check }
+private def datePolicyNotifications (policy : TemporalTargetPolicy) : List FieldTypeNotification :=
   let components := TemporalComponents.ofFormat policy.format
   raiseIf ({ policy with youngerThan1900Check := false }.errorFor? .date components ==
       some .partialModeRequiresFullDate) .optionalDateTypeInvalid ++
     raiseIf ({ policy with partialMode := .full }.errorFor? .date components ==
       some .youngerThan1900RequiresYear) .additionalCheckInvalid
+
+/-- A Date's format gate, then the laws that read its components. A format outside the vocabulary binds
+nothing, as a member out of range does, so the component laws are silent beside it; no row measures the
+combination. -/
+private def dateNotifications (declaration : DateTypeDeclaration) : List FieldTypeNotification :=
+  if formatRefused declaration.format then [.declared .dateFormatInvalid]
+  else datePolicyNotifications {
+    format := declaration.format.getD "yyyy-MM-dd"
+    partialMode := declaration.partialMode
+    youngerThan1900Check := declaration.youngerThan1900Check }
+
+/-- A Time or DateTime body has the format gate alone (`tb-time-badfmt`, `tb-dt-badfmt`). -/
+private def temporalNotifications (declaration : TemporalTypeDeclaration) :
+    List FieldTypeNotification :=
+  raiseIf (formatRefused declaration.format) .dateFormatInvalid
+
+/-- A DateFragment's format gate, then the Date's pre-1900 law over its components. Its precision is
+not read: no row measures one on a fragment (`tb-frag-1900`, `tb-frag-1900-ok`). An absent format is
+the runtime reader's refusal and raises nothing here. -/
+private def dateFragmentNotifications (declaration : DateFragmentTypeDeclaration) :
+    List FieldTypeNotification :=
+  if formatRefused declaration.format then [.declared .dateFormatInvalid]
+  else datePolicyNotifications {
+    format := declaration.format.getD ""
+    youngerThan1900Check := declaration.youngerThan1900Check }
+
+/-- A DateRange `(format, separator)` pair on the allowlist, an absent separator being `/` and an absent
+format outside it (`tb-range-*`). The year interpretation and the 1900 flag are accepted on every
+admitted pair and add nothing. -/
+private def dateRangeNotifications (declaration : DateRangeTypeDeclaration) :
+    List FieldTypeNotification :=
+  raiseIf (!({ format := declaration.format.getD "", separator := declaration.separator.getD "/" } :
+    DateRangeDeclarationPolicy).admitted) .dateRangeFormatInvalid
 
 /-! ## Enumeration -/
 
@@ -525,7 +587,12 @@ def FieldTypeDeclaration.judge (compilePattern : StringPatternCompiler) (context
   | .number declaration => .notifications (numberNotifications declaration).eraseDups
   | .custom declaration => .notifications (customNotifications declaration).eraseDups
   | .date declaration => .notifications (dateNotifications declaration).eraseDups
-  | .enumeration declaration => .notifications (enumerationNotifications context declaration).eraseDups
+  | .temporal declaration => .notifications (temporalNotifications declaration).eraseDups
+  | .dateFragment declaration => .notifications (dateFragmentNotifications declaration).eraseDups
+  | .dateRange declaration => .notifications (dateRangeNotifications declaration).eraseDups
+  | .enumeration declaration =>
+      if declaration.values.isEmpty then .modelNotBuilt
+      else .notifications (enumerationNotifications context declaration).eraseDups
   | .unspecified => .notifications [.declared .unspecifiedTypeNoCodegen]
   | .other => .notifications []
 

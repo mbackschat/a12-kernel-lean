@@ -2725,3 +2725,11 @@ The full-Date pair disagreed on a target declaring the pre-1900 check: the fixed
 Lean treatment: the merged carrier admits the checked target at both addresses through `ownsBefore1900` (`b75fc94a`); the fixed-target crossing stays external evidence pending in [SG6](gaps/numeric-and-temporal.md#gap-sg6).
 
 **When two carriers express one operation at two address classes, diff their admissions before merging them.** Each difference is either a measured placement split, which the merged carrier must keep, or a defect in one side, and only the evidence says which; a merge that keeps the union or the intersection without that step picks an account by accident.
+
+## LF215 — Lean's JSON parser turns a lone surrogate escape into U+FFFD before any reader can see it
+
+A DM-JSON text carrying `\ud800` reaches the Kernel's encoding gate as a lone UTF-16 unit, but `Lean.Json.parse` replaces the unpaired escape with the replacement character, measured 2026-10-13 on the pinned toolchain. Lean's `String` cannot hold a surrogate at all, so after parsing the distinction between an authored U+FFFD, which the Kernel admits, and a lone surrogate, which draws `WRONG_ENCODING`, is gone.
+
+Lean treatment: [`LoneSurrogate.lean`](../A12Kernel/Reference/Dm/LoneSurrogate.lean) rewrites each unpaired surrogate escape to the noncharacter U+10FFFF before parsing, so the supplementary-scalar notification fires on it naturally and the encoding gate tests for it; an authored U+10FFFF is the one collision, documented there.
+
+**A value the host's text type cannot represent must be carried across the parse, not reconstructed after it.** Check what the parser does with the boundary value before writing the predicate that needs it.

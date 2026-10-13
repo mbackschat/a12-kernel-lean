@@ -3168,5 +3168,224 @@
     "at": "/Form/C1"
    }
   ]
+ },
+ {
+  "case": "tb-date-badfmt",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:date-format-invalid",
+    "at": "/Form/D1"
+   }
+  ]
+ },
+ {
+  "case": "tb-date-ok",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-time-badfmt",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:date-format-invalid",
+    "at": "/Form/T1"
+   }
+  ]
+ },
+ {
+  "case": "tb-time-datefmt",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-dt-badfmt",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:date-format-invalid",
+    "at": "/Form/T1"
+   }
+  ]
+ },
+ {
+  "case": "tb-frag-badfmt",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:date-format-invalid",
+    "at": "/Form/T1"
+   }
+  ]
+ },
+ {
+  "case": "tb-frag-ok",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-frag-1900",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_ADDITIONAL_CHECK_INVALID",
+    "at": "/Form/T1"
+   }
+  ]
+ },
+ {
+  "case": "tb-frag-1900-ok",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-frag-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-range-ok",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-range-fmtonly",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-range-fmtonly-de",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:date-range-format-invalid",
+    "at": "/Form/R1"
+   }
+  ]
+ },
+ {
+  "case": "tb-range-badpair",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:date-range-format-invalid",
+    "at": "/Form/R1"
+   }
+  ]
+ },
+ {
+  "case": "tb-range-badpair2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:date-range-format-invalid",
+    "at": "/Form/R2"
+   }
+  ]
+ },
+ {
+  "case": "tb-range-sepnly",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:date-range-format-invalid",
+    "at": "/Form/R1"
+   }
+  ]
+ },
+ {
+  "case": "tb-range-1900",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-range-interp",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-range-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-enum-novalues",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:model-not-built",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "tb-enum-emptyvalues",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:model-not-built",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "tb-bool-body",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-confirm-body",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "tb-date-1900-yearless",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_ADDITIONAL_CHECK_INVALID",
+    "at": "/Form/D1"
+   }
+  ]
+ },
+ {
+  "case": "tb-date-badfmt-two",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:date-format-invalid",
+    "at": "/Form/D2"
+   },
+   {
+    "code": "codeless:date-format-invalid",
+    "at": "/Form/D1"
+   }
+  ]
  }
 ]
