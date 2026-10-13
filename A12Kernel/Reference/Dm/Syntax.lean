@@ -118,6 +118,8 @@ inductive SyntaxErrorClass
   | expectedTokenNotFound
   | incompleteInput
   | bracketMissing
+  /-- A segment's `.*` star, the H-model spelling an A12 model refuses (spec/12 §12.3). -/
+  | pointInA12Model
   deriving Repr, BEq, DecidableEq
 
 def SyntaxErrorClass.code : SyntaxErrorClass → String
@@ -126,6 +128,7 @@ def SyntaxErrorClass.code : SyntaxErrorClass → String
   | .expectedTokenNotFound => "MVK_EXPECTED_TOKEN_NOT_FOUND"
   | .incompleteInput => "MVK_INCOMPLETE_INPUT"
   | .bracketMissing => "MVK_BRACKET_MISSING"
+  | .pointInA12Model => "MVK_POINT_IN_A12_MODEL"
 
 structure SyntaxError where
   errorClass : SyntaxErrorClass

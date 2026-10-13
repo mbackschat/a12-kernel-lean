@@ -83,9 +83,17 @@ private def segment : P Segment := do
   | some (.name name _) => advance; return { name, star := ← acceptSymbol "*" }
   | _ => failHere .expectedTokenNotFound
 
-/-- The segments after `header`'s prefix, each step read up to its `/` recorded as the open path so far. -/
+/-- The segments after `header`'s prefix, each step read up to its `/` recorded as the open path so far.
+A `.*` after a segment is a starred step the walk checks before the spelling's own class is raised, so
+`NoSuch.*/Items/` draws the name's class and `Items.*/Count` the star's (spec/12 §12.3). Where the class
+stands for a `.*` not followed by `/` is unmeasured; it is raised the same way. -/
 private partial def segments (header : Path) : P (List Segment) := do
   let first ← segment
+  if (← peek) == some (.symbol ".") && (← peekAt 1) == some (.symbol "*") then
+    let offset := (← read)[← get]!.offset
+    modifyThe (Array ParseEvent)
+      (·.push (.openPath { header with segments := header.segments ++ [{ first with star := true }] }))
+    throw { errorClass := .pointInA12Model, offset }
   if ← acceptSymbol "/" then
     let header := { header with segments := header.segments ++ [first] }
     modifyThe (Array ParseEvent) (·.push (.openPath header))

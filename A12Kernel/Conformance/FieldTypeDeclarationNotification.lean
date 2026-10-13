@@ -273,6 +273,9 @@ example :
 example :
     labels (number { amount := true, maxFractionalDigits := some 2, minFractionalDigits := some 3 }) =
       ["MVK_ARITY_TOO_BIG", "MVK_FRACT_DIGITS_INVALID"] ∧
+    labels (number { maxFractionalDigits := some 2, minFractionalDigits := some 3 }) =
+      ["MVK_FRACT_DIGITS_INVALID"] ∧
+    labels (number { maxFractionalDigits := some 3, minFractionalDigits := some 3 }) = [] ∧
     labels (number { minFractionalDigits := some 15, maxFractionalDigits := some 2 }) =
       ["codeless:member-above-14"] ∧
     labels (number { minFractionalDigits := some 3, maxFractionalDigits := some (-1) }) = [] := by

@@ -15,8 +15,9 @@ says nothing about them.
 An observed notification whose element is null matches a reported one of the same class at any element:
 the Kernel names no element for a name holding a `/`, whose path it cannot form.
 
-A row of `deferred` is skipped and counted. Both the capture and the base model load through
-`parseModelJson`, which keeps a lone surrogate visible.
+A row the Kernel's DM-JSON binding refused, recorded with `admitted` null, agrees when the reader
+refuses it too. A row of `deferred` is skipped and counted. Both the capture and the base model load
+through `parseModelJson`, which keeps a lone surrogate visible.
 -/
 
 namespace A12Kernel.Evidence.DeclarationNotificationProjection
@@ -26,9 +27,11 @@ open Lean A12Kernel A12Kernel.Dm
 /-- The capture, under the evidence root. -/
 def captureDirectory : System.FilePath := "captures/field-declaration-notifications-2026-10-13"
 
-/-- Rows whose reported classes depend on a class this projection does not own, each with the reason.
-A row stays out only when the laws disagree with it for that reason alone; no other row disagrees. -/
-def deferred : List (String × String) := []
+/-- Rows the reader disagrees with for a reason outside the laws, each with the reason. A row stays out
+only when it disagrees for that reason alone; no other row disagrees. -/
+def deferred : List (String × String) :=
+  ["pp-time", "pp-datetime", "pp-datetime-twin", "pp-fragment", "pp-range"].map fun id =>
+    (id, "the Kernel's binding refuses a member its type does not declare; the reader ignores it")
 
 private def readJson (path : System.FilePath) : IO Json := do
   match parseModelJson (← IO.FS.readFile path) with
@@ -118,9 +121,15 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
         (candidate.getObjValAs? String "case").toOption == some id
       | failures := failures.push s!"{id}: no observation"; continue
     let model := applyPatch base (row.getObjValD "patch")
+    let refused := (observation.getObjVal? "admitted").toOption == some .null
     match fieldTypeDeclarationNotifications model (compilePattern := capturedJavaCompilation) with
-    | .error reason => failures := failures.push s!"{id}: unreadable model: {reason}"
+    | .error reason =>
+        if refused then agreeing := agreeing + 1
+        else failures := failures.push s!"{id}: unreadable model: {reason}"
     | .ok reported =>
+        if refused then
+          failures := failures.push s!"{id}: the Kernel refused the input but the reader reports {reported}"
+          continue
         let expected := observed observation
         if agrees expected reported then agreeing := agreeing + 1
         else

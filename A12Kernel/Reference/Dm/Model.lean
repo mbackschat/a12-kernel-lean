@@ -94,44 +94,66 @@ private def nat? (json : Json) (key : String) : Option Nat :=
 private def bool? (json : Json) (key : String) : Option Bool :=
   (json.getObjValAs? Bool key).toOption
 
-/-- A plain decimal string: an optional minus, digits, and optionally a point with digits. Anything else,
-an exponent, a plus sign or a digit separator included, is no decimal here. -/
-private def plainDecimal? (text : String) : Option Rat :=
-  let (negative, unsigned) := if text.startsWith "-" then (true, (text.drop 1).toString) else (false, text)
-  let digits (part : String) : Bool := !part.isEmpty && part.all Char.isDigit
-  let magnitude? : Option Rat := match unsigned.splitOn "." with
-    | [whole] => if digits whole then some (whole.toNat! : Rat) else none
-    | [whole, fraction] =>
-        if digits whole && digits fraction then
-          some (((whole ++ fraction).toNat! : Rat) / (10 ^ fraction.length : Nat))
-        else none
-    | _ => none
-  magnitude?.map fun magnitude => if negative then -magnitude else magnitude
+/-- A Number bound written as text, read by the decimal grammar the Kernel's DM-JSON binding applies:
+surrounding spaces trimmed, an optional sign, digits with an optional point and an optional exponent
+(rows `sb-str`, `sb-str-exp`, `sb-str-plus`, `sb-str-space`, `sb-str-frac`, while `sb-str-abc` is
+unreadable). Among the trimmed characters only a leading space is measured. An exponent beyond ±400 is
+refused as outside this reader's range, which is no Kernel class. -/
+private def boundText? (text : String) : Option Rat := do
+  let trim (characters : List Char) := characters.dropWhile (·.toNat ≤ 0x20)
+  let trimmed := (trim (trim text.toList).reverse).reverse
+  let (negative, unsigned) := match trimmed with
+    | '-' :: rest => (true, rest)
+    | '+' :: rest => (false, rest)
+    | rest => (false, rest)
+  let (significand, exponentPart) := match unsigned.span (fun c => c != 'e' && c != 'E') with
+    | (significand, []) => (significand, none)
+    | (significand, _ :: exponent) => (significand, some exponent)
+  let (whole, fraction) := match significand.span (· != '.') with
+    | (whole, []) => (whole, [])
+    | (whole, _ :: fraction) => (whole, fraction)
+  let digits (part : List Char) : Bool := part.all Char.isDigit
+  if (whole.isEmpty && fraction.isEmpty) || !digits whole || !digits fraction then none
+  let exponent : Int ← match exponentPart with
+    | none => some 0
+    | some ('-' :: written) => if !written.isEmpty && digits written then some (-((String.ofList written).toNat! : Int)) else none
+    | some ('+' :: written) => if !written.isEmpty && digits written then some ((String.ofList written).toNat! : Int) else none
+    | some written => if !written.isEmpty && digits written then some ((String.ofList written).toNat! : Int) else none
+  if 400 < exponent.natAbs then none
+  let mantissa : Rat := ((String.ofList (whole ++ fraction)).toNat?.getD 0 : Nat)
+  let shift := exponent - fraction.length
+  let magnitude := if 0 ≤ shift then mantissa * ((10 ^ shift.toNat : Nat) : Rat)
+    else mantissa / ((10 ^ (-shift).toNat : Nat) : Rat)
+  pure (if negative then -magnitude else magnitude)
 
-/-- A DM decimal bound, written as a JSON number or as a plain decimal string (the Kernel admitted
-string-written Number bounds, capture row `mv-double`); absent is `none`, and any other value refuses
-the declaration rather than dropping the bound. -/
+/-- A DM decimal bound, written as a JSON number or as text `boundText?` reads; absent is `none`, and
+any other value refuses the declaration rather than dropping the bound. -/
 def decimalMember? (json : Json) (key : String) : Except String (Option Rat) :=
   match json.getObjVal? key with
   | .ok (.num number) => pure (some (Rat.ofScientific number.mantissa.natAbs true number.exponent *
       (if number.mantissa < 0 then -1 else 1)))
-  | .ok (.str text) => match plainDecimal? text with
+  | .ok (.str text) => match boundText? text with
     | some value => pure (some value)
     | none => throw s!"{key} {text}"
   | .ok .null | .error _ => pure none
   | .ok other => throw s!"{key} {other.compress}"
 
-/-- A DM flag the Kernel coerces: `true`, `false`, `null` or absent, a JSON number (non-zero is true)
-and the strings `"true"` and `"false"`. Any other value is unreadable. Measured on
-`noValueValidation` and `lineBreaksPermitted` only (rows `nv-coerce`, `nv-coerce-zero`); every other
-flag keeps its own reading. -/
+/-- A DM flag as the Kernel's binding coerces it: `true`, `false`, `null` or absent; a JSON number
+written without a fraction, non-zero being true; and the texts `true` and `false` in any letter case.
+A number written with a fraction and any other text are unreadable. Measured on `noValueValidation`
+and `lineBreaksPermitted` (rows `nv-coerce`, `nv-coerce-zero`, `fc-*`), where the case variants
+measured are `true`, `TRUE` and `false` and a number written with an exponent is not; every other flag
+keeps its own reading. -/
 def flagMember? (json : Json) (key : String) : Except String Bool :=
   match json.getObjVal? key with
   | .error _ | .ok .null => pure false
   | .ok (.bool value) => pure value
-  | .ok (.num number) => pure (number.mantissa != 0)
-  | .ok (.str "true") => pure true
-  | .ok (.str "false") => pure false
+  | .ok (.num number) =>
+      if number.exponent == 0 then pure (number.mantissa != 0) else throw s!"{key} {number}"
+  | .ok (.str text) => match text.toLower with
+    | "true" => pure true
+    | "false" => pure false
+    | _ => throw s!"{key} {text}"
   | .ok other => throw s!"{key} {other.compress}"
 
 /-- The partial precision a `datePrecision` member declares; an absent member is the full date. -/
@@ -142,8 +164,10 @@ def partialMode? : Option String → Except String TemporalPartialMode
   | some "YEAR_OPTIONAL" => pure .yearOptional
   | some other => throw s!"datePrecision {other}"
 
-/-- The ordinary Enumeration declaration of a DM `EnumerationType` body. The one parse behind both the field's declaration and its notification pass, so the two cannot read different declarations. -/
-private def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclaration := do
+/-- The ordinary Enumeration declaration of a DM `EnumerationType` body. It decides whether the body is
+readable for the field's declaration, its notification pass and the declaration-generation reader, which
+reads the members this declaration does not keep only from a body this parse admits. -/
+def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclaration := do
   let defaultStoredToken ← match (body.getObjVal? "sValue").toOption with
     | none | some .null => pure none
     | some (.str value) => pure (if value.isEmpty then none else some value)

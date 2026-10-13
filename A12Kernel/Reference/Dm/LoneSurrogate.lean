@@ -10,11 +10,13 @@ survive the parse. `replaceLoneSurrogates` rewrites each escape of a surrogate t
 high-low pair into the escape pair of `loneSurrogateStandIn`, which then parses as that one scalar.
 
 The escape scanner treats a backslash and the character after it as one unit, so `\\ud800`, an escaped
-backslash followed by text, is left alone. The one collision is an authored `U+10FFFF`, which reads as a
-lone surrogate; the Kernel's own repertoire never holds it in a message text.
+backslash followed by text, is left alone. An authored `U+10FFFF`, written raw or as its escape pair, is
+read as `U+10FFFE` so that it cannot be taken for a lone surrogate: both are last-plane noncharacters,
+which every gate here classes alike, and in a field message both draw the invalid-character class alone
+(rows `we-authored`, `we-noncharacter-bmp`), where a lone surrogate draws the encoding class.
 
-It is an input adapter, differentially tested by the field-declaration capture (rows `we-s`, `we-e`) and
-by the examples below, not proved.
+It is an input adapter, differentially tested by the field-declaration capture (rows `we-s`, `we-e`,
+`we-authored`) and by the examples below, not proved.
 -/
 
 namespace A12Kernel.Dm
@@ -41,6 +43,9 @@ private def isLow (code : Nat) : Bool := 0xDC00 ≤ code && code ≤ 0xDFFF
 /-- The escape pair of `loneSurrogateStandIn`, `U+10FFFF`. -/
 private def standInEscape : List Char := "\\uDBFF\\uDFFF".toList
 
+/-- The escape pair of `U+10FFFE`, which an authored `U+10FFFF` is read as. -/
+private def authoredMaximumEscape : List Char := "\\uDBFF\\uDFFE".toList
+
 private partial def rewrite : List Char → List Char
   | '\\' :: 'u' :: rest =>
       match hexFour? rest with
@@ -52,14 +57,16 @@ private partial def rewrite : List Char → List Char
                 match hexFour? afterEscape with
                 | some (lowDigits, low, remaining) =>
                     if isLow low then
-                      ['\\', 'u'] ++ digits ++ ['\\', 'u'] ++ lowDigits ++ rewrite remaining
+                      if code == 0xDBFF && low == 0xDFFF then authoredMaximumEscape ++ rewrite remaining
+                      else ['\\', 'u'] ++ digits ++ ['\\', 'u'] ++ lowDigits ++ rewrite remaining
                     else standInEscape ++ rewrite afterFirst
                 | none => standInEscape ++ rewrite afterFirst
             | _ => standInEscape ++ rewrite afterFirst
           else if isLow code then standInEscape ++ rewrite afterFirst
           else ['\\', 'u'] ++ digits ++ rewrite afterFirst
   | '\\' :: other :: rest => '\\' :: other :: rewrite rest
-  | character :: rest => character :: rewrite rest
+  | character :: rest =>
+      (if character == loneSurrogateStandIn then Char.ofNat 0x10FFFE else character) :: rewrite rest
   | [] => []
 
 /-- The text with every escaped lone surrogate replaced by the escape pair of `loneSurrogateStandIn`. -/
@@ -85,7 +92,9 @@ example :
     parsedString? "\"\\ud83d\\u0041\"" = some (stand ++ "A") ∧
     parsedString? "\"\\ud800\\ud800\"" = some (stand ++ stand) ∧
     parsedString? "\"\\\\ud800\"" = some "\\ud800" ∧
-    parsedString? "\"\\u0041\\uD83D\\uDE00\"" = some "A😀" := by
+    parsedString? "\"\\u0041\\uD83D\\uDE00\"" = some "A😀" ∧
+    parsedString? "\"\\udbff\\udfff\"" = some (String.singleton (Char.ofNat 0x10FFFE)) ∧
+    parsedString? ("\"" ++ stand ++ "\"") = some (String.singleton (Char.ofNat 0x10FFFE)) := by
   native_decide
 
 end A12Kernel.Dm

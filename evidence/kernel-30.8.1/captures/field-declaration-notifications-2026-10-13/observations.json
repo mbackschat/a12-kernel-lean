@@ -3198,6 +3198,17 @@
   ]
  },
  {
+  "case": "tb-time-nobody",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
+   }
+  ]
+ },
+ {
   "case": "tb-time-datefmt",
   "admitted": true,
   "verification": "KERNEL_CONFIRMED",
@@ -3211,6 +3222,17 @@
    {
     "code": "codeless:date-format-invalid",
     "at": "/Form/T1"
+   }
+  ]
+ },
+ {
+  "case": "tb-dt-nobody",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
    }
   ]
  },
@@ -3247,6 +3269,17 @@
   "admitted": true,
   "verification": "KERNEL_CONFIRMED",
   "notifications": []
+ },
+ {
+  "case": "tb-frag-nobody",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
+   }
+  ]
  },
  {
   "case": "tb-frag-only",
@@ -3385,6 +3418,369 @@
    {
     "code": "codeless:date-format-invalid",
     "at": "/Form/D1"
+   }
+  ]
+ },
+ {
+  "case": "fc-nv-strtrue",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "fc-nv-num1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "fc-nv-num2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "fc-nv-numneg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "fc-nv-numfrac",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "fc-nv-strfalse",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "fc-nv-strTRUE",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "fc-nv-stryes",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "fc-nv-null",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "fc-nv-booltrue",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "fc-lb-strfalse",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "fc-lb-num2",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "fc-lb-strtrue-max1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_LINE_BREAK_AND_MAX_LENGTH_1_INVALID",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "fc-lb-num1-max1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_LINE_BREAK_AND_MAX_LENGTH_1_INVALID",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "fc-lb-strfalse-max1",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "sb-str",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_VALUE_BIGGER_THAN_MAX_VALUE",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "sb-str-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "sb-str-exp",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_VALUE_BIGGER_THAN_MAX_VALUE",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "sb-str-plus",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_VALUE_BIGGER_THAN_MAX_VALUE",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "sb-str-space",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_VALUE_BIGGER_THAN_MAX_VALUE",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "sb-str-abc",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "sb-str-mixed",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_VALUE_BIGGER_THAN_MAX_VALUE",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "sb-str-frac",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_VALUE_BIGGER_THAN_MAX_VALUE",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "we-authored",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "INVALID_CHARACTERS",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "pp-time",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "pp-datetime",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "pp-datetime-twin",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "pp-fragment",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "pp-range",
+  "admitted": null,
+  "verification": null,
+  "notifications": [
+   {
+    "code": "RK_MODEL_INPUT_INVALID",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "we-emoji",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "we-noncharacter-bmp",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "INVALID_CHARACTERS",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "ux-annot-max",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/A1"
+   }
+  ]
+ },
+ {
+  "case": "ux-annot-bmp-noncharacter",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "we-control-emoji",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "INVALID_CHARACTERS",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "we-control-emoji-enum",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "INVALID_CHARACTERS",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/E1"
    }
   ]
  }

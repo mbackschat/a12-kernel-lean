@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.ParseDefectClass
+import A12Kernel.Reference.Dm.HavingAdmission
 
 /-! # Locks for the first class beside a parse defect
 
@@ -57,6 +58,37 @@ example :
     spec12Class "FieldFilled(/NoRoot/)" = some "MVK_UNEXPECTED_TOKEN" ∧
     spec12Class "FieldFilled(Items*/Count/)" = some "MVK_UNEXPECTED_TOKEN" ∧
     spec12Class "FieldFilled(Items*/NoSuch.)" = some "MVK_UNEXPECTED_TOKEN" := by
+  native_decide
+
+/- A `.*` step is walked before its own class is raised: a step naming nothing draws the name's class,
+a resolving one `MVK_POINT_IN_A12_MODEL` (spec/12 §12.3); the plain star is the admitted twin. -/
+example :
+    spec12Class "FieldFilled(Items.*/Count)" = some "MVK_POINT_IN_A12_MODEL" ∧
+    spec12Class "FieldFilled(NoSuch.*/Items/)" = some "MVK_INVALID_ENTITY" ∧
+    spec12Class "FieldFilled(Items*/Count)" = none := by
+  native_decide
+
+/-- The class ordered admission raises for a whole condition on a form with String `Reference` and
+Number `Score`, `none` when it admits it. -/
+private def admissionClass (text : String) : Option String :=
+  let form : FlatModel :=
+    { fields := [{ id := 0, groupPath := ["Form"], name := "Reference", policy := { kind := .string } },
+        { id := 1, groupPath := ["Form"], name := "Score", policy := { kind := .number { scale := 0, signed := true } } }] }
+  match parseText .english text with
+  | .error error => some error.errorClass.code
+  | .ok parsed => match checkOrderedAdmission form ["Form"] ["Form"] parsed.body with
+    | .ok () => none
+    | .error refusal => some refusal.detail
+
+/- A comparison standing as an operation's operand is a token defect, after the operand read before it
+keeps its own production's check (spec/12 §12.3); the rounding twins separate the gate from the token,
+and the connective is this account's extension of the comparison rows. -/
+example :
+    admissionClass "Abs(RoundUpValue(Reference, 2) > 1) > 0" = some "MVK_NO_NUMBER" ∧
+    admissionClass "Abs(RoundUpValue(Score, 2) > 1) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    admissionClass "Max([Score] > 1, 2) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    admissionClass "Abs([Score] > 1 And [Score] > 2) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    admissionClass "Abs(RoundUpValue(Score, 2)) > 0" = none := by
   native_decide
 
 end A12Kernel.Dm.ParseDefectClassLocks

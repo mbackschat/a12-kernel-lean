@@ -252,6 +252,17 @@ example :
       message "fr_FR" "😀"] }) = [] := by
   native_decide
 
+/- A supplementary scalar the invalid-character class names is not a repertoire defect of the message,
+   while a control character beside an emoji draws both (we-authored, we-control-emoji); the model reader
+   reads an authored `U+10FFFF` as `U+10FFFE`, so the field never meets the encoding class. -/
+example :
+    let noncharacter := "bad " ++ String.singleton (Char.ofNat 0x10FFFE)
+    fieldLabels (.string { pattern := some "[A-Z]+", messages := [message "en_US" noncharacter] }) =
+      ["INVALID_CHARACTERS"] ∧
+    fieldLabels (.string { pattern := some "[A-Z]+", messages := [message "en_US" "bad \u0007 😀"] }) =
+      ["INVALID_CHARACTERS", "codeless:supplementary-character"] := by
+  native_decide
+
 /- A field whose own name carries a path class reports no field message: its messages are withheld
    while its body classes stay as the context says (pa-f-content, spec/11). -/
 example :

@@ -36,10 +36,31 @@ def Expr.hasHaving : Expr → Bool := Expr.anyReference (·.filter.isSome)
 def Reference.hasHaving : Reference → Bool := Reference.anyReference (·.filter.isSome)
 def Argument.hasHaving : Argument → Bool := Argument.anyReference (·.filter.isSome)
 
+/-- An operation call (`Abs`, `Min`, `Max`, a rounding or a numeric field form) one of whose
+operands is a comparison or a connective, which the grammar does not admit there. -/
+private partial def Expr.hasConditionAsOperationOperand : Expr → Bool
+  | .call id arguments listed _ =>
+      let operation := id == "Abs" || id == "Min" || id == "Max" ||
+        (roundingMode? id).isSome || isNumericFieldForm id
+      let condition : Expr → Bool
+        | .compare .. | .logic .. => true
+        | _ => false
+      let nested (argument : Argument) : Bool := match argument with
+        | .mk operand rangeEnd => operand.hasConditionAsOperationOperand ||
+            (rangeEnd.map (·.hasConditionAsOperationOperand)).getD false
+      let operandIsCondition (argument : Argument) : Bool := match argument with
+        | .mk operand _ => condition operand
+      (operation && arguments.any operandIsCondition) || arguments.any nested || (listed.getD []).any nested
+  | .compare _ left right | .arith _ left right =>
+      left.hasConditionAsOperationOperand || right.hasConditionAsOperationOperand
+  | .logic _ parts => parts.any (·.hasConditionAsOperationOperand)
+  | .braces body | .parens body => body.hasConditionAsOperationOperand
+  | _ => false
+
 /-- Authored scalar slots, lists and repetition operands need their parse/read diagnostics before
 lowering loses their shape (spec/07 §5–6, spec/08 CurrentRepetition cascade; KF532). -/
 def Expr.needsOrderedAdmission (expression : Expr) : Bool :=
-  expression.hasHaving || expression.anyReference (fun _ => false)
+  expression.hasHaving || expression.hasConditionAsOperationOperand || expression.anyReference (fun _ => false)
     (fun name => name == "Date" || name == "Time" || name == "CurrentRepetition" ||
       name == "RepetitionNotUnique" || name == "FirstFilledValue" ||
       (rawScalarOperator? name).isSome)
@@ -708,6 +729,16 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
   | .constant "BaseYear" =>
       if model.hasBaseYear then pure (.number (.field 0), inFilter)
       else refuse "Having" KernelStaticDiagnostic.conditionNoBaseYear.kernelCode
+  -- An operation's operand is arithmetic, so a comparison or connective there is a token defect at
+  -- its operator; the operand read before it completed its own production and keeps that check
+  -- (`Abs(RoundUpValue(Reference, 2) > 1) > 0` draws `MVK_NO_NUMBER`, `Max([Score] > 1, 2)` the
+  -- token class; spec/12 §12.3).
+  | .compare _ left _ => do
+      discard <| admitNumericExpression model group bindingGroup inFilter insideSemanticIndexKey admission left
+      refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
+  | .logic _ (first :: _) => do
+      discard <| admitBody model group bindingGroup [] [] admission insideSemanticIndexKey inFilter first
+      refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
   | _ => do refuse "Having" "raw numeric atom"
 
 end

@@ -93,6 +93,9 @@ private def readNumber (body : Json) : Except String NumberTypeDeclaration := do
     maxValue := ← decimalMember? body "maxValue" }
 
 private def readEnumeration (body : Json) : Except String EnumerationTypeDeclaration := do
+  -- The runtime declaration's parse decides whether the body is readable, so the two readers cannot
+  -- admit different bodies; a body without `values` is the unbuilt model, which the laws report.
+  if (body.getObjVal? "values").toOption.isSome then discard <| readEnumerationDeclaration body
   let sValue ← match body.getObjVal? "sValue" with
     | .error _ | .ok .null => pure none
     | .ok (.str value) => pure (some value)
@@ -113,6 +116,10 @@ private def readDeclaration (fieldJson : Json) : Except String FieldTypeDeclarat
   let some fieldType := (fieldJson.getObjVal? "fieldType").toOption | pure .other
   let some typeName := (fieldType.getObjValAs? String "type").toOption | pure .other
   let body := (fieldType.getObjVal? typeName).toOption.getD (Json.mkObj [])
+  -- A temporal kind without its body object is unreadable (rows `tb-time-nobody`, `tb-dt-nobody`,
+  -- `tb-frag-nobody`; spec/01 §3 for Date), while a String or a Boolean without one is read.
+  if ["DateType", "TimeType", "DateTimeType", "DateFragmentType"].contains typeName then
+    discard <| (fieldType.getObjVal? typeName).bind Json.getObj?
   match typeName with
   | "StringType" => .string <$> readString body
   | "NumberType" => .number <$> readNumber body
@@ -361,18 +368,26 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
 
 private def member (value : Json) : Json := Json.mkObj [("k", value)]
 
-/- A bound written as a plain decimal string reads as the number, and anything that is no plain decimal
-   stays refused: an exponent, a plus sign, a digit separator and a bare or trailing point. -/
+/- A bound written as text reads as a decimal with an optional sign, point and exponent, surrounding
+   spaces trimmed (`sb-str-plus`, `sb-str-exp`, `sb-str-space`); a bare or trailing point is this
+   account's reading of that grammar, unmeasured. Text with no digits, a digit separator, a second point,
+   a letter or an exponent past this reader's range stays refused (`sb-str-abc`). -/
 example :
     (decimalMember? (member (.str "1.5")) "k").toOption = some (some (3 / 2)) ∧
     (decimalMember? (member (.str "-2")) "k").toOption = some (some (-2)) ∧
     (decimalMember? (member (.str "007.50")) "k").toOption = some (some (15 / 2)) ∧
-    ["", "-", "+1", "1e3", "1_0", ".5", "5.", "1.2.3", " 1"].all
+    (decimalMember? (member (.str "+5")) "k").toOption = some (some 5) ∧
+    (decimalMember? (member (.str "1e3")) "k").toOption = some (some 1000) ∧
+    (decimalMember? (member (.str "25E-1")) "k").toOption = some (some (5 / 2)) ∧
+    (decimalMember? (member (.str " 5")) "k").toOption = some (some 5) ∧
+    (decimalMember? (member (.str ".5")) "k").toOption = some (some (1 / 2)) ∧
+    ["", "-", "1_0", "1.2.3", "abc", "1e", "e3", "1e401"].all
       (fun text => (decimalMember? (member (.str text)) "k").toOption.isNone) = true := by
   native_decide
 
-/- The two String flags coerce: a JSON number is true unless zero, the two strings read as their
-   Boolean, `null` and absence are false, and any other shape is unreadable. -/
+/- The two String flags coerce: a JSON number written without a fraction is true unless zero, the two
+   words read as their Boolean in any letter case, `null` and absence are false, and a fraction, another
+   text or another shape is unreadable (`fc-*`). -/
 example :
     (flagMember? (member (.bool true)) "k").toOption = some true ∧
     (flagMember? (member (.num 1)) "k").toOption = some true ∧
@@ -381,6 +396,9 @@ example :
     (flagMember? (member (.str "false")) "k").toOption = some false ∧
     (flagMember? (member .null) "k").toOption = some false ∧
     (flagMember? (Json.mkObj []) "k").toOption = some false ∧
+    (flagMember? (member (.num (-1))) "k").toOption = some true ∧
+    (flagMember? (member (.str "TRUE")) "k").toOption = some true ∧
+    (flagMember? (member (.num { mantissa := 5, exponent := 1 })) "k").toOption = none ∧
     (flagMember? (member (.str "yes")) "k").toOption = none ∧
     (flagMember? (member (.arr #[])) "k").toOption = none := by
   native_decide

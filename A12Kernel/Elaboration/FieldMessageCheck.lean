@@ -55,9 +55,8 @@ def FieldMessageEntry.askedFor? (entries : List FieldMessageEntry) (locale : Str
     Option String :=
   (entries.filter (·.locale == locale)).getLast?.map (·.text)
 
-/-- The scalar the model reader writes in place of a lone UTF-16 surrogate. It is the last Unicode
-scalar, so it is outside every repertoire a message may use; the one collision is an authored `U+10FFFF`,
-which reads as a lone surrogate. -/
+/-- The scalar the model reader writes in place of a lone UTF-16 surrogate, the last Unicode scalar. The
+reader reads an authored `U+10FFFF` as `U+10FFFE`, so this scalar stands for a lone surrogate alone. -/
 def loneSurrogateStandIn : Char := Char.ofNat 0x10FFFF
 
 /-- A text's named class under the pattern message's gates. An empty text draws none here: whether

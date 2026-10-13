@@ -24,11 +24,12 @@ address an entity is not the full name this walk validates, and a reimplementer 
 checks the wrong string. A digit-initial name draws an earlier and more specific class instead, so the
 path stage is not the first name gate either.
 
-**Three stages test container invariants, and no witness is known for them.** The path-consistency,
-field-containment and parent-presence stages compare a path derived from an entity's own name against
-the one the walk carried, and look the parent up in the container. A model file supplies a tree, from
-which both sides are derived together — but whether some legal model makes them disagree is a
-reachability question this project has not measured, so it is recorded as unknown rather than as
+**Three stages test container invariants.** The path-consistency, field-containment and
+parent-presence stages compare a path derived from an entity's own name against the one the walk
+carried, and look the parent up in the container. A name holding `/` makes the derived path disagree:
+a field named `Co/de` draws the path-consistency class (row `pa-slash` of the field-declaration
+capture). For the other two stages no witness is known as of Kernel 30.8.1; a model file supplies a
+tree from which both sides are derived together, so they are recorded as unknown rather than as
 unreachable.
 
 **Two stages are shadowed, each measured.** A field placed among the root groups draws no

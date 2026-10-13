@@ -18,7 +18,7 @@ The input is a small read-model of the field's body after type-definition resolu
 
 Choices no row separates, recorded where they are made: a declared but refused integer count is not replaced by the amount-derived one; two label entries for one value and locale are both counted; a repeated hint-list locale is judged whether or not the model declares it; the label texts of every declared locale are pooled for the tab, pipe and line-break classes, and a text shared by two locales is one notification.
 
-Not claimed: element-name, group, rule, computation and annotation classes ([`ElementNameNotification`](ElementNameNotification.lean) owns them), the partial precision of a Time, DateTime or DateFragment, notification order, a variant-filtered field (the caller does not ask), and the Enumeration invalid-character class under a restricted charset beyond what `EnumerationDeclaration.notifications` already answers.
+Not claimed: element-name, group, rule, computation and annotation classes ([`ElementNameNotification`](ElementNameNotification.lean) owns them), notification order, a variant-filtered field (the caller does not ask), and the Enumeration invalid-character class under a restricted charset beyond what `EnumerationDeclaration.notifications` already answers.
 -/
 
 namespace A12Kernel
@@ -329,17 +329,21 @@ private def refusals (readings : List MemberReading) : List FieldTypeNotificatio
   readings.filterMap fun reading => reading.refusal?.map (.declared · [])
 
 /-- A field's own message classes, none when its messages are not reached. A text asked for a declared
-locale is also a repertoire carrier: a supplementary scalar in it is the field's one codeless
-notification (`we-s`, `we-e`, [spec/01 §1.1](../../spec/01-data-model.md#11-the-two-special-model-level-configurations)),
-which a String message with no pattern is assumed to share with the pattern message; no row measures
-that carrier. -/
+locale is also a repertoire carrier: a lone surrogate or a supplementary scalar the invalid-character
+class does not already name is the field's one codeless notification (`we-s`, `we-e`, `we-emoji`,
+[spec/01 §1.1](../../spec/01-data-model.md#11-the-two-special-model-level-configurations)), while an
+authored `U+10FFFF` draws the invalid-character class alone (`we-authored`) and an annotation's does
+draw it (`ux-annot-max`). That the exemption covers every supplementary scalar Java's `\p{C}` matches
+is this account's extension of the one measured. A String message with no pattern is assumed to share
+the carrier with the pattern message; no row measures it. -/
 private def messageNotifications (context : FieldTypeContext) (carrier : FieldMessageCarrier)
     (entries : List FieldMessageEntry) : List FieldTypeNotification :=
   (fieldMessageDiagnostics context.messageTokens context.declaredLocales carrier entries
       context.messagesReached).map .message ++
     raiseIf (context.messagesReached &&
-      (context.declaredLocales.filterMap (FieldMessageEntry.askedFor? entries)).any
-        hasSupplementaryScalar) .supplementaryCharacter
+      (context.declaredLocales.filterMap (FieldMessageEntry.askedFor? entries)).any fun text =>
+        text.toList.any fun character => character == loneSurrogateStandIn ||
+          (!isBmpScalar character && !isJavaOtherCategory character)) .supplementaryCharacter
 
 /-- Whether both bounds are in range and the minimum exceeds the maximum. -/
 private def minExceedsMax : MemberReading → MemberReading → Bool
