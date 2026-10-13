@@ -207,8 +207,7 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
   | .inl _ => pure ()
   | .inr path =>
       if !model.groupContributesField path then
-        refuse "Having" (if path.length == 1 then KernelStaticDiagnostic.rootGroupIsEmpty
-          else .groupIsEmpty).kernelCode
+        refuse "Having" path.emptyGroupDiagnostic.kernelCode
       if reference.category.isSome then refuse "Having" KernelStaticDiagnostic.noGroupsAllowed.kernelCode
   if let some (expression, candidate, reopened) := filteredBody then
     if reopened.isEmpty then refuse "Having" KernelStaticDiagnostic.wildcardsRequired.kernelCode
