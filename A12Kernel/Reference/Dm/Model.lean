@@ -94,19 +94,48 @@ private def nat? (json : Json) (key : String) : Option Nat :=
 private def bool? (json : Json) (key : String) : Option Bool :=
   (json.getObjValAs? Bool key).toOption
 
-/-- A DM decimal bound, written as a JSON number or an integer string; absent is `none`, and any
-other value refuses the declaration rather than dropping the bound. -/
+/-- A plain decimal string: an optional minus, digits, and optionally a point with digits. Anything else,
+an exponent, a plus sign or a digit separator included, is no decimal here. -/
+private def plainDecimal? (text : String) : Option Rat :=
+  let (negative, unsigned) := if text.startsWith "-" then (true, (text.drop 1).toString) else (false, text)
+  let digits (part : String) : Bool := !part.isEmpty && part.all Char.isDigit
+  let magnitude? : Option Rat := match unsigned.splitOn "." with
+    | [whole] => if digits whole then some (whole.toNat! : Rat) else none
+    | [whole, fraction] =>
+        if digits whole && digits fraction then
+          some (((whole ++ fraction).toNat! : Rat) / (10 ^ fraction.length : Nat))
+        else none
+    | _ => none
+  magnitude?.map fun magnitude => if negative then -magnitude else magnitude
+
+/-- A DM decimal bound, written as a JSON number or as a plain decimal string (the Kernel admitted
+string-written Number bounds, capture row `mv-double`); absent is `none`, and any other value refuses
+the declaration rather than dropping the bound. -/
 def decimalMember? (json : Json) (key : String) : Except String (Option Rat) :=
   match json.getObjVal? key with
   | .ok (.num number) => pure (some (Rat.ofScientific number.mantissa.natAbs true number.exponent *
       (if number.mantissa < 0 then -1 else 1)))
-  | .ok (.str text) => match text.toInt? with
+  | .ok (.str text) => match plainDecimal? text with
     | some value => pure (some value)
     | none => throw s!"{key} {text}"
   | .ok .null | .error _ => pure none
   | .ok other => throw s!"{key} {other.compress}"
 
-private def partialMode? : Option String → Except String TemporalPartialMode
+/-- A DM flag the Kernel coerces: `true`, `false`, `null` or absent, a JSON number (non-zero is true)
+and the strings `"true"` and `"false"`. Any other value is unreadable. Measured on
+`noValueValidation` and `lineBreaksPermitted` only (rows `nv-coerce`, `nv-coerce-zero`); every other
+flag keeps its own reading. -/
+def flagMember? (json : Json) (key : String) : Except String Bool :=
+  match json.getObjVal? key with
+  | .error _ | .ok .null => pure false
+  | .ok (.bool value) => pure value
+  | .ok (.num number) => pure (number.mantissa != 0)
+  | .ok (.str "true") => pure true
+  | .ok (.str "false") => pure false
+  | .ok other => throw s!"{key} {other.compress}"
+
+/-- The partial precision a `datePrecision` member declares; an absent member is the full date. -/
+def partialMode? : Option String → Except String TemporalPartialMode
   | none | some "FULL" => pure .full
   | some "DAY_OPTIONAL" => pure .dayOptional
   | some "MONTH_OPTIONAL" => pure .monthOptional
@@ -169,11 +198,13 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
   let base := { base with requiredness }
   match typeName with
   | "StringType" =>
+      let lineBreaksPermitted ← flagMember? body "lineBreaksPermitted"
+      let noValueValidation ← flagMember? body "noValueValidation"
       pure { base with
-        stringPolicy := { lineBreaksPermitted := (bool? body "lineBreaksPermitted").getD false
+        stringPolicy := { lineBreaksPermitted
                           minLength := nat? body "minLength", maxLength := nat? body "maxLength" }
         stringPatternSource := str? body "pattern"
-        stringValueMode := if (bool? body "noValueValidation").getD false then .raw else .evaluated }
+        stringValueMode := if noValueValidation then .raw else .evaluated }
   | "NumberType" =>
       -- An absent fractional member reads as `0` and `-1` is the no-bound sentinel (spec/04 §4): the
       -- declared pair becomes an ordinary one, except that `-1` beside a zero maximum leaves stored

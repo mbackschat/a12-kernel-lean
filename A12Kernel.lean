@@ -339,5 +339,6 @@ import A12Kernel.Elaboration.EnumerationComparability
 import A12Kernel.Elaboration.Enumeration
 import A12Kernel.Elaboration.EnumerationDeclarationNotification
 import A12Kernel.Elaboration.ModelConsistency
+import A12Kernel.Elaboration.FieldTypeDeclarationNotification
 import A12Kernel.Proofs
 import A12Kernel.Conformance

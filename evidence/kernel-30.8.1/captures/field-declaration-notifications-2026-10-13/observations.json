@@ -1,0 +1,3172 @@
+[
+ {
+  "case": "r-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "r-above",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "r-zero-both",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-not-positive",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "r-str-neg1",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "r-num-neg1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-signed",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "r-two",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "codeless:member-signed",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "r-int16",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-15",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "r-int15",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "r-frac-neg2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-signed",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "r-amount15",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-not-positive",
+    "at": "/Form/N1"
+   },
+   {
+    "code": "codeless:member-above-14",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "r-sign-dedup",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-signed",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "r-per-field",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/S2"
+   },
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "r-silence",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-14",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "r-filtered",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "r-custom",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "r-three",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/N1"
+   },
+   {
+    "code": "codeless:member-not-positive",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "codeless:member-not-positive",
+    "at": "/Form/N1"
+   },
+   {
+    "code": "codeless:member-signed",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "nv-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "nv-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "nv-two",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S2"
+   }
+  ]
+ },
+ {
+  "case": "nv-coerce",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "nv-coerce-zero",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "nv-filtered",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "pi-pattern",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_PARAMS_INCONSISTENT",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "pi-min",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_PARAMS_INCONSISTENT",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "pi-max",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "pi-both",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_PARAMS_INCONSISTENT",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "pi-min-neg1",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "pi-pat-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_ERROR_MESSAGE_AND_NO_PATTERN",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "pi-combo",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATTERN_INVALID",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_ERROR_MESSAGE_AND_PATTERN_INVALID",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_STRING_TYPE_PARAMS_INCONSISTENT",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "pi-filtered",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "nh-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NO_VAL_AND_HINT_LISTS",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "nh-empty",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "nh-plus",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_VALUES_DUPLICATE",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_NO_VAL_AND_HINT_LISTS",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "lb1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_LINE_BREAK_AND_MAX_LENGTH_1_INVALID",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "lb1-twin-a",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "lb1-twin-b",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "lb1-filtered",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mm-s",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_LENGTH_BIGGER_MAX_LENGTH",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "mm-s-eq",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mm-s-neg",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mm-n",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_LENGTH_BIGGER_MAX_LENGTH",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "mm-n-filtered",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mm-c",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MIN_LENGTH_BIGGER_MAX_LENGTH",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "mm-c-oor",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "p-bad",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATTERN_INVALID",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "p-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "p-nomsg",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATTERN_INVALID",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_ERROR_MESSAGE_AND_PATTERN_INVALID",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "p-compile",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATTERN_INVALID",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "p-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_ERROR_MESSAGE_AND_NO_PATTERN",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "p-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "h-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "h-long2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_VALUE_TOO_LONG",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_VALUE_TOO_LONG",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "h-short",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_VALUE_TOO_SHORT",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "h-dup",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_VALUES_DUPLICATE",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_VALUES_DUPLICATE",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "h-undeclared",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "h-xlocale",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "h-unit",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "h-unit2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "h-oor",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-not-positive",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "h-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "h-mixed",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_VALUE_TOO_LONG",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_VALUE_TOO_SHORT",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_VALUES_DUPLICATE",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "h-twoentries",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:model-not-built",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "ml-17",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MAX_LENGTH_TOO_BIG",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ml-16",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ml-pos",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MAX_LENGTH_TOO_BIG",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ml-frac",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MAX_LENGTH_TOO_BIG",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ml-frac17",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ml-supp",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_FRACT_DIGITS_MISSING",
+    "at": "/Form/N1"
+   },
+   {
+    "code": "MVK_MAX_LENGTH_TOO_BIG",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ml-unknown",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-signed",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ml-decided",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-14",
+    "at": "/Form/N1"
+   },
+   {
+    "code": "MVK_MAX_LENGTH_TOO_BIG",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "nl-17",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_LENGTH_TOO_BIG",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "nl-17-max17",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_LENGTH_TOO_BIG",
+    "at": "/Form/N1"
+   },
+   {
+    "code": "MVK_MAX_LENGTH_TOO_BIG",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ml-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ms-4",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MAX_LENGTH_TOO_SMALL",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ms-5",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ms-pos",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MAX_LENGTH_TOO_SMALL",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ms-pos5",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ms-oormax",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-14",
+    "at": "/Form/N1"
+   },
+   {
+    "code": "MVK_MAX_LENGTH_TOO_SMALL",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ms-maxonly",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ar-14+2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_ARITY_TOO_BIG",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ar-13+2",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ar-maxonly",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ar-amount",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_FRACT_DIGITS_INVALID",
+    "at": "/Form/N1"
+   },
+   {
+    "code": "MVK_ARITY_TOO_BIG",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ar-oor",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-15",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "ar-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ar-ml",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MAX_LENGTH_TOO_BIG",
+    "at": "/Form/N1"
+   },
+   {
+    "code": "MVK_ARITY_TOO_BIG",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "mv-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_VALUE_BIGGER_THAN_MAX_VALUE",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "mv-eq",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mv-neg",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mv-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ec-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_COUNT_OF_VALUES_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ec-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ec-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_COUNT_OF_VALUES_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ec-2loc",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_COUNT_OF_VALUES_INVALID",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_COUNT_OF_VALUES_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ec-undecl",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ec-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ed-blank",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ed-undecl",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ed-bi",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ed-tri",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ed-half",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ed-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "dd-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_DISPLAY_VALUES_DUPLICATE",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "dd-x",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "dd-case",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "dd-two",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_DISPLAY_VALUES_DUPLICATE",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_DISPLAY_VALUES_DUPLICATE",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "dd-three",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_DISPLAY_VALUES_DUPLICATE",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "dd-2loc",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_DISPLAY_VALUES_DUPLICATE",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_DISPLAY_VALUES_DUPLICATE",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "dd-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ev-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ev-pipe",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ev-space",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ev-both",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ev-two",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUE_INVALID",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_INTERNAL_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ed-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_DISPLAY_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ed-tab-undecl",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ecat-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUE_INVALID",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_CATEGORY_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ecat-tab2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_CATEGORY_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ev-dup-tab",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUE_INVALID",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_INTERNAL_VALUES_DUPLICATE",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "codeless:repeated-value",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ev-tab-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ev-tab-label-both",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUE_INVALID",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_DISPLAY_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "nl-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:line-break",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "nl-mix",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:line-break",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_INTERNAL_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "nl-pre",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:line-break",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "nl-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "nl-two-fields",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:line-break",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "codeless:line-break",
+    "at": "/Form/E2"
+   }
+  ]
+ },
+ {
+  "case": "sv-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_S_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "sv-a",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "sv-empty",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "sv-ws",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "sv-case",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_S_VALUE_INVALID",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "sv-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ev-empty-token",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "u-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/U1"
+   }
+  ]
+ },
+ {
+  "case": "u-body",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/U1"
+   }
+  ]
+ },
+ {
+  "case": "u-two",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/U1"
+   },
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/U2"
+   }
+  ]
+ },
+ {
+  "case": "u-nested",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/Sub/U1"
+   }
+  ]
+ },
+ {
+  "case": "u-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "u-td2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/T1"
+   },
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/T2"
+   }
+  ]
+ },
+ {
+  "case": "u-td0",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "td-nv2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/T1"
+   },
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/T2"
+   }
+  ]
+ },
+ {
+  "case": "td-nv0",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "td-range2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/T2"
+   },
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/T1"
+   }
+  ]
+ },
+ {
+  "case": "u-cond",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/U1"
+   },
+   {
+    "code": "MVK_ERROR_FIELD_NOT_REFERENCED",
+    "at": "/Form/R1"
+   }
+  ]
+ },
+ {
+  "case": "u-cond-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "cn-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "CUSTOM_FIELD_TYPE_CODENAME_MISSING",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "cn-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "cn-ws",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "CUSTOM_FIELD_TYPE_CODENAME_MISSING",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "cn-space",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "CUSTOM_FIELD_TYPE_CODENAME_MISSING",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "cn-nbsp",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:custom-name-content",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "cn-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "CUSTOM_FIELD_TYPE_CODENAME_MISSING",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "cn-nobody",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "CUSTOM_FIELD_TYPE_CODENAME_MISSING",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "cn-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "od-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_OPTIONAL_DATE_TYPE_INVALID",
+    "at": "/Form/D1"
+   }
+  ]
+ },
+ {
+  "case": "od-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "od-noformat",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "od-instant",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_OPTIONAL_DATE_TYPE_INVALID",
+    "at": "/Form/D1"
+   }
+  ]
+ },
+ {
+  "case": "od-both",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_ADDITIONAL_CHECK_INVALID",
+    "at": "/Form/D1"
+   },
+   {
+    "code": "MVK_OPTIONAL_DATE_TYPE_INVALID",
+    "at": "/Form/D1"
+   }
+  ]
+ },
+ {
+  "case": "od-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "pa-f-dash",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Co-de"
+   },
+   {
+    "code": "codeless:field-name-shape",
+    "at": "/Form/Co-de"
+   }
+  ]
+ },
+ {
+  "case": "pa-f-uml",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Sl\u00f6ts"
+   },
+   {
+    "code": "codeless:field-name-shape",
+    "at": "/Form/Sl\u00f6ts"
+   }
+  ]
+ },
+ {
+  "case": "pa-g-uml",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "pa-g-lead",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/\u00e4Teil"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/\u00e4Teil/A"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/\u00e4Teil"
+   }
+  ]
+ },
+ {
+  "case": "pa-slash",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATHS_INCONSISTENT",
+    "at": "/Form/Co/de"
+   }
+  ]
+ },
+ {
+  "case": "pa-slash-bad",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Co/-de"
+   },
+   {
+    "code": "codeless:field-name-shape",
+    "at": null
+   }
+  ]
+ },
+ {
+  "case": "pa-desc",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Gr-p"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p/B"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p/A"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p"
+   }
+  ]
+ },
+ {
+  "case": "pa-desc-content",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Gr-p"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p/1B"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p/A"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p"
+   },
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/Gr-p/A"
+   },
+   {
+    "code": "MVK_NAME_STARTS_WITH_DIGIT_A12_DV",
+    "at": "/Form/Gr-p/1B"
+   }
+  ]
+ },
+ {
+  "case": "pa-f-content",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Co-de"
+   },
+   {
+    "code": "codeless:field-name-shape",
+    "at": "/Form/Co-de"
+   }
+  ]
+ },
+ {
+  "case": "pa-f-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "pa-g-only",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Gr-p"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p"
+   }
+  ]
+ },
+ {
+  "case": "dg-f",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/1Code"
+   },
+   {
+    "code": "MVK_NAME_STARTS_WITH_DIGIT_A12_DV",
+    "at": "/Form/1Code"
+   }
+  ]
+ },
+ {
+  "case": "dg-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "dg-root",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_STARTS_WITH_DIGIT",
+    "at": "/1Root"
+   }
+  ]
+ },
+ {
+  "case": "dg-nested",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/1Grp"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/1Grp/A"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/1Grp"
+   }
+  ]
+ },
+ {
+  "case": "dg-mixed",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/1Co.de"
+   },
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/1Co.de"
+   },
+   {
+    "code": "MVK_NAME_STARTS_WITH_DIGIT_A12_DV",
+    "at": "/Form/1Co.de"
+   }
+  ]
+ },
+ {
+  "case": "dg-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "xg-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_STARTS_WITH_XML",
+    "at": "/Form/xmlGrp"
+   }
+  ]
+ },
+ {
+  "case": "xg-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "xg-mixed",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_STARTS_WITH_XML",
+    "at": "/Form/XmLGrp"
+   }
+  ]
+ },
+ {
+  "case": "xg-chain",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_STARTS_WITH_XML",
+    "at": "/Form/xmlA"
+   },
+   {
+    "code": "MVK_NAME_STARTS_WITH_XML",
+    "at": "/Form/xmlA/B"
+   }
+  ]
+ },
+ {
+  "case": "xg-refused",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/xmlG\u00e9"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/xmlG\u00e9/A"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/xmlG\u00e9"
+   }
+  ]
+ },
+ {
+  "case": "xf-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_STARTS_WITH_XML_A12_DV",
+    "at": "/Form/xmlCode"
+   }
+  ]
+ },
+ {
+  "case": "xf-mixed",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_STARTS_WITH_XML_A12_DV",
+    "at": "/Form/xMlCode"
+   }
+  ]
+ },
+ {
+  "case": "xf-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "xf-dot",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/xml.a"
+   },
+   {
+    "code": "MVK_NAME_STARTS_WITH_XML_A12_DV",
+    "at": "/Form/xml.a"
+   }
+  ]
+ },
+ {
+  "case": "xr-root",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_STARTS_WITH_XML",
+    "at": "/xmlRoot"
+   }
+  ]
+ },
+ {
+  "case": "dc-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/Co.de"
+   }
+  ]
+ },
+ {
+  "case": "dc-colon",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/:Code"
+   }
+  ]
+ },
+ {
+  "case": "dc-path",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Co.1de"
+   },
+   {
+    "code": "codeless:field-name-shape",
+    "at": "/Form/Co.1de"
+   }
+  ]
+ },
+ {
+  "case": "dc-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "nv-val",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_A12_DV",
+    "at": "/Form/Code.value"
+   },
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/Code.value"
+   }
+  ]
+ },
+ {
+  "case": "nv-bare",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "nv-values",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/Code.values"
+   }
+  ]
+ },
+ {
+  "case": "nv-mid",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/Code.value.List"
+   }
+  ]
+ },
+ {
+  "case": "nv-upper",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_A12_DV",
+    "at": "/Form/Code.VALUE"
+   },
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/Code.VALUE"
+   }
+  ]
+ },
+ {
+  "case": "nv-de",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_A12_DV",
+    "at": "/Form/Code.Wert"
+   },
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/Code.Wert"
+   }
+  ]
+ },
+ {
+  "case": "nv-de-en",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/Code.value"
+   }
+  ]
+ },
+ {
+  "case": "us-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "NAME_STARTS_WITH_UNDERSCORE_AND_WRONG_PATTERN",
+    "at": "/Form/_Grp"
+   }
+  ]
+ },
+ {
+  "case": "us-meta",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "us-photo",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "us-meta-x",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "NAME_STARTS_WITH_UNDERSCORE_AND_WRONG_PATTERN",
+    "at": "/Form/__meta_x"
+   }
+  ]
+ },
+ {
+  "case": "us-att-data",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "us-root",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "us-field",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "rid-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_ROOT_GROUP_NAME_INVALID",
+    "at": "/Id"
+   }
+  ]
+ },
+ {
+  "case": "rid-mixed",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_ROOT_GROUP_NAME_INVALID",
+    "at": "/iD"
+   }
+  ]
+ },
+ {
+  "case": "rid-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "rid-nested",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "rid-co",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_ROOT_GROUP_NAME_INVALID",
+    "at": "/Id"
+   },
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Id/U1"
+   }
+  ]
+ },
+ {
+  "case": "ps-61",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG/B"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG/A"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+   }
+  ]
+ },
+ {
+  "case": "ps-60",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ps-61-content",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG/A"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
+   },
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG/A"
+   }
+  ]
+ },
+ {
+  "case": "ps-f61",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mt-n",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MAX_TOO_BIG",
+    "at": "/Form/Big"
+   }
+  ]
+ },
+ {
+  "case": "mt-n-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mt-r",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MAX_TOO_BIG",
+    "at": "/Big"
+   }
+  ]
+ },
+ {
+  "case": "mt-r-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mt-co",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MAX_TOO_BIG",
+    "at": "/Form/Big"
+   },
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/Big/U1"
+   }
+  ]
+ },
+ {
+  "case": "si-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INVALID_SORTINFO",
+    "at": "/Form/Fix"
+   }
+  ]
+ },
+ {
+  "case": "si-empty",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "si-rep",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "si-nvv",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_SORT_FIELD_NO_VALUE_VALIDATION",
+    "at": "/Form/Fix/K"
+   },
+   {
+    "code": "MVK_INVALID_SORTINFO",
+    "at": "/Form/Fix"
+   }
+  ]
+ },
+ {
+  "case": "si-root",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INVALID_SORTINFO",
+    "at": "/Fix"
+   }
+  ]
+ },
+ {
+  "case": "ux-fname",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Code\ud83d\ude00"
+   },
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/Code\ud83d\ude00"
+   }
+  ]
+ },
+ {
+  "case": "ux-gname",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Gr\ud83d\ude00"
+   },
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/Gr\ud83d\ude00/A"
+   },
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/Gr\ud83d\ude00"
+   }
+  ]
+ },
+ {
+  "case": "we-s",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "WRONG_ENCODING",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "we-s-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "we-e",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "WRONG_ENCODING",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "sw-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INVALID_SUPPRESSED_WARNING",
+    "at": "/Form/Cp"
+   }
+  ]
+ },
+ {
+  "case": "sw-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "sw-two",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_UNEXPECTED_TOKEN",
+    "at": "/Form/Cp"
+   }
+  ]
+ },
+ {
+  "case": "o-1",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/1B"
+   },
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/A1"
+   },
+   {
+    "code": "MVK_NAME_STARTS_WITH_DIGIT_A12_DV",
+    "at": "/Form/1B"
+   }
+  ]
+ },
+ {
+  "case": "o-1r",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/1B"
+   },
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/A1"
+   },
+   {
+    "code": "MVK_NAME_STARTS_WITH_DIGIT_A12_DV",
+    "at": "/Form/1B"
+   }
+  ]
+ },
+ {
+  "case": "o-2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "o-3",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUES_DUPLICATE",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/A1"
+   },
+   {
+    "code": "codeless:repeated-value",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "o-4",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_INTERNAL_VALUES_DUPLICATE",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/A1"
+   },
+   {
+    "code": "codeless:repeated-value",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "o-5",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/1B"
+   },
+   {
+    "code": "codeless:member-above-99999",
+    "at": "/Form/S2"
+   },
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_NAME_STARTS_WITH_DIGIT_A12_DV",
+    "at": "/Form/1B"
+   }
+  ]
+ },
+ {
+  "case": "o-6",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Co-de"
+   },
+   {
+    "code": "codeless:field-name-shape",
+    "at": "/Form/Co-de"
+   },
+   {
+    "code": "MVK_NAME_STARTS_WITH_XML",
+    "at": "/Form/xmlG"
+   },
+   {
+    "code": "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREAK",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "ec-2loc-partial",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_COUNT_OF_VALUES_INVALID",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_COUNT_OF_VALUES_INVALID",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "ec-2loc-de",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_COUNT_OF_VALUES_INVALID",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_COUNT_OF_VALUES_INVALID",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "mv-num-a",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mv-num-b",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_MIN_VALUE_BIGGER_THAN_MAX_VALUE",
+    "at": "/Form/N1"
+   }
+  ]
+ },
+ {
+  "case": "mv-num-c",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "mv-num-d",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "h-unit3",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "h-unit4",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "h-unit5",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "u-cond2",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/U1"
+   }
+  ]
+ },
+ {
+  "case": "u-cond3",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/U1"
+   }
+  ]
+ },
+ {
+  "case": "u-cond4",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_UNSPECIFIED_TYPE_NO_CODEGEN",
+    "at": "/Form/U1"
+   },
+   {
+    "code": "MVK_UNEXPECTED_TOKEN",
+    "at": "/Form/R1"
+   }
+  ]
+ },
+ {
+  "case": "pa-root-dash",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Ro-ot"
+   },
+   {
+    "code": "codeless:root-name-shape",
+    "at": "/Ro-ot"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Ro-ot/A"
+   }
+  ]
+ },
+ {
+  "case": "pa-g-dot",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Gr.p"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr.p/A"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr.p"
+   }
+  ]
+ },
+ {
+  "case": "nv-de-lower",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_A12_DV",
+    "at": "/Form/Code.wert"
+   },
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/Code.wert"
+   }
+  ]
+ },
+ {
+  "case": "eg-fixed",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "eg-rep",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "eg-fixed-root",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "rn-digit",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:rule-name-content",
+    "at": "/Form/1R"
+   }
+  ]
+ },
+ {
+  "case": "rn-dot",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:rule-name-content",
+    "at": "/Form/R.x"
+   }
+  ]
+ },
+ {
+  "case": "rn-xml",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "rn-dash",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:rule-name-content",
+    "at": "/Form/R-x"
+   }
+  ]
+ },
+ {
+  "case": "rn-umlaut",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:rule-name-content",
+    "at": "/Form/R\u00e4"
+   }
+  ]
+ },
+ {
+  "case": "rn-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "cpn-digit",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:rule-name-content",
+    "at": "/Form/1C"
+   }
+  ]
+ },
+ {
+  "case": "cpn-dash",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:code-content",
+    "at": "/Form/C-x"
+   },
+   {
+    "code": "codeless:rule-name-content",
+    "at": "/Form/C-x"
+   }
+  ]
+ },
+ {
+  "case": "cpn-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ux-annot-el",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/A1"
+   }
+  ]
+ },
+ {
+  "case": "ux-annot-el-name",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/A1"
+   }
+  ]
+ },
+ {
+  "case": "ux-annot-el-twin",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ux-label-el",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "ux-annot-group",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/Gx"
+   }
+  ]
+ },
+ {
+  "case": "ux-annot-rule",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/R1"
+   }
+  ]
+ },
+ {
+  "case": "h-unit-mixed",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:supplementary-character",
+    "at": "/Form/S1"
+   },
+   {
+    "code": "MVK_VALUE_TOO_LONG",
+    "at": "/Form/S1"
+   }
+  ]
+ },
+ {
+  "case": "pa-g-nested",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Gr-p"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p/Sub/A"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p/Sub"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p"
+   }
+  ]
+ },
+ {
+  "case": "pa-g-and-f",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Gr-p"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p/Co-de"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p"
+   },
+   {
+    "code": "codeless:field-name-shape",
+    "at": "/Form/Gr-p/Co-de"
+   }
+  ]
+ },
+ {
+  "case": "pa-g-and-xml",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_PATH_INVALID",
+    "at": "/Form/Gr-p"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p/xmlSub/A"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p/xmlSub"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/Form/Gr-p"
+   }
+  ]
+ },
+ {
+  "case": "dd-incomplete",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_COUNT_OF_VALUES_INVALID",
+    "at": "/Form/E1"
+   },
+   {
+    "code": "MVK_DISPLAY_VALUES_DUPLICATE",
+    "at": "/Form/E1"
+   }
+  ]
+ },
+ {
+  "case": "eg-ref",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_GROUP_IS_EMPTY",
+    "at": "/Form/R1"
+   }
+  ]
+ },
+ {
+  "case": "eg-rule-only",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "cpn-umlaut",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:rule-name-content",
+    "at": "/Form/C\u00e4"
+   }
+  ]
+ },
+ {
+  "case": "root-uml-lead",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "root-61",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:name-above-sixty",
+    "at": "/RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR"
+   },
+   {
+    "code": "codeless:group-name-shape",
+    "at": "/RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR/A"
+   }
+  ]
+ },
+ {
+  "case": "root-us-meta",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "nv-val-upper-de",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "MVK_NAME_INVALID_A12_DV",
+    "at": "/Form/Code.WERT"
+   },
+   {
+    "code": "MVK_NAME_INVALID_DOT_COLON_A12_DV",
+    "at": "/Form/Code.WERT"
+   }
+  ]
+ },
+ {
+  "case": "cn-alpha-0",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "cn-alpha-1",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "cn-alpha-2",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "cn-alpha-3",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:custom-name-content",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "cn-alpha-4",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:custom-name-content",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "cn-alpha-5",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:custom-name-content",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "cn-alpha-6",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:custom-name-content",
+    "at": "/Form/C1"
+   }
+  ]
+ },
+ {
+  "case": "cn-alpha-7",
+  "admitted": true,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": []
+ },
+ {
+  "case": "cn-alpha-8",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   {
+    "code": "codeless:custom-name-content",
+    "at": "/Form/C1"
+   }
+  ]
+ }
+]

@@ -31,9 +31,6 @@ private def whole (json : Json) (key : String) : Except String Int :=
   | .error _ | .ok .null => pure 0
   | .ok value => fromJson? value
 
-private def flag (json : Json) (key : String) : Bool :=
-  (json.getObjValAs? Bool key).toOption.getD false
-
 /-- A field type from its `fieldType` object; the body sits under the type's own name. -/
 private def readConsistencyFieldType (fieldType : Json) : Except String ConsistencyFieldType := do
   let typeName ← fieldType.getObjValAs? String "type"
@@ -42,7 +39,7 @@ private def readConsistencyFieldType (fieldType : Json) : Except String Consiste
   | "NumberType" =>
       pure (.number (← whole body "minFractionalDigits") (← whole body "maxFractionalDigits")
         (← decimalMember? body "minValue") (← decimalMember? body "maxValue"))
-  | "StringType" => pure (.string (flag body "noValueValidation") (flag body "lineBreaksPermitted"))
+  | "StringType" => pure (.string (← flagMember? body "noValueValidation") (← flagMember? body "lineBreaksPermitted"))
   | "EnumerationType" =>
       pure (.enumeration ((← members body "categories").map (text · "name")))
   | "TypeDefType" => pure (.typeDefinition (text body "typeDefinitionId"))

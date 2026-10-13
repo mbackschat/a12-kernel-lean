@@ -1,3 +1,4 @@
+import A12Kernel.Evidence.DeclarationNotificationProjection
 import A12Kernel.Evidence.NumberFormalProjection
 import A12Kernel.Evidence.ObservationBundleTest
 import A12Kernel.Evidence.RuleCheckProjection
@@ -22,5 +23,8 @@ def main : IO Unit := do
   IO.println s!"rule-check observations: {ruleCheckCount} rows agree, {A12Kernel.Evidence.RuleCheckProjection.deferred.length} deferred, {ruleCheckSkipped} without a Kernel verdict"
   let (numberCount, numberCodes) ← A12Kernel.Evidence.NumberFormalProjection.checkArtifacts root
   IO.println s!"Number formal observations: {numberCount} engine observations agree through the reader on {numberCodes} field codes"
+  let (declarationCount, declarationDeferred) ←
+    A12Kernel.Evidence.DeclarationNotificationProjection.checkArtifacts root
+  IO.println s!"declaration notifications: {declarationCount} rows agree through the reader, {declarationDeferred} deferred"
   let total := validationCount + stringCount + cascadeCount
   IO.println s!"kernel evidence: {total}/{total} compact non-public projections agree; 25 public normalized associations are checked by checkReferenceProcess"
