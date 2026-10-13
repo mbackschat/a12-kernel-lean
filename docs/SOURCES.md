@@ -145,6 +145,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Inbound handbacks and historical Git stubs](sources/inbound-handbacks.md), including [2026-10-09 reconciliation and additional observations](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation)
 - [Computation diagnostic assembly](sources/inbound-handbacks.md#src-computation-diagnostic-assembly): inbound a12-dmkits `6b919e0870e36b9da7f33e6735ea7821474e68a0`, retained in reviewed `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`; post-execution full-pointer collisions and application availability.
 - [Partial declared-slot walks (KF527)](sources/inbound-handbacks.md#inbound-2026-10-09-extensions): inbound `f641cc24f`, `PartialFillWalkRelevanceDiffTest` and `PartialProductCapacityDiffTest`; the route for fill, prefix and product relevance distinctions adopted in spec/10 §5.
+- [Model-check class multiplicity (KF558)](sources/inbound-handbacks.md#src-inbound-kf558-multiplicity): inbound a12-dmkits `18dd8a23dedbdfc96bc62a6b0832c8aea4645430`, `CheckerClassMultiplicityAgreementTest`; the per-locale `RULE_HAS_NO_ERRORTEXT` is confirmed locally by three retained rows.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route

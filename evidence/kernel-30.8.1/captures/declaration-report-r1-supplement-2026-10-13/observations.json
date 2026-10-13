@@ -138,6 +138,36 @@
   "notifications": []
  },
  {
+  "case": "m-two-locales-no-text",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING",
+   "RULE_HAS_NO_ERRORTEXT",
+   "RULE_HAS_NO_ERRORTEXT"
+  ]
+ },
+ {
+  "case": "m-three-locales-one-text",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING",
+   "RULE_HAS_NO_ERRORTEXT",
+   "RULE_HAS_NO_ERRORTEXT"
+  ]
+ },
+ {
+  "case": "m-two-locales-two-empty",
+  "admitted": false,
+  "verification": "KERNEL_CONFIRMED",
+  "notifications": [
+   "MVK_ERROR_MESSAGE_MISSING",
+   "RULE_HAS_NO_ERRORTEXT",
+   "RULE_HAS_NO_ERRORTEXT"
+  ]
+ },
+ {
   "case": "e-bmp-range-supp",
   "admitted": false,
   "verification": "KERNEL_CONFIRMED",

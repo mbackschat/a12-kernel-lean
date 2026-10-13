@@ -42,8 +42,9 @@ structure MessagePresence where
 
 /-- The presence classes for `entries`, written `(locale, text)` pairs. A locale is answered by a
 nonblank judged text. The prefixed class asks whether any declared locale is answered; the
-unprefixed one whether a declared locale is left with no text or an empty one, so a blank text
-counts as present for it and absent for the prefixed one. Blankness is Java's, as for the other
+unprefixed one is drawn once for each declared locale left with no text or an empty one, so a blank
+text counts as present for it and absent for the prefixed one (peer KF558; rows `m-*` of the
+[sort-list supplement](../../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity)). Blankness is Java's, as for the other
 declaration members (spec/01 §3); the measured blank texts are spaces. With no declared locale no
 locale is answered, so the prefixed class stands whatever is written, beside the model's own
 `MVK_SUPP_LANGUAGES_MISSING`, while the unprefixed one asks nothing (rows `n-no-locale` and
@@ -57,9 +58,8 @@ def messagePresence (declaredLocales : List String) (entries : List (String × S
       if answered.isEmpty then [.errorMessageMissing]
       else if answered.length < declaredLocales.length then [.errorMessageForLanguageMissing]
       else []
-    unprefixed :=
-      if declaredLocales.any fun locale => (judgedText entries locale).all (·.isEmpty)
-      then [.ruleHasNoErrorText] else [] }
+    unprefixed := declaredLocales.filterMap fun locale =>
+      if (judgedText entries locale).all (·.isEmpty) then some .ruleHasNoErrorText else none }
 
 /-- The error-text checker's template classes over every declared locale's nonempty judged text, in
 locale order. A text for a locale the model does not declare is not asked (spec/11). `check` is the

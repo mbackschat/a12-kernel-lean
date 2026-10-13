@@ -161,6 +161,13 @@ example :
       kernel ["MVK_ERROR_MESSAGE_MISSING", "RULE_HAS_NO_ERRORTEXT"] ∧
     rule (locales := twoLocales) (condition := unknownName) (entries := [("en_US", "x")]) =
       kernel ["MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING", "MVK_INVALID_ENTITY"] ∧
+    rule (locales := twoLocales) (entries := []) =
+      kernel ["MVK_ERROR_MESSAGE_MISSING", "RULE_HAS_NO_ERRORTEXT", "RULE_HAS_NO_ERRORTEXT"] ∧
+    rule (locales := twoLocales) (entries := [("en_US", ""), ("de_DE", "")]) =
+      kernel ["MVK_ERROR_MESSAGE_MISSING", "RULE_HAS_NO_ERRORTEXT", "RULE_HAS_NO_ERRORTEXT"] ∧
+    rule (locales := ["en_US", "de_DE", "fr_FR"]) (entries := [("en_US", "x")]) =
+      kernel ["MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING", "RULE_HAS_NO_ERRORTEXT",
+        "RULE_HAS_NO_ERRORTEXT"] ∧
     rule (locales := twoLocales) (target := .absent) (entries := [("en_US", "x")]) =
       kernel ["MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING", "MVK_ERROR_FIELD_MISSING",
         "MVK_MISSING_ERROR_FIELD"] := by

@@ -157,7 +157,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 ### K17 — model declarations and static denominator
 
 - [ ] Resolve the residual ordinary declaration surface and classify the six H-model classes in [SG28](gaps/targets-and-derivation.md#gap-sg28), with [SG8](gaps/strings-and-messages.md#gap-sg8), [SG9](gaps/paths-and-groups.md#gap-sg9) and [SG21](gaps/numeric-and-temporal.md#gap-sg21).
-- Matrix: empty fixed groups, variant/default declarations, all catalogued field-type bodies, table-backed Enumeration provider metadata, hint/sort references, rule/computation name and notification controls; a condition's first-raised class beside a parse defect and the field type's combined classes beside a refused declaration (from K14).
+- Matrix: empty fixed groups, variant/default declarations, all catalogued field-type bodies, table-backed Enumeration provider metadata, hint/sort references, rule/computation name and notification controls; a condition's first-raised class beside a parse defect and the field type's combined classes beside a refused declaration (from K14); the per-carrier multiplicity of the xml-prefix, value-validation-off String and unspecified-type classes ([KF558](sources/inbound-handbacks.md#src-inbound-kf558-multiplicity)).
 - Done: every named declaration class is implemented, already evidenced, or tied to a measured/source-defined host/service boundary. Four classes living outside H packages cannot be excluded by package name. No ordinary supported declaration is silently dropped by the reader.
 
 ### K18 — CustomCondition callback contract and calibration

@@ -614,3 +614,10 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `limit`: The tests establish duplicate-key failure, not a portable choice of which collision wins when several pointers repeat. Exact exception text beyond the asserted prefix is not a language-neutral contract. The peer's separate first-admitted pointer policy does not replace this Kernel result-assembly oracle.
 - `local`: [The implementation owner](../implementation/validation-messages-and-custom.md#cap-computation-message-partition) separates raw execution, checked assembly and projection. The ordinary malformed-source twin is an internal composition control, not a newly measured Kernel witness.
 - `sync`: Inbound correction to [computation §3.3](../../spec/09-computations.md#33-what-compute-reports); no outbound acknowledgement request is created.
+
+<a id="src-inbound-kf558-multiplicity"></a>
+#### Model-check class multiplicity, peer KF558 at a12-dmkits `18dd8a23dedbdfc96bc62a6b0832c8aea4645430`, reconciled 2026-10-13
+
+- `source`: [KF558](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf558), committed at the revision above, which also corrects the peer's distinct-only laws instrument.
+- `local-confirmation`: rows `m-two-locales-no-text`, `m-three-locales-one-text` and `m-two-locales-two-empty` of the [R1 supplement](model-structure-and-declaration-probes.md#src-sort-list-capacity) reproduce the per-locale `RULE_HAS_NO_ERRORTEXT` at the measurement pin; [report locks](../../A12Kernel/Conformance/DeclarationReport.lean) assert them.
+- `routing`: inbound, so no outbound ledger entry. The xml-prefix, value-validation-off String and unspecified-type multiplicities have no local implementation and join [K17](../PLAN.md#k17--model-declarations-and-static-denominator)'s matrix.

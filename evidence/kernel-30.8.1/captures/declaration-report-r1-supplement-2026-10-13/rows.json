@@ -349,6 +349,80 @@
   }
  },
  {
+  "id": "m-two-locales-no-text",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US",
+   "de_DE"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR"
+   }
+  }
+ },
+ {
+  "id": "m-three-locales-one-text",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US",
+   "de_DE",
+   "fr_FR"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": "x"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "id": "m-two-locales-two-empty",
+  "base": "Wh_DM.json",
+  "locales": [
+   "en_US",
+   "de_DE"
+  ],
+  "appendToForm": {
+   "type": "Rule",
+   "id": "/Form/Probe",
+   "name": "Probe",
+   "Rule": {
+    "errorEntityRelPath": "../Value",
+    "errorCode": "CODE",
+    "errorCondition": "FieldFilled(Value)",
+    "severity": "ERROR",
+    "errorMessage": [
+     {
+      "locale": "en_US",
+      "text": ""
+     },
+     {
+      "locale": "de_DE",
+      "text": ""
+     }
+    ]
+   }
+  }
+ },
+ {
   "id": "e-bmp-range-supp",
   "base": "Store_DM.json",
   "supportedCharacters": [
