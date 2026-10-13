@@ -144,9 +144,9 @@ Twelve corrections are `pending` below and have not been handed off. The 24 term
 
 - `status`: pending
 - `canonical`: [iteration guard slots](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands).
-- `delta`: The uniqueness guard's slot count extends from direct fields and wildcards to semantic-index selections and group operands: each field they read weighs the declared limits of its repeatable levels below the selected row or group, identically across the Number, String and temporal overloads.
+- `delta`: The uniqueness guard's slot count extends from direct fields and wildcards to semantic-index selections and group operands: each field they read weighs the declared limits of its repeatable levels below the selected row or group, a starred group's own level included, identically across the Number, String and temporal overloads.
 - `basis`: [Uniqueness iteration-guard checkpoint](sources/having-filter-probes.md#src-uniqueness-iteration-guard): 44 model-check rows at a12-dmkits `a4091041`, Kernel 30.8.1.
-- `acceptance`: Reconcile the guard account with these rows, including the nested repeatable rows `GDEEP1`, `GDEEP2`, `SELDEEP` and `ROWDEEP`.
+- `acceptance`: Reconcile the guard account with these rows, including the nested repeatable rows `GDEEP1`, `GDEEP2`, `GDEEPSTAR`, `SELDEEP` and `ROWDEEP`. Do not claim a selection whose own scope holds the iterated level, which no row tests.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-13-11"></a>
@@ -154,7 +154,7 @@ Twelve corrections are `pending` below and have not been handed off. The 24 term
 
 - `status`: pending
 - `canonical`: [index and sort nominations](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique), [Enumeration declaration blocks](../spec/06-strings-and-enumerations.md#b2-categories-via--), [rule error-text locales](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation) and the [error-target gate](../spec/07-repetition-and-iteration.md).
-- `delta`: A sort list longer than three draws one codeless capacity notice whatever its later entries name, `MVK_SORT_FIELD_DUPLICATE` judges the first three entries only, and each distinct name reports its own class once. With no declared locale a rule draws `MVK_ERROR_MESSAGE_MISSING` and no `RULE_HAS_NO_ERRORTEXT`. A group target is an ordinary declared entity, and an absent target's pair stands beside `MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING`. A restricted charset judges each UTF-16 unit alone, so a supplementary scalar counts once under a range covering its low surrogate, replacing the unconditional count of two.
+- `delta`: A sort list longer than three draws one codeless capacity notice whatever its later entries name, `MVK_SORT_FIELD_DUPLICATE` judges the first three entries only, and each distinct name reports its own class once. With no declared locale a rule draws `MVK_ERROR_MESSAGE_MISSING` and no `RULE_HAS_NO_ERRORTEXT`. A group target is an ordinary declared entity, and an absent target's pair stands beside `MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING`. Under a restricted charset a supplementary scalar's high surrogate is rejected even inside a covering range while its low surrogate is judged alone, so the scalar counts once under a range covering its low surrogate, replacing the unconditional count of two.
 - `basis`: [Supplement checkpoint](sources/model-structure-and-declaration-probes.md#src-sort-list-capacity), 21 `model check` rows at a12-dmkits `a4091041`, Kernel 30.8.1.
-- `acceptance`: Reconcile the sort, presence, target and Enumeration character accounts with these rows. Do not claim a declared-but-unknown target, a lenient parse or a lone-surrogate range, none of which was measured.
+- `acceptance`: Reconcile the sort, presence, target and Enumeration character accounts with these rows. Do not claim why the high surrogate is rejected, a declared-but-unknown target, a lenient parse, a lone-surrogate range or a supplementary singleton atom, none of which was measured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

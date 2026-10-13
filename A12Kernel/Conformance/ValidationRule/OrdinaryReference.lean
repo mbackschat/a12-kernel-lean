@@ -573,8 +573,8 @@ example :
       { field := otherAmount.id, coordinates := [] }] := by
   native_decide
 
-/-- `RepetitionNotUnique` is the one leaf family still outside the fragment, so it carries the
-    refusal guard that a classified `groupPresence` no longer can. -/
+/-- `RepetitionNotUnique` projects only from a supplied duplicate cluster, so without
+    `repetitionAt` it carries the refusal guard that a classified `groupPresence` no longer can. -/
 private def countRepetitionNotUniqueError? (environment : Env) :
     Option ReferenceProjectionError := do
   let condition ← (CheckedValidationCondition.fromRepetitionNotUnique countModel

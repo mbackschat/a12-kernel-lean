@@ -3,9 +3,10 @@
 <a id="active-unit"></a>
 ## Next action and accepted baseline
 
-- `status`: K01–K13 are accepted; K14–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
-- `next`: Enter K14. K13 closed with the checked-document [technical-length guard](sources/domain-ingestion-probes.md#src-technical-length-k13), disposing of the K13 review's separate finding. Its spec/ledger and shared `FormalCause` triggers defer to the next family-boundary cold review, which covers the complete change since the reviewed K13 slice. Full replay was not rerun: the longest retained JSON string measured 1,068 UTF-16 units on 2026-10-13, below the guard.
-- `sync`: Four locally originated corrections are pending and not handed off in [the open ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue): selected-error eligibility, Date first-filled rendering, full-input/custom invocation order and computation operand-read precedence. Terminal receipts have been retired to exact Git provenance.
+- `status`: K01–K14 are accepted; K15–K22 remain unchecked in the [conformance checklist](#remaining-conformance-checklist). Work in numbered risk order; peer receipts do not establish local task closure.
+- `next`: Enter K15. K14 closed after two cold reviews of the slice from `ece3dfb6`: every retained row of the declaration-report, R1-supplement, requiredness, over-repetition, filtered-star, parallel-reference and uniqueness-guard captures is locked or replayed, and full population replay is unchanged at 167,593 matches. The condition first-raised class and the field-type combined classes move to K17.
+- `sync`: Twelve locally originated corrections are pending and not handed off in [the open ledger](A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue), SPEC-2026-10-13-04 through -11 among them.
+- `cleanup`: The presence-polarity classification is written twice, in `omissionLeafPointers` and `ParallelFieldReference.reads`; R2 found them agreeing. Extract one owner as its own change when either changes.
 - `baseline`: K12 passed integrated build, compact evidence, all 112 new retained comparisons, one triggered HIGH review with its implicit-row key-read finding reproduced and fixed, population replay and final trust/hygiene. All 72,276 admitted comparisons match; the 217 rows lacking matching observations and six whole-row refusals are unchanged. [Selected range composition](implementation/date-range.md#cap-selected-date-range-composition) owns the new capability. The [C12 readback](consumer-probes/EXECUTE.md#c12--first-consumer-reliability-checkpoint) establishes bounded semantic transport, not independent-evaluator qualification.
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `carry-forward`: Keep the two remaining joined-guard kinds in [SG4](gaps/keystone.md#gap-sg4) for required K19 disposition; they are unresolved implementation gaps, not accepted exclusions.
@@ -137,7 +138,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 ### K14 — structural and generated findings
 
-- [ ] Close finding multiplicity, suppression and coordinates in [SG10](gaps/strings-and-messages.md#gap-sg10) and [SG7](gaps/strings-and-messages.md#gap-sg7).
+- [x] Close finding multiplicity, suppression and coordinates in [SG10](gaps/strings-and-messages.md#gap-sg10) and [SG7](gaps/strings-and-messages.md#gap-sg7).
 - Matrix: Enumeration declarations and withholding combinations; required/empty/default values; nonempty versus empty partial selection; repeated over-capacity present-null/empty fields; generated self-validation after computation; error/reference/fill-to-fix coordinates.
 - Done: observable code/type/severity/cardinality and full pointer identity are retained where promised. Independent notifications must not collapse merely because one code is absent. Localized catalog prose stays external.
 
@@ -156,7 +157,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 ### K17 — model declarations and static denominator
 
 - [ ] Resolve the residual ordinary declaration surface and classify the six H-model classes in [SG28](gaps/targets-and-derivation.md#gap-sg28), with [SG8](gaps/strings-and-messages.md#gap-sg8), [SG9](gaps/paths-and-groups.md#gap-sg9) and [SG21](gaps/numeric-and-temporal.md#gap-sg21).
-- Matrix: empty fixed groups, variant/default declarations, all catalogued field-type bodies, table-backed Enumeration provider metadata, hint/sort references, rule/computation name and notification controls.
+- Matrix: empty fixed groups, variant/default declarations, all catalogued field-type bodies, table-backed Enumeration provider metadata, hint/sort references, rule/computation name and notification controls; a condition's first-raised class beside a parse defect and the field type's combined classes beside a refused declaration (from K14).
 - Done: every named declaration class is implemented, already evidenced, or tied to a measured/source-defined host/service boundary. Four classes living outside H packages cannot be excluded by package name. No ordinary supported declaration is silently dropped by the reader.
 
 ### K18 — CustomCondition callback contract and calibration

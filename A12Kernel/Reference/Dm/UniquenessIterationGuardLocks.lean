@@ -98,6 +98,7 @@ example :
     let verdict := fun condition => verdictIn nestedModel "../Rows/N" condition
     verdict "FieldValuesNotUnique(Rows/N, GR1)" = refused ∧
     verdict "FieldValuesNotUnique(Rows/N, GR2)" = refused ∧
+    verdict "FieldValuesNotUnique(Rows/N, GR1/Deep*)" = refused ∧
     verdict "FieldValuesNotUnique(Rows/N, K/KD For \"k1\")" = refused ∧
     verdict "FieldValuesNotUnique(Rows/N, Rows/RG)" = admitted := by native_decide
 

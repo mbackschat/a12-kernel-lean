@@ -82,9 +82,9 @@ def scanRestricted (ranges : List LegalCharRange)
           else
             false
 
-/-- The units one rejected character reports. The Kernel judges every UTF-16 index on its own: a
-supplementary scalar is rejected at its high unit, since a model declaring a supplementary range does
-not build, and its low unit is judged alone, so a range spanning the low-surrogate block admits that
+/-- The units one rejected character reports, one per rejected UTF-16 index. A supplementary
+scalar's high unit is rejected even under a range numerically covering it, which mechanism is not
+settled, and its low unit is judged alone, so a range spanning the low-surrogate block admits that
 unit ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity),
 rows `e-bmp-range-supp`, `e-bmp-range-two-supp`, `e-az-supp` and `e-supp-range`). -/
 def rejectedUnits (ranges : List LegalCharRange) (character : Char) : List Nat :=
