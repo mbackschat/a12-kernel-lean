@@ -85,8 +85,10 @@ def referencesField (operand : ResolvedGroupListOperand model)
       | .ok declaration => source.groupPath.isPrefixOf declaration.groupPath
       | .error _ => false
 
+/-- A starred source is rechecked at the lexical group it was resolved from, which an error-field
+binding leaves in place; a fixed group is rechecked at the binding. -/
 def wellFormedBool (operand : ResolvedGroupListOperand model)
-    (rowGroup : GroupPath) : Bool :=
+    (rowGroup : GroupPath) (declaringGroup : GroupPath := rowGroup) : Bool :=
   match operand with
   | .indexed _ => true
   | .keyed source => source.isGroup
@@ -97,8 +99,8 @@ def wellFormedBool (operand : ResolvedGroupListOperand model)
       | .error _ => false
   | .group reference =>
       reference.fixedWellFormedBool model rowGroup
-  | .starredGroup source => source.wellFormedBool rowGroup
-  | .starredGroupPresence source => source.wellFormedBool rowGroup
+  | .starredGroup source => source.wellFormedBool declaringGroup
+  | .starredGroupPresence source => source.wellFormedBool declaringGroup
 
 private def overlapsStarred (path : GroupPath) :
     ResolvedGroupListOperand model → Bool
@@ -182,7 +184,7 @@ def firstOverlap? : List (ResolvedGroupListOperand model) →
 
 def wellFormedBool (operator : GroupFillQuantifier)
     (operands : List (ResolvedGroupListOperand model))
-    (rowGroup : GroupPath) : Bool :=
+    (rowGroup : GroupPath) (declaringGroup : GroupPath := rowGroup) : Bool :=
   !operands.isEmpty &&
     (if operator.requiresMultipleOperands then
       1 < operands.length &&
@@ -190,7 +192,7 @@ def wellFormedBool (operator : GroupFillQuantifier)
     else
       operands.length != 1 ||
         operands.any ResolvedGroupListOperand.isStarred) &&
-    operands.all (·.wellFormedBool rowGroup) &&
+    operands.all (·.wellFormedBool rowGroup declaringGroup) &&
     (firstOverlap? operands).isNone &&
     (!operands.any ResolvedGroupListOperand.isRootGroup ||
       (!operator.requiresMultipleOperands && operands.length == 1))
@@ -675,7 +677,7 @@ def wellFormedBool (rowGroup : GroupPath) (declaringGroup : GroupPath := rowGrou
   | .groupPresence _ reference =>
       reference.presenceWellFormedBool model rowGroup
   | .groupList operator operands =>
-      ResolvedGroupListOperands.wellFormedBool operator operands rowGroup
+      ResolvedGroupListOperands.wellFormedBool operator operands rowGroup declaringGroup
   | .keyedGroupPresence _ source => source.isGroup && !source.isStarredGroup &&
       source.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))
   | .indexedFieldPresence _ source => source.bindingScopes.all (·.isPrefixOf (model.repeatableScopeForGroupPath rowGroup))

@@ -192,4 +192,31 @@ private def boundCompute (operation : String) : Option (List (String × String))
 example : boundCompute "NumberOfFilledGroups(Rows*/Items*/Desc*)" =
     some [("Form/Parents/Target", "value 8"), ("Form/Parents[2]/Target", "value 4")] := by native_decide
 
+/-- A starred group list keeps the declaring group it was resolved from when the error field binds
+`Rows`, so the rule is admitted there as at the root; every computation generating its
+self-validation rule at its target's row takes this shape (the `*StarDirectComp` rows of the
+retained having-predicate-family capture). -/
+private def boundGroupList (target condition : String) : Option (List (String × String)) := do
+  let data ← (readDocument dm (input full)).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
+  let rule ← (checkRule dm .english {
+    name := "Listed", group := ["Form"], errorCode := "Listed", errorEntityRelPath := target, severity := "ERROR",
+    condition := condition }).toOption
+  pure ((← (runRule world document rule).toOption).map fun message =>
+    let observed := observe model message
+    (observed.pointer, observed.messageType))
+
+-- The bare `[Rows/N]` read forces the error-field binding; without it the lexical attempt admits the
+-- rule, so the first two rows guard nothing about the binding and only pin the shared values.
+example :
+    let fired := some [("Form/Rows/N", "VALUE_ERROR"), ("Form/Rows[2]/N", "VALUE_ERROR")]
+    boundGroupList "../Rows/N" "FieldFilled(Rows/N) And AtLeastOneGroupFilled(Rows*/Items*)" = fired ∧
+    boundGroupList "../Rows/N" "FieldFilled(Rows/N) And NoGroupFilled(Rows*/Items*)" = some [] ∧
+    boundGroupList "../Rows/N" "FieldFilled(Rows/N) And AtLeastOneGroupFilled(Rows*/Items*) And [Rows/N] != 5" =
+      fired ∧
+    boundGroupList "../Rows/N" "FieldFilled(Rows/N) And NoGroupFilled(Rows*/Items*) And [Rows/N] != 5" = some [] ∧
+    boundGroupList "../Anchor" "FieldFilled(Anchor) And AtLeastOneGroupFilled(Rows*/Items*)" =
+      some [("Form/Anchor", "VALUE_ERROR")] := by native_decide
+
 end A12Kernel.Dm.NestedGroupCountLocks
