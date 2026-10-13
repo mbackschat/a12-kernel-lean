@@ -103,6 +103,12 @@ structure CheckedDocument (model : FlatModel) where
   This view affects filter bounds, never immutable topology or cell placement (KF528). -/
   filterRows : Option (List RowAddr) := none
 
+/-- The cell finding a pre-check refusal stores: the two blank refusals share one cause. -/
+private def UniversalFormalRefusal.formalCause : UniversalFormalRefusal → FormalCause
+  | .valueTooLong => .valueTooLong
+  | .characterNotInCharset => .unsupportedCharacter
+  | .leadingBlank | .trailingBlank => .leadingOrTrailingSpace
+
 private def firstDuplicateRow? : List RowAddr → Option RowAddr
   | [] => none
   | row :: rest =>
@@ -336,14 +342,9 @@ private def checkPlacedCell
       checkAdmittedRawCell input.raw
     else if declaration.stringValueMode == .raw then
       (prepared.checkContext locale raw).read input.address.field
-    else if exceedsTechnicalLength input.stored then
-      { rawPresent := true, parsed := none, findings := [.valueTooLong] }
-    else if !model.legalCharset.accepts input.stored then
-      { rawPresent := true, parsed := none, findings := [.unsupportedCharacter] }
-    else if input.stored.startsWith " " || input.stored.endsWith " " then
-      { rawPresent := true, parsed := none, findings := [.leadingOrTrailingSpace] }
-    else
-      (prepared.checkContext locale raw).read input.address.field
+    else match universalFormalRefusal? model.legalCharset.accepts input.stored with
+      | some refusal => { rawPresent := true, parsed := none, findings := [refusal.formalCause] }
+      | none => (prepared.checkContext locale raw).read input.address.field
   let numericInput := match declaration.policy.kind with
     | .number _ =>
         if input.stored.isEmpty then none

@@ -82,6 +82,17 @@ inductive ValueFormalOutcome (TypeRefusal : Type) where
 def normalizeLinebreaks (value : String) : String :=
   value.replace "\r\n" "\n"
 
+/-- The pre-check's first failing step for a validated value, in the Kernel's order: the technical
+length, the charset, a leading blank, a trailing blank. The value-validation switch is the caller's,
+since it ends the pipeline before any of these. -/
+def universalFormalRefusal? (charsetAdmits : String → Bool) (value : String) :
+    Option UniversalFormalRefusal :=
+  if exceedsTechnicalLength value then some .valueTooLong
+  else if !charsetAdmits value then some .characterNotInCharset
+  else if value.startsWith " " then some .leadingBlank
+  else if value.endsWith " " then some .trailingBlank
+  else none
+
 /-- Run the universal pre-check and, when it passes, the declaration's own cascade.
 
 The `declarationStage` receives the value **as authored**, matching the Kernel: normalisation applies
@@ -93,17 +104,11 @@ def valueFormalCheck {TypeRefusal : Type}
     (value : String) : ValueFormalOutcome TypeRefusal :=
   if environment.skipValueValidation then
     .uncheckedPassthrough value
-  else if exceedsTechnicalLength value then
-    .refused .valueTooLong
-  else if !environment.charsetAdmits value then
-    .refused .characterNotInCharset
-  else if value.startsWith " " then
-    .refused .leadingBlank
-  else if value.endsWith " " then
-    .refused .trailingBlank
-  else
-    match declarationStage value with
-    | some refusal => .refusedByDeclaration refusal
-    | none => .admitted (normalizeLinebreaks value)
+  else match universalFormalRefusal? environment.charsetAdmits value with
+    | some refusal => .refused refusal
+    | none =>
+        match declarationStage value with
+        | some refusal => .refusedByDeclaration refusal
+        | none => .admitted (normalizeLinebreaks value)
 
 end A12Kernel
