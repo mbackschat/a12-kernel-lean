@@ -660,7 +660,8 @@ def wellFormedBool (rowGroup : GroupPath) (declaringGroup : GroupPath := rowGrou
       (model.repeatableScopeForGroupPath rowGroup).contains
   | .flat condition =>
       if condition.isScalarMembership || (match condition with
-          | .compare (.string ..) | .compare (.textFields ..) | .compare (.enumeration ..) => true
+          | .compare (.string ..) | .compare (.textFields ..) | .compare (.enumeration ..)
+          | .compare (.boolean ..) | .compare (.confirm ..) | .compare (.booleanFields ..) => true
           | _ => false) then
         let scope := model.repeatableScopeForGroupPath rowGroup
         condition.wellFormedInBool model scope && model.fields.all (fun field =>

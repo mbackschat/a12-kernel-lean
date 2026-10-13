@@ -150,6 +150,7 @@ import A12Kernel.Reference.Dm.BandedComputationLocks
 import A12Kernel.Reference.Dm.DistinctCountLocks
 import A12Kernel.Reference.Dm.DateLiteralLocks
 import A12Kernel.Reference.Dm.ConstructedDateValidityLocks
+import A12Kernel.Reference.Dm.BooleanComparisonLocks
 import A12Kernel.Elaboration.StringContext
 
 /-! # A12Kernel.ReplayMain — replay retained `kernelProbe` requests through Lean

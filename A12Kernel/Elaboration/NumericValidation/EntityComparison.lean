@@ -40,8 +40,6 @@ inductive EntityNumericComparisonElabError where
   | booleanSource (error : BooleanValueCountElabError)
   | productSource (error : NumericProductAggregateElabError)
   | fieldFillSource (error : FieldFillListElabError)
-  /-- A filled-group count, which its own carriers own. -/
-  | groupCount
   /-- A comparison reading no entity list, which the scalar carriers own. -/
   | readsNoList
   | incoherent
@@ -84,7 +82,16 @@ private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : Group
   | .numeric (.aggregate op source) =>
       (elaborateNumberEntitySource model rowGroup source
         (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup)).map (.aggregate op) |>.mapError .numberSource
-  | .numeric (.filledGroupCount _) => throw .groupCount
+  -- A count compared with any operand: a starred list takes the mixed count's checked operands and
+  -- a fixed-only list the scalar count, as the literal-threshold carriers already do.
+  | .numeric (.filledGroupCount operands) =>
+      match SurfaceGroupCountOperand.fixedOnly? operands with
+      | some _ =>
+          (resolveAddressedNumericValidationAtom model bindingGroup (.filledGroupCount operands) rowGroup).map
+            .ordinary |>.mapError .ordinary
+      | none =>
+          (checkMixedFilledGroupCountOperands model rowGroup operands bindingGroup).map
+            .filledGroupCountMixed |>.mapError .ordinary
   | .numeric atom => match SurfaceNumericAtom.ofEntityAtom? atom with
       | some ordinary =>
           (resolveAddressedNumericValidationAtom model bindingGroup ordinary rowGroup).map .ordinary
@@ -124,7 +131,7 @@ def elaborateEntityNumericComparison (model : FlatModel) (rowGroup : GroupPath)
   | .error error => .error (.ordinary (.resolve error))
   | .ok () => do
       -- A comparison reading no entity list belongs to the ordinary carriers, so this carrier never
-      -- answers in their place. A group count passes on to its own refusal, which names its carriers.
+      -- answers in their place.
       let readsList : SurfaceNumericComputationAtom → Bool
         | .numeric (.aggregate _ _) | .numeric (.filledGroupCount _) => true
         | .numeric _ => false

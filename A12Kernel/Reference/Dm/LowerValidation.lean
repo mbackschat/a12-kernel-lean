@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.LowerString
 import A12Kernel.Reference.Dm.LowerFlat
+import A12Kernel.Elaboration.BoundBooleanComparison
 import A12Kernel.Elaboration.BoundScalarMembership
 import A12Kernel.Elaboration.BoundTextComparison
 import A12Kernel.Reference.Dm.LowerScalarTemporal
@@ -15,7 +16,7 @@ connectives are kept and each leaf is offered, in a fixed order, to the carriers
 the flat leaf, scalar temporal and selected-token comparisons, repeatable field presence, group presence, the group-list quantifiers, the filled-group
 numeric comparison, scalar, then addressed, then over entity lists, the starred filled-group count
 against a literal, the field-fill quantifiers (filled-field counts use the shared numeric expression carrier),
-typed entity-valued or token-literal value lists, the three checked uniqueness overloads, constructed-Date validity, and named-type validity with the caller’s registry. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
+typed entity-valued or token-literal value lists, the three checked uniqueness overloads, constructed-Date validity, named-type validity with the caller’s registry, and last the Boolean and Confirm comparisons. The first carrier that admits a leaf answers. A leaf none admits is refused with its construct, which is the replay ledger's cluster
 key; when an elaborator itself refused, its error is kept as the detail.
 
 Only public elaboration entry points are reached. A construct with a semantic evaluator but no rule
@@ -421,7 +422,19 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
             | none => []
         | _, _ => []
     | _ => []
-  flat ++ boundText ++ range ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ scalarMembership ++ valueLists ++ uniqueness ++ validity ++ overlap
+  -- Tried last, so that a refusal of the pair or literal arm is the one reported for a comparison naming
+  -- a Boolean or Confirm field, instead of a numeric carrier's refusal of a kind it never owned.
+  let booleanComparison := match leaf, lowerFlat model rowGroup leaf with
+    | .compare .., some surface =>
+        if BoundBooleanComparison.readsBooleanField model rowGroup surface then [do
+          let condition ← elaborated "BooleanComparison"
+            (BoundBooleanComparison.elaborate model rowGroup bindingGroup surface)
+          if hModel : model.validate.isOk = true then
+            elaborated "BooleanComparison"
+              (CheckedValidationCondition.checkCore model bindingGroup (.leaf (.flat condition)) hModel rowGroup)
+          else refuse "BooleanComparison" "invalid model"] else []
+    | _, _ => []
+  flat ++ boundText ++ range ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ scalarMembership ++ valueLists ++ uniqueness ++ validity ++ overlap ++ booleanComparison
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

@@ -22,11 +22,15 @@ inductive CheckedScalarFieldComparison (model : FlatModel) where
   | boolean (source : CheckedBooleanFieldComparison model)
   | range (source : CheckedDateRangeSourceComparison model)
 
-def elaborateScalarFieldComparison (model : FlatModel) (declaringGroup targetGroup : GroupPath)
+/-- The kind arms of a field pair, once both reads passed. `read` is the caller's bound read and
+`rangeScope` the repeatable scope its DateRange operands are admitted at, so a computation guard and
+a rule share one kind arm. -/
+def elaborateScalarFieldComparisonWith (model : FlatModel)
+    (read : SurfaceFieldPath → Except ResolveError FlatFieldDecl) (rangeScope : List RepeatableLevel)
     (operator : SurfaceComparisonOp) (left right : SurfaceFieldPath) :
     Except ScalarFieldComparisonElabError (CheckedScalarFieldComparison model) := do
-  let left ← (model.resolveComputationFieldValueRead declaringGroup targetGroup left).mapError .read
-  let right ← (model.resolveComputationFieldValueRead declaringGroup targetGroup right).mapError .read
+  let left ← (read left).mapError .read
+  let right ← (read right).mapError .read
   let some equality := operator.toEquality? | throw (.admission .invalidTypeForComparison)
   match left.policy.kind, right.policy.kind with
   | .boolean, .boolean => pure (.boolean { left, right, operator := equality, confirm := false })
@@ -36,9 +40,14 @@ def elaborateScalarFieldComparison (model : FlatModel) (declaringGroup targetGro
   | .confirm, _ | _, .confirm => throw (.admission .invalidCompareToYes)
   | .boolean, _ | _, .boolean => throw (.admission .invalidCompareToYesNo)
   | .dateRange, .dateRange =>
-      .range <$> (elaborateDateRangeSourceComparisonIn model
-        (model.repeatableScopeForGroupPath targetGroup) left.id right.id equality).mapError .range
+      .range <$> (elaborateDateRangeSourceComparisonIn model rangeScope left.id right.id equality).mapError .range
   | _, _ => throw (.admission .invalidCompareToDateRange)
+
+def elaborateScalarFieldComparison (model : FlatModel) (declaringGroup targetGroup : GroupPath)
+    (operator : SurfaceComparisonOp) (left right : SurfaceFieldPath) :
+    Except ScalarFieldComparisonElabError (CheckedScalarFieldComparison model) :=
+  elaborateScalarFieldComparisonWith model (model.resolveComputationFieldValueRead declaringGroup targetGroup)
+    (model.repeatableScopeForGroupPath targetGroup) operator left right
 
 private def CheckedBooleanFieldComparison.operands (source : CheckedBooleanFieldComparison model) :
     FlatBooleanOperand × FlatBooleanOperand :=

@@ -13,6 +13,13 @@ def FlatModel.admitsField (model : FlatModel) (field : FlatField) : Bool :=
   | .ok declaration => declaration.repeatableScope.isEmpty && field.matchesDecl declaration
   | .error _ => false
 
+/-- Whether the model declares exactly this field and the reading scope binds every repeatable level
+it crosses; the empty scope is `admitsField`'s nonrepeatable case. -/
+def FlatModel.admitsFieldIn (model : FlatModel) (scope : List RepeatableLevel) (field : FlatField) : Bool :=
+  match model.lookupUniqueId field.id with
+  | .ok declaration => declaration.repetitionBoundBy scope && field.matchesDecl declaration
+  | .error _ => false
+
 /-- Whether one model declaration is exactly this field, at whatever repeatable scope. A construct
 reading the field asks separately whether its own reading scope binds that declaration's levels. -/
 def FlatModel.ownsField (model : FlatModel) (field : FlatField) : Bool :=
@@ -152,13 +159,17 @@ def FlatModel.dateRangeComparisonProfilesMatch (model : FlatModel)
     let right ← (certifyDateRangeInputField right).toOption
     pure (left.format.components == right.format.components)) : Option Bool).getD false
 
+/-- A Boolean identity pair admits two Boolean fields under either equality and two Confirm fields
+under inequality only; every other comparison names no such pair. -/
+def FlatComparison.booleanKindsAdmitted : FlatComparison → Bool
+  | .booleanFields op (.confirm _) (.confirm _) => op == .notEqual
+  | .booleanFields _ (.boolean _) (.boolean _) => true
+  | .booleanFields .. => false
+  | _ => true
+
 def FlatModel.admitsComparison (model : FlatModel) (comparison : FlatComparison) : Bool :=
   match comparison with
-  | .booleanFields op left right =>
-      (match left, right with
-        | .boolean _, .boolean _ => true
-        | .confirm _, .confirm _ => op == .notEqual
-        | _, _ => false) && comparison.fields.all model.admitsField
+  | .booleanFields .. => comparison.booleanKindsAdmitted && comparison.fields.all model.admitsField
   | .dateRange _ left right =>
       model.dateRangeComparisonProfilesMatch left right && comparison.fields.all model.admitsField
   | .stringLength _ field _ => model.admitsStringValueField field
@@ -207,12 +218,16 @@ def FlatModel.admitsNumberOperandListIn (model : FlatModel) (scope : List Repeat
         (FlatField.number operand).matchesDecl declaration
     | .error _ => false
 
-/-- Text comparisons retain their existing type/profile admission under an ordinary row binding; other comparison families keep their established admission. -/
+/-- Text comparisons retain their existing type/profile admission under an ordinary row binding, and
+Boolean and Confirm comparisons their kind pairing with each field read at the bound row; other
+comparison families keep their established admission. -/
 def FlatModel.admitsComparisonIn (model : FlatModel) (scope : List RepeatableLevel)
     (comparison : FlatComparison) : Bool :=
   if scope.isEmpty then model.admitsComparison comparison else
     match comparison with
     | .string .. | .textFields .. | .enumeration .. => model.admitsTextComparisonIn scope comparison
+    | .boolean .. | .confirm .. | .booleanFields .. =>
+        comparison.booleanKindsAdmitted && comparison.fields.all (model.admitsFieldIn scope)
     | _ => model.admitsComparison comparison
 
 def FlatConditionLeaf.wellFormedInBool (condition : FlatConditionLeaf) (model : FlatModel)

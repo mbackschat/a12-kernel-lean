@@ -71,13 +71,13 @@ example :
       ("incoherent", "entity") := by
   native_decide
 
-/- The filled-group count is refused, so a rule reaching it here falls through to the count's own
-carriers instead of acquiring a second representation. -/
+/- A filled-group count reuses the count's own atoms rather than acquiring a second representation,
+so an empty list meets the scalar count's own arity refusal. -/
 example :
     (match elaborateEntityNumericComparison ordinaryIterationModel ["Order", "Sections"]
         (.ordinary .greater) (.atom (.numeric (.filledGroupCount [])))
         (.literal { value := 0, authoredScale := 0 }) with
-      | .error .groupCount => true
+      | .error (.ordinary .groupCountNeedsMultipleOperands) => true
       | _ => false) = true := by
   native_decide
 

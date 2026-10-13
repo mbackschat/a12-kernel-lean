@@ -38,24 +38,12 @@ def elaborateRepeatableNumericComparison
   pure checked
 
 
-/-- Admit one filled-group count whose operand list carries at least one star, as a comparison
-against a literal threshold. This is the shape the Kernel admits and the scalar carrier refuses: a
-bare repeatable member is refused `MVK_NO_WILDCARD` upstream, so the star is mandatory rather than
-optional, and a starred member contributes its in-capacity instantiated row count
-([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-list-extent)).
-
-The fixed-only list keeps the established scalar atom untouched and is refused here, so widening
-this operator costs the already-measured form nothing; a lone star is admitted. The duplicate gate reaches every member: any
-containment refuses, and equal paths refuse unless both sides are starred, which the Kernel admits
-and counts once per position. `writtenGroup` is the error field's group, defaulting to the rule
-group; it places a walk refusal, a star's unstarred level below its first star included, as on the
-other validation carriers. -/
-def elaborateMixedFilledGroupCountComparison
-    (model : FlatModel) (rowGroup : GroupPath)
-    (operands : List SurfaceGroupCountOperand)
-    (op : NumericComparisonOp) (threshold : Int) (writtenGroup : GroupPath := rowGroup) :
-    Except NumericValidationElabError
-      (CheckedOrderedNumericComparison model) := do
+/-- The checked operands of a filled-group count whose list carries at least one star, in authored
+order. A fixed-only list keeps the scalar atom and is refused here; arity, overlap and rootness are
+judged as `elaborateMixedFilledGroupCountComparison` states. -/
+def checkMixedFilledGroupCountOperands (model : FlatModel) (rowGroup : GroupPath)
+    (operands : List SurfaceGroupCountOperand) (writtenGroup : GroupPath := rowGroup) :
+    Except NumericValidationElabError (List (CheckedGroupCountOperand model)) := do
   if (SurfaceGroupCountOperand.fixedOnly? operands).isSome then
     throw .unsupportedExpression
   let checked ← operands.mapM fun operand =>
@@ -86,27 +74,47 @@ def elaborateMixedFilledGroupCountComparison
   | none =>
       match checked.find? CheckedGroupCountOperand.isRoot with
       | some operand => throw (.rootGroupInGroupCount operand.groupPath)
-      | none =>
-          -- The list is not fixed-only, so some member is a star and its own certificate carries
-          -- the model proof. Searching for it rather than requiring one from the caller keeps the
-          -- entry point free of a hypothesis the surface cannot supply.
-          match CheckedGroupCountOperand.modelWellFormed? checked with
-          | none =>
-              throw NumericValidationElabError.unsupportedExpression
-          | some ⟨modelWellFormed⟩ =>
-              let core : OrderedNumericComparison model := {
-                op := .ordinary op
-                left := .atom (.filledGroupCountMixed checked)
-                right := .literal { value := (threshold : Rat), authoredScale := 0 }
-                suppressExactScaleWarning := false }
-              if hCore : core.wellFormedInBool rowGroup .sameGroupAddressed = true then
-                pure {
-                  rowGroup
-                  operandScope := .sameGroupAddressed
-                  core
-                  modelWellFormed
-                  wellFormed := hCore }
-              else
-                throw NumericValidationElabError.incoherentCore
+      | none => pure checked
+
+/-- Admit one filled-group count whose operand list carries at least one star, as a comparison
+against a literal threshold. This is the shape the Kernel admits and the scalar carrier refuses: a
+bare repeatable member is refused `MVK_NO_WILDCARD` upstream, so the star is mandatory rather than
+optional, and a starred member contributes its in-capacity instantiated row count
+([checkpoint](../../../docs/sources/group-list-and-capacity-probes.md#src-group-count-list-extent)).
+
+The fixed-only list keeps the established scalar atom untouched and is refused here, so widening
+this operator costs the already-measured form nothing; a lone star is admitted. The duplicate gate reaches every member: any
+containment refuses, and equal paths refuse unless both sides are starred, which the Kernel admits
+and counts once per position. `writtenGroup` is the error field's group, defaulting to the rule
+group; it places a walk refusal, a star's unstarred level below its first star included, as on the
+other validation carriers. -/
+def elaborateMixedFilledGroupCountComparison
+    (model : FlatModel) (rowGroup : GroupPath)
+    (operands : List SurfaceGroupCountOperand)
+    (op : NumericComparisonOp) (threshold : Int) (writtenGroup : GroupPath := rowGroup) :
+    Except NumericValidationElabError
+      (CheckedOrderedNumericComparison model) := do
+  let checked ← checkMixedFilledGroupCountOperands model rowGroup operands writtenGroup
+  -- The list is not fixed-only, so some member is a star and its own certificate carries
+  -- the model proof. Searching for it rather than requiring one from the caller keeps the
+  -- entry point free of a hypothesis the surface cannot supply.
+  match CheckedGroupCountOperand.modelWellFormed? checked with
+  | none =>
+      throw NumericValidationElabError.unsupportedExpression
+  | some ⟨modelWellFormed⟩ =>
+      let core : OrderedNumericComparison model := {
+        op := .ordinary op
+        left := .atom (.filledGroupCountMixed checked)
+        right := .literal { value := (threshold : Rat), authoredScale := 0 }
+        suppressExactScaleWarning := false }
+      if hCore : core.wellFormedInBool rowGroup .sameGroupAddressed = true then
+        pure {
+          rowGroup
+          operandScope := .sameGroupAddressed
+          core
+          modelWellFormed
+          wellFormed := hCore }
+      else
+        throw NumericValidationElabError.incoherentCore
 
 end A12Kernel

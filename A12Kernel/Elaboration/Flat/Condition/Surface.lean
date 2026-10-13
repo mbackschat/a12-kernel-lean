@@ -28,6 +28,20 @@ def elaborateEnumerationCore (declaration : FlatFieldDecl)
   | kind, _ =>
       throw (.literalKindMismatch declaration.path .enumeration kind.surfaceKind)
 
+/-- Share the Boolean and Confirm literal arms between fixed and row-bound rule comparisons. A
+Confirm field admits only the literal `True`; `False` draws the Confirm literal refusal. -/
+def elaborateBooleanLiteralCore (declaration : FlatFieldDecl)
+    (op : SurfaceComparisonOp) (literal : SurfaceLiteral) : Except ElabError FlatCondition := do
+  let equality ← match op.toEquality? with
+    | some equality => pure equality
+    | none => throw (.unsupportedOperator op)
+  match declaration.policy.kind, literal with
+  | .boolean, .boolean expected =>
+      pure (.compare (.boolean equality { id := declaration.id } expected))
+  | .confirm, .boolean true => pure (.compare (.confirm equality { id := declaration.id }))
+  | .confirm, .boolean false => throw (.illegalConfirmLiteral declaration.path)
+  | kind, literal => throw (.literalKindMismatch declaration.path kind.surfaceKind literal.kind)
+
 /-- Preserve the shared direct-field profile gate for fixed and row-bound text comparisons. -/
 def finishTextFieldComparison (op : SurfaceComparisonOp)
     (leftPath rightPath : List String)
@@ -559,27 +573,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
                 { id := declaration.id, info } expected))
           | literal =>
               throw (.literalKindMismatch declaration.path .number literal.kind)
-      | .boolean => do
-          let equality ← match op.toEquality? with
-            | some equality => pure equality
-            | none => throw (.unsupportedOperator op)
-          match literal with
-          | .boolean expected =>
-              pure (.compare (.boolean equality { id := declaration.id } expected))
-          | literal =>
-              throw (.literalKindMismatch declaration.path .boolean literal.kind)
-      | .confirm => do
-          let equality ← match op.toEquality? with
-            | some equality => pure equality
-            | none => throw (.unsupportedOperator op)
-          match literal with
-          | .boolean expected =>
-              if expected then
-                pure (.compare (.confirm equality { id := declaration.id }))
-              else
-                throw (.illegalConfirmLiteral declaration.path)
-          | literal =>
-              throw (.literalKindMismatch declaration.path .confirm literal.kind)
+      | .boolean | .confirm => elaborateBooleanLiteralCore declaration op literal
       | .string => do
           let field ← requireStringValueField declaration
           let equality ← match op.toEquality? with
