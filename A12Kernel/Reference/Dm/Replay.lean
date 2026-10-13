@@ -112,8 +112,13 @@ private def blankInputs : ValidationMessageInputs where
   formPointer := fun _ _ => ""
 
 /-- Each ordinary firing after the request locale's template renders at its row, so a rendering fault
-reports as the Kernel reports it. A rule without a template in that locale, or with one this theory
-refuses, keeps its firings, as does a firing whose rendering fails structurally. -/
+reports as the Kernel reports it. The fault reaches the generated rule's whole-loop handler, as a
+reached condition failure does in `evalOrdinaryRepeatableFull`: earlier firings stay, later rows report
+nothing, and the finding points at the iterator's first error address. Peer KF561 measured the fault
+once, at the first row, in a rule iterating the keyed group (a12-dmkits `7b98fae62`); a fault first
+reached at a later row is that handler's account, not a separate measurement. A rule without a template
+in that locale, or with one this theory refuses, keeps its firings, as does a firing whose rendering
+fails structurally. -/
 def renderFirings (prepared : PreparedFlatStringContext model compilePattern) (language : Language)
     (locale : String) (document : CheckedDocument model) (definition : DmRule)
     (rule : CheckedResolvedValidationRule model) (fired : List (Env × FlatRuleMessage)) :
@@ -122,12 +127,22 @@ def renderFirings (prepared : PreparedFlatStringContext model compilePattern) (l
       (elaborateValidationMessageTemplate model language.messageKeywordProfile (.rule rule)) with
   | some (.ok template) =>
       let references := document.applyFullIndexPreliminary.toOption.bind (·.messageReferenceInputs.toOption)
-      fired.map fun (environment, message) =>
-        let context : ValidationMessageRowContext model compilePattern := {
-          environment, document := document.source.toDocument, prepared, locale, references }
-        match message.afterRendering (template.toRenderPlanAt context blankInputs) with
-        | .ok rendered => (environment, rendered)
-        | .error _ => (environment, message)
+      let failureAddress? : Option MessagePointer := do
+        let (environments, _) ← (rule.fullRowsAndRepetitionResults document).toOption
+        let path ← (rule.errorPathAt (← environments.head?)).toOption
+        (rule.core.emitAt path (.fired .value)).message?.map (·.errorAddress)
+      let rec render : List (Env × FlatRuleMessage) → List (Env × FlatRuleMessage)
+        | [] => []
+        | (environment, message) :: remaining =>
+            let context : ValidationMessageRowContext model compilePattern := {
+              environment, document := document.source.toDocument, prepared, locale, references }
+            let plan := template.toRenderPlanAt context blankInputs
+            match message.afterRendering plan, plan with
+            | .ok faulted, .error .unresolvedSelection =>
+                [(environment, { faulted with errorAddress := failureAddress?.getD faulted.errorAddress })]
+            | .ok rendered, _ => (environment, rendered) :: render remaining
+            | .error _, _ => (environment, message) :: render remaining
+      render fired
   | _ => fired
 
 /-- Project every fired message's reference channels at the environment it fired at, with the

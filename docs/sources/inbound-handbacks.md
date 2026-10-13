@@ -621,3 +621,40 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `source`: [KF558](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf558), committed at the revision above, which also corrects the peer's distinct-only laws instrument.
 - `local-confirmation`: rows `m-two-locales-no-text`, `m-three-locales-one-text` and `m-two-locales-two-empty` of the [R1 supplement](model-structure-and-declaration-probes.md#src-sort-list-capacity) reproduce the per-locale `RULE_HAS_NO_ERRORTEXT` at the measurement pin; [report locks](../../A12Kernel/Conformance/DeclarationReport.lean) assert them.
 - `routing`: inbound, so no outbound ledger entry. The xml-prefix, value-validation-off String and unspecified-type multiplicities have no local implementation and join [K17](../PLAN.md#k17--model-declarations-and-static-denominator)'s matrix.
+
+<a id="src-inbound-2026-10-13"></a>
+## Reviewed October 13 peer response
+
+- `source`: Owner-delivered `a12-kernel-lean-spec-corrections-2026-10-13.md`, SHA-256 `5005f7da4fffc207bb251398e7c7a507f388ce39c5109aa29b63d9d59520f5a8`. It answers `SPEC-2026-10-12-01` and `SPEC-2026-10-13-01` to `-12` as committed at `a4f769ba`; `SPEC-2026-10-13-13` postdates it.
+- `revision`: Reviewed a12-dmkits `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`; every checkpoint the table names resolves and is its ancestor, and every named lock class exists there. Files were read with `git show` at this revision.
+- `review`: Source-reading review of the named Kernel-differential and `checkConsistency` assertions against each acceptance condition, plus local reader probes for the rendering rows. No peer suites, Kernel calls or local replay were run for this receipt; peer lane and performance figures are peer-reported.
+- `receipt`: [The reconciliation ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue) owns the per-entry dispositions.
+
+| SPEC-2026 suffix | Checkpoint | Committed lock class | Status |
+|---|---|---|---|
+| 10-12-01 | `43c4b1302` | `SelectedErrorReanchorEligibilityDiffTest` | accepted |
+| 10-13-01 | `609eb41c3` | `FirstFilledDateTargetRenderingDiffTest` | accepted |
+| 10-13-02 | `4b5e73812` | `CheckedInputOrderDiffTest` | accepted, corrected |
+| 10-13-03 | `82bb2d977` | `CheckerMembershipReadOrderAgreementTest` | accepted |
+| 10-13-04 | `09acf9995` | `CheckerEnumDeclarationStreamAgreementTest` | accepted |
+| 10-13-05 | `796e060e4` | `OverRepetitionOccurrenceScopeDiffTest` | accepted |
+| 10-13-06 | `c223b0f4c` | `RequiredEmptyReadDiffTest` | accepted |
+| 10-13-07 | `399c728ef` | `UnmatchedKeyAggregatePolarityDiffTest` | accepted |
+| 10-13-08 | `f3677bea0` | `CheckerDeclarationWithholdingAgreementTest` | accepted |
+| 10-13-09 | `83d726617` | `RepetitionNotUniqueSiblingReferenceDiffTest` | accepted |
+| 10-13-10 | `f01f1fc58` | `UniquenessGuardSlotLawsTest` | accepted |
+| 10-13-11 | `058750e73` | `CheckerEnumDeclarationStreamAgreementTest` | accepted, corrected |
+| 10-13-12 | `7b98fae62` | `MessageParameterRowDiffTest` | accepted, extended |
+
+- `correction-a`: A computed String target meets its type's maximum, 99,999 units when none is declared, so 100,000 computed units are ERRORED while a Custom target stores them ([KF547](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf547), `CheckedInputOrderDiffTest`). Our entry's claim that the technical guard is absent stands; the default maximum was missing. Lean now checks computed String targets under it ([conformance](../../A12Kernel/Conformance/StringComputation.lean)); [spec/09 §4](../../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape).
+- `correction-b`: Every sort entry beyond the third draws its own capacity notification; the peer's five-entry row draws two, which our four-entry rows could not separate ([conformance](../../A12Kernel/Conformance/IndexAndSortDeclaration.lean)); [spec/03](../../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique).
+- `correction-c`: Enumeration charset notifications collapse per value and unit, so two values sharing a high surrogate draw two. The Lean notification already carried the value; only the spec prose generalized our one-value row ([lock](../../A12Kernel/Reference/Dm/EnumerationDeclarationNotificationLocks.lean)); [spec/06](../../spec/06-strings-and-enumerations.md#b2-categories-via--).
+- `extension-d`: Any `supportedCharacters` entry holding a surrogate unit leaves the model unbuilt, a supplementary singleton included; [spec/06](../../spec/06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching) already states it and the charset elaborator refuses it.
+- `extension-g-h`: An unmatched key faults a value parameter only, which [spec/11](../../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation) already stated at `4097253d`. In a rule iterating the keyed group the fault reports once, at the first row (`KEYED_MISS_ROW`, a12-dmkits `7b98fae62`); the replay now ends the row loop at the fault through the existing runtime-failure handler ([lock](../../A12Kernel/Reference/Dm/MessageRowRenderingLocks.lean)). A fault first reached at a later row follows that handler's account and is not separately measured. The whitespace-spelling rows render tight through the local reader.
+- `selected-key`: A formally invalid or partially irrelevant field-valued key selects no row ([KF549](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf549)); the local selected-error lookup already reads the authored-validation cell. [spec/08 §4.3](../../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
+- `member-ranges`: [KF556](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf556) and [KF559](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf559) (`CheckerLengthLimitAgreementTest`, `CheckerDigitMemberRangeAgreementTest`, a12-dmkits `b20417768`, `97bbeaaf4`) give length and digit-count ranges, a fractional count below `-1` as signed, and an integer count above 15 as a codeless verdict rather than a build failure, correcting [spec/04](../../spec/04-numbers-and-decimals.md#4-other-numeric-constraints)'s earlier tier. [spec/01 §1](../../spec/01-data-model.md#1-model--a-typed-tree) owns the account. The model reader does not judge these ranges; [K17](../PLAN.md#k17--model-declarations-and-static-denominator) carries them.
+- `corroborating`: [KF553](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf553) (partial validation runs a per-row rule on every covered declared slot, the content gate overridden) and [KF555](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf555) (a value outside `supportedCharacters` is formally invalid on every read) agree with [spec/10 §5](../../spec/10-validation-and-polarity.md#5-full-vs-partial-validation) and [spec/06](../../spec/06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching); no local replay was run for them. The peer's TIME-kind first-filled rows extend [KF211](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf211)'s declared-format rule.
+- `name-length`: A 61-character nested group name draws the path-shape notification at the group and its field, with no separate length notification; no local clause states otherwise, and K17 carries it.
+- `peer-residuals`: The peer reports Enumeration block 2 under its own code after block 5, omits block 7, declines a doubly declared index name for the display-label class, and keeps the [IF376](../../../a12-rulekit/docs/INTERPRETER-FINDINGS.md#if376) first-admitted pointer policy. These are compatibility choices of the peer, not contrary Kernel evidence.
+- `hypotheses`: The letter's mechanism accounts (high-unit refusal, metamodel judging of out-of-range members, the unmatched-key throw, index-scan order) are unmeasured and were not adopted.
+- `sync`: Inbound corrections to clauses this project owns; no outbound ledger entry is created.

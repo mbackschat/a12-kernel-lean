@@ -51,7 +51,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 <a id="cap-string-target-policy"></a>
 #### String target policy
 
-- `boundary`: Declaration-owned line-break, pattern, minimum/maximum length, attempted payload, and source-relative delta. `StringFieldError.errorCode` preserves the ordinary String check's four first-failure identities before `toBaseFormalCause` collapses them to checked-cell invalidity.
+- `boundary`: Declaration-owned line-break, pattern, minimum/maximum length with the runtime format's 99,999-unit default maximum, attempted payload, and source-relative delta. The default is peer-measured on computed targets ([inbound](../sources/inbound-handbacks.md#src-inbound-2026-10-13)) and locked in [conformance](../../A12Kernel/Conformance/StringComputation.lean). `StringFieldError.errorCode` preserves the ordinary String check's four first-failure identities before `toBaseFormalCause` collapses them to checked-cell invalidity.
 - `owner`: [`StringFieldPolicy.lean`](../../A12Kernel/Semantics/StringFieldPolicy.lean), [`StringComputation.lean`](../../A12Kernel/Semantics/StringComputation.lean)
 - `assurance`: E/P closed for admitted target; root subset C
 - `assurance`: The diagnostic projection is executable and proved injective over `StringFieldError`, with first-failure and successful-input separators. The [pattern-invalid checkpoint](../sources/evaluation-and-application-routes.md#src-pattern-invalid-string-cell) supplies pattern/minimum/maximum observations and the source basis for all four codes. Newline correspondence remains external evidence pending; no wider Enumeration, Custom, message-rendering, or public-process claim follows from this projection.

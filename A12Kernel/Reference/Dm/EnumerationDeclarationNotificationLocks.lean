@@ -116,10 +116,13 @@ private def restrictedCharsetRows : List (String × Row) := [
   ("lowercase-default-charset", { values := ["AA", "pq"], expected := [] }),
   ("bad-supplementary-character", { values := ["AA", "p😀"], restricted := true, expected := [invalidCharacter, invalidCharacter, invalidCharacter, supplementary] }),
   -- A range spanning the low-surrogate block admits a supplementary scalar's low unit, and two scalars
-  -- sharing a high unit collapse to one class: rows of the retained capture
+  -- sharing a high unit in one value collapse to one class: rows of the retained capture
   -- `declaration-report-r1-supplement-2026-10-13`, which starts from this capture's model.
   ("e-bmp-range-supp", { values := ["😀", "BB"], restricted := true, charset := [" -\uFFFD"], expected := [invalidCharacter, supplementary] }),
   ("e-bmp-range-two-supp", { values := ["😀😁", "BB"], restricted := true, charset := [" -\uFFFD"], expected := [invalidCharacter, supplementary] }),
+  -- Two values sharing that high unit keep one class each, since the collapse is per value and unit:
+  -- peer `CheckerEnumDeclarationStreamAgreementTest` with U+1F6D2 and U+1F6CD, a12-dmkits `058750e73`.
+  ("peer-two-values-shared-high-unit", { values := ["🛒", "🛍"], restricted := true, charset := [" -\uFFFD"], expected := [invalidCharacter, invalidCharacter, supplementary] }),
   ("e-az-supp", { values := ["A😀", "BB"], restricted := true, expected := [invalidCharacter, invalidCharacter, supplementary] })]
 
 example : disagreeing restrictedCharsetRows = [] := by native_decide

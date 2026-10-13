@@ -248,7 +248,7 @@ theorem acceptedStringTargetWithPattern_preserves_attempt
     (policy : StringFieldPolicy) (wholeValueMatches? : Option (String → Bool))
     (attempted : StoredString) (checked : Option String)
     (accepted :
-      policy.checkTextWithPattern wholeValueMatches? attempted.text = .ok checked) :
+      policy.withRuntimeMaximum.checkTextWithPattern wholeValueMatches? attempted.text = .ok checked) :
     policy.checkTargetWithPattern wholeValueMatches? (.produced attempted) =
       .accepted attempted := by
   simp [StringFieldPolicy.checkTargetWithPattern, accepted]
@@ -256,7 +256,7 @@ theorem acceptedStringTargetWithPattern_preserves_attempt
 /-- Successful no-pattern target checking is the exact specialization retained by the resolved computation boundary. -/
 theorem acceptedStringTarget_preserves_attempt (policy : StringFieldPolicy)
     (attempted : StoredString) (checked : Option String)
-    (accepted : policy.checkText attempted.text = .ok checked) :
+    (accepted : policy.withRuntimeMaximum.checkText attempted.text = .ok checked) :
     policy.checkTarget (.produced attempted) = .accepted attempted := by
   apply acceptedStringTargetWithPattern_preserves_attempt
   simpa [StringFieldPolicy.checkText] using accepted
@@ -266,7 +266,7 @@ theorem rejectedStringTargetWithPattern_preserves_attempt
     (policy : StringFieldPolicy) (wholeValueMatches? : Option (String → Bool))
     (attempted : StoredString) (cause : StringFieldError)
     (rejected :
-      policy.checkTextWithPattern wholeValueMatches? attempted.text = .error cause) :
+      policy.withRuntimeMaximum.checkTextWithPattern wholeValueMatches? attempted.text = .error cause) :
     policy.checkTargetWithPattern wholeValueMatches? (.produced attempted) =
       .errored attempted (.ordinary cause) := by
   simp [StringFieldPolicy.checkTargetWithPattern, rejected]
@@ -274,7 +274,7 @@ theorem rejectedStringTargetWithPattern_preserves_attempt
 /-- The no-pattern target failure law remains an exact specialization. -/
 theorem rejectedStringTarget_preserves_attempt (policy : StringFieldPolicy)
     (attempted : StoredString) (cause : StringFieldError)
-    (rejected : policy.checkText attempted.text = .error cause) :
+    (rejected : policy.withRuntimeMaximum.checkText attempted.text = .error cause) :
     policy.checkTarget (.produced attempted) = .errored attempted (.ordinary cause) := by
   apply rejectedStringTargetWithPattern_preserves_attempt
   simpa [StringFieldPolicy.checkText] using rejected
@@ -306,7 +306,7 @@ theorem poison_bypassesStringTargetPolicy (policy : StringFieldPolicy)
 theorem acceptedStringTarget_preserves_store_delta
     (policy : StringFieldPolicy) (attempted : StoredString)
     (checked : Option String)
-    (accepted : policy.checkText attempted.text = .ok checked)
+    (accepted : policy.withRuntimeMaximum.checkText attempted.text = .ok checked)
     (prior : PriorStringTarget) :
     (policy.checkTarget (.produced attempted)).projectDelta prior =
       (StringStore.produced attempted).projectDelta prior := by

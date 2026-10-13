@@ -128,16 +128,17 @@ def keepFirstName (kept : List (String × NominatedTarget)) (entry : String × N
 name's once in written order, then the list's two judgements. A list rather than a first match,
 because the Kernel judges every name, a fourth entry's included: two disqualified sort fields draw two
 classes, while a field named twice draws its own class once. The duplicate class reads only the first
-three entries, so a name repeated only at the fourth draws none, and a list longer than three draws
-one codeless capacity notification ([declaration-report](../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14)
-and [sort-list](../../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity) rows). A repeated
-name is the written one, measured on identical spellings. -/
+three entries, so a name repeated only at the fourth draws none, and every entry beyond the third
+draws one codeless capacity notification ([declaration-report](../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14)
+and [sort-list](../../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity) rows; peer
+`CheckerDeclarationWithholdingAgreementTest` measured a five-entry list drawing two, a12-dmkits
+`6bdfe70f4`). A repeated name is the written one, measured on identical spellings. -/
 def rowFieldDeclarationRefusals (declarations : RowFieldDeclarations) : List RowFieldRefusal :=
   let distinct := declarations.sort.foldl keepFirstName []
   let leading := (declarations.sort.take 3).map (·.1)
   (declarations.index.bind (rowFieldRefusal .indexField)).toList ++
     distinct.filterMap (rowFieldRefusal .sortField ·.2) ++
     (if leading.Nodup then [] else [.sortFieldDuplicate]) ++
-    if 3 < declarations.sort.length then [.sortListCapacity] else []
+    List.replicate (declarations.sort.length - 3) .sortListCapacity
 
 end A12Kernel

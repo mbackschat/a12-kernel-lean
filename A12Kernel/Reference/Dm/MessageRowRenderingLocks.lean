@@ -2,6 +2,7 @@ import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Elaboration.ValidationMessageRendering
 import A12Kernel.Reference.Dm.GeneratedComputationRule
+import A12Kernel.Reference.Dm.Replay
 
 /-! # Reader-to-render locks for the row a message parameter reads
 
@@ -217,6 +218,27 @@ example : rendered (rule ["Kp"] "RNum02" "../Anchor" "FieldFilled(Anchor) And Fi
     rendered (rule ["Kp"] "RNest" "../Anchor" "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")")
         "n=[$/Kp/Rows/Sub/SubV For \"k1\"$] b=[$/Kp/Rows/Base.value For \"k1\"$]" =
       some (.inr ["n=[SubV] b=[b1]"]) := by native_decide
+
+/-- Each finding of a rule iterating `Rows` after `renderFirings`, as its origin, its value-error
+flag and its error coordinates. Rows `k0` and `k1` both fire; the value parameter's key fault at the
+first ends the row loop, as peer KF561's `KeyedMissRow` measured on both strategies (a12-dmkits
+`7b98fae62`), while the name twin keeps both rows' omission findings. -/
+private def loopFindings (template : String) :
+    Option (List (RuleMessageOrigin × Bool × List MessageRepetitionCoordinate)) := do
+  let input ← (readDocument dm (documentJson false)).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let definition := { rule ["Kp", "Rows"] "RMissRow" "../Base"
+    "FieldFilled(Base) And FieldNotFilled(/Kp/Rows/Base For \"k9\")" with messages := [("en_US", template)] }
+  let .ordinary checkedRule ← (checkValidationRule dm .english definition).toOption | none
+  let fired ← (runRuleAt world checked checkedRule).toOption
+  pure ((renderFirings prepared .english "en_US" checked definition checkedRule fired).map fun (_, message) =>
+    (message.origin, message.messageType == .value, message.errorAddress.coordinates))
+
+example : loopFindings "mr=[$/Kp/Rows/Base.value For \"k9\"$]" =
+      some [(.runtimeFailure, true, [.concrete 1])] ∧
+    loopFindings "mr=[$/Kp/Rows/Base For \"k9\"$]" =
+      some [(.condition, false, [.concrete 1]), (.condition, false, [.concrete 2])] := by native_decide
 
 /-- A computation's message is its generated rule's: it fires only on the filled row whose holding
 alternative disagrees, the second, and renders that row's cells and coordinate

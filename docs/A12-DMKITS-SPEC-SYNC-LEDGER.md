@@ -37,137 +37,163 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Fourteen corrections are `pending` below and have not been handed off. The 24 terminal receipts retired on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). [The consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own their reviewed revisions, evidence routes and limits.
+Thirteen entries are `accepted` at the [October 13 response](sources/inbound-handbacks.md#src-inbound-2026-10-13); `SPEC-2026-10-13-13` is `pending` and has not been handed off. The 24 terminal receipts retired on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). [The consolidated provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and [the profile clarification](sources/custom-field-probes.md#src-custom-legacy-profile) own their reviewed revisions, evidence routes and limits.
 
 <a id="spec-2026-10-12-01"></a>
 ### SPEC-2026-10-12-01 — selected error addresses use the unique non-iterating key
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [selected validation-message references](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages).
 - `delta`: State the eligibility and address-replacement rule for a unique authored semantic-index key on the error field, separately from payload availability and ordinary iteration.
 - `basis`: Kernel 30.8.1 at `cb66e51fa7ab90b650698f861bf670754e2e1e66`; [source checkpoint](sources/message-cache-probes.md#src-selected-error-reanchoring). The peer's selected-error controls at `17b3eb0840e2e5dccf76135eb91fef04512ef3e8` establish full/partial invalid-key and duplicate-key outcomes, not every eligibility contrast. No new Kernel capture is claimed.
 - `acceptance`: Reconcile the canonical account and existing selected-error implementation with the source-owned unique-key/non-iterating gate. Check repeated same-key versus competing-key occurrences, ordinary iteration at the selected level, parent-local association, unavailable payload and absent association. Preserve the explicit duplicate-cache host-order boundary; do not adopt first-admitted row order as the Kernel oracle.
-- `introducing revision`: `83008cf9`. Local K05 closure is recorded in [the plan](PLAN.md#active-unit); peer reconciliation remains pending.
+- `introducing revision`: `83008cf9`. Local K05 closure is recorded in [the plan](PLAN.md#active-unit).
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: The peer reads a field-valued key as a checked value and pins same-key, competing-key, iterating, invalid-payload, invalid-key and irrelevant-key rows; the IF376 duplicate policy stays a peer compatibility choice. `SelectedErrorReanchorEligibilityDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-01"></a>
 ### SPEC-2026-10-13-01 — Date first-filled targets render independently of source spelling
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [typed selection](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape) and the Date target rule in the same clause.
 - `delta`: Remove the false refusal of crossed ISO/dotted Date formats. First-filled sources retain the list's exact-profile gate; target compatibility uses the temporal comparison gate, and the target renders the selected Date, including component omission.
 - `basis`: Kernel 30.8.1, [target-profile checkpoint](sources/repeatable-temporal-computation-probes.md#src-temporal-target-profiles-k11). Both strategies agree on fixed/repeated dotted-to-ISO, full-to-year and year-month-to-year results, fallback, reached poison and independent rows. The same checkpoint retains compact-format execution, yearless Base-Year completion, checked-source admission and source-rejection versus target-rejection controls. DateTime-to-Date refusals remain distinct.
 - `acceptance`: Reconcile the canonical first-filled assignment account and any source/target profile-identity restriction. Preserve the exact-profile source-list gate, source-order short circuit, target-owned formatting and rejection, source-format partial completion, and year-presence/Base-Year comparison rule. Existing sufficient evidence can discharge the peer work; no duplicate capture is requested.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: Already satisfied, with crossed-format, reduced-precision, yearless Base-Year and DateTime-refusal locks; the peer's TIME-kind rows extend KF211. `FirstFilledDateTargetRenderingDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-02"></a>
 ### SPEC-2026-10-13-02 — full-input checking precedes registered validation and optional conversion
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [String input checks](../spec/06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching) and [custom conversion](../spec/06-strings-and-enumerations.md#a3-custom-field-type-validation).
 - `delta`: State raw-String bypass and the technical-length → charset → ASCII-edge-space → basic-format sequence. The technical guard counts authored UTF-16 units before normalization, refuses above 99,999 with `wertZuLang` and is absent from computed-target checking. Replace unresolved custom length/charset/conversion ordering with the source-owned invocation contract, preserving the distinction between ordinary measured validation and opt-in codec source characterization.
 - `basis`: [Ordered ingestion and domain checkpoint](sources/domain-ingestion-probes.md#src-checked-string-ingestion-k13), pinned Kernel 30.8.1 source and both-strategy artifacts. Registered repeated Custom and mixed Custom/String distinct/uniqueness use the once-normalized accepted value. The converter selects the two-argument result's converted text without consuming its optional error message. The [technical-length checkpoint](sources/domain-ingestion-probes.md#src-technical-length-k13) is source-grounded with no retained capture.
 - `acceptance`: Reconcile the canonical input ordering and custom invocation contract. Preserve raw bypass, the technical guard's UTF-16 unit and authored-text measurement, single first input failure, original validator input, declared bounds in callback context, default conversion-off behavior, opt-in direction and normalized conversion input. Reuse sufficient existing tests; no arbitrary validator or codec implementation is requested.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: Gate order, raw bypass and the authored-text count reconcile; corrected here: a computed String target meets its type's 99,999-unit default maximum, folded into spec/09 and the Lean target check in the same change. `CheckedInputOrderDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-03"></a>
 ### SPEC-2026-10-13-03 — computation binding errors retain authored operand order
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Computation membership admission](../spec/06-strings-and-enumerations.md#b5-computation-preconditions-preserve-reached-errors-and-traversal-order).
 - `delta`: Check each operand's computation binding before reading the next operand, retaining that first read error through Number-to-token fallback. Whole-list duplicate and kind checks remain later.
 - `basis`: [Thirteen retained static cases](sources/domain-ingestion-probes.md#src-membership-read-order-k13) with admitted Number/String controls, missing-name/unbound field and group twins, Custom operands, a competing duplicate and an isolated mixed-kind refusal. All actual-model Lean readbacks agree.
 - `acceptance`: Reconcile operand-local binding with authored read order and fallback projection. An earlier unbound operand reports `MVK_NO_WILDCARD`; an earlier missing name reports `MVK_INVALID_ENTITY`. Preserve existing intra-operand gates and whole-list checks; no exhaustive diagnostic permutation is claimed.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: Already satisfied on 23 own-domain rows. `CheckerMembershipReadOrderAgreementTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-04"></a>
 ### SPEC-2026-10-13-04 — Enumeration declaration notifications are collected in six ordered blocks
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Category declaration pairing](../spec/06-strings-and-enumerations.md#b2-categories-via--).
 - `delta`: Add restricted-charset invalid-character notifications per rejected UTF-16 unit, the field-level codeless supplementary-plane notification, all shortfalls before all surpluses, value/category and value duplicates, the codeless repeated-value notification, supplementary-value skips and identical-notification collapse.
 - `basis`: [Retained 37-row consistency capture](sources/model-structure-and-declaration-probes.md#src-enumeration-declaration-notifications), real Kernel 30.8.1 through structured authoring at clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`; Lean reader locks replay every row.
 - `acceptance`: Reconcile declaration checking with the six-block order and per-unit/per-value multiplicity, keeping the two codeless classes distinct from coded ones. Do not claim an order inside the arity or category-duplicate blocks, supplementary scalars in category names or tokens, or table-backed Enumerations.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: The peer's checker follows blocks 1 and 3 to 6 in order and multiplicity; block 2's code and the unpublished block 7 are peer residuals, not contrary evidence. `CheckerEnumDeclarationStreamAgreementTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-05"></a>
 ### SPEC-2026-10-13-05 — over-repetition findings are per written entity, partial-insensitive and operand-inventory scoped
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Over-repetition row](../spec/02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state) and [computation formal input scope](../spec/09-computations.md#33-what-compute-reports).
 - `delta`: Count written nonrepeatable group instances and present null/empty cells; judge each entity on its own ancestry rather than by coordinate-prefix containment; report the full set for every nonempty partial selection and none for an empty one; scope the computation channel to uncomputed operand cells plus ancestor instances of operand and computed fields.
 - `basis`: [Occurrence-scope capture](sources/over-repetition-probes.md#src-over-repetition-occurrence-scope), eleven rows on both Kernel 30.8.1 strategies at clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`; Kernel source `CheckCommand.formalePruefung`, `ValidationCommand.processPartlyValidation` and `CalculationCommand.getEntityFullNamesNotRemovedFromData`. The validation-side occurrence and partial results corroborate the peer's `OverRepetitionOccurrenceDiffTest`; the sibling-coordinate twin, operand-path nonrepeatable group and computed-target ancestry are new measurements.
 - `acceptance`: Reconcile the structural emitter with per-entity own-ancestry checking, including nonrepeatable group instances, and the computation channel with the computed-target ancestry rule. Preserve position-selected codes, absorption and the empty-selection boundary; no emission order is claimed.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: Already satisfied on five documents and four selections. `OverRepetitionOccurrenceScopeDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-06"></a>
 ### SPEC-2026-10-13-06 — generated requiredness iterates instantiated in-capacity rows under partial relevance
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [The required property](../spec/03-empty-and-required.md#part-b--4-the-required-property).
 - `delta`: State that the generated `mandatoryField` rule runs per instantiated in-capacity row, never on uninstantiated or over-capacity rows, and under partial validation only where the field is selected, with its group gate reading only selected content.
 - `basis`: [Generated-requiredness capture](sources/model-structure-and-declaration-probes.md#src-generated-requiredness-k14), seventeen rows on both Kernel 30.8.1 strategies at clean a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`; authored-rule replay agrees on every row only when required-empty cells read as formally unavailable.
 - `acceptance`: Reconcile generated required-field evaluation with the row domain, capacity exclusion and partial relevance, and confirm that the full-validation authored-rule view carries required findings for parent-relative and repeatable requiredness. Preserve the base-view-first ordering and the computation asymmetry.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: The peer's interpreter now reads a required-empty cell as unavailable through direct, starred, filtered and correlated reads; the computation asymmetry holds. Filtered extrema, distinct counts and sums of products remain unmeasured. `RequiredEmptyReadDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-07"></a>
 ### SPEC-2026-10-13-07 — an unmatched selection keeps a starred aggregate fillable
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Keyed lookup](../spec/08-paths-and-references.md#41-what-a-semantic-index-read-yields).
 - `delta`: A key selecting no row leaves `Sum` over a starred list below the key at the both-directional all-empty identity, so a fired comparison over it is OMISSION rather than VALUE.
 - `basis`: [Generated self-validation replay](sources/model-structure-and-declaration-probes.md#src-generated-self-validation-k14): six retained Kernel 30.8.1 rows of the nested-semantic-index, selected-message-references and index-text-normalization captures type the generated `Sum(… For Key)` mismatch OMISSION for a key matching no row, an empty key and a key differing by a lone carriage return.
 - `acceptance`: Reconcile the selected aggregate's missingness with the value-list absence already recorded. Do not claim `MinValue`, `MaxValue`, `NumberOfDifferentValues` or partial validation, which share the read but are unmeasured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: Already satisfied on all three engines. `UnmatchedKeyAggregatePolarityDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-08"></a>
 ### SPEC-2026-10-13-08 — a failed error target withholds the error text beside standing slot classes, and every sort nomination reports
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [Error-target gate](../spec/07-repetition-and-iteration.md), [refused DSL member](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation) and [index and sort nominations](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique).
 - `delta`: A rule whose target names nothing reports its target pair beside `MVK_RULE_NAME_INVALID`, `MVK_ERROR_CODE_MISSING` and `MVK_ERROR_MESSAGE_MISSING`, while the condition's class and every error-text class, `RULE_HAS_NO_ERRORTEXT` included, are withheld. Two different sort fields with value validation off draw the sort class twice, an unresolved nomination does not stop the later ones, and `MVK_SORT_FIELD_DUPLICATE` is reported once beside the repeated field's own class.
 - `basis`: [Declaration-report capture](sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14), 49 `model check` rows. The sort rows contradict peer [KF345](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf345)'s row recording that two different opaque sort fields draw the class once; the target rows settle what KF339 leaves open beyond the DSL members.
 - `acceptance`: Reconcile KF339's open withholding reach and KF345's two-opaque-fields row with these rows. Do not claim the notification order, which interleaves members, or duplicate multiplicity for two different repeated names, which the three-entry sort capacity prevents.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: Withholding already satisfied; the peer corrected KF345 to one sort class per distinct name. `CheckerDeclarationWithholdingAgreementTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-09"></a>
 ### SPEC-2026-10-13-09 — a non-firing RepetitionNotUnique leaf contributes no message reference
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [RepetitionNotUnique references](../spec/07-repetition-and-iteration.md).
 - `delta`: When a sibling branch fires the message and the RNU leaf does not, the message's `referenced` set holds none of the RNU keys, including the current row's.
 - `basis`: [Population replay](sources/model-structure-and-declaration-probes.md#src-generated-self-validation-k14): the retained validation-iteration-domain `nested-2x2` and `nested-2x3` rows `missing-child` and `sibling-fills-missing-child` refer to the sibling's `N` alone, while the firing rows of the same captures carry the full duplicate cluster.
 - `acceptance`: Reconcile the RNU reference account with these rows. Do not claim an RNU leaf that fires OMISSION beside a VALUE sibling that wins, which these rows do not test.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: Already satisfied on all three engines. `RepetitionNotUniqueSiblingReferenceDiffTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-10"></a>
 ### SPEC-2026-10-13-10 — uniqueness guard slots for selections, groups and the temporal overload
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [iteration guard slots](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands).
 - `delta`: The uniqueness guard's slot count extends from direct fields and wildcards to semantic-index selections and group operands: each field they read weighs the declared limits of its repeatable levels below the selected row or group, a starred group's own level included, identically across the Number, String and temporal overloads.
 - `basis`: [Uniqueness iteration-guard checkpoint](sources/having-filter-probes.md#src-uniqueness-iteration-guard): 44 model-check rows at a12-dmkits `a4091041`, Kernel 30.8.1.
 - `acceptance`: Reconcile the guard account with these rows, including the nested repeatable rows `GDEEP1`, `GDEEP2`, `GDEEPSTAR`, `SELDEEP` and `ROWDEEP`. Do not claim a selection whose own scope holds the iterated level, which no row tests.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: Already satisfied, the amended nested rows included; the peer's checker leaves the gate to the Kernel. `UniquenessGuardSlotLawsTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-11"></a>
 ### SPEC-2026-10-13-11 — sort-list capacity, declaration-report presence without a locale and per-unit charset multiplicity
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [index and sort nominations](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique), [Enumeration declaration blocks](../spec/06-strings-and-enumerations.md#b2-categories-via--), [rule error-text locales](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation) and the [error-target gate](../spec/07-repetition-and-iteration.md).
 - `delta`: A sort list longer than three draws one codeless capacity notice whatever its later entries name, `MVK_SORT_FIELD_DUPLICATE` judges the first three entries only, and each distinct name reports its own class once. With no declared locale a rule draws `MVK_ERROR_MESSAGE_MISSING` and no `RULE_HAS_NO_ERRORTEXT`. A group target is an ordinary declared entity, and an absent target's pair stands beside `MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING`. Under a restricted charset a supplementary scalar's high surrogate is rejected even inside a covering range while its low surrogate is judged alone, so the scalar counts once under a range covering its low surrogate, replacing the unconditional count of two.
 - `basis`: [Supplement checkpoint](sources/model-structure-and-declaration-probes.md#src-sort-list-capacity), 21 `model check` rows at a12-dmkits `a4091041`, Kernel 30.8.1.
 - `acceptance`: Reconcile the sort, presence, target and Enumeration character accounts with these rows. Do not claim why the high surrogate is rejected, a declared-but-unknown target, a lenient parse, a lone-surrogate range or a supplementary singleton atom, none of which was measured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: Locale-less presence, group target and same-locale rows confirmed; corrected here: every sort entry beyond the third draws its own capacity notification, and charset notifications collapse per value and unit, so two values sharing a high unit draw two. Any surrogate-bearing charset entry leaves the model unbuilt, as spec/06 states. Spec and Lean corrected in the same change. `CheckerEnumDeclarationStreamAgreementTest`, `CheckerDeclarationWithholdingAgreementTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-12"></a>
 ### SPEC-2026-10-13-12 — keyed message membership by spelling, the rows message parameters render, the computation carrier and the reached index-message classes
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [rule error-text parameters](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation).
 - `delta`: A keyed group read admits keyed parameters on all its fields; in the name position a keyed group draws `MVK_INDEX_FOR_ERROR_TEXT_INVALID`. Literal keys match by spelling, a field key must be the condition's own, and the key gate precedes the category gate. A keyed read passes the value suffix's asterisk gate for its group's own fields and index field, not a deeper group's, and is no unkeyed membership. Value and category parameters render the row they read: enclosing, parallel partner, key-selected by value, or an unbound level's first row. A key selecting no row makes a value parameter's finding a runtime-failure value error with empty references and `ERROR_DURING_DATA_CHECK_EVAL`'s text; a name renders, a category renders empty. A computation's message is its generated rule's. `INVALID_INDEX_FIELD_REP` and `ENUM_XML_TO_DISPLAY` are reached; the scan follows full-name order, and `index(...).value` renders the stored token.
 - `basis`: [computation checkpoint](sources/message-parameter-rendering-probes.md#src-computation-message-members-k15), 26 static previews and one runtime document; [static checkpoint](sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15), 113 `rule check` requests; and [runtime checkpoint](sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15), two requests over two documents under both strategies; all at a12-dmkits `a4091041`, Kernel 30.8.1.
 - `acceptance`: Reconcile keyed membership, key identity, rendered rows and the two index classes with these rows. Do not claim a witness for `INVALID_INDEX_FIELD_INCONSISTENT_TYPES` or `INVALID_INDEX_FIELD_COMPOSED_INDEX`, a rendering for a missing parallel partner, a keyed category of a deeper field, or keyed rendering on a nested indexed group, none of which was measured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`.
+- `disposition`: Membership, rendered rows, carrier and index classes confirmed; extended here: an unmatched key's fault ends a row-iterating rule's loop at its first row, now replayed through the runtime-failure handler. `MessageParameterRowDiffTest`, `KeyedMessageMembershipAgreementTest`, `ComputationMessageCarrierAgreementTest`; [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-13).
 
 <a id="spec-2026-10-13-13"></a>
 ### SPEC-2026-10-13-13 — quoted Number conversion, kept leading-zero text and the full formal cascade with its message keys

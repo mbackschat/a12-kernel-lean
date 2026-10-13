@@ -223,6 +223,19 @@ example : minFive.checkTarget (.produced storedAbcde) = .accepted storedAbcde :=
 example : minThree.checkTarget (.produced storedAbcd) = .accepted storedAbcd := by
   native_decide
 
+private def storedUnits? (count : Nat) : Option StoredString :=
+  let text := String.ofList (List.replicate count 'a')
+  if nonempty : text ≠ "" then some ⟨text, nonempty⟩ else none
+
+/- A declaration without a maximum still carries the runtime format's 99,999 units, which a computed
+target meets though it meets no input gate: 99,999 units are stored and 100,000 are ERRORED with the
+attempt kept (peer KF547 `CheckedInputOrderDiffTest`, a12-dmkits `4b5e73812`). -/
+example : (storedUnits? 99999).map (({} : StringFieldPolicy).checkTarget <| .produced ·) =
+      (storedUnits? 99999).map .accepted ∧
+    (storedUnits? 100000).map (({} : StringFieldPolicy).checkTarget <| .produced ·) =
+      (storedUnits? 100000).map (.errored · .tooLong) := by
+  native_decide
+
 /- Computed leading and trailing blanks survive the reduced target check when the length bound admits them. -/
 example : maxFive.checkTarget (.produced storedSpacedAbc) = .accepted storedSpacedAbc := by
   native_decide

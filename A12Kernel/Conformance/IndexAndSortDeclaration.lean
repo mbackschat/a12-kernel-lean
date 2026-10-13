@@ -92,6 +92,16 @@ example : sortRows.all (fun (_, index, sort, expected) =>
     actual.length == expected.length && expected.all fun code => actual.count code == expected.count code) = true := by
   native_decide
 
+/- Every entry beyond the third draws its own capacity notification: the peer's five-entry list, two
+   plain names around two opaque ones with the first repeated last, draws two besides the opaque pair's
+   classes (`CheckerDeclarationWithholdingAgreementTest`, a12-dmkits `6bdfe70f4`). Four entries, where
+   "once" and "per entry" agree, cannot separate the two accounts. -/
+example :
+    (rowFieldDeclarationRefusals { index := none, sort :=
+        ["K", "V", "NVV", "NVV2", "K"].map fun name => (name, nominated name) }).map (·.kernelCode?) =
+      [some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", none, none] := by
+  native_decide
+
 /- Six distinct keys across two roles and the list, beside the codeless capacity class. The index and sort
    spellings differ by more than a prefix, so a consumer deriving one from the other by substitution gets a
    key the Kernel never emits. -/

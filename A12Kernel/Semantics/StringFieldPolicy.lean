@@ -60,6 +60,16 @@ def checkNormalizedLength (policy : StringFieldPolicy) (normalized : String) :
             .ok (some normalized)
       | none => .ok (some normalized)
 
+/-- The maximum a String declaration's runtime format carries when it declares none, in UTF-16 units
+(peer KF547, both strategies, a12-dmkits `4b5e73812`). It equals the technical cap only by value:
+stored input never reaches it, because that cap refuses longer text first, but a computed target, which
+meets no input gate, does, and a Custom target does not carry it. -/
+def defaultMaximumLength : Nat := 99999
+
+/-- The policy with the runtime format's maximum made explicit. -/
+def withRuntimeMaximum (policy : StringFieldPolicy) : StringFieldPolicy :=
+  { policy with maxLength := some (policy.maxLength.getD defaultMaximumLength) }
+
 /-- Check one non-custom, non-Enumeration String exactly once. Empty bypasses every format clause; forbidden CR/LF is detected on raw text; admitted text is normalized; an effective declared pattern is matched against that complete normalized value; and only then are UTF-16 min/max bounds measured. -/
 def checkTextWithPattern (policy : StringFieldPolicy)
     (wholeValueMatches? : Option (String → Bool)) (text : String) :

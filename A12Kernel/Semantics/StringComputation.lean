@@ -241,14 +241,14 @@ inductive StringTargetOutcome where
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
 
-/-- Apply the declaration-owned basic String clauses and optional prepared matcher to a root write attempt. Checking may normalize CRLF for pattern and length measurement, but an accepted or rejected result retains the exact attempted payload. No-value and poison bypass target validation unchanged. -/
+/-- Apply the declaration-owned basic String clauses and optional prepared matcher to a root write attempt, under the runtime format's maximum, which a declaration without one still carries. Checking may normalize CRLF for pattern and length measurement, but an accepted or rejected result retains the exact attempted payload. No-value and poison bypass target validation unchanged. -/
 def StringFieldPolicy.checkTargetWithPattern (policy : StringFieldPolicy)
     (wholeValueMatches? : Option (String → Bool)) :
     StringStore → StringTargetOutcome
   | .noValue => .noValue
   | .poison cause => .poison cause
   | .produced attempted =>
-      match policy.checkTextWithPattern wholeValueMatches? attempted.text with
+      match policy.withRuntimeMaximum.checkTextWithPattern wholeValueMatches? attempted.text with
       | .ok _ => .accepted attempted
       | .error cause => .errored attempted (.ordinary cause)
 

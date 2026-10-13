@@ -296,8 +296,10 @@ example : baselineFirst (letters 99997 ++ "😀") .unsupportedCharacter := by
 example : FormalCause.valueTooLong.fixedFormalErrorCode? = some "wertZuLang" := by
   native_decide
 
-/- The reduced computed-target check has no technical cap: an overlength concatenation of two
-admitted values is applied to an unconstrained String target. -/
+/- The reduced computed-target check has no technical cap, but a String target without a declared
+maximum still carries its runtime format's 99,999 units: an overlength concatenation of two admitted
+values is ERRORED with its attempt kept (peer KF547 `CheckedInputOrderDiffTest`, a12-dmkits
+`4b5e73812`). -/
 example :
     (do
       let dm ← (readModel ingestionSource).toOption
@@ -311,7 +313,7 @@ example :
         errorCodesToSuppress := [] }
       let results ← (runModelComputations { dm with computations := [concatenation] }
         .english ingestionWorld prepared checked).toOption
-      pure (results.map (·.outcome))) = some [s!"value {letters 100000}"] := by
+      pure (results.map (·.outcome))) = some [s!"errored {letters 100000}"] := by
   native_decide
 
 private inductive Domain where
