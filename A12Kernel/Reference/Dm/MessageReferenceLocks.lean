@@ -173,4 +173,28 @@ example : (do
       "/Form[1]/Parent[1]/Children[0]/Parts[0]/K", "Form/Anchor", "Form/Other/N"] := by
   native_decide
 
+private def temporalRowsModel : FlatModel :=
+  { fields := [
+      { id := 1, name := "A", groupPath := ["G", "Rows"], repeatableScope := [10]
+        policy := { kind := .temporal .date .fullDate }, temporalTargetPolicy := some { format := "yyyy-MM-dd" } },
+      { id := 2, name := "Keep", groupPath := ["G", "Rows"], repeatableScope := [10]
+        policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 3, name := "MaxFiltered", groupPath := ["G"]
+        policy := { kind := .temporal .date .fullDate }, temporalTargetPolicy := some { format := "yyyy-MM-dd" } }]
+    repeatableGroups := [{ level := 10, path := ["G", "Rows"], repeatability := some 3 }] }
+
+/-- A filtered temporal star refers to its selected column and to every filter read, wildcarded at
+the reopened level like the Number and token carriers. Kernel oracle: the retained
+temporal-rowset-computations capture's `MaxFilteredComp` messages. -/
+example : (do
+    let dm : DmModel := { flat := temporalRowsModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    let rule ← (checkRule dm .english {
+      name := "MaxFilteredComp", group := ["G"], errorCode := "MaxFilteredComp", errorEntityRelPath := "../MaxFiltered",
+      severity := "ERROR"
+      condition := "FieldFilled(MaxFiltered) And [MaxFiltered] != MaxValue(Rows*/A Having [Rows/Keep] > 0)" }).toOption
+    let pointers ← (rule.condition.core.referencePointers []).toOption
+    pure ((pointers.map (renderPointer temporalRowsModel)).mergeSort (compare · · != .gt))) =
+    some ["/G[1]/Rows[0]/A", "/G[1]/Rows[0]/Keep", "G/MaxFiltered"] := by
+  native_decide
+
 end A12Kernel.Dm.MessageReferenceLocks

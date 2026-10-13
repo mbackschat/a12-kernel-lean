@@ -32,6 +32,9 @@ inductive ReferenceProjectionError where
 structure MessageReferenceInputs where
   cache : MessageIndexContext
   keyAt : CellAddr → Option SemanticIndexKey
+  /-- The rule's `RepetitionNotUnique` result at a row, from the same evaluation that fired the
+  message. Its references are the firing's duplicate cluster, so without it they are refused. -/
+  repetitionAt : Option (Env → Option RepetitionNotUniqueResult) := none
 
 /-- Build structural-reference inputs from one full-validation preliminary view. Unsettled host ordering fails at the affected lookup instead of refusing unrelated pointers. -/
 def CheckedIndexPreliminary.messageReferenceInputs (preliminary : CheckedIndexPreliminary model) :
@@ -409,6 +412,23 @@ def CheckedTokenValueCountSource.referencePointers
   (·.flatten) <$> checked.source.operands.mapM
     (fun operand => operand.referencePointers environment inputs)
 
+/-- A firing `RepetitionNotUnique` leaf refers to every key at every row of its duplicate cluster;
+a leaf that did not fire refers to nothing, even when a sibling branch fires the message
+([spec/07](../../../spec/07-repetition-and-iteration.md); `missing-child` row of the
+validation-iteration-domain capture). `counts` selects the firings whose keys count. -/
+def CheckedRepetitionNotUniqueSource.firingPointers (source : CheckedRepetitionNotUniqueSource model)
+    (environment : Env) (inputs : Option MessageReferenceInputs) (counts : Polarity → Bool) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  match inputs.bind (·.repetitionAt) with
+  | none => .error .unclassifiedLeaf
+  | some resultAt => match resultAt environment with
+    | some { verdict := .fired polarity, cluster, .. } =>
+        if counts polarity then
+          (·.flatten) <$> cluster.mapM fun row =>
+            (source.firstKey :: source.restKeys).mapM (concreteFieldPointer ·.source.declaration row)
+        else pure []
+    | _ => pure []
+
 /-- Temporal predicates and counts share the certified slot's references. Filter coordinates
 remain refused until temporal-carrier observations establish their projection. -/
 def CheckedTemporalUniquenessOperand.referencePointers (environment : Env)
@@ -481,10 +501,8 @@ private def resolvedFieldPointers {model : FlatModel} (field : FieldId) (environ
   let declaration ← (model.lookupUniqueId field).mapError (fun _ => .unclassifiedOperand)
   pure [← concreteFieldPointer declaration environment]
 
-private def entityShapePointers (shape : CheckedFieldEntityShape model)
-    (environment : Env) (inputs : Option MessageReferenceInputs) :
-    Except ReferenceProjectionError (List MessagePointer) :=
-  (·.flatten) <$> shape.operands.mapM fun
+private def entityOperandPointers (environment : Env) (inputs : Option MessageReferenceInputs) :
+    ResolvedFieldEntityOperand model → Except ReferenceProjectionError (List MessagePointer)
     | .field declaration _ => (concreteFieldPointer declaration environment).map ([·])
     | .indexed source => source.referencePointers environment inputs
     | .keyed source => source.referencePointers environment inputs
@@ -493,6 +511,11 @@ private def entityShapePointers (shape : CheckedFieldEntityShape model)
     | .group reference => fixedGroupPointers model reference environment
     | .starredGroup source => starredGroupPointers model source.group.path source.path.firstStar environment
     | .starredGroupPresence source => starredGroupPointers model source.groupPath source.path.firstStar environment
+
+private def entityShapePointers (shape : CheckedFieldEntityShape model)
+    (environment : Env) (inputs : Option MessageReferenceInputs) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  (·.flatten) <$> shape.operands.mapM (entityOperandPointers environment inputs)
 
 /-- Overlap retains the checked filter beside its exact star; rebuilding it from the authored shape
 would lose the caller binding settled by the Having caller capture. -/
@@ -509,11 +532,17 @@ private def overlapOperandPointers (operand : CheckedSingularDateRangesOverlapOp
       let filters ← filter.toList.mapM (path.filterReferencePointers environment)
       pure (selected :: filters.flatten)
 
+/-- A certified filtered star projects its selected pointer and every filter read, as the Number and
+token carriers do. A filtered star admitted without a certified filter has no checked reads to
+project and stays refused. -/
 private def temporalEntityPointers (source : CheckedTemporalExtremumOperands model)
     (environment : Env) (inputs : Option MessageReferenceInputs) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  if source.filters.any Option.isSome then .error .filteredStarOperand else
-    entityShapePointers source.shape environment inputs
+  (·.flatten) <$> (source.shape.operands.zip source.filters).mapM fun
+    | (.starHaving star _ _, some filter) => do
+        pure ((← starFieldPointer star environment) :: (← star.filterReferencePointers environment filter))
+    | (.starHaving .., none) => .error .filteredStarOperand
+    | (operand, _) => entityOperandPointers environment inputs operand
 
 private def temporalExpressionPointers (source : ScalarTemporalExpression model)
     (environment : Env) (inputs : Option MessageReferenceInputs) :
@@ -679,9 +708,22 @@ def ValidationConditionLeaf.referencePointers (environment : Env)
       pure (scalar ++ operands.flatten)
   | .iteratedDateRange condition =>
       match condition.overlapShape? with
-      | some shape =>
-          if !condition.filters.isEmpty then .error .filteredStarOperand else
-            entityShapePointers shape environment inputs
+      | some shape => do
+          -- The yearless overlaps keep each certified filter on their own operand, not the shape.
+          let filtered : List (CheckedStarFieldPath model × CorrelatedHaving) :=
+            (match condition with
+              | .yearlessOverlap source => source.operands
+              | .yearlessPluralOverlap source => source.operands
+              | _ => []).filterMap fun (operand : CheckedYearlessDateRangeOverlapOperand model) =>
+                match operand with
+                | .star path _ (some filter) => some (path, filter)
+                | _ => none
+          if filtered.length != condition.filters.length then throw .filteredStarOperand
+          let selected ← shape.operands.mapM fun
+            | .starHaving star _ _ => (starFieldPointer star environment).map ([·])
+            | operand => entityOperandPointers environment inputs operand
+          let filters ← filtered.mapM fun (star, filter) => star.filterReferencePointers environment filter
+          pure (selected.flatten ++ filters.flatten)
       | none => do
           let direct ← condition.operandDeclarations.mapM fun declaration => concreteFieldPointer declaration environment
           let selected ← condition.constructionEndpoints.filterMap (fun endpoint => endpoint.selection?.map (·.val)) |>.mapM fun selection =>
@@ -717,7 +759,7 @@ def ValidationConditionLeaf.referencePointers (environment : Env)
           (·.flatten) <$> source.fields.operands.mapM
             (fun operand => operand.referencePointers environment inputs)
   | .fieldFill _ source => source.referencePointers environment inputs
-  | _ => .error .unclassifiedLeaf
+  | .repetitionNotUnique source => source.firingPointers environment inputs (fun _ => true)
 
 private def treePointers (environment : Env) (inputs : Option MessageReferenceInputs) :
     ValidationCondition model →

@@ -555,6 +555,20 @@ private def evalOrdinaryRepeatableAt
   | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid) =>
       pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
 
+/-- Full validation's row domain and the `RepetitionNotUnique` results its rows are evaluated
+against. A fired message's references read the duplicate cluster from the same results. -/
+def fullRowsAndRepetitionResults
+    (rule : CheckedResolvedValidationRule model)
+    (checked : CheckedDocument model) :
+    Except OrdinaryRepeatableRuleEvaluationError (List Env × List RepetitionNotUniqueResult) := do
+  let scope ← match rule.iterationScope with
+    | some scope => pure scope
+    | none => throw .missingIterationScope
+  let environments ←
+    checked.fullValidationRowEnvironments scope
+      |>.mapError toOrdinaryRowEnvironmentError
+  pure (environments, ← rule.repetitionNotUniqueResults checked .full environments true)
+
 /-- Execute a checked ordinary nonparallel repeatable rule over the validation row domain. The root dispatcher and declared-capacity/occupied-prefix iterator own the domain (iteration grid, 2026-10-04). Repeated operands use the validation-only addressed view; the error address defaults its unbound suffix without reading or materializing that target. A runtime-aborted pair retains the failing environment, while its message points to the iterator’s first error address. -/
 def evalOrdinaryRepeatableFull
     (rule : CheckedResolvedValidationRule model)
@@ -564,14 +578,7 @@ def evalOrdinaryRepeatableFull
       (List (Env × FlatRuleOutcome)) := do
   if !rule.condition.core.supportsOrdinaryIteration then
     throw .unsupportedCondition
-  let scope ← match rule.iterationScope with
-    | some scope => pure scope
-    | none => throw .missingIterationScope
-  let environments ←
-    checked.fullValidationRowEnvironments scope
-      |>.mapError toOrdinaryRowEnvironmentError
-  let repetitionNotUniqueResults ←
-    rule.repetitionNotUniqueResults checked .full environments true
+  let (environments, repetitionNotUniqueResults) ← rule.fullRowsAndRepetitionResults checked
   -- The generated rule handler surrounds the whole loop (CodeGenRuleDefinition.st), so a
   -- reached runtime failure keeps earlier messages and terminates before later row reads.
   -- Its error address uses EbenenIterator.get(), which restarts at the first environment.

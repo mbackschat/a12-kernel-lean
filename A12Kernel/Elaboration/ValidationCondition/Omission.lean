@@ -116,6 +116,8 @@ private def omissionLeafPointers (leaf : ValidationConditionLeaf model)
           throw .filteredStarOperand
         else pure []
       else leaf.referencePointers environment inputs
+  -- A VALUE firing's cluster can repair nothing by filling, so only an OMISSION firing counts.
+  | .repetitionNotUnique source => source.firingPointers environment inputs (· == .omission)
   | _ => leaf.referencePointers environment inputs
 
 /-- The omission-responsible subset at one firing environment. Both connectives contribute every

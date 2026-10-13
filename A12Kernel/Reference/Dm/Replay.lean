@@ -91,8 +91,10 @@ private def sortedSet (pointers : List String) : List String :=
 message-cache inputs of full validation for selected operands, and compare them as sets. -/
 def replayReferences (model : FlatModel) (world : World) (document : CheckedDocument model)
     (rule : CheckedResolvedValidationRule model) (kernel : List ObservedReferences) : RuleStatus :=
+  let repetitionAt := (rule.fullRowsAndRepetitionResults document).toOption.map
+    fun (_, results) environment => results.find? (·.row == environment)
   let inputs := (document.applyFullIndexPreliminary.toOption.bind fun preliminary =>
-    preliminary.messageReferenceInputs.toOption)
+    preliminary.messageReferenceInputs.toOption).map ({ · with repetitionAt })
   match runRuleAt world document rule with
   | .error detail => .runFault detail
   | .ok fired =>

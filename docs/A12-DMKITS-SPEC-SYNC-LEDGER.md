@@ -128,3 +128,13 @@ Four corrections are `pending` below and have not been handed off. The 24 termin
 - `basis`: [Declaration-report capture](sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14), 49 `model check` rows. The sort rows contradict peer [KF345](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf345)'s row recording that two different opaque sort fields draw the class once; the target rows settle what KF339 leaves open beyond the DSL members.
 - `acceptance`: Reconcile KF339's open withholding reach and KF345's two-opaque-fields row with these rows. Do not claim the notification order, which interleaves members, or duplicate multiplicity for two different repeated names, which the three-entry sort capacity prevents.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-13-09"></a>
+### SPEC-2026-10-13-09 — a non-firing RepetitionNotUnique leaf contributes no message reference
+
+- `status`: pending
+- `canonical`: [RepetitionNotUnique references](../spec/07-repetition-and-iteration.md).
+- `delta`: When a sibling branch fires the message and the RNU leaf does not, the message's `referenced` set holds none of the RNU keys, including the current row's.
+- `basis`: [Population replay](sources/model-structure-and-declaration-probes.md#src-generated-self-validation-k14): the retained validation-iteration-domain `nested-2x2` and `nested-2x3` rows `missing-child` and `sibling-fills-missing-child` refer to the sibling's `N` alone, while the firing rows of the same captures carry the full duplicate cluster.
+- `acceptance`: Reconcile the RNU reference account with these rows. Do not claim an RNU leaf that fires OMISSION beside a VALUE sibling that wins, which these rows do not test.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

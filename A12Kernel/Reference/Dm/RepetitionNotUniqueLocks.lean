@@ -1,4 +1,6 @@
 import A12Kernel.Reference.Dm.HavingFixture
+import A12Kernel.Reference.Dm.Validate
+import A12Kernel.Elaboration.ValidationCondition.Omission
 
 namespace A12Kernel.Dm.RepetitionNotUniqueLocks
 open Lean A12Kernel
@@ -154,5 +156,47 @@ example : ["RepetitionNotUnique(Rows/Left/Tag)",
     "RepetitionNotUnique(Rows/Left/Tag, Rows/Right/N @From Rows)",
     "RepetitionNotUnique(Rows/Right/N, Rows/Left/Tag @From Rows)"].all (fun condition =>
       siblingAdmission condition == none) = true := by native_decide
+
+private def keyRows (rows : List (Nat × String × Option Rat)) : DocumentData := {
+  instantiatedRows := rows.map fun (row, _, _) => { group := 10, path := [row] }
+  cells := rows.flatMap fun (row, tag, n) =>
+    { address := { field := 3, path := [row] }, stored := tag, raw := .parsed (.str tag) } ::
+      n.toList.map fun n => { address := { field := 4, path := [row] }, stored := toString n, raw := .parsed (.num n) } }
+
+/-- Each firing row's `referenced` and `fillToFix` sets, rendered and sorted. -/
+private def references (condition : String) (data : DocumentData) :
+    Option (List (List Nat × List String × List String)) := do
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" data).toOption
+  let rule ← (checkRule dm .english {
+    group := ["Form"], name := "Duplicates", errorCode := "DUPLICATES"
+    errorEntityRelPath := "/Form/Rows/Tag", condition, severity := "ERROR" }).toOption
+  let (_, results) ← (rule.fullRowsAndRepetitionResults document).toOption
+  let base ← (document.applyFullIndexPreliminary.toOption.bind (·.messageReferenceInputs.toOption))
+  let inputs := { base with repetitionAt := some fun environment => results.find? (·.row == environment) }
+  let fired ← (runRuleAt world document rule).toOption
+  let sorted (pointers : List MessagePointer) :=
+    (pointers.map (renderPointer model)).eraseDups.mergeSort (compare · · != .gt)
+  fired.mapM fun (environment, message) => do
+    let found ← (rule.condition.core.messageReferences message environment (some inputs)).toOption
+    pure (environment.map (·.2), sorted found.referenced, sorted found.fillToFix)
+
+/- A firing RNU leaf refers to its key at every duplicate row, while a non-firing one refers to
+   nothing although a sibling fires the message (row 2 below, the Kernel's `missing-child` row of
+   the validation-iteration-domain capture). A VALUE firing fills nothing; an OMISSION firing's
+   fill-to-fix set is the whole duplicate cluster's keys (spec/07). -/
+example :
+    references (repeated ++ " Or FieldFilled(/Form/Rows/N)")
+        (keyRows [(1, "same", some 2), (2, "other", some 5), (3, "same", some 7)]) =
+      some [([1], ["Form/Rows/N", "Form/Rows/Tag", "Form/Rows[3]/Tag"], []),
+        ([2], ["Form/Rows[2]/N"], []),
+        ([3], ["Form/Rows/Tag", "Form/Rows[3]/N", "Form/Rows[3]/Tag"], [])] ∧
+    references "RepetitionNotUnique(/Form/Rows/Tag, /Form/Rows/N @From /Form/Rows)"
+        (keyRows [(1, "same", none), (2, "same", none)]) =
+      some [([1], ["Form/Rows/N", "Form/Rows/Tag", "Form/Rows[2]/N", "Form/Rows[2]/Tag"],
+          ["Form/Rows/N", "Form/Rows/Tag", "Form/Rows[2]/N", "Form/Rows[2]/Tag"]),
+        ([2], ["Form/Rows/N", "Form/Rows/Tag", "Form/Rows[2]/N", "Form/Rows[2]/Tag"],
+          ["Form/Rows/N", "Form/Rows/Tag", "Form/Rows[2]/N", "Form/Rows[2]/Tag"])] := by
+  native_decide
 
 end A12Kernel.Dm.RepetitionNotUniqueLocks
