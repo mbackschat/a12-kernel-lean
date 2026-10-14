@@ -1,0 +1,1467 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "R7_DM.json",
+    "locale": "en_US",
+    "clock": "2026-10-14T10:00:00Z"
+  },
+  "rows": [
+    {
+      "name": "base",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Rg/Rows/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "Rg/Rows/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Rg/Rows/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "14"
+              },
+              {
+                "field": "Rg/Rows/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows/Q1",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/Q2",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows/Q3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows[2]/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows[2]/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows[2]/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows[2]/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Rg/Rows[2]/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Rg/Rows[2]/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "16"
+              },
+              {
+                "field": "Rg/Rows[2]/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[2]/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows[2]/Q2",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Rg/Rows[2]/Q4",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[3]/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows[3]/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[3]/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "17"
+              },
+              {
+                "field": "Rg/Rows[3]/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows[3]/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Rg/Rows[3]/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "17"
+              },
+              {
+                "field": "Rg/Rows[3]/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Rg/Rows[3]/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[3]/Q1",
+                "cleared": false,
+                "errored": false,
+                "value": "17"
+              },
+              {
+                "field": "Rg/Rows[3]/Q2",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows[3]/Q3",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[3]/Q4",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Rg/Rows/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "4"
+              },
+              {
+                "field": "Rg/Rows/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Rg/Rows/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "14"
+              },
+              {
+                "field": "Rg/Rows/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows/Q1",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/Q2",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows/Q3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows[2]/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows[2]/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows[2]/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows[2]/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Rg/Rows[2]/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Rg/Rows[2]/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "16"
+              },
+              {
+                "field": "Rg/Rows[2]/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[2]/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows[2]/Q2",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Rg/Rows[2]/Q4",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[3]/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows[3]/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[3]/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "17"
+              },
+              {
+                "field": "Rg/Rows[3]/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows[3]/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "9"
+              },
+              {
+                "field": "Rg/Rows[3]/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "17"
+              },
+              {
+                "field": "Rg/Rows[3]/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "3"
+              },
+              {
+                "field": "Rg/Rows[3]/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[3]/Q1",
+                "cleared": false,
+                "errored": false,
+                "value": "17"
+              },
+              {
+                "field": "Rg/Rows[3]/Q2",
+                "cleared": false,
+                "errored": false,
+                "value": "7"
+              },
+              {
+                "field": "Rg/Rows[3]/Q3",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[3]/Q4",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "bad",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Rg/Rows/RD",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Rg/Rows/RD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Rg/Items/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Rg/Items/V"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Rg/Rows/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Rg/Rows/Amt"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Rg/Rows[2]/Box/X",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Rg/Rows[2]/Box/X"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Rg/Rows/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Rg/Rows/Q1",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/Q3",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows[2]/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows[2]/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Rg/Rows[2]/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "16"
+              },
+              {
+                "field": "Rg/Rows[2]/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[2]/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/Q1",
+                "cleared": false,
+                "errored": false,
+                "value": "16"
+              },
+              {
+                "field": "Rg/Rows[2]/Q3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows[2]/Q4",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Rg/Rows/RD",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Rg/Rows/RD"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Rg/Items/V",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Rg/Items/V"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Rg/Rows/Amt",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Rg/Rows/Amt"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Rg/Rows[2]/Box/X",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Rg/Rows[2]/Box/X"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Rg/Rows/RD",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Rg/Rows/RD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Rg/Items/V",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Rg/Items/V"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Rg/Rows/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Rg/Rows/Amt"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zahlHatUngueltigeZeichen",
+              "field": "Rg/Rows[2]/Box/X",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "Rg/Rows[2]/Box/X"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Rg/Rows/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Rg/Rows/Q1",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/Q3",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows[2]/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows[2]/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "5"
+              },
+              {
+                "field": "Rg/Rows[2]/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "16"
+              },
+              {
+                "field": "Rg/Rows[2]/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[2]/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/Q1",
+                "cleared": false,
+                "errored": false,
+                "value": "16"
+              },
+              {
+                "field": "Rg/Rows[2]/Q3",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows[2]/Q4",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Rg/Rows/RD",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Rg/Rows/RD"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Rg/Items/V",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Rg/Items/V"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Rg/Rows/Amt",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Rg/Rows/Amt"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "zahlHatUngueltigeZeichen",
+                "field": "Rg/Rows[2]/Box/X",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "",
+                "referenced": [
+                  "Rg/Rows[2]/Box/X"
+                ],
+                "fillToFix": []
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Rg/Rows/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Rg/Rows/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "seeded",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "CO1",
+              "field": "Rg/Rows/O1",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/Rg[1]/Rows[0]/Amt",
+                "/Rg[1]/Rows[0]/B",
+                "Rg/Rows/O1"
+              ],
+              "fillToFix": [
+                "/Rg[1]/Rows[0]/Amt",
+                "/Rg[1]/Rows[0]/B",
+                "Rg/Rows/O1"
+              ]
+            },
+            {
+              "code": "CO2",
+              "field": "Rg/Rows/O2",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "Rg/Rows/Box/X",
+                "Rg/Rows/O2",
+                "Rg/Rows/Pad/Y"
+              ],
+              "fillToFix": [
+                "Rg/Rows/Box/X",
+                "Rg/Rows/O2",
+                "Rg/Rows/Pad/Y"
+              ]
+            },
+            {
+              "code": "CO3",
+              "field": "Rg/Rows/O3",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "Rg/Rows/Amt",
+                "Rg/Rows/B",
+                "Rg/Rows/C",
+                "Rg/Rows/O3",
+                "Rg/Total"
+              ],
+              "fillToFix": [
+                "Rg/Rows/Amt",
+                "Rg/Rows/B",
+                "Rg/Rows/C",
+                "Rg/Rows/O3",
+                "Rg/Total"
+              ]
+            },
+            {
+              "code": "CO4",
+              "field": "Rg/Rows/O4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "Rg/Rows/Amt",
+                "Rg/Rows/B",
+                "Rg/Rows/O4",
+                "Rg/Total"
+              ],
+              "fillToFix": [
+                "Rg/Rows/Amt",
+                "Rg/Rows/B",
+                "Rg/Rows/O4",
+                "Rg/Total"
+              ]
+            },
+            {
+              "code": "CO5",
+              "field": "Rg/Rows/O5",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/Rg[1]/Items[0]/V",
+                "Rg/Rows/O5"
+              ],
+              "fillToFix": [
+                "/Rg[1]/Items[0]/V",
+                "Rg/Rows/O5"
+              ]
+            },
+            {
+              "code": "CO6",
+              "field": "Rg/Rows/O6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "Rg/Rows/O6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CO7",
+              "field": "Rg/Rows/O7",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "Rg/Rows/O7",
+                "Rg/Rows/RD"
+              ],
+              "fillToFix": [
+                "Rg/Rows/O7",
+                "Rg/Rows/RD"
+              ]
+            },
+            {
+              "code": "CO9",
+              "field": "Rg/Rows/O9",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/Rg[1]/Rows[0]/Amt",
+                "/Rg[1]/Rows[0]/B",
+                "Rg/Rows/B",
+                "Rg/Rows/O9"
+              ],
+              "fillToFix": [
+                "/Rg[1]/Rows[0]/Amt",
+                "/Rg[1]/Rows[0]/B",
+                "Rg/Rows/B",
+                "Rg/Rows/O9"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Rg/Rows/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows[2]/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows[2]/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows[2]/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows[2]/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "16"
+              },
+              {
+                "field": "Rg/Rows[2]/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[2]/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/Q1",
+                "cleared": false,
+                "errored": false,
+                "value": "16"
+              },
+              {
+                "field": "Rg/Rows[2]/Q2",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows[2]/Q3",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/Q4",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "CO1",
+              "field": "Rg/Rows/O1",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/Rg[1]/Rows[0]/Amt",
+                "/Rg[1]/Rows[0]/B",
+                "Rg/Rows/O1"
+              ],
+              "fillToFix": [
+                "/Rg[1]/Rows[0]/Amt",
+                "/Rg[1]/Rows[0]/B",
+                "Rg/Rows/O1"
+              ]
+            },
+            {
+              "code": "CO2",
+              "field": "Rg/Rows/O2",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "Rg/Rows/Box/X",
+                "Rg/Rows/O2",
+                "Rg/Rows/Pad/Y"
+              ],
+              "fillToFix": [
+                "Rg/Rows/Box/X",
+                "Rg/Rows/O2",
+                "Rg/Rows/Pad/Y"
+              ]
+            },
+            {
+              "code": "CO3",
+              "field": "Rg/Rows/O3",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "Rg/Rows/Amt",
+                "Rg/Rows/B",
+                "Rg/Rows/C",
+                "Rg/Rows/O3",
+                "Rg/Total"
+              ],
+              "fillToFix": [
+                "Rg/Rows/Amt",
+                "Rg/Rows/B",
+                "Rg/Rows/C",
+                "Rg/Rows/O3",
+                "Rg/Total"
+              ]
+            },
+            {
+              "code": "CO4",
+              "field": "Rg/Rows/O4",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "Rg/Rows/Amt",
+                "Rg/Rows/B",
+                "Rg/Rows/O4",
+                "Rg/Total"
+              ],
+              "fillToFix": [
+                "Rg/Rows/Amt",
+                "Rg/Rows/B",
+                "Rg/Rows/O4",
+                "Rg/Total"
+              ]
+            },
+            {
+              "code": "CO5",
+              "field": "Rg/Rows/O5",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/Rg[1]/Items[0]/V",
+                "Rg/Rows/O5"
+              ],
+              "fillToFix": [
+                "/Rg[1]/Items[0]/V",
+                "Rg/Rows/O5"
+              ]
+            },
+            {
+              "code": "CO6",
+              "field": "Rg/Rows/O6",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "Rg/Rows/O6"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "CO7",
+              "field": "Rg/Rows/O7",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "Rg/Rows/O7",
+                "Rg/Rows/RD"
+              ],
+              "fillToFix": [
+                "Rg/Rows/O7",
+                "Rg/Rows/RD"
+              ]
+            },
+            {
+              "code": "CO9",
+              "field": "Rg/Rows/O9",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/Rg[1]/Rows[0]/Amt",
+                "/Rg[1]/Rows[0]/B",
+                "Rg/Rows/B",
+                "Rg/Rows/O9"
+              ],
+              "fillToFix": [
+                "/Rg[1]/Rows[0]/Amt",
+                "/Rg[1]/Rows[0]/B",
+                "Rg/Rows/B",
+                "Rg/Rows/O9"
+              ]
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Rg/Rows/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "15"
+              },
+              {
+                "field": "Rg/Rows/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Rg/Rows/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows[2]/O1",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows[2]/O2",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/O3",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows[2]/O4",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows[2]/O5",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/O6",
+                "cleared": false,
+                "errored": false,
+                "value": "16"
+              },
+              {
+                "field": "Rg/Rows[2]/O7",
+                "cleared": false,
+                "errored": false,
+                "value": "2"
+              },
+              {
+                "field": "Rg/Rows[2]/O9",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/Q1",
+                "cleared": false,
+                "errored": false,
+                "value": "16"
+              },
+              {
+                "field": "Rg/Rows[2]/Q2",
+                "cleared": false,
+                "errored": false,
+                "value": "6"
+              },
+              {
+                "field": "Rg/Rows[2]/Q3",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              },
+              {
+                "field": "Rg/Rows[2]/Q4",
+                "cleared": false,
+                "errored": false,
+                "value": "0"
+              }
+            ],
+            "formalErrorsInOperands": []
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+ "model": "R7_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "base",
+   "documentInline": {
+    "Rg": {
+     "Total": "10",
+     "Rows": [
+      {
+       "B": "1",
+       "C": "3",
+       "RD": "2026-10-01",
+       "Box": {
+        "X": "1"
+       }
+      },
+      {
+       "Amt": "5",
+       "B": "0",
+       "Pad": {
+        "Y": "2"
+       }
+      },
+      {
+       "Amt": "7",
+       "B": "2",
+       "Box": {
+        "X": "3"
+       },
+       "Pad": {
+        "Y": "4"
+       }
+      }
+     ],
+     "Items": [
+      {},
+      {
+       "V": "9"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "bad",
+   "documentInline": {
+    "Rg": {
+     "Total": "10",
+     "Rows": [
+      {
+       "Amt": "x",
+       "B": "1",
+       "RD": "bad"
+      },
+      {
+       "Amt": "5",
+       "B": "3",
+       "Box": {
+        "X": "z"
+       }
+      }
+     ],
+     "Items": [
+      {
+       "V": "y"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "empty",
+   "documentInline": {
+    "Rg": {
+     "Rows": [
+      {}
+     ]
+    }
+   }
+  },
+  {
+   "name": "seeded",
+   "documentInline": {
+    "Rg": {
+     "Total": "",
+     "Rows": [
+      {
+       "Amt": "",
+       "B": "",
+       "C": "",
+       "O1": "99",
+       "O2": "99",
+       "O3": "99",
+       "O4": "99",
+       "O5": "99",
+       "O6": "99",
+       "O7": "99",
+       "O9": "99"
+      },
+      {
+       "B": "4",
+       "Amt": "6"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

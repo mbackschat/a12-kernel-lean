@@ -1,0 +1,580 @@
+{
+ "header": {
+  "id": "R7_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R7_DM"
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Rg",
+     "name": "Rg",
+     "Group": {
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Rg/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Rg/Rows",
+        "name": "Rows",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Amt",
+           "name": "Amt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/B",
+           "name": "B",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/C",
+           "name": "C",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/RD",
+           "name": "RD",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/O1",
+           "name": "O1",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/O2",
+           "name": "O2",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/O3",
+           "name": "O3",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/O4",
+           "name": "O4",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/O5",
+           "name": "O5",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/O6",
+           "name": "O6",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/O7",
+           "name": "O7",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/O9",
+           "name": "O9",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Rg/Rows/Box",
+           "name": "Box",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Rg/Rows/Box/X",
+              "name": "X",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Rg/Rows/Pad",
+           "name": "Pad",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Rg/Rows/Pad/Y",
+              "name": "Y",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Q1",
+           "name": "Q1",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Q2",
+           "name": "Q2",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Q3",
+           "name": "Q3",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Rg/Rows/Q4",
+           "name": "Q4",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CO1",
+           "name": "CO1",
+           "Computation": {
+            "computedFieldRelPath": "../O1",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/Rg/Rows*/Amt Having [/Rg/Rows/B] > 0)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CO2",
+           "name": "CO2",
+           "Computation": {
+            "computedFieldRelPath": "../O2",
+            "computationAlternatives": [
+             {
+              "operation": "NumberOfFilledGroups(Box, Pad)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CO3",
+           "name": "CO3",
+           "Computation": {
+            "computedFieldRelPath": "../O3",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(Amt, B) + FirstFilledValue(C, /Rg/Total)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CO4",
+           "name": "CO4",
+           "Computation": {
+            "computedFieldRelPath": "../O4",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(Amt, B, /Rg/Total)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CO5",
+           "name": "CO5",
+           "Computation": {
+            "computedFieldRelPath": "../O5",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/Rg/Items*/V)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CO6",
+           "name": "CO6",
+           "Computation": {
+            "computedFieldRelPath": "../O6",
+            "computationAlternatives": [
+             {
+              "operation": "CurrentRepetition(/Rg/Rows) + DayFromDate(Now)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CO7",
+           "name": "CO7",
+           "Computation": {
+            "computedFieldRelPath": "../O7",
+            "computationAlternatives": [
+             {
+              "operation": "CurrentRepetition(/Rg/Rows) + DifferenceInDays(RD, Now)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CO9",
+           "name": "CO9",
+           "Computation": {
+            "computedFieldRelPath": "../O9",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/Rg/Rows*/Amt Having [/Rg/Rows/B] > [$/Rg/Rows/B])"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CQ1",
+           "name": "CQ1",
+           "Computation": {
+            "computedFieldRelPath": "../Q1",
+            "computationAlternatives": [
+             {
+              "precondition": "[B] > 0",
+              "operation": "CurrentRepetition(/Rg/Rows) + DayFromDate(Now)"
+             },
+             {
+              "precondition": "FieldFilled(C)",
+              "operation": "CurrentRepetition(/Rg/Rows) * 10"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CQ2",
+           "name": "CQ2",
+           "Computation": {
+            "computedFieldRelPath": "../Q2",
+            "computationAlternatives": [
+             {
+              "precondition": "[B] > 0",
+              "operation": "FirstFilledValue(/Rg/Rows*/Amt Having [/Rg/Rows/B] > 0)"
+             },
+             {
+              "precondition": "FieldFilled(Amt)",
+              "operation": "FirstFilledValue(/Rg/Items*/V)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CQ3",
+           "name": "CQ3",
+           "Computation": {
+            "computedFieldRelPath": "../Q3",
+            "computationAlternatives": [
+             {
+              "precondition": "[B] > 0",
+              "operation": "NumberOfFilledGroups(Box, Pad)"
+             },
+             {
+              "precondition": "FieldFilled(C)",
+              "operation": "Sum(/Rg/Rows*/Amt)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Rg/Rows/CQ4",
+           "name": "CQ4",
+           "Computation": {
+            "computedFieldRelPath": "../Q4",
+            "computationAlternatives": [
+             {
+              "precondition": "[B] > 1",
+              "operation": "DifferenceInDays(RD, Now)"
+             },
+             {
+              "precondition": "FieldFilled(Amt)",
+              "operation": "CurrentRepetition(/Rg/Rows)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ],
+         "repeatability": 3
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Rg/Items",
+        "name": "Items",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Rg/Items/V",
+           "name": "V",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "repeatability": 3
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}
