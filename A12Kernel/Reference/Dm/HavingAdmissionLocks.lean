@@ -180,22 +180,31 @@ private def scopedAdmission (filter : String) : Admission :=
 /-- The text's scale-warning suppression reaches its filters: a scale-0 field against a one-digit
 literal or under arithmetic is refused bare and admitted in the suppressed scope, while ordering
 never meets the gate. Rows `w03`, `w04`, `s01`–`s06` of the
-[checkpoint](../../../docs/sources/having-filter-probes.md#src-having-scale-warning-suppression). -/
+[checkpoint](../../../docs/sources/having-filter-probes.md#src-having-scale-warning-suppression). The
+bare elaboration below the reader assigns the arithmetic side no class; the reader's computation route,
+locked further down, does. -/
 example : ["[Rows/N] == 1.5", "[Rows/N] != 1.5", "[Rows/N] + 0 != 1.5", "1.5 == [Rows/N]"].all (fun filter =>
       admission HavingFixture.model filter != .admitted && scopedAdmission filter == .admitted) &&
     admission HavingFixture.model "[Rows/N] < 1.5" == .admitted := by native_decide
 
-private def filteredSum (suppressed : List String) : Lowering (FlatFieldDecl × LoweredComputation HavingFixture.model) :=
+private def filtered (suppressed : List String) (operation : String) (guard : Option String := none) :
+    Lowering (FlatFieldDecl × LoweredComputation HavingFixture.model) :=
   lowerComputation HavingFixture.model .english {
     group := ["Form"], name := "Total", targetRelPath := "../Out", commonPrecondition := none
-    alternatives := [{ precondition := none, operation := "Sum(Rows*/N Having [Rows/N] != 1.5)" }]
+    alternatives := [{ precondition := guard, operation }]
     errorCodesToSuppress := suppressed }
 
-/-- A computation's `errorCodesToSuppress` covers its operation's filters the same way: `c01`
-is admitted and `c02` refused with the scale class. -/
-example : (filteredSum ["MVK_INVALID_COMPARE_DEC_PLACES"]).isOk = true ∧
-    ((filteredSum []).toOption.isNone && match filteredSum [] with
-      | .error refusal => refusal.detail == "MVK_INVALID_COMPARE_DEC_PLACES"
-      | .ok _ => false) = true := by native_decide
+/-- A computation's `errorCodesToSuppress` covers its filters the same way, in the operation and in a
+guard and under an extremum, over a literal, arithmetic or reversed side: each is admitted waived and
+refused bare with the scale class. Rows `c01`/`c02` of the [checkpoint](../../../docs/sources/having-filter-probes.md#src-having-scale-warning-suppression)
+and `Cgb`/`Cgs`, `Cmb`/`Cms` of the
+[carrier checkpoint](../../../docs/sources/having-filter-probes.md#src-having-waiver-carriers). -/
+example : [("Sum(Rows*/N Having [Rows/N] != 1.5)", none), ("Sum(Rows*/N Having [Rows/N] + 0 != 1.5)", none),
+      ("Sum(Rows*/N Having 1.5 == [Rows/N])", none), ("1", some "Sum(Rows*/N Having [Rows/N] != 1.5) > 0"),
+      ("MaxValue(Rows*/N Having [Rows/N] != 1.5)", none)].all (fun (operation, guard) =>
+      (filtered ["MVK_INVALID_COMPARE_DEC_PLACES"] operation guard).isOk &&
+        match filtered [] operation guard with
+        | .error refusal => refusal.detail == "MVK_INVALID_COMPARE_DEC_PLACES"
+        | .ok _ => false) = true := by native_decide
 
 end A12Kernel.Dm.HavingAdmissionLocks

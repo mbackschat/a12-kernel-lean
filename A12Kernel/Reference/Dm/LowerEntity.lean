@@ -223,9 +223,11 @@ def lowerGroupCountOperand : Argument → Lowering SurfaceGroupCountOperand
   | _ => refuse "NumberOfFilledGroups" "operand"
 
 /-- The common authored source dispatch for fixed and row first-filled targets. A lone starred
-operand takes the entity-list route too: the Kernel admits it under any number of stars and at every
-target placement the list admits, selecting parent-major
-([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-typed-first-filled-nested-stars)). -/
+operand takes the entity-list route too, as the Kernel admits it under two stars at a fixed target and
+at six row placements, selecting parent-major
+([fixed](../../../docs/sources/computation-placement-and-constant-probes.md#src-typed-first-filled-nested-stars),
+[rows](../../../docs/sources/computation-placement-and-constant-probes.md#src-typed-first-filled-row-placements));
+deeper nesting is assumed to follow the same list order. -/
 def lowerFirstFilledSource (model : FlatModel) (group : GroupPath) (arguments : List Argument)
     (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) : Lowering SurfaceFirstFilledSource :=
   (.list ·) <$> lowerFirstFilledEntitySource model group arguments bindingGroup? suppress

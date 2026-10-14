@@ -1,0 +1,119 @@
+{
+ "model": "R12N_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "parentMajor",
+   "documentInline": {
+    "P": {
+     "Outer": [
+      {
+       "Inner": [
+        {},
+        {
+         "INum": "2",
+         "Deep": [
+          {},
+          {
+           "DNum": "7"
+          }
+         ]
+        }
+       ],
+       "Tg": [
+        {
+         "TK": "t"
+        }
+       ]
+      },
+      {
+       "Inner": [
+        {
+         "INum": "5",
+         "Deep": [
+          {
+           "DNum": "8"
+          }
+         ]
+        }
+       ],
+       "Tg": [
+        {
+         "TK": "t"
+        }
+       ]
+      }
+     ],
+     "Side": [
+      {
+       "SK": "s"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "first",
+   "documentInline": {
+    "P": {
+     "Outer": [
+      {
+       "Inner": [
+        {
+         "INum": "5",
+         "Deep": [
+          {
+           "DNum": "8"
+          }
+         ]
+        },
+        {
+         "INum": "2"
+        }
+       ],
+       "Tg": [
+        {
+         "TK": "t"
+        }
+       ]
+      }
+     ],
+     "Side": [
+      {
+       "SK": "s"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "empty",
+   "documentInline": {
+    "P": {
+     "Outer": [
+      {
+       "Inner": [
+        {}
+       ],
+       "Tg": [
+        {
+         "TK": "t"
+        }
+       ]
+      }
+     ],
+     "Side": [
+      {
+       "SK": "s"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

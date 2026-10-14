@@ -1,0 +1,13 @@
+{
+ "kernel": "30.8.1",
+ "producer": "a4091041",
+ "route": "dmtool model check",
+ "model": "R12NS_DM.json",
+ "valid": false,
+ "diagnostics": [
+  {
+   "path": "/P/CfIN",
+   "code": "MVK_UNEXPECTED_TOKEN"
+  }
+ ]
+}

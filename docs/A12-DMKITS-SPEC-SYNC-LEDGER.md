@@ -45,8 +45,8 @@ Fifteen corrections are `pending` below and have not been handed off. The 13 ter
 - `status`: pending
 - `canonical`: [spec/04 §1](../spec/04-numbers-and-decimals.md#1-scale-gates----checked-at-parse-time).
 - `delta`: `@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)` and a computation's `errorCodesToSuppress` waive the `==`/`!=` scale gate inside the text's `Having` filters as well, on literal, field-pair and arithmetic sides under every measured aggregate; unwaived, each such filter draws the class. Evaluation stays exact. Tolerance comparisons draw no scale class inside or outside a filter.
-- `basis`: [filter suppression checkpoint](sources/having-filter-probes.md#src-having-scale-warning-suppression), 22 rule checks, two computations and two runtime documents per model at a12-dmkits `a4091041`, Kernel 30.8.1, both strategies agreeing.
-- `acceptance`: Reconcile the static verdicts of `w01`–`w08` and `s01`–`s14`, `c01` admitted and `c02` refused, and the runtime messages and `Tot2` values of both documents. Do not claim nested filters, temporal filters or a German-condition model.
+- `basis`: [filter suppression checkpoint](sources/having-filter-probes.md#src-having-scale-warning-suppression), 22 rule checks, two computations and two runtime documents per model, and the [carrier checkpoint](sources/having-filter-probes.md#src-having-waiver-carriers), 12 rule checks and six computations, at a12-dmkits `a4091041`, Kernel 30.8.1, both strategies agreeing.
+- `acceptance`: Reconcile the static verdicts of `w01`–`w08`, `s01`–`s14`, `m01`–`m04`, `t01`–`t04`, `v01`/`v02` and the six carrier computations, `c01` admitted and `c02` refused, and the runtime messages and `Tot2` values of both documents. A nested filter draws `MVK_NO_WILDCARD` waived or not, so it witnesses nothing about the waiver. Do not claim a German-condition model.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-10"></a>

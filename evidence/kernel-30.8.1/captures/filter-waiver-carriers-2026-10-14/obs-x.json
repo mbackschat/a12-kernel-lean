@@ -1,0 +1,33 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "f73232363287c07eb4304a8f7a72568f2e78c3ca74b3241c5246e27b0974719a",
+  "observations" : [ {
+    "id" : "bx1",
+    "inputHash" : "da4b77419ef38f66828e2e4bf38b5bfaf91804aefbc4a346768a0aaaf38d5b4a",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "bx2",
+    "inputHash" : "c59af7d711bac4f83359d1a4dbca48adbb905868b2043c5ff0bb84c0aef70217",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "bx3",
+    "inputHash" : "e970f8da5736cddea48e477c9a8a402ac8296e25c070efe39710232bf0e47173",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "bx4",
+    "inputHash" : "0c650ecb1f3bdcc7b7b69ce0659424efdcd2f3210c800535359455050e516dec",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD" ]
+  } ]
+}

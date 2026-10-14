@@ -1,0 +1,49 @@
+{
+ "kernel": "30.8.1",
+ "producer": "a4091041",
+ "route": "dmtool model check",
+ "model": "R12BS_DM.json",
+ "valid": false,
+ "diagnostics": [
+  {
+   "path": "/P/Outer/Co1C",
+   "code": "MVK_NO_BOOLY_ALLOWED"
+  },
+  {
+   "path": "/P/Outer/Co2C",
+   "code": "MVK_NO_BOOLY_ALLOWED"
+  },
+  {
+   "path": "/P/Outer/Co2N",
+   "code": "MVK_UNEXPECTED_TOKEN"
+  },
+  {
+   "path": "/P/Outer/Co3C",
+   "code": "MVK_NO_BOOLY_ALLOWED"
+  },
+  {
+   "path": "/P/Outer/Co3N",
+   "code": "MVK_UNEXPECTED_TOKEN"
+  },
+  {
+   "path": "/P/Outer/Tg/Ct1C",
+   "code": "MVK_NO_BOOLY_ALLOWED"
+  },
+  {
+   "path": "/P/Outer/Tg/Ct2C",
+   "code": "MVK_NO_BOOLY_ALLOWED"
+  },
+  {
+   "path": "/P/Outer/Tg/Ct2N",
+   "code": "MVK_UNEXPECTED_TOKEN"
+  },
+  {
+   "path": "/P/Side/Cs1C",
+   "code": "MVK_NO_BOOLY_ALLOWED"
+  },
+  {
+   "path": "/P/Side/Cs1N",
+   "code": "MVK_UNEXPECTED_TOKEN"
+  }
+ ]
+}

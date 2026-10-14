@@ -1,0 +1,38 @@
+[
+ {
+  "id": "bx1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-bx1.json"
+  ]
+ },
+ {
+  "id": "bx2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-bx2.json"
+  ]
+ },
+ {
+  "id": "bx3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-bx3.json"
+  ]
+ },
+ {
+  "id": "bx4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-bx4.json"
+  ]
+ }
+]

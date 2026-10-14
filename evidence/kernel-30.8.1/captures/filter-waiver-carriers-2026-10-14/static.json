@@ -1,0 +1,21 @@
+{
+ "kernel": "30.8.1",
+ "producer": "a4091041",
+ "route": "dmtool model check",
+ "model": "R11DC_DM.json",
+ "valid": false,
+ "diagnostics": [
+  {
+   "path": "/P/Cgb",
+   "code": "MVK_INVALID_COMPARE_DEC_PLACES"
+  },
+  {
+   "path": "/P/Cmb",
+   "code": "MVK_INVALID_COMPARE_DEC_PLACES"
+  },
+  {
+   "path": "/P/Ctb",
+   "code": "MVK_INVALID_COMPARE_DEC_PLACES"
+  }
+ ]
+}

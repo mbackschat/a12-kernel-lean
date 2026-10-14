@@ -311,6 +311,12 @@ example : [("D2", "[Rows/D]", "[D]", "[D0]"), ("D2", "AddDays(D0, [Rows/N])", "A
     [(false, false, true), (false, false, true), (false, false, true), (false, false, true), (false, false, true),
       (false, false, true), (false, false, false), (false, false, true)] := by native_decide
 
+/-- The row-declared refusals above come from the row operand, not from the root target the row group
+declares: the same group and target admit a copy and a shift of a root field, rows `bx1` and `bx2` of
+the [waiver-carrier capture](../../../docs/sources/computation-placement-and-constant-probes.md#src-by-id-temporal-arm-binding). -/
+example : bindingAdmitted ["P", "Rows"] "D2" "[/P/D0]" = true ∧
+    bindingAdmitted ["P", "Rows"] "D2" "AddDays(/P/D0, 1)" = true := by native_decide
+
 /-- A row Boolean target first-fills its own row's Boolean before a root one, while the Confirm
 twin draws `MVK_NO_BOOLY_ALLOWED`: rows `k04` and `k05` of the
 [checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-row-copy-carriers-and-root-indices). -/

@@ -15,9 +15,16 @@ private def model : FlatModel :=
       { text 14 "Flag" ["Form", "Parents", "Rows"] [10, 20] with policy := { kind := .boolean } },
       { text 15 "BareFlag" ["Form"] [] with policy := { kind := .boolean } },
       { text 16 "RowFlag" ["Form", "Parents"] [10] with policy := { kind := .boolean } },
-      { text 17 "OwnFlag" ["Form", "Parents"] [10] with policy := { kind := .boolean } }]
+      { text 17 "OwnFlag" ["Form", "Parents"] [10] with policy := { kind := .boolean } },
+      { text 18 "Ok" ["Form", "Parents", "Rows"] [10, 20] with policy := { kind := .confirm } },
+      { text 19 "OkOut" ["Form"] [] with policy := { kind := .confirm } },
+      { text 20 "Cell" ["Form", "Parents", "Rows", "Cells"] [10, 20, 30] with
+          policy := { kind := .number { scale := 0, signed := true } } },
+      { text 21 "NumOut" ["Form"] [] with policy := { kind := .number { scale := 0, signed := true } } },
+      { text 22 "RowNum" ["Form", "Parents"] [10] with policy := { kind := .number { scale := 0, signed := true } } }]
     repeatableGroups := [{ level := 10, path := ["Form", "Parents"], repeatability := some 3 },
-      { level := 20, path := ["Form", "Parents", "Rows"], repeatability := some 3 }] }
+      { level := 20, path := ["Form", "Parents", "Rows"], repeatability := some 3 },
+      { level := 30, path := ["Form", "Parents", "Rows", "Cells"], repeatability := some 2 }] }
 
 private def input (parents : List (String × List (String × String))) (head : String := "H")
     (missingFirstRows : Bool := false) : Json :=
@@ -188,5 +195,24 @@ example : run [("1", [("", "1"), ("B", "0")]), ("1", [("A", "1")])] (selected :=
       ("Parents/OwnFlag", "FirstFilledValue(/Form/Parents/Rows*/Flag)")]) = some [
     ("Form/BareFlag", "value false"), ("Form/Parents/OwnFlag", "value false"), ("Form/Parents/RowFlag", "value false"),
     ("Form/Parents[2]/OwnFlag", "value true"), ("Form/Parents[2]/RowFlag", "value false")] := by native_decide
+
+/-- The class the reader assigns a first-filled computation it refuses, or none when admitted. -/
+private def refusalClass (target operation : String) : Option String :=
+  match lowerComputation model .english {
+      name := "Static", group := ["Form"], targetRelPath := "../" ++ target, commonPrecondition := none
+      alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] } with
+  | .error refusal => some refusal.detail
+  | .ok _ => none
+
+/-- Confirm draws `MVK_NO_BOOLY_ALLOWED` under two stars where Boolean is admitted, and Number is
+admitted at a fixed target and from a row under one or two reopened stars: row `CfC` of the
+[fixed checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-typed-first-filled-nested-stars)
+and the Number rows of the
+[row checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-typed-first-filled-row-placements). -/
+example : refusalClass "OkOut" "FirstFilledValue(/Form/Parents*/Rows*/Ok)" = some "MVK_NO_BOOLY_ALLOWED" ∧
+    refusalClass "BareFlag" "FirstFilledValue(/Form/Parents*/Rows*/Flag)" = none ∧
+    refusalClass "NumOut" "FirstFilledValue(/Form/Parents*/Rows*/Keep)" = none ∧
+    refusalClass "Parents/RowNum" "FirstFilledValue(/Form/Parents/Rows*/Keep)" = none ∧
+    refusalClass "Parents/RowNum" "FirstFilledValue(/Form/Parents/Rows*/Cells*/Cell)" = none := by native_decide
 
 end A12Kernel.Dm.NestedFirstFilledLocks

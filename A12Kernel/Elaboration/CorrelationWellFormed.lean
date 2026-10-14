@@ -43,7 +43,7 @@ def NumericComparisonOf.havingAdmitted (comparison : NumericComparisonOf HavingN
     (admitted : HavingNumericAtom → Bool) : Bool :=
   comparison.admittedWith admitted HavingNumericAtom.summary
 
-/-- Operator-specific static scale law for one filter leaf: `==` and `!=` are gated; ordering and tolerance are exempt (spec/04 §4). -/
+/-- Operator-specific static scale law for one filter leaf: `==` and `!=` are gated unless the leaf carries the text's scale-warning waiver; ordering and tolerance are exempt (spec/04 §4). -/
 def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool
   | .numeric comparison =>
       match comparison.left.summary? HavingNumericAtom.summary,

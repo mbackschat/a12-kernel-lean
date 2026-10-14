@@ -278,6 +278,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [First-filled carrier composition](implementation/strings-and-enumerations.md#cap-first-filled-carrier-composition)
 <a id="cap-first-filled-value-assurance"></a>
 - [Resolved `FirstFilledValue` — assurance and calibration](implementation/strings-and-enumerations.md#cap-first-filled-value-assurance)
+<a id="cap-first-filled-value-nested-evidence"></a>
+- [Resolved `FirstFilledValue` — nested-star evidence](implementation/strings-and-enumerations.md#cap-first-filled-value-nested-evidence)
 <a id="cap-enumeration-identity-and-categories"></a>
 - [Enumeration identity and categories](implementation/strings-and-enumerations.md#cap-enumeration-identity-and-categories)
 <a id="cap-direct-comparability"></a>

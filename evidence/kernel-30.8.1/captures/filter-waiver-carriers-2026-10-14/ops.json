@@ -1,0 +1,206 @@
+[
+ {
+  "id": "m01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And MaxValue(Rows*/N Having [Rows/N] != 1.5) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "m02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And MaxValue(Rows*/N Having [Rows/N] != 1.5) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "m03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m03",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And MinValue(Rows*/N Having [Rows/N] == 1.5) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "m04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And MinValue(Rows*/N Having [Rows/N] == 1.5) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D0, Sum(Rows*/N Having [Rows/N] != 1.5)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And AddDays(D0, Sum(Rows*/N Having [Rows/N] != 1.5)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t03",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D0, MaxValue(Rows*/N Having [Rows/N] == 1.5)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And AddDays(D0, MaxValue(Rows*/N Having [Rows/N] == 1.5)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "e01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And Sum(Rows*/N Having NumberOfFilledFields(Rows/Sub*/X Having [Rows/Sub/X] != 1.5) > 0) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "e02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And Sum(Rows*/N Having NumberOfFilledFields(Rows/Sub*/X Having [Rows/Sub/X] != 1.5) > 0) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "v01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And NumberOfDifferentValues(Rows*/N Having [Rows/N] != 1.5) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "v02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And NumberOfDifferentValues(Rows*/N Having [Rows/N] != 1.5) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

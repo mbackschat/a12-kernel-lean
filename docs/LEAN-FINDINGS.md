@@ -2757,3 +2757,9 @@ The Kernel's scale-warning waiver covers every `Having` filter in the waived tex
 Lean treatment: [`CorrelationSurface.lean`](../A12Kernel/Elaboration/CorrelationSurface.lean) adds a `scaleWarningSuppressed` node that wraps the authored filter; [`HavingTree.lean`](../A12Kernel/Elaboration/HavingTree.lean) elaborates its body with the waiver set in the leaf resolvers, and each traversal gives the node its own arm.
 
 **Carry a pragma that scopes over a subtree as a node around that subtree.** Every existing traversal then has to decide what the node means, while a flag on the leaves leaves the decision to a default nobody chose.
+
+## LF219 — a generated probe field whose name spells a keyword turns a parse refusal into a kind verdict
+
+A two-star `FirstFilledValue` batch, measured 2026-10-14, named each source after its kind, so the Number source in `Inner` was `IN`. Every row reading it drew `MVK_UNEXPECTED_TOKEN`, the two reading `DN` were admitted, and the checkpoint first recorded a Number placement rule. A strengthened reader lock over a field named `Keep` disagreed, and a second batch with `INum` admitted Number at every placement, refusing only a control still reading `IN` ([checkpoint](sources/computation-placement-and-constant-probes.md#src-typed-first-filled-row-placements)). The model declaration itself was accepted, so nothing flagged the name.
+
+**Name generated probe fields so no prefix-plus-kind spelling forms a condition keyword (`In`, `Or`, `And`, `Not`), and treat a parse-class refusal confined to one kind as a naming suspect until a renamed twin agrees.** The cheapest guard is the twin itself: one admitted row of the same kind under another name separates the grammar from the gate.

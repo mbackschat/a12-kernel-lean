@@ -1,0 +1,1821 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "R12B_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-14T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "parentMajor",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "P/Outer/O1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer/O1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-07"
+              },
+              {
+                "field" : "P/Outer/O1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-07T09:09:09"
+              },
+              {
+                "field" : "P/Outer/O1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer/O1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07"
+              },
+              {
+                "field" : "P/Outer/O1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "P/Outer/O1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-01/2026-06-01"
+              },
+              {
+                "field" : "P/Outer/O1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "c"
+              },
+              {
+                "field" : "P/Outer/O1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12:00:00"
+              },
+              {
+                "field" : "P/Outer/O2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer/O2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              },
+              {
+                "field" : "P/Outer/O2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02T03:04:05"
+              },
+              {
+                "field" : "P/Outer/O2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer/O2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02"
+              },
+              {
+                "field" : "P/Outer/O2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01/2026-02-01"
+              },
+              {
+                "field" : "P/Outer/O2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "a"
+              },
+              {
+                "field" : "P/Outer/O2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:00"
+              },
+              {
+                "field" : "P/Outer/O3B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer/O3D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              },
+              {
+                "field" : "P/Outer/O3DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02T03:04:05"
+              },
+              {
+                "field" : "P/Outer/O3E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer/O3FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02"
+              },
+              {
+                "field" : "P/Outer/O3R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01/2026-02-01"
+              },
+              {
+                "field" : "P/Outer/O3S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "a"
+              },
+              {
+                "field" : "P/Outer/O3T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:00"
+              },
+              {
+                "field" : "P/Outer/Tg/T1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer/Tg/T1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-07"
+              },
+              {
+                "field" : "P/Outer/Tg/T1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-07T09:09:09"
+              },
+              {
+                "field" : "P/Outer/Tg/T1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer/Tg/T1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07"
+              },
+              {
+                "field" : "P/Outer/Tg/T1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "P/Outer/Tg/T1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-01/2026-06-01"
+              },
+              {
+                "field" : "P/Outer/Tg/T1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "c"
+              },
+              {
+                "field" : "P/Outer/Tg/T1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12:00:00"
+              },
+              {
+                "field" : "P/Outer/Tg/T2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer/Tg/T2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              },
+              {
+                "field" : "P/Outer/Tg/T2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02T03:04:05"
+              },
+              {
+                "field" : "P/Outer/Tg/T2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer/Tg/T2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02"
+              },
+              {
+                "field" : "P/Outer/Tg/T2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01/2026-02-01"
+              },
+              {
+                "field" : "P/Outer/Tg/T2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "a"
+              },
+              {
+                "field" : "P/Outer/Tg/T2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:00"
+              },
+              {
+                "field" : "P/Outer[2]/O1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer[2]/O1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08"
+              },
+              {
+                "field" : "P/Outer[2]/O1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08T10:10:10"
+              },
+              {
+                "field" : "P/Outer[2]/O1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer[2]/O1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08"
+              },
+              {
+                "field" : "P/Outer[2]/O1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "P/Outer[2]/O1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-01/2026-08-01"
+              },
+              {
+                "field" : "P/Outer[2]/O1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "d"
+              },
+              {
+                "field" : "P/Outer[2]/O1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13:15:00"
+              },
+              {
+                "field" : "P/Outer[2]/O2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer[2]/O2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Outer[2]/O2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Outer[2]/O2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer[2]/O2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Outer[2]/O2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Outer[2]/O2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Outer[2]/O2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              },
+              {
+                "field" : "P/Outer[2]/O3B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer[2]/O3D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              },
+              {
+                "field" : "P/Outer[2]/O3DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02T03:04:05"
+              },
+              {
+                "field" : "P/Outer[2]/O3E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer[2]/O3FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02"
+              },
+              {
+                "field" : "P/Outer[2]/O3R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01/2026-02-01"
+              },
+              {
+                "field" : "P/Outer[2]/O3S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "a"
+              },
+              {
+                "field" : "P/Outer[2]/O3T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:00"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08T10:10:10"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-01/2026-08-01"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "d"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13:15:00"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              },
+              {
+                "field" : "P/Side/S1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Side/S1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              },
+              {
+                "field" : "P/Side/S1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02T03:04:05"
+              },
+              {
+                "field" : "P/Side/S1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Side/S1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02"
+              },
+              {
+                "field" : "P/Side/S1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01/2026-02-01"
+              },
+              {
+                "field" : "P/Side/S1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "a"
+              },
+              {
+                "field" : "P/Side/S1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "P/Outer/O1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer/O1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-07"
+              },
+              {
+                "field" : "P/Outer/O1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-07T09:09:09"
+              },
+              {
+                "field" : "P/Outer/O1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer/O1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07"
+              },
+              {
+                "field" : "P/Outer/O1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "P/Outer/O1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-01/2026-06-01"
+              },
+              {
+                "field" : "P/Outer/O1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "c"
+              },
+              {
+                "field" : "P/Outer/O1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12:00:00"
+              },
+              {
+                "field" : "P/Outer/O2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer/O2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              },
+              {
+                "field" : "P/Outer/O2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02T03:04:05"
+              },
+              {
+                "field" : "P/Outer/O2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer/O2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02"
+              },
+              {
+                "field" : "P/Outer/O2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01/2026-02-01"
+              },
+              {
+                "field" : "P/Outer/O2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "a"
+              },
+              {
+                "field" : "P/Outer/O2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:00"
+              },
+              {
+                "field" : "P/Outer/O3B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer/O3D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              },
+              {
+                "field" : "P/Outer/O3DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02T03:04:05"
+              },
+              {
+                "field" : "P/Outer/O3E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer/O3FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02"
+              },
+              {
+                "field" : "P/Outer/O3R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01/2026-02-01"
+              },
+              {
+                "field" : "P/Outer/O3S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "a"
+              },
+              {
+                "field" : "P/Outer/O3T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:00"
+              },
+              {
+                "field" : "P/Outer/Tg/T1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer/Tg/T1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-07"
+              },
+              {
+                "field" : "P/Outer/Tg/T1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-07T09:09:09"
+              },
+              {
+                "field" : "P/Outer/Tg/T1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer/Tg/T1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07"
+              },
+              {
+                "field" : "P/Outer/Tg/T1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              },
+              {
+                "field" : "P/Outer/Tg/T1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-01/2026-06-01"
+              },
+              {
+                "field" : "P/Outer/Tg/T1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "c"
+              },
+              {
+                "field" : "P/Outer/Tg/T1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "12:00:00"
+              },
+              {
+                "field" : "P/Outer/Tg/T2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer/Tg/T2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              },
+              {
+                "field" : "P/Outer/Tg/T2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02T03:04:05"
+              },
+              {
+                "field" : "P/Outer/Tg/T2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer/Tg/T2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02"
+              },
+              {
+                "field" : "P/Outer/Tg/T2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01/2026-02-01"
+              },
+              {
+                "field" : "P/Outer/Tg/T2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "a"
+              },
+              {
+                "field" : "P/Outer/Tg/T2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:00"
+              },
+              {
+                "field" : "P/Outer[2]/O1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer[2]/O1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08"
+              },
+              {
+                "field" : "P/Outer[2]/O1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08T10:10:10"
+              },
+              {
+                "field" : "P/Outer[2]/O1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer[2]/O1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08"
+              },
+              {
+                "field" : "P/Outer[2]/O1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "P/Outer[2]/O1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-01/2026-08-01"
+              },
+              {
+                "field" : "P/Outer[2]/O1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "d"
+              },
+              {
+                "field" : "P/Outer[2]/O1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13:15:00"
+              },
+              {
+                "field" : "P/Outer[2]/O2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer[2]/O2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Outer[2]/O2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Outer[2]/O2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer[2]/O2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Outer[2]/O2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Outer[2]/O2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Outer[2]/O2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              },
+              {
+                "field" : "P/Outer[2]/O3B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer[2]/O3D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              },
+              {
+                "field" : "P/Outer[2]/O3DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02T03:04:05"
+              },
+              {
+                "field" : "P/Outer[2]/O3E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer[2]/O3FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02"
+              },
+              {
+                "field" : "P/Outer[2]/O3R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01/2026-02-01"
+              },
+              {
+                "field" : "P/Outer[2]/O3S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "a"
+              },
+              {
+                "field" : "P/Outer[2]/O3T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:00"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08T10:10:10"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-01/2026-08-01"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "d"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13:15:00"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Outer[2]/Tg/T2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              },
+              {
+                "field" : "P/Side/S1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Side/S1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02"
+              },
+              {
+                "field" : "P/Side/S1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02-02T03:04:05"
+              },
+              {
+                "field" : "P/Side/S1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Side/S1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-02"
+              },
+              {
+                "field" : "P/Side/S1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-01-01/2026-02-01"
+              },
+              {
+                "field" : "P/Side/S1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "a"
+              },
+              {
+                "field" : "P/Side/S1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10:30:00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "first",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "P/Outer/O1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer/O1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08"
+              },
+              {
+                "field" : "P/Outer/O1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08T10:10:10"
+              },
+              {
+                "field" : "P/Outer/O1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer/O1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08"
+              },
+              {
+                "field" : "P/Outer/O1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "P/Outer/O1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-01/2026-08-01"
+              },
+              {
+                "field" : "P/Outer/O1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "d"
+              },
+              {
+                "field" : "P/Outer/O1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13:15:00"
+              },
+              {
+                "field" : "P/Outer/O2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer/O2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Outer/O2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Outer/O2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer/O2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Outer/O2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Outer/O2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Outer/O2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              },
+              {
+                "field" : "P/Outer/O3B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer/O3D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Outer/O3DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Outer/O3E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer/O3FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Outer/O3R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Outer/O3S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Outer/O3T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              },
+              {
+                "field" : "P/Outer/Tg/T1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer/Tg/T1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08"
+              },
+              {
+                "field" : "P/Outer/Tg/T1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08T10:10:10"
+              },
+              {
+                "field" : "P/Outer/Tg/T1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer/Tg/T1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08"
+              },
+              {
+                "field" : "P/Outer/Tg/T1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "P/Outer/Tg/T1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-01/2026-08-01"
+              },
+              {
+                "field" : "P/Outer/Tg/T1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "d"
+              },
+              {
+                "field" : "P/Outer/Tg/T1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13:15:00"
+              },
+              {
+                "field" : "P/Outer/Tg/T2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer/Tg/T2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Outer/Tg/T2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Outer/Tg/T2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer/Tg/T2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Outer/Tg/T2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Outer/Tg/T2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Outer/Tg/T2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              },
+              {
+                "field" : "P/Side/S1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Side/S1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Side/S1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Side/S1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Side/S1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Side/S1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Side/S1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Side/S1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "P/Outer/O1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer/O1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08"
+              },
+              {
+                "field" : "P/Outer/O1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08T10:10:10"
+              },
+              {
+                "field" : "P/Outer/O1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer/O1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08"
+              },
+              {
+                "field" : "P/Outer/O1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "P/Outer/O1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-01/2026-08-01"
+              },
+              {
+                "field" : "P/Outer/O1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "d"
+              },
+              {
+                "field" : "P/Outer/O1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13:15:00"
+              },
+              {
+                "field" : "P/Outer/O2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer/O2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Outer/O2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Outer/O2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer/O2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Outer/O2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Outer/O2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Outer/O2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              },
+              {
+                "field" : "P/Outer/O3B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer/O3D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Outer/O3DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Outer/O3E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer/O3FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Outer/O3R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Outer/O3S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Outer/O3T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              },
+              {
+                "field" : "P/Outer/Tg/T1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "true"
+              },
+              {
+                "field" : "P/Outer/Tg/T1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08"
+              },
+              {
+                "field" : "P/Outer/Tg/T1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08-08T10:10:10"
+              },
+              {
+                "field" : "P/Outer/Tg/T1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "A"
+              },
+              {
+                "field" : "P/Outer/Tg/T1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-08"
+              },
+              {
+                "field" : "P/Outer/Tg/T1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "P/Outer/Tg/T1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-07-01/2026-08-01"
+              },
+              {
+                "field" : "P/Outer/Tg/T1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "d"
+              },
+              {
+                "field" : "P/Outer/Tg/T1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "13:15:00"
+              },
+              {
+                "field" : "P/Outer/Tg/T2B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Outer/Tg/T2D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Outer/Tg/T2DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Outer/Tg/T2E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Outer/Tg/T2FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Outer/Tg/T2R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Outer/Tg/T2S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Outer/Tg/T2T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              },
+              {
+                "field" : "P/Side/S1B",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "false"
+              },
+              {
+                "field" : "P/Side/S1D",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05"
+              },
+              {
+                "field" : "P/Side/S1DT",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05-05T06:07:08"
+              },
+              {
+                "field" : "P/Side/S1E",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "B"
+              },
+              {
+                "field" : "P/Side/S1FD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-05"
+              },
+              {
+                "field" : "P/Side/S1R",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2026-03-01/2026-04-01"
+              },
+              {
+                "field" : "P/Side/S1S",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "b"
+              },
+              {
+                "field" : "P/Side/S1T",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11:45:00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "P/Outer/O1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "P/Outer/Tg/T1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "P/Outer/O1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "P/Outer/Tg/T1N",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

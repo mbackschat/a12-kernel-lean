@@ -1,0 +1,205 @@
+{
+ "header": {
+  "id": "R11D_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R11D_DM"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Tot",
+        "name": "Tot",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/D0",
+        "name": "D0",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/D2",
+        "name": "D2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Rows",
+        "name": "Rows",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Rows/N",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Rows/Sub",
+           "name": "Sub",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Rows/Sub/X",
+              "name": "X",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ],
+            "repeatability": 2
+           }
+          }
+         ],
+         "repeatability": 4
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Out1b",
+        "name": "Out1b",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Out1s",
+        "name": "Out1s",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DOutb",
+        "name": "DOutb",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DOuts",
+        "name": "DOuts",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Out2b",
+        "name": "Out2b",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Out2s",
+        "name": "Out2s",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

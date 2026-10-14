@@ -740,6 +740,20 @@ example : evaluate true "FirstFilledValue(Rows/Body/A ->Kind For Key, Rows/Body/
     (evaluate true "FirstFilledValue(Rows/Body/A For Key, Rows/Body/A For Key) == \"A\"" false).isNone ∧
     (evaluate true "[Rows/Children*/Value For Key]" true none { tokenTarget := true }).isNone := by native_decide
 
+/-- The class the reader assigns a computation it refuses. -/
+private def refusalClass (operation : String) : Option String :=
+  match lowerComputation (scenarioModel true { tokenTarget := true }) .english {
+      name := "Result", group := ["Form"], targetRelPath := "../TextOut", commonPrecondition := none
+      alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] } with
+  | .error refusal => some refusal.detail
+  | .ok _ => none
+
+-- The directly assigned keyed star is refused (e5, e6) while its scalar keyed twin is admitted. The
+-- reader's cause is no Kernel class yet, where the Kernel draws `MVK_NO_WILDCARDS_ALLOWED`: SG29's
+-- diagnostics residual.
+example : refusalClass "[Rows/Children*/Value For Key]" = some "target path" ∧
+    refusalClass "[Rows/Body/A For Key]" = none := by native_decide
+
 -- A category on a keyed first-filled operand projects the selected cell; a missing key falls through
 -- to the next operand with OMISSION, and a duplicate or invalid selection stays silent (c01, c05 and
 -- p06 of the semantic-index capture).

@@ -1,0 +1,375 @@
+{
+ "header": {
+  "id": "R12N_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R12N_DM"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/P/Outer",
+        "name": "Outer",
+        "Group": {
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/P/Outer/Inner",
+           "name": "Inner",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/INum",
+              "name": "INum",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IN",
+              "name": "IN",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/P/Outer/Inner/Deep",
+              "name": "Deep",
+              "Group": {
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/P/Outer/Inner/Deep/DNum",
+                 "name": "DNum",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                }
+               ],
+               "repeatability": 2
+              }
+             }
+            ],
+            "repeatability": 3
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Outer/Tg",
+           "name": "Tg",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Outer/Tg/TK",
+              "name": "TK",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Tg/T1Num",
+              "name": "T1Num",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/P/Outer/Tg/Ct1Num",
+              "name": "Ct1Num",
+              "Computation": {
+               "computedFieldRelPath": "../T1Num",
+               "computationAlternatives": [
+                {
+                 "operation": "FirstFilledValue(/P/Outer/Inner*/Deep*/DNum)"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Tg/T2Num",
+              "name": "T2Num",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/P/Outer/Tg/Ct2Num",
+              "name": "Ct2Num",
+              "Computation": {
+               "computedFieldRelPath": "../T2Num",
+               "computationAlternatives": [
+                {
+                 "operation": "FirstFilledValue(/P/Outer/Inner*/INum)"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ],
+            "repeatability": 2
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Outer/O1Num",
+           "name": "O1Num",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Outer/Co1Num",
+           "name": "Co1Num",
+           "Computation": {
+            "computedFieldRelPath": "../O1Num",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(Inner*/Deep*/DNum)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Outer/O2Num",
+           "name": "O2Num",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Outer/Co2Num",
+           "name": "Co2Num",
+           "Computation": {
+            "computedFieldRelPath": "../O2Num",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(Inner*/INum)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Outer/O3Num",
+           "name": "O3Num",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Outer/Co3Num",
+           "name": "Co3Num",
+           "Computation": {
+            "computedFieldRelPath": "../O3Num",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/P/Outer*/Inner*/INum)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ],
+         "repeatability": 3
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Side",
+        "name": "Side",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Side/SK",
+           "name": "SK",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Side/S1Num",
+           "name": "S1Num",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Side/Cs1Num",
+           "name": "Cs1Num",
+           "Computation": {
+            "computedFieldRelPath": "../S1Num",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/P/Outer*/Inner*/INum)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ],
+         "repeatability": 2
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FNum",
+        "name": "FNum",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfNum",
+        "name": "CfNum",
+        "Computation": {
+         "computedFieldRelPath": "../FNum",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/INum)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

@@ -151,7 +151,7 @@ example : fired noledger = some [
     "d01b Staffing/Supply/Note A12Kernel.Polarity.value [Staffing/Demand/Department, Staffing/Demand/Label, Staffing/Supply/Department, Staffing/Supply/Note]"] := by
   native_decide
 
--- With every group full, an unmatched side has no free row of its group left; its fields still read
+-- With Demand and Supply full, an unmatched side has no free row of its group left; its fields still read
 -- empty, so neither the computations nor the rules change. The capture has free
 -- rows on every document, so this invariance is the chosen account, not a measurement.
 example : computed staff 4 = computed staff ∧ fired staff 4 = fired staff := by native_decide
