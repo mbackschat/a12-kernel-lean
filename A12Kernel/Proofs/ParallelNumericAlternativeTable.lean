@@ -27,37 +27,38 @@ theorem checkedParallelNumericAlternativeTable_excludes_target
 
 theorem parallelNumericAlternativeTable_noMatch
     (table : CheckedParallelNumericAlternativeTable model)
-    (context : ScalarComputationContext) (document : Document) (row : Env)
-    (selection : ComputationAlternative.selectFirstWith (fun guard => guard.eval context document row)
+    (context : ParallelNumericGuardContext)
+    (selection : ComputationAlternative.selectFirstWith (fun guard => guard.eval context)
       table.selectableAlternatives = .ok .noMatch) :
-    table.evaluate context document row = .ok .noValue := by
+    table.evaluate context = .ok .noValue := by
   simp [CheckedParallelNumericAlternativeTable.evaluate, selection]
 
 theorem parallelNumericAlternativeTable_guardPoison
     (table : CheckedParallelNumericAlternativeTable model)
-    (context : ScalarComputationContext) (document : Document) (row : Env) (cause : FormalCause)
-    (selection : ComputationAlternative.selectFirstWith (fun guard => guard.eval context document row)
+    (context : ParallelNumericGuardContext) (cause : FormalCause)
+    (selection : ComputationAlternative.selectFirstWith (fun guard => guard.eval context)
       table.selectableAlternatives = .ok (.poison cause)) :
-    table.evaluate context document row = .ok (.inheritedPoison cause) := by
+    table.evaluate context = .ok (.inheritedPoison cause) := by
   simp [CheckedParallelNumericAlternativeTable.evaluate, selection]
 
 theorem parallelNumericAlternativeTable_selected
     (table : CheckedParallelNumericAlternativeTable model)
-    (context : ScalarComputationContext) (document : Document) (row : Env)
+    (context : ParallelNumericGuardContext)
     (operation : CheckedIsolatedParallelNumericDirectRun model)
-    (selection : ComputationAlternative.selectFirstWith (fun guard => guard.eval context document row)
+    (selection : ComputationAlternative.selectFirstWith (fun guard => guard.eval context)
       table.selectableAlternatives = .ok (.selected operation)) :
-    table.evaluate context document row = operation.evaluateSelected context := by
+    table.evaluate context = operation.evaluateSelected context.joinedScalar := by
   simp [CheckedParallelNumericAlternativeTable.evaluate, selection]
 
 private theorem parallelNumericAlternativeTable_executeTargetWith_address
     (table : CheckedParallelNumericAlternativeTable model)
     (preliminary : CheckedIndexPreliminary model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (ordinaryAt : Env → NumericComputationEvaluationContext)
     (target : ParallelNumericTargetCoverage)
     (outcome : ParallelNumericDirectOutcome)
     (executed :
-      table.executeTargetWith preliminary read target = .ok outcome) :
+      table.executeTargetWith preliminary read ordinaryAt target = .ok outcome) :
     outcome.address = target.address := by
   unfold CheckedParallelNumericAlternativeTable.executeTargetWith at executed
   cases keyResult :
@@ -75,22 +76,23 @@ private theorem parallelNumericAlternativeTable_executeTargetWith_address
           rw [keyResult] at executed
           simp only [Bind.bind, Except.bind] at executed
           rw [cellsResult] at executed
-          let context : ScalarComputationContext := {
-            read := fun field =>
+          let context : ParallelNumericGuardContext := {
+            joinedRead := fun field =>
               match cells.find? fun cell => cell.1 == field with
               | some cell => cell.2
               | none => malformedCheckedCell
+            ordinary := ordinaryAt target.environment
           }
           change
             (do
-              let result ← table.evaluate context preliminary.base.readDocument target.environment
+              let result ← table.evaluate context
               pure ({
                 address := target.address
                 outcome := result
               } : ParallelNumericDirectOutcome)) =
                 .ok outcome at executed
           cases evaluationResult :
-              table.evaluate context preliminary.base.readDocument target.environment with
+              table.evaluate context with
           | error error =>
               rw [evaluationResult] at executed
               contradiction
@@ -105,9 +107,10 @@ theorem parallelNumericAlternativeTable_executeWithRead_owns_target
     (table : CheckedParallelNumericAlternativeTable model)
     (preliminary : CheckedIndexPreliminary model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (ordinaryAt : Env → NumericComputationEvaluationContext)
     (outcomes : List ParallelNumericDirectOutcome)
     (executed :
-      table.executeWithRead preliminary read = .ok outcomes) :
+      table.executeWithRead preliminary read ordinaryAt = .ok outcomes) :
     ∀ outcome ∈ outcomes,
       outcome.address.field = table.targetField := by
   unfold CheckedParallelNumericAlternativeTable.executeWithRead at executed
@@ -134,7 +137,7 @@ theorem parallelNumericAlternativeTable_executeWithRead_owns_target
             table.first.operation.route.targetField at owned
         exact owned.trans table.first.targetMatches
       change
-        targets.mapM (table.executeTargetWith preliminary read) =
+        targets.mapM (table.executeTargetWith preliminary read ordinaryAt) =
           .ok outcomes at executed
       apply exceptMapM_all_of_step
         (property := fun outcome =>
@@ -142,7 +145,7 @@ theorem parallelNumericAlternativeTable_executeWithRead_owns_target
         (mapped := executed)
       intro target member outcome targetExecuted
       rw [parallelNumericAlternativeTable_executeTargetWith_address
-        table preliminary read target outcome targetExecuted]
+        table preliminary read ordinaryAt target outcome targetExecuted]
       exact targetsOwned target member
 
 /-- Successful table execution emits each exact target address at most once. -/
@@ -150,9 +153,10 @@ theorem parallelNumericAlternativeTable_executeWithRead_addresses_nodup
     (table : CheckedParallelNumericAlternativeTable model)
     (preliminary : CheckedIndexPreliminary model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (ordinaryAt : Env → NumericComputationEvaluationContext)
     (outcomes : List ParallelNumericDirectOutcome)
     (executed :
-      table.executeWithRead preliminary read = .ok outcomes) :
+      table.executeWithRead preliminary read ordinaryAt = .ok outcomes) :
     (outcomes.map (·.address)).Nodup := by
   unfold CheckedParallelNumericAlternativeTable.executeWithRead at executed
   cases targetsResult :
@@ -165,16 +169,16 @@ theorem parallelNumericAlternativeTable_executeWithRead_addresses_nodup
   | ok targets =>
       rw [targetsResult] at executed
       change
-        targets.mapM (table.executeTargetWith preliminary read) =
+        targets.mapM (table.executeTargetWith preliminary read ordinaryAt) =
           .ok outcomes at executed
       have projected := exceptMapM_map_eq_of_step
-        (table.executeTargetWith preliminary read)
+        (table.executeTargetWith preliminary read ordinaryAt)
         (·.address) (·.address) targets outcomes
         (by
           intro target member outcome targetExecuted
           exact
             parallelNumericAlternativeTable_executeTargetWith_address
-              table preliminary read target outcome targetExecuted)
+              table preliminary read ordinaryAt target outcome targetExecuted)
         executed
       rw [projected]
       exact parallelNumericExecutableTargets_addresses_nodup

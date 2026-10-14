@@ -87,7 +87,7 @@ theorem parallelNumericRun_executeTables_trace
   | cons table remaining inductionHypothesis =>
       cases tableResult :
           table.executeWithRead preliminary
-            (plan.readPolicy state.runState preliminary.base) with
+            (plan.readPolicy state.runState preliminary.base) preliminary.base.parallelGuardContextAt with
       | error fault =>
           simp [CheckedParallelNumericPlan.executeTables, tableResult] at executed
       | ok outcomes =>
@@ -170,7 +170,7 @@ theorem parallelNumericRun_executeTables_failureTrace
   | cons table remaining inductionHypothesis =>
       cases tableResult :
           table.executeWithRead preliminary
-            (plan.readPolicy state.runState preliminary.base) with
+            (plan.readPolicy state.runState preliminary.base) preliminary.base.parallelGuardContextAt with
       | error error =>
           rw [CheckedParallelNumericPlan.executeTables, tableResult] at executed
           change Except.error (.table table.targetField error) =

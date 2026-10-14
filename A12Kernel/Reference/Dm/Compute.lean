@@ -296,12 +296,37 @@ private def joinedGuards (language : Language) (model : FlatModel) (computation 
     (target : FlatFieldDecl) (suppress : Bool) : Lowering (List (Option (ParallelNumericGuard model))) := do
   let joined := model.parallelJoinedGroups target
   let view := model.parallelInstanceView joined
-  let resolve (text : String) : Lowering (CheckedComputationCondition view) := do
-    let surface ← guardSurface language view computation target suppress text
-    (model.elaborateParallelNumericGuard joined computation.group target.groupPath surface).mapError guardRefusal
+  -- Each leaf is lowered and checked twice, because the view drops the repetition and index of
+  -- every joined group: a starred, keyed or filtered read of one only exists against the model.
+  let rec tree : Expr → Lowering (ConditionTree (ParallelNumericGuardPart model joined))
+    | .parens body => tree body
+    | .logic op (first :: rest) => do
+        let join := match op with
+          | .and => ConditionTree.and
+          | .or => ConditionTree.or
+        let mut result ← tree first
+        for part in rest do result := join result (← tree part)
+        pure result
+    | leaf => ParallelNumericGuardPart.choose
+        (do
+          let surface ← lowerGuard view computation.group suppress leaf (some target.groupPath)
+          (model.elaborateParallelNumericGuardLeaf joined computation.group target.groupPath surface).mapError guardRefusal)
+        (do
+          let surface ← lowerGuard model computation.group suppress leaf (some target.groupPath)
+          (model.elaborateCheckedComputationCondition computation.group target.groupPath surface).mapError guardRefusal)
+      |>.map .leaf
+  let resolve (text : String) : Lowering (ConditionTree (ParallelNumericGuardPart model joined)) := do
+    let guard := (← parsed language text).body
+    if !guard.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
+    tree guard
   let common ← computation.commonPrecondition.mapM resolve
   let own ← computation.alternatives.mapM (·.precondition.mapM resolve)
-  pure (own.map fun guard => (ComputationConditionOf.withCommon common guard).map ({ joined, condition := · }))
+  let withCommon := fun (guard : Option (ConditionTree (ParallelNumericGuardPart model joined))) =>
+    match common, guard with
+    | none, guard => guard
+    | some common, none => some common
+    | some common, some guard => some (.and common guard)
+  pure (own.map fun guard => (withCommon guard).map ({ joined, condition := · }))
 
 /-- Reuse the checked parallel carriers after ordinary scope binding refuses. The complete table owns
 its joined routes, including scalar fallbacks; bound fields retain the ordinary target environment. -/

@@ -78,7 +78,9 @@ private def tableOutcome?
   let checked ← collectRows? rows
   let table ← (certifyParallelNumericAlternativeTable checked).toOption
   -- Presence guards read no row topology, so an empty document and row suffice.
-  (table.evaluate inputContext { instantiatedRows := [], rawCells := fun _ => none } []).toOption
+  (table.evaluate { joinedRead := inputContext.read, ordinary := {
+    scalar := inputContext, document := { instantiatedRows := [], rawCells := fun _ => none }, outer := []
+    filterRead := fun _ => inputContext.read, starRead := fun _ => inputContext.read } }).toOption
 
 private def executionTable? :
     Option (CheckedParallelNumericAlternativeTable model) := do

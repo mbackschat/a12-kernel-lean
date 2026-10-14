@@ -81,7 +81,7 @@ theorem parallelNumericPlan_executeTables_append
   | cons table remaining ih =>
       cases executed :
           table.executeWithRead preliminary
-            (plan.readPolicy state preliminary.base) with
+            (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt with
       | error error =>
           simp [CheckedParallelNumericPlan.executeTables, executed] at first
       | ok outcomes =>
@@ -113,7 +113,7 @@ theorem parallelNumericPlan_executeTables_owns_target_fields
   | cons table remaining ih =>
       cases tableResult :
           table.executeWithRead preliminary
-            (plan.readPolicy state preliminary.base) with
+            (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt with
       | error error =>
           simp [CheckedParallelNumericPlan.executeTables,
             tableResult] at executed
@@ -130,7 +130,7 @@ theorem parallelNumericPlan_executeTables_owns_target_fields
             · have tableField :=
                 parallelNumericAlternativeTable_executeWithRead_owns_target
                   table preliminary
-                  (plan.readPolicy state preliminary.base)
+                  (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
                   outcomes tableResult outcome member
               rw [tableField]
               exact tablesOwned table (by simp)
@@ -160,7 +160,7 @@ private theorem parallelNumericPlan_executeTables_addresses_nodup
   | cons table remaining inductionHypothesis =>
       cases tableResult :
           table.executeWithRead preliminary
-            (plan.readPolicy state preliminary.base) with
+            (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt with
       | error error =>
           simp [CheckedParallelNumericPlan.executeTables,
             tableResult] at executed
@@ -168,7 +168,7 @@ private theorem parallelNumericPlan_executeTables_addresses_nodup
           have outcomesNodup :=
             parallelNumericAlternativeTable_executeWithRead_addresses_nodup
               table preliminary
-              (plan.readPolicy state preliminary.base)
+              (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
               outcomes tableResult
           have appendedNodup :
               ((state.completed ++ outcomes).map (·.address)).Nodup := by
@@ -187,7 +187,7 @@ private theorem parallelNumericPlan_executeTables_addresses_nodup
               have currentOwned :=
                 parallelNumericAlternativeTable_executeWithRead_owns_target
                   table preliminary
-                  (plan.readPolicy state preliminary.base)
+                  (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
                   outcomes tableResult currentOutcome
                   currentOutcomeMember
               apply priorFieldNotCurrent
@@ -207,7 +207,7 @@ private theorem parallelNumericPlan_executeTables_addresses_nodup
             · have currentOwned :=
                 parallelNumericAlternativeTable_executeWithRead_owns_target
                   table preliminary
-                  (plan.readPolicy state preliminary.base)
+                  (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
                   outcomes tableResult outcome currentMember
               rw [currentOwned]
               exact (List.nodup_cons.mp tableTargetsNodup).1

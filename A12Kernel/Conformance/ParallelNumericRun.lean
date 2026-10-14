@@ -434,7 +434,7 @@ private def relationPreliminary : CheckedIndexPreliminary model :=
 private def relationSeedOutcomes : List ParallelNumericDirectOutcome :=
   (relationSeedTable.executeWithRead relationPreliminary
     (relationPlan.readPolicy
-      ({} : ParallelNumericTransitionState).runState relationPreliminary.base))
+      ({} : ParallelNumericTransitionState).runState relationPreliminary.base) relationPreliminary.base.parallelGuardContextAt)
       |>.toOption |>.get (by native_decide)
 
 private def afterActionFreeSeed : ParallelNumericTransitionState :=
@@ -450,12 +450,12 @@ private theorem evaluated_to_get (evaluation : Except ε α)
 private theorem relationSeedExecuted :
     relationSeedTable.executeWithRead relationPreliminary
       (relationPlan.readPolicy
-        ({} : ParallelNumericTransitionState).runState relationPreliminary.base) =
+        ({} : ParallelNumericTransitionState).runState relationPreliminary.base) relationPreliminary.base.parallelGuardContextAt =
         .ok relationSeedOutcomes := by
   simpa [relationSeedOutcomes] using evaluated_to_get
     (evaluation := relationSeedTable.executeWithRead relationPreliminary
       (relationPlan.readPolicy
-        ({} : ParallelNumericTransitionState).runState relationPreliminary.base))
+        ({} : ParallelNumericTransitionState).runState relationPreliminary.base) relationPreliminary.base.parallelGuardContextAt)
     (by native_decide)
 
 private theorem relationEnabled
@@ -507,7 +507,7 @@ example (error : CheckedIsolatedParallelNumericDirectRun.ExecutionError)
     (executed :
       relationMiddleTable.executeWithRead relationPreliminary
         (relationPlan.readPolicy afterActionFreeSeed.runState
-          relationPreliminary.base) = .error error) :
+          relationPreliminary.base) relationPreliminary.base.parallelGuardContextAt = .error error) :
     afterActionFreeSeed.completedTargets = [6] ∧
       afterActionFreeSeed.outcomes = [] ∧
       ParallelNumericRunFailureTransition relationPlan relationPreliminary

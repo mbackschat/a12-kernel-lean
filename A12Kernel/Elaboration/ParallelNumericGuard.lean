@@ -30,80 +30,157 @@ def CheckedComputationCondition.protectionView (condition : CheckedComputationCo
     | .predicate source => .predicate source.groupReference?
     | leaf => .predicate leaf.groupReference?
 
-/-- A guard checked against the instance view of the groups one joined row binds. -/
+/-- Whether `group` strictly contains a joined group, so that the join does not narrow it. -/
+def GroupPath.enclosesAny (group : GroupPath) (joined : List GroupPath) : Bool :=
+  joined.any fun path => group.isPrefixOf path && group != path
+
+/-- One authored guard leaf of a joined computation, kept with the model that certified it. -/
+inductive ParallelNumericGuardPart (model : FlatModel) (joined : List GroupPath) where
+  /-- Certified against the instance view, so a plain read of a joined group takes the partner row;
+  it evaluates over the joined row's cells. -/
+  | view (condition : CheckedComputationCondition (model.parallelInstanceView joined))
+  /-- Certified against the model at the target row. A starred, keyed or filtered leaf, which the
+  view cannot certify, keeps its ordinary meaning there and reads the whole document
+  ([joined-carrier checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-joined-carrier-admission)). -/
+  | ordinary (condition : CheckedComputationCondition model)
+
+/-- The two reads a joined guard evaluates over: the joined row's cells by field identity, and the
+document at the target row, which carries the world a clock-reading leaf needs in either part. -/
+structure ParallelNumericGuardContext where
+  joinedRead : FieldId → CheckedCell
+  ordinary : NumericComputationEvaluationContext
+
+/-- The joined row's cells under the document's world: the context a joined operation and a view
+part read through. -/
+def ParallelNumericGuardContext.joinedScalar (context : ParallelNumericGuardContext) :
+    ScalarComputationContext :=
+  { read := context.joinedRead, world := context.ordinary.scalar.world }
+
+/-- The ordinary computation context at one target row of `document`, with its own world. -/
+def CheckedDocument.parallelGuardContextAt (document : CheckedDocument model) (environment : Env) :
+    NumericComputationEvaluationContext :=
+  let reads := document.computationFillContext
+  { scalar := document.computationContextAt environment, document := reads.document,
+    outer := environment
+    filterRead := reads.read, filterStoredText := reads.storedText, filterNumberText := reads.numberText
+    starRead := reads.read, starStoredText := reads.storedText
+    indexColumn? := some (document.resolveSemanticIndexColumnWith document.read) }
+
+namespace ParallelNumericGuardPart
+
+def referencesField : ParallelNumericGuardPart model joined → FieldId → Bool
+  | .view condition, field => condition.referencesField field
+  | .ordinary condition, field => condition.referencesField field
+
+def forbidsTarget : ParallelNumericGuardPart model joined → FieldId → Bool
+  | .view condition, field => condition.forbidsTarget field
+  | .ordinary condition, field => condition.forbidsTarget field
+
+def requiresProducer (part : ParallelNumericGuardPart model joined) (consumer producer : FieldId)
+    (producerProtected : ResolvedGroupReference → Bool) : Bool :=
+  match part with
+  | .view condition => condition.requiresProducer consumer producer producerProtected
+  | .ordinary condition => condition.requiresProducer consumer producer producerProtected
+
+def protectionView : ParallelNumericGuardPart model joined → ComputationProtectionView
+  | .view condition => condition.protectionView
+  | .ordinary condition => condition.protectionView
+
+/-- Whether evaluation reads the field among the joined row's cells. Group presence reads its
+content fields; its complete member inventory stays a dependency of `referencesField` only. An
+ordinary part reads the document instead, so it adds no cell and no route to the join. -/
+def readsJoinedField : ParallelNumericGuardPart model joined → FieldId → Bool
+  | .view condition, field => condition.anyLeaf fun
+      | .groupPresence _ source => source.content.fields.contains field
+      | leaf => CheckedComputationCondition.referencesField (.leaf leaf) field
+  | .ordinary _, _ => false
+
+/-- A view part reads direct cells only, each one admitted by `admits`. Starred, indexed, keyed
+and filtered sources need an extent the joined row does not supply; group presence below a joined
+group needs no row topology because the view has none there. Its predicate set is the one the
+parallel-guard capture measured: field-fill lists, temporal comparisons and scalar value lists. An
+ordinary part was certified at the target row and needs nothing from the join. -/
+def admitted (part : ParallelNumericGuardPart model joined) (admits : FieldId → Bool) : Bool :=
+  match part with
+  | .ordinary _ => true
+  | .view condition =>
+      let reads := fun (leaf : ComputationConditionLeaf _ _) =>
+        model.fields.all fun declaration =>
+          !CheckedComputationCondition.referencesField (model := model.parallelInstanceView joined)
+            (.leaf leaf) declaration.id || admits declaration.id
+      condition.allLeaves fun leaf => match leaf with
+        | .fieldFilled field | .fieldNotFilled field => admits field
+        | .text comparison | .scalar comparison => comparison.fieldIds.all admits
+        | .fieldFill _ sources => sources.all fun
+            | .direct field => admits field
+            | .expanded .. => false
+        | .groupPresence _ source => source.starPath.isNone &&
+            (source.content.rowLevels.isEmpty || source.reference.path.enclosesAny joined) &&
+            source.content.fields.all admits
+        | .numeric comparison => reads leaf && (comparison.left.atoms ++ comparison.right.atoms).all fun
+            | .numeric (.field _) | .numeric (.temporalFieldPart ..) | .numeric (.stringLength _)
+            | .numeric (.aggregate ..) => true
+            | _ => false
+        | .predicate (.fieldFill _ source) => reads leaf && source.source.operands.all fun
+            | .field _ => true
+            | _ => false
+        | .predicate (.temporal _) | .predicate (.scalarValueList ..) => reads leaf
+        | .predicate _ => false
+
+/-- A view part sees only the joined row's cells, and the document only for the row topology an
+enclosing group's presence consults. An ordinary part sees the document at the target row. -/
+def eval (part : ParallelNumericGuardPart model joined) (context : ParallelNumericGuardContext) :
+    Except CheckedComputationConditionError ComputationConditionResult :=
+  match part with
+  | .view condition =>
+      let row := context.ordinary.outer
+      condition.evalCheckedIn {
+        scalar := { context.joinedScalar with row }
+        document := context.ordinary.document, outer := row
+        filterRead := fun _ => context.joinedRead, starRead := fun _ => context.joinedRead }
+  | .ordinary condition => condition.evalCheckedIn context.ordinary
+
+end ParallelNumericGuardPart
+
+private def graftProtection : ConditionTree (ParallelNumericGuardPart model joined) → ComputationProtectionView
+  | .leaf part => part.protectionView
+  | .and left right => .and (graftProtection left) (graftProtection right)
+  | .or left right => .or (graftProtection left) (graftProtection right)
+
+/-- A joined computation's guard: the authored connective tree over parts. -/
 structure ParallelNumericGuard (model : FlatModel) where
   joined : List GroupPath
-  condition : CheckedComputationCondition (model.parallelInstanceView joined)
+  condition : ConditionTree (ParallelNumericGuardPart model joined)
 
 namespace ParallelNumericGuard
 
-/-- A model-checked guard that joins no group, such as one over target-row or common-frame fields. -/
+/-- A model-checked guard that joins no group, such as one over target-row or common-frame fields.
+With nothing joined the view is the model itself, so the guard reads the joined cells as before. -/
 def ofUnjoined (condition : CheckedComputationCondition model) : ParallelNumericGuard model :=
-  { joined := [], condition }
+  { joined := [], condition := .leaf (.view condition) }
 
 def referencesField (guard : ParallelNumericGuard model) (field : FieldId) : Bool :=
-  guard.condition.referencesField field
+  guard.condition.anyLeaf (·.referencesField field)
 
 def forbidsTarget (guard : ParallelNumericGuard model) (field : FieldId) : Bool :=
-  guard.condition.forbidsTarget field
+  guard.condition.anyLeaf (·.forbidsTarget field)
 
 def requiresProducer (guard : ParallelNumericGuard model) (consumer producer : FieldId)
     (producerProtected : ResolvedGroupReference → Bool) : Bool :=
-  guard.condition.requiresProducer consumer producer producerProtected
-
-/-- Whether `group` strictly contains a joined group, so that the join does not narrow it. -/
-def _root_.A12Kernel.GroupPath.enclosesAny (group : GroupPath) (joined : List GroupPath) : Bool :=
-  joined.any fun path => group.isPrefixOf path && group != path
-
-def encloses (guard : ParallelNumericGuard model) (group : GroupPath) : Bool :=
-  group.enclosesAny guard.joined
+  guard.condition.anyLeaf (·.requiresProducer consumer producer producerProtected)
 
 def protectionView (guard : ParallelNumericGuard model) : ComputationProtectionView :=
-  guard.condition.protectionView
+  graftProtection guard.condition
 
-/-- Whether evaluation reads the field's cell. Group presence reads its content fields; its
-complete member inventory stays a dependency of `referencesField` only. -/
 def readsField (guard : ParallelNumericGuard model) (field : FieldId) : Bool :=
-  guard.condition.anyLeaf fun
-    | .groupPresence _ source => source.content.fields.contains field
-    | leaf => CheckedComputationCondition.referencesField (.leaf leaf) field
+  guard.condition.anyLeaf (·.readsJoinedField field)
 
-/-- Every leaf reads direct cells only, each one admitted by `admits`. Starred, indexed, keyed and
-filtered sources need an extent the joined row does not supply; group presence below a joined
-group needs no row topology because the view has none there. The predicate set is the one the
-capture measured: field-fill lists, temporal comparisons and scalar value lists. -/
 def admitted (guard : ParallelNumericGuard model) (admits : FieldId → Bool) : Bool :=
-  let reads := fun (leaf : ComputationConditionLeaf _ _) =>
-    model.fields.all fun declaration =>
-      !CheckedComputationCondition.referencesField (model := model.parallelInstanceView guard.joined)
-        (.leaf leaf) declaration.id || admits declaration.id
-  guard.condition.allLeaves fun leaf => match leaf with
-    | .fieldFilled field | .fieldNotFilled field => admits field
-    | .text comparison | .scalar comparison => comparison.fieldIds.all admits
-    | .fieldFill _ sources => sources.all fun
-        | .direct field => admits field
-        | .expanded .. => false
-    | .groupPresence _ source => source.starPath.isNone &&
-        (source.content.rowLevels.isEmpty || guard.encloses source.reference.path) &&
-        source.content.fields.all admits
-    | .numeric comparison => reads leaf && (comparison.left.atoms ++ comparison.right.atoms).all fun
-        | .numeric (.field _) | .numeric (.temporalFieldPart ..) | .numeric (.stringLength _)
-        | .numeric (.aggregate ..) => true
-        | _ => false
-    | .predicate (.fieldFill _ source) => reads leaf && source.source.operands.all fun
-        | .field _ => true
-        | _ => false
-    | .predicate (.temporal _) | .predicate (.scalarValueList ..) => reads leaf
-    | .predicate _ => false
+  guard.condition.allLeaves (·.admitted admits)
 
-/-- Evaluate over one joined row. `read` supplies every admitted cell by identity; `document`
-supplies only the row topology an enclosing group's presence consults. -/
-def eval (guard : ParallelNumericGuard model) (context : ScalarComputationContext)
-    (document : Document) (row : Env) :
+def eval (guard : ParallelNumericGuard model) (context : ParallelNumericGuardContext) :
     Except CheckedComputationConditionError ComputationConditionResult :=
-  guard.condition.evalCheckedIn {
-    scalar := { context with row }, document, outer := row
-    filterRead := fun _ => context.read, starRead := fun _ => context.read }
+  guard.condition.evalComputationExcept (·.eval context)
 
 end ParallelNumericGuard
 
@@ -115,9 +192,9 @@ def FlatModel.parallelJoinedGroups (model : FlatModel) (target : FlatFieldDecl) 
   own ++ (model.repeatableGroups.filter fun group => group.indexField.isSome &&
     !group.path.isPrefixOf target.groupPath && !own.contains group.path).map (·.path)
 
-/-- Check a guard against the instance view of `joined`. A group strictly containing a joined
-group regains the model's content and members, which the view would have narrowed to one row. -/
-def FlatModel.elaborateParallelNumericGuard (model : FlatModel) (joined : List GroupPath)
+/-- Check one guard leaf against the instance view of `joined`. A group strictly containing a
+joined group regains the model's content and members, which the view would have narrowed to one row. -/
+def FlatModel.elaborateParallelNumericGuardLeaf (model : FlatModel) (joined : List GroupPath)
     (declaringGroup targetGroup : GroupPath)
     (surface : SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate) :
     Except CheckedComputationConditionElabError (CheckedComputationCondition (model.parallelInstanceView joined)) := do
@@ -131,5 +208,23 @@ def FlatModel.elaborateParallelNumericGuard (model : FlatModel) (joined : List G
             members := (model.groupSubtreeFields source.reference.path).map (·.id) }
         else .groupPresence operator source
     | leaf => leaf)
+
+/-- Choose one guard leaf's part from its two checks. The view's reading wins when the joined row can
+evaluate it. A leaf the view refuses, or certifies only as a kind the joined row cannot evaluate
+such as a pattern, takes its ordinary reading at the target row when it has one; otherwise the
+view's account stands, so its refusal or its later route refusal is reported. -/
+def ParallelNumericGuardPart.choose
+    (view : Except ε (CheckedComputationCondition (model.parallelInstanceView joined)))
+    (ordinary : Except ε (CheckedComputationCondition model)) :
+    Except ε (ParallelNumericGuardPart model joined) :=
+  match view with
+  | .ok condition =>
+      if (ParallelNumericGuardPart.view condition).admitted (fun _ => true) then .ok (.view condition)
+      else match ordinary with
+        | .ok checked => .ok (.ordinary checked)
+        | .error _ => .ok (.view condition)
+  | .error refusal => match ordinary with
+      | .ok checked => .ok (.ordinary checked)
+      | .error _ => .error refusal
 
 end A12Kernel

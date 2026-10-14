@@ -107,15 +107,15 @@ def forbidsField
 
 /-- Select through the shared computation-condition scan, then evaluate only the selected checked parallel operation. -/
 def evaluate (table : CheckedParallelNumericAlternativeTable model)
-    (context : ScalarComputationContext) (document : Document) (row : Env) :
+    (context : ParallelNumericGuardContext) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       NumericTargetOutcome := do
-  match ComputationAlternative.selectFirstWith (fun guard => guard.eval context document row)
+  match ComputationAlternative.selectFirstWith (fun guard => guard.eval context)
       table.selectableAlternatives with
   | .error error => if error.isValueFailure then .ok (.invalidNoValue .calculationValue) else throw (.guard error)
   | .ok .noMatch => .ok .noValue
   | .ok (.poison cause) => .ok (.inheritedPoison cause)
-  | .ok (.selected operation) => operation.evaluateSelected context
+  | .ok (.selected operation) => operation.evaluateSelected context.joinedScalar
 
 def WellFormed
     (table : CheckedParallelNumericAlternativeTable model) : Prop :=
@@ -156,11 +156,12 @@ def operandCellsWith
       targetEnvironment key
   pure nested.flatten
 
-/-- Evaluate the selected table row at one already-certified target coverage entry. The supplied target owns the returned exact address. -/
+/-- Evaluate the selected table row at one already-certified target coverage entry. The supplied target owns the returned exact address; `ordinaryAt` supplies the document at a target row. -/
 def executeTargetWith
     (table : CheckedParallelNumericAlternativeTable model)
     (preliminary : CheckedIndexPreliminary model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (ordinaryAt : Env → NumericComputationEvaluationContext)
     (target : ParallelNumericTargetCoverage) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       ParallelNumericDirectOutcome := do
@@ -168,29 +169,31 @@ def executeTargetWith
     target.environment target.address
   let cells ← table.operandCellsWith preliminary read
     target.environment key
-  let context : ScalarComputationContext := {
-    read := fun field =>
+  let context : ParallelNumericGuardContext := {
+    joinedRead := fun field =>
       match cells.find? fun cell => cell.1 == field with
       | some cell => cell.2
       | none => malformedCheckedCell
+    ordinary := ordinaryAt target.environment
   }
   pure {
     address := target.address
-    outcome := ← table.evaluate context preliminary.base.readDocument target.environment
+    outcome := ← table.evaluate context
   }
 
 /-- Execute the table through one addressed carrier read at every actual target whose complete all-row route inventory has clean checked index columns. -/
 def executeWithRead
     (table : CheckedParallelNumericAlternativeTable model)
     (preliminary : CheckedIndexPreliminary model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (ordinaryAt : Env → NumericComputationEvaluationContext) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       (List ParallelNumericDirectOutcome) := do
   let targets ←
     CheckedIsolatedParallelNumericDirectRun.executableTargets
       table.first.operation.route
       (table.operandRoutes.drop 1) preliminary
-  targets.mapM (table.executeTargetWith preliminary read)
+  targets.mapM (table.executeTargetWith preliminary read ordinaryAt)
 
 /-- Preserve the standalone table entry point by reading carriers from the immutable preliminary document. -/
 def execute
@@ -198,7 +201,7 @@ def execute
     (preliminary : CheckedIndexPreliminary model) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       (List ParallelNumericDirectOutcome) :=
-  table.executeWithRead preliminary preliminary.base.read
+  table.executeWithRead preliminary preliminary.base.read preliminary.base.parallelGuardContextAt
 
 /-- Execute and classify the table against the same immutable preliminary, including source-filled clears from every statically participating row route. -/
 def executeResult

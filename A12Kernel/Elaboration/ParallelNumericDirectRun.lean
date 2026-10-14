@@ -236,19 +236,22 @@ def executeTargetWith
     (checked : CheckedIsolatedParallelNumericDirectRun model)
     (preliminary : CheckedIndexPreliminary model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (ordinaryAt : Env → NumericComputationEvaluationContext)
     (targetEnvironment : Env) (address : CellAddr) :
     Except ExecutionError ParallelNumericDirectOutcome := do
   let key ← checked.targetKeyFor preliminary targetEnvironment address
   let cells ← checked.operandCellsWith preliminary read targetEnvironment key
-  let context : ScalarComputationContext := {
-    read := fun field =>
+  let guardContext : ParallelNumericGuardContext := {
+    joinedRead := fun field =>
       match cells.find? fun cell => cell.1 == field with
       | some cell => cell.2
       | none => malformedCheckedCell
+    ordinary := ordinaryAt targetEnvironment
   }
+  let context := guardContext.joinedScalar
   let guardResult ← match checked.precondition with
     | none => pure ComputationConditionResult.holds
-    | some guard => (guard.eval context preliminary.base.readDocument targetEnvironment).mapError .guard
+    | some guard => (guard.eval guardContext).mapError .guard
   match guardResult with
   | .notTrue => pure { address, outcome := .noValue }
   | .poison cause =>
@@ -297,7 +300,8 @@ def execute
   let targets ← executableTargets checked.route
     checked.additionalRoutes preliminary
   targets.mapM fun target =>
-    checked.executeTargetWith preliminary preliminary.base.read target.environment target.address
+    checked.executeTargetWith preliminary preliminary.base.read preliminary.base.parallelGuardContextAt
+      target.environment target.address
 
 end CheckedIsolatedParallelNumericDirectRun
 

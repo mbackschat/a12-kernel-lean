@@ -48,7 +48,7 @@ inductive ParallelNumericRunTransition
       (outcomes : List ParallelNumericDirectOutcome)
       (executed :
         table.executeWithRead preliminary
-          (plan.readPolicy state.runState preliminary.base) = .ok outcomes) :
+          (plan.readPolicy state.runState preliminary.base) preliminary.base.parallelGuardContextAt = .ok outcomes) :
       ParallelNumericRunTransition plan preliminary state
         (table.targetField, outcomes) {
           completedTargets := state.completedTargets ++ [table.targetField]
@@ -72,7 +72,7 @@ inductive ParallelNumericRunFailureTransition
       (error : CheckedIsolatedParallelNumericDirectRun.ExecutionError)
       (executed :
         table.executeWithRead preliminary
-          (plan.readPolicy state.runState preliminary.base) = .error error) :
+          (plan.readPolicy state.runState preliminary.base) preliminary.base.parallelGuardContextAt = .error error) :
       ParallelNumericRunFailureTransition plan preliminary state
         (.table table.targetField error)
 

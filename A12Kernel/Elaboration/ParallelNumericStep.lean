@@ -102,9 +102,10 @@ def execute (step : CheckedParallelNumericStep model) (document : CheckedDocumen
     else
       match step with
       | .single operation =>
-          (operation.executeTargetWith preliminary document.read target.environment target.address).mapError .execution
+          (operation.executeTargetWith preliminary document.read document.parallelGuardContextAt
+            target.environment target.address).mapError .execution
       | .alternatives table =>
-          (table.executeTargetWith preliminary document.read target).mapError .execution
+          (table.executeTargetWith preliminary document.read document.parallelGuardContextAt target).mapError .execution
       | .mixed table => (table.executeTarget preliminary document target).mapError .execution
 
 end CheckedParallelNumericStep

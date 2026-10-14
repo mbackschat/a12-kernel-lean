@@ -113,8 +113,10 @@ def executeTables (plan : CheckedParallelNumericPlan model)
       ParallelNumericRunState → Except ExecutionFault ParallelNumericRunState
   | [], state => .ok state
   | table :: remaining, state =>
+      -- A model-certified guard part reads the immutable preliminary: this fragment plan overlays
+      -- completed outcomes only into the joined cells it routes.
       match table.executeWithRead preliminary
-          (plan.readPolicy state preliminary.base) with
+          (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt with
       | .error error => .error (.table table.targetField error)
       | .ok outcomes =>
           plan.executeTables preliminary remaining

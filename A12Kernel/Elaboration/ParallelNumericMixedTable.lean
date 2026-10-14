@@ -26,7 +26,7 @@ def evalGuard (member : CheckedParallelNumericMember model target)
     Except CheckedComputationConditionError ComputationConditionResult :=
   match member with
   | .joined alternative => match alternative.precondition with
-      | some guard => guard.eval context.scalar context.document context.outer
+      | some guard => guard.eval { joinedRead := context.scalar.read, ordinary := context }
       | none => pure .holds
   | .bound _ alternative => match alternative.precondition with
       | some guard => guard.evalCheckedIn context
@@ -95,17 +95,13 @@ def executeTarget (table : CheckedMixedParallelNumericTable model)
   let key := entry.key
   let cells ← table.operations.mapM fun operation =>
     operation.operandCellsWith preliminary document.read target.environment key
-  let bound := document.computationContextAt target.environment
+  let ordinary := document.parallelGuardContextAt target.environment
+  let bound := ordinary.scalar
   let scalar := { bound with read := fun field =>
     match cells.flatten.find? (·.1 == field) with
     | some (_, cell) => cell
     | none => bound.read field }
-  let reads := document.computationFillContext
-  let context : NumericComputationEvaluationContext := {
-    scalar, document := reads.document, outer := target.environment
-    filterRead := reads.read, filterStoredText := reads.storedText, filterNumberText := reads.numberText
-    starRead := reads.read, starStoredText := reads.storedText
-    indexColumn? := some (document.resolveSemanticIndexColumnWith document.read) }
+  let context := { ordinary with scalar }
   let alternatives := table.members.map fun member =>
     ({ precondition := if member.guarded then some member else none, operation := member } :
       ComputationAlternative (CheckedParallelNumericMember model table.targetField)
