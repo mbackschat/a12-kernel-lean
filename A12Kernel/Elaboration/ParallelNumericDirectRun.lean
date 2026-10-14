@@ -28,13 +28,13 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   private mk ::
   route : CheckedParallelNumericTargetRoute model
   additionalRoutes : List (CheckedParallelNumericTargetRoute model)
-  precondition : Option (CheckedComputationCondition model)
+  precondition : Option (ParallelNumericGuard model)
   suppressExactScaleWarning : Bool
   bandedRounding : Option ComputationRoundingMode := none
   expression : AuthoredNumericExpr NumericComputationAtom
   guardExcludesTarget :
     (precondition.map
-      (·.referencesField route.targetField)).getD false = false
+      (·.forbidsTarget route.targetField)).getD false = false
   expressionExcludesTarget :
     expression.anyAtom
       (NumericComputationAtom.referencesField model route.targetField) = false
@@ -86,6 +86,14 @@ def referencesField
   (checked.precondition.map (·.referencesField field)).getD false ||
     checked.expression.anyAtom (NumericComputationAtom.referencesField model field)
 
+/-- Whether the guard's target ban or the resolved expression reaches one exact field. A positive
+read of a group containing the field is no ban, as on the ordinary carrier (spec/09 §5). -/
+def forbidsField
+    (checked : CheckedIsolatedParallelNumericDirectRun model)
+    (field : FieldId) : Bool :=
+  (checked.precondition.map (·.forbidsTarget field)).getD false ||
+    checked.expression.anyAtom (NumericComputationAtom.referencesField model field)
+
 def WellFormed
     (checked : CheckedIsolatedParallelNumericDirectRun model) : Prop :=
   checked.route.WellFormed ∧
@@ -95,7 +103,7 @@ def WellFormed
       additional.targetDeclaration ==
         checked.route.targetDeclaration) = true ∧
     (checked.precondition.map
-      (·.referencesField checked.route.targetField)).getD false = false ∧
+      (·.forbidsTarget checked.route.targetField)).getD false = false ∧
     checked.expression.anyAtom
       (NumericComputationAtom.referencesField model checked.route.targetField) = false ∧
     parallelNumericDirectGuardAdmitted
@@ -240,7 +248,7 @@ def executeTargetWith
   }
   let guardResult ← match checked.precondition with
     | none => pure ComputationConditionResult.holds
-    | some guard => (guard.evalChecked { context with row := targetEnvironment }).mapError .guard
+    | some guard => (guard.eval context preliminary.base.readDocument targetEnvironment).mapError .guard
   match guardResult with
   | .notTrue => pure { address, outcome := .noValue }
   | .poison cause =>
@@ -325,7 +333,7 @@ private def FlatModel.resolveParallelNumericGuardRoutes
     (model : FlatModel) (declaringGroup : GroupPath)
     (primary : CheckedParallelNumericTargetRoute model)
     (additionalRoutes : List (CheckedParallelNumericTargetRoute model))
-    (precondition : Option (CheckedComputationCondition model)) :
+    (precondition : Option (ParallelNumericGuard model)) :
     Except ParallelNumericDirectPlanError
       (List (CheckedParallelNumericTargetRoute model)) := do
   let routes ← (parallelNumericGuardFields precondition).foldlM
@@ -358,18 +366,18 @@ private def FlatModel.resolveParallelNumericGuardRoutes
 /-- Certify target exclusion at the complete operation boundary. Keeping the direct guard and expression facts makes the checked operation's public self-reference invariant eliminable without reconstructing model paths in every consumer proof. -/
 private structure ParallelNumericTargetExclusion
     (target : FieldId)
-    (precondition : Option (CheckedComputationCondition model))
+    (precondition : Option (ParallelNumericGuard model))
     (expression : AuthoredNumericExpr NumericComputationAtom) : Type where
   guard :
     (precondition.map
-      (·.referencesField target)).getD false = false
+      (·.forbidsTarget target)).getD false = false
   expression :
     expression.anyAtom
       (NumericComputationAtom.referencesField model target) = false
 
 private def checkParallelNumericTargetExclusion
     (target : FieldId)
-    (precondition : Option (CheckedComputationCondition model))
+    (precondition : Option (ParallelNumericGuard model))
     (expression : AuthoredNumericExpr NumericComputationAtom) :
     Except ParallelNumericDirectPlanError
       (ParallelNumericTargetExclusion target precondition expression) :=
@@ -378,7 +386,7 @@ private def checkParallelNumericTargetExclusion
         (NumericComputationAtom.referencesField model target) = false then
     if guardExcluded :
         (precondition.map
-          (·.referencesField target)).getD false = false then
+          (·.forbidsTarget target)).getD false = false then
       .ok {
         guard := guardExcluded
         expression := expressionExcluded
@@ -393,7 +401,7 @@ def checkParallelNumericTableOperationWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath)
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
-    (precondition : Option (CheckedComputationCondition model))
+    (precondition : Option (ParallelNumericGuard model))
     (suppressExactScaleWarning : Bool := false) :
     Except ParallelNumericDirectPlanError
       (CheckedIsolatedParallelNumericDirectRun model) := do
@@ -472,7 +480,7 @@ may supply a primary route from another alternative (spec/09 §5). -/
 def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath) (expression : AuthoredNumericExpr SurfaceNumericAtom)
-    (precondition : Option (CheckedComputationCondition model))
+    (precondition : Option (ParallelNumericGuard model))
     (suppressExactScaleWarning : Bool := false) :
     Except ParallelNumericDirectPlanError (CheckedIsolatedParallelNumericDirectRun model) := do
   let anchor ← (checkParallelNumericComputationClearingPlan model declaringGroup targetField operandReference).mapError .route
@@ -487,7 +495,7 @@ def checkIsolatedParallelNumericExpressionRunWithGuard (model : FlatModel)
 def checkIsolatedParallelNumericDirectRunWithGuard (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (operandReference : SurfaceFieldPath)
-    (precondition : Option (CheckedComputationCondition model)) :
+    (precondition : Option (ParallelNumericGuard model)) :
     Except ParallelNumericDirectPlanError
       (CheckedIsolatedParallelNumericDirectRun model) :=
   checkIsolatedParallelNumericExpressionRunWithGuard model declaringGroup

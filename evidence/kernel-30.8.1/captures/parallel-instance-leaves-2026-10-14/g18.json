@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out20",
+ "alternatives": [
+  {
+   "precondition": "Length(Note) > 1",
+   "operation": "[/Staffing/Demand/Base] + [Headcount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

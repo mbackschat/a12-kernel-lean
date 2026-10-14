@@ -13,7 +13,7 @@ open A12Kernel.Conformance.ParallelNumericThreeGroupOperands
 private def guarded? :=
   (checkIsolatedParallelNumericExpressionRunWithGuard
     model ["Plan"] 2 inputPath (.atom (.field inputPath))
-      (some (.or (.fieldFilled 4) (.fieldFilled 7)))).toOption
+      (some (.ofUnjoined (.or (.fieldFilled 4) (.fieldFilled 7))))).toOption
 
 private def stringCell (path : List Nat) (stored : String)
     (raw : RawCell) : ClassifiedCellInput := {

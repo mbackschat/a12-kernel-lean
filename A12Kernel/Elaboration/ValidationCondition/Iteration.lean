@@ -346,30 +346,29 @@ private def uniquenessIterationGuardAt (level : RepeatableLevel)
     | some extents =>
         if 1 < independentIterationSlots level extents then .unguarded else .guarded
 
-/-- Scalar membership's subject guards either polarity; without it, Included needs every member
-to iterate and NotIncluded is unguarded (Kernel IterationNotValidVisitor.visit(IValueListCondition)). -/
-private def scalarMembershipGuardAt (model : FlatModel) (level : RepeatableLevel)
-    (condition : FlatConditionLeaf) : IterationGuardStatus :=
-  let classify (quantifier : ValueListQuantifier) (subjects members : List FieldId) :=
-    let iterates := fun field => (model.fieldRepeatableScope field).contains level
-    if !(subjects ++ members).any iterates then IterationGuardStatus.noReference
+/-- One flat leaf's guard, given which fields iterate: a comparison guards when any of its fields
+does. Scalar membership's subject guards either polarity; without it, Included needs every member
+to iterate and NotIncluded is unguarded (Kernel IterationNotValidVisitor.visit(IValueListCondition)).
+The ordinary and parallel carriers share this classification. -/
+def _root_.A12Kernel.FlatConditionLeaf.iterationGuard (iterates : FieldId → Bool) :
+    FlatConditionLeaf → IterationGuardStatus
+  | .compare comparison =>
+      if comparison.fields.any (iterates ·.id) then .guarded else .noReference
+  | .numberValueList quantifier subjects members .membership =>
+      membership quantifier (subjects.map (·.id)) (members.operands.map (·.id))
+  | .tokenValueList quantifier subjects members .membership =>
+      membership quantifier (subjects.map (·.field.id)) (members.operands.map (·.field.id))
+  | _ => .noReference
+where
+  membership (quantifier : ValueListQuantifier) (subjects members : List FieldId) : IterationGuardStatus :=
+    if !(subjects ++ members).any iterates then .noReference
     else if subjects.any iterates then .guarded
     else if quantifier == .atLeastOne && members.all iterates then .guarded else .unguarded
-  match condition with
-  | .numberValueList quantifier subjects members .membership =>
-      classify quantifier (subjects.map (·.id)) (members.operands.map (·.id))
-  | .tokenValueList quantifier subjects members .membership =>
-      classify quantifier (subjects.map (·.field.id)) (members.operands.map (·.field.id))
-  | _ => .noReference
 
 private def ValidationConditionLeaf.iterationGuardAt
     (level : RepeatableLevel) :
     ValidationConditionLeaf model → IterationGuardStatus
-  | .flat (.compare comparison) =>
-      if comparison.fields.any (fun field => (model.fieldRepeatableScope field.id).contains level) then
-        .guarded
-      else .noReference
-  | .flat condition => scalarMembershipGuardAt model level condition
+  | .flat condition => condition.iterationGuard fun field => (model.fieldRepeatableScope field).contains level
   | .numeric _ _ | .guardedRootCurrentRepetition _ _ _
   | .customCondition _ => .noReference
   | .customFieldValidity leaf =>

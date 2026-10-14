@@ -297,7 +297,7 @@ private def generated (guardText : String) (custom : Bool) (state : State := .ma
   let parsed ← (parseText .english guardText).toOption
   let .predicate surface ← (lowerGuard model ["Form"] false parsed.body (some ["Form"])).toOption | none
   let compiler : StringPatternCompiler := if custom then
-    (fun source => if source == "[0-9]+" then some (fun text => text == "x12") else none) else builtinStringPatternCompiler
+    (fun source => if source == "[0-9]+" then .compiled (fun text => text == "x12") else .rejected) else builtinStringPatternCompiler
   let predicate ← (model.elaborateComputationPredicate ["Form"] ["Form"] surface compiler).toOption
   let guard : CheckedComputationCondition model := .leaf (.predicate predicate)
   let operation ← (elaborateCompleteNumericComputationOperation model ["Form"] 0

@@ -105,7 +105,7 @@ end CheckedPartialPreliminary
 /-- Partial calls use the same checked join and condition tree, selecting keys from relevant index addresses while preserving the uncompressed relevance set for leaf reads. A custom callback receives that uncompressed set and the call's generated formal failures, as in the ordinary partial carrier. -/
 def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRule model)
     (view : CheckedPartialPreliminary model) (messageCache : Option MessageIndexContext := none)
-    (registry : CustomValidationRegistry model := {}) :
+    (registry : CustomValidationRegistry model := {}) (world : Option World := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
   let common := match rule.pair.groups.outerScopePlan with
     | .common shared | .framed _ shared _ => shared
@@ -131,7 +131,7 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
                 match ← view.readAuthoredValidation address |>.mapError .preliminary with
                 | .silentlyUnavailable => pure none
                 | .checked cell => pure (some (observeCell .validation cell)))
-          (view.parallelGroupState row rowOuter) leaf custom))
+          (view.parallelGroupState row rowOuter) leaf custom world))
       view.index outer messageCache view.isAddressRelevant
       (rule.pair.admitsPartialOuter view.relevance))).flatten
 

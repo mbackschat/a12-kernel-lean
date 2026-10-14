@@ -45,26 +45,26 @@ private def fieldPath (name : String) : SurfaceFieldPath :=
 
 private def exactUpper (value : String) : Bool := value == "ABC"
 
-private def compilePattern (source : String) : Option (String → Bool) :=
-  if source == "[A-Z]{3}" then some exactUpper
-  else if source == "(" then none
-  else some fun _ => false
+private def compilePattern (source : String) : PatternCompilation :=
+  if source == "[A-Z]{3}" then .compiled exactUpper
+  else if source == "(" then .rejected
+  else .compiled fun _ => false
 
-private def compileNormalized (source : String) : Option (String → Bool) :=
-  if source == "AB\\sCD" then some fun value => value == "AB\nCD" else none
+private def compileNormalized (source : String) : PatternCompilation :=
+  if source == "AB\\sCD" then .compiled fun value => value == "AB\nCD" else .rejected
 
-private def compileDeclared (source : String) : Option (String → Bool) :=
+private def compileDeclared (source : String) : PatternCompilation :=
   if source == "[A-Z]+" then
-    some fun value => !value.isEmpty && value.toList.all (fun character =>
+    .compiled fun value => !value.isEmpty && value.toList.all (fun character =>
       'A' ≤ character && character ≤ 'Z')
   else if source == "[0-9]+" then
-    some matchesAsciiDigitsPattern
+    .compiled matchesAsciiDigitsPattern
   else if source == "A" then
-    some fun value => value == "A"
+    .compiled fun value => value == "A"
   else if source == "B" then
-    some fun value => value == "B"
+    .compiled fun value => value == "B"
   else
-    none
+    .rejected
 
 private def condition (source : String := "[A-Z]{3}")
     (op : StringPatternOp := .matched) : SurfaceStringPatternCondition :=
@@ -78,16 +78,16 @@ private def uppercaseCases : List (String × Bool) := [
   ("@", false), ("[", false), ("A1", false), ("1A", false), ("A Z", false),
   ("Å", false), ("Ａ", false), ("𝔄", false), ("A\n", false), ("A\r\n", false)]
 
-example : (builtinStringPatternCompiler "[A-Z]+").map (fun matcher =>
+example : (builtinStringPatternCompiler "[A-Z]+").matcher?.map (fun matcher =>
     uppercaseCases.all fun (value, expected) => matcher value == expected) = some true := by native_decide
 
-example : (builtinStringPatternCompiler "[0-9]+").map (fun matcher =>
+example : (builtinStringPatternCompiler "[0-9]+").matcher?.map (fun matcher =>
     [("", false), ("0", true), ("9", true), ("0129", true), ("/", false),
       (":", false), ("١", false), ("１", false), ("1A", false)].all
       fun (value, expected) => matcher value == expected) = some true := by native_decide
 
 example : ["[A-Z]*", "[A-Z]{3}", "[a-z]+", "[A-Za-z]+", "[A-Z]+$", "("].all
-    (fun source => (builtinStringPatternCompiler source).isNone) = true := by native_decide
+    (fun source => (builtinStringPatternCompiler source).matcher?.isNone) = true := by native_decide
 
 example : [StringPatternOp.matched, .violated].all (fun op =>
     ["ABC", "abc", ""].all fun value =>
@@ -365,7 +365,7 @@ example :
           { fields := [invalidSource] } 1) =
           some (.pattern .javaSyntax) ∧
       declaredPatternErrorOf
-        (prepareDeclaredStringField (fun _ => some fun _ => false)
+        (prepareDeclaredStringField (fun _ => .compiled fun _ => false)
           { fields := [restrictedSource] } 1) =
           some (.pattern .kernelRestriction) := by
   native_decide

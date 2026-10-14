@@ -1,0 +1,97 @@
+{
+ "model": "ParVal_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "matched",
+   "documentInline": {
+    "Staffing": {
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Stamp": "2026-10-01",
+       "Kind": "a",
+       "Label": "x"
+      },
+      {
+       "Department": "C"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "5",
+       "Note": "x",
+       "Due": "2026-09-01"
+      },
+      {
+       "Department": "B",
+       "Headcount": "3",
+       "Note": "ab",
+       "Due": "2026-12-01"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "empty",
+   "documentInline": {
+    "Staffing": {
+     "Demand": [
+      {
+       "Department": "A"
+      },
+      {
+       "Department": "B",
+       "Base": "3",
+       "Stamp": "2026-01-01",
+       "Kind": "b",
+       "Label": "q"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "a",
+       "Due": "2026-01-01"
+      },
+      {
+       "Department": "B",
+       "Headcount": "2"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "malformed",
+   "documentInline": {
+    "Staffing": {
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "x1",
+       "Stamp": "2026-13-40",
+       "Kind": "zz",
+       "Label": "x"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x",
+       "Due": "2026-01-01"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

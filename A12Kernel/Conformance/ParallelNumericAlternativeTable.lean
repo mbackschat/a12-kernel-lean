@@ -26,7 +26,7 @@ private def row? (guard : (CheckedComputationCondition model))
     (expression : AuthoredNumericExpr SurfaceNumericAtom)
     (suppressExactScaleWarning : Bool := false) :=
   (checkIsolatedParallelNumericExpressionRunWithGuard
-    model ["Plan"] 2 inputPath expression (some guard)
+    model ["Plan"] 2 inputPath expression (some (.ofUnjoined guard))
       suppressExactScaleWarning).toOption
 
 private def secondTargetModel : FlatModel := {
@@ -45,7 +45,7 @@ private def secondModelRow? (target : FieldId)
     (guard : CheckedComputationCondition secondTargetModel) :=
   (checkIsolatedParallelNumericExpressionRunWithGuard
     secondTargetModel ["Plan"] target inputPath expression
-      (some guard)).toOption
+      (some (.ofUnjoined guard))).toOption
 
 private def collectRows? :
     List (Option (CheckedIsolatedParallelNumericDirectRun model)) →
@@ -77,7 +77,8 @@ private def tableOutcome?
     Option NumericTargetOutcome := do
   let checked ← collectRows? rows
   let table ← (certifyParallelNumericAlternativeTable checked).toOption
-  (table.evaluate inputContext).toOption
+  -- Presence guards read no row topology, so an empty document and row suffice.
+  (table.evaluate inputContext { instantiatedRows := [], rawCells := fun _ => none } []).toOption
 
 private def executionTable? :
     Option (CheckedParallelNumericAlternativeTable model) := do

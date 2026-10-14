@@ -225,7 +225,7 @@ example :
 
 
 private def javaCompiler : StringPatternCompiler :=
-  fun source => if source == "(" then none else some fun _ => true
+  fun source => if source == "(" then .rejected else .compiled fun _ => true
 
 /-- The sorted labels one field raises, with its messages reached or withheld. -/
 private def fieldLabels (declaration : FieldTypeDeclaration) (reached : Bool := true)

@@ -37,7 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Five corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Six corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+<a id="spec-2026-10-14-02"></a>
+### SPEC-2026-10-14-02 — ordinary leaves and computation guards of a key join read one joined row
+
+- `status`: pending
+- `canonical`: [spec/07 §2](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key) and [spec/09 §5](../spec/09-computations.md#5-where-a-computation-runs--scope-and-the-parallel-join).
+- `delta`: Validation leaves without a pair form and the preconditions of a joined computation are admitted and read each field from its side's joined row; an unmatched partner reads as a key-only row; `GroupFilled` of the target's own group is admitted in a joined guard and `GroupNotFilled` of it draws `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD`.
+- `basis`: [parallel instance checkpoint](sources/model-structure-and-declaration-probes.md#src-parallel-instance-leaves), 39 static rows and two runtime requests at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile the admission and runtime rows. Do not claim the enclosing-group account, which no row separates.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-01"></a>
 ### SPEC-2026-10-14-01 — a CustomCondition leaf in a parallel rule guards no iteration

@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out10",
+ "alternatives": [
+  {
+   "precondition": "[/Staffing/Demand/Kind -> X] == \"yes\"",
+   "operation": "[/Staffing/Demand/Base] + [Headcount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

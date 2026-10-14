@@ -23,12 +23,14 @@ def runState (state : ParallelNumericTransitionState) :
 
 end ParallelNumericTransitionState
 
-/-- Every plan target statically referenced by the table has completed, including an action-free completion. -/
+/-- Every other plan target statically referenced by the table has completed, including an
+action-free completion. The table's own target never blocks it: a positive read of its containing
+group is admitted, and every other self-read is the operation's own target ban. -/
 def ParallelNumericDependenciesEnabled
     (plan : CheckedParallelNumericPlan model)
     (table : CheckedParallelNumericAlternativeTable model)
     (state : ParallelNumericTransitionState) : Prop :=
-  ∀ dependency ∈ plan.targetFields,
+  ∀ dependency ∈ plan.targetFields, dependency ≠ table.targetField →
     table.referencesField dependency = true →
       dependency ∈ state.completedTargets
 

@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out08",
+ "alternatives": [
+  {
+   "precondition": "[Note] == \"x\"",
+   "operation": "[/Staffing/Demand/Base] + [Headcount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

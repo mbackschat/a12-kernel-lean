@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out17",
+ "alternatives": [
+  {
+   "precondition": "Invalid(Headcount)",
+   "operation": "[/Staffing/Demand/Base] + [Headcount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

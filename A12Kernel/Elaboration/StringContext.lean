@@ -8,9 +8,12 @@ Ordinary declared patterns and registered custom validators are mutually exclusi
 
 namespace A12Kernel
 
-/-- Compile the closed ASCII profiles without a host regex capability. -/
-def builtinStringPatternCompiler : StringPatternCompiler :=
-  locallyExecutableStringPatternMatcher?
+/-- Compile the closed ASCII profiles without a host regex capability. Every other source is beyond
+this compiler, not rejected Java syntax. -/
+def builtinStringPatternCompiler : StringPatternCompiler := fun source =>
+  match locallyExecutableStringPatternMatcher? source with
+  | some matcher => .compiled matcher
+  | none => .unsupported
 
 inductive FlatStringContextPreparationError where
   | model (error : ResolveError)

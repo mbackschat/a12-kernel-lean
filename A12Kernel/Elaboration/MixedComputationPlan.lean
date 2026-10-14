@@ -54,17 +54,19 @@ def referencesField : MixedComputationStep model compilePattern → FieldId → 
   | .document step => step.referencesField
   | .rows step => step.referencesField
 
-def protectionConditions : MixedComputationStep model compilePattern → List (Option (CheckedComputationCondition model))
-  | .number table => table.protectionConditions
+/-- Each guard's group-presence projection; a joined guard is typed by its instance view, so the
+plan's steps share only this projection. -/
+def protectionConditions : MixedComputationStep model compilePattern → List (Option ComputationProtectionView)
+  | .number table => table.protectionConditions.map (·.map (·.protectionView))
   | .parallel step => step.protectionConditions
-  | .string table => table.protectionConditions
-  | .document step => step.protectionConditions
-  | .rows step => step.protectionConditions
+  | .string table => table.protectionConditions.map (·.map (·.protectionView))
+  | .document step => step.protectionConditions.map (·.map (·.protectionView))
+  | .rows step => step.protectionConditions.map (·.map (·.protectionView))
 
 /-- Expanded operands are independent of the scheduler's conditional producer exemptions. -/
 def operandField (step : MixedComputationStep model compilePattern) (field : FieldId) : Bool :=
   computationOperandField model step.targetField step.referencesField step.protectionConditions
-    field CheckedComputationPredicate.groupReference?
+    field id
 
 def requiresProducer (producerProtected : FieldId → ResolvedGroupReference → Bool) :
     MixedComputationStep model compilePattern → FieldId → Bool
@@ -77,7 +79,7 @@ def requiresProducer (producerProtected : FieldId → ResolvedGroupReference →
 end MixedComputationStep
 
 def mixedComputationProducerProtection (steps : List (MixedComputationStep model compilePattern)) : FieldId → ResolvedGroupReference → Bool :=
-  fun producer reference => computationProducerProtection model MixedComputationStep.targetField MixedComputationStep.protectionConditions steps producer reference CheckedComputationPredicate.groupReference?
+  fun producer reference => computationProducerProtection model MixedComputationStep.targetField MixedComputationStep.protectionConditions steps producer reference id
 
 def mixedComputationDependencies (steps : List (MixedComputationStep model compilePattern)) :
     MixedComputationStep model compilePattern → FieldId → Bool :=

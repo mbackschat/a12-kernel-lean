@@ -428,7 +428,7 @@ private def nominationModel (shortNames : Bool) (elements : List String) : Json 
     "},\"modelRoot\":{\"rootGroups\":[" ++ groupElement "Form" 1 [] elements ++ "]}}}")).toOption.getD .null
 
 private def reported (model : Json) : Option (List (String × String)) :=
-  (fieldTypeDeclarationNotifications model fun _ => some fun _ => true).toOption
+  (fieldTypeDeclarationNotifications model fun _ => .compiled fun _ => true).toOption
 
 /- A nomination written as a path binds against the model as authored but is judged on the group's own
    direct child of the last segment's name: `../Key` binds to the parent's field while the local `Key`

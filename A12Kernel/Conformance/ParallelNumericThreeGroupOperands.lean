@@ -259,7 +259,7 @@ example :
       some .expressionNotLimitedToOperand ∧
     (match checkIsolatedParallelNumericExpressionRunWithGuard
         model ["Plan"] 2 inputPath (.atom (.field inputPath))
-          (some (.fieldFilled 2)) with
+          (some (.ofUnjoined (.fieldFilled 2))) with
     | .error error => some error
     | .ok _ => none) =
       some .guardNotLimitedToOperand := by

@@ -13,11 +13,11 @@ theorem checkedParallelNumericAlternativeTable_wellFormed
       alternative.operation,
     alternative.preconditionOwned, alternative.targetMatches⟩
 
-/-- Every checked row excludes the table target from both its guard and expression. -/
+/-- No checked row's guard bans, or expression reads, the table target. -/
 theorem checkedParallelNumericAlternativeTable_excludes_target
     (table : CheckedParallelNumericAlternativeTable model) :
-    table.referencesField table.targetField = false := by
-  unfold CheckedParallelNumericAlternativeTable.referencesField
+    table.forbidsField table.targetField = false := by
+  unfold CheckedParallelNumericAlternativeTable.forbidsField
   apply List.any_eq_false.mpr
   intro alternative member
   have excluded :=
@@ -27,28 +27,28 @@ theorem checkedParallelNumericAlternativeTable_excludes_target
 
 theorem parallelNumericAlternativeTable_noMatch
     (table : CheckedParallelNumericAlternativeTable model)
-    (context : ScalarComputationContext)
-    (selection : CheckedComputationAlternative.selectFirstChecked
-      table.selectableAlternatives context = .ok .noMatch) :
-    table.evaluate context = .ok .noValue := by
-  simp [CheckedParallelNumericAlternativeTable.evaluate, selection, bind, Except.bind, Except.mapError]
+    (context : ScalarComputationContext) (document : Document) (row : Env)
+    (selection : ComputationAlternative.selectFirstWith (fun guard => guard.eval context document row)
+      table.selectableAlternatives = .ok .noMatch) :
+    table.evaluate context document row = .ok .noValue := by
+  simp [CheckedParallelNumericAlternativeTable.evaluate, selection]
 
 theorem parallelNumericAlternativeTable_guardPoison
     (table : CheckedParallelNumericAlternativeTable model)
-    (context : ScalarComputationContext) (cause : FormalCause)
-    (selection : CheckedComputationAlternative.selectFirstChecked
-      table.selectableAlternatives context = .ok (.poison cause)) :
-    table.evaluate context = .ok (.inheritedPoison cause) := by
-  simp [CheckedParallelNumericAlternativeTable.evaluate, selection, bind, Except.bind, Except.mapError]
+    (context : ScalarComputationContext) (document : Document) (row : Env) (cause : FormalCause)
+    (selection : ComputationAlternative.selectFirstWith (fun guard => guard.eval context document row)
+      table.selectableAlternatives = .ok (.poison cause)) :
+    table.evaluate context document row = .ok (.inheritedPoison cause) := by
+  simp [CheckedParallelNumericAlternativeTable.evaluate, selection]
 
 theorem parallelNumericAlternativeTable_selected
     (table : CheckedParallelNumericAlternativeTable model)
-    (context : ScalarComputationContext)
+    (context : ScalarComputationContext) (document : Document) (row : Env)
     (operation : CheckedIsolatedParallelNumericDirectRun model)
-    (selection : CheckedComputationAlternative.selectFirstChecked
-      table.selectableAlternatives context = .ok (.selected operation)) :
-    table.evaluate context = operation.evaluateSelected context := by
-  simp [CheckedParallelNumericAlternativeTable.evaluate, selection, bind, Except.bind, Except.mapError]
+    (selection : ComputationAlternative.selectFirstWith (fun guard => guard.eval context document row)
+      table.selectableAlternatives = .ok (.selected operation)) :
+    table.evaluate context document row = operation.evaluateSelected context := by
+  simp [CheckedParallelNumericAlternativeTable.evaluate, selection]
 
 private theorem parallelNumericAlternativeTable_executeTargetWith_address
     (table : CheckedParallelNumericAlternativeTable model)
@@ -83,13 +83,14 @@ private theorem parallelNumericAlternativeTable_executeTargetWith_address
           }
           change
             (do
-              let result ← table.evaluate context
+              let result ← table.evaluate context preliminary.base.readDocument target.environment
               pure ({
                 address := target.address
                 outcome := result
               } : ParallelNumericDirectOutcome)) =
                 .ok outcome at executed
-          cases evaluationResult : table.evaluate context with
+          cases evaluationResult :
+              table.evaluate context preliminary.base.readDocument target.environment with
           | error error =>
               rw [evaluationResult] at executed
               contradiction

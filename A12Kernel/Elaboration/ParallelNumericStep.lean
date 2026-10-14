@@ -17,33 +17,6 @@ inductive ParallelNumericStepFault where
   | execution (cause : CheckedIsolatedParallelNumericDirectRun.ExecutionError)
   deriving Repr, DecidableEq
 
-/-- Resolve presence and numeric comparison leaves without pretending that sibling scopes are
-bound. The checked run certifies their field routes and ordinary comparison admission together. -/
-def FlatModel.resolveParallelNumericCondition (model : FlatModel) (group targetGroup : GroupPath) :
-    SurfaceComputationConditionOf SurfaceNumericComputationAtom SurfaceComputationPredicate →
-      Except ParallelNumericDirectPlanError (CheckedComputationCondition model)
-  | .fieldFilled path =>
-      (.fieldFilled ∘ FlatFieldDecl.id) <$> (model.resolvePresenceOperand group targetGroup path
-        (model.resolveFieldDeclarationUnchecked group path)).mapError .expressionResolve
-  | .fieldNotFilled path =>
-      (.fieldNotFilled ∘ FlatFieldDecl.id) <$> (model.resolvePresenceOperand group targetGroup path
-        (model.resolveFieldDeclarationUnchecked group path)).mapError .expressionResolve
-  | .numeric comparison => do
-      let resolve := model.resolveParallelNumericGuardAtom group targetGroup
-      let left ← comparison.left.mapM resolve
-      let right ← comparison.right.mapM resolve
-      let resolved : NumericComparisonOf (CheckedNumericComputationAtom model) := {
-        left, right, op := comparison.op
-        suppressExactScaleWarning := comparison.suppressExactScaleWarning }
-      pure (.leaf (.numeric resolved))
-  | .and left right => do
-      pure (.and (← model.resolveParallelNumericCondition group targetGroup left)
-        (← model.resolveParallelNumericCondition group targetGroup right))
-  | .or left right => do
-      pure (.or (← model.resolveParallelNumericCondition group targetGroup left)
-        (← model.resolveParallelNumericCondition group targetGroup right))
-  | _ => .error .guardNotLimitedToOperand
-
 namespace CheckedParallelNumericStep
 
 def targetField : CheckedParallelNumericStep model → FieldId
@@ -102,8 +75,8 @@ def operandRoutes : CheckedParallelNumericStep model → List (CheckedParallelNu
   | .alternatives table => table.operandRoutes
   | .mixed table => table.operandRoutes
 
-def protectionConditions (step : CheckedParallelNumericStep model) : List (Option (CheckedComputationCondition model)) :=
-  step.asMixedTable.members.map (·.precondition)
+def protectionConditions (step : CheckedParallelNumericStep model) : List (Option ComputationProtectionView) :=
+  step.asMixedTable.members.map (·.protectionView)
 
 /-- Index columns participate statically even when a guard prevents the numeric read (spec/07 §2). -/
 def referencesField (step : CheckedParallelNumericStep model) (field : FieldId) : Bool :=

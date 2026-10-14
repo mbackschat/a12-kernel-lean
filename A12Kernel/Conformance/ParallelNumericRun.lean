@@ -19,7 +19,7 @@ private def rowExpression? (target : FieldId)
     (guard : (CheckedComputationCondition model))
     (suppressExactScaleWarning : Bool := false) :=
   (checkIsolatedParallelNumericExpressionRunWithGuard
-    model ["Plan"] target operand expression (some guard)
+    model ["Plan"] target operand expression (some (.ofUnjoined guard))
       suppressExactScaleWarning).toOption
 
 private def row? (target : FieldId) (operand : SurfaceFieldPath)
@@ -465,7 +465,7 @@ private theorem relationEnabled
     (onMiddle : table.referencesField 4 = true → 4 ∈ state.completedTargets)
     (onConsumer : table.referencesField 2 = true → 2 ∈ state.completedTargets) :
     ParallelNumericDependenciesEnabled relationPlan table state := by
-  intro dependency member referenced
+  intro dependency member _ referenced
   have targets : relationPlan.targetFields = [6, 4, 2] := by native_decide
   rw [targets] at member
   simp at member
@@ -484,7 +484,7 @@ example :
           afterActionFreeSeed := by
   constructor
   · intro enabled
-    have completed := enabled 6 (by native_decide) (by native_decide)
+    have completed := enabled 6 (by native_decide) (by native_decide) (by native_decide)
     simp at completed
   constructor
   · exact .compute relationSeedTable (by
@@ -546,7 +546,7 @@ private theorem independentRelationEnabled
     (notFirst : table.referencesField 4 = false)
     (notSecond : table.referencesField 2 = false) :
     ParallelNumericDependenciesEnabled independentRelationPlan table {} := by
-  intro dependency member referenced
+  intro dependency member _ referenced
   have targets : independentRelationPlan.targetFields = [4, 2] := by native_decide
   rw [targets] at member
   simp at member

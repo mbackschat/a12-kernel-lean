@@ -225,6 +225,7 @@ def diagnostic? : StringPatternConditionElabError → Option KernelStaticDiagnos
       some .invalidTypeForPatternComparison
   | .pattern .javaSyntax
   | .pattern .kernelRestriction => some .invalidPattern
+  | .pattern .hostUnsupported => none
   | .fieldReference error => error.diagnostic?
   | .model _ | .incoherentCore => none
 

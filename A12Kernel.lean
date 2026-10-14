@@ -180,6 +180,8 @@ import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Elaboration.CheckedIndexColumn
 import A12Kernel.Elaboration.ParallelComputationClearing
 import A12Kernel.Elaboration.ParallelComputationClearingApplication
+import A12Kernel.Elaboration.ParallelInstanceView
+import A12Kernel.Elaboration.ParallelNumericGuard
 import A12Kernel.Elaboration.ParallelNumericDirectRun
 import A12Kernel.Elaboration.ParallelNumericDirectRunResult
 import A12Kernel.Elaboration.ParallelNumericRunRelation

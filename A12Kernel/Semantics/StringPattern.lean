@@ -40,12 +40,27 @@ def evalComputationResolved (op : StringPatternOp) (wholeValueMatches : String �
 
 end StringPatternOp
 
-/-- A pure host capability that either rejects Java syntax or returns the whole-value matcher compiled from that exact source. Construction-time caching remains the caller's responsibility. -/
-abbrev StringPatternCompiler := String → Option (String → Bool)
+/-- What a host pattern compiler answers for one source. `rejected` is Java's own syntax verdict;
+`unsupported` is the supplied compiler's limit, so a Java-valid source it cannot execute is never
+reported as the Kernel's invalid-pattern class. -/
+inductive PatternCompilation where
+  | compiled (wholeValueMatches : String → Bool)
+  | rejected
+  | unsupported
 
+def PatternCompilation.matcher? : PatternCompilation → Option (String → Bool)
+  | .compiled wholeValueMatches => some wholeValueMatches
+  | .rejected | .unsupported => none
+
+/-- A pure host capability returning the whole-value matcher compiled from that exact source.
+Construction-time caching remains the caller's responsibility. -/
+abbrev StringPatternCompiler := String → PatternCompilation
+
+/-- `hostUnsupported` carries no Kernel class: the Kernel's own compiler would have answered. -/
 inductive PatternAdmissionError where
   | javaSyntax
   | kernelRestriction
+  | hostUnsupported
   deriving Repr, DecidableEq
 
 inductive PatternAdmission where
@@ -97,8 +112,9 @@ def kernelPatternSourceAllowed (source : String) : Bool :=
 def classifyStringPattern (compilePattern : StringPatternCompiler)
     (source : String) : PatternAdmission :=
   match compilePattern source with
-  | none => .rejected .javaSyntax
-  | some _ =>
+  | .rejected => .rejected .javaSyntax
+  | .unsupported => .rejected .hostUnsupported
+  | .compiled _ =>
       if kernelPatternSourceAllowed source then .admitted
       else .rejected .kernelRestriction
 
@@ -107,7 +123,7 @@ structure AdmittedStringPattern (compilePattern : StringPatternCompiler) where
   source : String
   wholeValueMatches : String → Bool
   compiledSource :
-    compilePattern source = some wholeValueMatches
+    compilePattern source = .compiled wholeValueMatches
   kernelSourceAllowed : kernelPatternSourceAllowed source = true
 
 /-- Construct the proof-bearing pattern capability or retain the exact failed stage. -/
@@ -115,8 +131,9 @@ def admitStringPattern (compilePattern : StringPatternCompiler)
     (source : String) :
     Except PatternAdmissionError (AdmittedStringPattern compilePattern) :=
   match hCompiled : compilePattern source with
-  | none => .error .javaSyntax
-  | some wholeValueMatches =>
+  | .rejected => .error .javaSyntax
+  | .unsupported => .error .hostUnsupported
+  | .compiled wholeValueMatches =>
     if hAllowed : kernelPatternSourceAllowed source = true then
       .ok {
         source

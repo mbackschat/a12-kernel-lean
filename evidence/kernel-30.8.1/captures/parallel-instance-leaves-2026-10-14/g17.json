@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out19",
+ "alternatives": [
+  {
+   "precondition": "GroupFilled(/Staffing)",
+   "operation": "[/Staffing/Demand/Base] + [Headcount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

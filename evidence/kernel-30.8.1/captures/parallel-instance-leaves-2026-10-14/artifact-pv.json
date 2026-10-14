@@ -1,0 +1,962 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "ParVal_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "matched",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "r07",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/Note"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r08",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Due",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r08n",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Due",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r09",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Kind",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r10",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Kind",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r12",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ]
+            },
+            {
+              "code" : "r12n",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r12n",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ]
+            },
+            {
+              "code" : "r16",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/Note"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r17",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rF",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rG",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Demand/Kind",
+                "Staffing/Demand/Label",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rP",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "r07",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/Note"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r08",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Due",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r08n",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Due",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r09",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Kind",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r10",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Kind",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r12",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ]
+            },
+            {
+              "code" : "r12n",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r12n",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ]
+            },
+            {
+              "code" : "r16",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/Note"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r17",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rF",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rG",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Demand/Kind",
+                "Staffing/Demand/Label",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rP",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/Base",
+                "/Staffing[1]/Demand[-5]/Department"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "r10n",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Kind",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r12",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ]
+            },
+            {
+              "code" : "r12n",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ]
+            },
+            {
+              "code" : "r12n",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r17n",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Label",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rF",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Label",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rG",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Demand/Kind",
+                "Staffing/Demand/Label",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rG",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount",
+                "Staffing/Demand[2]/Kind",
+                "Staffing/Demand[2]/Label",
+                "Staffing/Demand[2]/Stamp",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rP",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "r10n",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Kind",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r12",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ]
+            },
+            {
+              "code" : "r12n",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ]
+            },
+            {
+              "code" : "r12n",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r17n",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Label",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rF",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Label",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rG",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Demand/Kind",
+                "Staffing/Demand/Label",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rG",
+              "field" : "Staffing/Supply[2]/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Demand[2]/Headcount",
+                "Staffing/Demand[2]/Kind",
+                "Staffing/Demand[2]/Label",
+                "Staffing/Demand[2]/Stamp",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rP",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "malformed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Staffing/Demand/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Staffing/Demand/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r16",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/Note"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r17",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rF",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rG",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Demand/Kind",
+                "Staffing/Demand/Label",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "Staffing/Demand/Kind",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Staffing/Demand/Kind"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Staffing/Demand/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Staffing/Demand/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "datumFormatFalsch",
+              "field" : "Staffing/Demand/Stamp",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Staffing/Demand/Stamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r16",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/Note"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r17",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rF",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Label",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "rG",
+              "field" : "Staffing/Supply/Headcount",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/Base",
+                "Staffing/Demand/Department",
+                "Staffing/Demand/Headcount",
+                "Staffing/Demand/Kind",
+                "Staffing/Demand/Label",
+                "Staffing/Demand/Stamp",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stringFalschesMuster",
+              "field" : "Staffing/Demand/Kind",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Staffing/Demand/Kind"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Staffing/Demand/Base",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Staffing/Demand/Base"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

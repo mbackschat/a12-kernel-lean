@@ -7,21 +7,28 @@ namespace A12Kernel
 
 @[simp]
 theorem classifyStringPattern_java_rejected (compilePattern : StringPatternCompiler)
-    (source : String) (rejected : compilePattern source = none) :
+    (source : String) (rejected : compilePattern source = .rejected) :
     classifyStringPattern compilePattern source = .rejected .javaSyntax := by
   simp [classifyStringPattern, rejected]
+
+/-- A source beyond the supplied compiler stays a host limit, never Java's syntax verdict. -/
+@[simp]
+theorem classifyStringPattern_host_unsupported (compilePattern : StringPatternCompiler)
+    (source : String) (unsupported : compilePattern source = .unsupported) :
+    classifyStringPattern compilePattern source = .rejected .hostUnsupported := by
+  simp [classifyStringPattern, unsupported]
 
 @[simp]
 theorem classifyStringPattern_admitted_iff (compilePattern : StringPatternCompiler)
     (source : String) :
     classifyStringPattern compilePattern source = .admitted ↔
       (∃ wholeValueMatches,
-        compilePattern source = some wholeValueMatches) ∧
+        compilePattern source = .compiled wholeValueMatches) ∧
         kernelPatternSourceAllowed source = true := by
   cases compiled : compilePattern source with
-  | none =>
+  | rejected | unsupported =>
       simp [classifyStringPattern, compiled]
-  | some wholeValueMatches =>
+  | compiled wholeValueMatches =>
       cases allowed : kernelPatternSourceAllowed source <;>
         simp [classifyStringPattern, compiled, allowed]
 
@@ -29,7 +36,7 @@ theorem classifyStringPattern_admitted_iff (compilePattern : StringPatternCompil
 theorem evalAdmittedStringPattern_success (compilePattern : StringPatternCompiler)
     (source : String) (op : StringPatternOp) (wholeValueMatches : String → Bool)
     (operand : SimpleComparisonOperand String)
-    (compiled : compilePattern source = some wholeValueMatches)
+    (compiled : compilePattern source = .compiled wholeValueMatches)
     (allowed : kernelPatternSourceAllowed source = true)
     (nonempty : source.isEmpty = false) :
     evalAdmittedStringPattern compilePattern source op operand =
@@ -46,9 +53,11 @@ theorem evalAdmittedStringPattern_success (compilePattern : StringPatternCompile
     split
     next hCompiled =>
       simp_all
+    next hCompiled =>
+      simp_all
     next matcher hCompiled =>
       have matcherEq : matcher = wholeValueMatches :=
-        Option.some.inj (hCompiled.symm.trans compiled)
+        PatternCompilation.compiled.inj (hCompiled.symm.trans compiled)
       subst matcher
       simp [allowed, admitted]
   simp only [evalAdmittedStringPattern, admittedEq, admitted,
@@ -76,13 +85,13 @@ theorem admittedStringPattern_computation_formal_precedence
   rfl
 
 /-- Java rejection and the Kernel's additional source gate retain their local
-stage while projecting to the same measured external diagnostic class. -/
+stage while projecting to the same measured external diagnostic class; a host limit projects to none. -/
 @[simp]
 theorem stringPatternCondition_pattern_diagnostic
-    (error : PatternAdmissionError) :
+    (error : PatternAdmissionError) (kernelStage : error ≠ .hostUnsupported) :
     StringPatternConditionElabError.diagnostic? (.pattern error) =
       some .invalidPattern := by
-  cases error <;> rfl
+  cases error <;> simp_all [StringPatternConditionElabError.diagnostic?]
 
 /-- Every non-String kind in the measured scalar matrix reaches one external diagnostic class. DateRange remains deliberately unmapped because that matrix did not measure it. -/
 @[simp]

@@ -166,10 +166,10 @@ private def preparedModel : FlatModel :=
 
 private def preparedCompiler : StringPatternCompiler := fun source =>
   if source == "A+" then
-    some fun value =>
+    .compiled fun value =>
       !value.isEmpty && value.toList.all fun character => character == 'A'
   else
-    none
+    .rejected
 
 private def preparedRejection : RegisteredCustomRejection where
   projectCode := "PROJECT_CODE_INVALID"

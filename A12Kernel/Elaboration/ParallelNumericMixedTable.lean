@@ -12,9 +12,25 @@ inductive CheckedParallelNumericMember (model : FlatModel) (target : FieldId) wh
 
 namespace CheckedParallelNumericMember
 
-def precondition : CheckedParallelNumericMember model target → Option (CheckedComputationCondition model)
-  | .joined alternative => alternative.precondition
-  | .bound _ alternative => alternative.precondition
+def guarded : CheckedParallelNumericMember model target → Bool
+  | .joined alternative => alternative.precondition.isSome
+  | .bound _ alternative => alternative.precondition.isSome
+
+def protectionView : CheckedParallelNumericMember model target → Option ComputationProtectionView
+  | .joined alternative => alternative.precondition.map (·.protectionView)
+  | .bound _ alternative => alternative.precondition.map (·.protectionView)
+
+/-- A joined member's guard reads the joined cells; a bound member's reads the target row. -/
+def evalGuard (member : CheckedParallelNumericMember model target)
+    (context : NumericComputationEvaluationContext) :
+    Except CheckedComputationConditionError ComputationConditionResult :=
+  match member with
+  | .joined alternative => match alternative.precondition with
+      | some guard => guard.eval context.scalar context.document context.outer
+      | none => pure .holds
+  | .bound _ alternative => match alternative.precondition with
+      | some guard => guard.evalCheckedIn context
+      | none => pure .holds
 
 def joinedOperation? : CheckedParallelNumericMember model target → Option (CheckedIsolatedParallelNumericDirectRun model)
   | .joined alternative => some alternative.operation
@@ -91,9 +107,10 @@ def executeTarget (table : CheckedMixedParallelNumericTable model)
     starRead := reads.read, starStoredText := reads.storedText
     indexColumn? := some (document.resolveSemanticIndexColumnWith document.read) }
   let alternatives := table.members.map fun member =>
-    ({ precondition := member.precondition, operation := member } :
-      CheckedComputationAlternative model (CheckedParallelNumericMember model table.targetField))
-  let outcome ← match CheckedComputationAlternative.selectFirstCheckedIn alternatives context with
+    ({ precondition := if member.guarded then some member else none, operation := member } :
+      ComputationAlternative (CheckedParallelNumericMember model table.targetField)
+        (CheckedParallelNumericMember model table.targetField))
+  let outcome ← match ComputationAlternative.selectFirstWith (·.evalGuard context) alternatives with
     | .error error => if error.isValueFailure then pure (.invalidNoValue .calculationValue) else throw (.guard error)
     | .ok .noMatch => pure .noValue
     | .ok (.poison cause) => pure (.inheritedPoison cause)

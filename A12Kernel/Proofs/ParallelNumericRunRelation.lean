@@ -33,7 +33,7 @@ private theorem parallelNumericRun_table_ready
     exact cross rfl
   constructor
   · simpa [stateTargets] using notEarlier
-  · intro dependency dependencyMember referenced
+  · intro dependency dependencyMember notOwn referenced
     change dependency ∈ plan.tables.map (·.targetField) at dependencyMember
     have located :
         dependency ∈ earlier.map (·.targetField) ∨
@@ -43,9 +43,7 @@ private theorem parallelNumericRun_table_ready
     rcases located with inEarlier | same | inRemaining
     · rw [stateTargets]
       exact inEarlier
-    · subst dependency
-      rw [checkedParallelNumericAlternativeTable_excludes_target] at referenced
-      contradiction
+    · exact absurd same notOwn
     · obtain ⟨dependencyTable, dependencyTableMember, rfl⟩ :=
         List.mem_map.mp inRemaining
       have notReferenced := checkedParallelNumericPlan_references_later_false

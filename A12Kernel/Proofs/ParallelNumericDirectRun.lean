@@ -18,11 +18,12 @@ theorem checkedIsolatedParallelNumericDirectRun_wellFormed
     checked.operandScopesAvailable,
     checked.operationScaleOwned, checked.operationScaleAdmitted⟩
 
-/-- A checked repeatable Number operation cannot read its own target through either its guard or expression. -/
+/-- A checked repeatable Number operation's guard bans no read of its own target and its expression
+does not read it; a positive read of the target's containing group stays admitted. -/
 theorem checkedIsolatedParallelNumericDirectRun_excludes_target
     (checked : CheckedIsolatedParallelNumericDirectRun model) :
-    checked.referencesField checked.route.targetField = false := by
-  simp [CheckedIsolatedParallelNumericDirectRun.referencesField,
+    checked.forbidsField checked.route.targetField = false := by
+  simp [CheckedIsolatedParallelNumericDirectRun.forbidsField,
     checked.guardExcludesTarget, checked.expressionExcludesTarget]
 
 /-- Executable-target filtering preserves the primary route's target field. -/

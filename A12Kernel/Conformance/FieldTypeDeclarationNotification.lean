@@ -19,7 +19,7 @@ open A12Kernel
 private def english : StringPatternMessageTokens := { field := "field", fieldValue := "field.value" }
 
 private def javaCompiler : StringPatternCompiler :=
-  fun source => if source == "(" then none else some fun _ => true
+  fun source => if source == "(" then .rejected else .compiled fun _ => true
 
 /-- The sorted labels one field raises, or the unbuilt-model label. -/
 private def labels (declaration : FieldTypeDeclaration) (locales : List String := ["en_US"]) :

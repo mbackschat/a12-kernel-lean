@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out11",
+ "alternatives": [
+  {
+   "precondition": "FieldValueIncludedInValueList(/Staffing/Demand/Kind, \"a\")",
+   "operation": "[/Staffing/Demand/Base] + [Headcount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

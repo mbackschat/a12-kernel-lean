@@ -78,6 +78,12 @@ def reads (pair : CheckedParallelFieldPair model) (outer : Env) : ParallelFieldL
       let all := ((value.left.atoms ++ value.right.atoms).flatMap (·.operands)).map (.joined ∘ pair.declaration)
       pure ⟨all, if upwardOmissionCount isDistinctCount value then [] else all⟩
   | .customCondition _ => pure ⟨[], []⟩
+  -- The ordinary carrier's flat rule: every read is referenced and, presence aside, fills to fix.
+  | .flat condition reads =>
+      let all := reads.map (.joined ∘ pair.declaration)
+      match condition with
+      | .fieldFilled _ => pure ⟨all, []⟩
+      | _ => pure ⟨all, all⟩
 
 end ParallelFieldLeaf
 

@@ -99,11 +99,13 @@ example : [false, true].all (fun row =>
     let kind := KernelStaticDiagnostic.invalidTypeForPatternComparison.kernelCode
     let missing := KernelStaticDiagnostic.invalidEntity.kernelCode
     let stars := KernelStaticDiagnostic.noWildcardsAllowed.kernelCode
-    let pattern := KernelStaticDiagnostic.invalidPattern.kernelCode
+    -- The built-in compiler cannot judge Java syntax: `[` reaches compilation after every kind
+    -- gate and stops at the host limit, not at the Kernel's invalid-pattern class.
+    let hostLimit := (repr (CorrelationElabError.stringPattern (.pattern .hostUnsupported))).pretty 100000
     patterns.all (fun op =>
       result ("[Rows/N] " ++ op ++ " [Missing]") row == (missing, missing) &&
       result ("[Rows*/Tag Having FieldFilled(Rows/N)] " ++ op ++ " [Missing]") row == (stars, stars) &&
-      result ("[Rows/Tag For \"keep\"] " ++ op ++ " \"[\"") row == (pattern, pattern) &&
+      result ("[Rows/Tag For \"keep\"] " ++ op ++ " \"[\"") row == (hostLimit, hostLimit) &&
       result ("[Rows/N For \"keep\"] " ++ op ++ " \"[\"") row == (kind, kind) &&
       result ("[Rows/Tag For \"keep\"] " ++ op ++ " \"01.03.2024\"") row == (kind, kind))) = true := by native_decide
 

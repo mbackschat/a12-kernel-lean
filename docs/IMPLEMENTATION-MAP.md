@@ -464,17 +464,17 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-repeatable-number-plan"></a>
 - [Repeatable Number plan](implementation/computations.md#cap-repeatable-number-plan)
 <a id="cap-finite-row-structural-guard-number-cascade"></a>
-- [Finite-row structural-guard Number cascade](implementation/computations.md#cap-finite-row-structural-guard-number-cascade)
+- [Finite-row structural-guard Number cascade](implementation/repeatable-computations.md#cap-finite-row-structural-guard-number-cascade)
 <a id="cap-finite-row-structural-guard-number-to-string-cascade"></a>
-- [Finite-row structural-guard Number-to-String cascade](implementation/computations.md#cap-finite-row-structural-guard-number-to-string-cascade)
+- [Finite-row structural-guard Number-to-String cascade](implementation/repeatable-computations.md#cap-finite-row-structural-guard-number-to-string-cascade)
 <a id="cap-finite-row-structural-guard-string-to-number-cascade"></a>
-- [Finite-row structural-guard String-to-Number cascade](implementation/computations.md#cap-finite-row-structural-guard-string-to-number-cascade)
+- [Finite-row structural-guard String-to-Number cascade](implementation/repeatable-computations.md#cap-finite-row-structural-guard-string-to-number-cascade)
 <a id="cap-finite-row-structural-guard-alternating-chain"></a>
-- [Finite-row structural-guard alternating chain](implementation/computations.md#cap-finite-row-structural-guard-alternating-chain)
+- [Finite-row structural-guard alternating chain](implementation/repeatable-computations.md#cap-finite-row-structural-guard-alternating-chain)
 <a id="cap-repeatable-number-aggregate-and-root-suffix-cascades"></a>
-- [Repeatable Number aggregate and root suffix cascades](implementation/computations.md#cap-repeatable-number-aggregate-and-root-suffix-cascades)
+- [Repeatable Number aggregate and root suffix cascades](implementation/repeatable-computations.md#cap-repeatable-number-aggregate-and-root-suffix-cascades)
 <a id="cap-repeatable-number-aggregate-and-repeatable-suffix-cascades"></a>
-- [Repeatable Number aggregate and repeatable suffix cascades](implementation/computations.md#cap-repeatable-number-aggregate-and-repeatable-suffix-cascades)
+- [Repeatable Number aggregate and repeatable suffix cascades](implementation/repeatable-computations.md#cap-repeatable-number-aggregate-and-repeatable-suffix-cascades)
 <a id="cap-checked-direct-field-formal-input"></a>
 - [Checked direct-field formal-input inventory](implementation/computations.md#cap-checked-direct-field-formal-input)
 <a id="cap-selected-computation-preliminary"></a>

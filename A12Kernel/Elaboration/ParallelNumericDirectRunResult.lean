@@ -106,7 +106,7 @@ def formalInputPlan
     (model.fields.filterMap fun declaration =>
       if computationOperandField model checked.route.targetField
           (fun field => checked.referencesField field || checked.referencesIndexField field)
-          [checked.precondition] declaration.id CheckedComputationPredicate.groupReference? then
+          [checked.precondition.map (·.protectionView)] declaration.id id then
         some declaration.id
       else
         none)

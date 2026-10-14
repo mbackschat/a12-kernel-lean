@@ -78,7 +78,7 @@ example : ([.matched, .violated] : List StringPatternOp).all (fun op =>
       some (.poison .malformed, .fired (expectedMessage .value))) = true := by native_decide
 
 private def exactXCompiler : StringPatternCompiler := fun source =>
-  if source == "x" then some (fun value => value == "x") else none
+  if source == "x" then .compiled (fun value => value == "x") else .rejected
 
 example : patternPhases .matched (.parsed (.str "x")) false "x" exactXCompiler =
     some (.holds, .fired (expectedMessage .value)) ∧

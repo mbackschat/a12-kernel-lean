@@ -98,7 +98,7 @@ private def checkedHaving (result : Except CorrelationElabError α)
 
 
 private structure RawAdmissionContext where
-  compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?
+  compilePattern : StringPatternCompiler := builtinStringPatternCompiler
   suppressExactScaleWarning : Bool := false
   inFilterSyntax : Bool := false
 
@@ -173,7 +173,7 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
       | .inl authored => do
           let matcher ← match index.stringPatternSource with
             | none => pure (fun (_ : String) => true)
-            | some pattern => match admission.compilePattern pattern with
+            | some pattern => match (admission.compilePattern pattern).matcher? with
                 | some matcher => pure matcher
                 | none => do refuse "Having" "unsupported index pattern"
           let spelling := normalizeLinebreaks authored
@@ -780,7 +780,7 @@ state is carried independently of executable-body availability (spec/07 §3). -/
 private def admitRawStarHaving (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (expression : Expr)
     (bindingGroup : GroupPath := declaringGroup)
-    (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
+    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
     Lowering (SurfaceCorrelatedHaving × CheckedStarHaving model source bindingGroup) := do
   let candidate := source.path.axes.map (·.level)
   let (body, _) ← (admitBody model declaringGroup bindingGroup candidate (candidate.drop source.path.firstStar)
@@ -804,7 +804,7 @@ private def admitRawStarHaving (model : FlatModel) (declaringGroup : GroupPath)
 def elaborateRawStarHaving (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (expression : Expr)
     (bindingGroup : GroupPath := declaringGroup)
-    (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
+    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
     Lowering (CheckedStarHaving model source bindingGroup) :=
   Prod.snd <$> admitRawStarHaving model declaringGroup source expression bindingGroup compilePattern
 

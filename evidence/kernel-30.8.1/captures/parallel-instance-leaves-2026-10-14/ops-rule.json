@@ -1,0 +1,325 @@
+[
+ {
+  "id": "v01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v01",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v02",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And GroupFilled(/Staffing/Supply)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v03",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And GroupFilled(/Staffing/Demand)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v04",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And AtLeastOneFieldFilled(Supply/Note, Supply/Due)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v05",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And AtLeastOneFieldFilled(Demand/Stamp, Demand/Kind)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v06",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And AllFieldsFilled(Supply/Note, Demand/Stamp)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v07",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And [Supply/Note] == \"x\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v08",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And [Demand/Stamp] > [Supply/Due]",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v09",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And [Demand/Kind -> X] == \"yes\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v10",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And FieldValueIncludedInValueList(Demand/Kind, \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v11",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And Length(Supply/Note) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v12",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And [Supply/Headcount] > [Demand/Base]",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v13",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And FieldFilled(/Staffing/PlanName)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v14",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And NoFieldFilled(Supply/Note, Supply/Due)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v15",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And GroupNotFilled(/Staffing/Demand)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v16",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And [Supply/Note] == [Demand/Kind]",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v17",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And Valid(Demand/Base)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v18",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And Invalid(Supply/Headcount)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "v19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v19",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And PatternMatched(Supply/Note, \"[0-9]+\")",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

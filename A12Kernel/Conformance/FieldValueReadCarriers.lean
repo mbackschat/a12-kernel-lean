@@ -410,7 +410,7 @@ example :
   native_decide
 
 private def patternDiagnostic? (name : String) : Option (Option KernelStaticDiagnostic) :=
-  (errorOf (elaborateStringPatternCondition (fun _ => some fun _ => true) model ["Grid"]
+  (errorOf (elaborateStringPatternCondition (fun _ => .compiled fun _ => true) model ["Grid"]
     { op := .matched, field := grid name, source := "a" })).map
       StringPatternConditionElabError.diagnostic?
 

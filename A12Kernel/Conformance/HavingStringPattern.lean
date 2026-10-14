@@ -4,7 +4,7 @@ namespace A12Kernel.Conformance.HavingStringPattern
 open A12Kernel
 
 private def digits : CompiledStringPattern := {
-  compilePattern := fun source => if source == asciiDigitsPatternSource then some matchesAsciiDigitsPattern else none
+  compilePattern := fun source => if source == asciiDigitsPatternSource then .compiled matchesAsciiDigitsPattern else .rejected
   pattern := {
     source := asciiDigitsPatternSource, wholeValueMatches := matchesAsciiDigitsPattern,
     compiledSource := rfl, kernelSourceAllowed := by decide } }
@@ -42,7 +42,7 @@ example : (condition .matched).fieldIds = [1] ∧
     (condition .violated .outer).markedFieldIds = [1] := by native_decide
 
 private def emptyPattern : CompiledStringPattern := {
-  compilePattern := fun _ => some String.isEmpty
+  compilePattern := fun _ => .compiled String.isEmpty
   pattern := {
     source := "", wholeValueMatches := String.isEmpty,
     compiledSource := rfl, kernelSourceAllowed := by decide } }

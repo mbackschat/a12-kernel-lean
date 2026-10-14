@@ -739,7 +739,7 @@ The staged result retains forbidden constructs without manufacturing an executab
 def elaborateHavingBodyAtLevels (model : FlatModel) (declaringGroup : GroupPath)
     (candidateLevels reopenedLevels : List RepeatableLevel) (authored : SurfaceCorrelatedHaving)
     (bindingGroup : GroupPath := declaringGroup)
-    (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
+    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
     Except CorrelationElabError HavingBodyAdmission := do
   let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let resolveTemporalEntity (reference : SurfaceHavingPresenceRef) :=
@@ -806,7 +806,7 @@ def elaborateHavingBodyAtLevels (model : FlatModel) (declaringGroup : GroupPath)
 def elaborateStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
     (bindingGroup : GroupPath := declaringGroup)
-    (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
+    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
     Except CorrelationElabError HavingBodyAdmission :=
   let candidate := source.path.axes.map (·.level)
   elaborateHavingBodyAtLevels model declaringGroup candidate (candidate.drop source.path.firstStar)
@@ -838,7 +838,7 @@ def finishStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
 def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
     (bindingGroup : GroupPath := declaringGroup)
-    (compilePattern : StringPatternCompiler := locallyExecutableStringPatternMatcher?) :
+    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
     Except CorrelationElabError (CheckedStarHaving model source bindingGroup) := do
   let candidateLevels := source.path.axes.map (·.level)
   let body ← elaborateStarHavingBody model declaringGroup source authored bindingGroup compilePattern

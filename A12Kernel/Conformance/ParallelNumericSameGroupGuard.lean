@@ -12,12 +12,12 @@ open A12Kernel.Conformance.ParallelComputationClearingPlan
 
 private def checked? :=
   (checkIsolatedParallelNumericDirectRunWithGuard
-    model ["Plan"] 2 operandPath (some (.fieldFilled 3))).toOption
+    model ["Plan"] 2 operandPath (some (.ofUnjoined (.fieldFilled 3)))).toOption
 
 private def shortCircuitChecked? :=
   (checkIsolatedParallelNumericDirectRunWithGuard
     model ["Plan"] 2 operandPath
-      (some (.or (.fieldFilled 3) (.fieldFilled 6)))).toOption
+      (some (.ofUnjoined (.or (.fieldFilled 3) (.fieldFilled 6))))).toOption
 
 private def outcomes? (cells : List ClassifiedCellInput) :
     Option (List NumericTargetOutcome) := do
@@ -36,7 +36,7 @@ private def shortCircuitHead? (cells : List ClassifiedCellInput) :
 /- The target remains forbidden even though other fields bound by its row are admitted (spec/09 §1). -/
 example :
     (match checkIsolatedParallelNumericDirectRunWithGuard
-        model ["Plan"] 2 operandPath (some (.fieldFilled 2)) with
+        model ["Plan"] 2 operandPath (some (.ofUnjoined (.fieldFilled 2))) with
     | .error error => some error
     | .ok _ => none) =
       some .guardNotLimitedToOperand := by

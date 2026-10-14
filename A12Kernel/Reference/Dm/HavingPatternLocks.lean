@@ -72,7 +72,8 @@ private def admission (filter : String) (model : FlatModel := HavingFixture.mode
 example : admission "[Rows/Tag] PatternMatched {\"[0-9]+\"}" = .admitted ∧
     admission "[Rows/N] PatternMatched \"[0-9]+\"" = .refused (some .invalidTypeForPatternComparison) ∧
     admission "[Rows/N] PatternMatched \"[\"" = .refused (some .invalidTypeForPatternComparison) ∧
-    admission "[Rows/Tag] PatternMatched \"[\"" = .refused (some .invalidPattern) ∧
+    -- The built-in compiler cannot judge Java syntax, so `[` is its limit, not the Kernel's class.
+    admission "[Rows/Tag] PatternMatched \"[\"" = .refused none ∧
     admission (pattern "PatternMatched" "Expected") = .refused (some .noIterationForWildcard) ∧
     admission (pattern "PatternMatched" "$Rows/Tag") = .refused (some .noWildcard) ∧
     admission "{[Rows/Tag]} PatternMatched \"[0-9]+\"" = .reader ∧
@@ -102,7 +103,7 @@ example : HavingFixture.runModel HavingFixture.model (pattern "PatternMatched") 
     rows "77" (some ("AtLeastOneFieldFilled(Rows*/N Having [Rows/N] > 0 And " ++ pattern "PatternMatched" "$Rows/Tag" ++ ")")) =
       some (List.replicate 3 (.fired .value), ["value 77", "cleared", "value 77"]) := by native_decide
 
-private def compileLiteral : StringPatternCompiler := fun source => some (· == source)
+private def compileLiteral : StringPatternCompiler := fun source => .compiled (· == source)
 private def library (source actual : String) : Option (K × K) := do
   let path ← (elaborateStarFieldPath HavingFixture.model ["Form"] {
     base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "N" }).toOption
@@ -119,7 +120,7 @@ private def library (source actual : String) : Option (K × K) := do
 example : library "abc" "abc" = some (.tru, .fls) ∧
     library "def" "abc" = some (.fls, .tru) ∧
     library "(?<=abc)" "(?<=abc)" = none ∧
-    admission "[Rows/Tag] PatternMatched \"abc\"" = .refused (some .invalidPattern) := by native_decide
+    admission "[Rows/Tag] PatternMatched \"abc\"" = .refused none := by native_decide
 
 example : admission (pattern "PatternMatched") { HavingFixture.model with fields := HavingFixture.model.fields.map fun field =>
       if field.id == 3 then { field with stringValueMode := .raw } else field } != .admitted ∧

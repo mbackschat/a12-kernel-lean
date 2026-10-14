@@ -74,7 +74,7 @@ private def applyPatch (base patch : Json) : Json :=
 /-- The Java compilation decisions the capture's pattern rows retain: `(` does not compile and every
 other source does. -/
 private def capturedJavaCompilation : StringPatternCompiler :=
-  fun source => if source == "(" then none else some fun _ => true
+  fun source => if source == "(" then .rejected else .compiled fun _ => true
 
 private def entry (label at_ : String) : String := s!"{label} at {at_}"
 

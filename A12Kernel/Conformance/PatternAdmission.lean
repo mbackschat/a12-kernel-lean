@@ -11,11 +11,11 @@ open A12Kernel
 
 private def exactA (value : String) : Bool := value == "A"
 
-private def compilePattern (source : String) : Option (String → Bool) :=
-  if source == "(" || source == "[" then none else some exactA
+private def compilePattern (source : String) : PatternCompilation :=
+  if source == "(" || source == "[" then .rejected else .compiled exactA
 
-private def compileExactSource (source : String) : Option (String → Bool) :=
-  some fun value => value == source
+private def compileExactSource (source : String) : PatternCompilation :=
+  .compiled fun value => value == source
 
 private def admittedVerdict? :
     Except (Sum PatternAdmissionError StringPatternRuntimeFault) Verdict → Option Verdict
@@ -69,7 +69,7 @@ example : [StringPatternOp.matched, .violated].all (fun op =>
       (fun operand => (evalAdmittedStringPattern compilePattern "" op operand).toOption.isNone)) = true := by
   native_decide
 
-example : classifyStringPattern (fun _ => none) "a++" =
+example : classifyStringPattern (fun _ => .rejected) "a++" =
     .rejected .javaSyntax := by native_decide
 
 /- The matcher is the exact capability returned for this source; evaluation cannot substitute a function compiled from another pattern. -/

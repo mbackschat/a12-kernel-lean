@@ -2733,3 +2733,11 @@ A DM-JSON text carrying `\ud800` reaches the Kernel's encoding gate as a lone UT
 Lean treatment: [`LoneSurrogate.lean`](../A12Kernel/Reference/Dm/LoneSurrogate.lean) rewrites each unpaired surrogate escape to the noncharacter U+10FFFF before parsing, so the supplementary-scalar notification fires on it naturally and the encoding gate tests for it; an authored U+10FFFF is the one collision, documented there.
 
 **A value the host's text type cannot represent must be carried across the parse, not reconstructed after it.** Check what the parser does with the boundary value before writing the predicate that needs it.
+
+## LF216 — a model-indexed certificate cannot cross a key join, but the ordinary elaborator can be run on the join's view
+
+The parallel carriers re-implemented every leaf they supported, presence and Number comparisons, because the ordinary elaborators refuse a partner field as an unbound repeatable level and their checked leaves are indexed by the model whose scopes they certified. The Kernel admits every ordinary leaf across the join, measured 2026-10-14, so the per-carrier route was a growing omission rather than a boundary.
+
+Lean treatment: [`ParallelInstanceView.lean`](../A12Kernel/Elaboration/ParallelInstanceView.lean) makes the joined groups fixed, and the ordinary reader lowers each leaf against that view. A validation leaf crosses back as the model-free `FlatConditionLeaf`; a computation guard stays typed by the view in [`ParallelNumericGuard.lean`](../A12Kernel/Elaboration/ParallelNumericGuard.lean), and scheduling consumes only its group-presence projection. The view of no group is the model by definition, so an ordinary checked guard lifts without a transport function.
+
+**When a checked representation is indexed by the model that certified it, change the model the elaborator sees rather than the representation.** Carry the result back only through a part that does not mention the model, and project consumers that span models onto the data they actually read.

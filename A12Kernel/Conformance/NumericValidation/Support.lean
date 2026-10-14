@@ -236,12 +236,12 @@ def temporalPairRaw (first second : RawCell) : RawFlatContext where
 
 def compileValidationPattern : StringPatternCompiler := fun source =>
   if source == asciiDigitsPatternSource then
-    locallyExecutableStringPatternMatcher? source
+    builtinStringPatternCompiler source
   else if source == "[0-9]*" then
-    some fun value =>
+    .compiled fun value =>
       value.toList.all fun character => '0' ≤ character && character ≤ '9'
   else
-    none
+    .rejected
 
 def verdictOf (surface : SurfaceNumericComparison)
     (context : RawFlatContext := raw) (hasContent : Bool := true)

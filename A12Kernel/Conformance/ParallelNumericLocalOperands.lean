@@ -16,7 +16,7 @@ private def expression : AuthoredNumericExpr SurfaceNumericAtom :=
   .binary .add (.atom (.field operandPath)) (.atom (.field peerPath))
 private def operation (guard : Option (CheckedComputationCondition model) := none) :=
   (checkIsolatedParallelNumericExpressionRunWithGuard model ["Plan"] 2
-    operandPath expression guard).toOption
+    operandPath expression (guard.map .ofUnjoined)).toOption
 private def peerCell (path : List Nat) (value : Int) : ClassifiedCellInput := {
   address := { field := 5, path }, stored := toString value
   raw := .parsed (.num value) }

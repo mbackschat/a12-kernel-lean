@@ -182,10 +182,10 @@ example :
 
 private def patternCompiler : StringPatternCompiler := fun pattern =>
   if pattern == "A+" then
-    some fun value =>
+    .compiled fun value =>
       !value.isEmpty && value.toList.all fun character => character == 'A'
   else
-    none
+    .rejected
 
 private def prepared : PreparedFlatStringContext model patternCompiler :=
   (prepareFlatStringContext { now := { epochMillis := 0 } }

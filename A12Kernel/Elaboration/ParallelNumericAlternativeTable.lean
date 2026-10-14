@@ -17,7 +17,7 @@ inductive ParallelNumericAlternativeTableError where
 structure CheckedParallelNumericAlternative (model : FlatModel)
     (target : FieldId) where
   operation : CheckedIsolatedParallelNumericDirectRun model
-  precondition : Option (CheckedComputationCondition model)
+  precondition : Option (ParallelNumericGuard model)
   preconditionOwned : operation.precondition = precondition
   targetMatches : operation.route.targetField = target
 
@@ -25,8 +25,8 @@ namespace CheckedParallelNumericAlternative
 
 def toSelectable
     (alternative : CheckedParallelNumericAlternative model target) :
-    CheckedComputationAlternative model
-      (CheckedIsolatedParallelNumericDirectRun model) where
+    ComputationAlternative (CheckedIsolatedParallelNumericDirectRun model)
+      (ParallelNumericGuard model) where
   precondition := alternative.precondition
   operation := alternative.operation
 
@@ -87,8 +87,8 @@ def alternatives
 
 def selectableAlternatives
     (table : CheckedParallelNumericAlternativeTable model) :
-    List (CheckedComputationAlternative model
-      (CheckedIsolatedParallelNumericDirectRun model)) :=
+    List (ComputationAlternative (CheckedIsolatedParallelNumericDirectRun model)
+      (ParallelNumericGuard model)) :=
   table.alternatives.map (·.toSelectable)
 
 /-- Whether any row's guard or complete numeric expression reads one exact field. -/
@@ -98,12 +98,20 @@ def referencesField
   table.alternatives.any fun alternative =>
     alternative.operation.referencesField field
 
+/-- Whether any row's guard ban or complete numeric expression reaches one exact field. -/
+def forbidsField
+    (table : CheckedParallelNumericAlternativeTable model)
+    (field : FieldId) : Bool :=
+  table.alternatives.any fun alternative =>
+    alternative.operation.forbidsField field
+
 /-- Select through the shared computation-condition scan, then evaluate only the selected checked parallel operation. -/
 def evaluate (table : CheckedParallelNumericAlternativeTable model)
-    (context : ScalarComputationContext) :
+    (context : ScalarComputationContext) (document : Document) (row : Env) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError
       NumericTargetOutcome := do
-  match CheckedComputationAlternative.selectFirstChecked table.selectableAlternatives context with
+  match ComputationAlternative.selectFirstWith (fun guard => guard.eval context document row)
+      table.selectableAlternatives with
   | .error error => if error.isValueFailure then .ok (.invalidNoValue .calculationValue) else throw (.guard error)
   | .ok .noMatch => .ok .noValue
   | .ok (.poison cause) => .ok (.inheritedPoison cause)
@@ -168,7 +176,7 @@ def executeTargetWith
   }
   pure {
     address := target.address
-    outcome := ← table.evaluate context
+    outcome := ← table.evaluate context preliminary.base.readDocument target.environment
   }
 
 /-- Execute the table through one addressed carrier read at every actual target whose complete all-row route inventory has clean checked index columns. -/

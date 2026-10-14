@@ -179,10 +179,10 @@ example : (((model .string true).elaborateComputationPredicate ["Form"] ["Form",
     some (true, false, true, false) := by native_decide
 
 private def patternCompiler : StringPatternCompiler := fun source =>
-  if source == "x" then some (· == "x")
-  else if source == "" then some String.isEmpty
-  else if source == "x++" then some (fun text => !text.isEmpty && text.toList.all (· == 'x'))
-  else none
+  if source == "x" then .compiled (· == "x")
+  else if source == "" then .compiled String.isEmpty
+  else if source == "x++" then .compiled (fun text => !text.isEmpty && text.toList.all (· == 'x'))
+  else .rejected
 
 private def hostPattern (op : StringPatternOp) (source : String) :=
   (model .string true).elaborateComputationPredicate ["Form"] ["Form", "Rows"]

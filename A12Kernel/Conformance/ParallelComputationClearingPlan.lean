@@ -87,7 +87,7 @@ private def directChecked? :=
 private def guardedDirectChecked? :=
   (checkIsolatedParallelNumericDirectRunWithGuard
     model ["Plan"] 2 operandPath
-      (some (.fieldFilled 4))).toOption
+      (some (.ofUnjoined (.fieldFilled 4)))).toOption
 
 private def incrementExpression :
     AuthoredNumericExpr SurfaceNumericAtom :=

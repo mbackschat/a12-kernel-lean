@@ -163,8 +163,9 @@ def replayReferences (model : FlatModel) (document : CheckedDocument model)
 /-- The parallel counterpart: each fired row projects its reference channels at its own resolved join
 row, so a duplicate side or an unmatched side is pointed at as the error pointer is. -/
 def replayParallelReferences (model : FlatModel) (document : CheckedDocument model)
-    (rule : CheckedParallelFieldRule model) (kernel : List ObservedReferences) : RuleStatus :=
-  match runParallelRuleReferences document rule with
+    (rule : CheckedParallelFieldRule model) (kernel : List ObservedReferences)
+    (world : Option World := none) : RuleStatus :=
+  match runParallelRuleReferences document rule world with
   | .error detail => .runFault detail
   | .ok fired =>
       match fired.mapM fun (message, references) => references.map (observedReferences model message) with
@@ -211,7 +212,7 @@ def replayRules (model : DmModel) (language : Language) (world : World)
             if actual != expected then { rule, status := .diverged actual expected } else
             let references := match checked', fired with
               | .parallel parallel, _ => some (replayParallelReferences model.flat document parallel
-                  (kernelReferences.filter (attributed ·.message)))
+                  (kernelReferences.filter (attributed ·.message)) (some world))
               | .ordinary ordinary, some fired => some (replayReferences model.flat document ordinary fired
                   (kernelReferences.filter (attributed ·.message)))
               | .ordinary _, none => none

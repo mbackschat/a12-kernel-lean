@@ -86,6 +86,8 @@ FieldsNotCollectivelyFilled(Demand/Units, Capacity/Units)   -- iterated per shar
 
 Group-presence operands in a parallel condition read the resolved joined group, including its instantiated-row content, rather than substituting one payload field. Index unavailability is checked before group presence; an unmatched clean group is empty, while an unmatched compromised index makes the group operand unavailable. A common outer repetition binds both sides before their key union is constructed, so equal keys in different outer rows do not join. The rule's declaring group resolves authored paths; it need not be the joined common parent.
 
+**Every other leaf reads the joined row as if both groups were fixed.** A leaf with no pair form of its own — a text or Date comparison across or within the sides, an Enumeration category read, value-list membership and its negation, `Length`, a String comparison between the two sides — reads each field from its side's joined row, and the Kernel admits each of these beside a pair leaf ([checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-parallel-instance-leaves)). An unmatched partner reads exactly as a partner row holding only its key: its fields are empty, so these leaves, negated ones included, do not fire on it through their ordinary empty-operand rules, while a Number inequality and `FieldNotFilled` of a partner field fire as omissions. A malformed partner field leaves its leaf undecided, firing nothing.
+
 ---
 
 ## 3. The filter `Having`, the `$` correlation, and aggregation

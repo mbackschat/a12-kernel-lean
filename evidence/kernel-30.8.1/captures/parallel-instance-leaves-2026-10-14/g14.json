@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out14",
+ "alternatives": [
+  {
+   "precondition": "FieldNotFilled(Note) Or AtLeastOneFieldFilled(Headcount, /Staffing/Demand/Base)",
+   "operation": "[/Staffing/Demand/Base] + [Headcount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}
