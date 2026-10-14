@@ -37,7 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Seven corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Eight corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+<a id="spec-2026-10-14-04"></a>
+### SPEC-2026-10-14-04 — an empty Enumeration token is legal, admitted as a literal, and never a cell value
+
+- `status`: pending
+- `canonical`: [spec/06 value lists](../spec/06-strings-and-enumerations.md).
+- `delta`: An Enumeration declaring `""` loads; `""` is a value-list literal exactly where it is a selected token; a stored `""` cell stays present-empty, so the token never matches and draws no formal finding; `== ""` and `!= ""` never fire on an Enumeration, as on a String.
+- `basis`: [empty-token checkpoint](sources/model-structure-and-declaration-probes.md#src-empty-enumeration-token), seven static rows and one runtime request over four documents at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile declaration loading, the literal gate and the four documents. Do not claim an empty category token, a labelled empty token or an empty index value, which no row measured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-03"></a>
 ### SPEC-2026-10-14-03 — a keyed group read beside a key join selects one row for every joined row

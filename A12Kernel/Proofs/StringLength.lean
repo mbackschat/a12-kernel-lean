@@ -16,7 +16,7 @@ theorem directEmptyStringComparison_notFired (context : FlatContext)
   simp only [FlatContext.observeValidationAt, FlatContext.observeAt] at empty
   simp [FlatComparison.eval, FlatContext.resolveDirectStringComparisonOperand,
     FlatContext.resolveStringComparisonOperandAt, empty,
-    SimpleComparisonOperand.evalDirectString]
+    SimpleComparisonOperand.evalTextLiteral]
 
 /-- An empty direct String literal suppresses both equality operators after a clean nonempty field value has been reached. -/
 theorem directEmptyStringLiteral_notFired (context : FlatContext)
@@ -24,7 +24,7 @@ theorem directEmptyStringLiteral_notFired (context : FlatContext)
     (resolved : context.resolveDirectStringComparisonOperand field =
       .value actual true) :
     (FlatComparison.string op field "").eval context = .notFired := by
-  simp [FlatComparison.eval, resolved, SimpleComparisonOperand.evalDirectString]
+  simp [FlatComparison.eval, resolved, SimpleComparisonOperand.evalTextLiteral]
 
 /-- Formal unavailability is observed before empty-literal suppression for both direct String equality operators. -/
 theorem directEmptyStringLiteral_unknown (context : FlatContext)
@@ -32,7 +32,7 @@ theorem directEmptyStringLiteral_unknown (context : FlatContext)
     (resolved : context.resolveDirectStringComparisonOperand field =
       .unknown cause) :
     (FlatComparison.string op field "").eval context = .unknown := by
-  simp [FlatComparison.eval, resolved, SimpleComparisonOperand.evalDirectString]
+  simp [FlatComparison.eval, resolved, SimpleComparisonOperand.evalTextLiteral]
 
 /-- The Length consumer turns the same clean empty String into grow-only zero, so any satisfied less-than comparison fires as omission. -/
 theorem emptyStringLengthLess_fires_omission (context : FlatContext)

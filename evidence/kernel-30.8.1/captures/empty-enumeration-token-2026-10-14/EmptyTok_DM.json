@@ -1,0 +1,282 @@
+{
+ "header": {
+  "id": "EmptyTok_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "EmptyTok_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/E1",
+        "name": "E1",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": ""
+            },
+            {
+             "value": "B"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/E2",
+        "name": "E2",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Note",
+        "name": "Note",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rF1",
+        "name": "rF1",
+        "Rule": {
+         "errorEntityRelPath": "../E1",
+         "errorCode": "rF1",
+         "errorCondition": "FieldFilled(E1)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rN1",
+        "name": "rN1",
+        "Rule": {
+         "errorEntityRelPath": "../E1",
+         "errorCode": "rN1",
+         "errorCondition": "FieldNotFilled(E1)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rF2",
+        "name": "rF2",
+        "Rule": {
+         "errorEntityRelPath": "../E2",
+         "errorCode": "rF2",
+         "errorCondition": "FieldFilled(E2)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rN2",
+        "name": "rN2",
+        "Rule": {
+         "errorEntityRelPath": "../E2",
+         "errorCode": "rN2",
+         "errorCondition": "FieldNotFilled(E2)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rIn1",
+        "name": "rIn1",
+        "Rule": {
+         "errorEntityRelPath": "../E1",
+         "errorCode": "rIn1",
+         "errorCondition": "FieldValueIncludedInValueList(E1, \"B\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rOut1",
+        "name": "rOut1",
+        "Rule": {
+         "errorEntityRelPath": "../E1",
+         "errorCode": "rOut1",
+         "errorCondition": "FieldValueNotIncludedInValueList(E1, \"B\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rOut2",
+        "name": "rOut2",
+        "Rule": {
+         "errorEntityRelPath": "../E2",
+         "errorCode": "rOut2",
+         "errorCondition": "FieldValueNotIncludedInValueList(E2, \"B\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rIn0",
+        "name": "rIn0",
+        "Rule": {
+         "errorEntityRelPath": "../E1",
+         "errorCode": "rIn0",
+         "errorCondition": "FieldValueIncludedInValueList(E1, \"\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rOut0",
+        "name": "rOut0",
+        "Rule": {
+         "errorEntityRelPath": "../E1",
+         "errorCode": "rOut0",
+         "errorCondition": "FieldValueNotIncludedInValueList(E1, \"\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rEq0",
+        "name": "rEq0",
+        "Rule": {
+         "errorEntityRelPath": "../E1",
+         "errorCode": "rEq0",
+         "errorCondition": "[E1] == \"\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/rNe0",
+        "name": "rNe0",
+        "Rule": {
+         "errorEntityRelPath": "../E1",
+         "errorCode": "rNe0",
+         "errorCondition": "[E1] != \"\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

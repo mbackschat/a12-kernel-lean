@@ -68,7 +68,7 @@ def resolveOperand (projection : ResolvedEnumerationProjection) :
 def evalLiteral (projection : ResolvedEnumerationProjection)
     (op : EqualityOp) (observation : CellObservation)
     (expected : String) : Verdict :=
-  op.evalSimple (· == ·) (projection.resolveOperand observation) expected
+  (projection.resolveOperand observation).evalTextLiteral op expected
 
 end ResolvedEnumerationProjection
 

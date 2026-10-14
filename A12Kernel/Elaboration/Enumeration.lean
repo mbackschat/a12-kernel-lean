@@ -25,7 +25,6 @@ structure EnumerationDeclaration where
 
 inductive EnumerationDeclarationError where
   | emptyStoredDomain
-  | emptyStoredToken (index : Nat)
   | duplicateStoredToken (token : String)
   | unknownDefaultStoredToken (token : String)
   | emptyDisplayLocale (stored : String)
@@ -100,32 +99,29 @@ private def invalidCategory? (expectedArity : Nat) :
         | some tokenIndex => some (.emptyCategoryToken category.name tokenIndex)
         | none => invalidCategory? expectedArity remaining (index + 1)
 
-/-- Validate the shared ordinary closed declaration invariants in deterministic source order. Identity displays are legal, and category tokens may repeat because category projection is many-to-one. -/
+/-- Validate the shared ordinary closed declaration invariants in deterministic source order. Identity displays are legal, and category tokens may repeat because category projection is many-to-one. An empty stored token is legal: the Kernel loads it and admits it as a value-list literal, while a stored empty cell stays empty, so no cell ever holds it (empty-token capture, 2026-10-14). -/
 def EnumerationDeclaration.validate (declaration : EnumerationDeclaration) :
     Except EnumerationDeclarationError Unit :=
   if declaration.storedTokens.isEmpty then
     .error .emptyStoredDomain
   else
-    match firstEmptyIndex? declaration.storedTokens 0 with
-    | some index => .error (.emptyStoredToken index)
+    match firstDuplicate? declaration.storedTokens with
+    | some token => .error (.duplicateStoredToken token)
     | none =>
-        match firstDuplicate? declaration.storedTokens with
-        | some token => .error (.duplicateStoredToken token)
+        match invalidDefaultStoredToken? declaration.storedTokens
+            declaration.defaultStoredToken with
+        | some error => .error error
         | none =>
-            match invalidDefaultStoredToken? declaration.storedTokens
-                declaration.defaultStoredToken with
+            match invalidDisplayFact? declaration.storedTokens declaration.displayFacts with
             | some error => .error error
             | none =>
-                match invalidDisplayFact? declaration.storedTokens declaration.displayFacts with
+                let locales := declaration.displayFacts.map (·.locale) |>.eraseDups
+                match incompleteDisplay? declaration.displayFacts declaration.storedTokens locales with
                 | some error => .error error
                 | none =>
-                    let locales := declaration.displayFacts.map (·.locale) |>.eraseDups
-                    match incompleteDisplay? declaration.displayFacts declaration.storedTokens locales with
+                    match invalidCategory? declaration.storedTokens.length declaration.categories 0 with
                     | some error => .error error
-                    | none =>
-                        match invalidCategory? declaration.storedTokens.length declaration.categories 0 with
-                        | some error => .error error
-                        | none => .ok ()
+                    | none => .ok ()
 
 private theorem firstDuplicate?_eq_none_nodup :
     ∀ tokens : List String, firstDuplicate? tokens = none → tokens.Nodup
@@ -210,11 +206,8 @@ theorem CheckedEnumerationDeclaration.defaultStoredToken_admitted
   unfold EnumerationDeclaration.validate at valid
   rw [selected] at valid
   simp [invalidDefaultStoredToken?, admitted] at valid
-  split at valid
-  · contradiction
-  · split at valid
-    · contradiction
-    · split at valid <;> contradiction
+  repeat' split at valid
+  all_goals contradiction
 
 def CheckedEnumerationDeclaration.displayProfile
     (checked : CheckedEnumerationDeclaration) : ResolvedEnumerationDisplay :=

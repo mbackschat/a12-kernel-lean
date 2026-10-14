@@ -1,0 +1,54 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "d50a13f27e58f3b8effd30f0f411ec76f541affccbffe87a52882f50d3e3c6bf",
+  "observations" : [ {
+    "id" : "s01",
+    "inputHash" : "209ab5048cbb8fbbf5e62fc41f04948f17d48caed3b11de0132ba1478fd247a8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s02",
+    "inputHash" : "b9e5b951ab8a8dd54451c3c0394ee8dc073a0cd950441d736709683dc3527716",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s03",
+    "inputHash" : "1de6d8c380a4bcc2fe8a0cfdf273018bea9ea648356adaed174c2540c668c0c1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s04",
+    "inputHash" : "8f5564910f125a91be0c97587f97efde5c0d78f2598ea3dc20ce951001ee1d0a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION" ]
+  }, {
+    "id" : "s05",
+    "inputHash" : "34a74bd0c65134659c2c2d5856c22ba964097d2d4e0a9cc3d7bc9d44cc356f7b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s06",
+    "inputHash" : "d8ef87bee72522fcee215987c09c91f66c2d116579968e8a4f45259880e3b337",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s07",
+    "inputHash" : "01b19875cb6984f81d48af76e3cfe5142b81837d1728745d3a6e76835cd7a144",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  } ]
+}

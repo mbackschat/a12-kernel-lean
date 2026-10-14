@@ -52,24 +52,24 @@ theorem evalSimple_complement_regions (op : EqualityOp) (equivalent : α → α 
 
 /-- Direct String equality and its complement never both fire, and both are silent exactly when the
 field holds no value or the literal is empty, which the String reader suppresses. -/
-theorem evalDirectString_complement_regions (op : EqualityOp)
+theorem evalTextLiteral_complement_regions (op : EqualityOp)
     (operand : SimpleComparisonOperand String) (expected : String) :
-    ¬ ((operand.evalDirectString op expected).fires ∧
-        (operand.evalDirectString op.complement expected).fires) ∧
-      (((operand.evalDirectString op expected).fires ||
-          (operand.evalDirectString op.complement expected).fires) = false ↔
+    ¬ ((operand.evalTextLiteral op expected).fires ∧
+        (operand.evalTextLiteral op.complement expected).fires) ∧
+      (((operand.evalTextLiteral op expected).fires ||
+          (operand.evalTextLiteral op.complement expected).fires) = false ↔
         expected.isEmpty ∨ ∀ actual given, operand ≠ .value actual given) := by
   cases operand with
   | value actual given =>
       cases op <;> cases given <;>
         by_cases empty : expected = "" <;>
         by_cases equal : actual = expected <;>
-        simp [SimpleComparisonOperand.evalDirectString, evalSimple, complement,
+        simp [SimpleComparisonOperand.evalTextLiteral, evalSimple, complement,
           holds, empty, equal, Verdict.fires]
   | notEvaluated =>
-      cases op <;> simp [SimpleComparisonOperand.evalDirectString, Verdict.fires]
+      cases op <;> simp [SimpleComparisonOperand.evalTextLiteral, Verdict.fires]
   | unknown cause =>
-      cases op <;> simp [SimpleComparisonOperand.evalDirectString, Verdict.fires]
+      cases op <;> simp [SimpleComparisonOperand.evalTextLiteral, Verdict.fires]
 
 end EqualityOp
 

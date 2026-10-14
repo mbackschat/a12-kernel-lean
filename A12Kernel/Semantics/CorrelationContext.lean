@@ -58,14 +58,6 @@ structure HavingStringRef where
 
 def HavingStringRef.field (reference : HavingStringRef) : FlatField := reference.operand.field
 
-/-- Direct String comparison suppresses an empty literal; Enumeration comparisons retain their
-checked projection's literal domain (`FlatComparison`'s separate String/Enumeration branches). -/
-def HavingStringRef.compareResolved (reference : HavingStringRef)
-    (value : SimpleComparisonOperand String) (op : EqualityOp) (expected : String) : Verdict :=
-  match reference.operand with
-  | .string _ => value.evalDirectString op expected
-  | .enumeration _ => op.evalSimple (· == ·) value expected
-
 def HavingOrigin.availableLevels (origin : HavingOrigin)
     (candidateLevels outerLevels : List RepeatableLevel) : List RepeatableLevel :=
   match origin with

@@ -37,7 +37,6 @@
 - `remaining`: text field-to-field and indexed computation-filter references beyond category-literal filters. Wider producer/source combinations share [SG4](keystone.md#gap-sg4); existing one/two-producer overlays are not missing prerequisites.
 - `host-boundary`: partial/dynamic table-backed Enumeration declarations need an input owner beyond normalized DM-JSON. [The declaration source](../sources/static-admission-and-class-probes.md#src-distinct-count-operand-domain) records this as a model-format boundary, not a missing dmtool verb.
 - `reopen-when`: a named consumer needs one residual profile or a current counterexample invalidates the accepted typed route.
-- `remaining`: the Kernel admits an Enumeration whose stored token is empty ([declaration checkpoint](../sources/model-structure-and-declaration-probes.md#src-field-declaration-notifications-k17), row `ev-empty-token`), while the runtime reader refuses it through `EnumerationDeclaration.validate`; the empty token's runtime meaning beside an absent value is unmeasured.
 - `route-state`: discovery-required
 
 <a id="gap-sg10"></a>

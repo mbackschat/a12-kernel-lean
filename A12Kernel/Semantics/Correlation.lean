@@ -343,7 +343,7 @@ def CorrelatedHavingLeaf.evalTruthIn (context : CorrelationContext)
       | .error impossible => nomatch impossible
   | .compareStringLiteral op reference expected =>
       CorrelatedHavingLeaf.verdictTruth
-        (reference.compareResolved (reference.resolveInAt .validation context frame) op expected)
+        ((reference.resolveInAt .validation context frame).evalTextLiteral op expected)
   | .dateValidity operation source =>
       match source.evalValidationRead operation context.asResolving frame with
       | .ok verdict => CorrelatedHavingLeaf.verdictTruth verdict
@@ -405,7 +405,7 @@ def CorrelatedHavingLeaf.evalTruthInResolving
         (some context.temporalValueFailure)))
   | .compareStringLiteral op reference expected => do
       pure (CorrelatedHavingLeaf.verdictTruth
-        (reference.compareResolved (← reference.resolveInAtResolving .validation context frame)
+        ((← reference.resolveInAtResolving .validation context frame).evalTextLiteral
           op expected))
   | .dateValidity operation source => CorrelatedHavingLeaf.verdictTruth <$> source.evalValidationRead operation context frame
   | .dateRange source => CorrelatedHavingLeaf.verdictTruth <$> source.evalValidationRead context frame
@@ -461,7 +461,7 @@ def CorrelatedHavingLeaf.evalComputationInResolving
       | .notEvaluated => pure .notTrue
       | .value actual given =>
           pure (match
-              reference.compareResolved (.value actual given) op expected with
+              (SimpleComparisonOperand.value actual given).evalTextLiteral op expected with
             | .fired _ => .holds
             | _ => .notTrue)
   | .dateValidity operation source => source.evalComputationRead operation context frame
@@ -678,7 +678,7 @@ def CorrelatedHavingLeaf.HoldsIn (context : CorrelationContext)
           .ok (.fired polarity)
   | .compareStringLiteral op reference expected =>
       ∃ messagePolarity,
-        reference.compareResolved (reference.resolveInAt .validation context frame) op expected
+        (reference.resolveInAt .validation context frame).evalTextLiteral op expected
           = .fired messagePolarity
   | .dateValidity operation source => ∃ polarity, source.evalValidationRead operation context.asResolving frame = .ok (.fired polarity)
   | .dateRange source => ∃ polarity, source.evalValidationRead context.asResolving frame = .ok (.fired polarity)

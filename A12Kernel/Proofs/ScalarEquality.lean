@@ -77,4 +77,14 @@ theorem computationComparisonExcept_pure
       .ok (evalComputationComparison holds left right) := by
   cases left <;> rfl
 
+
+/-- An empty text literal never fires in validation, under either operator and on any read. -/
+theorem evalTextLiteral_emptyLiteral_notFired (operand : SimpleComparisonOperand String)
+    (op : EqualityOp) (unknownFree : ∀ cause, operand ≠ .unknown cause) :
+    operand.evalTextLiteral op "" = .notFired := by
+  cases operand with
+  | unknown cause => exact absurd rfl (unknownFree cause)
+  | notEvaluated => rfl
+  | value actual given => rfl
+
 end A12Kernel

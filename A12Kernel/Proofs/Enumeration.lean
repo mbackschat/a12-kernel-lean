@@ -92,6 +92,9 @@ theorem enumeration_resolved_never_omission
     (resolved : projection.resolveOperand observation = .value actual true) :
     projection.evalLiteral op observation expected ≠ .fired .omission := by
   rw [ResolvedEnumerationProjection.evalLiteral, resolved]
-  cases op <;> simp [EqualityOp.evalSimple] <;> split <;> simp
+  simp only [SimpleComparisonOperand.evalTextLiteral]
+  split
+  · simp
+  · cases op <;> simp [EqualityOp.evalSimple] <;> split <;> simp
 
 end A12Kernel

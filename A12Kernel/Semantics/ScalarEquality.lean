@@ -94,4 +94,22 @@ def EqualityOp.evalSymmetric (op : EqualityOp) (equivalent : α → α → Bool)
     (left right : SimpleComparisonOperand α) : Verdict :=
   evalSymmetricComparison (fun left right => op.holds (equivalent left right)) left right
 
+/-- A String or Enumeration literal as a comparison operand. The empty literal is never evaluated,
+under either operator and whatever tokens a declaration lists (spec/03 empty values; empty-token
+capture, 2026-10-14). -/
+def SimpleComparisonOperand.textLiteral (expected : String) : SimpleComparisonOperand String :=
+  if expected.isEmpty then .notEvaluated else .value expected true
+
+/-- A String or Enumeration read compared with a literal in validation: `textLiteral`'s empty
+suppression, applied after the read has preserved malformed input as unknown. -/
+def SimpleComparisonOperand.evalTextLiteral
+    (operand : SimpleComparisonOperand String) (op : EqualityOp)
+    (expected : String) : Verdict :=
+  match operand with
+  | .unknown _ => .unknown
+  | .notEvaluated => .notFired
+  | .value actual given =>
+      if expected.isEmpty then .notFired
+      else op.evalSimple (· == ·) (.value actual given) expected
+
 end A12Kernel

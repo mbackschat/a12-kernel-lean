@@ -1,0 +1,47 @@
+{
+ "model": "EmptyTok_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "empty",
+   "documentInline": {
+    "Form": {
+     "E1": "",
+     "E2": "",
+     "Note": "n"
+    }
+   }
+  },
+  {
+   "name": "absent",
+   "documentInline": {
+    "Form": {
+     "Note": "n"
+    }
+   }
+  },
+  {
+   "name": "filled",
+   "documentInline": {
+    "Form": {
+     "E1": "B",
+     "E2": "B",
+     "Note": "n"
+    }
+   }
+  },
+  {
+   "name": "foreign",
+   "documentInline": {
+    "Form": {
+     "E1": "C",
+     "E2": "C",
+     "Note": "n"
+    }
+   }
+  }
+ ]
+}

@@ -58,7 +58,7 @@ theorem checkedEnumeration_evalRaw_outOfDomain
     nonempty, absent', observeCell,
     ResolvedEnumerationProjection.evalLiteral,
     ResolvedEnumerationProjection.resolveOperand,
-    EqualityOp.evalSimple, BaseFormalCause.toFormalCause]
+    SimpleComparisonOperand.evalTextLiteral, BaseFormalCause.toFormalCause]
 
 /-- A flat Enumeration declaration delegates raw admission to the exact checked source retained by that declaration. -/
 theorem flatEnumeration_checkRaw_exact (declaration : FlatFieldDecl)

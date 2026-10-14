@@ -59,6 +59,19 @@ example : checkedExpected? (.category "Kind") .notEqual "Shared" =
 
 example : storedEqualsA.evalRaw (.parsed (.enum "A")) = .fired .value := by native_decide
 
+private def emptyTokenChecked : CheckedEnumerationDeclaration :=
+  { declaration := { storedTokens := ["", "B"] }, wellFormed := by rfl }
+
+private def storedDiffersFromEmpty : Option CheckedEnumerationLiteralComparison :=
+  (checkEnumerationLiteralComparison emptyTokenChecked .stored .notEqual "").toOption
+
+/-- A declared empty token is an admitted literal, and `!= ""` stays silent on a filled `B` and on a
+stored `""`, which is empty (empty-token capture `rNe0`, 2026-10-14). The direct-String account would
+also stay silent; the separating wrong account is the plain token inequality, which fires on `B`. -/
+example : storedDiffersFromEmpty.map (fun comparison =>
+      (comparison.evalRaw (.parsed (.enum "B")), comparison.evalRaw (.parsed (.enum "")))) =
+    some (.notFired, .notFired) := by native_decide
+
 example : storedEqualsA.evalRaw (.parsed (.enum "B")) = .notFired := by native_decide
 
 example : categoryEqualsShared.evalRaw (.parsed (.enum "A")) = .fired .value := by native_decide

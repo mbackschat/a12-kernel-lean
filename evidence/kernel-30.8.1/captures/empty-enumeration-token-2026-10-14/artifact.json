@@ -1,0 +1,320 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "EmptyTok_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "rN1",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": [
+        "Form/E1"
+       ]
+      },
+      {
+       "code": "rN2",
+       "field": "Form/E2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E2"
+       ],
+       "fillToFix": [
+        "Form/E2"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "rN1",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": [
+        "Form/E1"
+       ]
+      },
+      {
+       "code": "rN2",
+       "field": "Form/E2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E2"
+       ],
+       "fillToFix": [
+        "Form/E2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "absent",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "rN1",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": [
+        "Form/E1"
+       ]
+      },
+      {
+       "code": "rN2",
+       "field": "Form/E2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E2"
+       ],
+       "fillToFix": [
+        "Form/E2"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "rN1",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": [
+        "Form/E1"
+       ]
+      },
+      {
+       "code": "rN2",
+       "field": "Form/E2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E2"
+       ],
+       "fillToFix": [
+        "Form/E2"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "filled",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "rF1",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "rF2",
+       "field": "Form/E2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "rIn1",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "rOut0",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "rF1",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "rF2",
+       "field": "Form/E2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "rIn1",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "rOut0",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "foreign",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/E2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "Form/E2"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/E2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted: Kernel message text, EUPL localisation resource]",
+       "referenced": [
+        "Form/E2"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

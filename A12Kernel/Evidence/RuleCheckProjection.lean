@@ -104,7 +104,8 @@ def captures : List (String × String × String) := [
   ("captures/semantic-index-entry-2026-10-09/observations.json", "captures/selected-typed-comparison-2026-10-09/Probe_DM.json", "captures/semantic-index-entry-2026-10-09/ops.json"),
   ("captures/temporal-extractor-entry/observations.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/temporal-extractor-entry/ops.json"),
   ("captures/temporal-extractor-entry/observations2.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/temporal-extractor-entry/ops2.json"),
-  ("captures/unraised-diagnostic-vocabulary/obs.json", "captures/parser-index-and-iteration-classes/IdxProbe_DM.json", "captures/unraised-diagnostic-vocabulary/ops.json")]
+  ("captures/unraised-diagnostic-vocabulary/obs.json", "captures/parser-index-and-iteration-classes/IdxProbe_DM.json", "captures/unraised-diagnostic-vocabulary/ops.json"),
+  ("captures/empty-enumeration-token-2026-10-14/obs.json", "captures/empty-enumeration-token-2026-10-14/EmptyTok_DM.json", "captures/empty-enumeration-token-2026-10-14/ops.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) := [

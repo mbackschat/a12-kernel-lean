@@ -1,0 +1,107 @@
+[
+ {
+  "id": "s01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s01",
+   "--field",
+   "/Form/E1",
+   "--condition",
+   "FieldValueIncludedInValueList(E1, \"\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s02",
+   "--field",
+   "/Form/E1",
+   "--condition",
+   "FieldValueNotIncludedInValueList(E1, \"\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s03",
+   "--field",
+   "/Form/E1",
+   "--condition",
+   "FieldValueIncludedInValueList(E1, \"B\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s04",
+   "--field",
+   "/Form/E2",
+   "--condition",
+   "FieldValueIncludedInValueList(E2, \"\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s05",
+   "--field",
+   "/Form/E1",
+   "--condition",
+   "[E1] == \"\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s06",
+   "--field",
+   "/Form/E1",
+   "--condition",
+   "[E1] == \"B\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s07",
+   "--field",
+   "/Form/E1",
+   "--condition",
+   "FieldFilled(E1)",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

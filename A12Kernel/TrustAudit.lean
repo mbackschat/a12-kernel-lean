@@ -59,6 +59,7 @@ run_cmd do
 #print axioms A12Kernel.computationComparisonExcept_leftPoison
 #print axioms A12Kernel.computationComparisonExcept_emptyLeft_error
 #print axioms A12Kernel.computationComparisonExcept_pure
+#print axioms A12Kernel.evalTextLiteral_emptyLiteral_notFired
 
 #print axioms A12Kernel.dateParts_real_iff
 #print axioms A12Kernel.civilDate_ofParts_isSome_iff
@@ -603,7 +604,7 @@ run_cmd do
 #print axioms A12Kernel.NumericComparisonOp.holds_complement
 #print axioms A12Kernel.NumericComparisonOp.eval_complement_regions
 #print axioms A12Kernel.EqualityOp.evalSimple_complement_regions
-#print axioms A12Kernel.EqualityOp.evalDirectString_complement_regions
+#print axioms A12Kernel.EqualityOp.evalTextLiteral_complement_regions
 #print axioms A12Kernel.CellObservation.fieldFilled_complement_regions
 #print axioms A12Kernel.GroupPresenceState.groupFilled_complement_regions
 #print axioms A12Kernel.GroupPresenceOperator.evalComputation_holds_iff_count

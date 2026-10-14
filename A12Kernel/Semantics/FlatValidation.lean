@@ -562,18 +562,6 @@ def FlatTemporalOperand.resolveResultAt (context : FlatContext) (phase : Phase) 
   | .grouped source => source.resolveResultAt context phase
   | operand => pure (operand.resolveAt context phase)
 
-/-- Direct String equality suppresses an empty literal only after the field read has
-    preserved malformed input as unknown. -/
-def SimpleComparisonOperand.evalDirectString
-    (operand : SimpleComparisonOperand String) (op : EqualityOp)
-    (expected : String) : Verdict :=
-  match operand with
-  | .unknown _ => .unknown
-  | .notEvaluated => .notFired
-  | .value actual given =>
-      if expected.isEmpty then .notFired
-      else op.evalSimple (· == ·) (.value actual given) expected
-
 def FlatEnumerationOperand.resolve (operand : FlatEnumerationOperand)
     (context : FlatContext) : SimpleComparisonOperand String :=
   operand.projection.resolveOperand
@@ -751,7 +739,7 @@ def FlatComparison.eval (comparison : FlatComparison) (context : FlatContext) : 
   | .booleanFields op left right =>
       op.evalSymmetric (· == ·) (left.resolveAt .validation context) (right.resolveAt .validation context)
   | .string op field expected =>
-      (context.resolveDirectStringComparisonOperand field).evalDirectString op expected
+      (context.resolveDirectStringComparisonOperand field).evalTextLiteral op expected
   | .stringLength op field expected =>
       op.toNumeric.evalFixedRight (context.resolveStringLengthOperand field) expected
   | .enumeration op operand expected =>

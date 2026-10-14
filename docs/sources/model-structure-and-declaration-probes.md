@@ -319,6 +319,17 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/parallel-instance-leaves-2026-10-14/) with the static model, the runtime models, ops, observations, both requests and artifacts and `MANIFEST.sha256`.
 - `sync`: [SPEC-2026-10-14-02](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-02).
 
+<a id="src-empty-enumeration-token"></a>
+#### An Enumeration declaring an empty stored token loads, admits that token as a value-list literal, and never holds it in a cell, measured 2026-10-14
+
+- `producer`: a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`, clean before and after; dmtool `0.13.0`, Kernel `30.8.1`; on a model with `E1` declaring `""` and `B` and the control `E2` declaring `A` and `B`: `model check` (valid), seven `rule check` rows and one `:adapter:kernelProbe` request observing `validateFull` over four documents, both strategies agreeing.
+- `static`: `FieldValueIncludedInValueList(E1, "")` and its negation are admitted (`s01`, `s02`); on `E2` the same literal draws `MVK_INVALID_STRING_CONSTANT_FOR_ENUMERATION` (`s04`). `[E1] == ""` is admitted (`s05`).
+- `runtime`: a stored `""` (`empty`) answers exactly as an absent cell (`absent`): only `FieldNotFilled` fires on either field, as an omission, with no formal finding, and neither membership in `""`, `[E1] == ""` nor `[E1] != ""` fires. On `B` (`filled`), `FieldValueNotIncludedInValueList(E1, "")` fires and `[E1] != ""` does not. An undeclared `C` (`foreign`) draws the declared-constraint finding on both fields and fires no rule.
+- `local`: the [declaration check](../../A12Kernel/Elaboration/Enumeration.lean) admits an empty stored token, and the existing value classification already reads a stored `""` as empty. The replay first diverged on `rNe0`, where Lean fired the token inequality on `B`; the [shared literal rule](../../A12Kernel/Semantics/ScalarEquality.lean) now suppresses an empty literal on Enumeration reads as on String ones.
+- `limit`: one declaration with the empty token first, `en_US`, a fixed root group. An empty category token, a labelled empty token and an empty token as an index field's value are not measured.
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/empty-enumeration-token-2026-10-14/) with the model, ops, observations, request and artifact (Kernel message texts redacted) and `MANIFEST.sha256`.
+- `sync`: [SPEC-2026-10-14-04](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-04).
+
 <a id="src-field-declaration-notifications-k17"></a>
 #### The declaration-generation rule reports field-type, element-name, group and element-text classes as one unordered set over the variant-filtered model, measured 2026-10-13
 

@@ -31,7 +31,7 @@ private def isAccepted (source : EnumerationDeclaration) : Bool :=
 
 example : rejectsWith (declaration []) .emptyStoredDomain := by native_decide
 
-example : rejectsWith (declaration [""]) (.emptyStoredToken 0) := by native_decide
+example : isAccepted (declaration ["", "B"]) := by native_decide
 
 example : rejectsWith (declaration ["A", "A"]) (.duplicateStoredToken "A") := by native_decide
 
