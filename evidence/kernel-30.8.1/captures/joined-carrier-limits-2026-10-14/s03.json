@@ -1,0 +1,14 @@
+{
+ "computedField": "/Num/NL/NOut",
+ "alternatives": [
+  {
+   "operation": "[/Num/NR/NW] + [NV]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out13",
+ "alternatives": [
+  {
+   "precondition": "GroupFilled(/Staffing/Ledger For Note)",
+   "operation": "[/Staffing/Demand/Base] + [Headcount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

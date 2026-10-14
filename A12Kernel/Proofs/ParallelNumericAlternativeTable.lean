@@ -73,34 +73,37 @@ private theorem parallelNumericAlternativeTable_executeTargetWith_address
       | error error =>
           simp [keyResult, cellsResult, Bind.bind, Except.bind] at executed
       | ok cells =>
-          rw [keyResult] at executed
-          simp only [Bind.bind, Except.bind] at executed
-          rw [cellsResult] at executed
-          let context : ParallelNumericGuardContext := {
-            joinedRead := fun field =>
-              match cells.find? fun cell => cell.1 == field with
-              | some cell => cell.2
-              | none => malformedCheckedCell
-            ordinary := ordinaryAt target.environment
-          }
-          change
-            (do
-              let result ← table.evaluate context
-              pure ({
-                address := target.address
-                outcome := result
-              } : ParallelNumericDirectOutcome)) =
-                .ok outcome at executed
-          cases evaluationResult :
-              table.evaluate context with
+          cases partnersResult :
+              CheckedIsolatedParallelNumericDirectRun.partnerEnvironments table.operandRoutes
+                preliminary target.environment key with
           | error error =>
-              rw [evaluationResult] at executed
-              contradiction
-          | ok result =>
-              rw [evaluationResult] at executed
-              change Except.ok _ = Except.ok outcome at executed
-              cases executed
-              rfl
+              simp [keyResult, cellsResult, partnersResult, Bind.bind, Except.bind] at executed
+          | ok partners =>
+              rw [keyResult] at executed
+              simp only [Bind.bind, Except.bind] at executed
+              rw [cellsResult] at executed
+              simp only at executed
+              rw [partnersResult] at executed
+              let context := CheckedIsolatedParallelNumericDirectRun.guardContextAt cells partners
+                ordinaryAt target.environment
+              change
+                (do
+                  let result ← table.evaluate context
+                  pure ({
+                    address := target.address
+                    outcome := result
+                  } : ParallelNumericDirectOutcome)) =
+                    .ok outcome at executed
+              cases evaluationResult :
+                  table.evaluate context with
+              | error error =>
+                  rw [evaluationResult] at executed
+                  contradiction
+              | ok result =>
+                  rw [evaluationResult] at executed
+                  change Except.ok _ = Except.ok outcome at executed
+                  cases executed
+                  rfl
 
 /-- Successful table execution emits exact addresses only for the table's checked target field. -/
 theorem parallelNumericAlternativeTable_executeWithRead_owns_target

@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CustomCondition
 import A12Kernel.Elaboration.ParallelFieldPair
+import A12Kernel.Elaboration.ParallelInstanceView
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Semantics.NumericExpression
 import A12Kernel.Semantics.ValidationFillQuantifier
@@ -56,6 +57,9 @@ inductive ParallelFieldLeafOf (Field Ordinary : Type) where
   | fill (op : FieldFillQuantifier) (left right : Field)
   | comparison (value : NumericComparisonOf (ParallelNumericAtomOf Field))
   | customCondition (name : CheckedCustomConditionName)
+  /-- `FieldValuesNotUnique` over two or more direct String or Enumeration fields of the joined row
+  (joined-carrier-limits capture, row `d04`, 2026-10-14). -/
+  | valuesNotUnique (operands : List Field)
   /-- An ordinary flat leaf elaborated against the joined-instance view, where each pair group reads
   one row. `reads` lists the fields it reads, so admission and references see them as payloads. -/
   | flat (condition : FlatConditionLeaf) (reads : List Field)
@@ -78,24 +82,28 @@ def CheckedParallelFieldPair.declaration (pair : CheckedParallelFieldPair model)
   | .field declaration => declaration
 
 /-- Where an ordinary leaf beside the join is evaluated. The common outer binding is preferred; a
-leaf whose iterating reads it does not fix, a key field on the error side's row for instance, reads
-the error side's joined row. -/
+leaf whose iterating reads it does not fix, a key field on one side's row for instance, reads that
+side's joined row, the error side's first. -/
 inductive ParallelOrdinaryBinding where
   | common
-  | errorSide
+  | side (side : ParallelFieldSide)
   deriving Repr, DecidableEq
 
 /-- The binding that fixes every iterating read of `leaf`, a key field's included, or none. -/
 def CheckedParallelFieldPair.ordinaryBinding? (pair : CheckedParallelFieldPair model)
     (leaf : ValidationConditionLeaf model) : Option ParallelOrdinaryBinding :=
   let common := match pair.groups.outerScopePlan with | .common shared | .framed _ shared _ => shared
-  let errorScope := (if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration
-    else pair.rightDeclaration).repeatableScope
+  let (first, second) : ParallelFieldSide × ParallelFieldSide :=
+    if pair.errorField == pair.leftDeclaration.id then (.left, .right) else (.right, .left)
+  let scopeOf : ParallelFieldSide → List RepeatableLevel
+    | .left => pair.leftDeclaration.repeatableScope
+    | .right => pair.rightDeclaration.repeatableScope
   match ValidationCondition.ordinaryIterationScope (.leaf leaf) with
   | .ok none => some .common
   | .ok (some scope) =>
       if scope.isPrefixOf common then some .common
-      else if scope.isPrefixOf errorScope then some .errorSide
+      else if scope.isPrefixOf (scopeOf first) then some (.side first)
+      else if scope.isPrefixOf (scopeOf second) then some (.side second)
       else none
   | .error _ => none
 
@@ -121,6 +129,24 @@ def aggregateFields? (pair : CheckedParallelFieldPair model) (operands : List Pa
   | some (first :: rest) => some { first, rest }
   | _ => none
 
+/-- The operands' stored String or Enumeration projections, or none when any operand has none. -/
+def tokenOperands? (pair : CheckedParallelFieldPair model) (operands : List ParallelFieldOperand) :
+    Option (List FlatTextFieldOperand) :=
+  operands.mapM fun operand => ((pair.declaration operand).toTokenFieldComparison? .stored).map (·.1)
+
+/-- Two or more distinct String or Enumeration fields, the operand list a distinct count and a
+uniqueness test take over a joined pair (joined-carrier-limits capture, rows `d01b`, `d03` and `d04`,
+2026-10-14). -/
+def tokenList (pair : CheckedParallelFieldPair model) (operands : List ParallelFieldOperand) : Bool :=
+  (tokenOperands? pair operands).isSome && 1 < operands.length &&
+    (operands.map (pair.declaration · |>.id)).Nodup
+
+/-- A distinct count over a token list. -/
+def tokenDistinct (pair : CheckedParallelFieldPair model) :
+    NumericAggregateOp → List ParallelFieldOperand → Bool
+  | .distinctCount, operands => tokenList pair operands
+  | _, _ => false
+
 /-- The temporal gates are the ordinary ones; the stored-component decoder is the model's own, so the atom carries none. -/
 def admitted (pair : CheckedParallelFieldPair model) : ParallelNumericAtomOf ParallelFieldOperand → Bool
   | .field operand => (pair.declaration operand).toNumberField?.isSome
@@ -128,7 +154,7 @@ def admitted (pair : CheckedParallelFieldPair model) : ParallelNumericAtomOf Par
       match (pair.declaration operand).toTemporalField? with
       | some source => model.admitsTemporalNumericPart source part (model.temporalNumericPartialFormat source.id)
       | none => false
-  | .aggregate _ operands => (aggregateFields? pair operands).any fun source =>
+  | .aggregate op operands => tokenDistinct pair op operands || (aggregateFields? pair operands).any fun source =>
       source.hasMultipleFields && source.hasUniqueFields
 
 def scaleSummary (pair : CheckedParallelFieldPair model) :
@@ -141,7 +167,7 @@ def scaleSummary (pair : CheckedParallelFieldPair model) :
   | .aggregate op operands =>
       match aggregateFields? pair operands with
       | some source => op.scaleSummary source
-      | none => { scale := .unknown, canExpandScale := false }
+      | none => if tokenDistinct pair op operands then .field 0 else { scale := .unknown, canExpandScale := false }
 
 /-- An absent joined observation is call-local unavailability without an invented formal cause; a present one enters the ordinary validation fold, so empty and invalid operands stay UNKNOWN or substituted rather than poisoning. -/
 def resolveValidation (pair : CheckedParallelFieldPair model)
@@ -160,7 +186,15 @@ def resolveValidation (pair : CheckedParallelFieldPair model)
           (model.temporalNumericPartialFormat source.id)).toValidationArithmetic).getD
             (.error NumericValidationUnavailable.silentlyUnavailable))
   | .aggregate op operands => do
-      let some source := aggregateFields? pair operands | throw .unsupportedCondition
+      let some source := aggregateFields? pair operands | do
+        -- A token distinct count folds the ordinary value-list cells of the joined observations.
+        let some tokens := tokenOperands? pair operands | throw .unsupportedCondition
+        let observed ← operands.mapM read
+        let some cells := observed.mapM id | return .error NumericValidationUnavailable.silentlyUnavailable
+        let side : ResolvedValueListSide .token := {
+          cells := (tokens.zip cells).map fun (token, cell) => token.observedValueListCell cell
+          hasUninstantiatedTail := false, hasHaving := false }
+        pure (evalDistinctCountAggregate side).toValidationArithmetic
       let observed ← operands.mapM fun operand => do
         pure ((pair.declaration operand).id, ← read operand)
       match observed.mapM fun (id, cell) => cell.map (id, ·) with
@@ -178,6 +212,7 @@ def fields : ParallelFieldLeaf model → List ParallelFieldOperand
   | .numeric _ lhs rhs | .fill _ lhs rhs => [lhs, rhs]
   | .comparison value => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
   | .customCondition _ => []
+  | .valuesNotUnique operands => operands
   | .flat _ reads => reads
   | .ordinary _ => []
 
@@ -186,6 +221,8 @@ def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
   let group := match side with | .left => pair.groups.leftGroup | .right => pair.groups.rightGroup
   match leaf with
   | .groupPresence _ reference => group.path.isPrefixOf reference.path
+  -- A side-bound ordinary leaf reads that side's joined row; a common-bound one reads neither.
+  | .ordinary condition => pair.ordinaryBinding? condition == some (.side side)
   | _ => leaf.fields.any fun field => group.path.isPrefixOf (pair.declaration field).groupPath
 
 /-- Every payload is model-owned and addressable from the join or frame; comparisons reuse the shared authoring and scale gates. -/
@@ -211,10 +248,14 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
       { value with suppressExactScaleWarning := suppress }.admittedWith
         (·.admitted pair) (·.scaleSummary pair)
   | .customCondition _ => true
+  | .valuesNotUnique operands => ParallelNumericAtomOf.tokenList pair operands
   | .flat condition reads => model.fields.all fun declaration =>
       !condition.referencesField declaration.id || reads.any (pair.declaration · == declaration)
-  -- A binding must fix every iterating read. A read below a joined group or in a repeatable group
-  -- enclosing one is unmeasured beside a join, as are uniqueness, current-repetition and custom leaves.
+  -- A binding must fix every iterating read. A read below a joined group or in a repeatable frame
+  -- enclosing one is unmeasured beside a join, as are current-repetition and custom leaves; a join
+  -- inside an indexed group is refused as a whole (`MVK_MULTIPLE_INDEX_FIELDS`), and so is
+  -- `RepetitionNotUnique` beside one (`MVK_PARALLEL_ITERATION_NOT_ALLOWED`; joined-carrier-limits
+  -- capture rows `e01`–`e05`, `d06`, 2026-10-14).
   | .ordinary leaf =>
       let joined := [pair.groups.leftGroup.path, pair.groups.rightGroup.path]
       let placed := model.fields.all fun declaration =>
@@ -223,7 +264,7 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
             (!path.isPrefixOf declaration.groupPath &&
               (!declaration.groupPath.isPrefixOf path || declaration.repeatableScope.isEmpty))
       let measured := match leaf with
-        | .repetitionNotUnique .. | .valuesNotUnique _ | .guardedRootCurrentRepetition ..
+        | .repetitionNotUnique .. | .guardedRootCurrentRepetition ..
         | .guardedRepeatableCurrentRepetition .. | .customCondition _ | .customFieldValidity _
         | .indexedCustomFieldValidity _ => false
         | _ => true
@@ -231,9 +272,8 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
 
 /-- Direct fields and operation-list wrappers retain the ordinary literal-sensitive guard;
 composite arithmetic has its own parse-tree branch (spec/07 §2). A field list is an entity list in the
-ordinary guard: it rejects mixed references like a wrapper. A bare distinct count against a literal
-stays unclassified, because the ordinary carrier gives it a positive-threshold rule this carrier has not
-measured. -/
+ordinary guard: it rejects mixed references like a wrapper, and a distinct count keeps the ordinary
+positive-threshold rule. -/
 private def numericGuard (participates : ParallelFieldOperand → Bool)
     (value : NumericComparisonOf (ParallelNumericAtomOf ParallelFieldOperand)) : IterationGuardStatus :=
   let rec sensitive : AuthoredNumericExpr (ParallelNumericAtomOf ParallelFieldOperand) → Option Bool
@@ -248,18 +288,22 @@ private def numericGuard (participates : ParallelFieldOperand → Bool)
     | _ => false
   let atomOperands := fun (expression : AuthoredNumericExpr (ParallelNumericAtomOf ParallelFieldOperand)) =>
     expression.atoms.flatMap (·.operands)
-  let classify expression constant := do
+  let classify expression constant (entityOnLeft : Bool) := do
     let rejectMixed ← sensitive expression
     let .literal literal := constant | none
     let bits := (atomOperands expression).map participates
     if !bits.any id then return IterationGuardStatus.noReference
     if rejectMixed && !bits.all id then return .unguarded
-    if distinctCount expression then return .unclassified
     let some converted := literal.javaRoundedInt32? | return .unclassified
+    -- The ordinary carrier's positive-threshold rule: `> 1` guards, `< 2` does not
+    -- (joined-carrier-limits capture, rows `d01b` and `d02b`, 2026-10-14).
+    if distinctCount expression then
+      return if 0 < converted && ValidationCondition.positiveCountThresholdIsUnguarded entityOnLeft value.op then .unguarded
+        else .guarded
     pure (value.op.literalIterationGuard converted bits rejectMixed)
-  match classify value.left value.right with
+  match classify value.left value.right true with
   | some result => result
-  | none => match classify value.right value.left with
+  | none => match classify value.right value.left false with
     | some result => result
     | none =>
         if (atomOperands value.left ++ atomOperands value.right).any participates then .guarded
@@ -289,7 +333,7 @@ def guards (pair : CheckedParallelFieldPair model) : ParallelFieldLeaf model →
   | .fill op left right => decide (fillGuard (fun field =>
       pair.groups.leftGroup.path.isPrefixOf (pair.declaration field).groupPath ||
       pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) op left right = .guarded)
-  | .customCondition _ | .ordinary _ => false
+  | .customCondition _ | .ordinary _ | .valuesNotUnique _ => false
   | .flat condition reads => decide (condition.iterationGuard (fun field =>
       reads.any fun operand => (pair.declaration operand).id == field &&
         (pair.groups.leftGroup.path.isPrefixOf (pair.declaration operand).groupPath ||
@@ -312,6 +356,9 @@ def guardAt (pair : CheckedParallelFieldPair model) (level : RepeatableLevel)
       if (pair.declaration left).repeatableScope.contains level ||
           (pair.declaration right).repeatableScope.contains level then .guarded else .noReference
   | .customCondition _ | .ordinary _ => .noReference
+  | .valuesNotUnique operands =>
+      if operands.any (fun operand => (pair.declaration operand).repeatableScope.contains level) then .unclassified
+      else .noReference
   | .flat condition reads => condition.iterationGuard fun field =>
       reads.any fun operand => (pair.declaration operand).id == field &&
         (pair.declaration operand).repeatableScope.contains level
@@ -380,6 +427,11 @@ def evalWith (pair : CheckedParallelFieldPair model)
         (right.map (·.asValidationFillTally) |>.getD unknown))).asConservativeVerdict)
   | .customCondition name => do
       pure (customConditionVerdict (← (custom name.value).mapError .customCondition))
+  | .valuesNotUnique operands => do
+      let some tokens := ParallelNumericAtomOf.tokenOperands? pair operands | throw .unsupportedCondition
+      let some cells := (← operands.mapM read).mapM id | return .unknown
+      pure (evalValuesNotUniqueVerdict ((tokens.zip cells).map fun (token, cell) =>
+        (token.observedValueListCell cell, false)))
   | .flat condition reads => do
       -- Each read is one joined observation, so the leaf's ordinary semantics see an unmatched
       -- partner as empty, the same observation a presence leaf sees (parallel-flat-leaves capture, 2026-10-14).
@@ -393,13 +445,30 @@ def evalWith (pair : CheckedParallelFieldPair model)
       pure (condition.evalSelected context)
   | .ordinary leaf => readOrdinary leaf
 
-/-- The environment an ordinary leaf reads at one joined row; none for an unmatched error side,
-whose leaf decides nothing, an account no captured row separates. -/
-def ordinaryEnvironment? (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
-    (outer : Env) (leaf : ValidationConditionLeaf model) : Option Env :=
+/-- The environment an ordinary leaf reads at one joined row: the common outer one, or its bound
+side's row, a key-only row for an unmatched side. The flag marks that key-only row. -/
+def ordinaryEnvironment? (pair : CheckedParallelFieldPair model) (document : CheckedDocument model)
+    (row : ResolvedParallelIndexRow) (outer : Env) (leaf : ValidationConditionLeaf model) :
+    Option (Env × Bool) :=
   match pair.ordinaryBinding? leaf with
-  | some .common | none => some outer
-  | some .errorSide => (pair.errorSide row).environment
+  | some .common | none => some (outer, false)
+  | some (.side side) =>
+      let joined := match side with | .left => row.left | .right => row.right
+      match joined.environment with
+      | some environment => some (environment, false)
+      | none => (document.keyOnlyEnvironment? outer joined.group).map (·, true)
+
+/-- Evaluate one ordinary leaf in a partial view. A reached temporal fault has no parallel
+runtime-failure route; it fails the call, as in full validation. -/
+def evalPartialOrdinary (view : CheckedPartialPreliminary model) (environment : Env)
+    (world : Option World) (leaf : ValidationConditionLeaf model) :
+    Except ParallelPresenceRuleEvaluationError Verdict :=
+  match ValidationCondition.evalPartialAddressedResult (.leaf leaf) view
+      (view.addressedValidationContext environment world) environment none with
+  | .ok verdict => pure verdict
+  | .error (.inl (.conditionAddressing error)) => throw (.addressing error)
+  | .error (.inl _) => throw .unsupportedCondition
+  | .error (.inr _) => throw (.addressing .temporalUnavailable)
 
 /-- Missing and invalid joined sides enter the same scalar observation consumers as physical reads. -/
 def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
@@ -419,9 +488,14 @@ def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow
           |>.mapError (fun error => .join (.document error))
         pure (some (observeCell .validation cell)))
     (groupState row preliminary)
-    (fun leaf => match ordinaryEnvironment? pair row outer leaf with
+    -- The full evaluator reads only instantiated rows; a key-only row is read through the
+    -- full-relevance partial view, which reads an absent declared slot as empty.
+    (fun leaf => match ordinaryEnvironment? pair preliminary.base row outer leaf with
       | none => pure .unknown
-      | some environment => ValidationCondition.evalAddressed (.leaf leaf) {
+      | some (environment, true) => do
+          let view ← preliminary.base.applyPartialGeneratedPreliminaryForScope .full |>.mapError .preliminary
+          evalPartialOrdinary view environment world leaf
+      | some (environment, false) => ValidationCondition.evalAddressed (.leaf leaf) {
           scalar := { fields := { preliminary.base.flatContext with world }, groups := GroupPresenceContext.unavailable }
           outer := environment, input := .checked preliminary.base }
         |>.mapError .addressing) leaf custom world
@@ -455,6 +529,8 @@ def references (pair : CheckedParallelFieldPair model) : ParallelFieldCondition 
       ancestorOrEqual := reference.path.isPrefixOf
         (if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration.groupPath
          else pair.rightDeclaration.groupPath) }]
+  | .leaf (.ordinary leaf) => (model.fields.filter (leaf.referencesField ·.id)).map fun declaration =>
+      { sameEntity := declaration.id == pair.errorField }
   | .leaf leaf => leaf.fields.map fun field =>
       { sameEntity := (pair.declaration field).id == pair.errorField }
   | .and left right | .or left right => references pair left ++ references pair right

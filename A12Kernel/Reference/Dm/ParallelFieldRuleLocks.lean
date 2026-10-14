@@ -221,7 +221,9 @@ example :
     runAtoms "[L/N] != DayFromDate(R/D) + [L/M]" [leftRow "Alpha" "3" "2"] [rightRow "Alpha" "8" "bad"] =
       some [] := by native_decide
 
--- Each refusal has an admitted twin differing only in the refused feature.
+-- Each refusal has an admitted twin differing only in the refused feature. A distinct count keeps
+-- the ordinary positive-threshold guard, measured on String operands (joined-carrier capture, rows
+-- `d01b` and `d02b`, 2026-10-14) and assumed for Number ones.
 example : admittedAtoms "[L/M] != Sum(R/N, L/N)" = true ∧
     admittedAtoms "[L/N] != DayFromDate(R/D) + [L/M]" = true ∧
     admittedAtoms "[L/M] != Sum(R/N)" = false ∧
@@ -230,7 +232,8 @@ example : admittedAtoms "[L/M] != Sum(R/N, L/N)" = true ∧
     admittedAtoms "[L/N] != DayFromDate(R*/D) + [L/M]" = false ∧
     admittedAtoms "Sum(R/N, L/N) > 3" = true ∧
     admittedAtoms "Sum(R/N, L/N) >= 0" = false ∧
-    admittedAtoms "NumberOfDifferentValues(R/N, L/N) > 3" = false := by native_decide
+    admittedAtoms "NumberOfDifferentValues(R/N, L/N) > 3" = true ∧
+    admittedAtoms "NumberOfDifferentValues(R/N, L/N) < 3" = false := by native_decide
 
 example : renderPointer model { field := 2, coordinates := [.unknown] } = "/Form[1]/L[-5]/N" ∧
     renderPointer model { field := 2, coordinates := [.wildcard] } = "/Form[1]/L[0]/N" ∧

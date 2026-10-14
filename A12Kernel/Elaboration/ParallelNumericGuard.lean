@@ -43,12 +43,18 @@ inductive ParallelNumericGuardPart (model : FlatModel) (joined : List GroupPath)
   view cannot certify, keeps its ordinary meaning there and reads the whole document
   ([joined-carrier checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-joined-carrier-admission)). -/
   | ordinary (condition : CheckedComputationCondition model)
+  /-- Certified against the model at a row of the joined partner `group`, as a leaf keyed by a
+  partner field is; it evaluates at the partner row the target's key matches, or at a key-only row
+  when none does (joined-carrier-limits capture, `Cp03`, 2026-10-14). -/
+  | partner (group : GroupPath) (condition : CheckedComputationCondition model)
 
-/-- The two reads a joined guard evaluates over: the joined row's cells by field identity, and the
-document at the target row, which carries the world a clock-reading leaf needs in either part. -/
+/-- The reads a joined guard evaluates over: the joined row's cells by field identity, the document
+at the target row, which carries the world a clock-reading leaf needs in every part, and the
+document at each joined partner group's row. -/
 structure ParallelNumericGuardContext where
   joinedRead : FieldId → CheckedCell
   ordinary : NumericComputationEvaluationContext
+  partnerAt : GroupPath → Option NumericComputationEvaluationContext := fun _ => none
 
 /-- The joined row's cells under the document's world: the context a joined operation and a view
 part read through. -/
@@ -70,21 +76,22 @@ namespace ParallelNumericGuardPart
 
 def referencesField : ParallelNumericGuardPart model joined → FieldId → Bool
   | .view condition, field => condition.referencesField field
-  | .ordinary condition, field => condition.referencesField field
+  | .ordinary condition, field | .partner _ condition, field => condition.referencesField field
 
 def forbidsTarget : ParallelNumericGuardPart model joined → FieldId → Bool
   | .view condition, field => condition.forbidsTarget field
-  | .ordinary condition, field => condition.forbidsTarget field
+  | .ordinary condition, field | .partner _ condition, field => condition.forbidsTarget field
 
 def requiresProducer (part : ParallelNumericGuardPart model joined) (consumer producer : FieldId)
     (producerProtected : ResolvedGroupReference → Bool) : Bool :=
   match part with
   | .view condition => condition.requiresProducer consumer producer producerProtected
-  | .ordinary condition => condition.requiresProducer consumer producer producerProtected
+  | .ordinary condition | .partner _ condition =>
+      condition.requiresProducer consumer producer producerProtected
 
 def protectionView : ParallelNumericGuardPart model joined → ComputationProtectionView
   | .view condition => condition.protectionView
-  | .ordinary condition => condition.protectionView
+  | .ordinary condition | .partner _ condition => condition.protectionView
 
 /-- Whether evaluation reads the field among the joined row's cells. Group presence reads its
 content fields; its complete member inventory stays a dependency of `referencesField` only. An
@@ -93,16 +100,19 @@ def readsJoinedField : ParallelNumericGuardPart model joined → FieldId → Boo
   | .view condition, field => condition.anyLeaf fun
       | .groupPresence _ source => source.content.fields.contains field
       | leaf => CheckedComputationCondition.referencesField (.leaf leaf) field
-  | .ordinary _, _ => false
+  | .ordinary _, _ | .partner .., _ => false
 
 /-- A view part reads direct cells only, each one admitted by `admits`. Starred, indexed, keyed
 and filtered sources need an extent the joined row does not supply; group presence below a joined
 group needs no row topology because the view has none there. Its predicate set is the one the
 parallel-guard capture measured: field-fill lists, temporal comparisons and scalar value lists. An
-ordinary part was certified at the target row and needs nothing from the join. -/
+ordinary part was certified at the target row and needs nothing from the join; a partner part
+needs its group joined, which a route admitting one of the group's own fields shows. -/
 def admitted (part : ParallelNumericGuardPart model joined) (admits : FieldId → Bool) : Bool :=
   match part with
   | .ordinary _ => true
+  | .partner group _ => model.fields.any fun declaration =>
+      declaration.groupPath == group && admits declaration.id
   | .view condition =>
       let reads := fun (leaf : ComputationConditionLeaf _ _) =>
         model.fields.all fun declaration =>
@@ -128,7 +138,8 @@ def admitted (part : ParallelNumericGuardPart model joined) (admits : FieldId �
         | .predicate _ => false
 
 /-- A view part sees only the joined row's cells, and the document only for the row topology an
-enclosing group's presence consults. An ordinary part sees the document at the target row. -/
+enclosing group's presence consults. An ordinary part sees the document at the target row, a partner
+part at its group's row; a partner group the execution bound no row for is a structural failure. -/
 def eval (part : ParallelNumericGuardPart model joined) (context : ParallelNumericGuardContext) :
     Except CheckedComputationConditionError ComputationConditionResult :=
   match part with
@@ -139,6 +150,9 @@ def eval (part : ParallelNumericGuardPart model joined) (context : ParallelNumer
         document := context.ordinary.document, outer := row
         filterRead := fun _ => context.joinedRead, starRead := fun _ => context.joinedRead }
   | .ordinary condition => condition.evalCheckedIn context.ordinary
+  | .partner group condition => match context.partnerAt group with
+      | some partnerContext => condition.evalCheckedIn partnerContext
+      | none => throw (.primitive .groupContextRequired)
 
 end ParallelNumericGuardPart
 
@@ -209,22 +223,27 @@ def FlatModel.elaborateParallelNumericGuardLeaf (model : FlatModel) (joined : Li
         else .groupPresence operator source
     | leaf => leaf)
 
-/-- Choose one guard leaf's part from its two checks. The view's reading wins when the joined row can
+/-- Choose one guard leaf's part from its checks. The view's reading wins when the joined row can
 evaluate it. A leaf the view refuses, or certifies only as a kind the joined row cannot evaluate
-such as a pattern, takes its ordinary reading at the target row when it has one; otherwise the
-view's account stands, so its refusal or its later route refusal is reported. -/
+such as a pattern, takes its ordinary reading at the target row when it has one, and otherwise
+its reading at the first partner group's row that certifies it; failing all, the view's account
+stands, so its refusal or its later route refusal is reported. -/
 def ParallelNumericGuardPart.choose
     (view : Except ε (CheckedComputationCondition (model.parallelInstanceView joined)))
-    (ordinary : Except ε (CheckedComputationCondition model)) :
+    (ordinary : Except ε (CheckedComputationCondition model))
+    (partners : List (GroupPath × Except ε (CheckedComputationCondition model))) :
     Except ε (ParallelNumericGuardPart model joined) :=
+  let fallback : Option (ParallelNumericGuardPart model joined) := match ordinary with
+    | .ok checked => some (.ordinary checked)
+    | .error _ => partners.findSome? fun
+        | (group, .ok checked) => some (.partner group checked)
+        | (_, .error _) => none
   match view with
   | .ok condition =>
       if (ParallelNumericGuardPart.view condition).admitted (fun _ => true) then .ok (.view condition)
-      else match ordinary with
-        | .ok checked => .ok (.ordinary checked)
-        | .error _ => .ok (.view condition)
-  | .error refusal => match ordinary with
-      | .ok checked => .ok (.ordinary checked)
-      | .error _ => .error refusal
+      else .ok (fallback.getD (.view condition))
+  | .error refusal => match fallback with
+      | some part => .ok part
+      | none => .error refusal
 
 end A12Kernel

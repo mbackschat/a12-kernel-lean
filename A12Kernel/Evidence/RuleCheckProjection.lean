@@ -31,6 +31,8 @@ def captures : List (String × String × String) := [
   ("captures/computation-message-members-2026-10-13/obs.json", "captures/computation-message-members-2026-10-13/Kc_DM.json", "captures/computation-message-members-2026-10-13/ops.json"),
   ("captures/parallel-custom-condition-2026-10-14/obs.json", "captures/parallel-custom-condition-2026-10-14/Staffing_DM.json", "captures/parallel-custom-condition-2026-10-14/ops.json"),
   ("captures/parallel-instance-leaves-2026-10-14/obs-rule.json", "captures/parallel-instance-leaves-2026-10-14/GuardJoin_DM.json", "captures/parallel-instance-leaves-2026-10-14/ops-rule.json"),
+  ("captures/joined-carrier-limits-2026-10-14/obs.json", "captures/joined-carrier-limits-2026-10-14/R1_DM.json", "captures/joined-carrier-limits-2026-10-14/ops.json"),
+  ("captures/joined-carrier-limits-2026-10-14/obs2.json", "captures/joined-carrier-limits-2026-10-14/R1b_DM.json", "captures/joined-carrier-limits-2026-10-14/ops2.json"),
   ("captures/computation-star-binding-gate/obs11.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops11.json"),
   ("captures/condition-class-projection-2026-10-01/obs-baseyear-review.json", "captures/condition-class-projection-2026-10-01/OrderBaseYear_DM.json", "captures/condition-class-projection-2026-10-01/ops-baseyear-review.json"),
   ("captures/condition-class-projection-2026-10-01/obs-baseyear.json", "captures/condition-class-projection-2026-10-01/OrderBaseYear_DM.json", "captures/condition-class-projection-2026-10-01/ops-baseyear.json"),

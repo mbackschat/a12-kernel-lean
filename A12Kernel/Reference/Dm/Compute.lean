@@ -296,8 +296,10 @@ private def joinedGuards (language : Language) (model : FlatModel) (computation 
     (target : FlatFieldDecl) (suppress : Bool) : Lowering (List (Option (ParallelNumericGuard model))) := do
   let joined := model.parallelJoinedGroups target
   let view := model.parallelInstanceView joined
-  -- Each leaf is lowered and checked twice, because the view drops the repetition and index of
-  -- every joined group: a starred, keyed or filtered read of one only exists against the model.
+  -- Each leaf is lowered and checked against the view and against the model, because the view drops
+  -- the repetition and index of every joined group: a starred, keyed or filtered read of one only
+  -- exists against the model, at the target row or, keyed by a partner field, at a partner row.
+  let partners := joined.filter fun group => !group.isPrefixOf target.groupPath
   let rec tree : Expr → Lowering (ConditionTree (ParallelNumericGuardPart model joined))
     | .parens body => tree body
     | .logic op (first :: rest) => do
@@ -314,6 +316,9 @@ private def joinedGuards (language : Language) (model : FlatModel) (computation 
         (do
           let surface ← lowerGuard model computation.group suppress leaf (some target.groupPath)
           (model.elaborateCheckedComputationCondition computation.group target.groupPath surface).mapError guardRefusal)
+        (partners.map fun group => (group, do
+          let surface ← lowerGuard model computation.group suppress leaf (some group)
+          (model.elaborateCheckedComputationCondition computation.group group surface).mapError guardRefusal))
       |>.map .leaf
   let resolve (text : String) : Lowering (ConditionTree (ParallelNumericGuardPart model joined)) := do
     let guard := (← parsed language text).body

@@ -1,0 +1,336 @@
+[
+ {
+  "id": "e04",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e04.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e05",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e05.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p03",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p03.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p04",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p04.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "s03",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s03.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e01",
+   "--field",
+   "/Hub/Zone/Left/LV",
+   "--group",
+   "/Hub/Zone",
+   "--condition",
+   "FieldFilled(Left/LV) And FieldFilled(Right/RV)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "e02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e02",
+   "--field",
+   "/Hub/Zone/Left/LV",
+   "--group",
+   "/Hub/Zone",
+   "--condition",
+   "FieldFilled(Left/LV) And FieldFilled(Right/RV) And GroupFilled(/Hub/Zone For \"z1\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "e03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e03",
+   "--field",
+   "/Hub/Zone/Left/LV",
+   "--group",
+   "/Hub/Zone",
+   "--condition",
+   "FieldFilled(Left/LV) And FieldFilled(Right/RV) And [/Hub/Zone/ZNum For \"z1\"] > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "p01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p01",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And GroupFilled(/Staffing/Ledger For Demand/Label)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "p02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p02",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And [/Staffing/Ledger/Amount For Demand/Label] > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "u01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "u01",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Demand/Base) And GroupNotFilled(/Staffing/Ledger For Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "u02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "u02",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And GroupNotFilled(/Staffing/Ledger For Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "u03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "u03",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And FieldNotFilled(/Staffing/Ledger/Amount For Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "u04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "u04",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "d01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d01",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "NumberOfDifferentValues(Supply/Note, Demand/Label) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "d02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d02",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "NumberOfDifferentValues(Supply/Note, Demand/Label) < 2",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "d03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d03",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And NumberOfDifferentValues(Supply/Note, Demand/Label) < 2",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "d04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d04",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And FieldValuesNotUnique(Supply/Note, Demand/Label)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "d05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d05",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And FieldValuesNotUnique(/Staffing/Demand*/Label)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "d06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d06",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And RepetitionNotUnique(Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "s01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s01",
+   "--field",
+   "/Num/NL/NV",
+   "--group",
+   "/Num",
+   "--condition",
+   "FieldFilled(NL/NV) And FieldFilled(NR/NW)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "s02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s02",
+   "--field",
+   "/Num/NL/NV",
+   "--group",
+   "/Num",
+   "--condition",
+   "FieldFilled(NL/NV) And [NL/NV] < [NR/NW]",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

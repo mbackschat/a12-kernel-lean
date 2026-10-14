@@ -179,7 +179,9 @@ private def numericEntityGuardShape? :
   | .indexed _ | .indexedString _ | .temporalExpression _ | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
   | .temporalDistinctCount _ => none
 
-private def positiveCountThresholdIsUnguarded
+/-- Whether a count compared with a positive literal leaves its iteration unguarded: an upper bound
+or an inequality, read from the count's side. -/
+def positiveCountThresholdIsUnguarded
     (entityOnLeft : Bool) : NumericValidationOp → Bool
   | .tolerance _ => true
   | .ordinary comparison =>

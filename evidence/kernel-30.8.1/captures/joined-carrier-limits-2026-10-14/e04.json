@@ -1,0 +1,15 @@
+{
+ "computedField": "/Hub/Zone/Left/LOut",
+ "alternatives": [
+  {
+   "precondition": "GroupFilled(/Hub/Zone For \"z1\")",
+   "operation": "[/Hub/Zone/Right/RV] + [LV]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

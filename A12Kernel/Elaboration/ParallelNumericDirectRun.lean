@@ -164,6 +164,32 @@ private def operandCellsForRoute
         } |>.mapError ExecutionError.document
         pure (declaration.id, cell)
 
+/-- The row each route's partner group binds at one target key, for a guard part read at that row:
+the matched row, or a key-only row when the key matches none. A group with neither has no entry. -/
+def partnerEnvironments (routes : List (CheckedParallelNumericTargetRoute model))
+    (preliminary : CheckedIndexPreliminary model) (targetEnvironment : Env) (key : SemanticIndexKey) :
+    Except ExecutionError (List (GroupPath × Env)) := do
+  let found ← routes.mapM fun route => do
+    let group := route.groups.rightGroup
+    let column ← preliminary.resolveIndexColumn group targetEnvironment
+      |>.mapError (ExecutionError.indexColumn .operand)
+    pure <| (group.path, ·) <$> match column.entries.find? (·.key == key) with
+      | some entry => some entry.environment
+      | none => preliminary.base.keyOnlyEnvironment? targetEnvironment group
+  pure found.reduceOption
+
+/-- The guard context at one target row: the joined cells, the document there, and the document at
+each partner row. -/
+def guardContextAt (cells : List (FieldId × CheckedCell)) (partners : List (GroupPath × Env))
+    (ordinaryAt : Env → NumericComputationEvaluationContext) (targetEnvironment : Env) :
+    ParallelNumericGuardContext := {
+  joinedRead := fun field =>
+    match cells.find? fun cell => cell.1 == field with
+    | some cell => cell.2
+    | none => malformedCheckedCell
+  ordinary := ordinaryAt targetEnvironment
+  partnerAt := fun group => (partners.lookup group).map ordinaryAt }
+
 /-- Fetch bound fields at the target environment and joined fields through their indexed-group route, using one supplied checked addressed read. Carrier construction remains observation-free so a table can collect all row inputs before first-selected evaluation. -/
 def operandCellsWith
     (checked : CheckedIsolatedParallelNumericDirectRun model)
@@ -241,13 +267,8 @@ def executeTargetWith
     Except ExecutionError ParallelNumericDirectOutcome := do
   let key ← checked.targetKeyFor preliminary targetEnvironment address
   let cells ← checked.operandCellsWith preliminary read targetEnvironment key
-  let guardContext : ParallelNumericGuardContext := {
-    joinedRead := fun field =>
-      match cells.find? fun cell => cell.1 == field with
-      | some cell => cell.2
-      | none => malformedCheckedCell
-    ordinary := ordinaryAt targetEnvironment
-  }
+  let partners ← partnerEnvironments checked.operandRoutes preliminary targetEnvironment key
+  let guardContext := guardContextAt cells partners ordinaryAt targetEnvironment
   let context := guardContext.joinedScalar
   let guardResult ← match checked.precondition with
     | none => pure ComputationConditionResult.holds

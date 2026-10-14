@@ -1,0 +1,147 @@
+[
+ {
+  "id": "u01b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "u01b",
+   "--field",
+   "/Staffing/Supply/Note",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Demand/Base) And GroupNotFilled(/Staffing/Ledger For Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "u02b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "u02b",
+   "--field",
+   "/Staffing/Supply/Note",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And GroupNotFilled(/Staffing/Ledger For Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "u03b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "u03b",
+   "--field",
+   "/Staffing/Supply/Note",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And FieldNotFilled(/Staffing/Ledger/Amount For Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "u04b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "u04b",
+   "--field",
+   "/Staffing/Supply/Note",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "d01b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d01b",
+   "--field",
+   "/Staffing/Supply/Note",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "NumberOfDifferentValues(Supply/Note, Demand/Label) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "d02b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d02b",
+   "--field",
+   "/Staffing/Supply/Note",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "NumberOfDifferentValues(Supply/Note, Demand/Label) < 2",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "s04b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s04b",
+   "--field",
+   "/Num/NL/NV",
+   "--group",
+   "/Num",
+   "--condition",
+   "FieldFilled(NL/NV) And FieldFilled(NR3/NW3)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "s05b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s05b",
+   "--field",
+   "/Num/NR/NW",
+   "--group",
+   "/Num",
+   "--condition",
+   "FieldFilled(NR/NW) And FieldFilled(NR3/NW3)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "s06",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s06.json",
+   "--dry-run"
+  ]
+ }
+]

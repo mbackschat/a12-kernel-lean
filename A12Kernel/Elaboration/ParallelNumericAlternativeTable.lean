@@ -156,7 +156,7 @@ def operandCellsWith
       targetEnvironment key
   pure nested.flatten
 
-/-- Evaluate the selected table row at one already-certified target coverage entry. The supplied target owns the returned exact address; `ordinaryAt` supplies the document at a target row. -/
+/-- Evaluate the selected table row at one already-certified target coverage entry. The supplied target owns the returned exact address; `ordinaryAt` supplies the document at a target or partner row. -/
 def executeTargetWith
     (table : CheckedParallelNumericAlternativeTable model)
     (preliminary : CheckedIndexPreliminary model)
@@ -169,13 +169,10 @@ def executeTargetWith
     target.environment target.address
   let cells ← table.operandCellsWith preliminary read
     target.environment key
-  let context : ParallelNumericGuardContext := {
-    joinedRead := fun field =>
-      match cells.find? fun cell => cell.1 == field with
-      | some cell => cell.2
-      | none => malformedCheckedCell
-    ordinary := ordinaryAt target.environment
-  }
+  let partners ← CheckedIsolatedParallelNumericDirectRun.partnerEnvironments table.operandRoutes
+    preliminary target.environment key
+  let context := CheckedIsolatedParallelNumericDirectRun.guardContextAt cells partners ordinaryAt
+    target.environment
   pure {
     address := target.address
     outcome := ← table.evaluate context

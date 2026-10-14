@@ -1,0 +1,14 @@
+{
+ "computedField": "/Hub/Zone/Left/LOut2",
+ "alternatives": [
+  {
+   "operation": "[/Hub/Zone/Right/RV] + [LV]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

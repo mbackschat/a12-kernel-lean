@@ -90,6 +90,11 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
         | "FieldFilled", true => pure (.leaf (.pair (.presence (← pairField model group false field) .filled)))
         | "FieldNotFilled", true => pure (.leaf (.pair (.presence (← pairField model group false field) .notFilled)))
         | _, _ => ordinary (.call name [.mk field none] none none)
+  | expression@(.call "FieldValuesNotUnique" arguments none none) => do
+      let some paths := arguments.mapM (fun | .mk operand none => operand.fieldEntity? | _ => none)
+        | ordinary expression
+      if paths.length < 2 then ordinary expression else
+      pure (.leaf (.pair (.valuesNotUnique (← paths.mapM (pairPath model group)))))
   | expression@(.call name [.mk left none, .mk right none] none none) => do
       let some op := fieldFillOp? name | ordinary expression
       if left.fieldEntity?.isNone || right.fieldEntity?.isNone then ordinary expression else
@@ -112,6 +117,7 @@ private def pairReferences : ConditionTree PairSyntaxLeaf → List FieldId
   | .leaf (.pair (.numeric _ left right)) | .leaf (.pair (.fill _ left right)) => [left, right]
   | .leaf (.pair (.comparison value)) => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
   | .leaf (.pair (.customCondition _)) | .leaf (.pair (.ordinary _)) => []
+  | .leaf (.pair (.valuesNotUnique operands)) => operands
   | .leaf (.pair (.flat _ reads)) | .leaf (.ordinary _ reads) => reads
   | .and left right | .or left right => pairReferences left ++ pairReferences right
 
@@ -120,10 +126,11 @@ private def pairGroupPaths (model : FlatModel) (left right : FieldId) : List Gro
   [left, right].filterMap fun anchor => (model.lookupUniqueId anchor).toOption.bind fun declaration =>
     (model.indexedAncestorGroups declaration).getLast?.map (·.path)
 
-/-- A keyed presence read lowered with the error side's levels bound, as a parallel rule binds a key
-field on that row (joined-carrier capture, rows `k03b` and `k08`, 2026-10-14). The ordinary reader
-binds the declaring group only, which refuses such a key for a rule without a join. -/
-private def errorSideKeyedPresence (model : FlatModel) (group bound : GroupPath) :
+/-- A keyed presence read lowered with one joined side's levels bound, as a parallel rule binds a key
+field on that side's row (joined-carrier capture, rows `k03b` and `k08`, and its limits capture,
+row `p01`, 2026-10-14). The
+ordinary reader binds the declaring group only, which refuses such a key for a rule without a join. -/
+private def sideKeyedPresence (model : FlatModel) (group bound : GroupPath) :
     Expr → Option (Lowering (ValidationConditionLeaf model))
   | .call "FieldFilled" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>
       some (indexed .filled path key)
@@ -168,13 +175,20 @@ private def bindPairLeaf (model : FlatModel) (group : GroupPath) (suppress : Boo
           -- A key read on the error side's row binds at that row (joined-carrier capture, rows
           -- `k03b`, `k07b` and `k08`, 2026-10-14), so a leaf the declaring group cannot bind is
           -- lowered once more with the error side's group bound.
-          match lowerCondition model group suppress expression, (pairGroupPaths model left right).head? with
-          | .error _, some errorGroup =>
-              match errorSideKeyedPresence model group errorGroup expression with
-              | some leaf => (.ordinary ·) <$> leaf
-              | none => single (← lowerCondition model group suppress expression (bindingGroup := errorGroup))
-          | result, _ => single (← result)
+          match lowerCondition model group suppress expression with
+          | .ok checked => single checked
+          | .error refusal => sideBound expression refusal (pairGroupPaths model left right)
 where
+  -- Each joined side's group in turn, the error side's first.
+  sideBound (expression : Expr) (refusal : Refusal) : List GroupPath → Lowering (ParallelFieldLeaf model)
+    | [] => .error refusal
+    | side :: rest =>
+        let lowered : Lowering (ParallelFieldLeaf model) := match sideKeyedPresence model group side expression with
+          | some leaf => (ParallelFieldLeafOf.ordinary ·) <$> leaf
+          | none => (lowerCondition model group suppress expression (bindingGroup := side)).bind single
+        match lowered with
+        | .ok leaf => pure leaf
+        | .error _ => sideBound expression refusal rest
   single (condition : CheckedValidationCondition model) : Lowering (ParallelFieldLeaf model) :=
     match condition.core with
     | .leaf leaf => pure (.ordinary leaf)
@@ -192,6 +206,7 @@ where
     | .comparison value => pure (.comparison { value with
         left := ← value.left.mapM (·.mapM operand), right := ← value.right.mapM (·.mapM operand) })
     | .customCondition name => pure (.customCondition name)
+    | .valuesNotUnique operands => pure (.valuesNotUnique (← operands.mapM operand))
     | .flat condition reads => pure (.flat condition (← reads.mapM operand))
     | .ordinary leaf => nomatch leaf
 
@@ -298,7 +313,7 @@ def runParallelRuleReferences (document : CheckedDocument model) (rule : Checked
   let inputs := preliminary.messageReferenceInputs.toOption
   let rows ← rule.evalDocument preliminary cache (world := world) |>.mapError (fun error => (repr error).pretty)
   pure (rows.filterMap fun row => row.outcome.message?.map fun message =>
-    (message, rule.condition.messageReferences rule.pair row.row row.outerEnvironment cache message inputs))
+    (message, rule.condition.messageReferences rule.pair preliminary.base row.row row.outerEnvironment cache message inputs))
 
 /-- Execute a checked parallel rule for one normalized partial call. Duplicate message coordinates share the partial cache producer while value reads retain partial unavailability. -/
 def runPartialParallelRule (document : CheckedDocument model)

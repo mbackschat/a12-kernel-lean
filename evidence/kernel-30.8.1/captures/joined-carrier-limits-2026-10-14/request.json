@@ -1,0 +1,110 @@
+{
+ "model": "R1Rt_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "staff",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz"
+      },
+      {
+       "Department": "C",
+       "Base": "5",
+       "Label": "k1"
+      },
+      {
+       "Department": "D",
+       "Base": "7",
+       "Label": "x"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Out12": "999",
+       "Out13": "999",
+       "Headcount": "1",
+       "Note": "x"
+      },
+      {
+       "Department": "B",
+       "Out12": "999",
+       "Out13": "999",
+       "Headcount": "7"
+      },
+      {
+       "Department": "C",
+       "Out12": "999",
+       "Out13": "999",
+       "Headcount": "3",
+       "Note": "k1"
+      },
+      {
+       "Department": "E",
+       "Out12": "999",
+       "Out13": "999",
+       "Headcount": "2",
+       "Note": "q"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "noledger",
+   "documentInline": {
+    "Staffing": {
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "1",
+       "Label": "LA"
+      },
+      {
+       "Department": "D",
+       "Base": "2"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Out12": "999",
+       "Out13": "999",
+       "Headcount": "1",
+       "Note": "x"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}
