@@ -1,0 +1,874 @@
+{
+ "header": {
+  "id": "R9_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R9_DM"
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Tot",
+        "name": "Tot",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Out",
+        "name": "Out",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutF",
+        "name": "OutF",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutT",
+        "name": "OutT",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutG",
+        "name": "OutG",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutR",
+        "name": "OutR",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/F",
+        "name": "F",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/F/FB",
+           "name": "FB",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/F/FC",
+           "name": "FC",
+           "Field": {
+            "fieldType": {
+             "type": "ConfirmType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/F/FB2",
+           "name": "FB2",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/P/F/Re05",
+           "name": "Re05",
+           "Rule": {
+            "errorEntityRelPath": "../../Tot",
+            "errorCode": "e05",
+            "errorCondition": "FieldFilled(../Tot) And NumberOfFilledGroups(../Rows*) > 2",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/F/COutR",
+           "name": "COutR",
+           "Computation": {
+            "computedFieldRelPath": "../../OutR",
+            "computationAlternatives": [
+             {
+              "operation": "NumberOfFilledGroups(../Rows*)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/F2",
+        "name": "F2",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/F2/XB1",
+           "name": "XB1",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/F2/XB2",
+           "name": "XB2",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/F2/XB3",
+           "name": "XB3",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/F3",
+        "name": "F3",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/F3/YB",
+           "name": "YB",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/F3/YR",
+           "name": "YR",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/F3/YR/YRB",
+              "name": "YRB",
+              "Field": {
+               "fieldType": {
+                "type": "BooleanType"
+               }
+              }
+             }
+            ],
+            "repeatability": 2
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Rows",
+        "name": "Rows",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Rows/Amt",
+           "name": "Amt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/Qty",
+           "name": "Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/S",
+           "name": "S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/Cnt",
+           "name": "Cnt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/Cnt2",
+           "name": "Cnt2",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/Cnt3",
+           "name": "Cnt3",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Rows/K1",
+           "name": "K1",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Rows/K1/KA",
+              "name": "KA",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Rows/K2",
+           "name": "K2",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Rows/K2/KB",
+              "name": "KB",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Rows/G",
+           "name": "G",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Rows/G/GS",
+              "name": "GS",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Rows/G/GT",
+              "name": "GT",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Rows/GB",
+           "name": "GB",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Rows/GB/GB1",
+              "name": "GB1",
+              "Field": {
+               "fieldType": {
+                "type": "BooleanType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Rows/GB/GB2",
+              "name": "GB2",
+              "Field": {
+               "fieldType": {
+                "type": "BooleanType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Rows/Sub",
+           "name": "Sub",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Rows/Sub/SA",
+              "name": "SA",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ],
+            "repeatability": 3
+           }
+          }
+         ],
+         "repeatability": 4
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc04",
+        "name": "Rc04",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "c04",
+         "errorCondition": "FieldFilled(Tot) And NumberOfValueInFields(True In F) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc05",
+        "name": "Rc05",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "c05",
+         "errorCondition": "FieldFilled(Tot) And NumberOfValueInFields(False In F2) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc06",
+        "name": "Rc06",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "c06",
+         "errorCondition": "FieldFilled(Tot) And NumberOfValueInFields(True In F3) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rb04",
+        "name": "Rb04",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "b04",
+         "errorCondition": "FieldFilled(Tot) And SumOfProducts(Rows*/Amt, Rows*/Qty) > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Re04",
+        "name": "Re04",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "e04",
+         "errorCondition": "FieldFilled(Tot) And NumberOfFilledGroups(Rows*/Sub*) > 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ra01",
+        "name": "Ra01",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "a01",
+         "errorCondition": "FieldFilled(Rows/Amt) And NumberOfValueInFields(\"x\" In Rows/G) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ra02",
+        "name": "Ra02",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "a02",
+         "errorCondition": "FieldFilled(Rows/Amt) And NumberOfValueInFields(True In Rows/GB) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ra03",
+        "name": "Ra03",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "a03",
+         "errorCondition": "FieldFilled(Rows/Amt) And FieldValuesNotUnique(Rows/G)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ra05",
+        "name": "Ra05",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "a05",
+         "errorCondition": "FieldFilled(Rows/Amt) And FirstFilledValue(Rows/G) == \"x\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rb01",
+        "name": "Rb01",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "b01",
+         "errorCondition": "FieldFilled(Rows/Amt) And Sum(Rows/Amt, Rows*/Qty) > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rb03",
+        "name": "Rb03",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "b03",
+         "errorCondition": "FieldFilled(Rows/Amt) And SumOfProducts(Rows*/Amt, Rows*/Qty) > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rb05",
+        "name": "Rb05",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "b05",
+         "errorCondition": "FieldFilled(Rows/Amt) And MaxValue(Rows/Amt, Rows*/Qty) > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Re06",
+        "name": "Re06",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "e06",
+         "errorCondition": "FieldFilled(Rows/Amt) And NumberOfFilledGroups(Rows/Sub*) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rd01",
+        "name": "Rd01",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/K1/KA",
+         "errorCode": "d01",
+         "errorCondition": "RepetitionNotUnique(Rows/K1/KA, Rows/K2/KB)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rd02",
+        "name": "Rd02",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/K1/KA",
+         "errorCode": "d02",
+         "errorCondition": "RepetitionNotUnique(Rows/K1/KA, Rows/S)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rd03",
+        "name": "Rd03",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/S",
+         "errorCode": "d03",
+         "errorCondition": "RepetitionNotUnique(Rows/S, Rows/K1/KA)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/COut",
+        "name": "COut",
+        "Computation": {
+         "computedFieldRelPath": "../Out",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfValueInFields(True In F)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/COutF",
+        "name": "COutF",
+        "Computation": {
+         "computedFieldRelPath": "../OutF",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfValueInFields(False In F2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/COutT",
+        "name": "COutT",
+        "Computation": {
+         "computedFieldRelPath": "../OutT",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfValueInFields(True In F3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/COutG",
+        "name": "COutG",
+        "Computation": {
+         "computedFieldRelPath": "../OutG",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfFilledGroups(Rows*/Sub*)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CRowsCnt",
+        "name": "CRowsCnt",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/Cnt",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfValueInFields(\"x\" In Rows/G)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CRowsCnt2",
+        "name": "CRowsCnt2",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/Cnt2",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfFilledGroups(Rows/Sub*)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CRowsCnt3",
+        "name": "CRowsCnt3",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/Cnt3",
+         "computationAlternatives": [
+          {
+           "operation": "NumberOfValueInFields(True In Rows/GB)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

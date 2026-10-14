@@ -1,0 +1,165 @@
+{
+ "model": "R9_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "base",
+   "documentInline": {
+    "P": {
+     "Tot": "1",
+     "F": {
+      "FB": "true",
+      "FC": "true",
+      "FB2": "false"
+     },
+     "F2": {
+      "XB1": "false",
+      "XB2": "false",
+      "XB3": "true"
+     },
+     "F3": {
+      "YB": "true",
+      "YR": [
+       {
+        "YRB": "true"
+       },
+       {
+        "YRB": "true"
+       }
+      ]
+     },
+     "Rows": [
+      {
+       "Amt": "3",
+       "Qty": "2",
+       "S": "a",
+       "K1": {
+        "KA": "k"
+       },
+       "K2": {
+        "KB": "k"
+       },
+       "G": {
+        "GS": "x",
+        "GT": "x"
+       },
+       "GB": {
+        "GB1": "true"
+       },
+       "Sub": [
+        {
+         "SA": "1"
+        },
+        {
+         "SA": "2"
+        }
+       ]
+      },
+      {
+       "Amt": "1",
+       "Qty": "4",
+       "S": "a",
+       "K1": {
+        "KA": "k"
+       },
+       "K2": {
+        "KB": "k"
+       },
+       "G": {
+        "GS": "y"
+       },
+       "GB": {
+        "GB2": "false"
+       },
+       "Sub": [
+        {
+         "SA": "1"
+        }
+       ]
+      },
+      {
+       "Amt": "7",
+       "Qty": "1",
+       "S": "b",
+       "K1": {
+        "KA": "j"
+       },
+       "G": {
+        "GT": "x"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "bad",
+   "documentInline": {
+    "P": {
+     "Tot": "1",
+     "F": {
+      "FB": "q",
+      "FC": "true"
+     },
+     "F2": {
+      "XB1": "false",
+      "XB2": "zz"
+     },
+     "F3": {
+      "YB": "false",
+      "YR": [
+       {
+        "YRB": "nope"
+       }
+      ]
+     },
+     "Rows": [
+      {
+       "Amt": "z",
+       "Qty": "2",
+       "S": "a",
+       "K1": {
+        "KA": "k"
+       },
+       "G": {
+        "GS": "x"
+       },
+       "GB": {
+        "GB1": "maybe"
+       },
+       "Sub": [
+        {
+         "SA": "q"
+        }
+       ]
+      },
+      {
+       "Amt": "2",
+       "Qty": "w",
+       "S": "a",
+       "K1": {
+        "KA": "k"
+       },
+       "G": {
+        "GS": "x"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "empty",
+   "documentInline": {
+    "P": {
+     "Tot": "1"
+    }
+   }
+  }
+ ]
+}

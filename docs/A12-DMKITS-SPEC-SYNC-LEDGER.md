@@ -37,7 +37,27 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Eleven corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Thirteen corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+<a id="spec-2026-10-14-09"></a>
+### SPEC-2026-10-14-09 — `RepetitionNotUnique` keys in sibling fixed groups of one row
+
+- `status`: pending
+- `canonical`: [spec/07 §6](../spec/07-repetition-and-iteration.md#6-repetitionnotunique-precisely-).
+- `delta`: Key components in sibling fixed groups of one repeatable row are admitted and compare per that row; a component whose group repeats nowhere draws `MVK_REPEATABLE_GROUP_MISSING` whether it is written first or second.
+- `basis`: [entity-list and group checkpoint](sources/group-count-topology.md#src-row-bound-group-and-key-gates), rules `d01`–`d05` at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile `d01`–`d03` on the filled and malformed documents and the two static refusals. Do not claim sibling groups below different repeatable levels, which no row measured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-14-08"></a>
+### SPEC-2026-10-14-08 — an unstarred own-row operand beside a star in `SumOfProducts` draws the lowest-level class
+
+- `status`: pending
+- `canonical`: [spec/07 §3](../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
+- `delta`: The filtered operand is not the only shape reaching `MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED`: an unstarred operand on the level the rule iterates beside a starred one draws it too, while `Sum` and `MaxValue` admit the same pair and evaluate it per row.
+- `basis`: [entity-list and group checkpoint](sources/group-count-topology.md#src-row-bound-group-and-key-gates), rules `b01`–`b05` at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile `b02`'s class and the admitted `b01`/`b05` runtime. Do not claim which gate reaches the class first.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-07"></a>
 ### SPEC-2026-10-14-07 — an undecided keyed selection leaves `NotAllFieldsFilled` silent

@@ -1,0 +1,342 @@
+[
+ {
+  "id": "c04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And NumberOfValueInFields(True In F) > 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "c05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c05",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And NumberOfValueInFields(False In F2) > 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "c06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c06",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And NumberOfValueInFields(True In F3) > 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "b04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And SumOfProducts(Rows*/Amt, Rows*/Qty) > 5",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "e04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And NumberOfFilledGroups(Rows*/Sub*) > 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "a01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a01",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And NumberOfValueInFields(\"x\" In Rows/G) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "a02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a02",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And NumberOfValueInFields(True In Rows/GB) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "a03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a03",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And FieldValuesNotUnique(Rows/G)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "a05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a05",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And FirstFilledValue(Rows/G) == \"x\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "b01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b01",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And Sum(Rows/Amt, Rows*/Qty) > 5",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "b02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b02",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And SumOfProducts(Rows/Amt, Rows*/Qty) > 5",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "b03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b03",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And SumOfProducts(Rows*/Amt, Rows*/Qty) > 5",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "b05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b05",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And MaxValue(Rows/Amt, Rows*/Qty) > 5",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "e06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e06",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And NumberOfFilledGroups(Rows/Sub*) > 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d01",
+   "--field",
+   "/P/Rows/K1/KA",
+   "--group",
+   "/P",
+   "--condition",
+   "RepetitionNotUnique(Rows/K1/KA, Rows/K2/KB)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d02",
+   "--field",
+   "/P/Rows/K1/KA",
+   "--group",
+   "/P",
+   "--condition",
+   "RepetitionNotUnique(Rows/K1/KA, Rows/S)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d03",
+   "--field",
+   "/P/Rows/S",
+   "--group",
+   "/P",
+   "--condition",
+   "RepetitionNotUnique(Rows/S, Rows/K1/KA)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d04",
+   "--field",
+   "/P/Rows/S",
+   "--group",
+   "/P",
+   "--condition",
+   "RepetitionNotUnique(Rows/S, F/FB)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d05",
+   "--field",
+   "/P/Rows/S",
+   "--group",
+   "/P",
+   "--condition",
+   "RepetitionNotUnique(F/FB, Rows/S)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d06",
+   "--field",
+   "/P/Rows/K1/KA",
+   "--group",
+   "/P",
+   "--condition",
+   "RepetitionNotUnique(Rows/K1/KA, Rows/Sub/SA)",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]
