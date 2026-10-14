@@ -42,6 +42,16 @@ example :
     ["01", "1.", "1e", "1e+-3", "+1", "{1:2}", "[1,]", "[1 2]", "1e100001"].all
       (fun text => !(parseDocumentJson text).isOk) := by native_decide
 
+/- Only an object of root groups is a document: well-formed JSON of any other shape is refused by
+the reader, not read as an empty document. -/
+example :
+    ["[]", "null", "\"x\"", "1", "true"].all (fun text =>
+      match parseDocumentJson text with
+      | .ok json => !(readDocument dm json).isOk
+      | .error _ => false) &&
+    ((parseDocumentJson "{}").toOption.bind (readDocument dm · |>.toOption)).isSome := by
+  native_decide
+
 example :
     ["null", "true", "false", "\"1e3\"", "\"10.50\"", "\"a\\\"1e3\\\\2.0\""].all
       (fun text => (Json.parse text).isOk &&
