@@ -1,0 +1,84 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "9a49aa6ac8aa25ed37db6a25602cb9d5a1bf3360a8649cde3515403b3de236fc",
+  "observations" : [ {
+    "id" : "y01",
+    "inputHash" : "3001582a1fb148a575be2eff968dcdac727ba5eb901f8779e490fb3f79cfcdd1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "y02",
+    "inputHash" : "e12147858d931f247cbf4c6d519b3e08858bf8f407a4740707be6b6f3e949f9b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "y03",
+    "inputHash" : "387057bd93c6e3a084526bfccbaa0cab4cf8cf36a0c483eba59eff190c9c5405",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ROOT_GROUP_REFERENCED" ]
+  }, {
+    "id" : "y04",
+    "inputHash" : "e8e46780e3d83a9eaaba9ff1f559824a7dfa8ecaee3cc161c80977ab089a0deb",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "y05",
+    "inputHash" : "4a6d10ad9f37e4a362a54b07b813b2f6c73870ae1b2c2cc228a45f7d20ed9ecd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "y06",
+    "inputHash" : "f7eff255e8784e3dcb8b30a4fc7cbaa9acbaf4b3ec2c9b1f71c091156a0e51d8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "z01",
+    "inputHash" : "1c26048c0da7e2ea4bc2500a295050cf7c5827abe4cbe739282bc8099e663308",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "z02",
+    "inputHash" : "d7ae278ad40139ef360ba50b711c99f95ca1e63a03e319944fc0731b953bd219",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "z03",
+    "inputHash" : "e1252ec26d9e878153693ed701791b77502df50f81da4c25a73a932db1f9fe65",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ROOT_GROUP_REFERENCED" ]
+  }, {
+    "id" : "z04",
+    "inputHash" : "a3a2f54e4ce4d0e23661296842c59352400a5c6645c858ce96dfc69f23f68e10",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "z05",
+    "inputHash" : "2bf22158659ea7f10b134238590d659e8d02079e14f7d36532a328f87d45efe2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "z06",
+    "inputHash" : "610be3e86aa3abde88c40ac9fc0312c5608569a08c00304362f2b81783e668e3",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

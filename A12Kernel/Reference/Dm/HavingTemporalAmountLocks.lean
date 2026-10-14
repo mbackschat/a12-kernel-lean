@@ -274,9 +274,11 @@ example : [
     amountReferences amount filtered == some (some member, some bound, some rootOnly) &&
       amountAdmission amount filtered == admitted) = true := by native_decide
 
-example : ["NumberOfFilledFields(Rows)", "NumberOfFilledFields(Rows*)",
-    "NumberOfFilledFields(/Form)"].all (fun amount =>
-      (amountReferences amount false).isNone && !amountAdmission amount false) = true := by native_decide
+/-- An ordinary shift amount may count the iterated group or its star, and never the root group.
+Kernel oracle: static rows `y01`–`y03` of the retained expanded-shift-amount capture. -/
+example : amountAdmission "NumberOfFilledFields(Rows)" false &&
+    amountAdmission "NumberOfFilledFields(Rows*)" false &&
+    !amountAdmission "NumberOfFilledFields(/Form)" false = true := by native_decide
 
 private def partialSourceModel : FlatModel := { ordinaryModel with
   fields := ordinaryModel.fields.map fun field => if field.id == 3 || field.id == 13 then

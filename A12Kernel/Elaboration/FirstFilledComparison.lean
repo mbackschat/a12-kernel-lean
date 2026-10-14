@@ -276,19 +276,25 @@ def projectComparisonObservation (model : FlatModel) (declaration : FlatFieldDec
   | _ => projectFirstFilledValue model declaration observation.asValidationSimpleOperand
 
 private def CheckedFirstFilledComparisonOperand.evaluate
-    (document : CheckedDocument model) (outer : Env) (context : FlatContext) :
+    (document : CheckedDocument model) (outer : Env) (context : FlatContext)
+    (filtered : FilteredShiftAmountReader model) :
     CheckedFirstFilledComparisonOperand model →
       Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) (SimpleComparisonOperand FirstFilledComparisonValue)
   | .boolean value => pure (.value (.boolean value) true)
   | .temporal expression => do
-      let cells ← expression.boundFieldIds.mapM fun field => do
+      -- Every resolvable read, not only bound fields: an expanded amount reads its extent's bound
+      -- row through this view (`scalarAmountReadContext`).
+      let fields := expression.fieldIds.filter fun field =>
+        (outer.pathForScope (model.fieldRepeatableScope field)).isOk
+      let cells ← fields.mapM fun field => do
         let cell ← (document.fullValidationAddressedCell outer field).mapError Sum.inl
         pure (field, cell.cell)
       let context := { context with
         read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell
         storedText := document.storedTextIn outer }
       mapFirstFilledOperand .temporal <$> (expression.evalResult .validation context
-        (some document.indexedComputationFillContext) outer).mapError ScalarTemporalEvaluationFault.separateAddressing
+        (some document.indexedComputationFillContext) outer (filtered := filtered)).mapError
+          ScalarTemporalEvaluationFault.separateAddressing
   | .field declaration _ => do
       let addressed ← (document.fullValidationAddressedCell outer declaration.id).mapError Sum.inl
       pure (projectComparisonObservation model declaration (observeCell .validation addressed.cell))
@@ -404,9 +410,10 @@ private def verdict (operator : TemporalComparisonOp)
   | _, _ => evalSymmetricComparison (holds operator) (normalize left) (normalize right)
 
 def evaluateFull (comparison : CheckedFirstFilledComparison model) (document : CheckedDocument model)
-    (outer : Env) (context : FlatContext) : Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) Verdict := do
+    (outer : Env) (context : FlatContext) (filtered : FilteredShiftAmountReader model := .unavailable) :
+    Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) Verdict := do
   pure (verdict comparison.operator
-    (← comparison.left.evaluate document outer context) (← comparison.right.evaluate document outer context))
+    (← comparison.left.evaluate document outer context filtered) (← comparison.right.evaluate document outer context filtered))
 
 /-- Partial selection stops on a reached uncovered or silently unavailable cell, retaining that
 absence separately from empty substitution and formal causes (spec/07, partial FirstFilledValue). -/

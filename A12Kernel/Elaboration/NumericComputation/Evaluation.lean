@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.NumericComputation.Core
+import A12Kernel.Elaboration.NumericComputation.Preflight
 import A12Kernel.Semantics.ComputationSelfValidation
 
 /-! # Checked numeric-computation evaluation and fault projection -/
@@ -294,10 +295,12 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
 /-- Numeric extraction consumes the temporal source's computation observation before discarding
 validation-only fillability; formal poison and calendar faults remain distinct. -/
 def readTemporalNumericExpression (context : ScalarComputationContext)
-    (source : CheckedTemporalNumericExpression model) :
+    (source : CheckedTemporalNumericExpression model)
+    (filtered : FilteredShiftAmountReader model := .unavailable) :
     Except NumericComputationFault NumericComputationResult := do
   let result ← match source.evalResult .computation {
-      read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
+      read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row
+      (filtered := filtered) with
     | .ok result => pure result
     | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return .domainFailure
     | .error fault => throw (.temporalExpression fault)
@@ -583,8 +586,9 @@ def scalarContext
       storedText := context.starStoredText
       numberText := context.filterNumberText } }
 
-/-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
-def readCheckedNumericComputationAtom
+/-- `filtered` evaluates a temporal operand's filtered shift amounts; `readCheckedNumericComputationAtom`
+supplies it. -/
+def readCheckedNumericComputationAtomWith (filtered : FilteredShiftAmountReader model)
     (context : NumericComputationEvaluationContext) :
     CheckedNumericComputationAtom model →
       Except NumericComputationFault NumericComputationResult
@@ -601,7 +605,7 @@ def readCheckedNumericComputationAtom
   | .temporalExpression source =>
       let scalar := context.scalarContext model
       let scalar := scalar.withIndexColumnReader model (context.indexColumn?.getD context.scalar.semanticIndexColumnReader)
-      scalar.readTemporalNumericExpression source
+      scalar.readTemporalNumericExpression source filtered
   | .filledFieldCount source =>
       source.evaluateComputationCount (context.scalarContext model) (some context.filterRead) context.indexColumn? (some context.filterStoredText) (some context.filterNumberText)
   | .firstFilled source => do
@@ -654,130 +658,47 @@ def readCheckedNumericComputationAtom
               NumericComputationFault.repeatableAddressing)
         (context.readFilledGroupCount model) source
 
+/-- A filtered shift amount read through its computation atom over the same row and read channels.
+A domain failure leaves the shift without an amount, as an unavailable temporal operand does. -/
+def filteredAmountReader (context : NumericComputationEvaluationContext) : FilteredShiftAmountReader model :=
+  fun source => do
+    let atom : CheckedNumericComputationAtom model := match source with
+      | .aggregate op source => .numeric (.aggregate op source)
+      | .firstFilled source => .firstFilled source
+      | .valueCount expected source => .valueCount expected source
+      | .tokenValueCount source => .tokenValueCount source
+      | .booleanValueCount source => .booleanValueCount source
+      | .tokenDistinctCount source => .tokenDistinctCount source
+      | .temporalDistinctCount run => .temporalDistinctCount run
+      | .filledFieldCount source => .filledFieldCount source
+    match readCheckedNumericComputationAtomWith .unavailable context atom with
+    | .ok (.value amount) => pure (.ok (.value amount .fixed))
+    | .ok (.poison cause) => pure (.error (.formal cause))
+    | .ok .domainFailure => pure (.ok .notEvaluated)
+    | .error (.temporalExpression fault) => throw fault
+    | .error (.indexSelection error) => throw (.addressing error)
+    | .error (.repeatableAddressing error) => throw (.addressing (.addressing error))
+    | .error .unsupportedDateCalendar => throw .calendarUnavailable
+    | .error .worldRequired => throw (.addressing .worldUnavailable)
+    | .error _ => throw (.addressing .temporalUnavailable)
+
+/-- Evaluate one model-checked atom against its complete direct/repeatable computation inputs. Addressing failures stay explicit and cannot collapse into a numeric value, clean absence, or formal poison. -/
+def readCheckedNumericComputationAtom (context : NumericComputationEvaluationContext) :
+    CheckedNumericComputationAtom model → Except NumericComputationFault NumericComputationResult :=
+  readCheckedNumericComputationAtomWith context.filteredAmountReader context
+
 end NumericComputationEvaluationContext
 
-def FlatFieldDecl.numericComputationFault?
-    (declaration : FlatFieldDecl) : Option NumericComputationFault :=
-  if declaration.toNumberField?.isSome then
-    none
-  else
-    some (.fieldKindMismatch declaration.id)
-
-/-- Preflight one resolved source atom. Checked temporal component atoms already retain their kind, while a forged direct declaration can still carry a non-Number kind. -/
-def NumericComputationAtom.numericComputationFault? :
-    ResolvedNumericAtom FlatFieldDecl Aggregate →
-      Option NumericComputationFault
-  | .field declaration => declaration.numericComputationFault?
-  | .baseYear _ => none
-  | .fixedCurrentRepetition _ => none
-  | .boundCurrentRepetition _ => none
-  | .baseYearDatePart _ _ _ => none
-  | .temporalFieldPart _ _ _ => none
-  | .dateRangeBoundPart _ _ _ => none
-  | .stringLength _ => none
-  | .stringRange _ _ _ => none
-  | .fieldValueAsNumber _ => none
-  -- Each difference arm preflights through the SAME predicate its checked owner gates with, rather
-  -- than restating the rule, so the two cannot drift. All three previously tested the declared
-  -- kind, which is not what the Kernel reads: the declared format is
-  -- ([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
-  -- `hasBaseYear` is unavailable on this model-free route, so the completed-period arm passes the
-  -- permissive value; a preflight must never be stricter than the gate it guards.
-  | .dateDifference unit left right =>
-      let fault? : ResolvedDateDifferenceOperand → Option NumericComputationFault
-        | .field source =>
-            if unit.admittedBy true source.components then none
-            else some (.fieldKindMismatch source.id)
-        | .baseYear _ _ | .literal _ _ | .today _ => none
-      match fault? left with
-      | some fault => some fault
-      | none => fault? right
-  | .dateTimeDifference unit left right =>
-      let fault? : FlatTemporalOperand → Option NumericComputationFault
-        | .fieldValue source =>
-            if unit.admittedBy source.components then none
-            else some (.fieldKindMismatch source.id)
-        | .nowValue => none
-        | _ => some .unsupportedDateTimeDifferenceOperand
-      match fault? left with
-      | some fault => some fault
-      | none => fault? right
-  | .dayDifference _ left right =>
-      let fault? : ResolvedDateDifferenceOperand FlatTemporalField true → Option NumericComputationFault
-        | .field source =>
-            if CalendarDayDifference.admittedBy source.components then none
-            else some (.fieldKindMismatch source.id)
-        | .baseYear _ _ | .literal _ _ | .today _ | .now _ _ => none
-      match fault? left with
-      | some fault => some fault
-      | none => fault? right
-  | .aggregate _ _ => none
-  -- No model is available on this route, so no single operand can be named.
-  | .filledGroupCount _ => some .groupCountNeedsModel
-
-/-- The structural fault a fixed group-count operand carries, if any.
-
-    Shared by both group-count atoms so the pre-read gate cannot end up narrower than the reader
-    on one of them; `readGroupCountOperand_fixed_error_iff_notAdmitted` ties it to the reader. -/
-def fixedGroupCountOperandFault? (model : FlatModel) (reference : ResolvedGroupReference) :
-    Option NumericComputationFault :=
-  if reference.computationOperandAdmitted model then none
-  else some (.unsupportedGroupCount reference.path)
-
-def CheckedNumericComputationAtom.numericComputationFault? :
-    CheckedNumericComputationAtom model → Option NumericComputationFault
-  | .filledFieldCount source => source.operands.findSome? fun operand =>
-      match operand with
-      | .indexed _ | .keyed _ => none
-      | operand => if operand.hasHaving then none else
-        match CheckedFieldFillList.computationSources { operands := [operand] } with
-        | .ok _ => none
-        | .error error => some (.fieldFillSource error)
-  | .indexed _ | .indexedString _ | .temporalExpression _ | .firstFilled _ => none
-  | .valueCount _ _ => none
-  | .tokenDistinctCount _ | .temporalDistinctCount _ => none
-  | .tokenValueCount _ => none
-  | .booleanValueCount _ => none
-  -- A group operand's boundary is model-structural, so it is decided here rather than left
-  -- to the reading branch, where a data-dependent poison could otherwise hide it: `evalOrdered`
-  -- stops at a left poison, so an ungated atom's structural fault is never reached. It must be the
-  -- reader's own admission and not a narrower copy: refusing here what the reader would count
-  -- makes the gate, rather than the operand, decide the answer.
-  | .numeric (.filledGroupCount groups) =>
-      groups.findSome? (fixedGroupCountOperandFault? model)
-  | .numeric source =>
-      NumericComputationAtom.numericComputationFault? source
-  | .sumOfProducts _ => none
-  -- The same gate, because this atom holds the same `fixed` operand form. Only the fixed operands
-  -- are pre-decided: a starred operand's refusal is a `StarAddressingError` over the document's
-  -- own row topology, which no model-structural pass can answer.
-  | .filledGroupCountMixed operands =>
-      operands.findSome? fun operand =>
-        match operand with
-        | .fixed reference => fixedGroupCountOperandFault? model reference
-        | .starred _ => none
-        | .starredPresence _ => none
-
-namespace LoweredNumericExpr
-
-/-- The first structural fault in the complete lowered tree. This pass runs before any context read, so a bad atom cannot be hidden by data-dependent poison. -/
-def computationFaultWith?
-    (fault? : Atom → Option NumericComputationFault) :
-    LoweredNumericExpr Atom → Option NumericComputationFault
-  | .atom sourceAtom => fault? sourceAtom
-  | .literal _ => none
-  | .binary _ left right | .power left right | .extremum _ left right =>
-      match left.computationFaultWith? fault? with
-      | some fault => some fault
-      | none => right.computationFaultWith? fault?
-  | .abs body | .extremumCall _ _ body => body.computationFaultWith? fault?
-  | .round _ _ body => body.computationFaultWith? fault?
-
-def computationFault? (expression : LoweredNumericExpr FlatFieldDecl) :
-    Option NumericComputationFault :=
-  expression.computationFaultWith? FlatFieldDecl.numericComputationFault?
-
-end LoweredNumericExpr
+/-- The computation reader of a temporal target or guard: its addressed overlay serves as both the
+filter and the selected-member channel, as the guard evaluator's addressed context does. -/
+def ScalarComputationContext.filteredAmountReader (context : ScalarComputationContext) (model : FlatModel) :
+    FilteredShiftAmountReader model :=
+  match context.addressed with
+  | some addressed => NumericComputationEvaluationContext.filteredAmountReader {
+      scalar := context, document := addressed.document, outer := context.row
+      filterRead := addressed.read, filterStoredText := addressed.storedText, filterNumberText := addressed.numberText
+      starRead := addressed.read, starStoredText := addressed.storedText }
+  | none => .unavailable
 
 namespace AuthoredNumericExpr
 

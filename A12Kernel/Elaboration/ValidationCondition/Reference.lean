@@ -243,6 +243,12 @@ private def havingGroupReferencePointers (source : CheckedStarFieldPath model)
   groupExpansionPointers model reference.path
     (match origin with | .outer => groupDepth | .inner => min groupDepth source.path.firstStar) environment
 
+/-- An extent member is exact when its whole scope is bound and reopened below its bound levels otherwise. -/
+private def extentMemberPointer (declaration : FlatFieldDecl) (bound : Nat) (environment : Env) :
+    Except ReferenceProjectionError MessagePointer :=
+  if declaration.repeatableScope.length ≤ bound then concreteFieldPointer declaration environment
+  else reopenedFieldPointer declaration bound environment
+
 private def havingEntityListReferencePointers (source : CheckedStarFieldPath model)
     (environment : Env) (operands : List (HavingFieldListSlot HavingPresenceRef)) :
     Except ReferenceProjectionError (List MessagePointer) := do
@@ -251,10 +257,8 @@ private def havingEntityListReferencePointers (source : CheckedStarFieldPath mod
     match slot with
     | .direct _ => havingFieldPointerFor source environment declaration ref.origin
     | .extent extent _ =>
-        let bound := if ref.origin == .outer then extent.boundCount
-          else min source.path.firstStar extent.boundCount
-        if declaration.repeatableScope.length ≤ bound then concreteFieldPointer declaration environment
-        else reopenedFieldPointer declaration bound environment
+        extentMemberPointer declaration (if ref.origin == .outer then extent.boundCount
+          else min source.path.firstStar extent.boundCount) environment
   pure slots.flatten
 
 /-- Every authored filter read retains its candidate or captured coordinate, independently of
@@ -546,12 +550,43 @@ private def temporalEntityPointers (source : CheckedTemporalExtremumOperands mod
     | (.starHaving .., none) => .error .filteredStarOperand
     | (operand, _) => entityOperandPointers environment inputs operand
 
+/-- A filtered amount projects as its ordered atom does (`filteredAmountPointers_ofFiltered`); the
+temporal traversal reaches it before that projection is defined. -/
+def CheckedFilteredShiftAmount.referencePointers (source : CheckedFilteredShiftAmount model)
+    (environment : Env) (inputs : Option MessageReferenceInputs) :
+    Except ReferenceProjectionError (List MessagePointer) :=
+  match source with
+  | .firstFilled source | .valueCount _ source | .aggregate _ source => source.referencePointers environment inputs
+  | .tokenValueCount source => source.referencePointers environment inputs
+  | .tokenDistinctCount source =>
+      (·.flatten) <$> source.operands.mapM (fun operand => operand.referencePointers environment inputs)
+  | .temporalDistinctCount run =>
+      (·.flatten) <$> run.source.operands.mapM (fun operand => operand.referencePointers environment inputs)
+  | .booleanValueCount source => source.referencePointers environment inputs
+  | .filledFieldCount source => source.referencePointers environment inputs
+
+/-- A shift amount walking an extent reopens its members below the extent's bound levels, as the
+retained Kernel references of starred and group amounts report them
+(`docs/sources/temporal-runtime-fold-probes.md#src-expanded-shift-amounts`); a bound amount projects
+its fields exactly. -/
+private def shiftAmountPointers (environment : Env) (atom : HavingNumericAtomOf (ScalarTemporalExpression model)) :
+    List (Except ReferenceProjectionError (List MessagePointer)) :=
+  if numericAtomExpands atom then
+    (atom.presenceSlotsWith (fun _ _ => [])).map fun slot => slot.references.mapM fun ref => do
+      let declaration ← (model.lookupUniqueId ref.field).mapError fun _ => .unclassifiedOperand
+      match slot with
+      | .direct _ => concreteFieldPointer declaration environment
+      | .extent extent _ => extentMemberPointer declaration extent.boundCount environment
+  else (atom.fieldOriginsWith (fun _ => [])).map fun (_, field) => resolvedFieldPointers (model := model) field environment
+
 private def temporalExpressionPointers (source : ScalarTemporalExpression model)
     (environment : Env) (inputs : Option MessageReferenceInputs) :
     Except ReferenceProjectionError (List MessagePointer) :=
   (·.flatten) <$> (source.dependenciesWith
     (fun field => [resolvedFieldPointers (model := model) field environment])
     (fun source => [temporalEntityPointers source environment inputs])
+    (fun source => [source.referencePointers environment inputs])
+    (shiftAmountPointers environment)
     (fun source => [source.referencePointers environment inputs])).mapM id
 
 private def firstFilledComparisonPointers (operand : CheckedFirstFilledComparisonOperand model)
@@ -590,6 +625,8 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env)
           (·.flatten) <$> (atom.dependenciesWith
             (fun field => [resolvedFieldPointers (model := model) field environment])
             (fun source => [temporalEntityPointers source environment inputs])
+            (fun source => [source.referencePointers environment inputs])
+            (shiftAmountPointers environment)
             (fun source => [source.referencePointers environment inputs])).mapM id
   | .ordinary (.filledGroupCount groups) =>
       (·.flatten) <$> groups.mapM fun reference =>
@@ -616,6 +653,12 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env)
           | .starred source => .starred source
           | .starredPresence source => .starredPresence source
         source.referencePointers environment
+
+theorem filteredAmountPointers_ofFiltered (source : CheckedFilteredShiftAmount model) (environment : Env)
+    (inputs : Option MessageReferenceInputs) :
+    (OrderedNumericValidationAtom.ofFiltered source).referencePointers environment inputs =
+      source.referencePointers environment inputs := by
+  cases source <;> rfl
 
 /-- Traverse one authored operand expression left to right. Literals reference nothing; a failing atom fails the whole projection. -/
 private def expressionPointers (environment : Env) (inputs : Option MessageReferenceInputs) :

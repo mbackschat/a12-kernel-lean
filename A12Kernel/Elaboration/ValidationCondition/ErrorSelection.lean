@@ -67,21 +67,10 @@ private def fillErrorSelections (field : FieldId) (source : CheckedFieldFillList
     | .keyed source => selectedErrorReference field (.inr source)
     | _ => []
 
-private def temporalErrorSelections (field : FieldId) (source : ScalarTemporalExpression model) :
-    List SelectedErrorReference :=
-  source.dependenciesWith (fun _ => [])
-    (fun source => shapeErrorSelections field source.shape)
-    (fun source => selectedErrorReference field (.inl source))
-    (numeric := fun _ => [])
-
-private def typedErrorSelections (field : FieldId) :
-    CheckedFirstFilledComparisonOperand model → List SelectedErrorReference
-  | .firstFilled source => fillErrorSelections field source.source
-  | .indexed source _ => selectedErrorReference field (.inl source)
-  | .temporal source => temporalErrorSelections field source.core
-  | .field _ _ | .boolean _ => []
-
-private def numericErrorSelections (field : FieldId) :
+/-- The temporal arm is supplied by the caller because a temporal amount may carry a filtered
+entity list, whose selections are this function's own. -/
+private def orderedNumericErrorSelections (field : FieldId)
+    (temporal : CheckedTemporalNumericExpression model → List SelectedErrorReference) :
     OrderedNumericValidationAtom model → List SelectedErrorReference
   | .firstFilled source | .valueCount _ source | .aggregate _ source => numberErrorSelections field source
   | .tokenValueCount source => tokenErrorSelections field source.source
@@ -91,17 +80,40 @@ private def numericErrorSelections (field : FieldId) :
       | _ => []
   | .temporalDistinctCount run => shapeErrorSelections field run.source.shape
   | .filledFieldCount source => fillErrorSelections field source
-  | .temporalExpression source => match source.core with
-      | .temporal operation => operation.sources.flatMap fun source => temporalErrorSelections field source.core
-      | .storedProjection source => source.dependenciesWith (fun _ => [])
-          (fun source => shapeErrorSelections field source.shape)
-          (fun source => selectedErrorReference field (.inl source)) (numeric := fun _ => [])
+  | .temporalExpression source => temporal source
   | .indexed source => selectedErrorReference field (.inl source.toCheckedSemanticIndexSource)
   | .indexedString source => selectedErrorReference field (.inl source.selection)
   | .sumOfProducts (.selected source) =>
       selectedErrorReference field (.inr source.left.source) ++
       selectedErrorReference field (.inr source.right.source)
   | .sumOfProducts (.row _) | .filledGroupCountMixed _ | .ordinary _ => []
+
+private def filteredAmountErrorSelections (field : FieldId) (amount : CheckedFilteredShiftAmount model) :
+    List SelectedErrorReference :=
+  orderedNumericErrorSelections field (fun _ => []) (.ofFiltered amount)
+
+private def temporalErrorSelections (field : FieldId) (source : ScalarTemporalExpression model) :
+    List SelectedErrorReference :=
+  source.dependenciesWith (fun _ => [])
+    (fun source => shapeErrorSelections field source.shape)
+    (fun source => selectedErrorReference field (.inl source))
+    (numeric := fun _ => []) (filtered := filteredAmountErrorSelections field)
+
+private def typedErrorSelections (field : FieldId) :
+    CheckedFirstFilledComparisonOperand model → List SelectedErrorReference
+  | .firstFilled source => fillErrorSelections field source.source
+  | .indexed source _ => selectedErrorReference field (.inl source)
+  | .temporal source => temporalErrorSelections field source.core
+  | .field _ _ | .boolean _ => []
+
+private def numericErrorSelections (field : FieldId) :
+    OrderedNumericValidationAtom model → List SelectedErrorReference :=
+  orderedNumericErrorSelections field fun source => match source.core with
+    | .temporal operation => operation.sources.flatMap fun source => temporalErrorSelections field source.core
+    | .storedProjection source => source.dependenciesWith (fun _ => [])
+        (fun source => shapeErrorSelections field source.shape)
+        (fun source => selectedErrorReference field (.inl source)) (numeric := fun _ => [])
+        (filtered := filteredAmountErrorSelections field)
 
 private def tokenOperandErrorSelections (field : FieldId) :
     CheckedTokenComparisonOperand model → List SelectedErrorReference

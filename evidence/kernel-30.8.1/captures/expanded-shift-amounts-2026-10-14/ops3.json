@@ -1,0 +1,206 @@
+[
+ {
+  "id": "y01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y01",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "[Rows/Amt] > 0 And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), NumberOfFilledFields(Rows))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "y02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y02",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "[Rows/Amt] > 0 And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), NumberOfFilledFields(Rows*))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "y03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y03",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "[Rows/Amt] > 0 And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), NumberOfFilledFields(/P))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "y04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y04",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "[Rows/Amt] > 0 And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), NumberOfFilledFields(G))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "y05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y05",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "[Rows/Amt] > 0 And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), Sum(Rows*/Amt))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "y06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y06",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "[Rows/Amt] > 0 And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), NumberOfFilledGroups(Rows*))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "z01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), NumberOfFilledFields(Rows))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "z02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), NumberOfFilledFields(Rows*))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "z03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z03",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), NumberOfFilledFields(/P))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "z04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), NumberOfFilledFields(G))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "z05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z05",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), Sum(Rows*/Amt))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "z06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z06",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DayFromDate(AddDays(Date(\"01\",\"01\",\"2024\"), NumberOfFilledGroups(Rows*))) == 2",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

@@ -119,15 +119,18 @@ def captures : List (String × String × String) := [
   ("captures/semantic-index-reads-2026-10-14/obs.json", "captures/semantic-index-reads-2026-10-14/R4_DM.json", "captures/semantic-index-reads-2026-10-14/ops.json"),
   ("captures/semantic-index-reads-2026-10-14/obs-b.json", "captures/semantic-index-reads-2026-10-14/R4b_DM.json", "captures/semantic-index-reads-2026-10-14/ops-b.json"),
   ("captures/semantic-index-reads-2026-10-14/obs-d.json", "captures/semantic-index-reads-2026-10-14/R4b_DM.json", "captures/semantic-index-reads-2026-10-14/ops-d.json"),
-  ("captures/message-references-2026-10-14/obs.json", "captures/message-references-2026-10-14/R5_DM.json", "captures/message-references-2026-10-14/ops.json")]
+  ("captures/message-references-2026-10-14/obs.json", "captures/message-references-2026-10-14/R5_DM.json", "captures/message-references-2026-10-14/ops.json"),
+  ("captures/expanded-shift-amounts-2026-10-14/obs.json", "captures/expanded-shift-amounts-2026-10-14/R8_DM.json", "captures/expanded-shift-amounts-2026-10-14/ops.json"),
+  ("captures/expanded-shift-amounts-2026-10-14/obs2.json", "captures/expanded-shift-amounts-2026-10-14/R8_DM.json", "captures/expanded-shift-amounts-2026-10-14/ops2.json"),
+  ("captures/expanded-shift-amounts-2026-10-14/obs3.json", "captures/expanded-shift-amounts-2026-10-14/R8_DM.json", "captures/expanded-shift-amounts-2026-10-14/ops3.json"),
+  ("captures/expanded-shift-amounts-2026-10-14/obs-filtered.json", "captures/expanded-shift-amounts-2026-10-14/R8F_DM.json", "captures/expanded-shift-amounts-2026-10-14/ops-filtered.json"),
+  ("captures/expanded-shift-amounts-2026-10-14/obs-supplementary.json", "captures/expanded-shift-amounts-2026-10-14/R8S_DM.json", "captures/expanded-shift-amounts-2026-10-14/ops-supplementary.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) := [
   ("comparison-entry-gates/observations.json#groupregex", "host pattern compiler, SG7"),
   ("comparison-entry-gates/observations2.json#violatedcontrol", "host pattern compiler, SG7"),
-  ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7"),
-  ("message-references-2026-10-14/obs.json#s09", "ordinary expanded shift amounts, K19 R8"),
-  ("message-references-2026-10-14/obs.json#s10", "ordinary expanded shift amounts, K19 R8")]
+  ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

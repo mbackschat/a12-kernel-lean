@@ -154,6 +154,11 @@ def applyScalarTemporalShift
   match source, amount with
   | .unknown cause, _ | _, .error (.formal cause) => pure (.unknown cause)
   | .value .nonRelevant _, _ | _, .error .nonRelevant => pure (.value .nonRelevant true)
+  -- An undecided group-count amount, a counted group holding a malformed member, leaves the shifted
+  -- value unknown: a `>` twin and a `<=` twin both stay silent, on the ordinary and the filter route
+  -- (expanded-shift-amount supplementary capture, rows `s01`–`s04`). The operand domain demands a
+  -- formal cause that `Verdict.unknown` then discards; `malformed` names that measured trigger.
+  | _, .error .groupState => pure (.unknown .malformed)
   | _, .error _ => throw .calendarUnavailable
   | .notEvaluated, .ok .notEvaluated => pure (.value .noValue false)
   | .value _ given, .ok .notEvaluated => pure (.value .noValue given)

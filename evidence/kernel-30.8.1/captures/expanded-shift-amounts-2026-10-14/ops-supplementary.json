@@ -1,0 +1,223 @@
+[
+ {
+  "id": "s01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfFilledGroups(G, H)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfFilledGroups(G, H)) <= [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s03",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And NumberOfFilledFields(Rows*/Amt Having AddDays(Rows/RD, NumberOfFilledGroups(G, H)) > [$D2]) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And NumberOfFilledFields(Rows*/Amt Having AddDays(Rows/RD, NumberOfFilledGroups(G, H)) <= [$D2]) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s05",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And FirstFilledValue(DE, D) < AddDays(D, Sum(G))",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s06",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, Sum(G)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "r03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r03",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And FirstFilledValue(Rows/RD, D) < AddDays(D, Sum(Rows*/Amt))",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "r04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r04",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And [Rows/RD] < AddDays(D, Sum(Rows*/Amt))",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "r05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r05",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And AddDays(Rows/RD, Sum(Rows*/Amt Having [Rows/S] == \"x\")) < [D]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "r06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r06",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And AddDays(Rows/RD, Sum(Rows*/Amt)) < [D]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "b01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b01",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/RD) And AddDays(Rows/RD, Sum(Rows*/Amt Having [Rows/S] == \"x\")) > [D]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "b02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b02",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/RD) And AddDays(Rows/RD, Sum(Rows*/Amt)) > [D]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "b03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "b03",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/RD) And Sum(Rows*/Amt Having [Rows/S] == \"x\") > 0",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

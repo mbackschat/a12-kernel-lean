@@ -13,6 +13,7 @@ import A12Kernel.Elaboration.ComputationFieldFill
 import A12Kernel.Elaboration.ValuesNotUniqueCondition
 import A12Kernel.Elaboration.CustomFieldValidity
 import A12Kernel.Elaboration.ComputationStringPattern
+import A12Kernel.Elaboration.NumericComputation.Evaluation
 
 namespace A12Kernel
 
@@ -382,7 +383,7 @@ private def readSelectedComparisonOperand (context : ScalarComputationContext)
   | .temporal expression => do
       let result ← (expression.evalResult .computation
         { read := context.read, storedText := context.storedText, world := context.world }
-        context.addressed context.row).mapError temporalError
+        context.addressed context.row (filtered := context.filteredAmountReader model)).mapError temporalError
       pure (match result with
         | .notEvaluated => .notEvaluated
         | .unknown cause => .unknown cause
@@ -598,7 +599,8 @@ def evalChecked (predicate : CheckedComputationPredicate model)
         | some direct => (direct.evaluateComponentsWith (fun component =>
             component.readWith .computation context.read context.storedText context.world) >>= direct.applyProfileReality)
               |>.mapError (fun | .stringNotConvertible _ _ => .valueFailure | _ => .temporalUnavailable)
-        | none => (source.evaluateScalarValidity .computation context).mapError (fun
+        | none => (source.evaluateScalarValidity .computation context
+            (filtered := context.filteredAmountReader model)).mapError (fun
             | .componentNumberInvalid | .dateTimeLabelUnresolved => .valueFailure
             | .addressing (.addressing (.storedTextUnavailable field)) => .addressing (.storedTextUnavailable field)
             | _ => .temporalUnavailable)
@@ -630,7 +632,8 @@ def evalChecked (predicate : CheckedComputationPredicate model)
         (CheckedFirstFilledComparison.holds source.operator)
         (readSelectedComparisonOperand context filterRead filterStoredText filterNumberText source.left)
         (fun _ => readSelectedComparisonOperand context filterRead filterStoredText filterNumberText source.right)
-  | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row).mapError temporalError
+  | .temporal source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row
+      (context.filteredAmountReader model)).mapError temporalError
   | .fieldComparison source => (source.evalComputation { read := context.read, storedText := context.storedText, world := context.world }).mapError .fieldKindMismatch
   | .dateRangeComparison source => (source.evalComputation context).mapError .fieldKindMismatch
   | .fieldFill operator source =>

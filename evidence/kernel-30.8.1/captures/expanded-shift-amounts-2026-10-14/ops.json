@@ -1,0 +1,342 @@
+[
+ {
+  "id": "x01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfFilledFields(Rows*/Amt)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x03",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfFilledFields(G)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfFilledGroups(Rows*)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x05",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfDifferentValues(Rows*/S Having [Rows/Amt] > 0)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x06",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, FirstFilledValue(Rows*/Amt)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x07",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddMonths(D, MaxValue(Rows*/Amt)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x08",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And [D2] < AddDays(D, NumberOfDifferentValues(Rows*/RD))",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x09",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, Sum(G)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x10",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfFilledGroups(G, H)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x11",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt) + 1) < [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x12",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddHours(DT, NumberOfFilledFields(Rows*/Amt)) > [DT]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DifferenceInMonths(AddMonths(D, 1), D2) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DifferenceInHours(AddHours(DT, 1), DT) == 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d03",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DifferenceInHours(\"01.10.2026T10:00:00\", DT) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DifferenceInDays(\"01.10.2026T10:00:00\", D) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d05",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DifferenceInSeconds(DT, \"01.10.2026T10:00:00\") < 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d06",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DifferenceInYears(AddYears(D, 2), D2) < 3",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "o01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "o01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DateRangesOverlap(RG)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "o02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "o02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AtLeastOneDateRangeOverlaps(DR In RG)",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

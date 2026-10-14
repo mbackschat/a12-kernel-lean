@@ -210,6 +210,49 @@ private def fillReferenceAt? (field : FieldId) (query : ReferenceQuery)
     | .indexed source => some (selectedReferenceAt field query (.inl source))
     | .keyed source => some (selectedReferenceAt field query (.inr source)))
 
+private def ordinaryNumericAtomReferenceAt? (model : FlatModel) (field : FieldId)
+    (query : ReferenceQuery) (atom : NumericValidationAtom) : Option Bool :=
+  if !atom.referencesField model field then some false else
+  match atom with
+  | .filledGroupCount groups => some (groups.any fun reference =>
+      reference.referencesField model field && query.atPath reference.path reference.boundRepeatableScope reference.isRoot)
+  | _ => some (query.binds (model.fieldRepeatableScope field))
+
+/-- The temporal arm is supplied by the caller because temporal amounts may themselves carry a
+filtered entity list whose reference rule is this function's own. -/
+private def orderedNumericAtomReferenceAt? (field : FieldId) (query : ReferenceQuery)
+    (temporal : CheckedTemporalNumericExpression model → Option Bool)
+    (atom : OrderedNumericValidationAtom model) : Option Bool :=
+  if !atom.referencesErrorField field then some false else
+  match atom with
+  | .firstFilled source | .valueCount _ source | .aggregate _ source => numberReferenceAt? field query source
+  | .tokenValueCount source => tokenReferenceAt? field query source.source
+  | .booleanValueCount source => booleanCountReferenceAt? field query source
+  | .tokenDistinctCount source => tokenReferenceAt? field query source
+  | .temporalDistinctCount run =>
+      shapeReferenceAt? field query run.source.shape (run.source.operands.filterMap fun
+        | .slot (.star _ _ filter) => filter
+        | _ => none)
+  | .filledFieldCount source => fillReferenceAt? field query source
+  | .temporalExpression source => temporal source
+  | .indexed source => some (selectedReferenceAt field query (.inl source.toCheckedSemanticIndexSource))
+  | .indexedString source => some (selectedReferenceAt field query (.inl source.selection))
+  | .sumOfProducts (.selected source) => some (
+      selectedReferenceAt field query (.inr source.left.source) ||
+      selectedReferenceAt field query (.inr source.right.source))
+  | .sumOfProducts (.row source) => some (
+      (source.left.field.id == field && query.binds source.left.source.bindingScope) ||
+      (source.right.field.id == field && query.binds source.right.source.bindingScope))
+  | .filledGroupCountMixed operands => some (operands.any fun operand =>
+      operand.referencesField model field && query.atPath operand.groupPath operand.bindingScope operand.isRoot)
+  | .ordinary source => ordinaryNumericAtomReferenceAt? model field query source
+
+/-- A filtered shift amount is the ordinary entity-list carrier, so it takes that atom's reference
+rule; it never contains a temporal expression of its own. -/
+private def filteredAmountReferenceAt? (field : FieldId) (query : ReferenceQuery)
+    (amount : CheckedFilteredShiftAmount model) : Option Bool :=
+  orderedNumericAtomReferenceAt? field query (fun _ => some false) (.ofFiltered amount)
+
 /-- Recursive amounts retain authored slots separately from their temporal children. Use the
 slot's binding scope, rather than the surrounding temporal operand's scope (spec/07 §1). -/
 private def temporalNumericReferenceAt? (field : FieldId) (query : ReferenceQuery)
@@ -233,7 +276,8 @@ private def temporalReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (fun candidate => [some (candidate == field && query.binds (model.fieldRepeatableScope candidate))])
     (fun source => [shapeReferenceAt? field query source.shape (source.filters.filterMap id)])
     (fun source => [some (selectedReferenceAt field query (.inl source))])
-    (numeric := fun atom => [temporalNumericReferenceAt? field query atom]))
+    (numeric := fun atom => [temporalNumericReferenceAt? field query atom])
+    (filtered := fun amount => [filteredAmountReferenceAt? field query amount]))
 
 private def typedOperandReferenceAt? (field : FieldId) (query : ReferenceQuery) :
     CheckedFirstFilledComparisonOperand model → Option Bool
@@ -243,48 +287,18 @@ private def typedOperandReferenceAt? (field : FieldId) (query : ReferenceQuery) 
   | .boolean _ => some false
   | .temporal source => temporalReferenceAt? field query source.core
 
-private def ordinaryNumericAtomReferenceAt? (model : FlatModel) (field : FieldId)
-    (query : ReferenceQuery) (atom : NumericValidationAtom) : Option Bool :=
-  if !atom.referencesField model field then some false else
-  match atom with
-  | .filledGroupCount groups => some (groups.any fun reference =>
-      reference.referencesField model field && query.atPath reference.path reference.boundRepeatableScope reference.isRoot)
-  | _ => some (query.binds (model.fieldRepeatableScope field))
-
 private def numericAtomReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (atom : OrderedNumericValidationAtom model) : Option Bool :=
-  if !atom.referencesErrorField field then some false else
-  match atom with
-  | .firstFilled source | .valueCount _ source | .aggregate _ source => numberReferenceAt? field query source
-  | .tokenValueCount source => tokenReferenceAt? field query source.source
-  | .booleanValueCount source => booleanCountReferenceAt? field query source
-  | .tokenDistinctCount source => tokenReferenceAt? field query source
-  | .temporalDistinctCount run =>
-      shapeReferenceAt? field query run.source.shape (run.source.operands.filterMap fun
-        | .slot (.star _ _ filter) => filter
-        | _ => none)
-  | .filledFieldCount source => fillReferenceAt? field query source
-  | .temporalExpression source =>
-      match source.core with
-      | .temporal operation =>
-          anyReference (operation.sources.map fun source => temporalReferenceAt? field query source.core)
-      | .storedProjection source =>
-          anyReference (source.dependenciesWith
-            (fun candidate => [some (candidate == field && query.binds (model.fieldRepeatableScope candidate))])
-            (fun source => [shapeReferenceAt? field query source.shape (source.filters.filterMap id)])
-            (fun source => [some (selectedReferenceAt field query (.inl source))])
-            (numeric := fun atom => [temporalNumericReferenceAt? field query atom]))
-  | .indexed source => some (selectedReferenceAt field query (.inl source.toCheckedSemanticIndexSource))
-  | .indexedString source => some (selectedReferenceAt field query (.inl source.selection))
-  | .sumOfProducts (.selected source) => some (
-      selectedReferenceAt field query (.inr source.left.source) ||
-      selectedReferenceAt field query (.inr source.right.source))
-  | .sumOfProducts (.row source) => some (
-      (source.left.field.id == field && query.binds source.left.source.bindingScope) ||
-      (source.right.field.id == field && query.binds source.right.source.bindingScope))
-  | .filledGroupCountMixed operands => some (operands.any fun operand =>
-      operand.referencesField model field && query.atPath operand.groupPath operand.bindingScope operand.isRoot)
-  | .ordinary source => ordinaryNumericAtomReferenceAt? model field query source
+  orderedNumericAtomReferenceAt? field query (fun source => match source.core with
+    | .temporal operation =>
+        anyReference (operation.sources.map fun source => temporalReferenceAt? field query source.core)
+    | .storedProjection source =>
+        anyReference (source.dependenciesWith
+          (fun candidate => [some (candidate == field && query.binds (model.fieldRepeatableScope candidate))])
+          (fun source => [shapeReferenceAt? field query source.shape (source.filters.filterMap id)])
+          (fun source => [some (selectedReferenceAt field query (.inl source))])
+          (numeric := fun atom => [temporalNumericReferenceAt? field query atom])
+          (filtered := fun amount => [filteredAmountReferenceAt? field query amount]))) atom
 
 private def numericExpressionReferenceAt? (referenceAt : Atom → Option Bool)
     (expression : AuthoredNumericExpr Atom) : Option Bool :=

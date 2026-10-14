@@ -1,0 +1,673 @@
+{
+ "header": {
+  "id": "R8_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R8_DM"
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Tot",
+        "name": "Tot",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/D2",
+        "name": "D2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DT",
+        "name": "DT",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DR",
+        "name": "DR",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DOut",
+        "name": "DOut",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DOut2",
+        "name": "DOut2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DOut3",
+        "name": "DOut3",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/RM",
+        "name": "RM",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/G",
+        "name": "G",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/G/GA",
+           "name": "GA",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/G/GB",
+           "name": "GB",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/H",
+        "name": "H",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/H/HA",
+           "name": "HA",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/RG",
+        "name": "RG",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/RG/R1",
+           "name": "R1",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/RG/R2",
+           "name": "R2",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Rows",
+        "name": "Rows",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Rows/Amt",
+           "name": "Amt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/S",
+           "name": "S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/RD",
+           "name": "RD",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          }
+         ],
+         "repeatability": 4
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx01",
+        "name": "Rx01",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x01",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfFilledFields(Rows*/Amt)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx02",
+        "name": "Rx02",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x02",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx03",
+        "name": "Rx03",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x03",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfFilledFields(G)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx04",
+        "name": "Rx04",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x04",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfFilledGroups(Rows*)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx05",
+        "name": "Rx05",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x05",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfDifferentValues(Rows*/S Having [Rows/Amt] > 0)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx06",
+        "name": "Rx06",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x06",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, FirstFilledValue(Rows*/Amt)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx07",
+        "name": "Rx07",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x07",
+         "errorCondition": "FieldFilled(Tot) And AddMonths(D, MaxValue(Rows*/Amt)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx08",
+        "name": "Rx08",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x08",
+         "errorCondition": "FieldFilled(Tot) And [D2] < AddDays(D, NumberOfDifferentValues(Rows*/RD))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx09",
+        "name": "Rx09",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x09",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, Sum(G)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx10",
+        "name": "Rx10",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x10",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfFilledGroups(G, H)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx11",
+        "name": "Rx11",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x11",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt) + 1) < [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rx12",
+        "name": "Rx12",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "x12",
+         "errorCondition": "FieldFilled(Tot) And AddHours(DT, NumberOfFilledFields(Rows*/Amt)) > [DT]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rd01",
+        "name": "Rd01",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "d01",
+         "errorCondition": "FieldFilled(Tot) And DifferenceInMonths(AddMonths(D, 1), D2) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rd02",
+        "name": "Rd02",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "d02",
+         "errorCondition": "FieldFilled(Tot) And DifferenceInHours(AddHours(DT, 1), DT) == 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rd03",
+        "name": "Rd03",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "d03",
+         "errorCondition": "FieldFilled(Tot) And DifferenceInHours(\"01.10.2026T10:00:00\", DT) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rd04",
+        "name": "Rd04",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "d04",
+         "errorCondition": "FieldFilled(Tot) And DifferenceInDays(\"01.10.2026T10:00:00\", D) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rd05",
+        "name": "Rd05",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "d05",
+         "errorCondition": "FieldFilled(Tot) And DifferenceInSeconds(DT, \"01.10.2026T10:00:00\") < 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rd06",
+        "name": "Rd06",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "d06",
+         "errorCondition": "FieldFilled(Tot) And DifferenceInYears(AddYears(D, 2), D2) < 3",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ro02",
+        "name": "Ro02",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "o02",
+         "errorCondition": "FieldFilled(Tot) And AtLeastOneDateRangeOverlaps(DR In RG)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CDOut",
+        "name": "CDOut",
+        "Computation": {
+         "computedFieldRelPath": "../DOut",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(D, Sum(Rows*/Amt))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CDOut2",
+        "name": "CDOut2",
+        "Computation": {
+         "computedFieldRelPath": "../DOut2",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(D, NumberOfFilledFields(G))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CDOut3",
+        "name": "CDOut3",
+        "Computation": {
+         "computedFieldRelPath": "../DOut3",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(D, NumberOfFilledGroups(Rows*))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

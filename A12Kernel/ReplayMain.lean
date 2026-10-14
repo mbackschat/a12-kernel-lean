@@ -154,6 +154,7 @@ import A12Kernel.Reference.Dm.NumericCountLocks
 import A12Kernel.Reference.Dm.FirstFilledValidationLocks
 import A12Kernel.Reference.Dm.PartialDateFirstFilledLocks
 import A12Kernel.Reference.Dm.PartialCarrierLocks
+import A12Kernel.Reference.Dm.FilteredShiftAmountLocks
 import A12Kernel.Reference.Dm.SelectedFirstFilledLocks
 import A12Kernel.Reference.Dm.SelectedMessageLocks
 import A12Kernel.Reference.Dm.IndexKeyLiteralLocks

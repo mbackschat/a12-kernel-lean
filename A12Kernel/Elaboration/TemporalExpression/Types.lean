@@ -5,6 +5,7 @@ import A12Kernel.Elaboration.TemporalExtremumStream
 import A12Kernel.Elaboration.Flat.FieldValueRead
 import A12Kernel.Elaboration.ValueAsDateTimeWorldComponents
 import A12Kernel.Elaboration.SemanticIndexDateRange
+import A12Kernel.Elaboration.TemporalExpression.FilteredAmount
 
 /-! # Scalar temporal expression types
 
@@ -37,12 +38,12 @@ inductive SurfaceScalarTemporalExpression where
   | dateConstruction (components : SurfaceConstructedDateComponents
       (Sum (Sum SurfaceConstructedDateSource SurfaceSemanticIndex) (DateNumericPart × SurfaceScalarTemporalExpression)))
   | calendarShift (unit : DateShiftUnit) (source : SurfaceScalarTemporalExpression)
-      (amount : AuthoredNumericExpr (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression))
+      (amount : AuthoredNumericExpr (Sum (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression) SurfaceFilteredShiftAmount))
   | timeConstruction (components : TimeComponentPrefix (Sum (Sum SurfaceTimeComponent SurfaceSemanticIndex) (TimeNumericPart × SurfaceScalarTemporalExpression)))
   | dateFromDateTime (source : SurfaceScalarTemporalExpression)
   | timeFromDateTime (source : SurfaceScalarTemporalExpression)
   | subdayShift (unit : DateTimeSubdayUnit) (source : SurfaceScalarTemporalExpression)
-      (amount : AuthoredNumericExpr (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression))
+      (amount : AuthoredNumericExpr (Sum (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression) SurfaceFilteredShiftAmount))
 
 abbrev SurfaceScalarDateComponent :=
   Sum (Sum SurfaceConstructedDateSource SurfaceSemanticIndex) (DateNumericPart × SurfaceScalarTemporalExpression)
@@ -87,6 +88,7 @@ inductive ScalarTemporalExpressionError where
   | nonTemporal (path : List String)
   | unsupportedSource
   | incompatibleFormats
+  | filteredAmount (error : FilteredShiftAmountElabError)
   deriving Repr, DecidableEq
 
 def ScalarTemporalExpressionError.dateValidityDiagnostic? : ScalarTemporalExpressionError → Option KernelStaticDiagnostic
@@ -167,6 +169,8 @@ inductive ScalarTemporalNumericAtom (model : FlatModel) where
   | indexedPart (selection : CheckedSemanticIndexSource model) (part : TemporalNumericPart)
       (partialFormat : Option FullDateTargetFormat)
   | ordinary (source : CheckedTemporalShiftAmount model)
+  /-- An amount over a filtered entity list, evaluated by the route that holds the checked document. -/
+  | filtered (source : CheckedFilteredShiftAmount model)
   | projection (part : TemporalNumericPart) (profile : ModelZone.ConcreteProfile)
       (source : TemporalExpressionOf (ScalarTemporalAtom model) (ScalarTemporalTransform model))
 end

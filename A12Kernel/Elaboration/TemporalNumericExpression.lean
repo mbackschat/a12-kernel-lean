@@ -58,7 +58,7 @@ def CheckedTemporalNumericCore.admitted (model : FlatModel) (scope : List Repeat
         selection.targetDeclaration.toTemporalField?.any fun field =>
           model.admitsTemporalNumericPart field part format
   | .storedProjection (.numeric _) | .storedProjection (.ordinary _) |
-      .storedProjection (.projection _ _ _) => false
+      .storedProjection (.projection _ _ _) | .storedProjection (.filtered _) => false
 
 /-- A numeric projection retains the host scope as part of its stored-source certificate. -/
 structure CheckedTemporalNumericExpression (model : FlatModel) where
@@ -81,7 +81,7 @@ def elaborateTemporalNumericOperation (model : FlatModel) (declaringGroup : Grou
         let projected ← (elaborateScalarTemporalProjection model declaringGroup surface part targetGroup?).mapError .source
         match projected with
         | .numeric _ | .indexedPart _ _ _ => pure (.storedProjection projected)
-        | .projection _ _ _ | .ordinary _ =>
+        | .projection _ _ _ | .ordinary _ | .filtered _ =>
             pure (.temporal (.projection part
               (← (elaborateScalarTemporalExpression model declaringGroup surface targetGroup?).mapError .source)))
     | .difference unit left right => do
@@ -144,11 +144,12 @@ def referencesField (expression : CheckedTemporalNumericExpression model) (field
 /-- Project the common temporal result while retaining its independent missingness and failure. -/
 def evalResult (expression : CheckedTemporalNumericExpression model) (phase : Phase)
     (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := [])
-    (partialRead? : Option (TemporalPartialReadContext model) := none) : Except ScalarTemporalEvaluationFault
+    (partialRead? : Option (TemporalPartialReadContext model) := none)
+    (filtered : FilteredShiftAmountReader model := .unavailable) : Except ScalarTemporalEvaluationFault
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
-  let read (source : CheckedScalarTemporalExpression model) := source.evalResult phase context addressed row partialRead?
+  let read (source : CheckedScalarTemporalExpression model) := source.evalResult phase context addressed row partialRead? filtered
   match expression.core with
-  | .storedProjection source => source.evalResult phase context addressed row partialRead?
+  | .storedProjection source => source.evalResult phase context addressed row partialRead? filtered
   | .temporal (.projection part source) => part.observeScalar expression.profile (← read source)
   | .temporal (.difference unit left right) =>
       match ← readTemporalPair phase read scalarTemporalFormalCause? left right with

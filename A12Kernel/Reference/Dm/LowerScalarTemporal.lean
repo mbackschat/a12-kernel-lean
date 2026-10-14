@@ -106,6 +106,26 @@ private inductive TemporalExpressionPosition where
   | value
   | source
 
+/-- An entity-list call whose operand carries a `Having`. The Having atom family cannot carry a
+filter, so such an amount lowers to the ordinary filtered carriers instead. -/
+private def filteredEntityCall? : Expr → Bool
+  | .call _ arguments listed _ => (arguments ++ listed.getD []).any fun
+      | .mk (.entity reference) _ => reference.filter.isSome
+      | _ => false
+  | _ => false
+
+private def lowerFilteredShiftAmount (model : FlatModel) (rowGroup : GroupPath) (expression : Expr) :
+    Lowering SurfaceFilteredShiftAmount := do
+  match ← lowerComputationNumericAtom model rowGroup expression with
+  | .numeric (.aggregate op source) => pure (.aggregate op source)
+  | .firstFilled source => pure (.firstFilled source)
+  | .valueCount expected source => pure (.valueCount expected source)
+  | .tokenValueCount expected source => pure (.tokenValueCount expected source)
+  | .tokenEntityValueCount expected source => pure (.tokenEntityValueCount expected source)
+  | .booleanValueCount expected source => pure (.booleanValueCount expected source)
+  | .filledFieldCount source => pure (.filledFieldCount source)
+  | _ => refuse "TemporalExpression" "filtered shift amount"
+
 /-- Field spelling depends on the grammar position (spec/12 §3): value expressions use
 brackets, while temporal source slots take an entity. Keep that distinction until lowering. -/
 private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGroup : GroupPath)
@@ -113,6 +133,12 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
   let lowerSourceSlot (source : Expr) : Lowering SurfaceScalarTemporalExpression :=
     lowerScalarTemporalExpressionAt model rowGroup .source source
   let lowerNumericAtom := lowerHavingNumericAtomWith lowerSourceSlot
+  let lowerAmount : Expr → Lowering (AuthoredNumericExpr
+      (Sum (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression) SurfaceFilteredShiftAmount)) :=
+    lowerNumericExpr
+      (fun atom => if filteredEntityCall? atom then .inr <$> lowerFilteredShiftAmount model rowGroup atom
+        else .inl <$> lowerNumericAtom atom)
+      (fun atom => .inl <$> lowerNumericFieldAtom model rowGroup lowerNumericAtom atom)
   let lowerTimeComponent : Argument → Lowering (SurfaceScalarTimeComponent)
     | .mk (.string text) none => pure (.inl (.inl (.constant text)))
     | .mk (.call name [.mk source none] none none) none => do
@@ -224,12 +250,12 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
           let unit := if name == "AddDays" then DateShiftUnit.days
             else if name == "AddMonths" then .months else .years
           pure (.calendarShift unit (← lowerSourceSlot source)
-            (← lowerNumericExpr lowerNumericAtom (lowerNumericFieldAtom model rowGroup lowerNumericAtom) amount))
+            (← lowerAmount amount))
       | "AddHours" | "AddMinutes" | "AddSeconds" =>
           let unit := if name == "AddHours" then DateTimeSubdayUnit.hours
             else if name == "AddMinutes" then .minutes else .seconds
           pure (.subdayShift unit (← lowerSourceSlot source)
-            (← lowerNumericExpr lowerNumericAtom (lowerNumericFieldAtom model rowGroup lowerNumericAtom) amount))
+            (← lowerAmount amount))
       | "MinValue" | "MaxValue" =>
           pure (.extremum (if name == "MinValue" then .minimum else .maximum)
             (← lowerEntitySource model rowGroup [.mk source none, .mk amount none]))

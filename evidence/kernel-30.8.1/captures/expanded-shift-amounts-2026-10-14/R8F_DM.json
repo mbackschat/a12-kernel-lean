@@ -1,0 +1,675 @@
+{
+ "header": {
+  "id": "R8F_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R8F_DM"
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Tot",
+        "name": "Tot",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/D2",
+        "name": "D2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DT",
+        "name": "DT",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DOut",
+        "name": "DOut",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DOut2",
+        "name": "DOut2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DOut3",
+        "name": "DOut3",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DOut4",
+        "name": "DOut4",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DTOut",
+        "name": "DTOut",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/NOut",
+        "name": "NOut",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -9999
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Rows",
+        "name": "Rows",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Rows/Amt",
+           "name": "Amt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/S",
+           "name": "S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/RD",
+           "name": "RD",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/B",
+           "name": "B",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          }
+         ],
+         "repeatability": 6
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf01",
+        "name": "Rf01",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f01",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf02",
+        "name": "Rf02",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f02",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, MaxValue(Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf03",
+        "name": "Rf03",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f03",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, MinValue(Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf04",
+        "name": "Rf04",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f04",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, FirstFilledValue(Rows*/Amt Having [Rows/S] == \"y\")) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf05",
+        "name": "Rf05",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f05",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfDifferentValues(Rows*/S Having [Rows/Amt] > 0)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf06",
+        "name": "Rf06",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f06",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfDifferentValues(Rows*/RD Having [Rows/Amt] > 0)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf07",
+        "name": "Rf07",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f07",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfDifferentValues(Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf08",
+        "name": "Rf08",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f08",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfFilledFields(Rows*/S Having [Rows/Amt] > 0)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf09",
+        "name": "Rf09",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f09",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfValueInFields(1 In Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf10",
+        "name": "Rf10",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f10",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfValueInFields(\"x\" In Rows*/S Having [Rows/Amt] > 0)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf11",
+        "name": "Rf11",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f11",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, NumberOfValueInFields(True In Rows*/B Having [Rows/Amt] > 0)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf14",
+        "name": "Rf14",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f14",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\") + 1) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf15",
+        "name": "Rf15",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f15",
+         "errorCondition": "FieldFilled(Tot) And AddHours(DT, Sum(Rows*/Amt Having [Rows/S] == \"x\")) > [DT]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf16",
+        "name": "Rf16",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f16",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt Having [Rows/Amt] > [$Tot])) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf17",
+        "name": "Rf17",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f17",
+         "errorCondition": "FieldFilled(Tot) And DifferenceInDays(AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\")), D2) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf18",
+        "name": "Rf18",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f18",
+         "errorCondition": "FieldFilled(Tot) And YearFromDate(AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\"))) > 2025",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf19",
+        "name": "Rf19",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f19",
+         "errorCondition": "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\") + Sum(Rows*/Amt)) > [D2]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf20",
+        "name": "Rf20",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "f20",
+         "errorCondition": "FieldFilled(Tot) And [D2] < AddDays(D, NumberOfFilledFields(Rows*/S Having [Rows/Amt] > 0, Rows*/RD Having [Rows/S] == \"x\"))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rr01",
+        "name": "Rr01",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "r01",
+         "errorCondition": "FieldFilled(Rows/Amt) And AddDays(Rows/RD, Sum(Rows*/Amt Having [Rows/S] == \"x\")) > [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rr02",
+        "name": "Rr02",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "r02",
+         "errorCondition": "FieldFilled(Rows/Amt) And AddDays(Rows/RD, Sum(Rows*/Amt Having [Rows/Amt] > [$Rows/Amt])) > [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CDOut",
+        "name": "CDOut",
+        "Computation": {
+         "computedFieldRelPath": "../DOut",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\"))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CDOut2",
+        "name": "CDOut2",
+        "Computation": {
+         "computedFieldRelPath": "../DOut2",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(D, NumberOfFilledFields(Rows*/S Having [Rows/Amt] > 0))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CDOut3",
+        "name": "CDOut3",
+        "Computation": {
+         "computedFieldRelPath": "../DOut3",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(D, NumberOfDifferentValues(Rows*/RD Having [Rows/Amt] > 0))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CNOut",
+        "name": "CNOut",
+        "Computation": {
+         "computedFieldRelPath": "../NOut",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\")), D2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CDOut4",
+        "name": "CDOut4",
+        "Computation": {
+         "computedFieldRelPath": "../DOut4",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(D, FirstFilledValue(Rows*/Amt Having [Rows/S] == \"y\"))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CDTOut",
+        "name": "CDTOut",
+        "Computation": {
+         "computedFieldRelPath": "../DTOut",
+         "computationAlternatives": [
+          {
+           "operation": "AddHours(DT, Sum(Rows*/Amt Having [Rows/S] == \"x\"))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

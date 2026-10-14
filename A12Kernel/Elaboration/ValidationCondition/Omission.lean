@@ -26,7 +26,16 @@ private def temporalAmountOmissionCount : HavingNumericAtomOf Temporal → Bool
 (FeldOperationUtil's count search); filter bodies are a separate reference channel. -/
 private def temporalOmissionCount (source : ScalarTemporalExpression model) : Bool :=
   (source.dependenciesWith (fun _ => []) (fun _ => []) (fun _ => [])
-    (fun atom => [temporalAmountOmissionCount atom])).any id
+    (fun atom => [temporalAmountOmissionCount atom]) (fun amount => [amount.isCount])).any id
+
+private def temporalFilteredAmounts (source : ScalarTemporalExpression model) :
+    List (CheckedFilteredShiftAmount model) :=
+  source.dependenciesWith (fun _ => []) (fun _ => []) (fun _ => []) (fun _ => []) (fun amount => [amount])
+
+/-- A filtered temporal extremum operand, whose filter reads have no omission projection yet. -/
+private def temporalExtremumHaving (source : ScalarTemporalExpression model) : Bool :=
+  (source.dependenciesWith (fun _ => []) (fun operands => [operands.filters.any Option.isSome])
+    (fun _ => []) (fun _ => []) (fun _ => [])).any id
 
 private def orderedOmissionCount : OrderedNumericValidationAtom model → Bool
   | .ordinary atom => scalarOmissionCount atom
@@ -36,6 +45,11 @@ private def orderedOmissionCount : OrderedNumericValidationAtom model → Bool
   | .filledFieldCount _ | .filledGroupCountMixed _ | .aggregate .distinctCount _
   | .tokenDistinctCount _ | .temporalDistinctCount _ => true
   | _ => false
+
+/-- The filtered amount's own count flag agrees with the ordered atom it carries. -/
+private theorem filteredAmount_isCount (amount : CheckedFilteredShiftAmount model) :
+    amount.isCount = orderedOmissionCount (.ofFiltered amount) := by
+  cases amount <;> (try rename_i op _; cases op) <;> rfl
 
 def upwardOmissionCount (isCount : Atom → Bool)
     (comparison : NumericComparisonOf Atom) : Bool :=
@@ -120,9 +134,11 @@ private def omissionLeafPointers (leaf : ValidationConditionLeaf model)
   | .scalarTemporal comparison =>
       if upwardTemporalOmissionCount comparison.operator
           (temporalOmissionCount comparison.left.core) (temporalOmissionCount comparison.right.core) then
-        if comparison.left.core.hasHaving || comparison.right.core.hasHaving then
+        if temporalExtremumHaving comparison.left.core || temporalExtremumHaving comparison.right.core then
           throw .filteredStarOperand
-        else pure []
+        else
+          (·.flatten) <$> (temporalFilteredAmounts comparison.left.core ++ temporalFilteredAmounts comparison.right.core).mapM
+            fun amount => orderedFilterPointers (.ofFiltered amount) environment
       else leaf.referencePointers environment inputs
   -- A VALUE firing's cluster can repair nothing by filling, so only an OMISSION firing counts.
   | .repetitionNotUnique source => source.firingPointers environment inputs (· == .omission)

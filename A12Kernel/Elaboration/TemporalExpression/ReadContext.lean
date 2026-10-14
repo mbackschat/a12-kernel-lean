@@ -42,4 +42,15 @@ def selectedCell (context : TemporalPartialReadContext model)
       pure (some (.value (cell, ← context.storedText row source.targetDeclaration.id cell)))
 
 end TemporalPartialReadContext
+
+/-- Evaluates a filtered shift amount at the row the caller's context binds. Only a route holding
+the checked document can supply it; the default refuses with a structural fault. A consumer that maps
+structural faults to unavailability still turns that refusal into UNKNOWN, so such routes must stay
+behind the `requiresAddressed` gate. -/
+abbrev FilteredShiftAmountReader (model : FlatModel) :=
+  CheckedFilteredShiftAmount model →
+    Except ScalarTemporalEvaluationFault (Except NumericValidationUnavailable NumericArithmeticOutcome)
+
+def FilteredShiftAmountReader.unavailable : FilteredShiftAmountReader model :=
+  fun _ => throw (.addressing (.checkedDocumentRequired []))
 end A12Kernel

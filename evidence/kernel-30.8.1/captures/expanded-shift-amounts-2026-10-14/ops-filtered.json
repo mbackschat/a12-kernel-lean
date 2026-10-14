@@ -1,0 +1,393 @@
+[
+ {
+  "id": "f01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, MaxValue(Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f03",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, MinValue(Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, FirstFilledValue(Rows*/Amt Having [Rows/S] == \"y\")) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f05",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfDifferentValues(Rows*/S Having [Rows/Amt] > 0)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f06",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfDifferentValues(Rows*/RD Having [Rows/Amt] > 0)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f07",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfDifferentValues(Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f08",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfFilledFields(Rows*/S Having [Rows/Amt] > 0)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f09",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfValueInFields(1 In Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f10",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfValueInFields(\"x\" In Rows*/S Having [Rows/Amt] > 0)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f11",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfValueInFields(True In Rows*/B Having [Rows/Amt] > 0)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f12",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, SumOfProducts(Rows*/Amt Having [Rows/S] == \"x\", Rows*/Amt)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f12b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f12b",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, SumOfProducts(Rows*/Amt Having [Rows/S] == \"x\", Rows*/Amt Having [Rows/S] == \"x\")) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f13",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, NumberOfFilledGroups(Rows* Having [Rows/Amt] > 0)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f14",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\") + 1) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f15",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddHours(DT, Sum(Rows*/Amt Having [Rows/S] == \"x\")) > [DT]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f16",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt Having [Rows/Amt] > [$Tot])) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f17",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And DifferenceInDays(AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\")), D2) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f18",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And YearFromDate(AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\"))) > 2025",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f19",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And AddDays(D, Sum(Rows*/Amt Having [Rows/S] == \"x\") + Sum(Rows*/Amt)) > [D2]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f20",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And [D2] < AddDays(D, NumberOfFilledFields(Rows*/S Having [Rows/Amt] > 0, Rows*/RD Having [Rows/S] == \"x\"))",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "r01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r01",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And AddDays(Rows/RD, Sum(Rows*/Amt Having [Rows/S] == \"x\")) > [D]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "r02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r02",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Rows/Amt) And AddDays(Rows/RD, Sum(Rows*/Amt Having [Rows/Amt] > [$Rows/Amt])) > [D]",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

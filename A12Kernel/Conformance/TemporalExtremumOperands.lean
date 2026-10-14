@@ -119,8 +119,8 @@ example :
         some (.value (.date (value)) true) := by native_decide
 
 example :
-    let amount : AuthoredNumericExpr (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression) :=
-      .atom (.field { origin := .inner, field := { base := .relative 0, groups := [], field := "Amount" } })
+    let amount : AuthoredNumericExpr (Sum (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression) SurfaceFilteredShiftAmount) :=
+      .atom (.inl (.field { origin := .inner, field := { base := .relative 0, groups := [], field := "Amount" } }))
     let missing : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
     let poisoned (cause : FormalCause) : CheckedCell :=
       { rawPresent := true, parsed := none, findings := [cause] }

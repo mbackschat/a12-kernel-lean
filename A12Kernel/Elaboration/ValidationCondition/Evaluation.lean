@@ -126,7 +126,8 @@ private def evalConstructedDateAddressed
   let selected := { (document.indexedComputationContextAt context.outer) with
     read := fun field => ((cells.find? (·.1 == field)).map (·.2)).getD malformedCheckedCell
     world := context.scalar.fields.world }
-  let observation ← (source.evaluateScalarValidity .validation selected).mapError (fun _ => .temporalUnavailable)
+  let observation ← (source.evaluateScalarValidity .validation selected
+    (filtered := OrderedNumericValidationAtom.filteredAmountReader context)).mapError (fun _ => .temporalUnavailable)
   pure ((observation.validityVerdict operation).toOption.getD .unknown)
 
 /-- Partial relevance is independent of String omission: an unavailable operand never becomes
@@ -471,6 +472,7 @@ def evalFirstFilledComparisonAddressedResult (context : AddressedValidationEvalu
     Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) Verdict :=
   match context.input with
   | .checked document => comparison.evaluateFull document context.outer context.scalar.fields
+      (OrderedNumericValidationAtom.filteredAmountReader context)
   | .legacy _ _ | .partialView _ _ => .error (.inl (.checkedDocumentRequired []))
 
 /-- Evaluate one addressed leaf through the same relevance rules. Ordered numeric and starred group-list sources preserve structural addressing failures; direct scalar/group leaves remain the exact pure evaluator lifted into that channel. -/

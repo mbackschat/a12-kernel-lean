@@ -346,7 +346,8 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
         excludesTarget := excludes
         run context := do
           let result ← match expression.evalResult .computation
-              { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
+              { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row
+              (filtered := context.filteredAmountReader model) with
             | .ok result => pure result
             | .error (.addressing error) =>
                 if error.isFilterValueFailure then return (.valueError .time, DocumentComputationReadBack.poison)
@@ -371,7 +372,8 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
         excludesTarget := excludes
         run context := do
           let result ← match expression.evalResult .computation
-              { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
+              { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row
+              (filtered := context.filteredAmountReader model) with
             | .ok result => pure result
             | .error (.addressing error) =>
                 if error.isFilterValueFailure then return (.valueError .dateTime, DocumentComputationReadBack.poison)
@@ -396,7 +398,8 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
         excludesTarget := excludes
         run context := do
           let result ← match expression.evalResult .computation
-              { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row with
+              { read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row
+              (filtered := context.filteredAmountReader model) with
             | .ok result => pure result
             | .error (.addressing error) =>
                 if error.isFilterValueFailure then return (.valueError .fullDate, DocumentComputationReadBack.poison)

@@ -572,6 +572,7 @@ def evalWithTemporalResult (condition : ValidationCondition model)
       fun _ => pure .unknown)
     (customResult : String → Except Error Verdict := fun name =>
       pure ((context.customResult name).toOption.getD .unknown))
+    (temporalFiltered : FilteredShiftAmountReader model := .unavailable)
     (temporalAddressed : CheckedScalarTemporalComparison model → Except Error (Option ComputationFillContext × Env) :=
       fun _ => pure (none, []))
     (temporalPartialResult? : ValidationConditionLeaf model → Option (Except (Sum Error ScalarTemporalEvaluationFault) Verdict) :=
@@ -587,7 +588,7 @@ def evalWithTemporalResult (condition : ValidationCondition model)
             if comparison.fieldIds.all isRelevant then do
               let fields ← (temporalFields comparison).mapError Sum.inl
               let (addressed, row) ← (temporalAddressed comparison).mapError Sum.inl
-              (comparison.evalResult .validation fields addressed row).mapError Sum.inr
+              (comparison.evalResult .validation fields addressed row (filtered := temporalFiltered)).mapError Sum.inr
             else pure .unknown
         | leaf@(.orderedNumeric _ comparison) =>
             if comparison.hasTemporalExpression then numericResult comparison
@@ -692,15 +693,6 @@ private def addressedTemporalContext (context : AddressedValidationEvaluationCon
   | .checked document => pure (some document.indexedComputationFillContext, context.outer)
   | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired [])
 
-/-- A legal extensible String can fail numeric conversion at runtime; the generated rule
-handler catches that failure outside the Boolean tree (spec/05 §3), unlike a missing host input. -/
-def addressedValueFailure? : CheckedAddressingError → Option ScalarTemporalEvaluationFault
-  | .constructedDate (.stringNotConvertible _ _) => some .componentNumberInvalid
-  | .temporalValueFailure => some .dateTimeLabelUnresolved
-  | .typeValidityValueFailure => some (.addressing .typeValidityValueFailure)
-  | .stringExpression .emptyPattern => some (.addressing (.stringExpression .emptyPattern))
-  | _ => none
-
 /-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. Truth testing and conditional classification retain their separate failure boundaries. -/
 def evalAddressed (condition : ValidationCondition model)
     (context : AddressedValidationEvaluationContext model) :
@@ -709,6 +701,7 @@ def evalAddressed (condition : ValidationCondition model)
     (fun leaf => leaf.evalAddressed context) (.error .temporalUnavailable)
     (addressedTemporalFields context)
     (temporalAddressed := addressedTemporalContext context)
+    (temporalFiltered := OrderedNumericValidationAtom.filteredAmountReader context)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
     (leafRuntimeFault? := addressedValueFailure?)
     (firstFilledResult := ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context)
@@ -724,6 +717,7 @@ def evalAddressedWithRepetitionNotUnique
     (fun leaf => leaf.evalAddressedWithRepetitionNotUnique context result?) (.error .temporalUnavailable)
     (addressedTemporalFields context)
     (temporalAddressed := addressedTemporalContext context)
+    (temporalFiltered := OrderedNumericValidationAtom.filteredAmountReader context)
     (numericResult := fun comparison => comparison.evalAddressedResult context)
     (leafRuntimeFault? := addressedValueFailure?)
     (firstFilledResult := ValidationConditionLeaf.evalFirstFilledComparisonAddressedResult context)
@@ -742,6 +736,7 @@ def evalAddressedWithRepetitionNotUniqueResult
     (fun comparison => (addressedTemporalFields context comparison).mapError Sum.inl)
     (fun fault => .error (.inr fault))
     (temporalAddressed := fun comparison => (addressedTemporalContext context comparison).mapError Sum.inl)
+    (temporalFiltered := OrderedNumericValidationAtom.filteredAmountReader context)
     (numericResult := fun comparison => (comparison.evalAddressedResult context).mapError fun
       | .inl error => .inl (.inl error)
       | .inr fault => .inr fault)

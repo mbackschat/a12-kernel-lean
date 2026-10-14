@@ -18,19 +18,41 @@ def readScalarTemporalAmount (context : FlatContext) (phase : Phase) :
       | .field source => (context.resolveNumberComparisonOperandAt phase source).toValidationArithmetic
       | _ => .error .groupState
 
+private def CorrelationGroupReads.mapError (lift : Error → Other)
+    (groups : CorrelationGroupReads Error) : CorrelationGroupReads Other where
+  validation environment reference := (groups.validation environment reference).mapError lift
+  computation environment operand := (groups.computation environment operand).mapError lift
+  fieldExtent path environment boundCount field :=
+    (groups.fieldExtent path environment boundCount field).mapError lift
+  groupExtent? := groups.groupExtent?.map fun extent path environment selection =>
+    (extent path environment selection).mapError lift
+
 /-- Direct amount reads keep partial unavailability outside the cell's formal findings;
-`FirstFilledValue` can therefore hide an unread suffix (spec/05 selection and spec/10 relevance). -/
+`FirstFilledValue` can therefore hide an unread suffix (spec/05 selection and spec/10 relevance).
+
+A starred, group or group-count amount walks the addressed document's topology, as the same atom
+does under `Having`: a row other than the bound one reads through the addressed view, while the
+bound row keeps the caller's own cell view and its overrides. A partial read supplies no topology,
+so an expression that needs it fails structurally at its first extent read. -/
 def scalarAmountReadContext (context : ScalarComputationContext)
     (partialRead? : Option (TemporalPartialReadContext model)) :
-    ResolvingCorrelationContext (Option ScalarTemporalEvaluationFault) := {
-  read := fun _ field => match partialRead? with
-    | none => pure (context.read field)
-    | some partialRead => do
+    ResolvingCorrelationContext (Option ScalarTemporalEvaluationFault) :=
+  let walked? (environment : Env) : Option ComputationFillContext :=
+    if partialRead?.isNone && environment != context.row then context.addressed else none
+  {
+  read := fun environment field => match partialRead?, walked? environment with
+    | none, some addressed => pure (addressed.read environment field)
+    | none, none => pure (context.read field)
+    | some partialRead, _ => do
         match ← (partialRead.readCell context.row field).mapError some with
         | some cell => pure cell
         | none => throw none
-  storedText := fun _ => context.storedText
-  numberText := fun _ => context.numberText
+  storedText := fun environment => match walked? environment with
+    | some addressed => addressed.storedText environment
+    | none => context.storedText
+  numberText := fun environment => match walked? environment with
+    | some addressed => addressed.numberText environment
+    | none => context.numberText
   world := context.world
   bindingError := fun error => some (.addressing (.environment error))
   stringExpressionUnavailable := some (.addressing (.addressing .stringExpressionUnavailable))
@@ -39,7 +61,10 @@ def scalarAmountReadContext (context : ScalarComputationContext)
   worldUnavailable := some (.addressing .worldUnavailable)
   typeValidityValueFailure := some (.addressing .typeValidityValueFailure)
   groupUnavailable := fun path => some (.addressing (.checkedDocumentRequired path))
-  storedTextUnavailable := fun field => some (.addressing (.addressing (.storedTextUnavailable field))) }
+  storedTextUnavailable := fun field => some (.addressing (.addressing (.storedTextUnavailable field)))
+  groups := if partialRead?.isSome then none else context.addressed.map fun addressed =>
+    (model.correlationGroupsWithRead addressed.document fun environment field =>
+      pure (addressed.read environment field)).mapError (some ∘ .addressing) }
 
 def resolvedScalarDate (profile : ModelZone.ConcreteProfile) (date : FullDate) :
     Option DateValue := do

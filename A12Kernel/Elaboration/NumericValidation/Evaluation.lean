@@ -89,6 +89,15 @@ theorem ValidationEvaluationContext.resolveNumericValidationAtom_withoutGroups
         fields.resolveNumericValidationAtom atom := by
   rfl
 
+/-- A legal extensible String can fail numeric conversion at runtime; the generated rule
+handler catches that failure outside the Boolean tree (spec/05 §3), unlike a missing host input. -/
+def ValidationCondition.addressedValueFailure? : CheckedAddressingError → Option ScalarTemporalEvaluationFault
+  | .constructedDate (.stringNotConvertible _ _) => some .componentNumberInvalid
+  | .temporalValueFailure => some .dateTimeLabelUnresolved
+  | .typeValidityValueFailure => some (.addressing .typeValidityValueFailure)
+  | .stringExpression .emptyPattern => some (.addressing (.stringExpression .emptyPattern))
+  | _ => none
+
 namespace OrderedNumericValidationAtom
 
 /-- Resolve one nonempty direct Number field list in order, gating each reached source before its checked validation read. This proof-visible worker is used only by the relevance-aware numeric atom. -/
@@ -304,8 +313,9 @@ private def readValidationGroupCountOperands
           | none => pure none
           | some tail => pure (some (readings ++ tail))
 
-/-- Resolve one model-certified numeric source while preserving structural addressing failure outside semantic unavailability. -/
-def resolveAddressed (atom : OrderedNumericValidationAtom model)
+/-- `filtered` evaluates a temporal operand's filtered shift amounts; `resolveAddressed` supplies it. -/
+private def resolveAddressedWith (filtered : FilteredShiftAmountReader model)
+    (atom : OrderedNumericValidationAtom model)
     (context : AddressedValidationEvaluationContext model) :
     Except CheckedAddressingError
       (Except NumericValidationUnavailable NumericArithmeticOutcome) := do
@@ -325,7 +335,8 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
   | .temporalExpression source => do
       let fields ← temporalNumericFields source context
       let addressed ← temporalNumericAddressed source context
-      (source.evalResult .validation fields addressed context.outer).mapError (fun _ => .temporalUnavailable)
+      (source.evalResult .validation fields addressed context.outer (filtered := filtered)).mapError
+        (fun _ => .temporalUnavailable)
   | .ordinary source =>
       if source.allRelevant (addressedDirectRelevant context) then
         match source, context.input with
@@ -449,6 +460,19 @@ def resolveAddressed (atom : OrderedNumericValidationAtom model)
           (run.evaluate (world := context.scalar.fields.world) document context.outer).map NumericOperand.toValidationArithmetic
       | .legacy _ _ | .partialView _ _ => pure (.error .groupState)
 
+/-- A filtered shift amount is one ordered atom at the same row, which is never itself temporal. -/
+def filteredAmountReader (context : AddressedValidationEvaluationContext model) :
+    FilteredShiftAmountReader model :=
+  fun source => (resolveAddressedWith .unavailable (ofFiltered source) context).mapError fun error =>
+    (ValidationCondition.addressedValueFailure? error).getD (.addressing error)
+
+/-- Resolve one model-certified numeric source while preserving structural addressing failure outside semantic unavailability. -/
+def resolveAddressed (atom : OrderedNumericValidationAtom model)
+    (context : AddressedValidationEvaluationContext model) :
+    Except CheckedAddressingError
+      (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
+  resolveAddressedWith (filteredAmountReader context) atom context
+
 /-- Addressed temporal extraction keeps cell addressing and temporal execution as separate effects. -/
 def resolveAddressedResult (atom : OrderedNumericValidationAtom model)
     (context : AddressedValidationEvaluationContext model) :
@@ -458,7 +482,7 @@ def resolveAddressedResult (atom : OrderedNumericValidationAtom model)
   | .temporalExpression source =>
       let fields ← (temporalNumericFields source context).mapError Sum.inl
       let addressed ← (temporalNumericAddressed source context).mapError Sum.inl
-      (source.evalResult .validation fields addressed context.outer).mapError Sum.inr
+      (source.evalResult .validation fields addressed context.outer (filtered := filteredAmountReader context)).mapError Sum.inr
   | _ => (atom.resolveAddressed context).mapError Sum.inl
 
 end OrderedNumericValidationAtom

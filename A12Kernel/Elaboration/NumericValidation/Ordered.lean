@@ -115,7 +115,7 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
     field dependencies. Field-backed atoms require addressing when a checked declaration repeats. -/
 def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .indexed _ | .indexedString _ => true
-  | .temporalExpression source => source.fieldIds.any fun field =>
+  | .temporalExpression source => source.requiresAddressed || source.fieldIds.any fun field =>
       (model.lookupUniqueId field).toOption.any (fun declaration => !declaration.repeatableScope.isEmpty)
   | .ordinary (.boundCurrentRepetition _) => true
   | .ordinary (.filledGroupCount groups) =>
@@ -239,6 +239,28 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
   | .filledFieldCount source => source.hasHaving
   | .temporalExpression source => source.hasHaving
   | .indexed _ | .indexedString _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
+
+/-- Each filtered shift amount is exactly one ordered atom, so the ordinary carriers' evaluation,
+references and omission responsibility serve it unchanged. -/
+def ofFiltered : CheckedFilteredShiftAmount model → OrderedNumericValidationAtom model
+  | .aggregate op source => .aggregate op source
+  | .firstFilled source => .firstFilled source
+  | .valueCount expected source => .valueCount expected source
+  | .tokenValueCount source => .tokenValueCount source
+  | .booleanValueCount source => .booleanValueCount source
+  | .tokenDistinctCount source => .tokenDistinctCount source
+  | .temporalDistinctCount run => .temporalDistinctCount run
+  | .filledFieldCount source => .filledFieldCount source
+
+/-- The temporal dependency traversal reads a filtered amount's own projections; they must agree
+with the ordered atom the evaluator and the reference projection use. -/
+theorem ofFiltered_referencesField (source : CheckedFilteredShiftAmount model) (field : FieldId) :
+    (ofFiltered source).referencesField field = source.referencesField field := by
+  cases source <;> rfl
+
+theorem ofFiltered_summary (source : CheckedFilteredShiftAmount model) :
+    (ofFiltered source).summary = source.summary := by
+  cases source <;> rfl
 
 end OrderedNumericValidationAtom
 

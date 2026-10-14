@@ -1,0 +1,731 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R8_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-14T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "base",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "d06",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "o02",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/DR",
+        "P/RG/R1",
+        "P/RG/R2",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "x02",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/Amt",
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/Amt",
+        "P/D",
+        "P/D2"
+       ]
+      },
+      {
+       "code": "x04",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/Amt",
+        "/P[1]/Rows[0]/RD",
+        "/P[1]/Rows[0]/S",
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "x07",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/Amt",
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/Amt",
+        "P/D",
+        "P/D2"
+       ]
+      },
+      {
+       "code": "x09",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/D",
+        "P/D2",
+        "P/G/GA",
+        "P/G/GB",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "x12",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/Amt",
+        "P/DT",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/DOut",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-05"
+       },
+       {
+        "field": "P/DOut2",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-03"
+       },
+       {
+        "field": "P/DOut3",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-04"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "d06",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "o02",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/DR",
+        "P/RG/R1",
+        "P/RG/R2",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "x02",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/Amt",
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/Amt",
+        "P/D",
+        "P/D2"
+       ]
+      },
+      {
+       "code": "x04",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/Amt",
+        "/P[1]/Rows[0]/RD",
+        "/P[1]/Rows[0]/S",
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "x07",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/Amt",
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/Amt",
+        "P/D",
+        "P/D2"
+       ]
+      },
+      {
+       "code": "x09",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/D",
+        "P/D2",
+        "P/G/GA",
+        "P/G/GB",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "x12",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/Amt",
+        "P/DT",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/DOut",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-05"
+       },
+       {
+        "field": "P/DOut2",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-03"
+       },
+       {
+        "field": "P/DOut3",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-04"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "sparse",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "d03",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/DT",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "d05",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/DT",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "d06",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/DOut",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-01"
+       },
+       {
+        "field": "P/DOut2",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-01"
+       },
+       {
+        "field": "P/DOut3",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-01"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "d03",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/DT",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "d05",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/DT",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "d06",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/DOut",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-01"
+       },
+       {
+        "field": "P/DOut2",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-01"
+       },
+       {
+        "field": "P/DOut3",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-01"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "bad",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "d06",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichTrennerFehlt",
+       "field": "P/RG/R1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/RG/R1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/DT"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/Rows/RD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/RD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/G/GA",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/G/GA"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/Rows/Amt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/Amt"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/DOut3",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-02"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "P/Rows/RD",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/RD"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "P/G/GA",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/G/GA"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "P/Rows/Amt",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/Amt"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "d06",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichTrennerFehlt",
+       "field": "P/RG/R1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/RG/R1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/DT"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/Rows/RD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/RD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/G/GA",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/G/GA"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/Rows/Amt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/Amt"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/DOut3",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-02"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "P/Rows/RD",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/RD"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "P/G/GA",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/G/GA"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "P/Rows/Amt",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/Amt"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "d06",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "P/D",
+        "P/D2"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "d06",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/D",
+        "P/D2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "P/D",
+        "P/D2"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  }
+ ]
+}

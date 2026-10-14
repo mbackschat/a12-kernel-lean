@@ -54,6 +54,7 @@ theorem numericComputationEvaluationContext_filledGroupCount_ignoresIteration
         simp [NumericComputationEvaluationContext.readGroupCountOperand,
           NumericComputationEvaluationContext.readGroupContent, head]
   simp only [NumericComputationEvaluationContext.readCheckedNumericComputationAtom,
+    NumericComputationEvaluationContext.readCheckedNumericComputationAtomWith,
     ScalarComputationContext.readNumericComputationAtomWith,
     NumericComputationEvaluationContext.readFilledGroupCount, readings groups unbound]
 
@@ -240,6 +241,7 @@ theorem readCheckedNumericComputationAtom_filledGroupCount_eq_mixed
       context.readCheckedNumericComputationAtom (model := model)
         (.filledGroupCountMixed (groups.map .fixed)) := by
   simp [NumericComputationEvaluationContext.readCheckedNumericComputationAtom,
+    NumericComputationEvaluationContext.readCheckedNumericComputationAtomWith,
     ScalarComputationContext.readNumericComputationAtomWith,
     NumericComputationEvaluationContext.readFilledGroupCount, List.mapM_map,
     Function.comp_def]
