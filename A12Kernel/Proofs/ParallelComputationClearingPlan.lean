@@ -24,15 +24,15 @@ theorem checkedParallelNumericClearingPlan_wellFormed
     plan.operandGroup, plan.targetScope, plan.targetScopeUnique,
     plan.operandScope⟩
 
-theorem parallelNumericTargetRouteEnvironments_cells_irrelevant
-    (route : CheckedParallelNumericTargetRoute model)
+theorem parallelTargetJoinEnvironments_cells_irrelevant
+    (join : CheckedParallelTargetJoin model)
     (left right : CheckedDocument model)
     (rows :
       left.source.instantiatedRows =
         right.source.instantiatedRows) :
-    route.targetEnvironments left =
-      route.targetEnvironments right := by
-  simp [CheckedParallelNumericTargetRoute.targetEnvironments,
+    join.targetEnvironments left =
+      join.targetEnvironments right := by
+  simp [CheckedParallelTargetJoin.targetEnvironments,
     CheckedDocument.actualRowEnvironments, FlatModel.actualRowEnvironments, rows]
 
 /-- Target-instance enumeration depends on checked physical row topology, never on placed target-cell payloads. -/
@@ -44,17 +44,17 @@ theorem parallelNumericTargetEnvironments_cells_irrelevant
         right.source.instantiatedRows) :
     plan.targetEnvironments left =
       plan.targetEnvironments right := by
-  exact parallelNumericTargetRouteEnvironments_cells_irrelevant
-    plan.asTargetRoute left right rows
+  exact parallelTargetJoinEnvironments_cells_irrelevant
+    plan.asTargetRoute.join left right rows
 
-theorem parallelNumericTargetRouteInvalidIndexMarks_noTargets
-    (route : CheckedParallelNumericTargetRoute model)
+theorem parallelTargetJoinInvalidIndexMarks_noTargets
+    (join : CheckedParallelTargetJoin model)
     (preliminary : CheckedIndexPreliminary model)
     (side : ParallelComputationIndexSide)
     (empty :
-      route.targetEnvironments preliminary.base = .ok []) :
-    route.invalidIndexMarks preliminary side = .ok [] := by
-  unfold CheckedParallelNumericTargetRoute.invalidIndexMarks
+      join.targetEnvironments preliminary.base = .ok []) :
+    join.invalidIndexMarks preliminary side = .ok [] := by
+  unfold CheckedParallelTargetJoin.invalidIndexMarks
   rw [empty]
   rfl
 
@@ -68,23 +68,23 @@ private theorem exceptMapM_const_none {α β ε : Type} {f : α → Except ε (O
         exceptMapM_const_none (fun b member => h b (List.mem_cons_of_mem a member))]
       rfl
 
-/-- Every successful coverage entry retains the checked route's target field. -/
-theorem parallelNumericTargetRoute_coverageWithMarks_owns_target
-    (route : CheckedParallelNumericTargetRoute model)
+/-- Every successful coverage entry retains the checked join's target field. -/
+theorem parallelTargetJoin_coverageWithMarks_owns_target
+    (join : CheckedParallelTargetJoin model)
     (preliminary : CheckedIndexPreliminary model)
     (targetMarks :
-      List (ParallelComputationMark (route.markPlanFor .target)))
+      List (ParallelComputationMark (join.markPlanFor .target)))
     (operandMarks :
-      List (ParallelComputationMark (route.markPlanFor .operand)))
+      List (ParallelComputationMark (join.markPlanFor .operand)))
     (coverage : List ParallelNumericTargetCoverage)
     (covered :
-      route.targetCoverageWithMarks preliminary targetMarks operandMarks =
+      join.targetCoverageWithMarks preliminary targetMarks operandMarks =
         .ok coverage) :
     ∀ target ∈ coverage,
-      target.address.field = route.targetField := by
-  unfold CheckedParallelNumericTargetRoute.targetCoverageWithMarks at covered
+      target.address.field = join.targetField := by
+  unfold CheckedParallelTargetJoin.targetCoverageWithMarks at covered
   cases environments :
-      route.targetEnvironments preliminary.base with
+      join.targetEnvironments preliminary.base with
   | error error =>
       simp [environments, Except.mapError, Bind.bind,
         Except.bind] at covered
@@ -93,26 +93,26 @@ theorem parallelNumericTargetRoute_coverageWithMarks_owns_target
           targetEnvironments.mapM (fun environment => do
             let path ←
               environment.pathForScope
-                  route.targetDeclaration.repeatableScope
+                  join.targetDeclaration.repeatableScope
                 |>.mapError
                   ParallelNumericTargetCoverageError.targetEnvironment
             let coveredByTarget ←
-              (route.markPlanFor .target).coversAny
+              (join.markPlanFor .target).coversAny
                   environment targetMarks
                 |>.mapError
                   ParallelNumericTargetCoverageError.targetEnvironment
             let coveredByOperand ←
-              (route.markPlanFor .operand).coversAny
+              (join.markPlanFor .operand).coversAny
                   environment operandMarks
                 |>.mapError
                   ParallelNumericTargetCoverageError.targetEnvironment
             pure ({
               environment
-              address := { field := route.targetField, path }
+              address := { field := join.targetField, path }
               indexInvalid := coveredByTarget || coveredByOperand
               overLimit :=
                 preliminary.base.environmentOverLimit
-                  route.targetDeclaration.repeatableScope environment
+                  join.targetDeclaration.repeatableScope environment
             } : ParallelNumericTargetCoverage)) = .ok coverage := by
         simpa [environments, Except.mapError, Bind.bind,
           Except.bind] using covered
@@ -120,20 +120,20 @@ theorem parallelNumericTargetRoute_coverageWithMarks_owns_target
       intro environment _ target executed
       cases path :
           environment.pathForScope
-            route.targetDeclaration.repeatableScope with
+            join.targetDeclaration.repeatableScope with
       | error error =>
           simp [path, Except.mapError, Bind.bind, Except.bind]
             at executed
       | ok addressPath =>
           cases targetCovered :
-              (route.markPlanFor .target).coversAny
+              (join.markPlanFor .target).coversAny
                 environment targetMarks with
           | error error =>
               simp [path, targetCovered, Except.mapError,
                 Bind.bind, Except.bind] at executed
           | ok coveredByTarget =>
               cases operandCovered :
-                  (route.markPlanFor .operand).coversAny
+                  (join.markPlanFor .operand).coversAny
                     environment operandMarks with
               | error error =>
                   simp [path, targetCovered, operandCovered,
@@ -145,22 +145,22 @@ theorem parallelNumericTargetRoute_coverageWithMarks_owns_target
                   cases executed
                   rfl
 
-/-- Successful route coverage contains each exact target address at most once. -/
-theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
-    (route : CheckedParallelNumericTargetRoute model)
+/-- Successful join coverage contains each exact target address at most once. -/
+theorem parallelTargetJoin_coverageWithMarks_addresses_nodup
+    (join : CheckedParallelTargetJoin model)
     (preliminary : CheckedIndexPreliminary model)
     (targetMarks :
-      List (ParallelComputationMark (route.markPlanFor .target)))
+      List (ParallelComputationMark (join.markPlanFor .target)))
     (operandMarks :
-      List (ParallelComputationMark (route.markPlanFor .operand)))
+      List (ParallelComputationMark (join.markPlanFor .operand)))
     (coverage : List ParallelNumericTargetCoverage)
     (covered :
-      route.targetCoverageWithMarks preliminary targetMarks operandMarks =
+      join.targetCoverageWithMarks preliminary targetMarks operandMarks =
         .ok coverage) :
     (coverage.map (·.address)).Nodup := by
-  unfold CheckedParallelNumericTargetRoute.targetCoverageWithMarks at covered
+  unfold CheckedParallelTargetJoin.targetCoverageWithMarks at covered
   cases environmentsResult :
-      route.targetEnvironments preliminary.base with
+      join.targetEnvironments preliminary.base with
   | error error =>
       simp [environmentsResult, Except.mapError, Bind.bind,
         Except.bind] at covered
@@ -173,52 +173,52 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
               ParallelNumericTargetCoverage := fun environment => do
         let path ←
           environment.pathForScope
-              route.targetDeclaration.repeatableScope
+              join.targetDeclaration.repeatableScope
             |>.mapError
               ParallelNumericTargetCoverageError.targetEnvironment
         let coveredByTarget ←
-          (route.markPlanFor .target).coversAny
+          (join.markPlanFor .target).coversAny
               environment targetMarks
             |>.mapError
               ParallelNumericTargetCoverageError.targetEnvironment
         let coveredByOperand ←
-          (route.markPlanFor .operand).coversAny
+          (join.markPlanFor .operand).coversAny
               environment operandMarks
             |>.mapError
               ParallelNumericTargetCoverageError.targetEnvironment
         pure {
           environment
-          address := { field := route.targetField, path }
+          address := { field := join.targetField, path }
           indexInvalid := coveredByTarget || coveredByOperand
           overLimit :=
             preliminary.base.environmentOverLimit
-              route.targetDeclaration.repeatableScope environment
+              join.targetDeclaration.repeatableScope environment
         }
       have mapped : environments.mapM action = .ok coverage := by
         change
           environments.mapM (fun environment => do
             let path ←
               environment.pathForScope
-                  route.targetDeclaration.repeatableScope
+                  join.targetDeclaration.repeatableScope
                 |>.mapError
                   ParallelNumericTargetCoverageError.targetEnvironment
             let coveredByTarget ←
-              (route.markPlanFor .target).coversAny
+              (join.markPlanFor .target).coversAny
                   environment targetMarks
                 |>.mapError
                   ParallelNumericTargetCoverageError.targetEnvironment
             let coveredByOperand ←
-              (route.markPlanFor .operand).coversAny
+              (join.markPlanFor .operand).coversAny
                   environment operandMarks
                 |>.mapError
                   ParallelNumericTargetCoverageError.targetEnvironment
             pure ({
               environment
-              address := { field := route.targetField, path }
+              address := { field := join.targetField, path }
               indexInvalid := coveredByTarget || coveredByOperand
               overLimit :=
                 preliminary.base.environmentOverLimit
-                  route.targetDeclaration.repeatableScope environment
+                  join.targetDeclaration.repeatableScope environment
             } : ParallelNumericTargetCoverage)) =
               .ok coverage
         exact covered
@@ -227,26 +227,26 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
             action environment = .ok target →
               target.environment = environment ∧
                 environment.pathForScope
-                    route.targetDeclaration.repeatableScope =
+                    join.targetDeclaration.repeatableScope =
                   .ok target.address.path := by
         intro environment member target executed
         unfold action at executed
         cases pathResult :
             environment.pathForScope
-              route.targetDeclaration.repeatableScope with
+              join.targetDeclaration.repeatableScope with
         | error error =>
             simp [pathResult, Except.mapError, Bind.bind,
               Except.bind] at executed
         | ok path =>
             cases targetResult :
-                (route.markPlanFor .target).coversAny
+                (join.markPlanFor .target).coversAny
                   environment targetMarks with
             | error error =>
                 simp [pathResult, targetResult, Except.mapError,
                   Bind.bind, Except.bind] at executed
             | ok targetCovered =>
                 cases operandResult :
-                    (route.markPlanFor .operand).coversAny
+                    (join.markPlanFor .operand).coversAny
                       environment operandMarks with
                 | error error =>
                     simp [pathResult, targetResult, operandResult,
@@ -270,13 +270,13 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
       have pathsOwned :
           ∀ target ∈ coverage,
             target.environment.pathForScope
-                route.targetDeclaration.repeatableScope =
+                join.targetDeclaration.repeatableScope =
               .ok target.address.path := by
         apply exceptMapM_all_of_step
           action
           (fun target =>
             target.environment.pathForScope
-                route.targetDeclaration.repeatableScope =
+                join.targetDeclaration.repeatableScope =
               .ok target.address.path)
           environments coverage
         · intro environment member target executed
@@ -290,7 +290,7 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
         rw [environmentProjection]
         exact checkedDocument_actualRowEnvironments_nodup
           preliminary.base
-          route.targetDeclaration.repeatableScope
+          join.targetDeclaration.repeatableScope
           environments environmentsResult
       rw [List.nodup_iff_pairwise_ne, List.pairwise_map]
       rw [List.nodup_iff_pairwise_ne, List.pairwise_map]
@@ -310,13 +310,13 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
       have leftLevels :=
         checkedDocument_actualRowEnvironment_scope
           preliminary.base
-          route.targetDeclaration.repeatableScope
+          join.targetDeclaration.repeatableScope
           environments environmentsResult
           left.environment leftEnvironmentMember
       have rightLevels :=
         checkedDocument_actualRowEnvironment_scope
           preliminary.base
-          route.targetDeclaration.repeatableScope
+          join.targetDeclaration.repeatableScope
           environments environmentsResult
           right.environment rightEnvironmentMember
       have addressPathsEqual :
@@ -325,14 +325,14 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
       have leftPath :=
         env_pathForScope_complete_nodup
           left.environment
-          route.targetDeclaration.repeatableScope
-          left.address.path leftLevels route.targetScopeUnique
+          join.targetDeclaration.repeatableScope
+          left.address.path leftLevels join.targetScopeUnique
           (pathsOwned left leftMember)
       have rightPath :=
         env_pathForScope_complete_nodup
           right.environment
-          route.targetDeclaration.repeatableScope
-          right.address.path rightLevels route.targetScopeUnique
+          join.targetDeclaration.repeatableScope
+          right.address.path rightLevels join.targetScopeUnique
           (pathsOwned right rightMember)
       have valuesEqual :
           left.environment.map Prod.snd =
@@ -352,55 +352,55 @@ theorem parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
           simpa [List.unzip_eq_map] using
             List.zip_unzip right.environment
 
-/-- Deriving the marks internally cannot change the route-owned target field of successful coverage. -/
-theorem parallelNumericTargetRoute_coverage_owns_target
-    (route : CheckedParallelNumericTargetRoute model)
+/-- Deriving the marks internally cannot change the join-owned target field of successful coverage. -/
+theorem parallelTargetJoin_coverage_owns_target
+    (join : CheckedParallelTargetJoin model)
     (preliminary : CheckedIndexPreliminary model)
     (coverage : List ParallelNumericTargetCoverage)
-    (covered : route.targetCoverage preliminary = .ok coverage) :
+    (covered : join.targetCoverage preliminary = .ok coverage) :
     ∀ target ∈ coverage,
-      target.address.field = route.targetField := by
-  unfold CheckedParallelNumericTargetRoute.targetCoverage at covered
+      target.address.field = join.targetField := by
+  unfold CheckedParallelTargetJoin.targetCoverage at covered
   cases targetMarksResult :
-      route.invalidIndexMarks preliminary .target with
+      join.invalidIndexMarks preliminary .target with
   | error error =>
       simp [targetMarksResult, Except.mapError, Bind.bind, Except.bind]
         at covered
   | ok actualTargetMarks =>
       cases operandMarksResult :
-          route.invalidIndexMarks preliminary .operand with
+          join.invalidIndexMarks preliminary .operand with
       | error error =>
           simp [targetMarksResult, operandMarksResult, Except.mapError,
             Bind.bind, Except.bind] at covered
       | ok actualOperandMarks =>
-          apply parallelNumericTargetRoute_coverageWithMarks_owns_target
-            route preliminary actualTargetMarks actualOperandMarks coverage
+          apply parallelTargetJoin_coverageWithMarks_owns_target
+            join preliminary actualTargetMarks actualOperandMarks coverage
           simpa [targetMarksResult, operandMarksResult, Except.mapError,
             Bind.bind, Except.bind] using covered
 
 /-- Internally deriving the mark sets preserves exact target-address uniqueness. -/
-theorem parallelNumericTargetRoute_coverage_addresses_nodup
-    (route : CheckedParallelNumericTargetRoute model)
+theorem parallelTargetJoin_coverage_addresses_nodup
+    (join : CheckedParallelTargetJoin model)
     (preliminary : CheckedIndexPreliminary model)
     (coverage : List ParallelNumericTargetCoverage)
-    (covered : route.targetCoverage preliminary = .ok coverage) :
+    (covered : join.targetCoverage preliminary = .ok coverage) :
     (coverage.map (·.address)).Nodup := by
-  unfold CheckedParallelNumericTargetRoute.targetCoverage at covered
+  unfold CheckedParallelTargetJoin.targetCoverage at covered
   cases targetMarksResult :
-      route.invalidIndexMarks preliminary .target with
+      join.invalidIndexMarks preliminary .target with
   | error error =>
       simp [targetMarksResult, Except.mapError, Bind.bind, Except.bind]
         at covered
   | ok targetMarks =>
       cases operandMarksResult :
-          route.invalidIndexMarks preliminary .operand with
+          join.invalidIndexMarks preliminary .operand with
       | error error =>
           simp [targetMarksResult, operandMarksResult, Except.mapError,
             Bind.bind, Except.bind] at covered
       | ok operandMarks =>
           apply
-            parallelNumericTargetRoute_coverageWithMarks_addresses_nodup
-              route preliminary targetMarks operandMarks coverage
+            parallelTargetJoin_coverageWithMarks_addresses_nodup
+              join preliminary targetMarks operandMarks coverage
           simpa [targetMarksResult, operandMarksResult, Except.mapError,
             Bind.bind, Except.bind] using covered
 
@@ -412,7 +412,7 @@ theorem parallelNumericInvalidIndexMarks_noTargets
     (empty :
       plan.targetEnvironments preliminary.base = .ok []) :
     plan.invalidIndexMarks preliminary side = .ok [] := by
-  apply parallelNumericTargetRouteInvalidIndexMarks_noTargets
+  apply parallelTargetJoinInvalidIndexMarks_noTargets
   exact empty
 
 /-- Clean index columns clear nothing **on an in-capacity target inventory**. The capacity
@@ -423,39 +423,39 @@ theorem parallelNumericTargetRouteClearing_noMarks
     (route : CheckedParallelNumericTargetRoute model)
     (preliminary : CheckedIndexPreliminary model)
     (targetClean :
-      route.invalidIndexMarks preliminary .target = .ok [])
+      route.join.invalidIndexMarks preliminary .target = .ok [])
     (operandClean :
-      route.invalidIndexMarks preliminary .operand = .ok [])
+      route.join.invalidIndexMarks preliminary .operand = .ok [])
     (environments : List Env)
-    (rows : route.targetEnvironments preliminary.base = .ok environments)
+    (rows : route.join.targetEnvironments preliminary.base = .ok environments)
     (coverage : List ParallelNumericTargetCoverage)
     (covered :
-      route.targetCoverageWithMarks preliminary [] [] = .ok coverage)
+      route.join.targetCoverageWithMarks preliminary [] [] = .ok coverage)
     (inCapacity : ∀ environment ∈ environments,
       preliminary.base.environmentOverLimit
-        route.targetDeclaration.repeatableScope environment = false) :
+        route.join.targetDeclaration.repeatableScope environment = false) :
     route.clearedSourceTargets preliminary =
       .ok ParallelNumericClearingView.empty := by
   have mapped :
       environments.mapM (fun environment => do
         let path ←
           Except.mapError ParallelNumericTargetCoverageError.targetEnvironment
-            (environment.pathForScope route.targetDeclaration.repeatableScope)
+            (environment.pathForScope route.join.targetDeclaration.repeatableScope)
         let coveredByTarget ←
           Except.mapError ParallelNumericTargetCoverageError.targetEnvironment
-            ((route.markPlanFor .target).coversAny environment [])
+            ((route.join.markPlanFor .target).coversAny environment [])
         let coveredByOperand ←
           Except.mapError ParallelNumericTargetCoverageError.targetEnvironment
-            ((route.markPlanFor .operand).coversAny environment [])
+            ((route.join.markPlanFor .operand).coversAny environment [])
         pure ({
           environment
-          address := { field := route.targetField, path }
+          address := { field := route.join.targetField, path }
           indexInvalid := coveredByTarget || coveredByOperand
           overLimit :=
             preliminary.base.environmentOverLimit
-              route.targetDeclaration.repeatableScope environment
+              route.join.targetDeclaration.repeatableScope environment
         } : ParallelNumericTargetCoverage)) = .ok coverage := by
-    unfold CheckedParallelNumericTargetRoute.targetCoverageWithMarks at covered
+    unfold CheckedParallelTargetJoin.targetCoverageWithMarks at covered
     rw [rows] at covered
     simpa [Except.mapError, Bind.bind, Except.bind] using covered
   have quiet :
@@ -465,7 +465,7 @@ theorem parallelNumericTargetRouteClearing_noMarks
     intro environment member target executed
     cases path :
         environment.pathForScope
-          route.targetDeclaration.repeatableScope with
+          route.join.targetDeclaration.repeatableScope with
     | error error =>
         simp [path, Except.mapError, Bind.bind, Except.bind] at executed
     | ok addressPath =>
@@ -499,7 +499,7 @@ theorem parallelNumericClearing_noMarks
     (rows : plan.targetEnvironments preliminary.base = .ok environments)
     (coverage : List ParallelNumericTargetCoverage)
     (covered :
-      plan.asTargetRoute.targetCoverageWithMarks preliminary [] [] = .ok coverage)
+      plan.asTargetRoute.join.targetCoverageWithMarks preliminary [] [] = .ok coverage)
     (inCapacity : ∀ environment ∈ environments,
       preliminary.base.environmentOverLimit
         plan.targetDeclaration.repeatableScope environment = false) :

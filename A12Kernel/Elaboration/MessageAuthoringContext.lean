@@ -18,15 +18,15 @@ def CheckedParallelFieldRule.pairReferencesField (rule : CheckedParallelFieldRul
     | .ordinary _ => false
     | leaf => leaf.fields.any fun operand => (rule.pair.declaration operand).id == field
 
-/-- The ordinary leaves beside the join, each as the one-leaf condition whose reference queries
-already answer for it. -/
+/-- The ordinary leaves beside the join and the one-atom leaves of ordinary comparison atoms, each as
+the one-leaf condition whose reference queries already answer for it. -/
 def CheckedParallelFieldRule.ordinaryConditions (rule : CheckedParallelFieldRule model) :
     List (ValidationCondition model) :=
   go rule.condition
 where
   go : ParallelFieldCondition model → List (ValidationCondition model)
     | .leaf (.ordinary leaf) => [.leaf leaf]
-    | .leaf _ => []
+    | .leaf leaf => leaf.atomLeaves.map .leaf
     | .and left right | .or left right => go left ++ go right
 
 def MessageAuthoringCore.referencesField : MessageAuthoringCore model → FieldId → Bool

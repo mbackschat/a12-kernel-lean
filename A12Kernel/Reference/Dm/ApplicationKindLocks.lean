@@ -85,11 +85,7 @@ private def run (kind : Kind) (repeated : Bool) (sourceSeed : Option Bool)
     { name := "OutComp", group, targetRelPath := "../Out", commonPrecondition := some "FieldFilled(Gate)",
       alternatives := [{ precondition := none, operation := kind.operation }], errorCodesToSuppress := [] }]
   let lowered ← definitions.mapM fun definition => (lowerComputation model .english definition).toOption
-  let steps : List (MixedComputationStep model builtinStringPatternCompiler) := lowered.map fun (_, step) =>
-    match step with
-    | .number table _ => .number table | .parallel step => .parallel step
-    | .string table => .string table | .document step => .document step
-    | .rows step => .rows (step builtinStringPatternCompiler)
+  let steps := lowered.map (·.2.toMixedStep builtinStringPatternCompiler)
   let plan ← (certifyAuthoredMixedComputationPlan steps).toOption
   let outcomes ← (plan.execute world prepared.patterns source).toOption
   let addresses : List CellAddr := (List.range count).map fun index =>

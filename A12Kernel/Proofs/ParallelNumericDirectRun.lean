@@ -26,10 +26,10 @@ theorem checkedIsolatedParallelNumericDirectRun_excludes_target
   simp [CheckedIsolatedParallelNumericDirectRun.forbidsField,
     checked.guardExcludesTarget, checked.expressionExcludesTarget]
 
-/-- Executable-target filtering preserves the primary route's target field. -/
+/-- Executable-target filtering preserves the primary join's target field. -/
 theorem parallelNumericExecutableTargets_own_primary_target
-    (primary : CheckedParallelNumericTargetRoute model)
-    (additional : List (CheckedParallelNumericTargetRoute model))
+    (primary : CheckedParallelTargetJoin model)
+    (additional : List (CheckedParallelTargetJoin model))
     (preliminary : CheckedIndexPreliminary model)
     (targets : List ParallelNumericTargetCoverage)
     (executed :
@@ -58,13 +58,13 @@ theorem parallelNumericExecutableTargets_own_primary_target
           intro target member
           obtain ⟨original, primaryMember, rfl⟩ :=
             List.mem_map.mp (List.mem_filter.mp member).1
-          exact parallelNumericTargetRoute_coverage_owns_target
+          exact parallelTargetJoin_coverage_owns_target
             primary preliminary primaryCoverage primaryResult original primaryMember
 
 /-- Executable-target filtering preserves exact address uniqueness from primary coverage. -/
 theorem parallelNumericExecutableTargets_addresses_nodup
-    (primary : CheckedParallelNumericTargetRoute model)
-    (additional : List (CheckedParallelNumericTargetRoute model))
+    (primary : CheckedParallelTargetJoin model)
+    (additional : List (CheckedParallelTargetJoin model))
     (preliminary : CheckedIndexPreliminary model)
     (targets : List ParallelNumericTargetCoverage)
     (executed :
@@ -90,7 +90,7 @@ theorem parallelNumericExecutableTargets_addresses_nodup
         · change Except.ok _ = Except.ok coverage at covered
           cases covered
           apply (List.filter_sublist.map (fun target : ParallelNumericTargetCoverage => target.address)).nodup
-          simpa [List.map_map, Function.comp_def] using parallelNumericTargetRoute_coverage_addresses_nodup
+          simpa [List.map_map, Function.comp_def] using parallelTargetJoin_coverage_addresses_nodup
             primary preliminary primaryCoverage primaryResult
 
 end A12Kernel

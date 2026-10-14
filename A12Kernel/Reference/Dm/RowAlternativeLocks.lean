@@ -109,12 +109,7 @@ example : run [boxDefinition "Left" "\"A\"", boxDefinition "Right" "\"B\""] [""]
 
 private def planHasCycle (definitions : List DmComputation) : Option Bool := do
   let lowered ← definitions.mapM fun definition => (lowerComputation model .english definition).toOption.map (·.2)
-  let steps : List (MixedComputationStep model builtinStringPatternCompiler) := lowered.map fun
-    | .number table _ => .number table
-    | .parallel step => .parallel step
-    | .string table => .string table
-    | .document step => .document step
-    | .rows step => .rows (step builtinStringPatternCompiler)
+  let steps := lowered.map (·.toMixedStep builtinStringPatternCompiler)
   match certifyAuthoredMixedComputationPlan steps with
   | .error (.cycle _ _) => some true
   | .ok _ => some false

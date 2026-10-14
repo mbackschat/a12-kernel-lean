@@ -65,13 +65,7 @@ private def summary (guard : String) (scenario : Scenario := {}) : Option Summar
     (if scenario.payloadProducer then [computation "PayloadProducer" "Packages/Items/Box/Value" "[Packages/Items/Source]"] else []) ++
     (if scenario.independent then [computation "Independent" "Independent" "17"] else [])
   let lowered ← declarations.mapM fun declaration => (lowerComputation model .english declaration).toOption
-  let steps : List (MixedComputationStep model builtinStringPatternCompiler) := lowered.map fun (_, step) =>
-    match step with
-    | .number table _ => .number table
-    | .parallel step => .parallel step
-    | .string table => .string table
-    | .document step => .document step
-    | .rows step => .rows (step builtinStringPatternCompiler)
+  let steps := lowered.map (·.2.toMixedStep builtinStringPatternCompiler)
   let plan ← (certifyAuthoredMixedComputationPlan steps).toOption
   let formalPlan ← plan.formalInputPlan.toOption
   let formalInputs ← (formalPlan.prepare checked).toOption

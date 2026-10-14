@@ -95,9 +95,9 @@ example :
     (do
       let preliminary ← preliminary? resolvableExcess
       let checked ← plan?
-      let marks ← (checked.asTargetRoute.invalidIndexMarks preliminary .target).toOption
+      let marks ← (checked.asTargetRoute.join.invalidIndexMarks preliminary .target).toOption
       let operandMarks ←
-        (checked.asTargetRoute.invalidIndexMarks preliminary .operand).toOption
+        (checked.asTargetRoute.join.invalidIndexMarks preliminary .operand).toOption
       pure (marks.isEmpty && operandMarks.isEmpty)) = some true := by
   native_decide
 

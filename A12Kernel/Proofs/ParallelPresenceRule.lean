@@ -75,9 +75,11 @@ theorem parallelFieldPresence_silentUnavailable (pair : CheckedParallelFieldPair
     (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
     (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState)
     (readOrdinary : ValidationConditionLeaf model → Except ParallelPresenceRuleEvaluationError Verdict)
+    (readAtom : ValidationConditionLeaf model →
+      Except ParallelPresenceRuleEvaluationError (Except NumericValidationUnavailable NumericArithmeticOutcome))
     (side : ParallelFieldOperand) (op : RepeatableFieldPresenceOperator)
     (unavailable : read side = .ok none) :
-    ParallelFieldLeaf.evalWith pair read readGroup readOrdinary (.presence side op) = .ok .unknown := by
+    ParallelFieldLeaf.evalWith pair read readGroup readOrdinary readAtom (.presence side op) = .ok .unknown := by
   simp [ParallelFieldLeaf.evalWith, unavailable]
   rfl
 

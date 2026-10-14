@@ -135,6 +135,12 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
           (fun leaf => match ParallelFieldLeaf.ordinaryEnvironment? rule.pair view.index.base row rowOuter leaf with
             | none => pure .unknown
             | some (environment, _) => ParallelFieldLeaf.evalPartialOrdinary view environment world leaf)
+          (fun carrier => do
+            let some atom := carrier.orderedAtom? | throw .unsupportedCondition
+            match ParallelFieldLeaf.ordinaryEnvironment? rule.pair view.index.base row rowOuter carrier with
+            | none => pure (.error .silentlyUnavailable)
+            | some (environment, _) =>
+                (atom.resolveAddressed (view.addressedValidationContext environment world)).mapError .addressing)
           leaf custom world))
       view.index outer messageCache view.isAddressRelevant
       (rule.pair.admitsPartialOuter view.relevance))).flatten

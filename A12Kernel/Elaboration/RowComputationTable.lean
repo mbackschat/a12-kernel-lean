@@ -178,6 +178,17 @@ inductive RowComputationTableFault where
   | readBack (cause : DocumentComputationStepFault)
   deriving Repr, DecidableEq
 
+/-- Evaluate a selected String expression over one supplied read context, then check the store
+against the target under `targetContext`. The context alone decides which cells the expression
+reads, so a caller with its own row binding, such as a key-joined instance, supplies it here. -/
+def CheckedRowStringExpression.evaluateIn (operation : CheckedRowStringExpression model)
+    (matcher : Option (String → Bool)) (context targetContext : ScalarComputationContext) :
+    Except RowComputationTableFault (DocumentTargetOutcome × CheckedCell) := do
+  let result ← (operation.expression.eval .computation { read := context.read } context.numberText (some context)).mapError .stringExpression
+  let term := StringTerm.ofOperand result
+  let outcome ← (operation.target.checkStringExpressionTarget matcher term.store targetContext).mapError .stringExpression
+  pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
+
 namespace CheckedRowComputationOperation
 
 private def booleanOutcome (operation : BooleanConstantOperation) : DocumentTargetOutcome × CheckedCell :=
@@ -202,12 +213,8 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
   | .stringExpression operation =>
       let field := operation.targetField
       let some matcher := patterns.targetMatcher? field | throw (.targetPatternUnavailable field)
-      let context := document.indexedComputationContextAt environment
-      let result ← (operation.expression.eval .computation { read := context.read } context.numberText (some context)).mapError .stringExpression
-      let term := StringTerm.ofOperand result
-      let outcome ← (operation.target.checkStringExpressionTarget matcher term.store
-        ((document.computationContextAt environment).withWorld world)).mapError .stringExpression
-      pure (.string outcome, ← (DocumentComputationReadBack.string outcome).mapError .readBack)
+      operation.evaluateIn matcher (document.indexedComputationContextAt environment)
+        ((document.computationContextAt environment).withWorld world)
   | .stringConstant operation =>
       let some matcher := patterns.targetMatcher? operation.checkedTarget.targetField
         | throw (.targetPatternUnavailable operation.checkedTarget.targetField)

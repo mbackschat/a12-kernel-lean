@@ -22,14 +22,14 @@ def protectionView : CheckedParallelNumericMember model target → Option Comput
 
 /-- A joined member's guard reads the joined cells; a bound member's reads the target row. -/
 def evalGuard (member : CheckedParallelNumericMember model target)
-    (context : NumericComputationEvaluationContext) :
+    (context : ParallelNumericGuardContext) :
     Except CheckedComputationConditionError ComputationConditionResult :=
   match member with
   | .joined alternative => match alternative.precondition with
-      | some guard => guard.eval { joinedRead := context.scalar.read, ordinary := context }
+      | some guard => guard.eval context
       | none => pure .holds
   | .bound _ alternative => match alternative.precondition with
-      | some guard => guard.evalCheckedIn context
+      | some guard => guard.evalCheckedIn context.ordinary
       | none => pure .holds
 
 def joinedOperation? : CheckedParallelNumericMember model target → Option (CheckedIsolatedParallelNumericDirectRun model)
@@ -46,7 +46,7 @@ def requiresProducer (member : CheckedParallelNumericMember model target)
     (producerProtected : ResolvedGroupReference → Bool) (field : FieldId) : Bool :=
   match member with
   | .joined alternative =>
-      alternative.operation.expression.anyAtom (NumericComputationAtom.referencesField model field) ||
+      alternative.operation.expression.anyAtom (·.requiresProducer target field producerProtected) ||
         alternative.operation.referencesIndexField field ||
         alternative.precondition.any (·.requiresProducer target field producerProtected)
   | .bound _ alternative =>
@@ -55,12 +55,12 @@ def requiresProducer (member : CheckedParallelNumericMember model target)
         alternative.precondition.any (·.requiresProducer target field producerProtected)
 
 def evaluateSelected (member : CheckedParallelNumericMember model target)
-    (context : NumericComputationEvaluationContext) :
+    (context : ParallelNumericGuardContext) :
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError NumericTargetOutcome := do
   match member with
-  | .joined alternative => alternative.operation.evaluateSelected context.scalar
+  | .joined alternative => alternative.operation.evaluateSelected context
   | .bound _ alternative =>
-      match ← alternative.operation.evaluateIn context |>.mapError .numeric with
+      match ← alternative.operation.evaluateIn context.ordinary |>.mapError .numeric with
       | .supported outcome => pure outcome
       | .unsupported fault => throw (.unsupportedTarget fault)
 
@@ -101,7 +101,11 @@ def executeTarget (table : CheckedMixedParallelNumericTable model)
     match cells.flatten.find? (·.1 == field) with
     | some (_, cell) => cell
     | none => bound.read field }
-  let context := { ordinary with scalar }
+  let partners ← CheckedIsolatedParallelNumericDirectRun.partnerEnvironments (table.operandRoutes.map (·.join)) preliminary
+    target.environment key
+  let context : ParallelNumericGuardContext := {
+    joinedRead := scalar.read, ordinary := { ordinary with scalar }
+    partnerAt := fun group => (partners.lookup group).map document.parallelGuardContextAt }
   let alternatives := table.members.map fun member =>
     ({ precondition := if member.guarded then some member else none, operation := member } :
       ComputationAlternative (CheckedParallelNumericMember model table.targetField)

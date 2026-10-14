@@ -20,7 +20,7 @@ private def pairField (model : FlatModel) (group : GroupPath) (value : Bool)
 
 /-- A comparison atom is a bracketed field, a temporal component of one field, or an aggregate over a direct field list. Surface shapes reuse the ordinary validation lowering, so starred, filtered and indexed operands are refused there before any pair resolution. -/
 private def pairNumericAtom (model : FlatModel) (group : GroupPath) (expression : Expr) :
-    Lowering (ParallelNumericAtomOf FieldId) := do
+    Lowering (ParallelNumericAtomOf FieldId Expr) := do
   if expression.fieldValue?.isSome then
     return .field (← pairField model group true expression)
   match ← lowerValidationNumericAtom expression with
@@ -30,10 +30,13 @@ private def pairNumericAtom (model : FlatModel) (group : GroupPath) (expression 
   | _ => refuse "ParallelRule" "plain field operand required"
 
 /-- A pair-carrier leaf, or an ordinary leaf the carrier has no form for, kept as authored with the
-fields it reads until the pair's groups fix the instance view it is lowered against. -/
+fields it reads until the pair's groups fix the instance view it is lowered against. A comparison
+also keeps its reading with an ordinary atom for each operand the carrier has no form for, which
+applies when no binding fixes the whole comparison. -/
 private inductive PairSyntaxLeaf where
-  | pair (leaf : ParallelFieldLeafOf FieldId Empty)
+  | pair (leaf : ParallelFieldLeafOf FieldId Empty Expr)
   | ordinary (expression : Expr) (reads : List FieldId)
+      (mixed : Option (ParallelFieldLeafOf FieldId Empty Expr) := none)
 
 /-- Every plain field path an expression reads, in authored order. A starred, keyed or filtered
 reference reads no single joined row, so it never anchors the join. -/
@@ -61,18 +64,25 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
   | expression@(.compare op left right) => do
       -- The pair carrier owns Number comparisons; any other comparison is an ordinary leaf over the
       -- joined instance (parallel-flat-leaves capture, 2026-10-14).
-      let lower := lowerNumericExpr (pairNumericAtom model group) ((.field ·) <$> pairField model group true ·)
-      let numeric : Lowering (ConditionTree PairSyntaxLeaf) := do
+      let strict := lowerNumericExpr (pairNumericAtom model group) ((.field ·) <$> pairField model group true ·)
+      let orOrdinary := fun (lowerAtom : Expr → Lowering (ParallelNumericAtomOf FieldId Expr)) expression =>
+        tryCatch (lowerAtom expression) fun _ => pure (ParallelNumericAtomOf.ordinary expression)
+      let mixed := lowerNumericExpr (orOrdinary (pairNumericAtom model group))
+        (orOrdinary ((.field ·) <$> pairField model group true ·))
+      let comparison (lower : Expr → Lowering (AuthoredNumericExpr (ParallelNumericAtomOf FieldId Expr))) :
+          Lowering (ParallelFieldLeafOf FieldId Empty Expr) := do
         let some comparison := op.toNumeric? | refuse "ParallelRule" "Number comparison required"
-        let value : NumericComparisonOf (ParallelNumericAtomOf FieldId) :=
+        let value : NumericComparisonOf (ParallelNumericAtomOf FieldId Expr) :=
           { op := comparison, left := ← lower left, right := ← lower right }
         let plain := (value.left.atoms ++ value.right.atoms).filterMap fun
           | .field field => some field
           | _ => none
         if plain.all fun field => ((model.lookupUniqueId field).toOption.bind (·.toNumberField?)).isSome then
-          pure (.leaf (.pair (.comparison value)))
+          pure (.comparison value)
         else refuse "ParallelRule" "Number comparison required"
-      tryCatch numeric fun _ => ordinary expression
+      tryCatch ((.leaf ∘ .pair) <$> comparison strict) fun _ => do
+        let reads ← expression.fieldPaths.mapM (pairPath model group)
+        pure (.leaf (.ordinary expression reads.eraseDups (comparison mixed).toOption))
   | .call name [.mk field none] none none => do
       if let some op := (match name with
           | "GroupFilled" => some GroupPresenceOperator.filled
@@ -118,7 +128,7 @@ private def pairReferences : ConditionTree PairSyntaxLeaf → List FieldId
   | .leaf (.pair (.comparison value)) => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
   | .leaf (.pair (.customCondition _)) | .leaf (.pair (.ordinary _)) => []
   | .leaf (.pair (.valuesNotUnique operands)) => operands
-  | .leaf (.pair (.flat _ reads)) | .leaf (.ordinary _ reads) => reads
+  | .leaf (.pair (.flat _ reads)) | .leaf (.ordinary _ reads _) => reads
   | .and left right | .or left right => pairReferences left ++ pairReferences right
 
 /-- The repeatable groups the two anchors index, which one joined instance binds. -/
@@ -159,7 +169,7 @@ where
 private def bindPairLeaf (model : FlatModel) (group : GroupPath) (suppress : Bool) (left right : FieldId) :
     PairSyntaxLeaf → Lowering (ParallelFieldLeaf model)
   | .pair leaf => bindPair leaf
-  | .ordinary expression _ => do
+  | .ordinary expression _ mixed => do
       -- The ordinary reader lowers the leaf against the instance view; only a flat leaf, whose
       -- operands are model-free field records, crosses back to the real model. Any other leaf is
       -- lowered against the model itself, where admission accepts it only when the common outer
@@ -175,25 +185,38 @@ private def bindPairLeaf (model : FlatModel) (group : GroupPath) (suppress : Boo
           -- A key read on the error side's row binds at that row (joined-carrier capture, rows
           -- `k03b`, `k07b` and `k08`, 2026-10-14), so a leaf the declaring group cannot bind is
           -- lowered once more with the error side's group bound.
-          match lowerCondition model group suppress expression with
-          | .ok checked => single checked
-          | .error refusal => sideBound expression refusal (pairGroupPaths model left right)
+          match ordinaryLeaf expression with
+          | .ok leaf => pure (.ordinary leaf)
+          | .error refusal => match mixed with
+            -- No binding fixes the whole comparison: each operand without a pair form keeps its
+            -- ordinary meaning as an atom (generated rule of joined-carrier capture row `j11`, 2026-10-14).
+            | some leaf => tryCatch (bindPair leaf) fun _ => .error refusal
+            | none => .error refusal
 where
+  ordinaryLeaf (expression : Expr) : Lowering (ValidationConditionLeaf model) :=
+    match lowerCondition model group suppress expression with
+    | .ok checked => single checked
+    | .error refusal => sideBound expression refusal (pairGroupPaths model left right)
   -- Each joined side's group in turn, the error side's first.
-  sideBound (expression : Expr) (refusal : Refusal) : List GroupPath → Lowering (ParallelFieldLeaf model)
+  sideBound (expression : Expr) (refusal : Refusal) : List GroupPath → Lowering (ValidationConditionLeaf model)
     | [] => .error refusal
     | side :: rest =>
-        let lowered : Lowering (ParallelFieldLeaf model) := match sideKeyedPresence model group side expression with
-          | some leaf => (ParallelFieldLeafOf.ordinary ·) <$> leaf
+        let lowered : Lowering (ValidationConditionLeaf model) := match sideKeyedPresence model group side expression with
+          | some leaf => leaf
           | none => (lowerCondition model group suppress expression (bindingGroup := side)).bind single
         match lowered with
         | .ok leaf => pure leaf
         | .error _ => sideBound expression refusal rest
-  single (condition : CheckedValidationCondition model) : Lowering (ParallelFieldLeaf model) :=
+  single (condition : CheckedValidationCondition model) : Lowering (ValidationConditionLeaf model) :=
     match condition.core with
-    | .leaf leaf => pure (.ordinary leaf)
+    | .leaf leaf => pure leaf
     | _ => refuse "ParallelRule" "unsupported pair condition"
-  bindPair (leaf : ParallelFieldLeafOf FieldId Empty) : Lowering (ParallelFieldLeaf model) := do
+  -- An ordinary atom is checked as its one-atom comparison, which fixes its binding.
+  atomLeaf (expression : Expr) : Lowering (ValidationConditionLeaf model) := do
+    let leaf ← ordinaryLeaf (.compare .gt expression (.number "0"))
+    if leaf.orderedAtom?.isNone then refuse "ParallelRule" "ordinary numeric atom"
+    pure leaf
+  bindPair (leaf : ParallelFieldLeafOf FieldId Empty Expr) : Lowering (ParallelFieldLeaf model) := do
     let operand := fun field => do
       if field == left then pure ParallelFieldOperand.left
       else if field == right then pure .right
@@ -204,7 +227,7 @@ where
     | .numeric op a b => pure (.numeric op (← operand a) (← operand b))
     | .fill op a b => pure (.fill op (← operand a) (← operand b))
     | .comparison value => pure (.comparison { value with
-        left := ← value.left.mapM (·.mapM operand), right := ← value.right.mapM (·.mapM operand) })
+        left := ← value.left.mapM (·.mapM operand atomLeaf), right := ← value.right.mapM (·.mapM operand atomLeaf) })
     | .customCondition name => pure (.customCondition name)
     | .valuesNotUnique operands => pure (.valuesNotUnique (← operands.mapM operand))
     | .flat condition reads => pure (.flat condition (← reads.mapM operand))

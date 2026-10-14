@@ -115,7 +115,7 @@ def evaluate (table : CheckedParallelNumericAlternativeTable model)
   | .error error => if error.isValueFailure then .ok (.invalidNoValue .calculationValue) else throw (.guard error)
   | .ok .noMatch => .ok .noValue
   | .ok (.poison cause) => .ok (.inheritedPoison cause)
-  | .ok (.selected operation) => operation.evaluateSelected context.joinedScalar
+  | .ok (.selected operation) => operation.evaluateSelected context
 
 def WellFormed
     (table : CheckedParallelNumericAlternativeTable model) : Prop :=
@@ -169,7 +169,7 @@ def executeTargetWith
     target.environment target.address
   let cells ← table.operandCellsWith preliminary read
     target.environment key
-  let partners ← CheckedIsolatedParallelNumericDirectRun.partnerEnvironments table.operandRoutes
+  let partners ← CheckedIsolatedParallelNumericDirectRun.partnerEnvironments (table.operandRoutes.map (·.join))
     preliminary target.environment key
   let context := CheckedIsolatedParallelNumericDirectRun.guardContextAt cells partners ordinaryAt
     target.environment
@@ -188,8 +188,8 @@ def executeWithRead
       (List ParallelNumericDirectOutcome) := do
   let targets ←
     CheckedIsolatedParallelNumericDirectRun.executableTargets
-      table.first.operation.route
-      (table.operandRoutes.drop 1) preliminary
+      table.first.operation.route.join
+      ((table.operandRoutes.drop 1).map (·.join)) preliminary
   targets.mapM (table.executeTargetWith preliminary read ordinaryAt)
 
 /-- Preserve the standalone table entry point by reading carriers from the immutable preliminary document. -/

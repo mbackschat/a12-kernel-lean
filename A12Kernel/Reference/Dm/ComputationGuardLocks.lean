@@ -123,11 +123,7 @@ private def groupGuardRun (seed : Bool) (kind : GroupGuardKind := .number)
     | .splitPlainFirst => [plain, first, second]
     | _ => [first, second]
   let lowered ← authored.mapM fun computation => (lowerComputation model .english computation).toOption
-  let steps : List (MixedComputationStep model builtinStringPatternCompiler) := lowered.map fun (_, step) =>
-    match step with
-    | .number table _ => .number table | .string table => .string table
-    | .parallel step => .parallel step
-    | .document step => .document step | .rows step => .rows (step builtinStringPatternCompiler)
+  let steps := lowered.map (·.2.toMixedStep builtinStringPatternCompiler)
   match certifyAuthoredMixedComputationPlan steps with
   | .error (.cycle _ _) => pure .cycle
   | .error _ => none

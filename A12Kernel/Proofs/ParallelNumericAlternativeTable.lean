@@ -47,7 +47,7 @@ theorem parallelNumericAlternativeTable_selected
     (operation : CheckedIsolatedParallelNumericDirectRun model)
     (selection : ComputationAlternative.selectFirstWith (fun guard => guard.eval context)
       table.selectableAlternatives = .ok (.selected operation)) :
-    table.evaluate context = operation.evaluateSelected context.joinedScalar := by
+    table.evaluate context = operation.evaluateSelected context := by
   simp [CheckedParallelNumericAlternativeTable.evaluate, selection]
 
 private theorem parallelNumericAlternativeTable_executeTargetWith_address
@@ -74,7 +74,7 @@ private theorem parallelNumericAlternativeTable_executeTargetWith_address
           simp [keyResult, cellsResult, Bind.bind, Except.bind] at executed
       | ok cells =>
           cases partnersResult :
-              CheckedIsolatedParallelNumericDirectRun.partnerEnvironments table.operandRoutes
+              CheckedIsolatedParallelNumericDirectRun.partnerEnvironments (table.operandRoutes.map (·.join))
                 preliminary target.environment key with
           | error error =>
               simp [keyResult, cellsResult, partnersResult, Bind.bind, Except.bind] at executed
@@ -119,8 +119,8 @@ theorem parallelNumericAlternativeTable_executeWithRead_owns_target
   unfold CheckedParallelNumericAlternativeTable.executeWithRead at executed
   cases targetsResult :
       CheckedIsolatedParallelNumericDirectRun.executableTargets
-        table.first.operation.route
-        (table.operandRoutes.drop 1) preliminary with
+        table.first.operation.route.join
+        ((table.operandRoutes.drop 1).map (·.join)) preliminary with
   | error error =>
       rw [targetsResult] at executed
       contradiction
@@ -132,8 +132,8 @@ theorem parallelNumericAlternativeTable_executeWithRead_owns_target
         intro target member
         have owned :=
           parallelNumericExecutableTargets_own_primary_target
-            table.first.operation.route
-            (table.operandRoutes.drop 1) preliminary targets
+            table.first.operation.route.join
+            ((table.operandRoutes.drop 1).map (·.join)) preliminary targets
             targetsResult target member
         change
           target.address.field =
@@ -164,8 +164,8 @@ theorem parallelNumericAlternativeTable_executeWithRead_addresses_nodup
   unfold CheckedParallelNumericAlternativeTable.executeWithRead at executed
   cases targetsResult :
       CheckedIsolatedParallelNumericDirectRun.executableTargets
-        table.first.operation.route
-        (table.operandRoutes.drop 1) preliminary with
+        table.first.operation.route.join
+        ((table.operandRoutes.drop 1).map (·.join)) preliminary with
   | error error =>
       rw [targetsResult] at executed
       contradiction
@@ -185,7 +185,7 @@ theorem parallelNumericAlternativeTable_executeWithRead_addresses_nodup
         executed
       rw [projected]
       exact parallelNumericExecutableTargets_addresses_nodup
-        table.first.operation.route
-        (table.operandRoutes.drop 1) preliminary targets targetsResult
+        table.first.operation.route.join
+        ((table.operandRoutes.drop 1).map (·.join)) preliminary targets targetsResult
 
 end A12Kernel

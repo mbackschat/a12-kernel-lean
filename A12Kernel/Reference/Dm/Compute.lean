@@ -349,14 +349,18 @@ private def lowerParallelNumber (language : Language) (model : FlatModel) (compu
   if guards.any (·.any (·.forbidsTarget target.id)) then
     refuse "ParallelGuard" KernelStaticDiagnostic.errorReferenceToCalculatedField.kernelCode
   if expressions.length != outputModes.length then refuse "ParallelNumber" "output policy arity"
+  -- An atom with no joined form, such as a starred aggregate, keeps its ordinary meaning at the
+  -- target row (joined-carrier capture, row `j11`, 2026-10-14).
   let expressions ← expressions.mapM fun expression => expression.mapM fun atom =>
     match atom.parallelAtom? with
-    | some atom => pure atom
-    | none => refuse "ParallelNumber" "operand"
+    | some atom => pure (ParallelNumericOperationAtomOf.joined atom)
+    | none => .ordinary <$> elaborated "ParallelNumber"
+        (model.elaborateNumericComputationAtom group target.groupPath atom)
   let guardFields := guards.flatMap parallelNumericGuardFields
   let guardPaths := guardFields.filterMap fun field => (model.lookupUniqueId field).toOption.map fun declaration =>
     { base := .absolute, groups := declaration.groupPath, field := declaration.name : SurfaceFieldPath }
-  let fields := expressions.flatMap (fun expression => expression.atoms.flatMap SurfaceNumericAtom.parallelFields) ++ guardPaths
+  let fields := expressions.flatMap (fun expression =>
+    (expression.atoms.filterMap (·.joined?)).flatMap SurfaceNumericAtom.parallelFields) ++ guardPaths
   let some operand := fields.find? fun path => (checkParallelNumericTargetRoute model group target.id path).isOk
     | refuse "ParallelNumber" "no joined operand"
   let operations ← ((guards.zip expressions).zip outputModes).mapM fun ((guard, expression), mode) => do
@@ -367,6 +371,32 @@ private def lowerParallelNumber (language : Language) (model : FlatModel) (compu
   | [operation] => pure (.single operation)
   | _ => (.alternatives ·) <$> elaborated "ParallelNumber" (certifyParallelNumericAlternativeTable operations)
 
+/-- A String or temporal row target whose operation reads a partner row. The joined Number carrier's
+key joins and guards carry over; the operation is checked against the instance view, where each joined
+group is a fixed group, so the ordinary row elaborators read a partner field as a fixed read
+(joined-carrier capture, rows `t01`–`t03`, 2026-10-14). -/
+private def lowerJoinedRows (language : Language) (model : FlatModel) (computation : DmComputation)
+    (target : FlatFieldDecl) (operations : List Expr) (suppress : Bool) :
+    Lowering (CheckedParallelJoinedRowStep model) := do
+  let group := computation.group
+  let _ ← elaborated "ParallelRows" (checkAddressedRepeatableTarget model group target.id)
+  if computation.alternatives.length > 1 && computation.alternatives.any (·.precondition.isNone) then
+    refuse "ParallelRows" "unguarded alternative"
+  let guards ← joinedGuards language model computation target suppress
+  if guards.any (·.any (·.forbidsTarget target.id)) then
+    refuse "ParallelGuard" KernelStaticDiagnostic.errorReferenceToCalculatedField.kernelCode
+  let joined := model.parallelJoinedGroups target
+  let view := model.parallelInstanceView joined
+  let some viewTarget := (view.lookupUniqueId target.id).toOption | refuse "ParallelRows" "target"
+  let operations ← operations.mapM fun expression => do
+    match ← lowerRowAlternativeOperation view group viewTarget expression with
+    | .stringExpression operation => pure (ParallelJoinedRowOperation.string operation)
+    | .temporalExpression operation => pure (.temporal operation)
+    | _ => refuse "ParallelRows" "operation"
+  let alternatives := (guards.zip operations).map fun (precondition, operation) =>
+    ({ precondition, operation } : ParallelJoinedRowAlternative model joined)
+  elaborated "ParallelRows" (checkParallelJoinedRowStep model group target.id joined alternatives)
+
 inductive LoweredComputation (model : FlatModel)
   | number (table : CheckedNumericComputationTable model) (row : Bool)
   | parallel (step : CheckedParallelNumericStep model)
@@ -374,6 +404,17 @@ inductive LoweredComputation (model : FlatModel)
   | document (step : CheckedDocumentComputationStep model)
   /-- A non-Number computation over addressed instances, including fixed Boolean/Confirm tables. -/
   | rows (step : RowStep model)
+  | joinedRows (step : CheckedParallelJoinedRowStep model)
+
+/-- The plan step a lowered computation runs as. -/
+def LoweredComputation.toMixedStep (compilePattern : StringPatternCompiler) :
+    LoweredComputation model → MixedComputationStep model compilePattern
+  | .number table _ => .number table
+  | .parallel step => .parallel step
+  | .string table => .string table
+  | .document step => .document step
+  | .rows step => .rows (step compilePattern)
+  | .joinedRows step => .joinedRows step
 
 private def computationOutputModes (computation : DmComputation) :
     Lowering (List (Option ComputationRoundingMode)) := do
@@ -475,7 +516,9 @@ private def lowerComputationWith (allowParallelGuards : Bool)
     let atom := fun operand => lowerCompleteComputationNumericAtom model computation.group operand filterBinding?
     lowerNumericExpr atom (lowerNumericFieldAtom model computation.group atom) expression
   if allowParallelGuards then
-    let (.number _, true) := (target.policy.kind, row) | refuse "Guard" "joined route"
+    if !row then refuse "Guard" "joined route"
+    let .number _ := target.policy.kind
+      | return (target, .joinedRows (← lowerJoinedRows language model computation target operations suppress))
     return (target, .parallel (← lowerParallelNumber language model computation target
       (← numericExpressions) suppress outputModes))
   let document : Lowering (FlatFieldDecl × LoweredComputation model) := do
@@ -497,13 +540,22 @@ private def lowerComputationWith (allowParallelGuards : Bool)
         source.fields.any fun | .inr _ => true | .inl _ => false)) || target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .enumeration || target.policy.kind == .dateRange ||
       (target.temporalTargetPolicy.isSome && operations.length > 1)) &&
       operations.all (isRowAlternativeOperation model computation.group target) then
-    let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
-      let operation ← lowerRowAlternativeOperation model computation.group target expression
-      pure ({ precondition, operation } : CheckedComputationAlternative model _)
-    let table ← elaborated "RowComputation" (certifyRowComputationTable alternatives common)
-    let some step := CheckedRowComputationStep.ofTable? table
-      | refuse "RowComputation" "target self-read"
-    return (target, .rows step)
+    let ordinary : Lowering (RowStep model) := do
+      let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
+        let operation ← lowerRowAlternativeOperation model computation.group target expression
+        pure ({ precondition, operation } : CheckedComputationAlternative model _)
+      let table ← elaborated "RowComputation" (certifyRowComputationTable alternatives common)
+      let some step := CheckedRowComputationStep.ofTable? table
+        | refuse "RowComputation" "target self-read"
+      pure step
+    -- An operation reading a partner row is refused ordinarily and admitted through its key join;
+    -- a failed join keeps the ordinary refusal.
+    match ordinary with
+    | .ok step => return (target, .rows step)
+    | .error refusal =>
+        match lowerJoinedRows language model computation target operations suppress with
+        | .ok step => return (target, .joinedRows step)
+        | .error _ => throw refusal
   match target.policy.kind with
   | .number _ => do
       let expressions ← numericExpressions
@@ -602,12 +654,7 @@ private def textOutcome (model : FlatModel) (checked : CheckedDocument model) (a
 def runComputations (world : World) (prepared : PreparedFlatStringContext model compilePattern)
     (checked : CheckedDocument model) (lowered : List (LoweredComputation model)) :
     Lowering (List ComputedOutcome) := do
-  let steps : List (MixedComputationStep model compilePattern) := lowered.map fun
-    | .number table _ => .number table
-    | .parallel step => .parallel step
-    | .string table => .string table
-    | .document step => .document step
-    | .rows step => .rows (step compilePattern)
+  let steps := lowered.map (·.toMixedStep compilePattern)
   let plan ← elaborated "ComputationPlan" (certifyAuthoredMixedComputationPlan steps)
   let result ← elaborated "ComputationRun" (plan.executeResultWithFormalInputs world prepared.patterns checked)
   pure (result.outcomes.filterMap fun

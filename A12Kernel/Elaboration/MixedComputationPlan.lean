@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.ScalarComputationRun
 import A12Kernel.Elaboration.RepeatableNumberPlan
 import A12Kernel.Elaboration.RowComputationStep
 import A12Kernel.Elaboration.ParallelNumericStep
+import A12Kernel.Elaboration.ParallelJoinedRowStep
 import A12Kernel.Elaboration.ComputationFormalInput
 
 /-! # One computation plan over every target kind, fixed and repeatable
@@ -25,6 +26,8 @@ Parallel Number steps retain their checked key joins and include index-invalid r
 
 A **row step** ([`RowComputationStep`](RowComputationStep.lean)) is a checked computation into a
 repeatable target of a kind other than Number, run once per instantiated target row by its own carrier.
+A **joined row step** ([`ParallelJoinedRowStep`](ParallelJoinedRowStep.lean)) is its key-joined String or
+temporal counterpart, which reads the overlaid document like a parallel Number step.
 -/
 
 namespace A12Kernel
@@ -37,6 +40,7 @@ inductive MixedComputationStep (model : FlatModel) (compilePattern : StringPatte
   | string (table : CheckedStringComputationTable model)
   | document (step : CheckedDocumentComputationStep model)
   | rows (step : CheckedRowComputationStep model compilePattern)
+  | joinedRows (step : CheckedParallelJoinedRowStep model)
 
 namespace MixedComputationStep
 
@@ -46,6 +50,7 @@ def targetField : MixedComputationStep model compilePattern → FieldId
   | .string table => table.targetField
   | .document step => step.target
   | .rows step => step.target
+  | .joinedRows step => step.targetField
 
 def referencesField : MixedComputationStep model compilePattern → FieldId → Bool
   | .number table => table.referencesField
@@ -53,6 +58,7 @@ def referencesField : MixedComputationStep model compilePattern → FieldId → 
   | .string table => table.referencesField
   | .document step => step.referencesField
   | .rows step => step.referencesField
+  | .joinedRows step => step.referencesField
 
 /-- Each guard's group-presence projection; a joined guard is typed by its instance view, so the
 plan's steps share only this projection. -/
@@ -62,6 +68,7 @@ def protectionConditions : MixedComputationStep model compilePattern → List (O
   | .string table => table.protectionConditions.map (·.map (·.protectionView))
   | .document step => step.protectionConditions.map (·.map (·.protectionView))
   | .rows step => step.protectionConditions.map (·.map (·.protectionView))
+  | .joinedRows step => step.protectionConditions
 
 /-- Expanded operands are independent of the scheduler's conditional producer exemptions. -/
 def operandField (step : MixedComputationStep model compilePattern) (field : FieldId) : Bool :=
@@ -75,6 +82,7 @@ def requiresProducer (producerProtected : FieldId → ResolvedGroupReference →
   | .string table => table.requiresProducer producerProtected
   | .document step => step.requiresProducer producerProtected
   | .rows step => step.requiresProducer producerProtected
+  | .joinedRows step => step.requiresProducer producerProtected
 
 end MixedComputationStep
 
@@ -107,6 +115,7 @@ inductive MixedComputationPlanFault where
   | string (cause : StringComputationRunFault)
   | document (target : FieldId) (cause : DocumentComputationStepFault)
   | rows (target : FieldId) (cause : RowComputationStepFault)
+  | joinedRows (target : FieldId) (cause : ParallelJoinedRowStepFault)
   deriving Repr, DecidableEq
 
 /-- An authored mixed plan with its certified dependency order. -/
@@ -139,7 +148,7 @@ private def MixedComputationStep.rowTable? : MixedComputationStep model compileP
   | .rows step => step.sourceTable?
   | .document step => CheckedRowComputationTable.ofDocument? step
   | .string table => CheckedRowComputationTable.ofString? table
-  | .number _ | .parallel _ => none
+  | .number _ | .parallel _ | .joinedRows _ => none
 
 /-- Keep the first target position and concatenate checked alternatives; each operation retains
 its own addressing and target evaluator (spec/09 §§1.1, 5). -/
@@ -205,6 +214,14 @@ structure MixedComputationState where
   fixed : List ScalarComputationCompletion := []
   rows : List CheckedCellPlacement := []
   outcomes : List MixedComputationOutcome := []
+
+/-- Record a row-addressed step's completed targets as placements and their outcomes. -/
+def MixedComputationState.withRowResults (state : MixedComputationState)
+    (results : List (CellAddr × DocumentTargetOutcome × CheckedCell)) : MixedComputationState :=
+  { state with
+    rows := state.rows ++ results.map fun (address, outcome, cell) =>
+      ({ address, cell, storedText := outcome.storedText? } : CheckedCellPlacement)
+    outcomes := state.outcomes ++ results.map fun (address, outcome, _) => .document address outcome }
 
 /-- A successfully assembled call keeps its outcomes beside every selected noncomputed input finding. -/
 structure MixedComputationCheckedResult where
@@ -277,11 +294,11 @@ def executeStep (plan : CheckedMixedComputationPlan model compilePattern) (world
                         outcomes := state.outcomes ++ [.document { field := step.target, path := [] } outcome] }
   | .rows step => do
       let results ← (step.run world patterns (plan.documentFor state input)).mapError (.rows step.target)
-      let placements := results.map fun (address, outcome, cell) =>
-        ({ address, cell, storedText := outcome.storedText? } : CheckedCellPlacement)
-      pure { state with rows := state.rows ++ placements
-                        outcomes := state.outcomes ++ results.map fun (address, outcome, _) =>
-                          .document address outcome }
+      pure (state.withRowResults results)
+  | .joinedRows step => do
+      let results ← (step.execute world patterns.targetMatcher? (plan.documentFor state input)).mapError
+        (.joinedRows step.targetField)
+      pure (state.withRowResults results)
 
 def executeSteps (plan : CheckedMixedComputationPlan model compilePattern) (world : World)
     (patterns : PreparedFlatStringPatterns model compilePattern) (input : CheckedDocument model) :

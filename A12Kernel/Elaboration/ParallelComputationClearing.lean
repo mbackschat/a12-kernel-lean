@@ -4,7 +4,7 @@ import A12Kernel.Semantics.ParallelComputationClearing
 
 /-! # Checked parallel-computation clearing plans
 
-This boundary recognizes one direct non-starred observed field in an indexed group parallel to a repeatable Number target's indexed group. Both declarations and both groups come from one validated model; the existing checked parallel-group owner proves index-name/kind and scope compatibility. It derives side-specific mark scopes, resolves checked index columns over actual target rows, and projects covered source-filled targets to an extensional clearing fragment. The original direct Number-operand plan is retained as a stronger specialization; presence guards reuse the kind-neutral route without weakening Number expression admission. Starred operands, table execution, successful repeatable outcomes, and application remain separate. -/
+This boundary recognizes one direct non-starred observed field in an indexed group parallel to a repeatable Number target's indexed group. Both declarations and both groups come from one validated model; the existing checked parallel-group owner proves index-name/kind and scope compatibility. It derives side-specific mark scopes, resolves checked index columns over actual target rows, and projects covered source-filled targets to an extensional clearing fragment. The original direct Number-operand plan is retained as a stronger specialization; presence guards reuse the kind-neutral route without weakening Number expression admission. The key join under the route, with its target rows and index marks, is independent of the target's kind, so a joined String or temporal target uses it directly. Starred operands, table execution, successful repeatable outcomes, and application remain separate. -/
 
 namespace A12Kernel
 
@@ -78,7 +78,125 @@ def ExtensionalEq (left right : ParallelNumericClearingView) : Prop :=
 
 end ParallelNumericClearingView
 
-/-- One model-certified parallel route from a repeatable Number target to any directly observed field. The source field's kind is deliberately unconstrained because computation presence guards are kind-neutral. -/
+/-- One model-certified key join from a repeatable target row to the indexed group of one observed field. It is independent of the target's kind: a Number route adds the target's Number certificate, and a String or temporal target's joined step uses the join alone. The target row inventory and both index sides' invalid marks belong here, because they read only the target declaration and the two groups. -/
+structure CheckedParallelTargetJoin (model : FlatModel) where
+  private mk ::
+  declaringGroup : GroupPath
+  sourceReference : SurfaceFieldPath
+  targetField : FieldId
+  targetDeclaration : FlatFieldDecl
+  sourceDeclaration : FlatFieldDecl
+  groups : CheckedParallelIndexGroups model
+  targetResolved :
+    model.lookupUniqueId targetField = .ok targetDeclaration
+  sourceResolved :
+    model.resolveFieldDeclarationUnchecked declaringGroup sourceReference =
+      .ok sourceDeclaration
+  targetGroup :
+    groups.leftGroup.path.isPrefixOf targetDeclaration.groupPath = true
+  sourceGroup :
+    groups.rightGroup.path.isPrefixOf sourceDeclaration.groupPath = true
+  targetScope :
+    (targetDeclaration.repeatableScope ==
+      model.repeatableScopeForGroupPath groups.leftGroup.path) = true
+  targetScopeUnique : targetDeclaration.repeatableScope.Nodup
+  sourceScope :
+    (sourceDeclaration.repeatableScope ==
+      model.repeatableScopeForGroupPath groups.rightGroup.path) = true
+
+namespace CheckedParallelTargetJoin
+
+/-- Enumerate every physically instantiated target row from the checked document, over-limit rows included. The two dispositions are taken later: execution skips an over-limit row and clearing writes one. Enumerating only in-capacity rows here would collapse the distinction the Kernel draws, since a dropped row and a cleared row differ exactly on a seeded cell. The target declaration owns the complete scope; callers cannot supply environments or fabricate rows. The inherited document order is an internal canonicalization because Kernel clearing order is not observable. -/
+def targetEnvironments (join : CheckedParallelTargetJoin model)
+    (checked : CheckedDocument model) :
+    Except ActualRowEnvironmentError (List Env) :=
+  checked.actualRowEnvironments
+    join.targetDeclaration.repeatableScope
+
+/-- Derive one checked index side's cause-blind invalid-mark plan. The target's complete scope remains the coverage domain for every observed group. -/
+def markPlanFor (join : CheckedParallelTargetJoin model) :
+    ParallelComputationIndexSide → ParallelComputationMarkPlan
+  | .target =>
+      ParallelComputationMarkPlan.ofScopes
+        join.targetDeclaration.repeatableScope
+        (model.repeatableScopeForGroupPath
+          join.groups.leftGroup.path).dropLast
+  | .operand =>
+      ParallelComputationMarkPlan.ofScopes
+        join.targetDeclaration.repeatableScope
+        (model.repeatableScopeForGroupPath
+          join.groups.rightGroup.path).dropLast
+
+/-- Derive cause-blind post-loop mark keys for one checked index side. Each column is resolved at the target instance's inherited outer bindings, duplicate keys are collapsed, and the returned order is private execution detail. -/
+def invalidIndexMarks (join : CheckedParallelTargetJoin model)
+    (preliminary : CheckedIndexPreliminary model)
+    (side : ParallelComputationIndexSide) :
+    Except ParallelComputationMarkingError
+      (List (ParallelComputationMark (join.markPlanFor side))) := do
+  let targetEnvironments ←
+    join.targetEnvironments preliminary.base
+      |>.mapError .targetRows
+  let group := match side with
+    | .target => join.groups.leftGroup
+    | .operand => join.groups.rightGroup
+  let candidates ← targetEnvironments.mapM fun targetEnvironment => do
+    let column ←
+      preliminary.resolveIndexColumn group targetEnvironment
+        |>.mapError ParallelComputationMarkingError.indexColumn
+    (join.markPlanFor side).markForUnavailable
+      column.unavailableKey targetEnvironment
+        |>.mapError ParallelComputationMarkingError.targetEnvironment
+  pure (candidates.filterMap id).eraseDups
+
+/-- Classify one already-enumerated target list against already-derived marks from both checked sides. This is the shared coverage crossing used by execution and public clearing. -/
+def targetCoverageWithMarks
+    (join : CheckedParallelTargetJoin model)
+    (preliminary : CheckedIndexPreliminary model)
+    (targetMarks :
+      List (ParallelComputationMark (join.markPlanFor .target)))
+    (operandMarks :
+      List (ParallelComputationMark (join.markPlanFor .operand))) :
+    Except ParallelNumericTargetCoverageError
+      (List ParallelNumericTargetCoverage) := do
+  let targetEnvironments ←
+    join.targetEnvironments preliminary.base
+      |>.mapError .targetRows
+  targetEnvironments.mapM fun environment => do
+    let path ←
+      environment.pathForScope join.targetDeclaration.repeatableScope
+        |>.mapError ParallelNumericTargetCoverageError.targetEnvironment
+    let coveredByTarget ←
+      (join.markPlanFor .target).coversAny environment targetMarks
+        |>.mapError ParallelNumericTargetCoverageError.targetEnvironment
+    let coveredByOperand ←
+      (join.markPlanFor .operand).coversAny environment operandMarks
+        |>.mapError ParallelNumericTargetCoverageError.targetEnvironment
+    pure {
+      environment
+      address := { field := join.targetField, path }
+      indexInvalid := coveredByTarget || coveredByOperand
+      overLimit :=
+        preliminary.base.environmentOverLimit
+          join.targetDeclaration.repeatableScope environment
+    }
+
+/-- Derive both checked mark sets and project every actual target through their shared coverage decision. -/
+def targetCoverage
+    (join : CheckedParallelTargetJoin model)
+    (preliminary : CheckedIndexPreliminary model) :
+    Except ParallelNumericTargetCoverageError
+      (List ParallelNumericTargetCoverage) := do
+  let targetMarks ←
+    join.invalidIndexMarks preliminary .target
+      |>.mapError (ParallelNumericTargetCoverageError.marking .target)
+  let operandMarks ←
+    join.invalidIndexMarks preliminary .operand
+      |>.mapError (ParallelNumericTargetCoverageError.marking .operand)
+  join.targetCoverageWithMarks preliminary targetMarks operandMarks
+
+end CheckedParallelTargetJoin
+
+/-- One model-certified parallel route from a repeatable Number target to any directly observed field: a key join (`join`) with the target's Number certificate. The source field's kind is deliberately unconstrained because computation presence guards are kind-neutral. -/
 structure CheckedParallelNumericTargetRoute (model : FlatModel) where
   private mk ::
   declaringGroup : GroupPath
@@ -130,93 +248,22 @@ def WellFormed (route : CheckedParallelNumericTargetRoute model) : Prop :=
     (route.sourceDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath route.groups.rightGroup.path) = true
 
-/-- Enumerate every physically instantiated target row from the checked document, over-limit rows included. The two dispositions are taken later: execution skips an over-limit row and clearing writes one. Enumerating only in-capacity rows here would collapse the distinction the Kernel draws, since a dropped row and a cleared row differ exactly on a seeded cell. The target declaration owns the complete scope; callers cannot supply environments or fabricate rows. The inherited document order is an internal canonicalization because Kernel clearing order is not observable. -/
-def targetEnvironments (route : CheckedParallelNumericTargetRoute model)
-    (checked : CheckedDocument model) :
-    Except ActualRowEnvironmentError (List Env) :=
-  checked.actualRowEnvironments
-    route.targetDeclaration.repeatableScope
-
-/-- Derive one checked index side's cause-blind invalid-mark plan. The target's complete scope remains the coverage domain for every observed group. -/
-def markPlanFor (route : CheckedParallelNumericTargetRoute model) :
-    ParallelComputationIndexSide → ParallelComputationMarkPlan
-  | .target =>
-      ParallelComputationMarkPlan.ofScopes
-        route.targetDeclaration.repeatableScope
-        (model.repeatableScopeForGroupPath
-          route.groups.leftGroup.path).dropLast
-  | .operand =>
-      ParallelComputationMarkPlan.ofScopes
-        route.targetDeclaration.repeatableScope
-        (model.repeatableScopeForGroupPath
-          route.groups.rightGroup.path).dropLast
-
-/-- Derive cause-blind post-loop mark keys for one checked index side. Each column is resolved at the target instance's inherited outer bindings, duplicate keys are collapsed, and the returned order is private execution detail. -/
-def invalidIndexMarks (route : CheckedParallelNumericTargetRoute model)
-    (preliminary : CheckedIndexPreliminary model)
-    (side : ParallelComputationIndexSide) :
-    Except ParallelComputationMarkingError
-      (List (ParallelComputationMark (route.markPlanFor side))) := do
-  let targetEnvironments ←
-    route.targetEnvironments preliminary.base
-      |>.mapError .targetRows
-  let group := match side with
-    | .target => route.groups.leftGroup
-    | .operand => route.groups.rightGroup
-  let candidates ← targetEnvironments.mapM fun targetEnvironment => do
-    let column ←
-      preliminary.resolveIndexColumn group targetEnvironment
-        |>.mapError ParallelComputationMarkingError.indexColumn
-    (route.markPlanFor side).markForUnavailable
-      column.unavailableKey targetEnvironment
-        |>.mapError ParallelComputationMarkingError.targetEnvironment
-  pure (candidates.filterMap id).eraseDups
-
-/-- Classify one already-enumerated target list against already-derived marks from both checked sides. This is the shared coverage crossing used by execution and public clearing. -/
-def targetCoverageWithMarks
-    (route : CheckedParallelNumericTargetRoute model)
-    (preliminary : CheckedIndexPreliminary model)
-    (targetMarks :
-      List (ParallelComputationMark (route.markPlanFor .target)))
-    (operandMarks :
-      List (ParallelComputationMark (route.markPlanFor .operand))) :
-    Except ParallelNumericTargetCoverageError
-      (List ParallelNumericTargetCoverage) := do
-  let targetEnvironments ←
-    route.targetEnvironments preliminary.base
-      |>.mapError .targetRows
-  targetEnvironments.mapM fun environment => do
-    let path ←
-      environment.pathForScope route.targetDeclaration.repeatableScope
-        |>.mapError ParallelNumericTargetCoverageError.targetEnvironment
-    let coveredByTarget ←
-      (route.markPlanFor .target).coversAny environment targetMarks
-        |>.mapError ParallelNumericTargetCoverageError.targetEnvironment
-    let coveredByOperand ←
-      (route.markPlanFor .operand).coversAny environment operandMarks
-        |>.mapError ParallelNumericTargetCoverageError.targetEnvironment
-    pure {
-      environment
-      address := { field := route.targetField, path }
-      indexInvalid := coveredByTarget || coveredByOperand
-      overLimit :=
-        preliminary.base.environmentOverLimit
-          route.targetDeclaration.repeatableScope environment
-    }
-
-/-- Derive both checked mark sets and project every actual target through their shared coverage decision. -/
-def targetCoverage
-    (route : CheckedParallelNumericTargetRoute model)
-    (preliminary : CheckedIndexPreliminary model) :
-    Except ParallelNumericTargetCoverageError
-      (List ParallelNumericTargetCoverage) := do
-  let targetMarks ←
-    route.invalidIndexMarks preliminary .target
-      |>.mapError (ParallelNumericTargetCoverageError.marking .target)
-  let operandMarks ←
-    route.invalidIndexMarks preliminary .operand
-      |>.mapError (ParallelNumericTargetCoverageError.marking .operand)
-  route.targetCoverageWithMarks preliminary targetMarks operandMarks
+/-- The route's key join, without its Number certificate. -/
+def join (route : CheckedParallelNumericTargetRoute model) : CheckedParallelTargetJoin model := {
+  declaringGroup := route.declaringGroup
+  sourceReference := route.sourceReference
+  targetField := route.targetField
+  targetDeclaration := route.targetDeclaration
+  sourceDeclaration := route.sourceDeclaration
+  groups := route.groups
+  targetResolved := route.targetResolved
+  sourceResolved := route.sourceResolved
+  targetGroup := route.targetGroup
+  sourceGroup := route.sourceGroup
+  targetScope := route.targetScope
+  targetScopeUnique := route.targetScopeUnique
+  sourceScope := route.sourceScope
+}
 
 /-- Whether one classified target contributes a public clear, and at which address.
 
@@ -247,13 +294,13 @@ def clearedSourceTargets
     (preliminary : CheckedIndexPreliminary model) :
     Except ParallelNumericClearingError ParallelNumericClearingView := do
   let targetMarks ←
-    route.invalidIndexMarks preliminary .target
+    route.join.invalidIndexMarks preliminary .target
       |>.mapError (ParallelNumericClearingError.marking .target)
   let operandMarks ←
-    route.invalidIndexMarks preliminary .operand
+    route.join.invalidIndexMarks preliminary .operand
       |>.mapError (ParallelNumericClearingError.marking .operand)
   let coverage ←
-    route.targetCoverageWithMarks preliminary targetMarks operandMarks
+    route.join.targetCoverageWithMarks preliminary targetMarks operandMarks
       |>.mapError fun
         | .marking side error => .marking side error
         | .targetRows error => .targetRows error
@@ -344,18 +391,18 @@ def asTargetRoute
 def targetEnvironments (plan : CheckedParallelNumericClearingPlan model)
     (checked : CheckedDocument model) :
     Except ActualRowEnvironmentError (List Env) :=
-  plan.asTargetRoute.targetEnvironments checked
+  plan.asTargetRoute.join.targetEnvironments checked
 
 def markPlanFor (plan : CheckedParallelNumericClearingPlan model) :
     ParallelComputationIndexSide → ParallelComputationMarkPlan
-  | side => plan.asTargetRoute.markPlanFor side
+  | side => plan.asTargetRoute.join.markPlanFor side
 
 def invalidIndexMarks (plan : CheckedParallelNumericClearingPlan model)
     (preliminary : CheckedIndexPreliminary model)
     (side : ParallelComputationIndexSide) :
     Except ParallelComputationMarkingError
       (List (ParallelComputationMark (plan.markPlanFor side))) := do
-  plan.asTargetRoute.invalidIndexMarks preliminary side
+  plan.asTargetRoute.join.invalidIndexMarks preliminary side
 
 def targetCoverageWithMarks
     (plan : CheckedParallelNumericClearingPlan model)
@@ -366,7 +413,7 @@ def targetCoverageWithMarks
       List (ParallelComputationMark (plan.markPlanFor .operand))) :
     Except ParallelNumericTargetCoverageError
       (List ParallelNumericTargetCoverage) :=
-  plan.asTargetRoute.targetCoverageWithMarks
+  plan.asTargetRoute.join.targetCoverageWithMarks
     preliminary targetMarks operandMarks
 
 def targetCoverage
@@ -374,7 +421,7 @@ def targetCoverage
     (preliminary : CheckedIndexPreliminary model) :
     Except ParallelNumericTargetCoverageError
       (List ParallelNumericTargetCoverage) :=
-  plan.asTargetRoute.targetCoverage preliminary
+  plan.asTargetRoute.join.targetCoverage preliminary
 
 def clearedSourceTargets
     (plan : CheckedParallelNumericClearingPlan model)
@@ -394,12 +441,12 @@ private def indexedGroupForParallelComputation (model : FlatModel)
       .error (.multipleIndexedAncestors declaration.id
         (groups.map (·.path)))
 
-/-- Check one kind-neutral observed field as a parallel route to a repeatable Number target. The source kind remains with the consuming operation or presence guard. -/
-def checkParallelNumericTargetRoute (model : FlatModel)
+/-- Check one observed field's key join to a repeatable target of any kind. The target is never an index field; each side's single indexed group must form a checked parallel pair, and each declaration's scope must be exactly its group's. -/
+def checkParallelTargetJoin (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (sourceReference : SurfaceFieldPath) :
     Except ParallelComputationPlanError
-      (CheckedParallelNumericTargetRoute model) :=
+      (CheckedParallelTargetJoin model) :=
   match hTarget : model.lookupUniqueId targetField with
   | .error error => .error (.targetResolve error)
   | .ok targetDeclaration =>
@@ -407,75 +454,97 @@ def checkParallelNumericTargetRoute (model : FlatModel)
           model.resolveFieldDeclarationUnchecked
             declaringGroup sourceReference with
       | .error error => .error (.operandResolve error)
-      | .ok sourceDeclaration =>
-          match hTargetNumber : targetDeclaration.toNumberField? with
-          | none => .error (.targetNotNumber targetField)
-          | some target =>
-              match hPolicy :
-                  targetDeclaration.toNumericTargetPolicy? with
-              | none => .error (.incoherentTargetPolicy targetField)
-              | some targetPolicy => do
-                  if model.isIndexField targetField then
-                    throw (.targetIsIndexField targetField)
-                  let targetGroup ←
-                    indexedGroupForParallelComputation
-                      model targetDeclaration
-                  let sourceGroup ←
-                    indexedGroupForParallelComputation
-                      model sourceDeclaration
-                  let groups ←
-                    checkParallelIndexGroups model targetGroup sourceGroup
-                      |>.mapError .join
-                  if hTargetGroup :
-                      groups.leftGroup.path.isPrefixOf
-                        targetDeclaration.groupPath = true then
-                    if hSourceGroup :
-                        groups.rightGroup.path.isPrefixOf
-                          sourceDeclaration.groupPath = true then
-                      if hTargetScope :
-                          (targetDeclaration.repeatableScope ==
-                            model.repeatableScopeForGroupPath
-                              groups.leftGroup.path) = true then
-                        if hTargetScopeUnique :
-                            targetDeclaration.repeatableScope.Nodup then
-                          if hSourceScope :
-                              (sourceDeclaration.repeatableScope ==
-                                model.repeatableScopeForGroupPath
-                                  groups.rightGroup.path) = true then
-                            pure {
-                              declaringGroup
-                              sourceReference
-                              targetField
-                              targetDeclaration
-                              sourceDeclaration
-                              target
-                              targetPolicy
-                              groups
-                              targetResolved := hTarget
-                              sourceResolved := hSource
-                              targetNumber := hTargetNumber
-                              targetPolicyOwned := hPolicy
-                              targetGroup := hTargetGroup
-                              sourceGroup := hSourceGroup
-                              targetScope := hTargetScope
-                              targetScopeUnique := hTargetScopeUnique
-                              sourceScope := hSourceScope
-                            }
-                          else
-                            throw (.incoherentOperandScope
-                              sourceDeclaration.path)
-                        else
-                          throw (.incoherentTargetScope
-                            targetDeclaration.path)
-                      else
-                        throw (.incoherentTargetScope
-                          targetDeclaration.path)
-                    else
-                      throw (.incoherentOperandScope
-                        sourceDeclaration.path)
+      | .ok sourceDeclaration => do
+          if model.isIndexField targetField then
+            throw (.targetIsIndexField targetField)
+          let targetGroup ←
+            indexedGroupForParallelComputation
+              model targetDeclaration
+          let sourceGroup ←
+            indexedGroupForParallelComputation
+              model sourceDeclaration
+          let groups ←
+            checkParallelIndexGroups model targetGroup sourceGroup
+              |>.mapError .join
+          if hTargetGroup :
+              groups.leftGroup.path.isPrefixOf
+                targetDeclaration.groupPath = true then
+            if hSourceGroup :
+                groups.rightGroup.path.isPrefixOf
+                  sourceDeclaration.groupPath = true then
+              if hTargetScope :
+                  (targetDeclaration.repeatableScope ==
+                    model.repeatableScopeForGroupPath
+                      groups.leftGroup.path) = true then
+                if hTargetScopeUnique :
+                    targetDeclaration.repeatableScope.Nodup then
+                  if hSourceScope :
+                      (sourceDeclaration.repeatableScope ==
+                        model.repeatableScopeForGroupPath
+                          groups.rightGroup.path) = true then
+                    pure {
+                      declaringGroup
+                      sourceReference
+                      targetField
+                      targetDeclaration
+                      sourceDeclaration
+                      groups
+                      targetResolved := hTarget
+                      sourceResolved := hSource
+                      targetGroup := hTargetGroup
+                      sourceGroup := hSourceGroup
+                      targetScope := hTargetScope
+                      targetScopeUnique := hTargetScopeUnique
+                      sourceScope := hSourceScope
+                    }
                   else
-                    throw (.incoherentTargetScope
-                      targetDeclaration.path)
+                    throw (.incoherentOperandScope
+                      sourceDeclaration.path)
+                else
+                  throw (.incoherentTargetScope
+                    targetDeclaration.path)
+              else
+                throw (.incoherentTargetScope
+                  targetDeclaration.path)
+            else
+              throw (.incoherentOperandScope
+                sourceDeclaration.path)
+          else
+            throw (.incoherentTargetScope
+              targetDeclaration.path)
+
+/-- Check one kind-neutral observed field as a parallel route to a repeatable Number target: its key join, then the target's Number certificate. The source kind remains with the consuming operation or presence guard. -/
+def checkParallelNumericTargetRoute (model : FlatModel)
+    (declaringGroup : GroupPath) (targetField : FieldId)
+    (sourceReference : SurfaceFieldPath) :
+    Except ParallelComputationPlanError
+      (CheckedParallelNumericTargetRoute model) := do
+  let join ← checkParallelTargetJoin model declaringGroup targetField sourceReference
+  match hTargetNumber : join.targetDeclaration.toNumberField? with
+  | none => throw (.targetNotNumber targetField)
+  | some target =>
+      match hPolicy : join.targetDeclaration.toNumericTargetPolicy? with
+      | none => throw (.incoherentTargetPolicy targetField)
+      | some targetPolicy =>
+          pure {
+            declaringGroup := join.declaringGroup
+            sourceReference := join.sourceReference
+            targetField := join.targetField
+            targetDeclaration := join.targetDeclaration
+            sourceDeclaration := join.sourceDeclaration
+            target
+            targetPolicy
+            groups := join.groups
+            targetResolved := join.targetResolved
+            sourceResolved := join.sourceResolved
+            targetNumber := hTargetNumber
+            targetPolicyOwned := hPolicy
+            targetGroup := join.targetGroup
+            sourceGroup := join.sourceGroup
+            targetScope := join.targetScope
+            targetScopeUnique := join.targetScopeUnique
+            sourceScope := join.sourceScope
+          }
 
 /-- Check one direct non-starred Number operand as a bounded parallel route to a repeatable Number target. No caller chooses the indexed groups or mark prefixes.
 

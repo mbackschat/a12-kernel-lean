@@ -779,7 +779,8 @@ def evaluateComputation (expression : AuthoredNumericExpr FlatFieldDecl)
   | some fault => .error fault
   | none => lowered.evalComputation context.readNumeric
 
-private def evaluateComputationWith
+/-- Lower once, preflight every atom, then evaluate through one caller-supplied atom reader. -/
+def evaluateComputationWith
     (expression : AuthoredNumericExpr Atom)
     (fault? : Atom → Option NumericComputationFault)
     (read : Atom →

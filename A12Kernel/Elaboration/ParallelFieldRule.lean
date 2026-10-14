@@ -29,33 +29,37 @@ inductive ParallelFieldOperand where
   | field (declaration : FlatFieldDecl)
   deriving Repr, DecidableEq
 
-/-- One numeric comparison operand over the joined rows: a Number field, a numeric component of a temporal field, or a fixed list of Number fields. Each keeps the ordinary validation atom's fold; the kind-specific declarations are recovered from the pair, so a payload of the wrong kind fails admission rather than evaluation. -/
-inductive ParallelNumericAtomOf (Field : Type) where
+/-- One numeric comparison operand over the joined rows: a Number field, a numeric component of a temporal field, or a fixed list of Number fields. Each keeps the ordinary validation atom's fold; the kind-specific declarations are recovered from the pair, so a payload of the wrong kind fails admission rather than evaluation. An ordinary atom, such as a starred aggregate, reads no joined field and keeps its ordinary meaning at the common outer row (generated rule of the joined-carrier capture's row `j11`, 2026-10-14). -/
+inductive ParallelNumericAtomOf (Field Ordinary : Type) where
   | field (operand : Field)
   | temporalPart (operand : Field) (part : TemporalNumericPart)
   | aggregate (op : NumericAggregateOp) (operands : List Field)
+  | ordinary (atom : Ordinary)
   deriving Repr, DecidableEq
 
 namespace ParallelNumericAtomOf
 
-/-- Every field the atom reads, in authored order. -/
-def operands : ParallelNumericAtomOf Field → List Field
+/-- Every joined field the atom reads, in authored order. -/
+def operands : ParallelNumericAtomOf Field Ordinary → List Field
   | .field operand | .temporalPart operand _ => [operand]
   | .aggregate _ operands => operands
+  | .ordinary _ => []
 
-def mapM [Monad m] (bind : Field → m Target) : ParallelNumericAtomOf Field → m (ParallelNumericAtomOf Target)
+def mapM [Monad m] (bind : Field → m Target) (bindOrdinary : Ordinary → m Ordinary') :
+    ParallelNumericAtomOf Field Ordinary → m (ParallelNumericAtomOf Target Ordinary')
   | .field operand => .field <$> bind operand
   | .temporalPart operand part => (.temporalPart · part) <$> bind operand
   | .aggregate op operands => .aggregate op <$> operands.mapM bind
+  | .ordinary atom => .ordinary <$> bindOrdinary atom
 
 end ParallelNumericAtomOf
 
-inductive ParallelFieldLeafOf (Field Ordinary : Type) where
+inductive ParallelFieldLeafOf (Field Ordinary Atom : Type) where
   | groupPresence (op : GroupPresenceOperator) (reference : ResolvedGroupReference)
   | presence (side : Field) (op : RepeatableFieldPresenceOperator)
   | numeric (op : NumericComparisonOp) (left right : Field)
   | fill (op : FieldFillQuantifier) (left right : Field)
-  | comparison (value : NumericComparisonOf (ParallelNumericAtomOf Field))
+  | comparison (value : NumericComparisonOf (ParallelNumericAtomOf Field Atom))
   | customCondition (name : CheckedCustomConditionName)
   /-- `FieldValuesNotUnique` over two or more direct String or Enumeration fields of the joined row
   (joined-carrier-limits capture, row `d04`, 2026-10-14). -/
@@ -70,8 +74,19 @@ inductive ParallelFieldLeafOf (Field Ordinary : Type) where
   `j03`–`j10`, 2026-10-14). -/
   | ordinary (leaf : Ordinary)
 
+/-- An ordinary comparison atom is carried by its one-atom comparison leaf `atom > 0`, checked by the
+ordinary reader, so binding, admission and references answer for it as for an ordinary leaf. -/
 abbrev ParallelFieldLeaf (model : FlatModel) :=
-  ParallelFieldLeafOf ParallelFieldOperand (ValidationConditionLeaf model)
+  ParallelFieldLeafOf ParallelFieldOperand (ValidationConditionLeaf model) (ValidationConditionLeaf model)
+
+/-- A pair comparison atom of `model`. -/
+abbrev ParallelNumericAtom (model : FlatModel) :=
+  ParallelNumericAtomOf ParallelFieldOperand (ValidationConditionLeaf model)
+
+/-- The numeric atom an ordinary comparison atom's leaf compares. -/
+def ValidationConditionLeaf.orderedAtom? : ValidationConditionLeaf model → Option (OrderedNumericValidationAtom model)
+  | .orderedNumeric _ { left := .atom atom, .. } => some atom
+  | _ => none
 
 abbrev ParallelFieldCondition (model : FlatModel) := ConditionTree (ParallelFieldLeaf model)
 
@@ -106,6 +121,26 @@ def CheckedParallelFieldPair.ordinaryBinding? (pair : CheckedParallelFieldPair m
       else if scope.isPrefixOf (scopeOf second) then some (.side second)
       else none
   | .error _ => none
+
+/-- Whether a binding fixes every iterating read of an ordinary leaf. A read below a joined group or
+in a repeatable frame enclosing one is unmeasured beside a join, as are current-repetition and custom
+leaves; a join inside an indexed group is refused as a whole (`MVK_MULTIPLE_INDEX_FIELDS`), and so is
+`RepetitionNotUnique` beside one (`MVK_PARALLEL_ITERATION_NOT_ALLOWED`; joined-carrier-limits capture
+rows `e01`–`e05`, `d06`, 2026-10-14). -/
+def CheckedParallelFieldPair.ordinaryAdmitted (pair : CheckedParallelFieldPair model)
+    (leaf : ValidationConditionLeaf model) : Bool :=
+  let joined := [pair.groups.leftGroup.path, pair.groups.rightGroup.path]
+  let placed := model.fields.all fun declaration =>
+    !leaf.referencesField declaration.id || joined.all fun path =>
+      declaration.groupPath == path ||
+        (!path.isPrefixOf declaration.groupPath &&
+          (!declaration.groupPath.isPrefixOf path || declaration.repeatableScope.isEmpty))
+  let measured := match leaf with
+    | .repetitionNotUnique .. | .guardedRootCurrentRepetition ..
+    | .guardedRepeatableCurrentRepetition .. | .customCondition _ | .customFieldValidity _
+    | .indexedCustomFieldValidity _ => false
+    | _ => true
+  measured && placed && (pair.ordinaryBinding? leaf).isSome
 
 def CheckedParallelFieldPair.admitsOperand (pair : CheckedParallelFieldPair model)
     (operand : ParallelFieldOperand) : Bool :=
@@ -148,7 +183,7 @@ def tokenDistinct (pair : CheckedParallelFieldPair model) :
   | _, _ => false
 
 /-- The temporal gates are the ordinary ones; the stored-component decoder is the model's own, so the atom carries none. -/
-def admitted (pair : CheckedParallelFieldPair model) : ParallelNumericAtomOf ParallelFieldOperand → Bool
+def admitted (pair : CheckedParallelFieldPair model) : ParallelNumericAtom model → Bool
   | .field operand => (pair.declaration operand).toNumberField?.isSome
   | .temporalPart operand part =>
       match (pair.declaration operand).toTemporalField? with
@@ -156,9 +191,10 @@ def admitted (pair : CheckedParallelFieldPair model) : ParallelNumericAtomOf Par
       | none => false
   | .aggregate op operands => tokenDistinct pair op operands || (aggregateFields? pair operands).any fun source =>
       source.hasMultipleFields && source.hasUniqueFields
+  | .ordinary leaf => leaf.orderedAtom?.isSome && pair.ordinaryAdmitted leaf
 
 def scaleSummary (pair : CheckedParallelFieldPair model) :
-    ParallelNumericAtomOf ParallelFieldOperand → NumericScaleSummary
+    ParallelNumericAtom model → NumericScaleSummary
   | .field operand =>
       match (pair.declaration operand).toNumberField? with
       | some number => .field number.info.scale
@@ -168,11 +204,14 @@ def scaleSummary (pair : CheckedParallelFieldPair model) :
       match aggregateFields? pair operands with
       | some source => op.scaleSummary source
       | none => if tokenDistinct pair op operands then .field 0 else { scale := .unknown, canExpandScale := false }
+  | .ordinary leaf => (leaf.orderedAtom?.map (·.summary)).getD { scale := .unknown, canExpandScale := false }
 
 /-- An absent joined observation is call-local unavailability without an invented formal cause; a present one enters the ordinary validation fold, so empty and invalid operands stay UNKNOWN or substituted rather than poisoning. -/
 def resolveValidation (pair : CheckedParallelFieldPair model)
-    (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation)) :
-    ParallelNumericAtomOf ParallelFieldOperand →
+    (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
+    (readOrdinary : ValidationConditionLeaf model →
+      Except ParallelPresenceRuleEvaluationError (Except NumericValidationUnavailable NumericArithmeticOutcome)) :
+    ParallelNumericAtom model →
       Except ParallelPresenceRuleEvaluationError (Except NumericValidationUnavailable NumericArithmeticOutcome)
   | .field operand => do
       let some number := (pair.declaration operand).toNumberField? | throw .unsupportedCondition
@@ -201,10 +240,18 @@ def resolveValidation (pair : CheckedParallelFieldPair model)
       | none => pure (.error NumericValidationUnavailable.silentlyUnavailable)
       | some cells => pure (source.evaluate op
           (fun id => (cells.lookup id).getD (.unknown .malformed))).toValidationArithmetic
+  | .ordinary leaf => readOrdinary leaf
 
 end ParallelNumericAtomOf
 
 namespace ParallelFieldLeaf
+
+/-- The one-atom leaves of a comparison's ordinary atoms. -/
+def atomLeaves : ParallelFieldLeaf model → List (ValidationConditionLeaf model)
+  | .comparison value => (value.left.atoms ++ value.right.atoms).filterMap fun
+      | .ordinary leaf => some leaf
+      | _ => none
+  | _ => []
 
 def fields : ParallelFieldLeaf model → List ParallelFieldOperand
   | .groupPresence _ _ => []
@@ -223,7 +270,8 @@ def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
   | .groupPresence _ reference => group.path.isPrefixOf reference.path
   -- A side-bound ordinary leaf reads that side's joined row; a common-bound one reads neither.
   | .ordinary condition => pair.ordinaryBinding? condition == some (.side side)
-  | _ => leaf.fields.any fun field => group.path.isPrefixOf (pair.declaration field).groupPath
+  | _ => leaf.fields.any (fun field => group.path.isPrefixOf (pair.declaration field).groupPath) ||
+      leaf.atomLeaves.any (pair.ordinaryBinding? · == some (.side side))
 
 /-- Every payload is model-owned and addressable from the join or frame; comparisons reuse the shared authoring and scale gates. -/
 def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
@@ -251,42 +299,26 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
   | .valuesNotUnique operands => ParallelNumericAtomOf.tokenList pair operands
   | .flat condition reads => model.fields.all fun declaration =>
       !condition.referencesField declaration.id || reads.any (pair.declaration · == declaration)
-  -- A binding must fix every iterating read. A read below a joined group or in a repeatable frame
-  -- enclosing one is unmeasured beside a join, as are current-repetition and custom leaves; a join
-  -- inside an indexed group is refused as a whole (`MVK_MULTIPLE_INDEX_FIELDS`), and so is
-  -- `RepetitionNotUnique` beside one (`MVK_PARALLEL_ITERATION_NOT_ALLOWED`; joined-carrier-limits
-  -- capture rows `e01`–`e05`, `d06`, 2026-10-14).
-  | .ordinary leaf =>
-      let joined := [pair.groups.leftGroup.path, pair.groups.rightGroup.path]
-      let placed := model.fields.all fun declaration =>
-        !leaf.referencesField declaration.id || joined.all fun path =>
-          declaration.groupPath == path ||
-            (!path.isPrefixOf declaration.groupPath &&
-              (!declaration.groupPath.isPrefixOf path || declaration.repeatableScope.isEmpty))
-      let measured := match leaf with
-        | .repetitionNotUnique .. | .guardedRootCurrentRepetition ..
-        | .guardedRepeatableCurrentRepetition .. | .customCondition _ | .customFieldValidity _
-        | .indexedCustomFieldValidity _ => false
-        | _ => true
-      measured && placed && (pair.ordinaryBinding? leaf).isSome
+  | .ordinary leaf => pair.ordinaryAdmitted leaf
 
 /-- Direct fields and operation-list wrappers retain the ordinary literal-sensitive guard;
 composite arithmetic has its own parse-tree branch (spec/07 §2). A field list is an entity list in the
 ordinary guard: it rejects mixed references like a wrapper, and a distinct count keeps the ordinary
 positive-threshold rule. -/
 private def numericGuard (participates : ParallelFieldOperand → Bool)
-    (value : NumericComparisonOf (ParallelNumericAtomOf ParallelFieldOperand)) : IterationGuardStatus :=
-  let rec sensitive : AuthoredNumericExpr (ParallelNumericAtomOf ParallelFieldOperand) → Option Bool
+    (value : NumericComparisonOf (ParallelNumericAtom model)) : IterationGuardStatus :=
+  let rec sensitive : AuthoredNumericExpr (ParallelNumericAtom model) → Option Bool
     | .group body => sensitive body
     | .atom (.aggregate ..) => some true
+    -- An ordinary atom reads no joined field, so it neither participates nor wraps one.
     | .atom _ => some false
     | .abs _ | .round _ _ _ | .extremum _ _ _ | .extremumCall _ _ => some true
     | _ => none
-  let rec distinctCount : AuthoredNumericExpr (ParallelNumericAtomOf ParallelFieldOperand) → Bool
+  let rec distinctCount : AuthoredNumericExpr (ParallelNumericAtom model) → Bool
     | .group body => distinctCount body
     | .atom (.aggregate .distinctCount _) => true
     | _ => false
-  let atomOperands := fun (expression : AuthoredNumericExpr (ParallelNumericAtomOf ParallelFieldOperand)) =>
+  let atomOperands := fun (expression : AuthoredNumericExpr (ParallelNumericAtom model)) =>
     expression.atoms.flatMap (·.operands)
   let classify expression constant (entityOnLeft : Bool) := do
     let rejectMixed ← sensitive expression
@@ -396,6 +428,8 @@ def evalWith (pair : CheckedParallelFieldPair model)
     (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
     (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState)
     (readOrdinary : ValidationConditionLeaf model → Except ParallelPresenceRuleEvaluationError Verdict)
+    (readAtom : ValidationConditionLeaf model →
+      Except ParallelPresenceRuleEvaluationError (Except NumericValidationUnavailable NumericArithmeticOutcome))
     (leaf : ParallelFieldLeaf model)
     (custom : String → Except CustomConditionLookupError Bool := fun name => .error (.missingRegistration name))
     (world : Option World := none) :
@@ -416,8 +450,8 @@ def evalWith (pair : CheckedParallelFieldPair model)
             (right.asDirectNumericComparisonOperand b.info))
       | _, _ => pure .unknown
   | .comparison value => do
-      let left ← value.left.mapM (·.resolveValidation pair read)
-      let right ← value.right.mapM (·.resolveValidation pair read)
+      let left ← value.left.mapM (·.resolveValidation pair read readAtom)
+      let right ← value.right.mapM (·.resolveValidation pair read readAtom)
       pure ({ value with left, right }.evalWith id)
   | .fill op lhs rhs => do
       let unknown : ValidationFillTally := { filled := 0, empty := 0, unknown := 1, uninstantiated := 0 }
@@ -495,10 +529,22 @@ def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow
       | some (environment, true) => do
           let view ← preliminary.base.applyPartialGeneratedPreliminaryForScope .full |>.mapError .preliminary
           evalPartialOrdinary view environment world leaf
-      | some (environment, false) => ValidationCondition.evalAddressed (.leaf leaf) {
-          scalar := { fields := { preliminary.base.flatContext with world }, groups := GroupPresenceContext.unavailable }
-          outer := environment, input := .checked preliminary.base }
-        |>.mapError .addressing) leaf custom world
+      | some (environment, false) => ValidationCondition.evalAddressed (.leaf leaf) (addressedAt environment)
+        |>.mapError .addressing)
+    -- An ordinary comparison atom resolves at its leaf's binding, as that leaf would evaluate.
+    (fun carrier => do
+      let some atom := carrier.orderedAtom? | throw .unsupportedCondition
+      match ordinaryEnvironment? pair preliminary.base row outer carrier with
+      | none => pure (.error .silentlyUnavailable)
+      | some (environment, true) => do
+          let view ← preliminary.base.applyPartialGeneratedPreliminaryForScope .full |>.mapError .preliminary
+          (atom.resolveAddressed (view.addressedValidationContext environment world)).mapError .addressing
+      | some (environment, false) => (atom.resolveAddressed (addressedAt environment)).mapError .addressing)
+    leaf custom world
+where
+  addressedAt (environment : Env) : AddressedValidationEvaluationContext model := {
+    scalar := { fields := { preliminary.base.flatContext with world }, groups := GroupPresenceContext.unavailable }
+    outer := environment, input := .checked preliminary.base }
 
 end ParallelFieldLeaf
 
@@ -529,11 +575,14 @@ def references (pair : CheckedParallelFieldPair model) : ParallelFieldCondition 
       ancestorOrEqual := reference.path.isPrefixOf
         (if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration.groupPath
          else pair.rightDeclaration.groupPath) }]
-  | .leaf (.ordinary leaf) => (model.fields.filter (leaf.referencesField ·.id)).map fun declaration =>
-      { sameEntity := declaration.id == pair.errorField }
-  | .leaf leaf => leaf.fields.map fun field =>
-      { sameEntity := (pair.declaration field).id == pair.errorField }
+  | .leaf (.ordinary leaf) => ordinaryReferences leaf
+  | .leaf leaf => leaf.fields.map (fun field =>
+      { sameEntity := (pair.declaration field).id == pair.errorField }) ++ leaf.atomLeaves.flatMap ordinaryReferences
   | .and left right | .or left right => references pair left ++ references pair right
+where
+  ordinaryReferences (leaf : ValidationConditionLeaf model) : List ConditionReference :=
+    (model.fields.filter (leaf.referencesField ·.id)).map fun declaration =>
+      { sameEntity := declaration.id == pair.errorField }
 
 def errorTargetRefusal (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition model) :
     Option KernelStaticDiagnostic :=

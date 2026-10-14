@@ -95,7 +95,7 @@ def execute (step : CheckedParallelNumericStep model) (document : CheckedDocumen
     if step.referencesField declaration.id then some declaration.id else none
   let preliminary ← (document.applySelectedFullIndexPreliminary selected).mapError .preliminary
   let targets ← (CheckedIsolatedParallelNumericDirectRun.targetCoverage
-    step.primary (step.operandRoutes.drop 1) preliminary).mapError .execution
+    step.primary.join ((step.operandRoutes.drop 1).map (·.join)) preliminary).mapError .execution
   targets.mapM fun target => do
     if target.indexInvalid || target.overLimit then
       pure { address := target.address, outcome := .noValue }

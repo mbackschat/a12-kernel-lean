@@ -11,7 +11,8 @@ instance view cannot check: a clock read, a starred or filtered aggregate, a key
 of the partner group, a key read on the error side's row, and a pattern test. Each keeps its
 ordinary meaning at the common row, or at the error side's row where only that row binds its reads,
 beside the joined operation `[/Staffing/Demand/Base] + [Headcount]` or the pair guard
-`FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base)`. The model and documents are reductions
+`FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base)`, and a starred aggregate inside a joined
+operation and its generated rule. The model and documents are reductions
 of the retained Kernel 30.8.1 capture
 `evidence/kernel-30.8.1/captures/joined-carrier-admission-2026-10-14/`, whose clock this world pins;
 every expectation is the capture's own change or message.
@@ -52,10 +53,11 @@ private def guards : List (String × String) := [
   ("Out08", "[Note] PatternMatched \"[A-Z]+\""),
   ("Out10", "AtLeastOneFieldFilled(/Staffing/Demand*/Base)")]
 
-private def computation (target guard : String) : Json :=
+private def computation (target guard : String)
+    (operation : String := "[/Staffing/Demand/Base] + [Headcount]") : Json :=
   element "Computation" s!"/Staffing/Supply/C{target}" s!"C{target}" [("computedFieldRelPath", .str s!"../{target}"),
     ("computationAlternatives", Json.arr #[Json.mkObj [("precondition", .str guard),
-      ("operation", "[/Staffing/Demand/Base] + [Headcount]")]]),
+      ("operation", .str operation)]]),
     ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])]
 
 private def rule (name condition : String) : Json :=
@@ -81,7 +83,8 @@ private def dm? : Option DmModel :=
         field "Demand" "Stamp" date],
       keyed "Supply" "Department" ([field "Supply" "Headcount" number, field "Supply" "Note" text,
         field "Supply" "Due" date] ++ guards.map (fun (target, _) => field "Supply" target number) ++
-        guards.map (fun (target, guard) => computation target guard)),
+        guards.map (fun (target, guard) => computation target guard) ++ [field "Supply" "Out11" number,
+          computation "Out11" "FieldFilled(Headcount)" "[/Staffing/Demand/Base] + Sum(/Staffing/Demand*/Base)"]),
       keyed "Ledger" "Code" [field "Ledger" "Amount" number]] ++
       (rules.map fun (name, condition) => rule name condition).toArray))]])])])])).toOption
 
@@ -91,7 +94,7 @@ private def world : World := { now := { epochMillis := 1791972000000 }, modelZon
 private def row (entries : List (String × String)) : Json :=
   Json.mkObj (entries.map fun (key, value) => (key, Json.str value))
 
-private def outs : List (String × String) := guards.map (·.1, "999")
+private def outs : List (String × String) := guards.map (·.1, "999") ++ [("Out11", "999")]
 
 private def staffing (groups : List (String × List (List (String × String)))) (fixed : List (String × String) := []) : Json :=
   Json.mkObj [("Staffing", Json.mkObj (fixed.map (fun (key, value) => (key, Json.str value)) ++
@@ -156,13 +159,16 @@ private def sparse : Json := staffing [
     [("Department", "B"), ("Headcount", "2"), ("Due", "2026-02-01"), ("Note", "k1")] ++ outs])]
   [("PlanName", "P")]
 
--- Row C has no partner: its clock read on the partner side decides nothing, its own `Due` does.
+-- Row C has no partner: its clock read on the partner side decides nothing, its own `Due` does. A
+-- starred sum inside the joined operation spans every Demand row, `30`, beside the joined partner's.
 example : (computed matched).map (·.mergeSort) = some (
     changes "" ["cleared", "cleared", "value 11", "value 11", "value 11", "value 11", "value 11",
       "cleared", "value 11"] ++
     changes "[2]" (List.replicate 9 "value 27") ++
     changes "[3]" ["cleared", "value 3", "value 3", "value 3", "value 3", "value 3", "value 3",
-      "cleared", "value 3"]).mergeSort := by native_decide
+      "cleared", "value 3"] ++
+    ["Staffing/Supply/Out11 value 40", "Staffing/Supply[2]/Out11 value 50",
+      "Staffing/Supply[3]/Out11 value 30"]).mergeSort := by native_decide
 
 -- A filter that keeps no row sums to zero; an absent keyed row and a keyed partner without the read
 -- field read as empty. Each guard fails and clears its target.
@@ -170,7 +176,8 @@ example : (computed sparse).map (·.mergeSort) = some (
     changes "" ["cleared", "cleared", "value 0", "value 0", "cleared", "cleared", "cleared", "cleared",
       "value 0"] ++
     changes "[2]" ["cleared", "cleared", "value 7", "value 7", "cleared", "cleared", "cleared", "cleared",
-      "value 7"]).mergeSort := by native_decide
+      "value 7"] ++
+    ["Staffing/Supply/Out11 cleared", "Staffing/Supply[2]/Out11 value 10"]).mergeSort := by native_decide
 
 -- A literal key selects the same row at every joined row, the partner group's own included; a key on
 -- the error side's row selects per row, and a key naming no row leaves a Number read empty, an
@@ -209,7 +216,10 @@ example : fired matched = some [
     "COut08 Staffing/Supply[2]/Out08 A12Kernel.Polarity.value",
     "COut10 Staffing/Supply/Out10 A12Kernel.Polarity.value",
     "COut10 Staffing/Supply[2]/Out10 A12Kernel.Polarity.value",
-    "COut10 Staffing/Supply[3]/Out10 A12Kernel.Polarity.omission"] := by native_decide
+    "COut10 Staffing/Supply[3]/Out10 A12Kernel.Polarity.omission",
+    "COut11 Staffing/Supply/Out11 A12Kernel.Polarity.omission",
+    "COut11 Staffing/Supply[2]/Out11 A12Kernel.Polarity.omission",
+    "COut11 Staffing/Supply[3]/Out11 A12Kernel.Polarity.omission"] := by native_decide
 
 example : fired sparse = some [
     "k05 Staffing/Supply[2]/Headcount A12Kernel.Polarity.value",
@@ -219,7 +229,8 @@ example : fired sparse = some [
     "COut04 Staffing/Supply/Out04 A12Kernel.Polarity.omission",
     "COut04 Staffing/Supply[2]/Out04 A12Kernel.Polarity.omission",
     "COut10 Staffing/Supply/Out10 A12Kernel.Polarity.omission",
-    "COut10 Staffing/Supply[2]/Out10 A12Kernel.Polarity.value"] := by native_decide
+    "COut10 Staffing/Supply[2]/Out10 A12Kernel.Polarity.value",
+    "COut11 Staffing/Supply[2]/Out11 A12Kernel.Polarity.omission"] := by native_decide
 
 -- A literal key into the partner group names the selected row beside the joined one; an error-side
 -- key that selects nothing names the unknown Ledger row, and its own row's read brings that side's

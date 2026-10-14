@@ -69,12 +69,7 @@ private def summary (kind : InputKind) (same : Bool := false)
   let declarations := (if copy then [copyDeclaration] else []) ++ (if audit then [auditDeclaration] else [])
   let lowered ← declarations.mapM fun declaration =>
     (lowerComputation model .english declaration).toOption.map (·.2)
-  let steps : List (MixedComputationStep model builtinStringPatternCompiler) := lowered.map fun
-    | .number table _ => .number table
-    | .parallel step => .parallel step
-    | .string table => .string table
-    | .document step => .document step
-    | .rows step => .rows (step builtinStringPatternCompiler)
+  let steps := lowered.map (·.toMixedStep builtinStringPatternCompiler)
   let plan ← (certifyAuthoredMixedComputationPlan steps).toOption
   let inputPlan ← plan.formalInputPlan.toOption
   let staged ← (inputPlan.prepare input).toOption

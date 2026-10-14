@@ -32,7 +32,7 @@ structure ParallelLeafReads where
 
 namespace ParallelFieldLeaf
 
-private def isDistinctCount : ParallelNumericAtomOf ParallelFieldOperand → Bool
+private def isDistinctCount : ParallelNumericAtom model → Bool
   | .aggregate .distinctCount _ => true
   | _ => false
 
@@ -78,9 +78,13 @@ def reads (pair : CheckedParallelFieldPair model) (document : CheckedDocument mo
       | .allFieldsFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled => pure ⟨both, pure []⟩
       | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled
       | .fieldsNotCollectivelyFilled => pure ⟨both, pure both⟩
-  | .comparison value =>
+  -- An ordinary atom adds its one-atom leaf's ordinary reads.
+  | leaf@(.comparison value) => do
       let all := ((value.left.atoms ++ value.right.atoms).flatMap (·.operands)).map (.joined ∘ pair.declaration)
-      pure ⟨all, pure (if upwardOmissionCount isDistinctCount value then [] else all)⟩
+      let atoms ← leaf.atomLeaves.mapM (ordinaryReads pair document row outer inputs)
+      pure ⟨all ++ atoms.flatMap (·.referenced), do
+        let responsible ← atoms.mapM (·.responsible)
+        pure ((if upwardOmissionCount isDistinctCount value then [] else all) ++ responsible.flatten)⟩
   | .customCondition _ => pure ⟨[], pure []⟩
   | .valuesNotUnique operands =>
       let all := operands.map (.joined ∘ pair.declaration)
@@ -91,22 +95,26 @@ def reads (pair : CheckedParallelFieldPair model) (document : CheckedDocument mo
       match condition with
       | .fieldFilled _ => pure ⟨all, pure []⟩
       | _ => pure ⟨all, pure all⟩
+  | .ordinary leaf => ordinaryReads pair document row outer inputs leaf
+where
   -- The ordinary projection at the leaf's binding; a keyed read names the row the index context
   -- places. A read of the bound side's own row is a joined read, which brings that side's index
   -- field (KF539).
-  | .ordinary leaf => do
-      let condition : ValidationCondition model := .leaf leaf
-      let environment := ((ordinaryEnvironment? pair document row outer leaf).map (·.1)).getD outer
-      let classify := fun (pointer : MessagePointer) =>
-        match pair.ordinaryBinding? leaf, model.lookupUniqueId pointer.field with
-        | some (.side side), .ok declaration =>
-            let joined := match side with | .left => row.left | .right => row.right
-            if joined.group.path.isPrefixOf declaration.groupPath &&
-                (concreteFieldPointer declaration environment).toOption == some pointer then .joined declaration
-            else .expanded pointer
-        | _, _ => .expanded pointer
-      pure ⟨(← condition.referencePointers environment inputs |>.mapError .outer).map classify,
-        (·.map classify) <$> (condition.omissionPointers environment inputs).mapError .outer⟩
+  ordinaryReads (pair : CheckedParallelFieldPair model) (document : CheckedDocument model)
+      (row : ResolvedParallelIndexRow) (outer : Env) (inputs : Option MessageReferenceInputs)
+      (leaf : ValidationConditionLeaf model) : Except ParallelReferenceError ParallelLeafReads := do
+    let condition : ValidationCondition model := .leaf leaf
+    let environment := ((ordinaryEnvironment? pair document row outer leaf).map (·.1)).getD outer
+    let classify := fun (pointer : MessagePointer) =>
+      match pair.ordinaryBinding? leaf, model.lookupUniqueId pointer.field with
+      | some (.side side), .ok declaration =>
+          let joined := match side with | .left => row.left | .right => row.right
+          if joined.group.path.isPrefixOf declaration.groupPath &&
+              (concreteFieldPointer declaration environment).toOption == some pointer then .joined declaration
+          else .expanded pointer
+      | _, _ => .expanded pointer
+    pure ⟨(← condition.referencePointers environment inputs |>.mapError .outer).map classify,
+      (·.map classify) <$> (condition.omissionPointers environment inputs).mapError .outer⟩
 
 end ParallelFieldLeaf
 

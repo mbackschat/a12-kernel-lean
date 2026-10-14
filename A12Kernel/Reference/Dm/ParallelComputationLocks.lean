@@ -45,12 +45,7 @@ private def summary (definitions : List DmComputation) (demand supply : List Jso
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
   let lowered ← definitions.mapM fun definition => (lowerComputation model .english definition).toOption.map (·.2)
-  let steps : List (MixedComputationStep model builtinStringPatternCompiler) := lowered.map fun
-    | .number table _ => .number table
-    | .parallel step => .parallel step
-    | .string table => .string table
-    | .document step => .document step
-    | .rows step => .rows (step builtinStringPatternCompiler)
+  let steps := lowered.map (·.toMixedStep builtinStringPatternCompiler)
   let plan ← (certifyAuthoredMixedComputationPlan steps).toOption
   let formalPlan ← plan.formalInputPlan.toOption
   let formalInputs ← (formalPlan.prepare checked).toOption
