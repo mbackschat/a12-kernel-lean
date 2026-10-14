@@ -1,0 +1,194 @@
+{
+ "model": "JRt_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "matched",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Headcount": "1",
+       "Stamp": "2026-10-01",
+       "Kind": "a",
+       "Label": "LA"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Kind": "b",
+       "Stamp": "2026-11-20"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x",
+       "Due": "2026-09-01",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Out07": "999",
+       "Out08": "999",
+       "Out09": "999",
+       "Out10": "999",
+       "Out11": "999",
+       "OutS1": "zz",
+       "OutS2": "zz",
+       "OutD1": "2000-01-01"
+      },
+      {
+       "Department": "B",
+       "Headcount": "7",
+       "Note": "AB",
+       "Due": "2026-12-01",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Out07": "999",
+       "Out08": "999",
+       "Out09": "999",
+       "Out10": "999",
+       "Out11": "999",
+       "OutS1": "zz",
+       "OutS2": "zz",
+       "OutD1": "2000-01-01"
+      },
+      {
+       "Department": "C",
+       "Headcount": "3",
+       "Note": "k1",
+       "Due": "2026-12-01",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Out07": "999",
+       "Out08": "999",
+       "Out09": "999",
+       "Out10": "999",
+       "Out11": "999",
+       "OutS1": "zz",
+       "OutS2": "zz",
+       "OutD1": "2000-01-01"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "sparse",
+   "documentInline": {
+    "Staffing": {
+     "PlanName": "P",
+     "Demand": [
+      {
+       "Department": "A",
+       "Headcount": "0"
+      },
+      {
+       "Department": "B",
+       "Base": "5",
+       "Stamp": "2026-01-01",
+       "Kind": "a"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Out07": "999",
+       "Out08": "999",
+       "Out09": "999",
+       "Out10": "999",
+       "Out11": "999",
+       "OutS1": "zz",
+       "OutS2": "zz",
+       "OutD1": "2000-01-01"
+      },
+      {
+       "Department": "B",
+       "Headcount": "2",
+       "Due": "2026-02-01",
+       "Note": "k1",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Out07": "999",
+       "Out08": "999",
+       "Out09": "999",
+       "Out10": "999",
+       "Out11": "999",
+       "OutS1": "zz",
+       "OutS2": "zz",
+       "OutD1": "2000-01-01"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "net",
+   "documentInline": {
+    "Net": {
+     "Probe": "1",
+     "Region": [
+      {
+       "RKey": "r"
+      },
+      {
+       "RKey": "q"
+      }
+     ]
+    },
+    "Season": {
+     "Err": "1",
+     "S": "01.03-31.03",
+     "S2": "15.03-20.04",
+     "Rows": [
+      {
+       "Range": "01.01-10.01"
+      },
+      {
+       "Range": "20.03-25.03"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

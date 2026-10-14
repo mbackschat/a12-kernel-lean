@@ -1,0 +1,87 @@
+[
+ {
+  "id": "k03b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k03b",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And GroupFilled(/Staffing/Ledger For Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "k07b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k07b",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And [Supply/Headcount] > [/Staffing/Ledger/Amount For Supply/Note]",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "k08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k08",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And FieldFilled(/Staffing/Ledger/Amount For Supply/Note)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "k09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k09",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And FieldFilled(/Staffing/Demand/Base For \"A\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "k10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k10",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And GroupFilled(/Staffing For \"A\")",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

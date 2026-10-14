@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out11",
+ "alternatives": [
+  {
+   "precondition": "FieldFilled(Headcount)",
+   "operation": "[/Staffing/Demand/Base] + Sum(/Staffing/Demand*/Base)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

@@ -1,0 +1,42 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "3f1eb90a599f8b8b981ef143882653801e186b78ecff0ef8983bf133b710c32f",
+  "observations" : [ {
+    "id" : "k03b",
+    "inputHash" : "ccbefb7b2a05b899846573c0eb74016e59282f01ada68e39cb98a914d455a31d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "k07b",
+    "inputHash" : "ca8843e402125ccbada14b419ad9ea64a2f5c006677a3232ff2b752dd5e2c0dc",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "k08",
+    "inputHash" : "67a0ad398be7b1e7c3f2077524294a47dcdf9fb84ee3bfbbac340f01b9e9ad9b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "k09",
+    "inputHash" : "726089de1d88a7debed36f4a02aa4881f4aa54108b8ab3e1c97a297db344b522",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "k10",
+    "inputHash" : "e0058e542f87ec7d7a3e97d1bd15dd518f32dd0f784e1e361aa7edc13f9769d8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_INDEX_FIELD" ]
+  } ]
+}

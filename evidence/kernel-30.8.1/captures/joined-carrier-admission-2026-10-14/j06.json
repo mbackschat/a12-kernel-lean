@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out06",
+ "alternatives": [
+  {
+   "precondition": "[/Staffing/Ledger/Amount For \"k1\"] > 0",
+   "operation": "[/Staffing/Demand/Base] + [Headcount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

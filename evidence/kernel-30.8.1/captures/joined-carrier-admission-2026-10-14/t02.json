@@ -1,0 +1,14 @@
+{
+ "computedField": "/Staffing/Supply/OutS2",
+ "alternatives": [
+  {
+   "operation": "[/Staffing/Demand/Label]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

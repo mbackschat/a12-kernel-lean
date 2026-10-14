@@ -1,0 +1,374 @@
+[
+ {
+  "id": "j01",
+  "verb": "computation",
+  "args": [
+   "add",
+   "j01.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "j02",
+  "verb": "computation",
+  "args": [
+   "add",
+   "j02.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "j03",
+  "verb": "computation",
+  "args": [
+   "add",
+   "j03.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "j04",
+  "verb": "computation",
+  "args": [
+   "add",
+   "j04.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "j05",
+  "verb": "computation",
+  "args": [
+   "add",
+   "j05.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "j06",
+  "verb": "computation",
+  "args": [
+   "add",
+   "j06.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "j07",
+  "verb": "computation",
+  "args": [
+   "add",
+   "j07.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "j08",
+  "verb": "computation",
+  "args": [
+   "add",
+   "j08.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "j10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "j10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "j11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "j11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "t01",
+  "verb": "computation",
+  "args": [
+   "add",
+   "t01.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "t02",
+  "verb": "computation",
+  "args": [
+   "add",
+   "t02.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "t03",
+  "verb": "computation",
+  "args": [
+   "add",
+   "t03.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k01",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And FieldFilled(/Staffing/Ledger/Amount For \"k1\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "k02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k02",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And [/Staffing/Ledger/Amount For \"k1\"] > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "k03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k03",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And GroupFilled(/Staffing/Ledger For [Supply/Note])",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "k04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k04",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And GroupFilled(/Staffing/Ledger For \"k1\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "k05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k05",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And GroupFilled(/Staffing/Demand For \"A\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "k06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k06",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And [Demand/Stamp] > Today",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "k07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k07",
+   "--field",
+   "/Staffing/Supply/Headcount",
+   "--group",
+   "/Staffing",
+   "--condition",
+   "FieldFilled(Supply/Headcount) And FieldFilled(Demand/Base) And [Supply/Headcount] > [/Staffing/Ledger/Amount For [Supply/Note]]",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "n01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n01",
+   "--field",
+   "/Net/Probe",
+   "--group",
+   "/Net",
+   "--condition",
+   "FieldFilled(Probe) And [/Net/Region/Branch/F For \"x\"] > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "n02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n02",
+   "--field",
+   "/Net/Region/RKey",
+   "--group",
+   "/Net/Region",
+   "--condition",
+   "FieldFilled(RKey) And [Branch/F For \"x\"] > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "n03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n03",
+   "--field",
+   "/Net/Region/RKey",
+   "--group",
+   "/Net/Region",
+   "--condition",
+   "FieldFilled(RKey) And [/Net/Region/Branch/F For \"x\"] > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "n04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n04",
+   "--field",
+   "/Net/Probe",
+   "--group",
+   "/Net",
+   "--condition",
+   "FieldFilled(Probe) And [/Net/Region/RKey For \"r\"] == \"r\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "y01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y01",
+   "--field",
+   "/Season/Err",
+   "--group",
+   "/Season",
+   "--condition",
+   "FieldFilled(Err) And DateRangesOverlap(S, Rows*/Range)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "y02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y02",
+   "--field",
+   "/Season/Err",
+   "--group",
+   "/Season",
+   "--condition",
+   "FieldFilled(Err) And AtLeastOneDateRangeOverlaps(S IN Rows*/Range)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "y03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y03",
+   "--field",
+   "/Season/Err",
+   "--group",
+   "/Season",
+   "--condition",
+   "FieldFilled(Err) And AtLeastOneDateRangeOverlaps(Rows*/Range IN S, S2)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "y04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y04",
+   "--field",
+   "/Season/Err",
+   "--group",
+   "/Season",
+   "--condition",
+   "FieldFilled(Err) And DateRangesOverlap(S, S2)",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

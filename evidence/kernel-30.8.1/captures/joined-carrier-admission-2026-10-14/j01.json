@@ -1,0 +1,15 @@
+{
+ "computedField": "/Staffing/Supply/Out01",
+ "alternatives": [
+  {
+   "precondition": "[/Staffing/Demand/Stamp] > Today",
+   "operation": "[/Staffing/Demand/Base] + [Headcount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

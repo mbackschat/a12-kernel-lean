@@ -6,9 +6,9 @@ This is the open-only inventory of residual obligations toward conformance with 
 
 [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns implemented/proved/evidenced behavior, [`SOURCES.md`](SOURCES.md) owns provenance and [`PLAN.md`](PLAN.md) owns selection. This hub preserves stable links to the 24 family records in six shards. The shards retain only residual distinctions and links to their owners; completed milestones are removed.
 
-- `remaining` and `diagnostics` identify residual behavior or exact output distinctions, bounded by the record's scope/exclusion links.
+- `remaining` and `diagnostics` identify residual behavior or exact output distinctions, bounded by the record's scope/exclusion links. Since the K19 disposition (2026-10-14), a `remaining` bullet is an evaluator omission that names its item in the [returned-omission queue](PLAN.md#k19-returned-omissions), and `diagnostics` and `evidence-needed` are correspondence work for K20.
 - `evidence-needed` means additional correspondence is missing; it does not by itself mean executable support is absent.
-- `host-boundary` and `representation-boundary` preserve caller requirements or explicit limits of a named API. They are not permission to silently produce a wrong result.
+- `host-boundary` and `representation-boundary` preserve caller requirements or explicit limits of a named API. Every host input the account takes is a row of the [host-input contract](IMPLEMENTER-GUIDE.md#host-input-contract). They are not permission to silently produce a wrong result.
 - `consumer-gated` identifies transport, proof or product work whose exact consumer contract must be selected in the planned consumer phase; it is not automatically evaluator work.
 - `verification-needed` and `api-audit` preserve an unresolved historical claim or predicted API distinction without promoting it to a confirmed current defect. A current reader discriminator must settle it before work is selected.
 - `reopen-when` states the trigger; `route-state: discovery-required` describes investigation readiness, not an instruction to resume. A reproduced accepted-scope defect belongs in the selected correction, never in an exclusion by relabelling.
