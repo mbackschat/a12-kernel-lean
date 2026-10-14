@@ -1,0 +1,17 @@
+{
+ "kernel": "30.8.1",
+ "producer": "a4091041",
+ "route": "dmtool model check",
+ "model": "R12S_DM.json",
+ "valid": false,
+ "diagnostics": [
+  {
+   "path": "/P/CfN",
+   "code": "MVK_UNEXPECTED_TOKEN"
+  },
+  {
+   "path": "/P/CfC",
+   "code": "MVK_NO_BOOLY_ALLOWED"
+  }
+ ]
+}

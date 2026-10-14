@@ -11,13 +11,18 @@ private def model : FlatModel :=
   let parents := ["Local", "Global", "Captured"].zipIdx |>.map fun (name, i) => text (i + 8) name ["Form", "Parents"] [10]
   { fields := roots ++ parents ++ [text 11 "Text" ["Form", "Parents", "Rows"] [10, 20],
       { text 12 "Limit" ["Form", "Parents"] [10] with policy := { kind := .number { scale := 0, signed := true } } },
-      { text 13 "Keep" ["Form", "Parents", "Rows"] [10, 20] with policy := { kind := .number { scale := 0, signed := true } } }]
+      { text 13 "Keep" ["Form", "Parents", "Rows"] [10, 20] with policy := { kind := .number { scale := 0, signed := true } } },
+      { text 14 "Flag" ["Form", "Parents", "Rows"] [10, 20] with policy := { kind := .boolean } },
+      { text 15 "BareFlag" ["Form"] [] with policy := { kind := .boolean } },
+      { text 16 "RowFlag" ["Form", "Parents"] [10] with policy := { kind := .boolean } },
+      { text 17 "OwnFlag" ["Form", "Parents"] [10] with policy := { kind := .boolean } }]
     repeatableGroups := [{ level := 10, path := ["Form", "Parents"], repeatability := some 3 },
       { level := 20, path := ["Form", "Parents", "Rows"], repeatability := some 3 }] }
 
 private def input (parents : List (String × List (String × String))) (head : String := "H")
     (missingFirstRows : Bool := false) : Json :=
-  let row (text keep : String) := Json.mkObj [("Text", .str text), ("Keep", .str keep)]
+  let row (text keep : String) := Json.mkObj ([("Text", .str text), ("Keep", .str keep)] ++
+    if text.isEmpty then [] else [("Flag", .str (if keep == "1" then "true" else "false"))])
   let parent (limit : String) (rows : List (String × String)) (missing : Bool) := Json.mkObj
     ([("Limit", .str limit), ("Local", .str "99"), ("Global", .str "99"), ("Captured", .str "99")] ++
       if missing then [] else [("Rows", .arr (rows.map fun (text, keep) => row text keep).toArray)])
@@ -172,5 +177,16 @@ example : sameLevelRun ["Own", ""] ["", "Away"] = some [
 example : sameLevelRun ["", ""] [] = some [
     ("Form/Rows/Away", "cleared"), ("Form/Rows/Own", "cleared"),
     ("Form/Rows[2]/Away", "cleared"), ("Form/Rows[2]/Own", "cleared")] := by native_decide
+
+/-- A typed source under two stars selects parent-major at a fixed target and at a row target that
+restars its own group, and in the target's parent at a row target that leaves it bound; the inner-major
+account would answer `true` from the second parent's first row
+([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-typed-first-filled-nested-stars)). -/
+example : run [("1", [("", "1"), ("B", "0")]), ("1", [("A", "1")])] (selected := [
+      ("BareFlag", "FirstFilledValue(/Form/Parents*/Rows*/Flag)"),
+      ("Parents/RowFlag", "FirstFilledValue(/Form/Parents*/Rows*/Flag)"),
+      ("Parents/OwnFlag", "FirstFilledValue(/Form/Parents/Rows*/Flag)")]) = some [
+    ("Form/BareFlag", "value false"), ("Form/Parents/OwnFlag", "value false"), ("Form/Parents/RowFlag", "value false"),
+    ("Form/Parents[2]/OwnFlag", "value true"), ("Form/Parents[2]/RowFlag", "value false")] := by native_decide
 
 end A12Kernel.Dm.NestedFirstFilledLocks

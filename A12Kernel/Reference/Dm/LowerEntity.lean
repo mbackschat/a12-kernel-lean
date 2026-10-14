@@ -222,16 +222,12 @@ def lowerGroupCountOperand : Argument → Lowering SurfaceGroupCountOperand
         | none => refuse "NumberOfFilledGroups" "operand"
   | _ => refuse "NumberOfFilledGroups" "operand"
 
-/-- The common authored source dispatch for fixed and row first-filled targets. -/
+/-- The common authored source dispatch for fixed and row first-filled targets. A lone starred
+operand takes the entity-list route too: the Kernel admits it under any number of stars and at every
+target placement the list admits, selecting parent-major
+([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-typed-first-filled-nested-stars)). -/
 def lowerFirstFilledSource (model : FlatModel) (group : GroupPath) (arguments : List Argument)
-    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) : Lowering SurfaceFirstFilledSource := do
-  match arguments with
-  | [.mk (.entity reference@{ path, index := none, category := none, filter := none }) none] => do
-      if let some bindingGroup := bindingGroup? then
-        checkReferenceRead model group bindingGroup reference
-      match path.segments.any (·.star), path.toStarFieldPath? with
-      | true, some star => pure (.star star)
-      | _, _ => (.list ·) <$> lowerFirstFilledEntitySource model group arguments bindingGroup? suppress
-  | _ => (.list ·) <$> lowerFirstFilledEntitySource model group arguments bindingGroup? suppress
+    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) : Lowering SurfaceFirstFilledSource :=
+  (.list ·) <$> lowerFirstFilledEntitySource model group arguments bindingGroup? suppress
 
 end A12Kernel.Dm

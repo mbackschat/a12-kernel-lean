@@ -1,0 +1,1145 @@
+{
+ "header": {
+  "id": "R12_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R12_DM"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/P/Outer",
+        "name": "Outer",
+        "Group": {
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/P/Outer/Inner",
+           "name": "Inner",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IB",
+              "name": "IB",
+              "Field": {
+               "fieldType": {
+                "type": "BooleanType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IC",
+              "name": "IC",
+              "Field": {
+               "fieldType": {
+                "type": "ConfirmType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/ID",
+              "name": "ID",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IFD",
+              "name": "IFD",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IT",
+              "name": "IT",
+              "Field": {
+               "fieldType": {
+                "type": "TimeType",
+                "TimeType": {
+                 "format": "HH:mm:ss"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IDT",
+              "name": "IDT",
+              "Field": {
+               "fieldType": {
+                "type": "DateTimeType",
+                "DateTimeType": {
+                 "format": "yyyy-MM-dd'T'HH:mm:ss"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IR",
+              "name": "IR",
+              "Field": {
+               "fieldType": {
+                "type": "DateRangeType",
+                "DateRangeType": {
+                 "format": "yyyy-MM-dd",
+                 "rangeSeparator": "/"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IS",
+              "name": "IS",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IE",
+              "name": "IE",
+              "Field": {
+               "fieldType": {
+                "type": "EnumerationType",
+                "EnumerationType": {
+                 "values": [
+                  {
+                   "value": "A"
+                  },
+                  {
+                   "value": "B"
+                  }
+                 ]
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IN",
+              "name": "IN",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/P/Outer/Inner/Sub",
+              "name": "Sub",
+              "Group": {
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/P/Outer/Inner/Sub/SD",
+                 "name": "SD",
+                 "Field": {
+                  "fieldType": {
+                   "type": "DateType",
+                   "DateType": {
+                    "format": "yyyy-MM-dd"
+                   }
+                  }
+                 }
+                },
+                {
+                 "type": "Field",
+                 "id": "/P/Outer/Inner/Sub/SS",
+                 "name": "SS",
+                 "Field": {
+                  "fieldType": {
+                   "type": "StringType"
+                  }
+                 }
+                }
+               ]
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/P/Outer/Inner/Deep",
+              "name": "Deep",
+              "Group": {
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/P/Outer/Inner/Deep/DD",
+                 "name": "DD",
+                 "Field": {
+                  "fieldType": {
+                   "type": "DateType",
+                   "DateType": {
+                    "format": "yyyy-MM-dd"
+                   }
+                  }
+                 }
+                },
+                {
+                 "type": "Field",
+                 "id": "/P/Outer/Inner/Deep/DS",
+                 "name": "DS",
+                 "Field": {
+                  "fieldType": {
+                   "type": "StringType"
+                  }
+                 }
+                },
+                {
+                 "type": "Field",
+                 "id": "/P/Outer/Inner/Deep/DB",
+                 "name": "DB",
+                 "Field": {
+                  "fieldType": {
+                   "type": "BooleanType"
+                  }
+                 }
+                }
+               ],
+               "repeatability": 2
+              }
+             }
+            ],
+            "repeatability": 3
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Outer/OSub",
+           "name": "OSub",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Outer/OSub/OD",
+              "name": "OD",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/OSub/OS",
+              "name": "OS",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Outer/Tg",
+           "name": "Tg",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Outer/Tg/TK",
+              "name": "TK",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Tg/T1D",
+              "name": "T1D",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/P/Outer/Tg/Ct1d",
+              "name": "Ct1d",
+              "Computation": {
+               "computedFieldRelPath": "../T1D",
+               "computationAlternatives": [
+                {
+                 "operation": "FirstFilledValue(/P/Outer/Inner*/Deep*/DD)"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Tg/T1S",
+              "name": "T1S",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/P/Outer/Tg/Ct1s",
+              "name": "Ct1s",
+              "Computation": {
+               "computedFieldRelPath": "../T1S",
+               "computationAlternatives": [
+                {
+                 "operation": "FirstFilledValue(/P/Outer/Inner*/Deep*/DS)"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Tg/T2D",
+              "name": "T2D",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/P/Outer/Tg/Ct2d",
+              "name": "Ct2d",
+              "Computation": {
+               "computedFieldRelPath": "../T2D",
+               "computationAlternatives": [
+                {
+                 "operation": "FirstFilledValue(/P/Outer/Inner*/ID)"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ],
+            "repeatability": 2
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Outer/O1D",
+           "name": "O1D",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Outer/Co1d",
+           "name": "Co1d",
+           "Computation": {
+            "computedFieldRelPath": "../O1D",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(Inner*/Deep*/DD)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Outer/O1S",
+           "name": "O1S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Outer/Co1s",
+           "name": "Co1s",
+           "Computation": {
+            "computedFieldRelPath": "../O1S",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(Inner*/Deep*/DS)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Outer/O1B",
+           "name": "O1B",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Outer/Co1b",
+           "name": "Co1b",
+           "Computation": {
+            "computedFieldRelPath": "../O1B",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(Inner*/Deep*/DB)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Outer/O2D",
+           "name": "O2D",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Outer/Co2d",
+           "name": "Co2d",
+           "Computation": {
+            "computedFieldRelPath": "../O2D",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(Inner*/ID)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Outer/O2S",
+           "name": "O2S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Outer/Co2s",
+           "name": "Co2s",
+           "Computation": {
+            "computedFieldRelPath": "../O2S",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(Inner*/IS)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Outer/O3D",
+           "name": "O3D",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Outer/Co3d",
+           "name": "Co3d",
+           "Computation": {
+            "computedFieldRelPath": "../O3D",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/P/Outer*/Inner*/ID)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Outer/O3S",
+           "name": "O3S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Outer/Co3s",
+           "name": "Co3s",
+           "Computation": {
+            "computedFieldRelPath": "../O3S",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/P/Outer*/Inner*/IS)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ],
+         "repeatability": 3
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Side",
+        "name": "Side",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Side/SK",
+           "name": "SK",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Side/S1D",
+           "name": "S1D",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Side/Cs1d",
+           "name": "Cs1d",
+           "Computation": {
+            "computedFieldRelPath": "../S1D",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/P/Outer*/Inner*/ID)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Side/S1S",
+           "name": "S1S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Side/Cs1s",
+           "name": "Cs1s",
+           "Computation": {
+            "computedFieldRelPath": "../S1S",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/P/Outer*/Inner*/IS)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ],
+         "repeatability": 2
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FB",
+        "name": "FB",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfB",
+        "name": "CfB",
+        "Computation": {
+         "computedFieldRelPath": "../FB",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/IB)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FC",
+        "name": "FC",
+        "Field": {
+         "fieldType": {
+          "type": "ConfirmType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfC",
+        "name": "CfC",
+        "Computation": {
+         "computedFieldRelPath": "../FC",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/IC)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FD",
+        "name": "FD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfD",
+        "name": "CfD",
+        "Computation": {
+         "computedFieldRelPath": "../FD",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/ID)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FFD",
+        "name": "FFD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfFD",
+        "name": "CfFD",
+        "Computation": {
+         "computedFieldRelPath": "../FFD",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/IFD)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FT",
+        "name": "FT",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfT",
+        "name": "CfT",
+        "Computation": {
+         "computedFieldRelPath": "../FT",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/IT)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FDT",
+        "name": "FDT",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfDT",
+        "name": "CfDT",
+        "Computation": {
+         "computedFieldRelPath": "../FDT",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/IDT)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FR",
+        "name": "FR",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfR",
+        "name": "CfR",
+        "Computation": {
+         "computedFieldRelPath": "../FR",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/IR)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FS",
+        "name": "FS",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfS",
+        "name": "CfS",
+        "Computation": {
+         "computedFieldRelPath": "../FS",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/IS)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FE",
+        "name": "FE",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfE",
+        "name": "CfE",
+        "Computation": {
+         "computedFieldRelPath": "../FE",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/IE)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FN",
+        "name": "FN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CfN",
+        "name": "CfN",
+        "Computation": {
+         "computedFieldRelPath": "../FN",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/IN)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FSD",
+        "name": "FSD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cfsd",
+        "name": "Cfsd",
+        "Computation": {
+         "computedFieldRelPath": "../FSD",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/Sub/SD)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FSS",
+        "name": "FSS",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cfss",
+        "name": "Cfss",
+        "Computation": {
+         "computedFieldRelPath": "../FSS",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/Sub/SS)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FOD",
+        "name": "FOD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cfod",
+        "name": "Cfod",
+        "Computation": {
+         "computedFieldRelPath": "../FOD",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/OSub/OD)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/FOS",
+        "name": "FOS",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cfos",
+        "name": "Cfos",
+        "Computation": {
+         "computedFieldRelPath": "../FOS",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/OSub/OS)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}
