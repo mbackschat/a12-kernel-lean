@@ -586,8 +586,8 @@ These stable names help when a query crosses numbered clauses. Their capability 
 - `assurance`: E/P closed for the named projection; L partial; C none; X none; Q none.
 - `source`: [group runtime and reference correction](../sources/inbound-group-operand-batches.md#src-group-runtime-and-reference).
 - `consumer`: Analyze and Explain must distinguish exact-reference membership from broader reachability; a field reachable only through expansion has no direct referrer.
-- `limit`: an admitted unstarred repeatable group-presence operand still fails closed when its own level is unbound because no witness selects a concrete or wildcard coordinate.
-- `remains`: [unstarred repeatable group-presence coordinates](../SEMANTICS-GAPS.md#gap-sg5-unstarred-repeatable-group-presence-reference); unbound deeper descendants on other carriers, the unwitnessed Number and Boolean/Confirm filtered-star reference carriers, `RepetitionNotUnique`, and the message-record channel remain under [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
+- `limit`: the Kernel admits an unstarred repeatable group-presence operand only where the rule iterates that group, and [reports](../sources/message-reference-carrier-probes.md#src-message-reference-carriers) its row concrete with deeper levels wildcarded, as the depth rule gives; an unbound own level, which the Kernel refuses, still fails closed.
+- `remains`: unbound deeper descendants on other carriers, the unwitnessed Boolean/Confirm filtered-star reference carriers, `RepetitionNotUnique`, and the message-record channel remain under [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration).
 
 ## Reference-process exposure
 

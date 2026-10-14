@@ -1,0 +1,1459 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "R5_DM.json",
+    "locale": "en_US",
+    "clock": "2026-10-14T10:00:00Z"
+  },
+  "rows": [
+    {
+      "name": "base",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "a01",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a02",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a03",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a04",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RT",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a07",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a08",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a09",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a10",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "b01",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Code",
+                "P/Items/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b02",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Code",
+                "P/Items/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b03",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Sku",
+                "P/Items/Tm",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Label",
+                "P/Items/Sku",
+                "P/S",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Count",
+                "P/Items/Sku",
+                "P/Items[2]/Count",
+                "P/Items[2]/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b07",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Label",
+                "P/Items/Sku",
+                "P/S",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[1]/Sub[0]/X",
+                "P/Rows/Amt",
+                "P/Rows/RD",
+                "P/Rows/RT",
+                "P/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows[2]/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[2]/Sub[0]/X",
+                "P/Rows[2]/Amt",
+                "P/Rows[2]/RD",
+                "P/Rows[2]/RT",
+                "P/Rows[2]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows[4]/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[4]/Sub[0]/X",
+                "P/Rows[4]/Amt",
+                "P/Rows[4]/RD",
+                "P/Rows[4]/RT",
+                "P/Rows[4]/S"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "a01",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a02",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a03",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a04",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RT",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a07",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a08",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a09",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a10",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "b01",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Code",
+                "P/Items/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b02",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Code",
+                "P/Items/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b03",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Sku",
+                "P/Items/Tm",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Label",
+                "P/Items/Sku",
+                "P/S",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Count",
+                "P/Items/Sku",
+                "P/Items[2]/Count",
+                "P/Items[2]/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b07",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Label",
+                "P/Items/Sku",
+                "P/S",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[1]/Sub[0]/X",
+                "P/Rows/Amt",
+                "P/Rows/RD",
+                "P/Rows/RT",
+                "P/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows[2]/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[2]/Sub[0]/X",
+                "P/Rows[2]/Amt",
+                "P/Rows[2]/RD",
+                "P/Rows[2]/RT",
+                "P/Rows[2]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows[4]/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[4]/Sub[0]/X",
+                "P/Rows[4]/Amt",
+                "P/Rows[4]/RD",
+                "P/Rows[4]/RT",
+                "P/Rows[4]/S"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "sparse",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "a05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[1]/Sub[0]/X",
+                "P/Rows/Amt",
+                "P/Rows/RD",
+                "P/Rows/RT",
+                "P/Rows/S"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "a05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[1]/Sub[0]/X",
+                "P/Rows/Amt",
+                "P/Rows/RD",
+                "P/Rows/RT",
+                "P/Rows/S"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "norows",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "a05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "b01",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Code",
+                "P/Items/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b02",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Code",
+                "P/Items/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b03",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Sku",
+                "P/Items/Tm",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Label",
+                "P/Items/Sku",
+                "P/S",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Count",
+                "P/Items/Sku",
+                "P/Items[2]/Count",
+                "P/Items[2]/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b07",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Label",
+                "P/Items/Sku",
+                "P/S",
+                "P/Total"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "a05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "b01",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Code",
+                "P/Items/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b02",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Code",
+                "P/Items/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b03",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Sku",
+                "P/Items/Tm",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Label",
+                "P/Items/Sku",
+                "P/S",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Count",
+                "P/Items/Sku",
+                "P/Items[2]/Count",
+                "P/Items[2]/Sku",
+                "P/Total"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "b07",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "P/Items/Label",
+                "P/Items/Sku",
+                "P/S",
+                "P/Total"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dup",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "a01",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a02",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a03",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a04",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RT",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a07",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a08",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a09",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a10",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[1]/Sub[0]/X",
+                "P/Rows/Amt",
+                "P/Rows/RD",
+                "P/Rows/RT",
+                "P/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows[2]/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[2]/Sub[0]/X",
+                "P/Rows[2]/Amt",
+                "P/Rows[2]/RD",
+                "P/Rows[2]/RT",
+                "P/Rows[2]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows[4]/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[4]/Sub[0]/X",
+                "P/Rows[4]/Amt",
+                "P/Rows[4]/RD",
+                "P/Rows[4]/RT",
+                "P/Rows[4]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "P/Items/Sku",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "P/Items/Sku"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "P/Items[3]/Sku",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "P/Items[3]/Sku"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "a01",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a02",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a03",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a04",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RT",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a05",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a06",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a07",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a08",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/RD",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a09",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "/P[1]/Rows[0]/S",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "a10",
+              "field": "P/Total",
+              "severity": "ERROR",
+              "type": "OMISSION_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[0]/Amt",
+                "P/D",
+                "P/Total"
+              ],
+              "fillToFix": [
+                "/P[1]/Rows[0]/Amt",
+                "P/Total"
+              ]
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[1]/Sub[0]/X",
+                "P/Rows/Amt",
+                "P/Rows/RD",
+                "P/Rows/RT",
+                "P/Rows/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows[2]/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[2]/Sub[0]/X",
+                "P/Rows[2]/Amt",
+                "P/Rows[2]/RD",
+                "P/Rows[2]/RT",
+                "P/Rows[2]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c02",
+              "field": "P/Rows[4]/Amt",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "m",
+              "referenced": [
+                "/P[1]/Rows[4]/Sub[0]/X",
+                "P/Rows[4]/Amt",
+                "P/Rows[4]/RD",
+                "P/Rows[4]/RT",
+                "P/Rows[4]/S"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "P/Items/Sku",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "P/Items/Sku"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "uniqueIndex",
+              "field": "P/Items[3]/Sku",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "",
+              "referenced": [
+                "P/Items[3]/Sku"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

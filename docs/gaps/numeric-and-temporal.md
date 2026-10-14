@@ -15,14 +15,6 @@
 - `representation-boundary`: a bare-Rat flat condition cannot retain authored literal scale. The [reader preflight](../../A12Kernel/Reference/Dm/LowerValidation.lean) and [scale locks](../../A12Kernel/Reference/Dm/LowerLocks.lean) enforce it before that carrier; this is not an ordinary-reader admission defect.
 - `consumer-gated`: parser nesting ceilings beyond the measured [power/extremum shapes](../sources/computation-placement-and-constant-probes.md#src-power-derived-scale-and-operand-shapes). Further depth is D06, not a missing power mechanism.
 
-<a id="gap-sg5-unstarred-repeatable-group-presence-reference"></a>
-#### Unstarred repeatable group-presence reference
-
-- `state`: evidence/diagnostic residual; broader structural-reference transport is D18.
-- `remaining`: exact reference coordinates for the admitted unstarred repeatable group-presence form beyond the [structural-reference boundary](../implementation/validation-messages-and-custom.md#cap-structural-message-references). An unavailable projection must remain explicit rather than inventing a concrete or wildcard coordinate. Returned as [K19 R5](../PLAN.md#k19-returned-omissions).
-- `reopen-when`: a named output consumer needs this exact form and its source route settles the coordinate.
-- `route-state`: discovery-required
-
 #### SG5 family completion
 
 The [Number capability owners](../implementation/numeric.md) define current execution and assurance. A family-level open label does not imply missing ordinary arithmetic or group execution.

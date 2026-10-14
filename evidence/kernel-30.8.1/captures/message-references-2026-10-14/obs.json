@@ -1,0 +1,72 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "b9f18ef3bca8f145dc0df04c5dcf8645b559592b07634c5838b53578ba985b2c",
+  "observations" : [ {
+    "id" : "s01",
+    "inputHash" : "8efdf6fe9b1590c6226a05927e5472ca5982d8932dd3c0da5ac576d983630f62",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "s02",
+    "inputHash" : "285a0e3dd06cb21ad1bae2c784becd02bac8151a466a45ff4dbbea5ac5d35b45",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s03",
+    "inputHash" : "27c1e637cd21958c504bba3d098e7203058ff36856556af1c5f41f83cb55e9bb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "s04",
+    "inputHash" : "10ab965fc1e1c53bcdb1a9788b1bd3e967bc600111e9ae72e4c7bdb70e54e6d7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "s05",
+    "inputHash" : "be1ce2a21332c64da74572068c23e8ab22b1859105560ae7d474d4451233ec1f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "s06",
+    "inputHash" : "c52ef0dbcd198e3fbbdc5e6afb65f4532a29930c510a553d790441642e3700b1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s07",
+    "inputHash" : "d3e7ad7a5d087384f1a0560c9d2df88dfa49e13bf5d8ad79ecc8014bd931220d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s08",
+    "inputHash" : "77124e8c5caefc8802714ca53ee8995b0eddc73f959f5f28f929bec4e94fac9a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s09",
+    "inputHash" : "65f59c3b1dd5b29ca324488a1a6b38654ca76c42af3d49fabe09f02333eb9600",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s10",
+    "inputHash" : "29f6cf6d00b904f436f26f77a9acadbf02b9519b7e7c3a2ef2dcff214f86ee77",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

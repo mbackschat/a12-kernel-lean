@@ -1,0 +1,172 @@
+[
+ {
+  "id": "s01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "[Total] > 0 And GroupFilled(Rows)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s02",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "[Rows/Amt] > 0 And GroupFilled(Rows)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s03",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "[Rows/Amt] > 0 And GroupFilled(Rows/Sub)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s04",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "[Rows/Amt] > 0 And GroupNotFilled(Rows/Sub)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s05",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P/Rows",
+   "--condition",
+   "[Amt] > 0 And GroupFilled(Sub)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s06",
+   "--field",
+   "/P/Rows/Amt",
+   "--group",
+   "/P",
+   "--condition",
+   "[Rows/Amt] > 0 And GroupNotFilled(Rows)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s07",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "[Total] > 0 And NumberOfDifferentValues(Rows*/RD Having [Rows/Amt] > 0) > 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s08",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "[Total] > 0 And NumberOfDifferentValues(Items/Label For \"a\", S) > 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s09",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "[Total] > 0 And AddDays(D, NumberOfDifferentValues(Rows*/S Having [Rows/Amt] > 0)) > [D]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "[Total] > 0 And AddDays(D, NumberOfFilledFields(Rows*/S)) > [D]",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

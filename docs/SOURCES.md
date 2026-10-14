@@ -142,6 +142,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Custom-field ingestion and outcomes](sources/custom-field-probes.md), including inbound [reserved-report admission, core validation modes and computed-target checks](sources/custom-field-probes.md#src-custom-test-range) from a12-dmkits `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`
 - [Messages and pointers](sources/message-and-pointer-probes.md)
 - [Message-cache population](sources/message-cache-probes.md)
+- [Message-reference carriers](sources/message-reference-carrier-probes.md), including [filtered distinct counts and repeatable group presence](sources/message-reference-carrier-probes.md#src-message-reference-carriers)
 - [Message-parameter rendering and keyed membership](sources/message-parameter-rendering-probes.md)
 - [Inbound handbacks and historical Git stubs](sources/inbound-handbacks.md), including [2026-10-09 reconciliation and additional observations](sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation)
 - [Computation diagnostic assembly](sources/inbound-handbacks.md#src-computation-diagnostic-assembly): inbound a12-dmkits `6b919e0870e36b9da7f33e6735ea7821474e68a0`, retained in reviewed `c0a564ad30ab0baf41c4b4cac33e5452b39993a4`; post-execution full-pointer collisions and application availability.

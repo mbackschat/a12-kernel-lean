@@ -41,6 +41,22 @@ example : references? "Items*/Fixed" 1 = some [
     { field := 2, coordinates := [.concrete 1] },
     { field := 4, coordinates := [.concrete 1, .wildcard] }] := by native_decide
 
+/-- An unstarred repeatable group is admitted in presence only where the rule iterates it: the
+iterated row stays concrete and every deeper repeatable level is wildcarded, the same depth rule as
+the nonrepeatable operand. Kernel oracle: rule `c02` and static rows `s01`–`s06` of the retained
+message-references-2026-10-14 capture. -/
+example : (do
+    let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+    let rule ← (checkRule dm .english {
+      name := "Presence", group := ["Form"], errorCode := "PRES", errorEntityRelPath := "../Rows/Anchor",
+      severity := "ERROR", condition := "[Rows/Anchor] > 0 And GroupFilled(Rows)" }).toOption
+    (rule.condition.core.referencePointers [(10, 2)]).toOption) = some [
+    { field := 1, coordinates := [.concrete 2] },
+    { field := 2, coordinates := [.concrete 2] },
+    { field := 3, coordinates := [.concrete 2, .wildcard] },
+    { field := 4, coordinates := [.concrete 2, .wildcard] },
+    { field := 5, coordinates := [.concrete 2, .wildcard, .wildcard] }] := by native_decide
+
 private def omissionModel : FlatModel :=
   let number (id : Nat) (name : String) (groupPath : GroupPath := ["Form"])
       (repeatableScope : List Nat := []) : FlatFieldDecl :=
@@ -216,6 +232,26 @@ example :
       some ["/G[1]/Rows[0]/A", "/G[1]/Rows[0]/Keep", "G/MaxFiltered"] ∧
     filteredReferences "NumberOfDifferentValues(Rows*/T Having [Rows/Keep] > 0) < 5" =
       some ["/G[1]/Rows[0]/Keep", "/G[1]/Rows[0]/T", "G/MaxFiltered"] := by
+  native_decide
+
+private def filteredOmission (condition : String) : Option (List String) := do
+  let dm : DmModel := { flat := temporalRowsModel, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let rule ← (checkRule dm .english {
+    name := "Filtered", group := ["G"], errorCode := "Filtered", errorEntityRelPath := "../MaxFiltered",
+    severity := "ERROR", condition := "FieldFilled(MaxFiltered) And " ++ condition }).toOption
+  let pointers ← (rule.condition.core.omissionPointers []).toOption
+  pure ((pointers.map (renderPointer temporalRowsModel)).mergeSort (compare · · != .gt))
+
+/-- An upward temporal or token distinct count keeps only its filter reads as fill-to-fix, on either
+comparison side, while a downward count keeps its column too. Kernel oracle: rows `a01`, `a03`,
+`a05` and `a06` of the retained message-references-2026-10-14 capture. -/
+example :
+    filteredOmission "NumberOfDifferentValues(Rows*/A Having [Rows/Keep] > 0) > 1" =
+      some ["/G[1]/Rows[0]/Keep"] ∧
+    filteredOmission "1 < NumberOfDifferentValues(Rows*/T Having [Rows/Keep] > 0)" =
+      some ["/G[1]/Rows[0]/Keep"] ∧
+    filteredOmission "NumberOfDifferentValues(Rows*/A Having [Rows/Keep] > 0) < 3" =
+      some ["/G[1]/Rows[0]/A", "/G[1]/Rows[0]/Keep"] := by
   native_decide
 
 end A12Kernel.Dm.MessageReferenceLocks

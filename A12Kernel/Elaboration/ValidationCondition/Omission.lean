@@ -67,6 +67,12 @@ private def tokenFilterPointers (source : CheckedTokenEntitySource model)
         source.source.filterReferencePointers environment having.condition
     | _ => pure []
 
+private def temporalDistinctFilterPointers (run : CheckedTemporalDistinctCountRun model)
+    (environment : Env) : Except ReferenceProjectionError (List MessagePointer) :=
+  (·.flatten) <$> run.source.operands.mapM fun
+    | .slot (.star path _ (some filter)) => path.filterReferencePointers environment filter
+    | _ => pure []
+
 private def booleanFilterPointers (source : CheckedBooleanValueCountSource model)
     (environment : Env) : Except ReferenceProjectionError (List MessagePointer) :=
   (·.flatten) <$> source.operands.mapM fun
@@ -87,6 +93,8 @@ private def orderedFilterPointers (atom : OrderedNumericValidationAtom model)
     | .firstFilled source | .valueCount _ source | .aggregate _ source =>
         numberFilterPointers source environment
     | .tokenValueCount source => tokenFilterPointers source.source environment
+    | .tokenDistinctCount source => tokenFilterPointers source environment
+    | .temporalDistinctCount run => temporalDistinctFilterPointers run environment
     | .booleanValueCount source => booleanFilterPointers source environment
     | .filledFieldCount source => fieldFillFilterPointers source environment
     | _ => throw .filteredStarOperand

@@ -58,8 +58,6 @@ The former SG1 → SG2 → SG4 construction sequence is represented. [Checked-do
 
 <a id="gap-sg5"></a>
 - [residual record](gaps/numeric-and-temporal.md#gap-sg5)
-<a id="gap-sg5-unstarred-repeatable-group-presence-reference"></a>
-- [unstarred repeatable group presence reference](gaps/numeric-and-temporal.md#gap-sg5-unstarred-repeatable-group-presence-reference)
 
 ### SG6 — temporal authoring, calendar, and target completion
 
