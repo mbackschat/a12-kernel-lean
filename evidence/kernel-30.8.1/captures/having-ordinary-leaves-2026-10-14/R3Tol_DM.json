@@ -1,0 +1,657 @@
+{
+ "header": {
+  "id": "R3Tol_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R3Tol_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/F",
+     "name": "F",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/F/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/DT",
+        "name": "DT",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Txt",
+        "name": "Txt",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Flag",
+        "name": "Flag",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Win",
+        "name": "Win",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/F/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 10,
+         "indexFieldName": "Key",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/F/Rows/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/Amt",
+           "name": "Amt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RD",
+           "name": "RD",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RDT",
+           "name": "RDT",
+           "Field": {
+            "fieldType": {
+             "type": "DateTimeType",
+             "DateTimeType": {
+              "format": "yyyy-MM-dd'T'HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RT",
+           "name": "RT",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RTxt",
+           "name": "RTxt",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RTxt2",
+           "name": "RTxt2",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RFlag",
+           "name": "RFlag",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RConf",
+           "name": "RConf",
+           "Field": {
+            "fieldType": {
+             "type": "ConfirmType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RWin",
+           "name": "RWin",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/REnum",
+           "name": "REnum",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ]
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rt01",
+        "name": "Rt01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "t01",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Today) DiffersWithToleranceRange1 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ot01",
+        "name": "Ot01",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ct01",
+        "name": "Ct01",
+        "Computation": {
+         "computedFieldRelPath": "../Ot01",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Today) DiffersWithToleranceRange1 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rt02",
+        "name": "Rt02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "t02",
+         "errorCondition": "Sum(Rows*/Amt Having YearFromDate(Rows/RD) DiffersWithToleranceRange2 2026) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ot02",
+        "name": "Ot02",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ct02",
+        "name": "Ct02",
+        "Computation": {
+         "computedFieldRelPath": "../Ot02",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having YearFromDate(Rows/RD) DiffersWithToleranceRange2 2026)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rt03",
+        "name": "Rt03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "t03",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, Now) DiffersWithToleranceRange5 [Total]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ot03",
+        "name": "Ot03",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ct03",
+        "name": "Ct03",
+        "Computation": {
+         "computedFieldRelPath": "../Ot03",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, Now) DiffersWithToleranceRange5 [Total])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rt04",
+        "name": "Rt04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "t04",
+         "errorCondition": "Sum(Rows*/Amt Having HoursFromTime(Rows/RT) DiffersWithToleranceRange10 [Total]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ot04",
+        "name": "Ot04",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ct04",
+        "name": "Ct04",
+        "Computation": {
+         "computedFieldRelPath": "../Ot04",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having HoursFromTime(Rows/RT) DiffersWithToleranceRange10 [Total])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rt05",
+        "name": "Rt05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "t05",
+         "errorCondition": "Sum(Rows*/Amt Having MonthFromDate(StartOfDateRange(Rows/RWin)) DiffersWithToleranceRange1 6) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ot05",
+        "name": "Ot05",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ct05",
+        "name": "Ct05",
+        "Computation": {
+         "computedFieldRelPath": "../Ot05",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having MonthFromDate(StartOfDateRange(Rows/RWin)) DiffersWithToleranceRange1 6)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rt06",
+        "name": "Rt06",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "t06",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Now) DiffersWithToleranceRange1 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ot06",
+        "name": "Ot06",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ct06",
+        "name": "Ct06",
+        "Computation": {
+         "computedFieldRelPath": "../Ot06",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Now) DiffersWithToleranceRange1 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rt07",
+        "name": "Rt07",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "t07",
+         "errorCondition": "Sum(Rows*/Amt Having YearFromDate(Today) DiffersWithToleranceRange1 [Rows/Amt]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ot07",
+        "name": "Ot07",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ct07",
+        "name": "Ct07",
+        "Computation": {
+         "computedFieldRelPath": "../Ot07",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having YearFromDate(Today) DiffersWithToleranceRange1 [Rows/Amt])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rt10",
+        "name": "Rt10",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "t10",
+         "errorCondition": "Sum(Rows*/Amt Having SecondsFromTime(Now) DiffersWithToleranceRange10 [Rows/Amt]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ot10",
+        "name": "Ot10",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ct10",
+        "name": "Ct10",
+        "Computation": {
+         "computedFieldRelPath": "../Ot10",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having SecondsFromTime(Now) DiffersWithToleranceRange10 [Rows/Amt])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -22,12 +22,12 @@ def CheckedAddressedNumericTarget.admitsSourceField
     Base Year and that is a property of the pair's agreement, not of one endpoint. -/
 def CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint
     (target : CheckedAddressedNumericTarget model) :
-    ResolvedDateDifferenceOperand → Bool
+    ResolvedDateDifferenceOperand FlatTemporalField clock → Bool
   | .field source =>
       target.admitsSourceField source.id fun owned => owned.toTemporalField? == some source
   | .literal source year => source.admittedIn model year
   | .baseYear year _ => model.baseYear == some year
-  | .today _ => false
+  | .today _ | .now _ _ => false
 
 /-- One endpoint of a sub-day difference. Only a field is admitted, because `Now` needs an evaluation
     world this carrier's row read does not carry and every other operand this type carries reads
@@ -156,7 +156,7 @@ structure CheckedAddressedRepetitionComputation (model : FlatModel) where
     carry, and a structural refusal keeps that missing input out of the value domain. -/
 private def resolveDateDifferenceEndpoint (target : CheckedAddressedNumericTarget model)
     (surface : SurfaceDateDifferenceOperand) :
-    Except AddressedRepetitionComputationElabError ResolvedDateDifferenceOperand := do
+    Except AddressedRepetitionComputationElabError (ResolvedDateDifferenceOperand FlatTemporalField clock) := do
   match surface with
   | .field reference => do
       let declaration ← model.resolveFieldDeclarationUnchecked target.declaringGroup reference
@@ -334,9 +334,9 @@ private def readAddressedAtom (model : FlatModel) (atom : NumericComputationAtom
 
 /-- The field a difference endpoint addresses, or none for a constant. -/
 private def ResolvedDateDifferenceOperand.endpointField? :
-    ResolvedDateDifferenceOperand → Option FieldId
+    ResolvedDateDifferenceOperand FlatTemporalField clock → Option FieldId
   | .field source => some source.id
-  | .baseYear _ _ | .literal _ _ | .today _ => none
+  | .baseYear _ _ | .literal _ _ | .today _ | .now _ _ => none
 
 /-- The same projection for a sub-day endpoint. Only the field form is admitted here, so every other
     shape reports no field and would read nothing even if one were reachable. -/

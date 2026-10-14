@@ -114,7 +114,10 @@ example : ["DifferenceInMonths", "DifferenceInYears", "DifferenceInDays"].all (f
     refused dates s!"{op}($Expected, \"01.03.2025\") > 0" &&
     admitted dates s!"[Rows/N] > 0 And {op}($Expected, \"01.03.2025\") > 0" &&
     admitted dates s!"{op}(Rows/Tag, Today) > 0" &&
-    refused dates s!"{op}(Rows/Tag, Now) > 0") = true := by native_decide
+    -- `Now` is a DateTime: the day difference admits it, months and years refuse it as they refuse a
+    -- DateTime field (having-now-day-difference checkpoint).
+    (if op == "DifferenceInDays" then admitted else refused) dates s!"{op}(Rows/Tag, Now) > 0") = true := by
+  native_decide
 
 example : runModel dates "[Rows/N] > 0 And DifferenceInDays($Expected, \"02.03.2024\") == 1" true
     "2025-03-01" "2024-02-29" "2025-02-28" "Date(\"01\", \"03\", \"2024\")" =
@@ -132,7 +135,7 @@ example : ["DifferenceInMonths", "DifferenceInYears", "DifferenceInDays"].all (f
     referencesFor s!"[/Form/Rows/N] > 0 And {op}(\"01.03.2025\", $/Form/Rows/Tag) > 0" fixture "Token" == some (false, true)) = true := by native_decide
 
 
-private def certifiedSource (source : ResolvedDateDifferenceOperand HavingTemporalRef) : Bool :=
+private def certifiedSource (source : ResolvedDateDifferenceOperand HavingTemporalRef true) : Bool :=
   CorrelatedHavingLeaf.wellFormedForEnvironments { dates with baseYear := some 2024 } [10] [] (.numeric {
     op := .ordinary .equal
     left := .atom (.dayDifference .utc (.field { origin := .inner, field := {
@@ -145,7 +148,9 @@ example : certifiedSource (.literal { year := none, month := 3, day := 1 } 2024)
     certifiedSource (.baseYear 2024 .direct) = true ∧
     certifiedSource (.baseYear 2025 .direct) = false ∧
     certifiedSource (.today .utc) = true ∧
-    certifiedSource (.today .europeBerlin) = false := by native_decide
+    certifiedSource (.today .europeBerlin) = false ∧
+    certifiedSource (.now .utc rfl) = true ∧
+    certifiedSource (.now .europeBerlin rfl) = false := by native_decide
 
 
 private def baseYearSources : List (String × List String) :=
@@ -282,7 +287,7 @@ example : runModel enumerationTarget "" false "" "keep" "drop"
       (clock := { epochMillis := 86400000 }) = some (.notFired, []) := by native_decide
 
 example : refused dates "DifferenceInDays(Today, \"01.01.1970\") == 0" ∧
-    refused dates "DifferenceInDays(Rows/Tag, Now) == 0" ∧
+    admitted dates "DifferenceInDays(Rows/Tag, Now) == 0" ∧
     refused { dates with timeZoneId := "America/New_York" } "DifferenceInYears(Rows/Tag, Today) == 0" := by native_decide
 
 example : [(model, "keep", "drop"), (dates, "1970-01-01", "1971-01-01")].all
@@ -306,6 +311,15 @@ example : [("DifferenceInHours", "2"), ("DifferenceInMinutes", "120"), ("Differe
         "unused" "1970-01-01T00:00:00" "1970-01-01T03:00:00"
         (clock := { epochMillis := 7201999 }) == some (.fired .omission, ["value 9"])
     ) = true := by native_decide
+
+-- A day is a whole 24-hour span between the exact instants: the row one second short of the clock's
+-- day stays at zero (having-now-day-difference checkpoint).
+example : runModel utcInstants "DifferenceInDays(Rows/Tag, Now) == 1" false
+      "unused" "1970-01-01T00:00:00" "1970-01-01T00:00:01"
+      (clock := { epochMillis := 86400000 }) = some (.fired .omission, ["value 9"]) ∧
+    runModel utcInstants "DifferenceInDays(Now, Rows/Tag) == -1" false
+      "unused" "1970-01-01T00:00:00" "1970-01-01T00:00:01"
+      (clock := { epochMillis := 86400999 }) = some (.fired .omission, ["value 9"]) := by native_decide
 
 example : ["DifferenceInHours", "DifferenceInMinutes", "DifferenceInSeconds"].all (fun op =>
     admitted utcInstants s!"{op}(Rows/Tag, Now) > 0" &&

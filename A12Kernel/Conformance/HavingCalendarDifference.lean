@@ -80,7 +80,7 @@ private def staticAtoms : List HavingNumericAtom :=
   let literal : ResolvedDateDifferenceOperand HavingTemporalRef := .literal { year := some 1970, month := 1, day := 1 } 2023
   [.dateDifference .months literal (.field (reference .outer 2)),
    .dateDifference .years (.field (reference .outer 2)) (.baseYear 1970 .direct),
-   .dayDifference .utc literal (.field (reference .outer 2))]
+   .dayDifference .utc (.literal { year := some 1970, month := 1, day := 1 } 2023) (.field (reference .outer 2))]
 
 example : staticAtoms.all (fun atom => atom.origins == [.outer] &&
     CorrelatedHaving.fieldIds (condition atom) == [2] &&

@@ -660,8 +660,9 @@ def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : Group
     let some source := declaration.toTemporalField? | throw .numericExpressionUnsupported
     if !admitted source.components then throw .numericExpressionUnsupported
     pure { origin := reference.origin, field := source }
-  let resolveCalendar (admitted : TemporalComponents → Bool) :
-      SurfaceDateDifferenceOperand SurfaceHavingTemporalRef → Except CorrelationElabError (ResolvedDateDifferenceOperand HavingTemporalRef)
+  let resolveCalendar (clock : Bool) (admitted : TemporalComponents → Bool) :
+      SurfaceDateDifferenceOperand SurfaceHavingTemporalRef →
+        Except CorrelationElabError (ResolvedDateDifferenceOperand HavingTemporalRef clock)
     | .literal source => if source.valid then pure (.literal source model.baseYearOrDefault) else throw .numericExpressionUnsupported
     | .field reference => .field <$> resolveTemporal admitted reference
     | .baseYear source => match model.baseYear with
@@ -670,7 +671,12 @@ def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : Group
     | .today => match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
         | some profile => pure (.today profile)
         | none => throw .numericExpressionUnsupported
-    | .now => throw .numericExpressionUnsupported
+    | .now =>
+        if clockAdmitted : clock = true then
+          match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+          | some profile => pure (.now profile clockAdmitted)
+          | none => throw .numericExpressionUnsupported
+        else throw .numericExpressionUnsupported
   {
     firstFilled := HavingNumberAggregate.elaborate model declaringGroup candidateLevels outerLevels
     groupCount := elaborateHavingGroupCount model declaringGroup candidateLevels outerLevels
@@ -693,13 +699,13 @@ def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : Group
       | some field => pure field
       | none => throw (.text (.lengthOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind))
     dateDifference := fun unit left right => do
-      let resolve := resolveCalendar (unit.admittedBy model.hasBaseYear)
+      let resolve := resolveCalendar false (unit.admittedBy model.hasBaseYear)
       let first ← resolve left
       let second ← resolve right
       if !unit.compatible model.hasBaseYear (first.componentsWith (·.field.components)) (second.componentsWith (·.field.components)) then throw .numericExpressionUnsupported
       pure (.dateDifference unit first second)
     dayDifference := fun left right => do
-      let resolve := resolveCalendar (CalendarDayDifference.admittedBy)
+      let resolve := resolveCalendar true (CalendarDayDifference.admittedBy)
       let first ← resolve left
       let second ← resolve right
       if !CalendarDayDifference.admittedBy (first.componentsWith (·.field.components)) ||

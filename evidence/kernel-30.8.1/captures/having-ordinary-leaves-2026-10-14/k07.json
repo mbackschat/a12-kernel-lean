@@ -1,0 +1,1 @@
+{"computedField": "/F/Total", "alternatives": [{"operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RDT, Now) > 0)"}], "messages": [{"locale": "en_US", "text": "m"}]}

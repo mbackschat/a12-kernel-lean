@@ -64,7 +64,8 @@ theorem orderedNumericValidationAtom_repeatableDateDifference_requiresAddressed
         (.baseYear year source))).requiresAddressedValidation
         (model := model) = true := by
   simp [OrderedNumericValidationAtom.requiresAddressedValidation,
-    lookup, repeatable]
+    OrderedNumericValidationAtom.addressedNumericValidationFieldIds,
+    ResolvedDateDifferenceOperand.fields, lookup, repeatable]
 
 /-- A checked sub-day difference cannot fall back to scalar evaluation when either model-certified DateTime field is repeatable. -/
 theorem orderedNumericValidationAtom_repeatableDateTimeDifference_requiresAddressed
@@ -92,7 +93,8 @@ theorem orderedNumericValidationAtom_repeatableDayDifference_requiresAddressed
         (.baseYear year source))).requiresAddressedValidation
         (model := model) = true := by
   simp [OrderedNumericValidationAtom.requiresAddressedValidation,
-    lookup, repeatable]
+    OrderedNumericValidationAtom.addressedNumericValidationFieldIds,
+    ResolvedDateDifferenceOperand.fields, lookup, repeatable]
 
 /-- A model-certified evaluated-String `Length` source under a nonempty repeatable declaration uses the same addressed entry requirement. -/
 theorem orderedNumericValidationAtom_repeatableStringLength_requiresAddressed

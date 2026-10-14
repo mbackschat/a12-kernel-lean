@@ -69,11 +69,12 @@ private theorem admitsAggregateMember {model : FlatModel}
 
 /-- Neither endpoint of an admitted completed-period difference is the target itself. -/
 private theorem admitsDateDifferenceEndpoint_not_target {model : FlatModel}
-    {target : CheckedAddressedNumericTarget model} {operand : ResolvedDateDifferenceOperand}
+    {target : CheckedAddressedNumericTarget model} {clock : Bool}
+    {operand : ResolvedDateDifferenceOperand FlatTemporalField clock}
     (admitted : target.admitsDateDifferenceEndpoint operand = true) :
     operand.references target.targetField = false := by
   cases operand with
-  | baseYear _ _ | literal _ _ | today _ => rfl
+  | baseYear _ _ | literal _ _ | today _ | now _ _ => rfl
   | field source =>
       simp only [CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint,
         CheckedAddressedNumericTarget.admitsSourceField] at admitted
@@ -187,13 +188,14 @@ theorem admitsSourceField_rowBound {model : FlatModel}
     Base-Year endpoint reads nothing, which is why the hypothesis is the reference rather than the
     constructor: an unreferenced endpoint carries no obligation and none is claimed. -/
 private theorem admitsDateDifferenceEndpoint_rowBound {model : FlatModel}
-    {target : CheckedAddressedNumericTarget model} {operand : ResolvedDateDifferenceOperand}
+    {target : CheckedAddressedNumericTarget model} {clock : Bool}
+    {operand : ResolvedDateDifferenceOperand FlatTemporalField clock}
     {field : FieldId} (admitted : target.admitsDateDifferenceEndpoint operand = true)
     (referenced : operand.references field = true) :
     ∃ owned, model.lookupUniqueId field = .ok owned ∧
       owned.repetitionBoundBy target.targetDeclaration.repeatableScope = true := by
   cases operand with
-  | baseYear _ _ | literal _ _ | today _ => simp [ResolvedDateDifferenceOperand.references] at referenced
+  | baseYear _ _ | literal _ _ | today _ | now _ _ => simp [ResolvedDateDifferenceOperand.references] at referenced
   | field source =>
       simp only [ResolvedDateDifferenceOperand.references] at referenced
       cases (by simpa using referenced : source.id = field)

@@ -55,11 +55,8 @@ def addressedNumericValidationFieldIds :
   | .stringLength source => [source.id]
   | .stringRange source _ _ => [source.id]
   | .fieldValueAsNumber source => [source.fieldId]
-  | .dateDifference _ left right | .dayDifference _ left right =>
-      let fieldId : ResolvedDateDifferenceOperand → List FieldId
-        | .field source => [source.id]
-        | .baseYear _ _ | .literal _ _ | .today _ => []
-      (fieldId left ++ fieldId right).eraseDups
+  | .dateDifference _ left right => ((left.fields ++ right.fields).map (·.id)).eraseDups
+  | .dayDifference _ left right => ((left.fields ++ right.fields).map (·.id)).eraseDups
   | .dateTimeDifference _ left right =>
       ((left.fields ++ right.fields).map FlatField.id).eraseDups
   | _ => []

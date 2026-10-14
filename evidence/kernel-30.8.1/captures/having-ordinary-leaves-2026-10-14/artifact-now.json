@@ -1,0 +1,1147 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R3Now_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-14T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "before",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Ck01",
+       "field": "F/Ok01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Ok01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck02",
+       "field": "F/Ok02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Ok02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows/ROk06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows/RDT",
+        "F/Rows/ROk06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows[2]/ROk06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows[2]/RDT",
+        "F/Rows[2]/ROk06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows[3]/ROk06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows[3]/RDT",
+        "F/Rows[3]/ROk06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck07",
+       "field": "F/Ok07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ],
+       "fillToFix": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ]
+      },
+      {
+       "code": "n01",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r01",
+       "field": "F/Rows/Amt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows/Amt",
+        "F/Rows/RDT"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "F/Ok01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok02",
+        "cleared": false,
+        "errored": false,
+        "value": "13"
+       },
+       {
+        "field": "F/Ok05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "F/Ok07",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "F/Rows/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "F/Rows[2]/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Rows[3]/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Ck01",
+       "field": "F/Ok01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Ok01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck02",
+       "field": "F/Ok02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Ok02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows/ROk06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows/RDT",
+        "F/Rows/ROk06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows[2]/ROk06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows[2]/RDT",
+        "F/Rows[2]/ROk06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows[3]/ROk06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows[3]/RDT",
+        "F/Rows[3]/ROk06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck07",
+       "field": "F/Ok07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ],
+       "fillToFix": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ]
+      },
+      {
+       "code": "n01",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r01",
+       "field": "F/Rows/Amt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows/Amt",
+        "F/Rows/RDT"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "F/Ok01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok02",
+        "cleared": false,
+        "errored": false,
+        "value": "13"
+       },
+       {
+        "field": "F/Ok05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "F/Ok07",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "F/Rows/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "F/Rows[2]/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Rows[3]/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "after",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Ck01",
+       "field": "F/Ok01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Ok01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck02",
+       "field": "F/Ok02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Ok02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows/ROk06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows/RDT",
+        "F/Rows/ROk06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows[2]/ROk06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows[2]/RDT",
+        "F/Rows[2]/ROk06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck07",
+       "field": "F/Ok07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ],
+       "fillToFix": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ]
+      },
+      {
+       "code": "r01",
+       "field": "F/Rows[2]/Amt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows[2]/Amt",
+        "F/Rows[2]/RDT"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "F/Ok01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok02",
+        "cleared": false,
+        "errored": false,
+        "value": "-5"
+       },
+       {
+        "field": "F/Ok05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "F/Ok07",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Rows/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "-1"
+       },
+       {
+        "field": "F/Rows[2]/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Ck01",
+       "field": "F/Ok01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Ok01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck02",
+       "field": "F/Ok02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Ok02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows/ROk06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows/RDT",
+        "F/Rows/ROk06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows[2]/ROk06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows[2]/RDT",
+        "F/Rows[2]/ROk06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck07",
+       "field": "F/Ok07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ],
+       "fillToFix": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ]
+      },
+      {
+       "code": "r01",
+       "field": "F/Rows[2]/Amt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows[2]/Amt",
+        "F/Rows[2]/RDT"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "F/Ok01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok02",
+        "cleared": false,
+        "errored": false,
+        "value": "-5"
+       },
+       {
+        "field": "F/Ok05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "F/Ok07",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Rows/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "-1"
+       },
+       {
+        "field": "F/Rows[2]/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "same",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Ck01",
+       "field": "F/Ok01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Ok01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck02",
+       "field": "F/Ok02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Ok02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows/ROk06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows/RDT",
+        "F/Rows/ROk06"
+       ],
+       "fillToFix": [
+        "F/Rows/RDT",
+        "F/Rows/ROk06"
+       ]
+      },
+      {
+       "code": "Ck07",
+       "field": "F/Ok07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ],
+       "fillToFix": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ]
+      },
+      {
+       "code": "h05",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RD",
+        "F/Total"
+       ],
+       "fillToFix": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RD",
+        "F/Total"
+       ]
+      },
+      {
+       "code": "n01",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n02",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n03",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n08",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n10",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Total"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "F/Ok01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok02",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "F/Ok07",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Rows/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Ck01",
+       "field": "F/Ok01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Ok01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck02",
+       "field": "F/Ok02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Ok02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ck06",
+       "field": "F/Rows/ROk06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Rows/RDT",
+        "F/Rows/ROk06"
+       ],
+       "fillToFix": [
+        "F/Rows/RDT",
+        "F/Rows/ROk06"
+       ]
+      },
+      {
+       "code": "Ck07",
+       "field": "F/Ok07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ],
+       "fillToFix": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ]
+      },
+      {
+       "code": "h05",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RD",
+        "F/Total"
+       ],
+       "fillToFix": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RD",
+        "F/Total"
+       ]
+      },
+      {
+       "code": "n01",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n02",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n03",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n08",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n10",
+       "field": "F/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/Total"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "F/Ok01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok02",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "F/Ok07",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Rows/ROk06",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Ck01",
+       "field": "F/Ok01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Ok01"
+       ],
+       "fillToFix": [
+        "F/DT",
+        "F/Ok01"
+       ]
+      },
+      {
+       "code": "Ck02",
+       "field": "F/Ok02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Ok02"
+       ],
+       "fillToFix": [
+        "F/D",
+        "F/Ok02"
+       ]
+      },
+      {
+       "code": "Ck07",
+       "field": "F/Ok07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ],
+       "fillToFix": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ]
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "F/Rows/RDT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "F/Rows/RDT"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "F/Ok01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok02",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "F/Ok07",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "F/Rows/ROk06",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "F/Rows/RDT",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "F/Rows/RDT"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Ck01",
+       "field": "F/Ok01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/DT",
+        "F/Ok01"
+       ],
+       "fillToFix": [
+        "F/DT",
+        "F/Ok01"
+       ]
+      },
+      {
+       "code": "Ck02",
+       "field": "F/Ok02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "F/D",
+        "F/Ok02"
+       ],
+       "fillToFix": [
+        "F/D",
+        "F/Ok02"
+       ]
+      },
+      {
+       "code": "Ck07",
+       "field": "F/Ok07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ],
+       "fillToFix": [
+        "/F[1]/Rows[0]/Amt",
+        "/F[1]/Rows[0]/RDT",
+        "F/Ok07"
+       ]
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "F/Rows/RDT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "F/Rows/RDT"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "F/Ok01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok02",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "F/Ok05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "F/Ok07",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "F/Rows/ROk06",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "F/Rows/RDT",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "F/Rows/RDT"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

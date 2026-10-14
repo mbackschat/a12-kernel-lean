@@ -1,0 +1,397 @@
+[
+ {
+  "id": "n01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n01",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInDays(D, Now) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n02",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInDays(DT, Now) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n03",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInDays(Now, DT) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n04",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInMonths(D, Now) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n05",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInMonths(DT, Now) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n06",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInYears(D, Now) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n07",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInYears(Now, DT) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n08",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInDays(Now, Today) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n09",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInDays(Now, \"01.01.2026\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n10",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInDays(Now, Now) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n11",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInMonths(Now, Today) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n12",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "DifferenceInYears(Now, \"01.01.2026\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "h01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h01",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInMonths(Rows/RD, Now) > 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "h02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h02",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInYears(Now, Rows/RD) > 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "h03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h03",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInMonths(Rows/RDT, Now) > 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "h04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h04",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInYears(Rows/RDT, Now) > 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "h05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h05",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Now) > 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "r01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r01",
+   "--field",
+   "/F/Rows/Amt",
+   "--group",
+   "/F/Rows",
+   "--condition",
+   "DifferenceInDays(RDT, Now) > [Amt]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "r02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r02",
+   "--field",
+   "/F/Rows/Amt",
+   "--group",
+   "/F/Rows",
+   "--condition",
+   "DifferenceInMonths(RD, Now) > [Amt]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "k01",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k01.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k02",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k02.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k03",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k03.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k04",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k04.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k05",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k05.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k06",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k06.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k07",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k07.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k08",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k08.json",
+   "--dry-run"
+  ]
+ }
+]

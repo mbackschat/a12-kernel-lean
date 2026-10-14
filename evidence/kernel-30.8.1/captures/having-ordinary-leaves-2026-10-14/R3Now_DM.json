@@ -1,0 +1,562 @@
+{
+ "header": {
+  "id": "R3Now_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R3Now_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/F",
+     "name": "F",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/F/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/DT",
+        "name": "DT",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Txt",
+        "name": "Txt",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Flag",
+        "name": "Flag",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Win",
+        "name": "Win",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/F/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 10,
+         "indexFieldName": "Key",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/F/Rows/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/Amt",
+           "name": "Amt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RD",
+           "name": "RD",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RDT",
+           "name": "RDT",
+           "Field": {
+            "fieldType": {
+             "type": "DateTimeType",
+             "DateTimeType": {
+              "format": "yyyy-MM-dd'T'HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RT",
+           "name": "RT",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RTxt",
+           "name": "RTxt",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RTxt2",
+           "name": "RTxt2",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RFlag",
+           "name": "RFlag",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RConf",
+           "name": "RConf",
+           "Field": {
+            "fieldType": {
+             "type": "ConfirmType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RWin",
+           "name": "RWin",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/REnum",
+           "name": "REnum",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/F/Rows/Rr01",
+           "name": "Rr01",
+           "Rule": {
+            "errorEntityRelPath": "../Amt",
+            "errorCode": "r01",
+            "errorCondition": "DifferenceInDays(RDT, Now) > [Amt]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/ROk06",
+           "name": "ROk06",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/F/Rows/Ck06",
+           "name": "Ck06",
+           "Computation": {
+            "computedFieldRelPath": "../ROk06",
+            "computationAlternatives": [
+             {
+              "operation": "DifferenceInDays(RDT, Now)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rn01",
+        "name": "Rn01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n01",
+         "errorCondition": "DifferenceInDays(D, Now) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rn02",
+        "name": "Rn02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n02",
+         "errorCondition": "DifferenceInDays(DT, Now) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rn03",
+        "name": "Rn03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n03",
+         "errorCondition": "DifferenceInDays(Now, DT) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rn08",
+        "name": "Rn08",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n08",
+         "errorCondition": "DifferenceInDays(Now, Today) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rn09",
+        "name": "Rn09",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n09",
+         "errorCondition": "DifferenceInDays(Now, \"01.01.2026\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rn10",
+        "name": "Rn10",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n10",
+         "errorCondition": "DifferenceInDays(Now, Now) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rh05",
+        "name": "Rh05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "h05",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Now) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ok01",
+        "name": "Ok01",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ck01",
+        "name": "Ck01",
+        "Computation": {
+         "computedFieldRelPath": "../Ok01",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(DT, Now)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ok02",
+        "name": "Ok02",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ck02",
+        "name": "Ck02",
+        "Computation": {
+         "computedFieldRelPath": "../Ok02",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(D, Now)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ok05",
+        "name": "Ok05",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ck05",
+        "name": "Ck05",
+        "Computation": {
+         "computedFieldRelPath": "../Ok05",
+         "computationAlternatives": [
+          {
+           "precondition": "DifferenceInDays(DT, Now) > 0",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ok07",
+        "name": "Ok07",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ck07",
+        "name": "Ck07",
+        "Computation": {
+         "computedFieldRelPath": "../Ok07",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RDT, Now) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -32,7 +32,7 @@ The [Number capability owners](../implementation/numeric.md) define current exec
 ### SG6 — temporal authoring, calendar, and target completion
 
 - `state`: residual; D03 wider calendars/formats, D20/D21 additional carriers and D23 broader calibration.
-- `baseline`: [Temporal capabilities](../implementation/temporal.md), [DateRange capabilities](../implementation/date-range.md) and [recursive Having operations](../implementation/repetition-and-paths.md#cap-having-temporal-operations) own represented forms and exact supported profiles.
+- `baseline`: [Temporal capabilities](../implementation/temporal.md), [DateRange capabilities](../implementation/date-range.md) and [recursive Having operations](../implementation/having-filters.md#cap-having-temporal-operations) own represented forms and exact supported profiles.
 - `host-boundary`: below-Gregorian-floor/nonpositive-era dates, additional model zones, formats outside the declaration denominator and imprecise stored DateFragment forms require an explicit calendar/input profile. Unsupported profile information must not become an invented value or Kernel formal error.
 - `evidence-needed`: cross-kind ordering beyond equality, per-row ValueAsDate and additional extractor placements.
 - `representation-boundary`: the flat temporal comparison literal surface is narrower than the shared scalar temporal reader. Keep Time/DateTime literal refusals attached to that API rather than claiming those constructs are absent from maintained validation.

@@ -167,10 +167,14 @@ def readDateDifferenceOperand (context : ScalarComputationContext) :
 
 def readCalendarDayDifferenceOperand (context : ScalarComputationContext)
     (profile : ModelZone.ConcreteProfile) :
-    ResolvedDateDifferenceOperand → Except NumericComputationFault CalendarDayDifferenceOperand :=
+    ResolvedDateDifferenceOperand FlatTemporalField true →
+      Except NumericComputationFault CalendarDayDifferenceOperand :=
   ResolvedDateDifferenceOperand.readDayOperand profile
     (fun source => pure (observeCell .computation (context.read source.id)))
     (fun sourceProfile => CalendarDayDifferenceOperand.ofParts sourceProfile <$> context.readTodayParts sourceProfile)
+    (fun sourceProfile => do
+      let some world := context.world | throw .worldRequired
+      pure (CalendarDayDifferenceOperand.ofInstant sourceProfile world.now))
 
 /-- Resolve one checked sub-day operand through computation-phase field reads or the explicit evaluation world. Unsupported temporal comparison shapes fail structurally rather than becoming field poison. -/
 def readDateTimeDifferenceOperand (context : ScalarComputationContext) :
@@ -692,11 +696,11 @@ def NumericComputationAtom.numericComputationFault? :
       | some fault => some fault
       | none => fault? right
   | .dayDifference _ left right =>
-      let fault? : ResolvedDateDifferenceOperand → Option NumericComputationFault
+      let fault? : ResolvedDateDifferenceOperand FlatTemporalField true → Option NumericComputationFault
         | .field source =>
             if CalendarDayDifference.admittedBy source.components then none
             else some (.fieldKindMismatch source.id)
-        | .baseYear _ _ | .literal _ _ | .today _ => none
+        | .baseYear _ _ | .literal _ _ | .today _ | .now _ _ => none
       match fault? left with
       | some fault => some fault
       | none => fault? right

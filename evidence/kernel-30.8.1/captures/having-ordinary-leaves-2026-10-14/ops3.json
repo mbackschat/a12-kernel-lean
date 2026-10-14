@@ -1,0 +1,172 @@
+[
+ {
+  "id": "l01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "l01",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, \"01.01.2026\") > 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "l02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "l02",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, \"01.01.2026T00:00:00\") > 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "l03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "l03",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having [Rows/RD] > \"01.01.2026\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "l04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "l04",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having [Rows/RDT] > \"14.10.2026T11:00:00\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "l05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "l05",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, DateTime(Date(\"1\", \"1\", \"2026\"), Time(\"0\", \"0\", \"0\"))) > 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "l06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "l06",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInDays(Rows/RDT, \"01.01.2026T00:00:00\") > 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "l07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "l07",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having [Rows/RT] > \"10:30:00\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "l08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "l08",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInMinutes(Rows/RDT, Now) > 60) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "l09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "l09",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having [Rows/RDT] < AddHours(Now, 2)) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "l10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "l10",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Date([Rows/Amt], \"1\", \"2026\")) > 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

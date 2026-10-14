@@ -60,7 +60,7 @@ example :
       { model with baseYear := some 2023 } ["Order"] .sameGroup
       (.dayDifference .utc (.literal literal anchor) (.literal literal anchor))
     admitted 2023 = true ∧ admitted 2024 = false ∧
-      (ResolvedDateDifferenceOperand.literal literal 2023).references 11 = false := by
+      (.literal literal 2023 : ResolvedDateDifferenceOperand).references 11 = false := by
   native_decide
 
 private def fullDateField : FlatFieldDecl := {
@@ -409,7 +409,7 @@ example : todayVerdict (dayDifference (dateLiteral (some 2024) 3 31) .today) 1 =
 example :
     (ResolvedDateDifferenceOperand.today .utc).validationOperand { read := fun _ => malformedCheckedCell } =
       .unavailable .malformed ∧
-    (ResolvedDateDifferenceOperand.today .utc).references 1 = false ∧
+    (.today .utc : ResolvedDateDifferenceOperand).references 1 = false ∧
     NumericValidationAtom.admitted model ["Order"] .sameGroup
       (.dayDifference .utc (.today .europeBerlin) (.today .utc)) = false ∧
     errorOf (comparison .equal (dateTimeDifference .seconds .today .now) 0) =

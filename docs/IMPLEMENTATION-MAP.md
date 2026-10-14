@@ -308,85 +308,85 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 <a id="cap-named-environments-and-addresses"></a>
 - [Named environments and addresses](implementation/repetition-and-paths.md#cap-named-environments-and-addresses)
 <a id="cap-having-configured-numeric-sources"></a>
-- [Configured numeric sources inside Having](implementation/repetition-and-paths.md#cap-having-configured-numeric-sources)
+- [Configured numeric sources inside Having](implementation/having-filters.md#cap-having-configured-numeric-sources)
 
 <a id="cap-having-calendar-differences"></a>
-- [Calendar differences inside Having](implementation/repetition-and-paths.md#cap-having-calendar-differences)
+- [Calendar differences inside Having](implementation/having-filters.md#cap-having-calendar-differences)
 
 <a id="cap-having-numeric-field-forms"></a>
-- [Numeric field forms inside Having](implementation/repetition-and-paths.md#cap-having-numeric-field-forms)
+- [Numeric field forms inside Having](implementation/having-filters.md#cap-having-numeric-field-forms)
 
 <a id="cap-having-collection-counts"></a>
-- [Collection counts and paired products inside Having](implementation/repetition-and-paths.md#cap-having-collection-counts)
+- [Collection counts and paired products inside Having](implementation/having-filters.md#cap-having-collection-counts)
 
 <a id="cap-having-selection"></a>
-- [First-filled and temporal selection inside Having](implementation/repetition-and-paths.md#cap-having-selection)
+- [First-filled and temporal selection inside Having](implementation/having-filters.md#cap-having-selection)
 
 <a id="cap-having-direct-number-aggregates"></a>
-- [Number entity aggregates inside Having](implementation/repetition-and-paths.md#cap-having-direct-number-aggregates)
+- [Number entity aggregates inside Having](implementation/having-filters.md#cap-having-direct-number-aggregates)
 
 <a id="cap-having-temporal-constructions"></a>
-- [Temporal construction and range endpoints inside Having](implementation/repetition-and-paths.md#cap-having-temporal-constructions)
+- [Temporal construction and range endpoints inside Having](implementation/having-filters.md#cap-having-temporal-constructions)
 
 <a id="cap-having-temporal-constants"></a>
-- [Temporal constants in Having comparisons](implementation/repetition-and-paths.md#cap-having-temporal-constants)
+- [Temporal constants in Having comparisons](implementation/having-filters.md#cap-having-temporal-constants)
 
 <a id="cap-having-group-predicates"></a>
-- [Group predicates in correlated filters](implementation/repetition-and-paths.md#cap-having-group-predicates)
+- [Group predicates in correlated filters](implementation/having-filters.md#cap-having-group-predicates)
 
 <a id="cap-having-time-values"></a>
-- [Positional Time values inside Having](implementation/repetition-and-paths.md#cap-having-time-values)
+- [Positional Time values inside Having](implementation/having-filters.md#cap-having-time-values)
 
 <a id="cap-having-temporal-operations"></a>
-- [Temporal shifts, partial-Date completion and recursive differences in Having](implementation/repetition-and-paths.md#cap-having-temporal-operations)
+- [Temporal shifts, partial-Date completion and recursive differences in Having](implementation/having-filters.md#cap-having-temporal-operations)
 
 <a id="cap-having-recursive-components"></a>
-- [Recursive Date/Time components and constructed-Date validity in Having](implementation/repetition-and-paths.md#cap-having-recursive-components)
+- [Recursive Date/Time components and constructed-Date validity in Having](implementation/having-filters.md#cap-having-recursive-components)
 
 <a id="cap-having-date-values"></a>
-- [Positional Date values inside Having](implementation/repetition-and-paths.md#cap-having-date-values)
+- [Positional Date values inside Having](implementation/having-filters.md#cap-having-date-values)
 
 <a id="cap-having-date-validity"></a>
-- [Direct constructed-Date validity in correlated filters](implementation/repetition-and-paths.md#cap-having-date-validity)
+- [Direct constructed-Date validity in correlated filters](implementation/having-filters.md#cap-having-date-validity)
 
 <a id="cap-having-direct-uniqueness"></a>
-- [Field uniqueness entity lists in correlated filters](implementation/repetition-and-paths.md#cap-having-direct-uniqueness)
+- [Field uniqueness entity lists in correlated filters](implementation/having-filters.md#cap-having-direct-uniqueness)
 
 <a id="cap-having-pattern-predicates"></a>
-- [Pattern predicates in correlated filters](implementation/repetition-and-paths.md#cap-having-pattern-predicates)
+- [Pattern predicates in correlated filters](implementation/having-filters.md#cap-having-pattern-predicates)
 
 <a id="cap-having-named-type-predicates"></a>
-- [Named-type predicates in correlated filters](implementation/repetition-and-paths.md#cap-having-named-type-predicates)
+- [Named-type predicates in correlated filters](implementation/having-filters.md#cap-having-named-type-predicates)
 
 <a id="cap-having-subday-differences"></a>
-- [Direct sub-day differences inside Having](implementation/repetition-and-paths.md#cap-having-subday-differences)
+- [Direct sub-day differences inside Having](implementation/having-filters.md#cap-having-subday-differences)
 
 <a id="cap-having-date-ranges"></a>
 - [DateRange constructions and overlap in Having](implementation/date-range.md#cap-having-date-ranges)
 
 <a id="cap-having-date-range-components"></a>
-- [DateRange endpoint components inside Having](implementation/repetition-and-paths.md#cap-having-date-range-components)
+- [DateRange endpoint components inside Having](implementation/having-filters.md#cap-having-date-range-components)
 
 <a id="cap-having-scalar-projections"></a>
-- [Direct scalar numeric projections inside Having](implementation/repetition-and-paths.md#cap-having-scalar-projections)
+- [Direct scalar numeric projections inside Having](implementation/having-filters.md#cap-having-scalar-projections)
 
 <a id="cap-having-string-length"></a>
-- [String length inside Having](implementation/repetition-and-paths.md#cap-having-string-length)
+- [String length inside Having](implementation/having-filters.md#cap-having-string-length)
 
 <a id="cap-having-tolerance"></a>
-- [Numeric tolerance inside Having](implementation/repetition-and-paths.md#cap-having-tolerance)
+- [Numeric tolerance inside Having](implementation/having-filters.md#cap-having-tolerance)
 
 <a id="cap-having-direct-field-fill"></a>
-- [Field-fill entity lists inside Having](implementation/repetition-and-paths.md#cap-having-direct-field-fill)
+- [Field-fill entity lists inside Having](implementation/having-filters.md#cap-having-direct-field-fill)
 
 <a id="cap-having-literal-membership"></a>
-- [Literal membership inside Having](implementation/repetition-and-paths.md#cap-having-literal-membership)
+- [Literal membership inside Having](implementation/having-filters.md#cap-having-literal-membership)
 
 <a id="cap-having-field-membership"></a>
-- [Field-valued membership inside Having](implementation/repetition-and-paths.md#cap-having-field-membership)
+- [Field-valued membership inside Having](implementation/having-filters.md#cap-having-field-membership)
 
 <a id="cap-simple-having-comparisons"></a>
-- [Simple comparisons inside Having](implementation/repetition-and-paths.md#cap-simple-having-comparisons)
+- [Simple comparisons inside Having](implementation/having-filters.md#cap-simple-having-comparisons)
 
 <a id="cap-having-caller-capabilities"></a>
 - [Having caller capabilities](implementation/data-and-core.md#cap-having-caller-capabilities)

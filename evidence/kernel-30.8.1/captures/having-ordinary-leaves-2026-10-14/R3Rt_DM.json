@@ -1,0 +1,2491 @@
+{
+ "header": {
+  "id": "R3Rt_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R3Rt_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/F",
+     "name": "F",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/F/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/DT",
+        "name": "DT",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Txt",
+        "name": "Txt",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Flag",
+        "name": "Flag",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Win",
+        "name": "Win",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/F/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 10,
+         "indexFieldName": "Key",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/F/Rows/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/Amt",
+           "name": "Amt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RD",
+           "name": "RD",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RDT",
+           "name": "RDT",
+           "Field": {
+            "fieldType": {
+             "type": "DateTimeType",
+             "DateTimeType": {
+              "format": "yyyy-MM-dd'T'HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RT",
+           "name": "RT",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RTxt",
+           "name": "RTxt",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RTxt2",
+           "name": "RTxt2",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RFlag",
+           "name": "RFlag",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RConf",
+           "name": "RConf",
+           "Field": {
+            "fieldType": {
+             "type": "ConfirmType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/RWin",
+           "name": "RWin",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/REnum",
+           "name": "REnum",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/Rows/ROut",
+           "name": "ROut",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/F/Rows/CG",
+           "name": "CG",
+           "Computation": {
+            "computedFieldRelPath": "../ROut",
+            "computationAlternatives": [
+             {
+              "operation": "Sum(/F/Rows*/Amt Having [/F/Rows/Amt] > [$/F/Rows/Amt])"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra01",
+        "name": "Ra01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a01",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RDT, Now) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa01",
+        "name": "Oa01",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca01",
+        "name": "Ca01",
+        "Computation": {
+         "computedFieldRelPath": "../Oa01",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RDT, Now) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra02",
+        "name": "Ra02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a02",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Now) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa02",
+        "name": "Oa02",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca02",
+        "name": "Ca02",
+        "Computation": {
+         "computedFieldRelPath": "../Oa02",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Now) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra03",
+        "name": "Ra03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a03",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Now, Rows/RDT) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa03",
+        "name": "Oa03",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca03",
+        "name": "Ca03",
+        "Computation": {
+         "computedFieldRelPath": "../Oa03",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Now, Rows/RDT) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra04",
+        "name": "Ra04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a04",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, DateFromDateTime(Now)) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa04",
+        "name": "Oa04",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca04",
+        "name": "Ca04",
+        "Computation": {
+         "computedFieldRelPath": "../Oa04",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, DateFromDateTime(Now)) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra05",
+        "name": "Ra05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a05",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInYears(Rows/RD, Date(DayFromDate(Today), MonthFromDate(Today), YearFromDate(Today))) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa05",
+        "name": "Oa05",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca05",
+        "name": "Ca05",
+        "Computation": {
+         "computedFieldRelPath": "../Oa05",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInYears(Rows/RD, Date(DayFromDate(Today), MonthFromDate(Today), YearFromDate(Today))) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra06",
+        "name": "Ra06",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a06",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInMonths(Rows/RD, Date(\"1\", \"1\", \"2026\")) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa06",
+        "name": "Oa06",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca06",
+        "name": "Ca06",
+        "Computation": {
+         "computedFieldRelPath": "../Oa06",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInMonths(Rows/RD, Date(\"1\", \"1\", \"2026\")) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra07",
+        "name": "Ra07",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a07",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(StartOfDateRange(Rows/RWin), Today) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa07",
+        "name": "Oa07",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca07",
+        "name": "Ca07",
+        "Computation": {
+         "computedFieldRelPath": "../Oa07",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(StartOfDateRange(Rows/RWin), Today) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra08",
+        "name": "Ra08",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a08",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(EndOfDateRange(Rows/RWin), Rows/RD) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa08",
+        "name": "Oa08",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca08",
+        "name": "Ca08",
+        "Computation": {
+         "computedFieldRelPath": "../Oa08",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(EndOfDateRange(Rows/RWin), Rows/RD) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra10",
+        "name": "Ra10",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a10",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Today) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa10",
+        "name": "Oa10",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca10",
+        "name": "Ca10",
+        "Computation": {
+         "computedFieldRelPath": "../Oa10",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Today) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra11",
+        "name": "Ra11",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a11",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, AddDays(Today, 1)) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa11",
+        "name": "Oa11",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca11",
+        "name": "Ca11",
+        "Computation": {
+         "computedFieldRelPath": "../Oa11",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, AddDays(Today, 1)) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Ra12",
+        "name": "Ra12",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a12",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(StartOfDateRange(Win), Rows/RD) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oa12",
+        "name": "Oa12",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ca12",
+        "name": "Ca12",
+        "Computation": {
+         "computedFieldRelPath": "../Oa12",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(StartOfDateRange(Win), Rows/RD) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rb03",
+        "name": "Rb03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "b03",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, Now) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ob03",
+        "name": "Ob03",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cb03",
+        "name": "Cb03",
+        "Computation": {
+         "computedFieldRelPath": "../Ob03",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, Now) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rb05",
+        "name": "Rb05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "b05",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, AddHours(Now, 1)) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ob05",
+        "name": "Ob05",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cb05",
+        "name": "Cb05",
+        "Computation": {
+         "computedFieldRelPath": "../Ob05",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, AddHours(Now, 1)) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rc01",
+        "name": "Rc01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c01",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RD] > Date(\"1\", \"1\", \"2026\")) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oc01",
+        "name": "Oc01",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cc01",
+        "name": "Cc01",
+        "Computation": {
+         "computedFieldRelPath": "../Oc01",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RD] > Date(\"1\", \"1\", \"2026\"))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rc02",
+        "name": "Rc02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c02",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RD] < DateFromDateTime(Now)) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oc02",
+        "name": "Oc02",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cc02",
+        "name": "Cc02",
+        "Computation": {
+         "computedFieldRelPath": "../Oc02",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RD] < DateFromDateTime(Now))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rc03",
+        "name": "Rc03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c03",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RT] > Time(\"10\", \"30\")) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oc03",
+        "name": "Oc03",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cc03",
+        "name": "Cc03",
+        "Computation": {
+         "computedFieldRelPath": "../Oc03",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RT] > Time(\"10\", \"30\"))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rc04",
+        "name": "Rc04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c04",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RD] >= StartOfDateRange(Rows/RWin)) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oc04",
+        "name": "Oc04",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cc04",
+        "name": "Cc04",
+        "Computation": {
+         "computedFieldRelPath": "../Oc04",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RD] >= StartOfDateRange(Rows/RWin))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rc05",
+        "name": "Rc05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c05",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RD] > AddDays(Today, 1)) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oc05",
+        "name": "Oc05",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cc05",
+        "name": "Cc05",
+        "Computation": {
+         "computedFieldRelPath": "../Oc05",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RD] > AddDays(Today, 1))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rc07",
+        "name": "Rc07",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c07",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RDT] < Now) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oc07",
+        "name": "Oc07",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cc07",
+        "name": "Cc07",
+        "Computation": {
+         "computedFieldRelPath": "../Oc07",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RDT] < Now)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rc08",
+        "name": "Rc08",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c08",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RT] > TimeFromDateTime(Now)) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oc08",
+        "name": "Oc08",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cc08",
+        "name": "Cc08",
+        "Computation": {
+         "computedFieldRelPath": "../Oc08",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RT] > TimeFromDateTime(Now))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rc09",
+        "name": "Rc09",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c09",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RD] == [$D]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oc09",
+        "name": "Oc09",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cc09",
+        "name": "Cc09",
+        "Computation": {
+         "computedFieldRelPath": "../Oc09",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RD] == [$D])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rd01",
+        "name": "Rd01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "d01",
+         "errorCondition": "Sum(Rows*/Amt Having YearFromDate(StartOfDateRange(Rows/RWin)) == YearFromDate(Today)) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Od01",
+        "name": "Od01",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cd01",
+        "name": "Cd01",
+        "Computation": {
+         "computedFieldRelPath": "../Od01",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having YearFromDate(StartOfDateRange(Rows/RWin)) == YearFromDate(Today))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rd02",
+        "name": "Rd02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "d02",
+         "errorCondition": "Sum(Rows*/Amt Having MonthFromDate(EndOfDateRange(Rows/RWin)) > 6) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Od02",
+        "name": "Od02",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cd02",
+        "name": "Cd02",
+        "Computation": {
+         "computedFieldRelPath": "../Od02",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having MonthFromDate(EndOfDateRange(Rows/RWin)) > 6)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rd03",
+        "name": "Rd03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "d03",
+         "errorCondition": "Sum(Rows*/Amt Having YearFromDate(Rows/RD) == YearFromDate(Today)) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Od03",
+        "name": "Od03",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cd03",
+        "name": "Cd03",
+        "Computation": {
+         "computedFieldRelPath": "../Od03",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having YearFromDate(Rows/RD) == YearFromDate(Today))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rd04",
+        "name": "Rd04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "d04",
+         "errorCondition": "Sum(Rows*/Amt Having HoursFromTime(Rows/RT) > 9) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Od04",
+        "name": "Od04",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cd04",
+        "name": "Cd04",
+        "Computation": {
+         "computedFieldRelPath": "../Od04",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having HoursFromTime(Rows/RT) > 9)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Re01",
+        "name": "Re01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "e01",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RTxt] == [Rows/RTxt2]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oe01",
+        "name": "Oe01",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ce01",
+        "name": "Ce01",
+        "Computation": {
+         "computedFieldRelPath": "../Oe01",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RTxt] == [Rows/RTxt2])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Re02",
+        "name": "Re02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "e02",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RTxt] != [Rows/RTxt2]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oe02",
+        "name": "Oe02",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ce02",
+        "name": "Ce02",
+        "Computation": {
+         "computedFieldRelPath": "../Oe02",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RTxt] != [Rows/RTxt2])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Re03",
+        "name": "Re03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "e03",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RTxt] == [$Txt]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oe03",
+        "name": "Oe03",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ce03",
+        "name": "Ce03",
+        "Computation": {
+         "computedFieldRelPath": "../Oe03",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RTxt] == [$Txt])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Re04",
+        "name": "Re04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "e04",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/REnum] == [Rows/RTxt]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oe04",
+        "name": "Oe04",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ce04",
+        "name": "Ce04",
+        "Computation": {
+         "computedFieldRelPath": "../Oe04",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/REnum] == [Rows/RTxt])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Re05",
+        "name": "Re05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "e05",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RTxt] == [Txt]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Oe05",
+        "name": "Oe05",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Ce05",
+        "name": "Ce05",
+        "Computation": {
+         "computedFieldRelPath": "../Oe05",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RTxt] == [Txt])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rf01",
+        "name": "Rf01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f01",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RFlag] == True) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Of01",
+        "name": "Of01",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cf01",
+        "name": "Cf01",
+        "Computation": {
+         "computedFieldRelPath": "../Of01",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RFlag] == True)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rf02",
+        "name": "Rf02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f02",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RFlag] == [$Flag]) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Of02",
+        "name": "Of02",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cf02",
+        "name": "Cf02",
+        "Computation": {
+         "computedFieldRelPath": "../Of02",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RFlag] == [$Flag])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rf03",
+        "name": "Rf03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f03",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RConf] == True) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Of03",
+        "name": "Of03",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cf03",
+        "name": "Cf03",
+        "Computation": {
+         "computedFieldRelPath": "../Of03",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RConf] == True)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rf04",
+        "name": "Rf04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f04",
+         "errorCondition": "[Total] > 0 And NumberOfFilledFields(Rows*/RFlag Having [Rows/Amt] > 0) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rf05",
+        "name": "Rf05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f05",
+         "errorCondition": "[Total] > 0 And MaxValue(Rows*/RD Having [Rows/Amt] > 0) > [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rf06",
+        "name": "Rf06",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f06",
+         "errorCondition": "[Total] > 0 And NumberOfDifferentValues(Rows*/RD Having [Rows/Amt] > 0) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rf08",
+        "name": "Rf08",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f08",
+         "errorCondition": "[Total] > 0 And NumberOfFilledFields(Rows*/RConf Having [Rows/Amt] > 0) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rf09",
+        "name": "Rf09",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f09",
+         "errorCondition": "[Total] > 0 And MinValue(Rows*/RT Having [Rows/Amt] > 0) < \"10:00:00\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rf10",
+        "name": "Rf10",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f10",
+         "errorCondition": "[Total] > 0 And NumberOfFilledFields(Rows*/RWin Having [Rows/Amt] > 0) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rg01",
+        "name": "Rg01",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "g01",
+         "errorCondition": "Sum(/F/Rows*/Amt Having [/F/Rows/Amt] > [$/F/Rows/Amt]) > [/F/Rows/Amt]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rg04",
+        "name": "Rg04",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "g04",
+         "errorCondition": "Sum(/F/Rows*/Amt Having CurrentRepetition(/F/Rows) != CurrentRepetition($/F/Rows)) > [/F/Rows/Amt]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rl01",
+        "name": "Rl01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "l01",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, \"01.01.2026\") > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ol01",
+        "name": "Ol01",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cl01",
+        "name": "Cl01",
+        "Computation": {
+         "computedFieldRelPath": "../Ol01",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, \"01.01.2026\") > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rl02",
+        "name": "Rl02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "l02",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, \"01.01.2026T00:00:00\") > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ol02",
+        "name": "Ol02",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cl02",
+        "name": "Cl02",
+        "Computation": {
+         "computedFieldRelPath": "../Ol02",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, \"01.01.2026T00:00:00\") > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rl03",
+        "name": "Rl03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "l03",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RD] > \"01.01.2026\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ol03",
+        "name": "Ol03",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cl03",
+        "name": "Cl03",
+        "Computation": {
+         "computedFieldRelPath": "../Ol03",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RD] > \"01.01.2026\")"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rl04",
+        "name": "Rl04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "l04",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RDT] > \"14.10.2026T11:00:00\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ol04",
+        "name": "Ol04",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cl04",
+        "name": "Cl04",
+        "Computation": {
+         "computedFieldRelPath": "../Ol04",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RDT] > \"14.10.2026T11:00:00\")"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rl05",
+        "name": "Rl05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "l05",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, DateTime(Date(\"1\", \"1\", \"2026\"), Time(\"0\", \"0\", \"0\"))) > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ol05",
+        "name": "Ol05",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cl05",
+        "name": "Cl05",
+        "Computation": {
+         "computedFieldRelPath": "../Ol05",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, DateTime(Date(\"1\", \"1\", \"2026\"), Time(\"0\", \"0\", \"0\"))) > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rl06",
+        "name": "Rl06",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "l06",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RDT, \"01.01.2026T00:00:00\") > 0) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ol06",
+        "name": "Ol06",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cl06",
+        "name": "Cl06",
+        "Computation": {
+         "computedFieldRelPath": "../Ol06",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInDays(Rows/RDT, \"01.01.2026T00:00:00\") > 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rl07",
+        "name": "Rl07",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "l07",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RT] > \"10:30:00\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ol07",
+        "name": "Ol07",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cl07",
+        "name": "Cl07",
+        "Computation": {
+         "computedFieldRelPath": "../Ol07",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RT] > \"10:30:00\")"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rl08",
+        "name": "Rl08",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "l08",
+         "errorCondition": "Sum(Rows*/Amt Having DifferenceInMinutes(Rows/RDT, Now) > 60) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ol08",
+        "name": "Ol08",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cl08",
+        "name": "Cl08",
+        "Computation": {
+         "computedFieldRelPath": "../Ol08",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having DifferenceInMinutes(Rows/RDT, Now) > 60)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/F/Rl09",
+        "name": "Rl09",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "l09",
+         "errorCondition": "Sum(Rows*/Amt Having [Rows/RDT] < AddHours(Now, 2)) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Ol09",
+        "name": "Ol09",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/F/Cl09",
+        "name": "Cl09",
+        "Computation": {
+         "computedFieldRelPath": "../Ol09",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/Amt Having [Rows/RDT] < AddHours(Now, 2))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

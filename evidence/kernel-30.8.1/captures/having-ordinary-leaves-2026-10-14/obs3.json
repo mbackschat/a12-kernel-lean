@@ -1,0 +1,72 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "b458f9634deda87cd8a603ed3a8e08f437e7b1e2d65934540aae4cf12088619a",
+  "observations" : [ {
+    "id" : "l01",
+    "inputHash" : "1af6cc09f4e4d3e6cd08132cfc4db471fa033f404474fb438be7d3d9f2f43456",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "l02",
+    "inputHash" : "41fe47263ad245b852396c6ec1f6e113587911b545ce7e91139a0e0236bdc3dc",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "l03",
+    "inputHash" : "4122b36a55d4b4420628c466cad55c3dec533fab148a68438613f46fa352eec8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "l04",
+    "inputHash" : "1e02dbcbe9a85420baa44cd1d08f62c0816f02d2e6f7f4ede42f0d688532e867",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "l05",
+    "inputHash" : "07dcf19ae9de624447ae1e0ab4673c47b6d3ad79447c48bcbfa7f25ad031d416",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "l06",
+    "inputHash" : "40e83006aaf4f5666099c8e1f08527824a2247d2dcd36e7365134c75b6c29453",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "l07",
+    "inputHash" : "eb801e68d693efaa1df19632d5d7761f85a3ef37aa140f74d156f6d471789dae",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "l08",
+    "inputHash" : "a7ec546b0b65ba26a5dccd704d21cb0db37b85d6606e50dec797c302883047ee",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "l09",
+    "inputHash" : "7ee8278a5a2ff6306cad22e32110abe55eeeff4c66bfee1e21282a225533486b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "l10",
+    "inputHash" : "3a0d798248e50a5b33399cfff9c2f0f87221dae436b0bd4cb8d78693a67333e0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  } ]
+}

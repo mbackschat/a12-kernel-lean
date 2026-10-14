@@ -528,7 +528,7 @@ theorem numericValidation_dateTimeDifference_literal_delegates
 /-- A supported checked calendar-day atom delegates its exact-instant, profile-selected operand through the same numeric validator without a second comparison path. -/
 theorem numericValidation_dayDifference_literal_delegates
     (op : NumericValidationOp) (profile : ModelZone.ConcreteProfile)
-    (left right : ResolvedDateDifferenceOperand)
+    (left right : ResolvedDateDifferenceOperand FlatTemporalField true)
     (literal : DecodedNumericLiteral) (context : FlatContext)
     (operand : NumericOperand)
     (evaluated : CalendarDayDifferenceOperand.evaluate profile

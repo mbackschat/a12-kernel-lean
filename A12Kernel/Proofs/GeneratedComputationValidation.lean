@@ -363,7 +363,7 @@ theorem numericComputationAtom_fieldValueAsNumber_toValidationAtom
 /-- Generated validation preserves the selected concrete profile and both checked temporal operands of a calendar-day difference exactly. -/
 theorem numericComputationAtom_dayDifference_toValidationAtom
     (model : FlatModel) (profile : ModelZone.ConcreteProfile)
-    (left right : ResolvedDateDifferenceOperand) :
+    (left right : ResolvedDateDifferenceOperand FlatTemporalField true) :
     CheckedNumericComputationAtom.toValidationAtom (model := model)
         (.numeric (.dayDifference profile left right)) =
       .ok (.ordinary (.dayDifference profile left right)) := by

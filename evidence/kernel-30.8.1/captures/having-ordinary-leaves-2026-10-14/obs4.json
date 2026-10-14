@@ -1,0 +1,72 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "b458f9634deda87cd8a603ed3a8e08f437e7b1e2d65934540aae4cf12088619a",
+  "observations" : [ {
+    "id" : "t01",
+    "inputHash" : "4b6c4e1699691ddde92843965e9fb5deb98b291c61ed485f9fde725dae0b8215",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "t02",
+    "inputHash" : "c06e9dea33ef86e66c58cdf5fa0ea7a1f4566ea11b5db2066cdd04d9eebd9e61",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "t03",
+    "inputHash" : "276ae123b6f83faa98a6ddbd868ec09945bdd9a38266d850852706f58bd08d18",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "t04",
+    "inputHash" : "f50739aba436113ebb86b8429e86d30c7c9fb8a27ffcc23c0c960d9b9cc2f79f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "t05",
+    "inputHash" : "62d36f6f41d6b6352196adeda5cc0569040c0ddaebb7589e561da4e6c80e05f6",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "t06",
+    "inputHash" : "81b7982895697cb58dd4795ccd4f04a3759b6c9f42509458d234fe4b9cb5813d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "t07",
+    "inputHash" : "c905488f33786dfe0210ee6d20e5cbe93ffb999562db88c72d3bfd0c68880579",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "t08",
+    "inputHash" : "a289d1c66b7c9c47d54b594837150965d4833bde961652079f9e41953017eef6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ROOT_GROUP" ]
+  }, {
+    "id" : "t09",
+    "inputHash" : "d88ea36eb1195785f97f71c895b5785bf68ea6af52702fc769be36c8fe129230",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "t10",
+    "inputHash" : "179ed523ce54b183e01ae2e373d8e72efa756e9eebbb480a609eb500203cfa2e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  } ]
+}

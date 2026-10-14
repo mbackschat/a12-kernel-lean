@@ -1,0 +1,172 @@
+[
+ {
+  "id": "t01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t01",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Today) DiffersWithToleranceRange1 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t02",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having YearFromDate(Rows/RD) DiffersWithToleranceRange2 2026) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t03",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInHours(Rows/RDT, Now) DiffersWithToleranceRange5 [Total]) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t04",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having HoursFromTime(Rows/RT) DiffersWithToleranceRange10 [Total]) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t05",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having MonthFromDate(StartOfDateRange(Rows/RWin)) DiffersWithToleranceRange1 6) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t06",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Now) DiffersWithToleranceRange1 0) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t07",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having YearFromDate(Today) DiffersWithToleranceRange1 [Rows/Amt]) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t08",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInDays(Rows/RD, Date(\"1\", \"1\", \"2026\")) DiffersWithToleranceRange2 [/Amt]) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t09",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having DifferenceInMonths(Rows/RD, [D]) DiffersWithToleranceRange1 1) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t10",
+   "--field",
+   "/F/Total",
+   "--group",
+   "/F",
+   "--condition",
+   "Sum(Rows*/Amt Having SecondsFromTime(Now) DiffersWithToleranceRange10 [Rows/Amt]) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

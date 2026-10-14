@@ -451,7 +451,7 @@ theorem readDateTimeDifference_evaluated
 theorem readCalendarDayDifference_evaluated
     (context : ScalarComputationContext)
     (profile : ModelZone.ConcreteProfile)
-    (left right : ResolvedDateDifferenceOperand) (operand : NumericOperand)
+    (left right : ResolvedDateDifferenceOperand FlatTemporalField true) (operand : NumericOperand)
     (leftOperand rightOperand : CalendarDayDifferenceOperand)
     (leftResolved : context.readCalendarDayDifferenceOperand profile left = .ok leftOperand)
     (rightResolved : context.readCalendarDayDifferenceOperand profile right = .ok rightOperand)

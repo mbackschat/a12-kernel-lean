@@ -111,7 +111,11 @@ def captures : List (String × String × String) := [
   ("captures/unraised-diagnostic-vocabulary/obs.json", "captures/parser-index-and-iteration-classes/IdxProbe_DM.json", "captures/unraised-diagnostic-vocabulary/ops.json"),
   ("captures/empty-enumeration-token-2026-10-14/obs.json", "captures/empty-enumeration-token-2026-10-14/EmptyTok_DM.json", "captures/empty-enumeration-token-2026-10-14/ops.json"),
   ("captures/predicate-operand-classes-2026-10-14/obs.json", "captures/predicate-operand-classes-2026-10-14/PredOp_DM.json", "captures/predicate-operand-classes-2026-10-14/ops.json"),
-  ("captures/predicate-operand-classes-2026-10-14/obs2.json", "captures/predicate-operand-classes-2026-10-14/PredOp_DM.json", "captures/predicate-operand-classes-2026-10-14/ops2.json")]
+  ("captures/predicate-operand-classes-2026-10-14/obs2.json", "captures/predicate-operand-classes-2026-10-14/PredOp_DM.json", "captures/predicate-operand-classes-2026-10-14/ops2.json"),
+  ("captures/having-ordinary-leaves-2026-10-14/obs.json", "captures/having-ordinary-leaves-2026-10-14/R3_DM.json", "captures/having-ordinary-leaves-2026-10-14/ops.json"),
+  ("captures/having-ordinary-leaves-2026-10-14/obs2.json", "captures/having-ordinary-leaves-2026-10-14/R3_DM.json", "captures/having-ordinary-leaves-2026-10-14/ops2.json"),
+  ("captures/having-ordinary-leaves-2026-10-14/obs3.json", "captures/having-ordinary-leaves-2026-10-14/R3_DM.json", "captures/having-ordinary-leaves-2026-10-14/ops3.json"),
+  ("captures/having-ordinary-leaves-2026-10-14/obs4.json", "captures/having-ordinary-leaves-2026-10-14/R3_DM.json", "captures/having-ordinary-leaves-2026-10-14/ops4.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) := [

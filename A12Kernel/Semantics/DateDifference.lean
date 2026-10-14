@@ -220,6 +220,13 @@ def ofParts (profile : ModelZone.ConcreteProfile)
       | some instant => .value localDateTime instant
       | none => .unsupportedCalendar
 
+/-- One exact instant at its local wall label in the model zone, as `Now` enters a day difference.
+The instant keeps its millisecond remainder (spec/05 §7). -/
+def ofInstant (profile : ModelZone.ConcreteProfile) (instant : Instant) : CalendarDayDifferenceOperand :=
+  match profile.localDateTime? instant with
+  | some localDateTime => .value localDateTime instant
+  | none => .unsupportedCalendar
+
 /-- Resolve one direct or range-selected Base-Year endpoint through the common midnight boundary. -/
 def ofBaseYear (profile : ModelZone.ConcreteProfile) (year : Int)
     (source : BaseYearDateSource) : CalendarDayDifferenceOperand :=

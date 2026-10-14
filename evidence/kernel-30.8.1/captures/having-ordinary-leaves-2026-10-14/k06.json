@@ -1,0 +1,1 @@
+{"computedField": "/F/Rows/Amt", "alternatives": [{"operation": "DifferenceInDays(RDT, Now)"}], "messages": [{"locale": "en_US", "text": "m"}]}

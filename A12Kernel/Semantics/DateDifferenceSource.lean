@@ -25,11 +25,16 @@ def parts (literal : AuthoredDateLiteral) (anchorYear : Int) : DateParts :=
 
 end AuthoredDateLiteral
 
-inductive ResolvedDateDifferenceOperand (Field : Type := FlatTemporalField) where
+/-- One checked operand of a calendar difference. `clock` admits `Now`, which only the day difference
+accepts: `DifferenceInMonths` and `DifferenceInYears` refuse it with `MVK_WRONG_DATE_FORMAT_FOR_OP` on
+every route, as they refuse a DateTime field
+([checkpoint](../../docs/sources/having-filter-probes.md#src-having-now-day-difference)). -/
+inductive ResolvedDateDifferenceOperand (Field : Type := FlatTemporalField) (clock : Bool := false) where
   | literal (source : AuthoredDateLiteral) (anchorYear : Int)
   | field (source : Field)
   | baseYear (year : Int) (source : BaseYearDateSource)
   | today (profile : ModelZone.ConcreteProfile)
+  | now (profile : ModelZone.ConcreteProfile) (admitted : clock = true)
   deriving Repr, DecidableEq
 
 namespace ResolvedDateDifferenceOperand
@@ -41,16 +46,17 @@ def todayParts? (profile : ModelZone.ConcreteProfile) (world? : Option World) : 
   pure (← profile.localDate? world.now).civil.parts
 
 
-def fields : ResolvedDateDifferenceOperand Field → List Field
+def fields : ResolvedDateDifferenceOperand Field clock → List Field
   | .field source => [source]
-  | .literal _ _ | .baseYear _ _ | .today _ => []
+  | .literal _ _ | .baseYear _ _ | .today _ | .now _ _ => []
 
 def componentsWith (fieldComponents : Field → TemporalComponents) :
-    ResolvedDateDifferenceOperand Field → TemporalComponents
+    ResolvedDateDifferenceOperand Field clock → TemporalComponents
   | .literal source _ => source.components
   | .field source => fieldComponents source
   | .baseYear _ _ => TemporalComponents.baseYear
   | .today _ => TemporalComponents.fullDate
+  | .now _ _ => TemporalComponents.now
 
 def readDateOperand [Monad m] (read : Field → m CellObservation)
     (today : ModelZone.ConcreteProfile → m DateDifferenceOperand) :
@@ -59,14 +65,18 @@ def readDateOperand [Monad m] (read : Field → m CellObservation)
   | .field source => DateDifferenceOperand.ofObservation <$> read source
   | .baseYear year source => pure (.value (source.parts year))
   | .today profile => today profile
+  | .now _ admitted => nomatch admitted
 
+/-- `Now` is the evaluation's exact instant, read at its local wall label in the model zone. -/
 def readDayOperand [Monad m] (profile : ModelZone.ConcreteProfile)
-    (read : Field → m CellObservation) (today : ModelZone.ConcreteProfile → m CalendarDayDifferenceOperand) :
-    ResolvedDateDifferenceOperand Field → m CalendarDayDifferenceOperand
+    (read : Field → m CellObservation) (today : ModelZone.ConcreteProfile → m CalendarDayDifferenceOperand)
+    (now : ModelZone.ConcreteProfile → m CalendarDayDifferenceOperand) :
+    ResolvedDateDifferenceOperand Field clock → m CalendarDayDifferenceOperand
   | .literal source year => pure (.ofParts profile (source.parts year))
   | .field source => CalendarDayDifferenceOperand.ofObservation <$> read source
   | .baseYear year source => pure (.ofBaseYear profile year source)
   | .today sourceProfile => today sourceProfile
+  | .now sourceProfile _ => now sourceProfile
 
 end ResolvedDateDifferenceOperand
 

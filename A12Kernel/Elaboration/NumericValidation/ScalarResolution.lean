@@ -38,11 +38,11 @@ private def checkTemporalNumericPartField (model : FlatModel)
       throw (.temporalFieldPartSourceNotTemporal declaration.path part)
 
 private def resolveDateDifferenceOperandWith
-    (model : FlatModel)
+    (model : FlatModel) (clock : Bool)
     (resolveField : SurfaceFieldPath →
       Except NumericValidationElabError FlatTemporalField) :
     SurfaceDateDifferenceOperand →
-      Except NumericValidationElabError ResolvedDateDifferenceOperand
+      Except NumericValidationElabError (ResolvedDateDifferenceOperand FlatTemporalField clock)
   | .literal source =>
       if source.valid then pure (.literal source model.baseYearOrDefault)
       else throw .incompatibleDateDifference
@@ -51,7 +51,12 @@ private def resolveDateDifferenceOperandWith
       match model.baseYear with
       | some year => pure (.baseYear year source)
       | none => throw .baseYearNotDeclared
-  | .now => throw .incompatibleDateDifference
+  | .now =>
+      if admitted : clock = true then
+        match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+        | some profile => pure (.now profile admitted)
+        | none => throw (.unsupportedCalendarProfile model.timeZoneId)
+      else throw .incompatibleDateDifference
   | .today => match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
       | some profile => pure (.today profile)
       | none => throw (.unsupportedCalendarProfile model.timeZoneId)
@@ -148,7 +153,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       resolveFieldValueAsNumberAtom declaration surface.projectionRef
   | .dateDifference unit left right => do
-      let resolveOperand := resolveDateDifferenceOperandWith model
+      let resolveOperand := resolveDateDifferenceOperandWith model false
         (fun reference =>
           resolveTemporalNumericField model rowGroup writtenGroup reference
             (fun source =>
@@ -184,7 +189,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
         | some profile => pure profile
         | none => throw (.unsupportedCalendarProfile model.timeZoneId)
-      let resolveOperand := resolveDateDifferenceOperandWith model
+      let resolveOperand := resolveDateDifferenceOperandWith model true
         (fun reference =>
           resolveTemporalNumericField model rowGroup writtenGroup reference
             (fun source =>
@@ -319,7 +324,7 @@ private def resolveAddressedNumericAtomIn (model : FlatModel)
           (addressedEntityResolution model declaringGroup rowGroup surface.reference)
       resolveFieldValueAsNumberAtom declaration surface.projectionRef
   | .dateDifference unit left right => do
-      let resolveOperand := resolveDateDifferenceOperandWith model
+      let resolveOperand := resolveDateDifferenceOperandWith model false
         (fun reference => do
           let declaration ←
             resolveAddressedNumericDeclaration model rowGroup reference
@@ -369,7 +374,7 @@ private def resolveAddressedNumericAtomIn (model : FlatModel)
       let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
         | some profile => pure profile
         | none => throw (.unsupportedCalendarProfile model.timeZoneId)
-      let resolveOperand := resolveDateDifferenceOperandWith model
+      let resolveOperand := resolveDateDifferenceOperandWith model true
         (fun reference => do
           let declaration ←
             resolveAddressedNumericDeclaration model rowGroup reference

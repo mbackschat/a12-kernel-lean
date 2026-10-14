@@ -116,18 +116,18 @@ def SurfaceDateDifferenceOperand.fields : SurfaceDateDifferenceOperand Field →
 
 namespace ResolvedDateDifferenceOperand
 
-def isField : ResolvedDateDifferenceOperand → Bool
+def isField : ResolvedDateDifferenceOperand FlatTemporalField clock → Bool
   | .literal _ _ => false
   | .field _ => true
-  | .baseYear _ _ | .today _ => false
+  | .baseYear _ _ | .today _ | .now _ _ => false
 
-def components : ResolvedDateDifferenceOperand → TemporalComponents :=
+def components : ResolvedDateDifferenceOperand FlatTemporalField clock → TemporalComponents :=
   componentsWith (·.components)
 
-def references (field : FieldId) : ResolvedDateDifferenceOperand → Bool
+def references (field : FieldId) : ResolvedDateDifferenceOperand FlatTemporalField clock → Bool
   | .literal _ _ => false
   | .field source => source.id == field
-  | .baseYear _ _ | .today _ => false
+  | .baseYear _ _ | .today _ | .now _ _ => false
 
 def validationOperand (context : FlatContext) :
     ResolvedDateDifferenceOperand → DateDifferenceOperand
@@ -138,10 +138,11 @@ def validationOperand (context : FlatContext) :
   | .today profile => match todayParts? profile context.world with
       | some parts => .value parts
       | none => .unavailable .malformed
+  | .now _ admitted => nomatch admitted
 
 def calendarDayValidationOperand (profile : ModelZone.ConcreteProfile)
     (context : FlatContext) :
-    ResolvedDateDifferenceOperand → CalendarDayDifferenceOperand
+    ResolvedDateDifferenceOperand FlatTemporalField true → CalendarDayDifferenceOperand
   | .literal source year => CalendarDayDifferenceOperand.ofParts profile (source.parts year)
   | .field source => CalendarDayDifferenceOperand.ofObservation
       (context.observeValidationAt source.id)
@@ -149,6 +150,9 @@ def calendarDayValidationOperand (profile : ModelZone.ConcreteProfile)
       CalendarDayDifferenceOperand.ofBaseYear profile year source
   | .today sourceProfile => match todayParts? sourceProfile context.world with
       | some parts => CalendarDayDifferenceOperand.ofParts sourceProfile parts
+      | none => .unavailable .malformed
+  | .now sourceProfile _ => match context.world with
+      | some world => CalendarDayDifferenceOperand.ofInstant sourceProfile world.now
       | none => .unavailable .malformed
 
 end ResolvedDateDifferenceOperand
@@ -273,7 +277,7 @@ inductive ResolvedNumericAtom (Field : Type)
   | dateTimeDifference (unit : DateTimeSubdayUnit)
       (left right : FlatTemporalOperand)
   | dayDifference (profile : ModelZone.ConcreteProfile)
-      (left right : ResolvedDateDifferenceOperand)
+      (left right : ResolvedDateDifferenceOperand FlatTemporalField true)
   | aggregate (op : NumericAggregateOp) (source : Aggregate)
   | filledGroupCount (groups : List ResolvedGroupReference)
   deriving Repr, DecidableEq

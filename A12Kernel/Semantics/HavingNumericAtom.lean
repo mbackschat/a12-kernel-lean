@@ -17,7 +17,7 @@ inductive HavingNumericAtomOf (Temporal : Type) where
   | collectionCount (source : HavingCollectionCount)
   | aggregate (op : NumericAggregateOp) (slots : List (HavingFieldListSlot HavingNumberRef))
   | dateDifference (unit : DateDifferenceUnit) (left right : ResolvedDateDifferenceOperand HavingTemporalRef)
-  | dayDifference (profile : ModelZone.ConcreteProfile) (left right : ResolvedDateDifferenceOperand HavingTemporalRef)
+  | dayDifference (profile : ModelZone.ConcreteProfile) (left right : ResolvedDateDifferenceOperand HavingTemporalRef true)
   | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : FlatTemporalOperand HavingTemporalRef)
   | baseYear (year : Int)
   | baseYearDatePart (year : Int) (source : BaseYearDateSource) (part : DateNumericPart)
@@ -121,10 +121,10 @@ private def readHavingSubdayDifference (phase : Phase)
 private def readHavingCalendarDifference (phase : Phase)
     (read : Env → FieldId → Except Error CheckedCell) (frame : CorrelationFrame)
     (readOperand : (HavingTemporalRef → Except Error CellObservation) →
-      ResolvedDateDifferenceOperand HavingTemporalRef → Except Error Operand)
+      ResolvedDateDifferenceOperand HavingTemporalRef clock → Except Error Operand)
     (formalCause? : Operand → Option FormalCause)
     (evaluate : Operand → Operand → Except Unit NumericOperand)
-    (left right : ResolvedDateDifferenceOperand HavingTemporalRef) : Except Error (Except Unit NumericOperand) := do
+    (left right : ResolvedDateDifferenceOperand HavingTemporalRef clock) : Except Error (Except Unit NumericOperand) := do
   let observe reference := observeCell phase <$> read (frame.envAt reference.origin) reference.field.id
   match ← readTemporalPair phase (readOperand observe) formalCause? left right with
   | .error cause => pure (.ok (.unknown cause))
@@ -150,9 +150,12 @@ private def readHavingDateOperand (world : Option World) (unavailable : Error)
 
 private def readHavingDayOperand (profile : ModelZone.ConcreteProfile)
     (world : Option World) (unavailable : Error) (read : HavingTemporalRef → Except Error CellObservation) :
-    ResolvedDateDifferenceOperand HavingTemporalRef → Except Error CalendarDayDifferenceOperand :=
+    ResolvedDateDifferenceOperand HavingTemporalRef true → Except Error CalendarDayDifferenceOperand :=
   ResolvedDateDifferenceOperand.readDayOperand profile read
     (fun sourceProfile => CalendarDayDifferenceOperand.ofParts sourceProfile <$> readHavingToday world unavailable sourceProfile)
+    (fun sourceProfile => match world with
+      | some world => pure (CalendarDayDifferenceOperand.ofInstant sourceProfile world.now)
+      | none => throw unavailable)
 
 /-- Numeric reads retain omission and formal identity until their consumer projects them.
 The wider shift-amount controls separate these channels (docs/sources/temporal-runtime-fold-probes.md#src-temporal-numeric-amounts). -/

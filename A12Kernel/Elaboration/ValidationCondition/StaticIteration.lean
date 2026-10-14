@@ -138,7 +138,7 @@ private def checkedBooleanValueCountSourceIterationScope
 
 private def temporalDifferenceOperandDeclarations?
     (model : FlatModel) (accepts : FlatTemporalField → Bool) :
-    ResolvedDateDifferenceOperand → Option (List FlatFieldDecl)
+    ResolvedDateDifferenceOperand FlatTemporalField clock → Option (List FlatFieldDecl)
   | .field source =>
       match model.lookupUniqueId source.id with
       | .ok declaration =>
@@ -150,7 +150,7 @@ private def temporalDifferenceOperandDeclarations?
       if source.admittedIn model year then some [] else none
   | .baseYear year _ =>
       if model.baseYear == some year then some [] else none
-  | .today profile =>
+  | .today profile | .now profile _ =>
       if ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile then some [] else none
 
 def ordinaryNumericAtomFieldDeclarations?
@@ -196,7 +196,7 @@ def ordinaryNumericAtomFieldDeclarations?
   | .fieldValueAsNumber source =>
       (model.certifiedFieldValueAsNumberDeclaration? source).map (· :: [])
   | .dateDifference unit left right => do
-      let declarations := temporalDifferenceOperandDeclarations? model
+      let declarations := temporalDifferenceOperandDeclarations? (clock := false) model
         (fun source =>
           unit.admittedBy model.hasBaseYear source.components)
       let leftDeclarations ← declarations left
@@ -225,7 +225,7 @@ def ordinaryNumericAtomFieldDeclarations?
   | .dayDifference profile left right => do
       if ModelZone.ConcreteProfile.ofId? model.timeZoneId != some profile then
         none
-      let declarations := temporalDifferenceOperandDeclarations? model
+      let declarations := temporalDifferenceOperandDeclarations? (clock := true) model
         (fun source =>
           CalendarDayDifference.admittedBy source.components)
       let leftDeclarations ← declarations left
