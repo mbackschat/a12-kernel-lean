@@ -1,0 +1,162 @@
+{
+ "model": "R2_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "g2",
+   "documentInline": {
+    "P": {
+     "Flag": "false",
+     "Flag2": "true",
+     "Ok": "true",
+     "Label": "zz",
+     "Pick": "zz",
+     "PickDate": "2000-01-01",
+     "Out": "9",
+     "Out2": "9",
+     "Gate": "2",
+     "Rows": [
+      {
+       "Key": "a",
+       "RGate": "1",
+       "RFlag": "false",
+       "ROk": "true"
+      },
+      {
+       "Key": "b",
+       "RGate": "0",
+       "RFlag": "false",
+       "ROk": "true"
+      },
+      {
+       "Key": "c",
+       "RFlag": "true",
+       "ROk": "true"
+      }
+     ],
+     "Outer": [
+      {
+       "Inner": [
+        {},
+        {
+         "Item": "i2",
+         "IDate": "2026-02-02"
+        }
+       ]
+      },
+      {
+       "Inner": [
+        {
+         "Item": "i3",
+         "IDate": "2026-03-03"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "g0",
+   "documentInline": {
+    "P": {
+     "Flag": "true",
+     "Flag2": "false",
+     "Ok": "true",
+     "Label": "x",
+     "Pick": "i2",
+     "PickDate": "2026-02-02",
+     "Out": "1",
+     "Out2": "2",
+     "Gate": "0",
+     "Rows": [
+      {
+       "Key": "a",
+       "RFlag": "true"
+      },
+      {
+       "Key": "b",
+       "RGate": "3",
+       "RFlag": "true"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "g1",
+   "documentInline": {
+    "P": {
+     "Flag": "false",
+     "Flag2": "false",
+     "Ok": "true",
+     "Out": "1",
+     "Out2": "9",
+     "Gate": "1",
+     "Outer": [
+      {
+       "Inner": []
+      },
+      {
+       "Inner": [
+        {},
+        {
+         "Item": "j1",
+         "IDate": "2026-05-05"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "gnone",
+   "documentInline": {
+    "P": {
+     "Flag": "true",
+     "Flag2": "true",
+     "Label": "zz",
+     "Pick": "zz",
+     "PickDate": "2000-01-01",
+     "Out2": "9",
+     "Rows": [
+      {
+       "Key": "b",
+       "RFlag": "false"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "okfalse",
+   "documentInline": {
+    "P": {
+     "Flag": "false",
+     "Flag2": "true",
+     "Ok": "false",
+     "Label": "zz",
+     "Pick": "zz",
+     "PickDate": "2000-01-01",
+     "Out": "9",
+     "Out2": "9",
+     "Gate": "1",
+     "Rows": [
+      {
+       "Key": "a",
+       "RGate": "5",
+       "RFlag": "false",
+       "ROk": "false"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

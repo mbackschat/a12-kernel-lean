@@ -1,0 +1,1185 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R2_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-14T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "g2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CB",
+       "field": "P/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CBo",
+       "field": "P/Flag2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag2",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CF",
+       "field": "P/Pick",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Outer[0]/Inner[0]/Item",
+        "P/Pick"
+       ],
+       "fillToFix": [
+        "/P[1]/Outer[0]/Inner[0]/Item",
+        "P/Pick"
+       ]
+      },
+      {
+       "code": "CFD",
+       "field": "P/PickDate",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Outer[0]/Inner[0]/IDate",
+        "P/PickDate"
+       ],
+       "fillToFix": [
+        "/P[1]/Outer[0]/Inner[0]/IDate",
+        "P/PickDate"
+       ]
+      },
+      {
+       "code": "CK",
+       "field": "P/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Gate",
+        "P/Out",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CL",
+       "field": "P/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Label",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CRB",
+       "field": "P/Rows/RFlag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Rows/RFlag",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CRB",
+       "field": "P/Rows[3]/RFlag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Rows[3]/RFlag",
+        "P/Rows[3]/RGate"
+       ],
+       "fillToFix": [
+        "P/Rows[3]/RFlag",
+        "P/Rows[3]/RGate"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Flag",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Label",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/Out2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Pick",
+        "cleared": false,
+        "errored": false,
+        "value": "i2"
+       },
+       {
+        "field": "P/PickDate",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-02-02"
+       },
+       {
+        "field": "P/Rows/RFlag",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows[2]/ROk",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/RFlag",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows[3]/ROk",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CB",
+       "field": "P/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CBo",
+       "field": "P/Flag2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag2",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CF",
+       "field": "P/Pick",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Outer[0]/Inner[0]/Item",
+        "P/Pick"
+       ],
+       "fillToFix": [
+        "/P[1]/Outer[0]/Inner[0]/Item",
+        "P/Pick"
+       ]
+      },
+      {
+       "code": "CFD",
+       "field": "P/PickDate",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Outer[0]/Inner[0]/IDate",
+        "P/PickDate"
+       ],
+       "fillToFix": [
+        "/P[1]/Outer[0]/Inner[0]/IDate",
+        "P/PickDate"
+       ]
+      },
+      {
+       "code": "CK",
+       "field": "P/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Gate",
+        "P/Out",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CL",
+       "field": "P/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Label",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CRB",
+       "field": "P/Rows/RFlag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Rows/RFlag",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CRB",
+       "field": "P/Rows[3]/RFlag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Rows[3]/RFlag",
+        "P/Rows[3]/RGate"
+       ],
+       "fillToFix": [
+        "P/Rows[3]/RFlag",
+        "P/Rows[3]/RGate"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Flag",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Label",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/Out2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Pick",
+        "cleared": false,
+        "errored": false,
+        "value": "i2"
+       },
+       {
+        "field": "P/PickDate",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-02-02"
+       },
+       {
+        "field": "P/Rows/RFlag",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows[2]/ROk",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/RFlag",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows[3]/ROk",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "g0",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CB",
+       "field": "P/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CRB",
+       "field": "P/Rows/RFlag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Rows/RFlag",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": [
+        "P/Rows/RFlag",
+        "P/Rows/RGate"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Flag",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Flag2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Label",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Ok",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Out2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Pick",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/PickDate",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/RFlag",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows[2]/ROk",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CB",
+       "field": "P/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CRB",
+       "field": "P/Rows/RFlag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Rows/RFlag",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": [
+        "P/Rows/RFlag",
+        "P/Rows/RGate"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Flag",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Flag2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Label",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Ok",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Out2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Pick",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/PickDate",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/RFlag",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows[2]/ROk",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "g1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CB",
+       "field": "P/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CBo",
+       "field": "P/Flag2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag2",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CN",
+       "field": "P/Out2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[-5]/Key",
+        "/P[1]/Rows[-5]/RGate",
+        "P/Out2"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[-5]/Key",
+        "/P[1]/Rows[-5]/RGate",
+        "P/Out2"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Flag",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Flag2",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "P/Pick",
+        "cleared": false,
+        "errored": false,
+        "value": "j1"
+       },
+       {
+        "field": "P/PickDate",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-05"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CB",
+       "field": "P/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CBo",
+       "field": "P/Flag2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag2",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CN",
+       "field": "P/Out2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[-5]/Key",
+        "/P[1]/Rows[-5]/RGate",
+        "P/Out2"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[-5]/Key",
+        "/P[1]/Rows[-5]/RGate",
+        "P/Out2"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Flag",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Flag2",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "P/Pick",
+        "cleared": false,
+        "errored": false,
+        "value": "j1"
+       },
+       {
+        "field": "P/PickDate",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-05-05"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "gnone",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CB",
+       "field": "P/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag",
+        "P/Gate"
+       ],
+       "fillToFix": [
+        "P/Flag",
+        "P/Gate"
+       ]
+      },
+      {
+       "code": "CN",
+       "field": "P/Out2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Out2",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": [
+        "P/Out2",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Flag",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Flag2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Label",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "P/Pick",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/PickDate",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CB",
+       "field": "P/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag",
+        "P/Gate"
+       ],
+       "fillToFix": [
+        "P/Flag",
+        "P/Gate"
+       ]
+      },
+      {
+       "code": "CN",
+       "field": "P/Out2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Out2",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": [
+        "P/Out2",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Flag",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Flag2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Label",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "P/Pick",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/PickDate",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "okfalse",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CB",
+       "field": "P/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CK",
+       "field": "P/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Gate",
+        "P/Out",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CL",
+       "field": "P/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Label",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CN",
+       "field": "P/Out2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[-5]/Key",
+        "/P[1]/Rows[-5]/RGate",
+        "P/Out2"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[-5]/Key",
+        "/P[1]/Rows[-5]/RGate",
+        "P/Out2"
+       ]
+      },
+      {
+       "code": "CRB",
+       "field": "P/Rows/RFlag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Rows/RFlag",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "feldJaFalsch",
+       "field": "P/Ok",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Ok"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "feldJaFalsch",
+       "field": "P/Rows/ROk",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/ROk"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Flag",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Label",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/Ok",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "P/Pick",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/PickDate",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/RFlag",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/ROk",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CB",
+       "field": "P/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Flag",
+        "P/Gate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CK",
+       "field": "P/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Gate",
+        "P/Out",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CL",
+       "field": "P/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Label",
+        "P/Rows/Key",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CN",
+       "field": "P/Out2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[-5]/Key",
+        "/P[1]/Rows[-5]/RGate",
+        "P/Out2"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[-5]/Key",
+        "/P[1]/Rows[-5]/RGate",
+        "P/Out2"
+       ]
+      },
+      {
+       "code": "CRB",
+       "field": "P/Rows/RFlag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Rows/RFlag",
+        "P/Rows/RGate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "feldJaFalsch",
+       "field": "P/Ok",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Ok"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "feldJaFalsch",
+       "field": "P/Rows/ROk",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/ROk"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Flag",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Label",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/Ok",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "P/Pick",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/PickDate",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/RFlag",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/ROk",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  }
+ ]
+}

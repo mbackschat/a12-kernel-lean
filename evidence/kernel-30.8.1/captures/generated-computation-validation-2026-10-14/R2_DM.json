@@ -1,0 +1,454 @@
+{
+ "header": {
+  "id": "R2_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R2_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Gate",
+        "name": "Gate",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Flag",
+        "name": "Flag",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Flag2",
+        "name": "Flag2",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Ok",
+        "name": "Ok",
+        "Field": {
+         "fieldType": {
+          "type": "ConfirmType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Label",
+        "name": "Label",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Pick",
+        "name": "Pick",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/PickDate",
+        "name": "PickDate",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Out",
+        "name": "Out",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Out2",
+        "name": "Out2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Rows/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/RGate",
+           "name": "RGate",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/RFlag",
+           "name": "RFlag",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/ROk",
+           "name": "ROk",
+           "Field": {
+            "fieldType": {
+             "type": "ConfirmType"
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Rows/CRB",
+           "name": "CRB",
+           "Computation": {
+            "computedFieldRelPath": "../RFlag",
+            "computationAlternatives": [
+             {
+              "precondition": "[RGate] > 0",
+              "operation": "True"
+             },
+             {
+              "precondition": "[RGate] <= 0",
+              "operation": "False"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Rows/CRC",
+           "name": "CRC",
+           "Computation": {
+            "computedFieldRelPath": "../ROk",
+            "computationAlternatives": [
+             {
+              "precondition": "[RGate] > 0",
+              "operation": "True"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "Key"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Outer",
+        "name": "Outer",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/P/Outer/Inner",
+           "name": "Inner",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/Item",
+              "name": "Item",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Inner/IDate",
+              "name": "IDate",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CB",
+        "name": "CB",
+        "Computation": {
+         "computedFieldRelPath": "../Flag",
+         "computationAlternatives": [
+          {
+           "precondition": "[Gate] > 0",
+           "operation": "True"
+          },
+          {
+           "precondition": "[Gate] <= 0",
+           "operation": "False"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CBo",
+        "name": "CBo",
+        "Computation": {
+         "computedFieldRelPath": "../Flag2",
+         "computationAlternatives": [
+          {
+           "precondition": "[Gate] > 0",
+           "operation": "True"
+          },
+          {
+           "precondition": "[Gate] > 1",
+           "operation": "False"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CC",
+        "name": "CC",
+        "Computation": {
+         "computedFieldRelPath": "../Ok",
+         "computationAlternatives": [
+          {
+           "precondition": "[Gate] > 0",
+           "operation": "True"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CK",
+        "name": "CK",
+        "Computation": {
+         "computedFieldRelPath": "../Out",
+         "computationAlternatives": [
+          {
+           "precondition": "AtLeastOneFieldFilled(Rows/RGate For \"a\", Gate)",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CN",
+        "name": "CN",
+        "Computation": {
+         "computedFieldRelPath": "../Out2",
+         "computationAlternatives": [
+          {
+           "precondition": "FieldNotFilled(Rows/RGate For \"b\")",
+           "operation": "2"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CL",
+        "name": "CL",
+        "Computation": {
+         "computedFieldRelPath": "../Label",
+         "computationAlternatives": [
+          {
+           "precondition": "FieldFilled(Rows/RGate For \"a\")",
+           "operation": "\"x\""
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CF",
+        "name": "CF",
+        "Computation": {
+         "computedFieldRelPath": "../Pick",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/Item)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CFD",
+        "name": "CFD",
+        "Computation": {
+         "computedFieldRelPath": "../PickDate",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(/P/Outer*/Inner*/IDate)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

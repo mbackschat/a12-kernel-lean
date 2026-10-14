@@ -45,6 +45,7 @@ import A12Kernel.Reference.Dm.ParallelInstanceViewLocks
 import A12Kernel.Reference.Dm.ParallelJoinedGuardLocks
 import A12Kernel.Reference.Dm.ParallelJoinedLimitsLocks
 import A12Kernel.Reference.Dm.ParallelJoinedRowLocks
+import A12Kernel.Reference.Dm.GeneratedTableLocks
 import A12Kernel.Reference.Dm.AncestorErrorScopeLocks
 import A12Kernel.Reference.Dm.HavingComparisonLocks
 import A12Kernel.Reference.Dm.HavingAdmissionLocks
