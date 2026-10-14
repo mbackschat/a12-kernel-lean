@@ -49,18 +49,7 @@ def mapM [Monad m] (bind : Field → m Target) : ParallelNumericAtomOf Field →
 
 end ParallelNumericAtomOf
 
-/-- A keyed group presence beside the join. Its group lies outside both joined groups and its key is
-a literal, so the common outer binding fixes the row it selects, and it means at every joined row what
-the ordinary carrier means there (keyed-membership capture, rows `p00`–`p02` and `RPk`, 2026-10-13). -/
-structure ParallelKeyedGroupPresence (model : FlatModel) where
-  operator : GroupPresenceOperator
-  source : CheckedKeyedEntityExtent model
-
-def ParallelKeyedGroupPresence.leaf (keyed : ParallelKeyedGroupPresence model) :
-    ValidationConditionLeaf model :=
-  .keyedGroupPresence keyed.operator keyed.source
-
-inductive ParallelFieldLeafOf (Field Keyed : Type) where
+inductive ParallelFieldLeafOf (Field Ordinary : Type) where
   | groupPresence (op : GroupPresenceOperator) (reference : ResolvedGroupReference)
   | presence (side : Field) (op : RepeatableFieldPresenceOperator)
   | numeric (op : NumericComparisonOp) (left right : Field)
@@ -70,10 +59,15 @@ inductive ParallelFieldLeafOf (Field Keyed : Type) where
   /-- An ordinary flat leaf elaborated against the joined-instance view, where each pair group reads
   one row. `reads` lists the fields it reads, so admission and references see them as payloads. -/
   | flat (condition : FlatConditionLeaf) (reads : List Field)
-  | keyed (leaf : Keyed)
+  /-- A model-checked leaf the instance view has no flat form for, such as a starred or filtered
+  aggregate, a keyed read or a pattern test. It means what the ordinary carrier means at its
+  [binding](A12Kernel.ParallelOrdinaryBinding) (keyed-membership capture, rows `p00`–`p02` and
+  `RPk`, 2026-10-13; joined-carrier capture, rows `k01`–`k09` and the generated rules of
+  `j03`–`j10`, 2026-10-14). -/
+  | ordinary (leaf : Ordinary)
 
 abbrev ParallelFieldLeaf (model : FlatModel) :=
-  ParallelFieldLeafOf ParallelFieldOperand (ParallelKeyedGroupPresence model)
+  ParallelFieldLeafOf ParallelFieldOperand (ValidationConditionLeaf model)
 
 abbrev ParallelFieldCondition (model : FlatModel) := ConditionTree (ParallelFieldLeaf model)
 
@@ -82,6 +76,28 @@ def CheckedParallelFieldPair.declaration (pair : CheckedParallelFieldPair model)
   | .left => pair.leftDeclaration
   | .right => pair.rightDeclaration
   | .field declaration => declaration
+
+/-- Where an ordinary leaf beside the join is evaluated. The common outer binding is preferred; a
+leaf whose iterating reads it does not fix, a key field on the error side's row for instance, reads
+the error side's joined row. -/
+inductive ParallelOrdinaryBinding where
+  | common
+  | errorSide
+  deriving Repr, DecidableEq
+
+/-- The binding that fixes every iterating read of `leaf`, a key field's included, or none. -/
+def CheckedParallelFieldPair.ordinaryBinding? (pair : CheckedParallelFieldPair model)
+    (leaf : ValidationConditionLeaf model) : Option ParallelOrdinaryBinding :=
+  let common := match pair.groups.outerScopePlan with | .common shared | .framed _ shared _ => shared
+  let errorScope := (if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration
+    else pair.rightDeclaration).repeatableScope
+  match ValidationCondition.ordinaryIterationScope (.leaf leaf) with
+  | .ok none => some .common
+  | .ok (some scope) =>
+      if scope.isPrefixOf common then some .common
+      else if scope.isPrefixOf errorScope then some .errorSide
+      else none
+  | .error _ => none
 
 def CheckedParallelFieldPair.admitsOperand (pair : CheckedParallelFieldPair model)
     (operand : ParallelFieldOperand) : Bool :=
@@ -163,7 +179,7 @@ def fields : ParallelFieldLeaf model → List ParallelFieldOperand
   | .comparison value => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
   | .customCondition _ => []
   | .flat _ reads => reads
-  | .keyed _ => []
+  | .ordinary _ => []
 
 def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
     (leaf : ParallelFieldLeaf model) : Bool :=
@@ -197,15 +213,21 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
   | .customCondition _ => true
   | .flat condition reads => model.fields.all fun declaration =>
       !condition.referencesField declaration.id || reads.any (pair.declaration · == declaration)
-  | .keyed keyed =>
-      let path := keyed.source.groupPath
-      let common := match pair.groups.outerScopePlan with | .common shared | .framed _ shared _ => shared
-      let disjoint := fun (group : RepeatableGroupDecl) =>
-        !group.path.isPrefixOf path && !path.isPrefixOf group.path
-      keyed.source.isGroup && !keyed.source.isStarredGroup &&
-        (match keyed.source.selection.key with | .literal .. => true | .field _ => false) &&
-        disjoint pair.groups.leftGroup && disjoint pair.groups.rightGroup &&
-        keyed.source.bindingScopes.all (·.isPrefixOf common)
+  -- A binding must fix every iterating read. A read below a joined group or in a repeatable group
+  -- enclosing one is unmeasured beside a join, as are uniqueness, current-repetition and custom leaves.
+  | .ordinary leaf =>
+      let joined := [pair.groups.leftGroup.path, pair.groups.rightGroup.path]
+      let placed := model.fields.all fun declaration =>
+        !leaf.referencesField declaration.id || joined.all fun path =>
+          declaration.groupPath == path ||
+            (!path.isPrefixOf declaration.groupPath &&
+              (!declaration.groupPath.isPrefixOf path || declaration.repeatableScope.isEmpty))
+      let measured := match leaf with
+        | .repetitionNotUnique .. | .valuesNotUnique _ | .guardedRootCurrentRepetition ..
+        | .guardedRepeatableCurrentRepetition .. | .customCondition _ | .customFieldValidity _
+        | .indexedCustomFieldValidity _ => false
+        | _ => true
+      measured && placed && (pair.ordinaryBinding? leaf).isSome
 
 /-- Direct fields and operation-list wrappers retain the ordinary literal-sensitive guard;
 composite arithmetic has its own parse-tree branch (spec/07 §2). A field list is an entity list in the
@@ -267,7 +289,7 @@ def guards (pair : CheckedParallelFieldPair model) : ParallelFieldLeaf model →
   | .fill op left right => decide (fillGuard (fun field =>
       pair.groups.leftGroup.path.isPrefixOf (pair.declaration field).groupPath ||
       pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) op left right = .guarded)
-  | .customCondition _ | .keyed _ => false
+  | .customCondition _ | .ordinary _ => false
   | .flat condition reads => decide (condition.iterationGuard (fun field =>
       reads.any fun operand => (pair.declaration operand).id == field &&
         (pair.groups.leftGroup.path.isPrefixOf (pair.declaration operand).groupPath ||
@@ -289,7 +311,7 @@ def guardAt (pair : CheckedParallelFieldPair model) (level : RepeatableLevel)
   | .numeric _ left right =>
       if (pair.declaration left).repeatableScope.contains level ||
           (pair.declaration right).repeatableScope.contains level then .guarded else .noReference
-  | .customCondition _ | .keyed _ => .noReference
+  | .customCondition _ | .ordinary _ => .noReference
   | .flat condition reads => condition.iterationGuard fun field =>
       reads.any fun operand => (pair.declaration operand).id == field &&
         (pair.declaration operand).repeatableScope.contains level
@@ -326,7 +348,7 @@ private def _root_.A12Kernel.CellObservation.asCheckedCell : CellObservation →
 def evalWith (pair : CheckedParallelFieldPair model)
     (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
     (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState)
-    (readKeyed : ParallelKeyedGroupPresence model → Except ParallelPresenceRuleEvaluationError Verdict)
+    (readOrdinary : ValidationConditionLeaf model → Except ParallelPresenceRuleEvaluationError Verdict)
     (leaf : ParallelFieldLeaf model)
     (custom : String → Except CustomConditionLookupError Bool := fun name => .error (.missingRegistration name))
     (world : Option World := none) :
@@ -369,7 +391,15 @@ def evalWith (pair : CheckedParallelFieldPair model)
           | _ => malformedCheckedCell
         world }
       pure (condition.evalSelected context)
-  | .keyed keyed => readKeyed keyed
+  | .ordinary leaf => readOrdinary leaf
+
+/-- The environment an ordinary leaf reads at one joined row; none for an unmatched error side,
+whose leaf decides nothing, an account no captured row separates. -/
+def ordinaryEnvironment? (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
+    (outer : Env) (leaf : ValidationConditionLeaf model) : Option Env :=
+  match pair.ordinaryBinding? leaf with
+  | some .common | none => some outer
+  | some .errorSide => (pair.errorSide row).environment
 
 /-- Missing and invalid joined sides enter the same scalar observation consumers as physical reads. -/
 def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
@@ -389,8 +419,12 @@ def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow
           |>.mapError (fun error => .join (.document error))
         pure (some (observeCell .validation cell)))
     (groupState row preliminary)
-    (fun keyed => keyed.source.validationGroupPresence keyed.operator preliminary.base outer
-      |>.mapError .addressing) leaf custom world
+    (fun leaf => match ordinaryEnvironment? pair row outer leaf with
+      | none => pure .unknown
+      | some environment => ValidationCondition.evalAddressed (.leaf leaf) {
+          scalar := { fields := { preliminary.base.flatContext with world }, groups := GroupPresenceContext.unavailable }
+          outer := environment, input := .checked preliminary.base }
+        |>.mapError .addressing) leaf custom world
 
 end ParallelFieldLeaf
 

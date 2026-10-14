@@ -35,9 +35,12 @@ private inductive PairSyntaxLeaf where
   | pair (leaf : ParallelFieldLeafOf FieldId Empty)
   | ordinary (expression : Expr) (reads : List FieldId)
 
-/-- Every plain field path an expression reads, in authored order. -/
+/-- Every plain field path an expression reads, in authored order. A starred, keyed or filtered
+reference reads no single joined row, so it never anchors the join. -/
 private partial def Expr.fieldPaths : Expr → List SurfaceFieldPath
-  | .value reference | .entity reference => reference.path.toFieldPath?.toList
+  | .value reference | .entity reference =>
+      if reference.index.isSome || reference.filter.isSome || reference.path.segments.any (·.star) then []
+      else reference.path.toFieldPath?.toList
   | .call _ arguments listed _ =>
       (arguments ++ listed.getD []).flatMap fun (.mk expression rangeEnd) =>
         expression.fieldPaths ++ (rangeEnd.map Expr.fieldPaths).getD []
@@ -82,12 +85,14 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
         pure (.leaf (.pair (.groupPresence op { resolved with
           boundRepeatableScope := model.repeatableScopeForGroupPath resolved.path })))
       else
-       match name with
-        | "FieldFilled" => pure (.leaf (.pair (.presence (← pairField model group false field) .filled)))
-        | "FieldNotFilled" => pure (.leaf (.pair (.presence (← pairField model group false field) .notFilled)))
-        | _ => ordinary (.call name [.mk field none] none none)
+       -- A keyed, filtered or starred operand reads no single joined row: an ordinary leaf.
+       match name, field.fieldEntity?.isSome with
+        | "FieldFilled", true => pure (.leaf (.pair (.presence (← pairField model group false field) .filled)))
+        | "FieldNotFilled", true => pure (.leaf (.pair (.presence (← pairField model group false field) .notFilled)))
+        | _, _ => ordinary (.call name [.mk field none] none none)
   | expression@(.call name [.mk left none, .mk right none] none none) => do
       let some op := fieldFillOp? name | ordinary expression
+      if left.fieldEntity?.isNone || right.fieldEntity?.isNone then ordinary expression else
       pure (.leaf (.pair (.fill op (← pairField model group false left) (← pairField model group false right))))
   | .custom name quoted => do
       let spelling := if quoted then CustomConditionNameSpelling.quoted name else .unquoted name
@@ -96,10 +101,9 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
       pure (.leaf (.pair (.customCondition checkedName)))
   | expression => ordinary expression
 where
-  /-- A leaf the pair carrier has no form for, kept with the fields it reads. -/
+  /-- A leaf the pair carrier has no form for, kept with the plain fields it reads. -/
   ordinary (expression : Expr) : Lowering (ConditionTree PairSyntaxLeaf) := do
     let reads ← expression.fieldPaths.mapM (pairPath model group)
-    if reads.isEmpty then refuse "ParallelRule" "unsupported pair condition"
     pure (.leaf (.ordinary expression reads.eraseDups))
 
 private def pairReferences : ConditionTree PairSyntaxLeaf → List FieldId
@@ -107,7 +111,7 @@ private def pairReferences : ConditionTree PairSyntaxLeaf → List FieldId
   | .leaf (.pair (.presence field _)) => [field]
   | .leaf (.pair (.numeric _ left right)) | .leaf (.pair (.fill _ left right)) => [left, right]
   | .leaf (.pair (.comparison value)) => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
-  | .leaf (.pair (.customCondition _)) | .leaf (.pair (.keyed _)) => []
+  | .leaf (.pair (.customCondition _)) | .leaf (.pair (.ordinary _)) => []
   | .leaf (.pair (.flat _ reads)) | .leaf (.ordinary _ reads) => reads
   | .and left right | .or left right => pairReferences left ++ pairReferences right
 
@@ -116,25 +120,65 @@ private def pairGroupPaths (model : FlatModel) (left right : FieldId) : List Gro
   [left, right].filterMap fun anchor => (model.lookupUniqueId anchor).toOption.bind fun declaration =>
     (model.indexedAncestorGroups declaration).getLast?.map (·.path)
 
+/-- A keyed presence read lowered with the error side's levels bound, as a parallel rule binds a key
+field on that row (joined-carrier capture, rows `k03b` and `k08`, 2026-10-14). The ordinary reader
+binds the declaring group only, which refuses such a key for a rule without a join. -/
+private def errorSideKeyedPresence (model : FlatModel) (group bound : GroupPath) :
+    Expr → Option (Lowering (ValidationConditionLeaf model))
+  | .call "FieldFilled" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>
+      some (indexed .filled path key)
+  | .call "FieldNotFilled" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>
+      some (indexed .notFilled path key)
+  | .call "GroupFilled" [argument@(.mk (.entity { index := some _, filter := none, .. }) none)] none none =>
+      some (keyedGroup .filled argument)
+  | .call "GroupNotFilled" [argument@(.mk (.entity { index := some _, filter := none, .. }) none)] none none =>
+      some (keyedGroup .notFilled argument)
+  | _ => none
+where
+  indexed (operator : RepeatableFieldPresenceOperator) (path : Path) (key : IndexKey) :
+      Lowering (ValidationConditionLeaf model) := do
+    let source ← lowerIndexedSource model group path key
+    let checked ← elaborated "SemanticIndex"
+      (elaborateSemanticIndexSource model group source (some (model.repeatableScopeForGroupPath bound)))
+    pure (.indexedFieldPresence operator checked)
+  keyedGroup (operator : GroupPresenceOperator) (argument : Argument) :
+      Lowering (ValidationConditionLeaf model) := do
+    let .keyed source ← lowerEntityOperand model group argument | refuse "SemanticIndex" "group operand"
+    let checked ← elaborated "SemanticIndex"
+      (elaborateKeyedEntityExtent model group source (some (model.repeatableScopeForGroupPath bound)))
+    if !checked.isGroup || checked.isStarredGroup then refuse "SemanticIndex" "unstarred group operand"
+    pure (.keyedGroupPresence operator checked)
+
 private def bindPairLeaf (model : FlatModel) (group : GroupPath) (suppress : Bool) (left right : FieldId) :
     PairSyntaxLeaf → Lowering (ParallelFieldLeaf model)
   | .pair leaf => bindPair leaf
   | .ordinary expression _ => do
       -- The ordinary reader lowers the leaf against the instance view; only a flat leaf, whose
-      -- operands are model-free field records, crosses back to the real model. A keyed group read
-      -- reads no joined field, so it is lowered against the model itself, where admission places it
-      -- beside the join.
+      -- operands are model-free field records, crosses back to the real model. Any other leaf is
+      -- lowered against the model itself, where admission accepts it only when the common outer
+      -- binding fixes its every iterating read.
       let view := model.parallelInstanceView (pairGroupPaths model left right)
-      match (← lowerCondition view group suppress expression).core with
-      | .leaf (.flat condition) =>
+      let viewed : Option (ValidationCondition view) :=
+        (lowerCondition view group suppress expression).toOption.map (·.core)
+      match viewed with
+      | some (.leaf (.flat condition)) =>
           bindPair (.flat condition (model.fields.filterMap fun declaration =>
             if condition.referencesField declaration.id then some declaration.id else none))
-      | .leaf (.keyedGroupPresence ..) =>
-          match (← lowerCondition model group suppress expression).core with
-          | .leaf (.keyedGroupPresence operator source) => pure (.keyed { operator, source })
-          | _ => refuse "ParallelRule" "unsupported pair condition"
-      | _ => refuse "ParallelRule" "unsupported pair condition"
+      | _ =>
+          -- A key read on the error side's row binds at that row (joined-carrier capture, rows
+          -- `k03b`, `k07b` and `k08`, 2026-10-14), so a leaf the declaring group cannot bind is
+          -- lowered once more with the error side's group bound.
+          match lowerCondition model group suppress expression, (pairGroupPaths model left right).head? with
+          | .error _, some errorGroup =>
+              match errorSideKeyedPresence model group errorGroup expression with
+              | some leaf => (.ordinary ·) <$> leaf
+              | none => single (← lowerCondition model group suppress expression (bindingGroup := errorGroup))
+          | result, _ => single (← result)
 where
+  single (condition : CheckedValidationCondition model) : Lowering (ParallelFieldLeaf model) :=
+    match condition.core with
+    | .leaf leaf => pure (.ordinary leaf)
+    | _ => refuse "ParallelRule" "unsupported pair condition"
   bindPair (leaf : ParallelFieldLeafOf FieldId Empty) : Lowering (ParallelFieldLeaf model) := do
     let operand := fun field => do
       if field == left then pure ParallelFieldOperand.left
@@ -149,7 +193,7 @@ where
         left := ← value.left.mapM (·.mapM operand), right := ← value.right.mapM (·.mapM operand) })
     | .customCondition name => pure (.customCondition name)
     | .flat condition reads => pure (.flat condition (← reads.mapM operand))
-    | .keyed leaf => nomatch leaf
+    | .ordinary leaf => nomatch leaf
 
 private def pairGroupReferences : ConditionTree PairSyntaxLeaf → List GroupPath
   | .leaf (.pair (.groupPresence _ reference)) => [reference.path]

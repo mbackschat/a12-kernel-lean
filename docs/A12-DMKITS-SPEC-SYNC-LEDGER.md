@@ -40,13 +40,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 Ten corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
 
 <a id="spec-2026-10-14-06"></a>
-### SPEC-2026-10-14-06 — a joined guard's clock, starred, filtered, keyed and pattern leaves keep their ordinary meaning
+### SPEC-2026-10-14-06 — clock, starred, filtered, keyed and pattern leaves beside a key join keep their ordinary meaning
 
 - `status`: pending
-- `canonical`: [spec/09 §5](../spec/09-computations.md#5-where-a-computation-runs--scope-and-the-parallel-join).
-- `delta`: A joined computation's precondition admits `Today`, starred aggregates and field-fill lists, a filtered starred `Sum`, literal-keyed reads of a third or the partner group and `PatternMatched`; the values agree with each leaf keeping its ordinary meaning at the target's row.
-- `basis`: [joined-carrier checkpoint](sources/model-structure-and-declaration-probes.md#src-joined-carrier-admission), rows `j01`–`j08`, `j10` and the `matched` and `sparse` documents at a12-dmkits `a4091041`, Kernel 30.8.1.
-- `acceptance`: Reconcile admission and the per-row values. Do not claim the ordinary-meaning account as a measured mechanism, nor a starred joined operation or a non-Number joined target, which this entry does not cover.
+- `canonical`: [spec/09 §5](../spec/09-computations.md#5-where-a-computation-runs--scope-and-the-parallel-join) and [spec/07 §2](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key).
+- `delta`: A joined computation's precondition admits `Today`, starred aggregates and field-fill lists, a filtered starred `Sum`, literal-keyed reads of a third or the partner group and `PatternMatched`; a parallel rule admits literal-keyed field reads of a third group, literal-keyed reads into the partner group and error-side key fields. Values and messages agree with each leaf keeping its ordinary meaning at the common row, or at the error side's row where it reads that row; an omission against an error-side key that names no row includes that side's index field in its fill-to-fix set.
+- `basis`: [joined-carrier checkpoint](sources/model-structure-and-declaration-probes.md#src-joined-carrier-admission), rows `j01`–`j08`, `j10`, `k01`–`k09` and the `matched` and `sparse` documents at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile admission, the per-row values and the messages with their references. Do not claim the ordinary-meaning account as a measured mechanism, an unmatched error side, a starred joined operation or a non-Number joined target, which this entry does not cover.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-05"></a>

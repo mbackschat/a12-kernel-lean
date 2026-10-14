@@ -81,7 +81,8 @@ def core (pair : CheckedParallelFieldPair model) (condition : Condition) : Resol
   messagePlan := pair.messagePlan
 }
 
-private def errorSide (pair : CheckedParallelFieldPair model)
+/-- The joined side holding the error field. -/
+def errorSide (pair : CheckedParallelFieldPair model)
     (row : ResolvedParallelIndexRow) : ResolvedParallelIndexSide :=
   if pair.errorField == pair.leftDeclaration.id then row.left else row.right
 

@@ -352,35 +352,32 @@ private def fullMessageReferenceInputs (checked : CheckedDocument model) :
   let preliminary ← checked.applyFullIndexPreliminary |>.mapError .preliminary
   preliminary.messageReferenceInputs |>.mapError .messageCache
 
-/-- Evaluate an already-admitted partial instance at a derived target path. The caller owns filtering, relevance admission, and path construction; this helper owns leaf evaluation and message emission. -/
-private def evalOrdinaryPartialAdmittedAt
-    (rule : CheckedResolvedValidationRule model)
+/-- The addressed context of one partial instance, before any custom-condition callbacks. -/
+def _root_.A12Kernel.CheckedPartialPreliminary.addressedValidationContext
+    (preliminary : CheckedPartialPreliminary model) (environment : Env)
+    (world : Option World := none) : AddressedValidationEvaluationContext model := {
+  scalar := {
+    fields := { preliminary.index.base.flatContext with world }
+    groups := GroupPresenceContext.unavailable
+  }
+  outer := environment
+  input := .partialView preliminary.index.base (partialValidationAddressedCell? preliminary)
+}
+
+/-- The relevance-aware verdict of `condition` at `environment` in a partial call. Reached temporal
+faults stay distinct from structural errors, for the caller's runtime-failure handler. -/
+def _root_.A12Kernel.ValidationCondition.evalPartialAddressedResult (condition : ValidationCondition model)
     (preliminary : CheckedPartialPreliminary model)
-    (environment : Env)
-    (errorPath : List Nat)
-    (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult)
-    (failureErrorPath : List Nat := errorPath)
-    (world : Option World := none)
-    (registry : CustomValidationRegistry model := {}) :
-    Except OrdinaryRepeatableRuleEvaluationError OrdinaryRuleStep := do
+    (context : AddressedValidationEvaluationContext model) (environment : Env)
+    (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult) :
+    Except (Sum OrdinaryRepeatableRuleEvaluationError ScalarTemporalEvaluationFault) Verdict :=
   let checked := preliminary.index.base
   let scope := preliminary.relevance
-  let context : AddressedValidationEvaluationContext model := {
-    scalar := {
-      fields := { checked.flatContext with world }
-      groups := GroupPresenceContext.unavailable
-    }
-    outer := environment
-    input := .partialView checked (partialValidationAddressedCell? preliminary)
-  }
-  let context := rule.withCustomConditions context (.partialEntities scope) registry
-    preliminary.generatedFormalFailures
   let isRelevant : FlatRelevance := fun field =>
     scope.coversField model field environment
   let resolveGroup (groupPath : GroupPath) (current : Env) :=
     (preliminary.groupPresenceInput groupPath current false).mapError .group
-  let result : Except (Sum OrdinaryRepeatableRuleEvaluationError ScalarTemporalEvaluationFault) Verdict :=
-    rule.condition.core.evalWithTemporalResult context.scalar isRelevant (fun leaf =>
+  condition.evalWithTemporalResult context.scalar isRelevant (fun leaf =>
       match leaf.evalAddressedPartial? context scope isRelevant resolveGroup repetitionNotUniqueResult? with
       | some result => result.mapError (fun error => .inl (.conditionAddressing error))
       | none => .error (.inl .unsupportedCondition)) (.error (.inl .unsupportedCondition))
@@ -406,6 +403,22 @@ private def evalOrdinaryPartialAdmittedAt
             | .inr fault => .inr fault)
       (customResult := fun name => (context.scalar.customResult name).mapError
         (fun error => .inl (.conditionAddressing (.customCondition error))))
+
+/-- Evaluate an already-admitted partial instance at a derived target path. The caller owns filtering, relevance admission, and path construction; this helper owns leaf evaluation and message emission. -/
+private def evalOrdinaryPartialAdmittedAt
+    (rule : CheckedResolvedValidationRule model)
+    (preliminary : CheckedPartialPreliminary model)
+    (environment : Env)
+    (errorPath : List Nat)
+    (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult)
+    (failureErrorPath : List Nat := errorPath)
+    (world : Option World := none)
+    (registry : CustomValidationRegistry model := {}) :
+    Except OrdinaryRepeatableRuleEvaluationError OrdinaryRuleStep := do
+  let context := rule.withCustomConditions (preliminary.addressedValidationContext environment world)
+    (.partialEntities preliminary.relevance) registry preliminary.generatedFormalFailures
+  let result := rule.condition.core.evalPartialAddressedResult preliminary context environment
+    repetitionNotUniqueResult?
   match result with
   | .ok verdict => do
       let outcome ← rule.reanchorSelectedError environment (rule.core.emitAt errorPath verdict)

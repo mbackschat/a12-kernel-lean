@@ -9,23 +9,23 @@ inductive MessageAuthoringCore (model : FlatModel) where
   | validation (condition : ValidationCondition model)
   | parallel (rule : CheckedParallelFieldRule model)
 
-/-- Whether a parallel rule reads `field` other than through a keyed group read beside the join: a
+/-- Whether a parallel rule reads `field` other than through an ordinary leaf beside the join: a
 pair leaf reads its operands, and a group leaf every field below its group. -/
 def CheckedParallelFieldRule.pairReferencesField (rule : CheckedParallelFieldRule model)
     (field : FieldId) : Bool :=
   rule.condition.anyLeaf fun
     | .groupPresence _ reference => reference.referencesField model field
-    | .keyed _ => false
+    | .ordinary _ => false
     | leaf => leaf.fields.any fun operand => (rule.pair.declaration operand).id == field
 
-/-- The keyed group reads beside the join, each as the ordinary one-leaf condition whose reference
-queries already answer for it. -/
-def CheckedParallelFieldRule.keyedConditions (rule : CheckedParallelFieldRule model) :
+/-- The ordinary leaves beside the join, each as the one-leaf condition whose reference queries
+already answer for it. -/
+def CheckedParallelFieldRule.ordinaryConditions (rule : CheckedParallelFieldRule model) :
     List (ValidationCondition model) :=
   go rule.condition
 where
   go : ParallelFieldCondition model → List (ValidationCondition model)
-    | .leaf (.keyed keyed) => [.leaf keyed.leaf]
+    | .leaf (.ordinary leaf) => [.leaf leaf]
     | .leaf _ => []
     | .and left right | .or left right => go left ++ go right
 
@@ -33,7 +33,7 @@ def MessageAuthoringCore.referencesField : MessageAuthoringCore model → FieldI
   | .flat condition => condition.referencesField
   | .validation condition => condition.referencesField
   | .parallel rule => fun field =>
-      rule.pairReferencesField field || rule.keyedConditions.any (·.referencesField field)
+      rule.pairReferencesField field || rule.ordinaryConditions.any (·.referencesField field)
 
 /-- Rule-owned parameters need the actual error declaration as well as the checked condition.
 The flat entry point remains available for templates whose parameters do not inspect that path. -/
@@ -98,13 +98,13 @@ private def declarationsUnder (model : FlatModel) (group : GroupPath) : List Fla
 private def readsUnder (condition : ValidationMessageCondition model) (group : GroupPath) : Bool :=
   (declarationsUnder model group).any (condition.core.referencesField ·.id)
 
-/-- A parallel rule's answer: its pair reads carry one mode, and each keyed group read beside the
-join answers as the ordinary carrier does. -/
+/-- A parallel rule's answer: its pair reads carry one mode, and each ordinary leaf beside the join
+answers as the ordinary carrier does. -/
 private def parallelAnswer (rule : CheckedParallelFieldRule model) (group : GroupPath)
-    (keyed : ValidationCondition model → FieldId → Option Bool) : Option Bool :=
+    (ordinary : ValidationCondition model → FieldId → Option Bool) : Option Bool :=
   anyKnown (some ((declarationsUnder model group).any (rule.pairReferencesField ·.id)) ::
-    rule.keyedConditions.flatMap fun condition =>
-      (declarationsUnder model group).map (keyed condition ·.id))
+    rule.ordinaryConditions.flatMap fun condition =>
+      (declarationsUnder model group).map (ordinary condition ·.id))
 
 /-- Ancestor index references inherit each authored entity's mode; querying non-iteration directly
 retains a keyed/starred read even beside a plain read (ReferencedIdsUtil.createAllIndexFieldEntityIds). -/
@@ -113,8 +113,8 @@ def indexReferenced? (condition : ValidationMessageCondition model) (group : Gro
   | .flat _ => some (condition.readsUnder group)
   | .rule checkedRule => anyKnown ((declarationsUnder model group).map fun declaration =>
       checkedRule.condition.core.messageGroupReference? declaration.id group)
-  | .parallel parallelRule _ => parallelAnswer parallelRule group fun keyed field =>
-      keyed.messageGroupReference? field group
+  | .parallel parallelRule _ => parallelAnswer parallelRule group fun ordinary field =>
+      ordinary.messageGroupReference? field group
 
 def indexNonIterating? (condition : ValidationMessageCondition model)
     (group : GroupPath) (level : RepeatableLevel) : Option Bool :=
@@ -122,17 +122,17 @@ def indexNonIterating? (condition : ValidationMessageCondition model)
   | .flat _ => some (condition.readsUnder group)
   | .rule checkedRule => anyKnown ((declarationsUnder model group).map fun declaration =>
       checkedRule.condition.core.messageNonIteratingReference? declaration.id group level)
-  | .parallel parallelRule _ => anyKnown (parallelRule.keyedConditions.flatMap fun keyed =>
+  | .parallel parallelRule _ => anyKnown (parallelRule.ordinaryConditions.flatMap fun ordinary =>
       (declarationsUnder model group).map fun declaration =>
-        keyed.messageNonIteratingReference? declaration.id group level)
+        ordinary.messageNonIteratingReference? declaration.id group level)
 
 def selectedGroupReferenced? (condition : ValidationMessageCondition model)
     (group : GroupPath) (key : Option CheckedSemanticIndexKey) : Option Bool :=
   match condition with
   | .flat _ => some false
-  | .parallel parallelRule _ => anyKnown (parallelRule.keyedConditions.flatMap fun keyed =>
+  | .parallel parallelRule _ => anyKnown (parallelRule.ordinaryConditions.flatMap fun ordinary =>
       (declarationsUnder model group).map fun declaration =>
-        keyed.messageSelectedGroupReference? declaration.id group key)
+        ordinary.messageSelectedGroupReference? declaration.id group key)
   | .rule checkedRule => anyKnown ((declarationsUnder model group).map fun declaration =>
       checkedRule.condition.core.messageSelectedGroupReference? declaration.id group key)
 
@@ -142,8 +142,8 @@ def unkeyedGroupReferenced? (condition : ValidationMessageCondition model)
   | .flat _ => some (condition.readsUnder group)
   | .rule checkedRule => anyKnown ((declarationsUnder model group).map fun declaration =>
       checkedRule.condition.core.messageUnkeyedReference? declaration.id group level)
-  | .parallel parallelRule _ => parallelAnswer parallelRule group fun keyed field =>
-      keyed.messageUnkeyedReference? field group level
+  | .parallel parallelRule _ => parallelAnswer parallelRule group fun ordinary field =>
+      ordinary.messageUnkeyedReference? field group level
 
 def nonWildcardGroupReferenced? (condition : ValidationMessageCondition model)
     (group : GroupPath) (level : RepeatableLevel) : Option Bool :=
@@ -151,8 +151,8 @@ def nonWildcardGroupReferenced? (condition : ValidationMessageCondition model)
   | .flat _ => some (condition.readsUnder group)
   | .rule checkedRule => anyKnown ((declarationsUnder model group).map fun declaration =>
       checkedRule.condition.core.messageNonWildcardReference? declaration.id group level)
-  | .parallel parallelRule _ => parallelAnswer parallelRule group fun keyed field =>
-      keyed.messageNonWildcardReference? field group level
+  | .parallel parallelRule _ => parallelAnswer parallelRule group fun ordinary field =>
+      ordinary.messageNonWildcardReference? field group level
 
 def anySelectedGroupReferenced? (condition : ValidationMessageCondition model) : Option Bool :=
   anyKnown (model.repeatableGroups.map fun group => condition.selectedGroupReferenced? group.path none)
@@ -162,7 +162,7 @@ def keyedGroupGuarded (condition : ValidationMessageCondition model)
   match condition with
   | .flat _ => false
   | .parallel parallelRule _ => parallelRule.condition.iterationGuarded fun
-      | .keyed keyed => ValidationCondition.keyedMessageLeafGuard group key keyed.leaf
+      | .ordinary leaf => ValidationCondition.keyedMessageLeafGuard group key leaf
       | _ => false
   | .rule checkedRule => checkedRule.condition.core.keyedMessageGroupGuarded group key
 
@@ -178,7 +178,7 @@ def messageKeyedMember? (condition : ValidationMessageCondition model) (declarat
   | some group, .parallel parallelRule _ =>
       if group.indexField == some declaration.id then
         condition.selectedGroupReferenced? group.path (some key)
-      else anyKnown (parallelRule.keyedConditions.map
+      else anyKnown (parallelRule.ordinaryConditions.map
         (·.messageSelectedGroupReference? declaration.id group.path (some key)))
   | some group, .rule checkedRule =>
       if group.indexField == some declaration.id then

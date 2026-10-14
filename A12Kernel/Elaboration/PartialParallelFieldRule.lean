@@ -132,8 +132,17 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
                 | .silentlyUnavailable => pure none
                 | .checked cell => pure (some (observeCell .validation cell)))
           (view.parallelGroupState row rowOuter)
-          (fun keyed => keyed.source.partialGroupPresence keyed.operator view.index.base view.relevance
-            rowOuter (CheckedResolvedValidationRule.partialValidationAddressedCell? view) |>.mapError .addressing)
+          -- A reached temporal fault has no parallel runtime-failure route; it fails the call, as in
+          -- full validation.
+          (fun leaf => match ParallelFieldLeaf.ordinaryEnvironment? rule.pair row rowOuter leaf with
+            | none => pure .unknown
+            | some environment =>
+            match ValidationCondition.evalPartialAddressedResult (.leaf leaf) view
+                (view.addressedValidationContext environment world) environment none with
+            | .ok verdict => pure verdict
+            | .error (.inl (.conditionAddressing error)) => throw (.addressing error)
+            | .error (.inl _) => throw .unsupportedCondition
+            | .error (.inr _) => throw (.addressing .temporalUnavailable))
           leaf custom world))
       view.index outer messageCache view.isAddressRelevant
       (rule.pair.admitsPartialOuter view.relevance))).flatten

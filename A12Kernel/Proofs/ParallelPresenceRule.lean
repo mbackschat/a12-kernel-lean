@@ -74,10 +74,10 @@ theorem checkedParallelFieldPair_noRelevantError (pair : CheckedParallelFieldPai
 theorem parallelFieldPresence_silentUnavailable (pair : CheckedParallelFieldPair model)
     (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
     (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState)
-    (readKeyed : ParallelKeyedGroupPresence model → Except ParallelPresenceRuleEvaluationError Verdict)
+    (readOrdinary : ValidationConditionLeaf model → Except ParallelPresenceRuleEvaluationError Verdict)
     (side : ParallelFieldOperand) (op : RepeatableFieldPresenceOperator)
     (unavailable : read side = .ok none) :
-    ParallelFieldLeaf.evalWith pair read readGroup readKeyed (.presence side op) = .ok .unknown := by
+    ParallelFieldLeaf.evalWith pair read readGroup readOrdinary (.presence side op) = .ok .unknown := by
   simp [ParallelFieldLeaf.evalWith, unavailable]
   rfl
 
