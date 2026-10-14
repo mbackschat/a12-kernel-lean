@@ -693,22 +693,22 @@ example : (match (ResolvedParallelIndexSide.messagePointer
     | .error error => some error
     | .ok _ => none) = some (.fieldOutsideGroup 5 demand.path) := by native_decide
 
-private def pairNumeric (op : NumericComparisonOp) : ParallelFieldCondition :=
+private def pairNumeric {owner : FlatModel} (op : NumericComparisonOp) : ParallelFieldCondition owner :=
   .leaf (.numeric op .left .right)
 
-private def pairFill (op : FieldFillQuantifier) : ParallelFieldCondition :=
+private def pairFill {owner : FlatModel} (op : FieldFillQuantifier) : ParallelFieldCondition owner :=
   .leaf (.fill op .left .right)
 
-private def pairPositive : ParallelFieldCondition :=
+private def pairPositive : ParallelFieldCondition model :=
   .or (.leaf (.presence .left .filled)) (.leaf (.presence .right .filled))
 
-private def pairRun (condition : ParallelFieldCondition) (source : DocumentData := data)
+private def pairRun (condition : ParallelFieldCondition model) (source : DocumentData := data)
     (errorField : FieldId := 2) : Option (List ParallelRuleRowOutcome) := do
   let preliminary ← preliminaryFor source
   let rule ← (checkParallelFieldRule model 2 4 errorField condition "PI" .error messagePlan).toOption
   (rule.evalFull preliminary).toOption
 
-private def pairVerdicts (condition : ParallelFieldCondition) (source : DocumentData := data) :
+private def pairVerdicts (condition : ParallelFieldCondition model) (source : DocumentData := data) :
     Option (List Verdict) :=
   (pairRun condition source).map (·.map fun row => match row.outcome with
     | .fired message => .fired message.messageType
@@ -770,14 +770,14 @@ example : (pairRun (.and (.leaf (.presence .left .filled))
 
 private def framedPairPresence : Option (List ParallelRuleRowOutcome) := do
   let preliminary ← framedPreliminaryFor framedData
-  let condition : ParallelFieldCondition := .and
+  let condition : ParallelFieldCondition framedModel := .and
     (.leaf (.presence .left .filled)) (.leaf (.presence .right .filled))
   let rule ← (checkParallelFieldRule framedModel 22 24 22 condition "FPI" .error messagePlan).toOption
   (rule.evalFull preliminary).toOption
 
 example : framedPairPresence = framedEvaluated? framedData := by native_decide
 
-private def frameAdmitted (body : ParallelFieldCondition) : Bool :=
+private def frameAdmitted (body : ParallelFieldCondition framedModel) : Bool :=
   (checkParallelFieldRule framedModel 22 24 22 body "FPI" .error messagePlan).isOk
 
 example : !frameAdmitted (pairFill .fieldsNotCollectivelyFilled) &&

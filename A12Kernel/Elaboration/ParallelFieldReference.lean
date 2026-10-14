@@ -50,7 +50,8 @@ private def groupReads (pair : CheckedParallelFieldPair model) (outer : Env)
 /-- The authored reads of one leaf. A filled-presence operator can never be repaired by filling more,
 and a distinct count asked to be larger is repaired by changing values, not by filling; both mirror
 the ordinary carrier's omission selection. The root group's filled-presence names no field. -/
-def reads (pair : CheckedParallelFieldPair model) (outer : Env) : ParallelFieldLeaf →
+def reads (pair : CheckedParallelFieldPair model) (outer : Env)
+    (inputs : Option MessageReferenceInputs) : ParallelFieldLeaf model →
     Except ParallelReferenceError ParallelLeafReads
   | .groupPresence op reference => do
       match op with
@@ -84,16 +85,23 @@ def reads (pair : CheckedParallelFieldPair model) (outer : Env) : ParallelFieldL
       match condition with
       | .fieldFilled _ => pure ⟨all, []⟩
       | _ => pure ⟨all, all⟩
+  -- The ordinary keyed projection names the selected row, which only the index context can place.
+  | .keyed keyed => do
+      let all := (← keyed.leaf.referencePointers outer inputs |>.mapError .outer).map .expanded
+      match keyed.operator with
+      | .filled => pure ⟨all, []⟩
+      | .notFilled => pure ⟨all, all⟩
 
 end ParallelFieldLeaf
 
 namespace ParallelFieldCondition
 
-private def leafReads (pair : CheckedParallelFieldPair model) (outer : Env) :
-    ParallelFieldCondition → Except ParallelReferenceError (List ParallelLeafReads)
-  | .leaf leaf => (fun reads => [reads]) <$> leaf.reads pair outer
+private def leafReads (pair : CheckedParallelFieldPair model) (outer : Env)
+    (inputs : Option MessageReferenceInputs) :
+    ParallelFieldCondition model → Except ParallelReferenceError (List ParallelLeafReads)
+  | .leaf leaf => (fun reads => [reads]) <$> leaf.reads pair outer inputs
   | .and left right | .or left right => do
-      pure ((← leafReads pair outer left) ++ (← leafReads pair outer right))
+      pure ((← leafReads pair outer inputs left) ++ (← leafReads pair outer inputs right))
 
 /-- Each joined side that contributes a field also contributes its index field (KF539). -/
 private def withIndexFields (pair : CheckedParallelFieldPair model)
@@ -117,11 +125,13 @@ private def fieldPointer (pair : CheckedParallelFieldPair model) (row : Resolved
   | none => concreteFieldPointer declaration outer |>.mapError .outer
 
 /-- The reference channels of one message fired at a resolved row. `cache` is the message-cache
-context the row's error pointer used, which a duplicate-key side needs to name its row. -/
-def messageReferences (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition)
+context the row's error pointer used, which a duplicate-key side needs to name its row; `inputs` place
+the row a keyed group read beside the join selects. -/
+def messageReferences (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition model)
     (row : ResolvedParallelIndexRow) (outer : Env) (cache : Option MessageIndexContext)
-    (message : FlatRuleMessage) : Except ParallelReferenceError ValidationMessageReferences := do
-  let reads ← leafReads pair outer condition
+    (message : FlatRuleMessage) (inputs : Option MessageReferenceInputs := none) :
+    Except ParallelReferenceError ValidationMessageReferences := do
+  let reads ← leafReads pair outer inputs condition
   let project := fun (reads : List ParallelRead) => do
     let joined := reads.filterMap fun | .joined declaration => some declaration | .expanded _ => none
     let pointed ← ((withIndexFields pair joined).eraseDups).mapM (fieldPointer pair row outer cache)

@@ -131,7 +131,10 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
                 match ← view.readAuthoredValidation address |>.mapError .preliminary with
                 | .silentlyUnavailable => pure none
                 | .checked cell => pure (some (observeCell .validation cell)))
-          (view.parallelGroupState row rowOuter) leaf custom world))
+          (view.parallelGroupState row rowOuter)
+          (fun keyed => keyed.source.partialGroupPresence keyed.operator view.index.base view.relevance
+            rowOuter (CheckedResolvedValidationRule.partialValidationAddressedCell? view) |>.mapError .addressing)
+          leaf custom world))
       view.index outer messageCache view.isAddressRelevant
       (rule.pair.admitsPartialOuter view.relevance))).flatten
 

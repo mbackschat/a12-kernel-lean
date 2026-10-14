@@ -21,7 +21,7 @@ private def groupGuards (group : GroupPath) (key : CheckedSemanticIndexKey) :
 
 /-- A matching reference licenses lookup, but only positive presence guards license a keyed row
 parameter. The all/any distinction is the entity-list rule of RuleErrorTextIterationParamVisitor. -/
-private def keyedMessageLeafGuard (group : GroupPath) (key : CheckedSemanticIndexKey) :
+def keyedMessageLeafGuard (group : GroupPath) (key : CheckedSemanticIndexKey) :
     ValidationConditionLeaf model → Bool
   | .indexedFieldPresence .filled source => selectionGuards group key source
   | .keyedGroupPresence .filled source => selectionGuards group key source.selection.indexSource

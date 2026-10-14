@@ -49,7 +49,18 @@ def mapM [Monad m] (bind : Field → m Target) : ParallelNumericAtomOf Field →
 
 end ParallelNumericAtomOf
 
-inductive ParallelFieldLeafOf (Field : Type) where
+/-- A keyed group presence beside the join. Its group lies outside both joined groups and its key is
+a literal, so the common outer binding fixes the row it selects, and it means at every joined row what
+the ordinary carrier means there (keyed-membership capture, rows `p00`–`p02` and `RPk`, 2026-10-13). -/
+structure ParallelKeyedGroupPresence (model : FlatModel) where
+  operator : GroupPresenceOperator
+  source : CheckedKeyedEntityExtent model
+
+def ParallelKeyedGroupPresence.leaf (keyed : ParallelKeyedGroupPresence model) :
+    ValidationConditionLeaf model :=
+  .keyedGroupPresence keyed.operator keyed.source
+
+inductive ParallelFieldLeafOf (Field Keyed : Type) where
   | groupPresence (op : GroupPresenceOperator) (reference : ResolvedGroupReference)
   | presence (side : Field) (op : RepeatableFieldPresenceOperator)
   | numeric (op : NumericComparisonOp) (left right : Field)
@@ -59,11 +70,12 @@ inductive ParallelFieldLeafOf (Field : Type) where
   /-- An ordinary flat leaf elaborated against the joined-instance view, where each pair group reads
   one row. `reads` lists the fields it reads, so admission and references see them as payloads. -/
   | flat (condition : FlatConditionLeaf) (reads : List Field)
-  deriving Repr, DecidableEq
+  | keyed (leaf : Keyed)
 
-abbrev ParallelFieldLeaf := ParallelFieldLeafOf ParallelFieldOperand
+abbrev ParallelFieldLeaf (model : FlatModel) :=
+  ParallelFieldLeafOf ParallelFieldOperand (ParallelKeyedGroupPresence model)
 
-abbrev ParallelFieldCondition := ConditionTree ParallelFieldLeaf
+abbrev ParallelFieldCondition (model : FlatModel) := ConditionTree (ParallelFieldLeaf model)
 
 def CheckedParallelFieldPair.declaration (pair : CheckedParallelFieldPair model) :
     ParallelFieldOperand → FlatFieldDecl
@@ -144,15 +156,17 @@ end ParallelNumericAtomOf
 
 namespace ParallelFieldLeaf
 
-def fields : ParallelFieldLeaf → List ParallelFieldOperand
+def fields : ParallelFieldLeaf model → List ParallelFieldOperand
   | .groupPresence _ _ => []
   | .presence field _ => [field]
   | .numeric _ lhs rhs | .fill _ lhs rhs => [lhs, rhs]
   | .comparison value => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
   | .customCondition _ => []
   | .flat _ reads => reads
+  | .keyed _ => []
+
 def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
-    (leaf : ParallelFieldLeaf) : Bool :=
+    (leaf : ParallelFieldLeaf model) : Bool :=
   let group := match side with | .left => pair.groups.leftGroup | .right => pair.groups.rightGroup
   match leaf with
   | .groupPresence _ reference => group.path.isPrefixOf reference.path
@@ -160,7 +174,7 @@ def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
 
 /-- Every payload is model-owned and addressable from the join or frame; comparisons reuse the shared authoring and scale gates. -/
 def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
-    (leaf : ParallelFieldLeaf) : Bool :=
+    (leaf : ParallelFieldLeaf model) : Bool :=
   leaf.fields.all (CheckedParallelFieldPair.admitsOperand pair) && match leaf with
   | .numeric op lhs rhs =>
       match (pair.declaration lhs).toNumberField?, (pair.declaration rhs).toNumberField? with
@@ -183,6 +197,15 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
   | .customCondition _ => true
   | .flat condition reads => model.fields.all fun declaration =>
       !condition.referencesField declaration.id || reads.any (pair.declaration · == declaration)
+  | .keyed keyed =>
+      let path := keyed.source.groupPath
+      let common := match pair.groups.outerScopePlan with | .common shared | .framed _ shared _ => shared
+      let disjoint := fun (group : RepeatableGroupDecl) =>
+        !group.path.isPrefixOf path && !path.isPrefixOf group.path
+      keyed.source.isGroup && !keyed.source.isStarredGroup &&
+        (match keyed.source.selection.key with | .literal .. => true | .field _ => false) &&
+        disjoint pair.groups.leftGroup && disjoint pair.groups.rightGroup &&
+        keyed.source.bindingScopes.all (·.isPrefixOf common)
 
 /-- Direct fields and operation-list wrappers retain the ordinary literal-sensitive guard;
 composite arithmetic has its own parse-tree branch (spec/07 §2). A field list is an entity list in the
@@ -232,7 +255,7 @@ private def fillGuard (participates : ParallelFieldOperand → Bool)
     | .allFieldsFilled | .moreThanOneFieldFilled => .guarded
 
 /-- For direct fields on the joined pair, the parallel guard follows the source operator's iteration test, not its runtime empty verdict (Kernel `IterationNotValidVisitor`). -/
-def guards (pair : CheckedParallelFieldPair model) : ParallelFieldLeaf → Bool
+def guards (pair : CheckedParallelFieldPair model) : ParallelFieldLeaf model → Bool
   | leaf@(.groupPresence .filled _) => leaf.uses pair .left || leaf.uses pair .right
   | .groupPresence .notFilled _ => false
   | leaf@(.presence _ .filled) | leaf@(.numeric _ _ _) =>
@@ -244,7 +267,7 @@ def guards (pair : CheckedParallelFieldPair model) : ParallelFieldLeaf → Bool
   | .fill op left right => decide (fillGuard (fun field =>
       pair.groups.leftGroup.path.isPrefixOf (pair.declaration field).groupPath ||
       pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) op left right = .guarded)
-  | .customCondition _ => false
+  | .customCondition _ | .keyed _ => false
   | .flat condition reads => decide (condition.iterationGuard (fun field =>
       reads.any fun operand => (pair.declaration operand).id == field &&
         (pair.groups.leftGroup.path.isPrefixOf (pair.declaration operand).groupPath ||
@@ -252,7 +275,7 @@ def guards (pair : CheckedParallelFieldPair model) : ParallelFieldLeaf → Bool
 
 /-- A one-sided frame has ordinary iteration levels in addition to the parallel key level. Direct pair leaves specialize the existing iteration guard table at each such level. -/
 def guardAt (pair : CheckedParallelFieldPair model) (level : RepeatableLevel)
-    (value : ParallelFieldLeaf) : IterationGuardStatus :=
+    (value : ParallelFieldLeaf model) : IterationGuardStatus :=
   match value with
   | .comparison value => numericGuard (fun field => (pair.declaration field).repeatableScope.contains level) value
   | .groupPresence op reference =>
@@ -266,7 +289,7 @@ def guardAt (pair : CheckedParallelFieldPair model) (level : RepeatableLevel)
   | .numeric _ left right =>
       if (pair.declaration left).repeatableScope.contains level ||
           (pair.declaration right).repeatableScope.contains level then .guarded else .noReference
-  | .customCondition _ => .noReference
+  | .customCondition _ | .keyed _ => .noReference
   | .flat condition reads => condition.iterationGuard fun field =>
       reads.any fun operand => (pair.declaration operand).id == field &&
         (pair.declaration operand).repeatableScope.contains level
@@ -303,7 +326,8 @@ private def _root_.A12Kernel.CellObservation.asCheckedCell : CellObservation →
 def evalWith (pair : CheckedParallelFieldPair model)
     (read : ParallelFieldOperand → Except ParallelPresenceRuleEvaluationError (Option CellObservation))
     (readGroup : ResolvedGroupReference → Except ParallelPresenceRuleEvaluationError GroupPresenceState)
-    (leaf : ParallelFieldLeaf)
+    (readKeyed : ParallelKeyedGroupPresence model → Except ParallelPresenceRuleEvaluationError Verdict)
+    (leaf : ParallelFieldLeaf model)
     (custom : String → Except CustomConditionLookupError Bool := fun name => .error (.missingRegistration name))
     (world : Option World := none) :
     Except ParallelPresenceRuleEvaluationError Verdict :=
@@ -345,11 +369,12 @@ def evalWith (pair : CheckedParallelFieldPair model)
           | _ => malformedCheckedCell
         world }
       pure (condition.evalSelected context)
+  | .keyed keyed => readKeyed keyed
 
 /-- Missing and invalid joined sides enter the same scalar observation consumers as physical reads. -/
 def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
     (preliminary : CheckedIndexPreliminary model) (outer : Env)
-    (custom : String → Except CustomConditionLookupError Bool) (world : Option World := none) : ParallelFieldLeaf →
+    (custom : String → Except CustomConditionLookupError Bool) (world : Option World := none) : ParallelFieldLeaf model →
     Except ParallelPresenceRuleEvaluationError Verdict :=
   fun leaf => evalWith pair
     (fun field => do
@@ -363,18 +388,20 @@ def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow
         let cell ← preliminary.readAuthoredValidation { field := declaration.id, path }
           |>.mapError (fun error => .join (.document error))
         pure (some (observeCell .validation cell)))
-    (groupState row preliminary) leaf custom world
+    (groupState row preliminary)
+    (fun keyed => keyed.source.validationGroupPresence keyed.operator preliminary.base outer
+      |>.mapError .addressing) leaf custom world
 
 end ParallelFieldLeaf
 
 namespace ParallelFieldCondition
 
 /-- A conjunction needs a guarding member; every disjunction branch needs one (`IterationNotValidVisitor.visit(ICompositeCondition)`). -/
-def guarded (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition) : Bool :=
+def guarded (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition model) : Bool :=
   condition.iterationGuarded (ParallelFieldLeaf.guards pair)
 
 /-- Common outer coordinates are caller-bound; each extra frame level needs a guard from its own side. -/
-def framesGuarded (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition) : Bool :=
+def framesGuarded (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition model) : Bool :=
   match pair.groups.outerScopePlan with
   | .common _ => true
   | .framed _ common frame => frame.all fun level =>
@@ -382,13 +409,13 @@ def framesGuarded (pair : CheckedParallelFieldPair model) (condition : ParallelF
         (condition.iterationGuardStatus (ParallelFieldLeaf.guardAt pair level) = .guarded)
 
 def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
-    (condition : ParallelFieldCondition) : Bool :=
+    (condition : ParallelFieldCondition model) : Bool :=
   condition.allLeaves (ParallelFieldLeaf.admitted pair suppress) &&
     condition.anyLeaf (ParallelFieldLeaf.uses pair .left) &&
     condition.anyLeaf (ParallelFieldLeaf.uses pair .right) && condition.guarded pair && framesGuarded pair condition
 
 /-- Authored references alone satisfy the error-target gate; topology anchor declarations are not implicit condition references. -/
-def references (pair : CheckedParallelFieldPair model) : ParallelFieldCondition → List ConditionReference
+def references (pair : CheckedParallelFieldPair model) : ParallelFieldCondition model → List ConditionReference
   | .leaf (.groupPresence _ reference) => [{
       isGroup := true, isRootGroup := reference.path.length == 1,
       ancestorOrEqual := reference.path.isPrefixOf
@@ -398,7 +425,7 @@ def references (pair : CheckedParallelFieldPair model) : ParallelFieldCondition 
       { sameEntity := (pair.declaration field).id == pair.errorField }
   | .and left right | .or left right => references pair left ++ references pair right
 
-def errorTargetRefusal (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition) :
+def errorTargetRefusal (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition model) :
     Option KernelStaticDiagnostic :=
   conditionSideRefusal {
     declaration := .declared true, references := condition.references pair,
@@ -412,14 +439,14 @@ end ParallelFieldCondition
 structure CheckedParallelFieldRule (model : FlatModel) where
   private mk ::
   pair : CheckedParallelFieldPair model
-  condition : ParallelFieldCondition
+  condition : ParallelFieldCondition model
   suppressExactScaleWarning : Bool
   errorTargetAllowed : condition.errorTargetRefusal pair = none
   admitted : condition.admitted pair suppressExactScaleWarning = true
 
 /-- Public construction retains the pair's topology certificate and checks the entire condition before any read. -/
 def checkParallelFieldRule (model : FlatModel)
-    (leftField rightField errorField : FieldId) (condition : ParallelFieldCondition)
+    (leftField rightField errorField : FieldId) (condition : ParallelFieldCondition model)
     (errorCode : String) (severity : ValidationSeverity) (messagePlan : MessageRenderPlan)
     (suppressExactScaleWarning : Bool := false) :
     Except ParallelPresenceRuleAssemblyError (CheckedParallelFieldRule model) := do

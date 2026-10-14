@@ -88,6 +88,8 @@ Group-presence operands in a parallel condition read the resolved joined group, 
 
 **Every other leaf reads the joined row as if both groups were fixed.** A leaf with no pair form of its own — a text or Date comparison across or within the sides, an Enumeration category read, value-list membership and its negation, `Length`, a String comparison between the two sides — reads each field from its side's joined row, and the Kernel admits each of these beside a pair leaf ([checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-parallel-instance-leaves)). An unmatched partner reads exactly as a partner row holding only its key: its fields are empty, so these leaves, negated ones included, do not fire on it through their ordinary empty-operand rules, while a Number inequality and `FieldNotFilled` of a partner field fire as omissions. A malformed partner field leaves its leaf undecided, firing nothing.
 
+**A keyed group read beside the join selects its row at the common outer binding.** `GroupFilled(/Kp/Rows For "k1")` beside a joined field pair, with `Rows` outside both joined groups and a literal key, is admitted, and so are keyed field and group message parameters under the same key, the group parameter guarded by that positive read as in an ordinary rule ([checkpoint](../docs/sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15)). The selected row does not depend on the joined row: each joined row reads the same group content, renders the same selected row beside its own partner value, and references that row's fields beside the joined ones ([rows](../docs/sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15)).
+
 ---
 
 ## 3. The filter `Having`, the `$` correlation, and aggregation

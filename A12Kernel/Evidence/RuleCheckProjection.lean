@@ -110,10 +110,7 @@ def captures : List (String × String × String) := [
 def deferred : List (String × String) := [
   ("comparison-entry-gates/observations.json#groupregex", "host pattern compiler, SG7"),
   ("comparison-entry-gates/observations2.json#violatedcontrol", "host pattern compiler, SG7"),
-  ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7"),
-  ("message-keyed-membership-2026-10-13/obs-review.json#p00", "parallel keyed read, SG29"),
-  ("message-keyed-membership-2026-10-13/obs-review.json#p01", "parallel keyed read, SG29"),
-  ("message-keyed-membership-2026-10-13/obs-review.json#p02", "parallel keyed read, SG29")]
+  ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

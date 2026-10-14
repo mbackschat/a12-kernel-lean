@@ -32,7 +32,7 @@ private def pairNumericAtom (model : FlatModel) (group : GroupPath) (expression 
 /-- A pair-carrier leaf, or an ordinary leaf the carrier has no form for, kept as authored with the
 fields it reads until the pair's groups fix the instance view it is lowered against. -/
 private inductive PairSyntaxLeaf where
-  | pair (leaf : ParallelFieldLeafOf FieldId)
+  | pair (leaf : ParallelFieldLeafOf FieldId Empty)
   | ordinary (expression : Expr) (reads : List FieldId)
 
 /-- Every plain field path an expression reads, in authored order. -/
@@ -75,7 +75,9 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
           | "GroupFilled" => some GroupPresenceOperator.filled
           | "GroupNotFilled" => some .notFilled
           | _ => none) then
-        let some reference := field.groupReference? | refuse "ParallelRule" "plain group operand required"
+        -- A keyed group read selects a row of a group the join does not bind, so it stays an
+        -- ordinary leaf (keyed-membership capture, rows p00-p02, 2026-10-13).
+        let some reference := field.groupReference? | pure (.leaf (.ordinary (.call name [.mk field none] none none) []))
         let resolved ← elaborated "ParallelRule" (reference.resolveAgainst group)
         pure (.leaf (.pair (.groupPresence op { resolved with
           boundRepeatableScope := model.repeatableScopeForGroupPath resolved.path })))
@@ -105,7 +107,7 @@ private def pairReferences : ConditionTree PairSyntaxLeaf → List FieldId
   | .leaf (.pair (.presence field _)) => [field]
   | .leaf (.pair (.numeric _ left right)) | .leaf (.pair (.fill _ left right)) => [left, right]
   | .leaf (.pair (.comparison value)) => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
-  | .leaf (.pair (.customCondition _)) => []
+  | .leaf (.pair (.customCondition _)) | .leaf (.pair (.keyed _)) => []
   | .leaf (.pair (.flat _ reads)) | .leaf (.ordinary _ reads) => reads
   | .and left right | .or left right => pairReferences left ++ pairReferences right
 
@@ -115,18 +117,25 @@ private def pairGroupPaths (model : FlatModel) (left right : FieldId) : List Gro
     (model.indexedAncestorGroups declaration).getLast?.map (·.path)
 
 private def bindPairLeaf (model : FlatModel) (group : GroupPath) (suppress : Bool) (left right : FieldId) :
-    PairSyntaxLeaf → Lowering ParallelFieldLeaf
+    PairSyntaxLeaf → Lowering (ParallelFieldLeaf model)
   | .pair leaf => bindPair leaf
   | .ordinary expression _ => do
       -- The ordinary reader lowers the leaf against the instance view; only a flat leaf, whose
-      -- operands are model-free field records, crosses back to the real model.
+      -- operands are model-free field records, crosses back to the real model. A keyed group read
+      -- reads no joined field, so it is lowered against the model itself, where admission places it
+      -- beside the join.
       let view := model.parallelInstanceView (pairGroupPaths model left right)
-      let lowered ← lowerCondition view group suppress expression
-      let .leaf (.flat condition) := lowered.core | refuse "ParallelRule" "unsupported pair condition"
-      bindPair (.flat condition (model.fields.filterMap fun declaration =>
-        if condition.referencesField declaration.id then some declaration.id else none))
+      match (← lowerCondition view group suppress expression).core with
+      | .leaf (.flat condition) =>
+          bindPair (.flat condition (model.fields.filterMap fun declaration =>
+            if condition.referencesField declaration.id then some declaration.id else none))
+      | .leaf (.keyedGroupPresence ..) =>
+          match (← lowerCondition model group suppress expression).core with
+          | .leaf (.keyedGroupPresence operator source) => pure (.keyed { operator, source })
+          | _ => refuse "ParallelRule" "unsupported pair condition"
+      | _ => refuse "ParallelRule" "unsupported pair condition"
 where
-  bindPair (leaf : ParallelFieldLeafOf FieldId) : Lowering ParallelFieldLeaf := do
+  bindPair (leaf : ParallelFieldLeafOf FieldId Empty) : Lowering (ParallelFieldLeaf model) := do
     let operand := fun field => do
       if field == left then pure ParallelFieldOperand.left
       else if field == right then pure .right
@@ -140,6 +149,7 @@ where
         left := ← value.left.mapM (·.mapM operand), right := ← value.right.mapM (·.mapM operand) })
     | .customCondition name => pure (.customCondition name)
     | .flat condition reads => pure (.flat condition (← reads.mapM operand))
+    | .keyed leaf => nomatch leaf
 
 private def pairGroupReferences : ConditionTree PairSyntaxLeaf → List GroupPath
   | .leaf (.pair (.groupPresence _ reference)) => [reference.path]
@@ -147,7 +157,7 @@ private def pairGroupReferences : ConditionTree PairSyntaxLeaf → List GroupPat
   | .and left right | .or left right => pairGroupReferences left ++ pairGroupReferences right
 
 private def bindPairCondition (model : FlatModel) (group : GroupPath) (suppress : Bool) (left right : FieldId) :
-    ConditionTree PairSyntaxLeaf → Lowering ParallelFieldCondition
+    ConditionTree PairSyntaxLeaf → Lowering (ParallelFieldCondition model)
   | .leaf leaf => (.leaf ·) <$> bindPairLeaf model group suppress left right leaf
   | .and a b => do
       let a ← bindPairCondition model group suppress left right a
@@ -241,9 +251,10 @@ def runParallelRuleReferences (document : CheckedDocument model) (rule : Checked
     Except String (List (FlatRuleMessage × Except ParallelReferenceError ValidationMessageReferences)) := do
   let preliminary ← document.applyFullIndexPreliminary |>.mapError (fun error => (repr error).pretty)
   let cache := preliminary.messageCacheContext.toOption
+  let inputs := preliminary.messageReferenceInputs.toOption
   let rows ← rule.evalDocument preliminary cache (world := world) |>.mapError (fun error => (repr error).pretty)
   pure (rows.filterMap fun row => row.outcome.message?.map fun message =>
-    (message, rule.condition.messageReferences rule.pair row.row row.outerEnvironment cache message))
+    (message, rule.condition.messageReferences rule.pair row.row row.outerEnvironment cache message inputs))
 
 /-- Execute a checked parallel rule for one normalized partial call. Duplicate message coordinates share the partial cache producer while value reads retain partial unavailability. -/
 def runPartialParallelRule (document : CheckedDocument model)

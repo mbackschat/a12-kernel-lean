@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CheckedIndexColumn
+import A12Kernel.Elaboration.CheckedStarDocument
 import A12Kernel.Semantics.CorrelationContext
 import A12Kernel.Semantics.CustomCondition
 import A12Kernel.Semantics.ValidationRule
@@ -29,6 +30,8 @@ inductive ParallelPresenceRuleEvaluationError where
   | rows (error : ActualRowEnvironmentError)
   | preliminary (error : CheckedIndexPreliminaryError)
   | customCondition (error : CustomConditionLookupError)
+  /-- A keyed group read beside the join failed in the ordinary addressed evaluator. -/
+  | addressing (error : CheckedAddressingError)
   | unsupportedCondition
   deriving Repr, DecidableEq
 

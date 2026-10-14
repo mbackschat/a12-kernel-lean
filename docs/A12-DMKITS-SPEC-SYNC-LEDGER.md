@@ -37,7 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Six corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Seven corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+<a id="spec-2026-10-14-03"></a>
+### SPEC-2026-10-14-03 — a keyed group read beside a key join selects one row for every joined row
+
+- `status`: pending
+- `canonical`: [spec/07 §2](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key).
+- `delta`: A literal-keyed `GroupFilled` of a group outside both joined groups is admitted beside a joined pair, licenses keyed message parameters under its key, and selects the same row, rendered and referenced, at every joined row.
+- `basis`: [keyed membership](sources/message-parameter-rendering-probes.md#src-keyed-message-membership-k15) rows `p00`–`p02` and [message rows](sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15) rule `RPk` over two documents, a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile admission, rendering and references with these rows. Do not claim a field-valued key, a keyed field read or a keyed group enclosing a joined group beside the join, which no row measured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-02"></a>
 ### SPEC-2026-10-14-02 — ordinary leaves and computation guards of a key join read one joined row

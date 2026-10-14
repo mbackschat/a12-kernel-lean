@@ -154,6 +154,13 @@ example : rendered (rule ["Kp", "GA"] "RPar" "../GNote" "FieldFilled(GNote) And 
       "p=[$/Kp/GB/GVal2.value$] own=[$GNote.value$] pn=[$/Kp/GB/GVal2$]" =
     some (.inr ["p=[5] own=[n1] pn=[GVal2]", "p=[7] own=[n2] pn=[GVal2]"]) := by native_decide
 
+/-- A keyed group read beside the join selects the same row at every joined row: the keyed field and
+group parameters render `k1`'s row while the partner value follows the join. -/
+example : rendered (rule ["Kp", "GA"] "RPk" "../GNote"
+      "FieldFilled(GNote) And FieldFilled(/Kp/GB/GVal2) And GroupFilled(/Kp/Rows For \"k1\")")
+      "pk=[$/Kp/Rows/Base.value For \"k1\"$] pg=[$#/Kp/Rows For \"k1\"$] p=[$/Kp/GB/GVal2.value$]" =
+    some (.inr ["pk=[b1] pg=[2] p=[5]", "pk=[b1] pg=[2] p=[7]"]) := by native_decide
+
 /-- A keyed parameter renders the row its key selects: a literal, the group's index field, a field-valued
 key read at its own cell, and a Number index read by value. -/
 example : rendered (rule ["Kp"] "RKey" "../Anchor" "FieldFilled(Anchor) And FieldFilled(/Kp/Rows/Base For \"k1\")")

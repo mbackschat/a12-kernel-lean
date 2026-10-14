@@ -310,7 +310,7 @@ def supportsOrdinaryRepeatablePartial
 /-- Partial operand walks can reach missing declared coordinates (KF527, spec/10 §5).
 Read those slots without materializing rows, then apply the relevance-scoped generated findings.
 `none` retains call-local silent unavailability rather than inventing a formal cause. -/
-private def partialValidationAddressedCell?
+def partialValidationAddressedCell?
     (preliminary : CheckedPartialPreliminary model)
     (environment : Env) (field : FieldId) :
     Except CheckedAddressingError (Option CheckedCell) := do
