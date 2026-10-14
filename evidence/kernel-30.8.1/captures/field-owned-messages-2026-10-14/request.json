@@ -1,0 +1,77 @@
+{
+ "model": "R10_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "empty",
+   "documentInline": {
+    "P": {
+     "Other": "o"
+    }
+   }
+  },
+  {
+   "name": "bad",
+   "documentInline": {
+    "P": {
+     "Other": "o",
+     "Rows": [
+      {
+       "rx": "1"
+      },
+      {
+       "rq": "v",
+       "rx": "2"
+      }
+     ],
+     "n01": "Z",
+     "n02": "Z"
+    }
+   }
+  },
+  {
+   "name": "full",
+   "documentInline": {
+    "P": {
+     "Other": "o",
+     "q00": "x",
+     "Rows": [
+      {
+       "rq": "v",
+       "rx": "1"
+      }
+     ],
+     "q01": "x",
+     "q02": "x",
+     "q03": "x",
+     "q04": "x",
+     "q05": "x",
+     "q06": "x",
+     "q07": "x",
+     "q08": "x",
+     "q09": "x",
+     "q10": "x",
+     "q11": "x",
+     "q12": "x",
+     "q13": "x",
+     "q14": "x",
+     "q15": "x",
+     "q16": "x",
+     "q17": "x",
+     "q18": "x",
+     "q19": "x",
+     "q20": "x",
+     "q21": "x",
+     "q22": "x",
+     "q23": "x",
+     "n01": "A",
+     "n02": "A"
+    }
+   }
+  }
+ ]
+}

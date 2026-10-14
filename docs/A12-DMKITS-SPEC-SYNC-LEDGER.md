@@ -37,7 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Thirteen corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Fourteen corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+<a id="spec-2026-10-14-10"></a>
+### SPEC-2026-10-14-10 — the requiredness text substitutes four tokens in succession and checks nothing; an Enumeration text renders its stored value
+
+- `status`: pending
+- `canonical`: [spec/11 Part A](../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation).
+- `delta`: A required field's own text is never checked. Rendering replaces `$Feld$`, `$field$`, `$Feld.Wert$` and `$field.value$` in that order over the whole text, the names by the label or short name and the values by the empty text, every other dollar sequence staying verbatim. An Enumeration's invalid-value text renders the label and the stored value and refuses `$BaseYear$`, another field, a category and an inner `$$` with `INVALID_PARAMETER`.
+- `basis`: [field-owned producer checkpoint](sources/message-parameter-rendering-probes.md#src-field-owned-message-producers), 23 requiredness and seven Enumeration templates at a12-dmkits `a4091041`, Kernel 30.8.1, both strategies agreeing.
+- `acceptance`: Reconcile the rendered texts of `q01`–`q23`, `rq`, `n01` and `n02` and the static classes of `n03`–`n07`. Do not claim re-substitution inside a label, a German-condition model or the catalog default text.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-09"></a>
 ### SPEC-2026-10-14-09 — `RepetitionNotUnique` keys in sibling fixed groups of one row

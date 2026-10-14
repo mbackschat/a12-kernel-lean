@@ -1,0 +1,29 @@
+{
+ "kernel": "30.8.1",
+ "producer": "a4091041",
+ "route": "dmtool model check",
+ "model": "R10S_DM.json",
+ "valid": false,
+ "diagnostics": [
+  {
+   "path": "/P/n03",
+   "code": "INVALID_PARAMETER"
+  },
+  {
+   "path": "/P/n04",
+   "code": "INVALID_PARAMETER"
+  },
+  {
+   "path": "/P/n05",
+   "code": "INVALID_PARAMETER"
+  },
+  {
+   "path": "/P/n06",
+   "code": "INVALID_PARAMETER"
+  },
+  {
+   "path": "/P/n07",
+   "code": "INVALID_PARAMETER"
+  }
+ ]
+}

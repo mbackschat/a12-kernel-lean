@@ -1,0 +1,1385 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R10_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-14T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "P/q00",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "P/q00"
+       ],
+       "fillToFix": [
+        "P/q00"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q01 end",
+       "referenced": [
+        "P/q01"
+       ],
+       "fillToFix": [
+        "P/q01"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req  end",
+       "referenced": [
+        "P/q02"
+       ],
+       "fillToFix": [
+        "P/q02"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $$ q03",
+       "referenced": [
+        "P/q03"
+       ],
+       "fillToFix": [
+        "P/q03"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req q04",
+       "referenced": [
+        "P/q04"
+       ],
+       "fillToFix": [
+        "P/q04"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $BaseYear$",
+       "referenced": [
+        "P/q05"
+       ],
+       "fillToFix": [
+        "P/q05"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $Other$",
+       "referenced": [
+        "P/q06"
+       ],
+       "fillToFix": [
+        "P/q06"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field->Cat$",
+       "referenced": [
+        "P/q07"
+       ],
+       "fillToFix": [
+        "P/q07"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q08",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field For \"k\"$",
+       "referenced": [
+        "P/q08"
+       ],
+       "fillToFix": [
+        "P/q08"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q09",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $#P$",
+       "referenced": [
+        "P/q09"
+       ],
+       "fillToFix": [
+        "P/q09"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q10",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field",
+       "referenced": [
+        "P/q10"
+       ],
+       "fillToFix": [
+        "P/q10"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q11",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $FIELD$",
+       "referenced": [
+        "P/q11"
+       ],
+       "fillToFix": [
+        "P/q11"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q12",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field.Wert$",
+       "referenced": [
+        "P/q12"
+       ],
+       "fillToFix": [
+        "P/q12"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q13",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $ field $",
+       "referenced": [
+        "P/q13"
+       ],
+       "fillToFix": [
+        "P/q13"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q14",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$$",
+       "referenced": [
+        "P/q14"
+       ],
+       "fillToFix": [
+        "P/q14"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q15",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q15 ",
+       "referenced": [
+        "P/q15"
+       ],
+       "fillToFix": [
+        "P/q15"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q16",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req  end",
+       "referenced": [
+        "P/q16"
+       ],
+       "fillToFix": [
+        "P/q16"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q17",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q17 Label q17",
+       "referenced": [
+        "P/q17"
+       ],
+       "fillToFix": [
+        "P/q17"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q18",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "ALabel q18field.value$B",
+       "referenced": [
+        "P/q18"
+       ],
+       "fillToFix": [
+        "P/q18"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q19",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$field.valueLabel q19",
+       "referenced": [
+        "P/q19"
+       ],
+       "fillToFix": [
+        "P/q19"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q20",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Label q20field$",
+       "referenced": [
+        "P/q20"
+       ],
+       "fillToFix": [
+        "P/q20"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q21",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$fieldLabel q21",
+       "referenced": [
+        "P/q21"
+       ],
+       "fillToFix": [
+        "P/q21"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q22",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$field.value",
+       "referenced": [
+        "P/q22"
+       ],
+       "fillToFix": [
+        "P/q22"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q23",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$Feld.WertLabel q23",
+       "referenced": [
+        "P/q23"
+       ],
+       "fillToFix": [
+        "P/q23"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "P/q00",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "P/q00"
+       ],
+       "fillToFix": [
+        "P/q00"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q01 end",
+       "referenced": [
+        "P/q01"
+       ],
+       "fillToFix": [
+        "P/q01"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req  end",
+       "referenced": [
+        "P/q02"
+       ],
+       "fillToFix": [
+        "P/q02"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $$ q03",
+       "referenced": [
+        "P/q03"
+       ],
+       "fillToFix": [
+        "P/q03"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req q04",
+       "referenced": [
+        "P/q04"
+       ],
+       "fillToFix": [
+        "P/q04"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $BaseYear$",
+       "referenced": [
+        "P/q05"
+       ],
+       "fillToFix": [
+        "P/q05"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $Other$",
+       "referenced": [
+        "P/q06"
+       ],
+       "fillToFix": [
+        "P/q06"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field->Cat$",
+       "referenced": [
+        "P/q07"
+       ],
+       "fillToFix": [
+        "P/q07"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q08",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field For \"k\"$",
+       "referenced": [
+        "P/q08"
+       ],
+       "fillToFix": [
+        "P/q08"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q09",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $#P$",
+       "referenced": [
+        "P/q09"
+       ],
+       "fillToFix": [
+        "P/q09"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q10",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field",
+       "referenced": [
+        "P/q10"
+       ],
+       "fillToFix": [
+        "P/q10"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q11",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $FIELD$",
+       "referenced": [
+        "P/q11"
+       ],
+       "fillToFix": [
+        "P/q11"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q12",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field.Wert$",
+       "referenced": [
+        "P/q12"
+       ],
+       "fillToFix": [
+        "P/q12"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q13",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $ field $",
+       "referenced": [
+        "P/q13"
+       ],
+       "fillToFix": [
+        "P/q13"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q14",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$$",
+       "referenced": [
+        "P/q14"
+       ],
+       "fillToFix": [
+        "P/q14"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q15",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q15 ",
+       "referenced": [
+        "P/q15"
+       ],
+       "fillToFix": [
+        "P/q15"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q16",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req  end",
+       "referenced": [
+        "P/q16"
+       ],
+       "fillToFix": [
+        "P/q16"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q17",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q17 Label q17",
+       "referenced": [
+        "P/q17"
+       ],
+       "fillToFix": [
+        "P/q17"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q18",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "ALabel q18field.value$B",
+       "referenced": [
+        "P/q18"
+       ],
+       "fillToFix": [
+        "P/q18"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q19",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$field.valueLabel q19",
+       "referenced": [
+        "P/q19"
+       ],
+       "fillToFix": [
+        "P/q19"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q20",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Label q20field$",
+       "referenced": [
+        "P/q20"
+       ],
+       "fillToFix": [
+        "P/q20"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q21",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$fieldLabel q21",
+       "referenced": [
+        "P/q21"
+       ],
+       "fillToFix": [
+        "P/q21"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q22",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$field.value",
+       "referenced": [
+        "P/q22"
+       ],
+       "fillToFix": [
+        "P/q22"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q23",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$Feld.WertLabel q23",
+       "referenced": [
+        "P/q23"
+       ],
+       "fillToFix": [
+        "P/q23"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bad",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "P/Rows/rq",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Row Row label ",
+       "referenced": [
+        "P/Rows/rq"
+       ],
+       "fillToFix": [
+        "P/Rows/rq"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q00",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "P/q00"
+       ],
+       "fillToFix": [
+        "P/q00"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q01 end",
+       "referenced": [
+        "P/q01"
+       ],
+       "fillToFix": [
+        "P/q01"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req  end",
+       "referenced": [
+        "P/q02"
+       ],
+       "fillToFix": [
+        "P/q02"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $$ q03",
+       "referenced": [
+        "P/q03"
+       ],
+       "fillToFix": [
+        "P/q03"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req q04",
+       "referenced": [
+        "P/q04"
+       ],
+       "fillToFix": [
+        "P/q04"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $BaseYear$",
+       "referenced": [
+        "P/q05"
+       ],
+       "fillToFix": [
+        "P/q05"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $Other$",
+       "referenced": [
+        "P/q06"
+       ],
+       "fillToFix": [
+        "P/q06"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field->Cat$",
+       "referenced": [
+        "P/q07"
+       ],
+       "fillToFix": [
+        "P/q07"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q08",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field For \"k\"$",
+       "referenced": [
+        "P/q08"
+       ],
+       "fillToFix": [
+        "P/q08"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q09",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $#P$",
+       "referenced": [
+        "P/q09"
+       ],
+       "fillToFix": [
+        "P/q09"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q10",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field",
+       "referenced": [
+        "P/q10"
+       ],
+       "fillToFix": [
+        "P/q10"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q11",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $FIELD$",
+       "referenced": [
+        "P/q11"
+       ],
+       "fillToFix": [
+        "P/q11"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q12",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field.Wert$",
+       "referenced": [
+        "P/q12"
+       ],
+       "fillToFix": [
+        "P/q12"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q13",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $ field $",
+       "referenced": [
+        "P/q13"
+       ],
+       "fillToFix": [
+        "P/q13"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q14",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$$",
+       "referenced": [
+        "P/q14"
+       ],
+       "fillToFix": [
+        "P/q14"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q15",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q15 ",
+       "referenced": [
+        "P/q15"
+       ],
+       "fillToFix": [
+        "P/q15"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q16",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req  end",
+       "referenced": [
+        "P/q16"
+       ],
+       "fillToFix": [
+        "P/q16"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q17",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q17 Label q17",
+       "referenced": [
+        "P/q17"
+       ],
+       "fillToFix": [
+        "P/q17"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q18",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "ALabel q18field.value$B",
+       "referenced": [
+        "P/q18"
+       ],
+       "fillToFix": [
+        "P/q18"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q19",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$field.valueLabel q19",
+       "referenced": [
+        "P/q19"
+       ],
+       "fillToFix": [
+        "P/q19"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q20",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Label q20field$",
+       "referenced": [
+        "P/q20"
+       ],
+       "fillToFix": [
+        "P/q20"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q21",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$fieldLabel q21",
+       "referenced": [
+        "P/q21"
+       ],
+       "fillToFix": [
+        "P/q21"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q22",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$field.value",
+       "referenced": [
+        "P/q22"
+       ],
+       "fillToFix": [
+        "P/q22"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q23",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$Feld.WertLabel q23",
+       "referenced": [
+        "P/q23"
+       ],
+       "fillToFix": [
+        "P/q23"
+       ]
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/n01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "Enum Label n01 end",
+       "referenced": [
+        "P/n01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/n02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "Enum Z end",
+       "referenced": [
+        "P/n02"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "P/Rows/rq",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Row Row label ",
+       "referenced": [
+        "P/Rows/rq"
+       ],
+       "fillToFix": [
+        "P/Rows/rq"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q00",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "P/q00"
+       ],
+       "fillToFix": [
+        "P/q00"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q01 end",
+       "referenced": [
+        "P/q01"
+       ],
+       "fillToFix": [
+        "P/q01"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req  end",
+       "referenced": [
+        "P/q02"
+       ],
+       "fillToFix": [
+        "P/q02"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $$ q03",
+       "referenced": [
+        "P/q03"
+       ],
+       "fillToFix": [
+        "P/q03"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req q04",
+       "referenced": [
+        "P/q04"
+       ],
+       "fillToFix": [
+        "P/q04"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $BaseYear$",
+       "referenced": [
+        "P/q05"
+       ],
+       "fillToFix": [
+        "P/q05"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $Other$",
+       "referenced": [
+        "P/q06"
+       ],
+       "fillToFix": [
+        "P/q06"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field->Cat$",
+       "referenced": [
+        "P/q07"
+       ],
+       "fillToFix": [
+        "P/q07"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q08",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field For \"k\"$",
+       "referenced": [
+        "P/q08"
+       ],
+       "fillToFix": [
+        "P/q08"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q09",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $#P$",
+       "referenced": [
+        "P/q09"
+       ],
+       "fillToFix": [
+        "P/q09"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q10",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field",
+       "referenced": [
+        "P/q10"
+       ],
+       "fillToFix": [
+        "P/q10"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q11",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $FIELD$",
+       "referenced": [
+        "P/q11"
+       ],
+       "fillToFix": [
+        "P/q11"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q12",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $field.Wert$",
+       "referenced": [
+        "P/q12"
+       ],
+       "fillToFix": [
+        "P/q12"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q13",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req $ field $",
+       "referenced": [
+        "P/q13"
+       ],
+       "fillToFix": [
+        "P/q13"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q14",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$$",
+       "referenced": [
+        "P/q14"
+       ],
+       "fillToFix": [
+        "P/q14"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q15",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q15 ",
+       "referenced": [
+        "P/q15"
+       ],
+       "fillToFix": [
+        "P/q15"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q16",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req  end",
+       "referenced": [
+        "P/q16"
+       ],
+       "fillToFix": [
+        "P/q16"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q17",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Req Label q17 Label q17",
+       "referenced": [
+        "P/q17"
+       ],
+       "fillToFix": [
+        "P/q17"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q18",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "ALabel q18field.value$B",
+       "referenced": [
+        "P/q18"
+       ],
+       "fillToFix": [
+        "P/q18"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q19",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$field.valueLabel q19",
+       "referenced": [
+        "P/q19"
+       ],
+       "fillToFix": [
+        "P/q19"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q20",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "Label q20field$",
+       "referenced": [
+        "P/q20"
+       ],
+       "fillToFix": [
+        "P/q20"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q21",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$fieldLabel q21",
+       "referenced": [
+        "P/q21"
+       ],
+       "fillToFix": [
+        "P/q21"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q22",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$field.value",
+       "referenced": [
+        "P/q22"
+       ],
+       "fillToFix": [
+        "P/q22"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/q23",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "$Feld.WertLabel q23",
+       "referenced": [
+        "P/q23"
+       ],
+       "fillToFix": [
+        "P/q23"
+       ]
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/n01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "Enum Label n01 end",
+       "referenced": [
+        "P/n01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/n02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "Enum Z end",
+       "referenced": [
+        "P/n02"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "full",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  }
+ ]
+}

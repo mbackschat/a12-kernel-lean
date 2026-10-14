@@ -57,7 +57,7 @@ private def strictFlag (json : Json) (key : String) : Bool :=
 
 /-- Locale-keyed entries, `[{locale, text}]`, as a field's messages and an Enumeration value's labels
 write them. -/
-private def localizedTexts (json : Json) (key : String) : Except String (List (String × String)) := do
+def localizedTexts (json : Json) (key : String) : Except String (List (String × String)) := do
   (← arrayMembers json key).mapM fun entry => do
     pure (← entry.getObjValAs? String "locale", ← entry.getObjValAs? String "text")
 
