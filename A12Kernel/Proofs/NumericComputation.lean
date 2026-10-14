@@ -92,7 +92,7 @@ theorem numericComputationEvaluationContext_aggregate_delegates
     (source : CheckedNumberEntitySource model) (op : NumericAggregateOp) :
     context.readCheckedNumericComputationAtom (.numeric (.aggregate op source)) =
       (source.evaluateComputation (world := context.scalar.world) (filterStoredText := context.filterStoredText) (filterNumberText := context.filterNumberText) op context.document context.outer
-        context.scalar.read context.filterRead context.starRead (selectedRead := context.selectedNumberSide)).mapError
+        context.scalar.read context.filterRead context.starRead (selectedRead := context.selectedNumberSides)).mapError
           NumericComputationFault.repeatableAddressing := by
   rfl
 

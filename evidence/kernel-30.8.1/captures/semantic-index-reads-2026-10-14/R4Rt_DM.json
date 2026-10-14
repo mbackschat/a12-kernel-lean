@@ -1,0 +1,1547 @@
+{
+ "header": {
+  "id": "R4Rt_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R4Rt_DM"
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Out",
+        "name": "Out",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutS",
+        "name": "OutS",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutE",
+        "name": "OutE",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ],
+           "categories": [
+            {
+             "name": "Band",
+             "values": [
+              "Hi",
+              "Lo"
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutD",
+        "name": "OutD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Key",
+        "name": "Key",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/NKeyF",
+        "name": "NKeyF",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Items",
+        "name": "Items",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Items/Sku",
+           "name": "Sku",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Count",
+           "name": "Count",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": true
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Price",
+           "name": "Price",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Label",
+           "name": "Label",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Kind",
+           "name": "Kind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Due",
+           "name": "Due",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Flag",
+           "name": "Flag",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Items/Gp",
+           "name": "Gp",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Items/Gp/A",
+              "name": "A",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0,
+                 "positivesOnly": true
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Items/Gp/B",
+              "name": "B",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "repeatability": 10,
+         "indexFieldName": "Sku"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/NItems",
+        "name": "NItems",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/NItems/NKey",
+           "name": "NKey",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/NItems/Count",
+           "name": "Count",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/NItems/Label",
+           "name": "Label",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "repeatability": 10,
+         "indexFieldName": "NKey"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Packages",
+        "name": "Packages",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Packages/PKey",
+           "name": "PKey",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Packages/Parcels",
+           "name": "Parcels",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Packages/Parcels/W",
+              "name": "W",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Packages/Parcels/Sku",
+              "name": "Sku",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/P/Packages/Parcels/Deep",
+              "name": "Deep",
+              "Group": {
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/P/Packages/Parcels/Deep/X",
+                 "name": "X",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                }
+               ],
+               "repeatability": 3
+              }
+             }
+            ],
+            "repeatability": 5
+           }
+          }
+         ],
+         "repeatability": 5,
+         "indexFieldName": "PKey"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/NPacks",
+        "name": "NPacks",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/NPacks/NP",
+           "name": "NP",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/NPacks/Parcels",
+           "name": "Parcels",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/NPacks/Parcels/W",
+              "name": "W",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ],
+            "repeatability": 5
+           }
+          }
+         ],
+         "repeatability": 5,
+         "indexFieldName": "NP"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Rows",
+        "name": "Rows",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Rows/K",
+           "name": "K",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/NK",
+           "name": "NK",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/ROut",
+           "name": "ROut",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/P/Rows/Rk01",
+           "name": "Rk01",
+           "Rule": {
+            "errorEntityRelPath": "../ROut",
+            "errorCode": "k01",
+            "errorCondition": "[/P/Items/Count For K] > [ROut]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/P/Rows/Rk02",
+           "name": "Rk02",
+           "Rule": {
+            "errorEntityRelPath": "../ROut",
+            "errorCode": "k02",
+            "errorCondition": "[/P/NItems/Count For NK] > [ROut]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/P/Rows/Rk03",
+           "name": "Rk03",
+           "Rule": {
+            "errorEntityRelPath": "../ROut",
+            "errorCode": "k03",
+            "errorCondition": "Sum(/P/Items/Count For K, /P/Items/Price For K) > [ROut]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/P/Rows/Rk04",
+           "name": "Rk04",
+           "Rule": {
+            "errorEntityRelPath": "../ROut",
+            "errorCode": "k04",
+            "errorCondition": "FieldFilled(/P/Items/Label For K) And FieldFilled(ROut)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/P/Rows/Rk05",
+           "name": "Rk05",
+           "Rule": {
+            "errorEntityRelPath": "../ROut",
+            "errorCode": "k05",
+            "errorCondition": "[/P/Items/Label For K] == \"x\" And FieldFilled(ROut)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/P/Rows/Rk06",
+           "name": "Rk06",
+           "Rule": {
+            "errorEntityRelPath": "../ROut",
+            "errorCode": "k06",
+            "errorCondition": "Sum(/P/Packages/Parcels*/W For K) > [ROut]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/RO10",
+           "name": "RO10",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/P/Rows/Cp10",
+           "name": "Cp10",
+           "Computation": {
+            "computedFieldRelPath": "../RO10",
+            "computationAlternatives": [
+             {
+              "precondition": "[/P/Items/Label For K] == \"x\"",
+              "operation": "1"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ],
+         "repeatability": 10
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs01",
+        "name": "Rs01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s01",
+         "errorCondition": "FieldFilled(Total) And [Items/Label For \"a\"] == \"x\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs02",
+        "name": "Rs02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s02",
+         "errorCondition": "FieldFilled(Total) And [Items/Sku For \"a\"] == \"a\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs03",
+        "name": "Rs03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s03",
+         "errorCondition": "FieldFilled(Total) And [Items/Kind For \"a\"] == \"A\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs04",
+        "name": "Rs04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s04",
+         "errorCondition": "FieldFilled(Total) And [Items/Due For \"a\"] > \"01.01.2026\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs05",
+        "name": "Rs05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s05",
+         "errorCondition": "FieldFilled(Total) And [Items/Flag For \"a\"] == True",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs06",
+        "name": "Rs06",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s06",
+         "errorCondition": "FieldFilled(Total) And [NItems/Label For \"1\"] == \"x\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs07",
+        "name": "Rs07",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s07",
+         "errorCondition": "FieldFilled(Total) And [Items/Kind -> Band For \"a\"] == \"Hi\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs08",
+        "name": "Rs08",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s08",
+         "errorCondition": "FieldFilled(Total) And [Items/Label For Key] == \"x\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rn01",
+        "name": "Rn01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n01",
+         "errorCondition": "Sum(NPacks/Parcels*/W For \"1\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rn02",
+        "name": "Rn02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n02",
+         "errorCondition": "MaxValue(NPacks/Parcels*/W For NKeyF) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rn03",
+        "name": "Rn03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n03",
+         "errorCondition": "FieldFilled(Total) And NumberOfFilledFields(NPacks/Parcels*/W For \"1\") > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rq01",
+        "name": "Rq01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "q01",
+         "errorCondition": "FieldFilled(Total) And AtLeastOneFieldFilled(Items/Count For \"a\", Items/Label For \"b\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rq02",
+        "name": "Rq02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "q02",
+         "errorCondition": "FieldFilled(Total) And AllFieldsFilled(Items/Gp For \"a\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rq03",
+        "name": "Rq03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "q03",
+         "errorCondition": "FieldFilled(Total) And NoFieldFilled(Items/Count For \"a\", NItems/Count For \"1\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rq04",
+        "name": "Rq04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "q04",
+         "errorCondition": "FieldFilled(Total) And NotAllFieldsFilled(Packages/Parcels*/W For \"p\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc01",
+        "name": "Rc01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c01",
+         "errorCondition": "FieldFilled(Total) And FirstFilledValue(Items/Kind -> Band For \"a\", OutE -> Band) == \"Hi\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc02",
+        "name": "Rc02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c02",
+         "errorCondition": "FieldFilled(Total) And FirstFilledValue(Items/Kind For \"a\", OutE) == \"A\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc03",
+        "name": "Rc03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c03",
+         "errorCondition": "FieldFilled(Total) And FirstFilledValue(Items/Due For \"a\", OutD) > \"01.01.2026\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc04",
+        "name": "Rc04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c04",
+         "errorCondition": "FieldFilled(Total) And FirstFilledValue(Items/Label For \"a\", OutS) == \"x\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rd01",
+        "name": "Rd01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "d01",
+         "errorCondition": "Sum(Packages/Parcels*/Deep*/X For \"p\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ra01",
+        "name": "Ra01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a01",
+         "errorCondition": "AbsValue(Items/Price For \"a\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ra02",
+        "name": "Ra02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a02",
+         "errorCondition": "AbsValue(Items/Count For Key) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rm01",
+        "name": "Rm01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "m01",
+         "errorCondition": "Sum(Items/Gp For \"a\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rm02",
+        "name": "Rm02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "m02",
+         "errorCondition": "FieldFilled(Total) And MinValue(Items/Gp For \"a\") < 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf01",
+        "name": "Rf01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f01",
+         "errorCondition": "FieldFilled(Total) And NumberOfFilledFields(Items/Count For \"a\", Items/Label For \"a\") > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf02",
+        "name": "Rf02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f02",
+         "errorCondition": "FieldFilled(Total) And NumberOfFilledFields(Items/Gp For \"a\") > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf03",
+        "name": "Rf03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f03",
+         "errorCondition": "FieldFilled(Total) And NumberOfFilledFields(Items/Label For Key, NItems/Count For \"1\") > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ra03",
+        "name": "Ra03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "a03",
+         "errorCondition": "AbsValue(Items/Price For \"a\") + AbsValue(NItems/Count For \"1\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rm03",
+        "name": "Rm03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "m03",
+         "errorCondition": "Sum(Items/Gp For \"a\", Items/Count For \"b\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rm04",
+        "name": "Rm04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "m04",
+         "errorCondition": "Sum(Items*/Gp) > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rm05",
+        "name": "Rm05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "m05",
+         "errorCondition": "MaxValue(Items/Gp For \"a\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc05",
+        "name": "Rc05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c05",
+         "errorCondition": "FieldFilled(Total) And FirstFilledValue(Items/Kind -> Band For \"a\", OutS) == \"Hi\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs09",
+        "name": "Rs09",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s09",
+         "errorCondition": "FieldFilled(Total) And [Items/Label For \"a\"] == [OutS]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs10",
+        "name": "Rs10",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s10",
+         "errorCondition": "FieldFilled(Total) And [Items/Kind For \"a\"] != [OutE]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs11",
+        "name": "Rs11",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "s11",
+         "errorCondition": "FieldFilled(Total) And [Items/Label For \"a\"] == [Items/Label For \"b\"]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rm06",
+        "name": "Rm06",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "m06",
+         "errorCondition": "Sum(Items/Gp For \"b\") > [Total]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/O01",
+        "name": "O01",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cp01",
+        "name": "Cp01",
+        "Computation": {
+         "computedFieldRelPath": "../O01",
+         "computationAlternatives": [
+          {
+           "precondition": "[Items/Label For \"a\"] == \"x\"",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/O02",
+        "name": "O02",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cp02",
+        "name": "Cp02",
+        "Computation": {
+         "computedFieldRelPath": "../O02",
+         "computationAlternatives": [
+          {
+           "precondition": "[Items/Kind For \"a\"] == \"A\"",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/O03",
+        "name": "O03",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cp03",
+        "name": "Cp03",
+        "Computation": {
+         "computedFieldRelPath": "../O03",
+         "computationAlternatives": [
+          {
+           "precondition": "[Items/Kind -> Band For \"a\"] == \"Hi\"",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OS04",
+        "name": "OS04",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cp04",
+        "name": "Cp04",
+        "Computation": {
+         "computedFieldRelPath": "../OS04",
+         "computationAlternatives": [
+          {
+           "operation": "[Items/Label For \"a\"]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OE05",
+        "name": "OE05",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ],
+           "categories": [
+            {
+             "name": "Band",
+             "values": [
+              "Hi",
+              "Lo"
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cp05",
+        "name": "Cp05",
+        "Computation": {
+         "computedFieldRelPath": "../OE05",
+         "computationAlternatives": [
+          {
+           "operation": "[Items/Kind For \"a\"]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OS06",
+        "name": "OS06",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cp06",
+        "name": "Cp06",
+        "Computation": {
+         "computedFieldRelPath": "../OS06",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Items/Kind -> Band For \"a\", OutE -> Band)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/O07",
+        "name": "O07",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cp07",
+        "name": "Cp07",
+        "Computation": {
+         "computedFieldRelPath": "../O07",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Items/Gp For \"a\")"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/O08",
+        "name": "O08",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cp08",
+        "name": "Cp08",
+        "Computation": {
+         "computedFieldRelPath": "../O08",
+         "computationAlternatives": [
+          {
+           "operation": "MaxValue(Items/Gp For \"a\")"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/O09",
+        "name": "O09",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cp09",
+        "name": "Cp09",
+        "Computation": {
+         "computedFieldRelPath": "../O09",
+         "computationAlternatives": [
+          {
+           "precondition": "[NItems/Label For \"1\"] != \"x\"",
+           "operation": "1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

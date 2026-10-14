@@ -1,0 +1,201 @@
+{
+ "header": {
+  "id": "R4c_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R4c_DM"
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/P/Outer",
+        "name": "Outer",
+        "Group": {
+         "elements": [
+          {
+           "type": "Group",
+           "id": "/P/Outer/Mid",
+           "name": "Mid",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Outer/Mid/K",
+              "name": "K",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Mid/ROut",
+              "name": "ROut",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Outer/Mid/RS",
+              "name": "RS",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/P/Outer/Mid/Items",
+              "name": "Items",
+              "Group": {
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/P/Outer/Mid/Items/Sku",
+                 "name": "Sku",
+                 "Field": {
+                  "fieldType": {
+                   "type": "StringType"
+                  }
+                 }
+                },
+                {
+                 "type": "Field",
+                 "id": "/P/Outer/Mid/Items/Label",
+                 "name": "Label",
+                 "Field": {
+                  "fieldType": {
+                   "type": "StringType"
+                  }
+                 }
+                },
+                {
+                 "type": "Field",
+                 "id": "/P/Outer/Mid/Items/Count",
+                 "name": "Count",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                }
+               ],
+               "repeatability": 5,
+               "indexFieldName": "Sku"
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/P/Outer/Mid/Ru01",
+              "name": "Ru01",
+              "Rule": {
+               "errorEntityRelPath": "../ROut",
+               "errorCode": "u01",
+               "errorCondition": "[Items/Label For K] == \"x\" And FieldNotFilled(ROut)",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/P/Outer/Mid/Ru02",
+              "name": "Ru02",
+              "Rule": {
+               "errorEntityRelPath": "../ROut",
+               "errorCode": "u02",
+               "errorCondition": "NumberOfFilledFields(Items/Count For K, Items/Label For K) > 1 And FieldNotFilled(ROut)",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/P/Outer/Mid/Ru03",
+              "name": "Ru03",
+              "Rule": {
+               "errorEntityRelPath": "../ROut",
+               "errorCode": "u03",
+               "errorCondition": "Sum(Items/Count For K, Items/Count For \"b\") > 3 And FieldNotFilled(ROut)",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/P/Outer/Mid/Cu04",
+              "name": "Cu04",
+              "Computation": {
+               "computedFieldRelPath": "../RS",
+               "computationAlternatives": [
+                {
+                 "operation": "[Items/Label For K]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ],
+            "repeatability": 3
+           }
+          }
+         ],
+         "repeatability": 3
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

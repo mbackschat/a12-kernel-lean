@@ -1,0 +1,576 @@
+{
+ "header": {
+  "id": "R4b_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R4b_DM"
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Out",
+        "name": "Out",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutS",
+        "name": "OutS",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutE",
+        "name": "OutE",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ],
+           "categories": [
+            {
+             "name": "Band",
+             "values": [
+              "Hi",
+              "Lo"
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutBand",
+        "name": "OutBand",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "Hi"
+            },
+            {
+             "value": "Lo"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/OutD",
+        "name": "OutD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Key",
+        "name": "Key",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/NKeyF",
+        "name": "NKeyF",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Items",
+        "name": "Items",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Items/Sku",
+           "name": "Sku",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Count",
+           "name": "Count",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": true
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Price",
+           "name": "Price",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Label",
+           "name": "Label",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Kind",
+           "name": "Kind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Due",
+           "name": "Due",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Flag",
+           "name": "Flag",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Items/Gp",
+           "name": "Gp",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Items/Gp/A",
+              "name": "A",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0,
+                 "positivesOnly": true
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Items/Gp/B",
+              "name": "B",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "repeatability": 10,
+         "indexFieldName": "Sku"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/NItems",
+        "name": "NItems",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/NItems/NKey",
+           "name": "NKey",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/NItems/Count",
+           "name": "Count",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/NItems/Label",
+           "name": "Label",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "repeatability": 10,
+         "indexFieldName": "NKey"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Packages",
+        "name": "Packages",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Packages/PKey",
+           "name": "PKey",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Packages/Parcels",
+           "name": "Parcels",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Packages/Parcels/W",
+              "name": "W",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Packages/Parcels/Sku",
+              "name": "Sku",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Packages/Parcels/PK",
+              "name": "PK",
+              "Field": {
+               "fieldType": {
+                "type": "EnumerationType",
+                "EnumerationType": {
+                 "values": [
+                  {
+                   "value": "A"
+                  },
+                  {
+                   "value": "B"
+                  }
+                 ],
+                 "categories": [
+                  {
+                   "name": "Band",
+                   "values": [
+                    "Hi",
+                    "Lo"
+                   ]
+                  }
+                 ]
+                }
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/P/Packages/Parcels/Deep",
+              "name": "Deep",
+              "Group": {
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/P/Packages/Parcels/Deep/X",
+                 "name": "X",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                }
+               ],
+               "repeatability": 3
+              }
+             }
+            ],
+            "repeatability": 5
+           }
+          }
+         ],
+         "repeatability": 5,
+         "indexFieldName": "PKey"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/NPacks",
+        "name": "NPacks",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/NPacks/NP",
+           "name": "NP",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/NPacks/Parcels",
+           "name": "Parcels",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/NPacks/Parcels/W",
+              "name": "W",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ],
+            "repeatability": 5
+           }
+          }
+         ],
+         "repeatability": 5,
+         "indexFieldName": "NP"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Rows",
+        "name": "Rows",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Rows/K",
+           "name": "K",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/NK",
+           "name": "NK",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/ROut",
+           "name": "ROut",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/REnum",
+           "name": "REnum",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          }
+         ],
+         "repeatability": 10
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

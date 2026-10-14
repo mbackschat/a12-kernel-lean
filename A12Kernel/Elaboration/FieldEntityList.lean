@@ -20,8 +20,8 @@ namespace A12Kernel
 /-- One parser-independent field entity-list slot. A filter belongs to its exact authored wildcard occurrence, and a group slot retains its authored path rather than its expansion, because the wildcard gate reads the path that was written. -/
 inductive SurfaceFieldEntityOperand where
   | field (path : SurfaceFieldPath) (form : FieldEntityReadForm := .stored)
-  | indexed (source : SurfaceSemanticIndex)
-  | keyed (source : SurfaceKeyedEntityExtent)
+  | indexed (source : SurfaceSemanticIndex) (form : FieldEntityReadForm)
+  | keyed (source : SurfaceKeyedEntityExtent) (form : FieldEntityReadForm)
   | star (path : SurfaceStarFieldPath) (form : FieldEntityReadForm := .stored)
   | starHaving (path : SurfaceStarFieldPath) (having : SurfaceCorrelatedHaving)
       (form : FieldEntityReadForm := .stored)
@@ -40,8 +40,8 @@ structure SurfaceFieldEntitySource where
     Terminal-repeatable groups and fixed terminals below a starred ancestor retain separate certificates because their row-selection boundaries differ. -/
 inductive ResolvedFieldEntityOperand (model : FlatModel) where
   | field (declaration : FlatFieldDecl) (form : FieldEntityReadForm)
-  | indexed (source : CheckedSemanticIndexSource model)
-  | keyed (source : CheckedKeyedEntityExtent model)
+  | indexed (source : CheckedSemanticIndexSource model) (form : FieldEntityReadForm)
+  | keyed (source : CheckedKeyedEntityExtent model) (form : FieldEntityReadForm)
   | star (source : CheckedStarFieldPath model) (form : FieldEntityReadForm := .stored)
   | starHaving (source : CheckedStarFieldPath model)
       (having : SurfaceCorrelatedHaving) (form : FieldEntityReadForm := .stored)
@@ -53,19 +53,19 @@ namespace ResolvedFieldEntityOperand
 
 /-- Whether one authored slot already satisfies the multiple-operand requirement by itself. A star denotes a row set and a group denotes a field scope, so both are already-many; this is exactly why one group slot is admitted where its single expanded field authored alone reports `MVK_PARAMSIZE_INVALIDN`. -/
 def isAlreadyMany : ResolvedFieldEntityOperand model → Bool
-  | .field .. | .indexed _ => false
-  | .keyed _ | .star .. | .starHaving .. | .group _ | .starredGroup _ |
+  | .field .. | .indexed _ _ => false
+  | .keyed _ _ | .star .. | .starHaving .. | .group _ | .starredGroup _ |
       .starredGroupPresence _ => true
 
 def directFieldId? : ResolvedFieldEntityOperand model → Option FieldId
   | .field declaration _ => some declaration.id
-  | .indexed _ | .keyed _ | .star .. | .starHaving .. | .group _ | .starredGroup _ |
+  | .indexed _ _ | .keyed _ _ | .star .. | .starHaving .. | .group _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
 /-- The group subtree a slot denotes, or `none` for a slot that denotes one field. Only the indirect duplicate arm and the expansion consult it. -/
 def subtreePath? : ResolvedFieldEntityOperand model → Option GroupPath
-  | .field .. | .indexed _ | .star .. | .starHaving .. => none
-  | .keyed source => match source.target with | .group path | .starredGroup path => some path | .star _ => none
+  | .field .. | .indexed _ _ | .star .. | .starHaving .. => none
+  | .keyed source _ => match source.target with | .group path | .starredGroup path => some path | .star _ => none
   | .group reference => some reference.path
   | .starredGroup source => some source.group.path
   | .starredGroupPresence source => some source.groupPath
@@ -74,8 +74,8 @@ def subtreePath? : ResolvedFieldEntityOperand model → Option GroupPath
 def expansionDeclarations : ResolvedFieldEntityOperand model →
     List FlatFieldDecl
   | .field declaration _ => [declaration]
-  | .indexed source => [source.targetDeclaration]
-  | .keyed source => source.declarations
+  | .indexed source _ => [source.targetDeclaration]
+  | .keyed source _ => source.declarations
   | .star source _ | .starHaving source _ _ => [source.declaration]
   | .group reference => model.groupSubtreeFields reference.path
   | .starredGroup source => model.groupSubtreeFields source.group.path
@@ -85,7 +85,7 @@ def expansionDeclarations : ResolvedFieldEntityOperand model →
     measured; a starred root would need a repeatable root, and no row places one on an entity list. -/
 def rootGroupPath? : ResolvedFieldEntityOperand model → Option GroupPath
   | .group reference => if reference.isRoot then some reference.path else none
-  | .field .. | .indexed _ | .keyed _ | .star .. | .starHaving .. | .starredGroup _ |
+  | .field .. | .indexed _ _ | .keyed _ _ | .star .. | .starHaving .. | .starredGroup _ |
       .starredGroupPresence _ => none
 
 /-- The Enumeration a category slot reads, for a carrier's category gate. A category of a field
@@ -93,23 +93,25 @@ def rootGroupPath? : ResolvedFieldEntityOperand model → Option GroupPath
     slot resolved. -/
 def categoryPath? : ResolvedFieldEntityOperand model → Option (List String)
   | .field declaration (.projected _) => some declaration.path
+  | .indexed source (.projected _) => some source.targetDeclaration.path
+  | .keyed source (.projected _) => some source.entityPath
   | .star source (.projected _) | .starHaving source _ (.projected _) => some source.declaration.path
-  | .field _ .stored | .indexed _ | .keyed _ | .star _ .stored | .starHaving _ _ .stored | .group _ | .starredGroup _ |
+  | .field _ .stored | .indexed _ .stored | .keyed _ .stored | .star _ .stored | .starHaving _ _ .stored | .group _ | .starredGroup _ |
       .starredGroupPresence _ => none
 
 /-- The authored path each slot occupies for the indirect duplicate arm. -/
 def entityPath : ResolvedFieldEntityOperand model → List String
   | .field declaration _ => declaration.path
-  | .indexed source => source.targetDeclaration.path
-  | .keyed source => source.entityPath
+  | .indexed source _ => source.targetDeclaration.path
+  | .keyed source _ => source.entityPath
   | .star source _ | .starHaving source _ _ => source.declaration.path
   | .group reference => reference.path
   | .starredGroup source => source.group.path
   | .starredGroupPresence source => source.groupPath
 
 def indexIdentity? : ResolvedFieldEntityOperand model → Option (GroupPath × CheckedSemanticIndexKey)
-  | .indexed source => some (source.group.path, source.key)
-  | .keyed source => some (source.selection.group.path, source.selection.key)
+  | .indexed source _ => some (source.group.path, source.key)
+  | .keyed source _ => some (source.selection.group.path, source.selection.key)
   | _ => none
 
 private def categoryIdentity? : ResolvedFieldEntityOperand model → Option String
@@ -130,8 +132,8 @@ def overlaps (left right : ResolvedFieldEntityOperand model) : Bool :=
     scope. -/
 def bindingScope : ResolvedFieldEntityOperand model → List RepeatableLevel
   | .field declaration _ => declaration.repeatableScope
-  | .indexed source => source.indexDeclaration.repeatableScope.dropLast
-  | .keyed source => source.selection.indexDeclaration.repeatableScope.dropLast
+  | .indexed source _ => source.indexDeclaration.repeatableScope.dropLast
+  | .keyed source _ => source.selection.indexDeclaration.repeatableScope.dropLast
   | .star source _ | .starHaving source _ _ => source.bindingScope
   | .group reference => reference.boundRepeatableScope
   | .starredGroup source => source.path.bindingScope
@@ -140,8 +142,8 @@ def bindingScope : ResolvedFieldEntityOperand model → List RepeatableLevel
 /-- Dynamic keys retain their own binding demand beside the selected extent's parent. -/
 def bindingScopes (operand : ResolvedFieldEntityOperand model) : List (List RepeatableLevel) :=
   match operand with
-  | .indexed source => source.bindingScopes
-  | .keyed source => source.bindingScopes
+  | .indexed source _ => source.bindingScopes
+  | .keyed source _ => source.bindingScopes
   | _ => [operand.bindingScope]
 
 end ResolvedFieldEntityOperand
@@ -294,8 +296,8 @@ inductive ResolvedFieldEntityIdentity where
 def ResolvedFieldEntityOperand.exactIdentity? :
     ResolvedFieldEntityOperand model → Option ResolvedFieldEntityIdentity
   | .field declaration form => some (.field (declaration.id, form))
-  | .indexed source => some (.indexed (source.targetDeclaration.id, source.key))
-  | .keyed source => match source.target with
+  | .indexed source _ => some (.indexed (source.targetDeclaration.id, source.key))
+  | .keyed source _ => match source.target with
     | .group path => some (.keyedGroup path source.selection.key)
     | .star _ | .starredGroup _ => none
   | .group reference => some (.fixedGroup reference.path)
@@ -408,11 +410,21 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   -- stands ([`kf482`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf482)).
   let categoryRead := FlatFieldDecl.checkEntityCategoryRead
   match authored with
-  | .keyed source => (elaborateKeyedEntityExtent model declaringGroup source
-      (some (model.repeatableScopeForGroupPath (fixedTargetGroup?.getD writtenGroup)))).map .keyed |>.mapError .keyed
-  | .indexed source =>
-      (elaborateSemanticIndexSource model declaringGroup source
-        (some (model.repeatableScopeForGroupPath (fixedTargetGroup?.getD writtenGroup)))).map .indexed |>.mapError .semanticIndex
+  | .keyed source form => do
+      let checked ← elaborateKeyedEntityExtent model declaringGroup source
+        (some (model.repeatableScopeForGroupPath (fixedTargetGroup?.getD writtenGroup))) |>.mapError .keyed
+      -- Only a keyed star reads one declaration a category can project
+      -- ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)).
+      match form, checked.target with
+      | .stored, _ => pure ()
+      | .projected _, .star path => categoryRead path.declaration form
+      | .projected _, .group _ | .projected _, .starredGroup _ => throw (.keyed .unsupportedExtent)
+      pure (.keyed checked form)
+  | .indexed source form => do
+      let checked ← elaborateSemanticIndexSource model declaringGroup source
+        (some (model.repeatableScopeForGroupPath (fixedTargetGroup?.getD writtenGroup))) |>.mapError .semanticIndex
+      categoryRead checked.targetDeclaration form
+      pure (.indexed checked form)
   | .field path form => do
       let resolved ←
         model.resolveFieldDeclarationUnchecked declaringGroup path
@@ -571,14 +583,14 @@ theorem resolveFieldEntityOperandIn_declaringGroupValid
     GroupPath.isValid declaringGroup = true := by
   unfold resolveFieldEntityOperandIn at ok
   cases authored with
-  | keyed source =>
+  | keyed source form =>
       by_cases valid : GroupPath.isValid declaringGroup = true
       · exact valid
       · simp [elaborateKeyedEntityExtent, valid, Except.map, Except.mapError, bind, Except.bind] at ok
-  | indexed source =>
+  | indexed source form =>
       cases hSource : elaborateSemanticIndexSource model declaringGroup source
         (some (model.repeatableScopeForGroupPath (fixedTargetGroup?.getD writtenGroup))) with
-      | error error => simp [hSource, Except.map, Except.mapError] at ok
+      | error error => simp [hSource, bind, Except.bind, Except.mapError] at ok
       | ok checked => exact elaborateSemanticIndexSource_declaringGroupValid hSource
   | field path form =>
       cases hResolved :

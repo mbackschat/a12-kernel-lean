@@ -2,8 +2,8 @@ import A12Kernel.Elaboration.TokenFirstFilledValue
 
 /-! # Checked comparisons of selected tokens
 
-Both equality sides retain their literal, direct field or first-filled source. Selection, empty suppression and
-missing-prefix polarity stay with the existing token scan and symmetric comparison owners.
+Both equality sides retain their literal, direct field, keyed field or first-filled source. Selection, empty
+suppression and missing-prefix polarity stay with the existing token scan and symmetric comparison owners.
 -/
 
 namespace A12Kernel
@@ -11,6 +11,7 @@ namespace A12Kernel
 inductive SurfaceTokenComparisonOperand where
   | literal (value : String)
   | field (reference : SurfaceFieldPath)
+  | indexed (source : SurfaceSemanticIndex)
   | firstFilled (source : SurfaceFirstFilledTokenSource)
 
 inductive TokenComparisonElabError where
@@ -25,12 +26,17 @@ inductive CheckedTokenComparisonOperand (model : FlatModel) where
   | field (source : CheckedTokenField model)
   | firstFilled (source : CheckedFirstFilledTokenSource model)
       (supported : source.supportsCheckedFirstFilledValidation = true)
+  /-- A keyed scalar read `[Field For key]`, kept apart from an authored `FirstFilledValue`. Its
+  source is the selection alone: a direct read is the one-cell first-filled scan the `field` arm
+  also evaluates, so selection, phase policy and partial coverage stay with the token scan
+  (spec/08 §4.1). -/
+  | indexed (source : CheckedFirstFilledTokenSource model)
 
 namespace CheckedTokenComparisonOperand
 
 def sources : CheckedTokenComparisonOperand model → List (CheckedFirstFilledTokenSource model)
   | .literal _ | .field _ => []
-  | .firstFilled source _ => [source]
+  | .firstFilled source _ | .indexed source => [source]
 
 def evaluate (operand : CheckedTokenComparisonOperand model)
     (document : CheckedDocument model) (outer : Env)
@@ -46,6 +52,9 @@ def evaluate (operand : CheckedTokenComparisonOperand model)
   | .firstFilled source supported =>
       FirstFilledTokenResult.asValidationOperand <$>
         source.evaluateSupportedFirstFilledValidation (world := world) document outer supported
+  | .indexed source =>
+      FirstFilledTokenResult.asValidationOperand <$>
+        source.evaluateSupportedFirstFilledValidation (world := world) document outer rfl
 
 def fields : CheckedTokenComparisonOperand model → List (CheckedTokenField model)
   | .field source => [source]
@@ -63,7 +72,7 @@ def evaluatePartial? (operand : CheckedTokenComparisonOperand model)
       pure (some (evalFirstFilledToken {
         cells := [source.operand.checkedValueListCellAt .validation cell]
         hasUninstantiatedTail := false, hasHaving := false }).asValidationOperand)
-  | .firstFilled source _ => do
+  | .firstFilled source _ | .indexed source => do
       let result ← source.evaluateCheckedPartialFirstFilled? document outer scope read
       pure (result.map fun
         | .nonRelevant => none
@@ -90,6 +99,9 @@ private def resolveTokenComparisonOperand (model : FlatModel) (declaringGroup bi
       if supported : source.supportsCheckedFirstFilledValidation = true then
         pure (.firstFilled source supported)
       else throw .unsupportedSource
+  | .indexed authored =>
+      .indexed <$> (elaborateTokenEntitySource model declaringGroup { first := .indexed authored .stored, rest := [] }
+        (arity := .soleAllowed) (bindingGroup? := some bindingGroup)).mapError fun cause => .source (.source cause)
 
 def elaborateTokenComparison (model : FlatModel) (declaringGroup : GroupPath)
     (operator : EqualityOp) (left right : SurfaceTokenComparisonOperand)

@@ -79,6 +79,7 @@ def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : 
   | .constant "True" | .constant "False" => target.policy.kind == .boolean || target.policy.kind == .confirm
   | .string text => !isTemporalConstant text
   | .value { index := none, filter := none, .. } => target.policy.kind == .enumeration || target.policy.kind == .boolean || target.policy.kind == .confirm
+  | .value { index := some _, filter := none, .. } => target.policy.kind == .enumeration
   | _ => false
 
 private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
@@ -91,8 +92,12 @@ private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
     pure (.enumeration (← elaborated "EnumerationComputation"
       (checkAddressedEnumerationComputation model group target.id source)))
 
+/-- `arity := .soleAllowed` lowers a keyed read, with or without a category, into an Enumeration
+target as the one-operand scan: the Kernel clears that target on a missing, duplicate or formally
+invalid key exactly as the scan does ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)). -/
 private def lowerFirstFilledAlternative (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
-    (arguments : List Argument) : Lowering (CheckedFirstFilledAlternative model) := do
+    (arguments : List Argument) (arity : EntityListArity := .manyRequired) :
+    Lowering (CheckedFirstFilledAlternative model) := do
   let bindingGroup? := if arguments.any Argument.hasHaving then some target.groupPath else none
   if target.policy.kind == .string && target.customType.isNone then
     return .string (← elaborated "FirstFilledValue" (checkStringFirstFilledComputation model group target.id
@@ -101,13 +106,13 @@ private def lowerFirstFilledAlternative (model : FlatModel) (group : GroupPath) 
     let source ← lowerEnumerationFirstFilledSource model group arguments bindingGroup?
     if hFixed : target.repeatableScope = [] then
       let operation ← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
-        (elaborateEnumerationFirstFilledComputation model group target.id source)
+        (elaborateEnumerationFirstFilledComputation model group target.id source arity)
       if hField : target.id = operation.target.field then
         return .fixedEnumeration operation target hField hFixed
       else refuse "FirstFilledValue" "target identity"
     else
       return .addressedEnumeration (← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
-        (checkAddressedEnumerationFirstFilledComputation model group target.id source))
+        (checkAddressedEnumerationFirstFilledComputation model group target.id source arity))
   let source ← lowerFirstFilledSource model group arguments bindingGroup?
   match target.temporalFirstFilledFamily?, target.policy.kind with
   | some .time, _ =>
@@ -132,6 +137,10 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
     (expression : Expr) : Lowering (CheckedRowComputationOperation model) := do
   if let .call "FirstFilledValue" arguments none none := expression then
     return .firstFilled (← lowerFirstFilledAlternative model group target arguments)
+  if target.policy.kind == .enumeration then
+    if let .value reference@{ index := some _, filter := none, .. } := expression then
+      return .firstFilled (← lowerFirstFilledAlternative model group target
+        [.mk (.entity reference) none] (arity := .soleAllowed))
   if target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .dateRange then
     if let .value { path, index := none, category := none, filter := none } := expression then
       let some source := path.toFieldPath? | refuse "ScalarCopy" "source path"

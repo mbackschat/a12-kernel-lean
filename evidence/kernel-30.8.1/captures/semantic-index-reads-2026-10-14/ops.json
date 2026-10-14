@@ -1,0 +1,858 @@
+[
+ {
+  "id": "s01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [Items/Label For \"a\"] == \"x\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [Items/Sku For \"a\"] == \"a\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [Items/Kind For \"a\"] == \"A\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s04",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [Items/Due For \"a\"] > \"01.01.2026\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s05",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [Items/Flag For \"a\"] == True",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s06",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [NItems/Label For \"1\"] == \"x\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s07",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [Items/Kind -> Band For \"a\"] == \"Hi\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s08",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [Items/Label For Key] == \"x\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "k01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k01",
+   "--field",
+   "/P/Rows/ROut",
+   "--group",
+   "/P/Rows",
+   "--condition",
+   "[/P/Items/Count For K] > [ROut]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "k02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k02",
+   "--field",
+   "/P/Rows/ROut",
+   "--group",
+   "/P/Rows",
+   "--condition",
+   "[/P/NItems/Count For NK] > [ROut]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "k03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k03",
+   "--field",
+   "/P/Rows/ROut",
+   "--group",
+   "/P/Rows",
+   "--condition",
+   "Sum(/P/Items/Count For K, /P/Items/Price For K) > [ROut]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "k04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k04",
+   "--field",
+   "/P/Rows/ROut",
+   "--group",
+   "/P/Rows",
+   "--condition",
+   "FieldFilled(/P/Items/Label For K) And FieldFilled(ROut)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "Sum(NPacks/Parcels*/W For \"1\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "MaxValue(NPacks/Parcels*/W For NKeyF) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "n03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And NumberOfFilledFields(NPacks/Parcels*/W For \"1\") > 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And AtLeastOneFieldFilled(Items/Count For \"a\", Items/Label For \"b\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And AllFieldsFilled(Items/Gp For \"a\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And NoFieldFilled(Items/Count For \"a\", NItems/Count For \"1\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q04",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And NotAllFieldsFilled(Packages/Parcels*/W For \"p\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "c01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Items/Kind -> Band For \"a\", OutE -> Band) == \"Hi\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "c02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Items/Kind For \"a\", OutE) == \"A\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "c03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Items/Due For \"a\", OutD) > \"01.01.2026\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "c04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c04",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Items/Label For \"a\", OutS) == \"x\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "Sum(Packages/Parcels*/Deep*/X For \"p\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "Sum(Packages/Parcels*/W For \"p\" Having [Packages/Parcels/W] > 1) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "Sum(Packages/Parcels*/W For Key Having [Packages/Parcels/W] > 1) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "a01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "AbsValue(Items/Price For \"a\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "a02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "AbsValue(Items/Count For Key) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "m01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "Sum(Items/Gp For \"a\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "m02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And MinValue(Items/Gp For \"a\") < 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And NumberOfFilledFields(Items/Count For \"a\", Items/Label For \"a\") > 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And NumberOfFilledFields(Items/Gp For \"a\") > 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "f03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "f03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And NumberOfFilledFields(Items/Label For Key, NItems/Count For \"1\") > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "a03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "AbsValue(Items/Price For \"a\") + AbsValue(NItems/Count For \"1\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "m03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "Sum(Items/Gp For \"a\", Items/Count For \"b\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "m04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m04",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "Sum(Items*/Gp) > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "m05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m05",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "MaxValue(Items/Gp For \"a\") > [Total]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "k05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k05",
+   "--field",
+   "/P/Rows/ROut",
+   "--group",
+   "/P/Rows",
+   "--condition",
+   "[/P/Items/Label For K] == \"x\" And FieldFilled(ROut)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "k06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "k06",
+   "--field",
+   "/P/Rows/ROut",
+   "--group",
+   "/P/Rows",
+   "--condition",
+   "Sum(/P/Packages/Parcels*/W For K) > [ROut]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "c05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c05",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Items/Kind -> Band For \"a\", OutS) == \"Hi\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "c06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c06",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Items/Label For \"a\") == \"x\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s09",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [Items/Label For \"a\"] == [OutS]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [Items/Kind For \"a\"] != [OutE]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "s11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And [Items/Label For \"a\"] == [Items/Label For \"b\"]",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "p01",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p01.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p02",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p02.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p03",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p03.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p04",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p04.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p05",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p05.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p06",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p06.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p07",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p07.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p08",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p08.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p09",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p09.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "p12",
+  "verb": "computation",
+  "args": [
+   "add",
+   "p12.json",
+   "--dry-run"
+  ]
+ }
+]

@@ -45,6 +45,13 @@ def FlatFieldDecl.toStoredTokenSlot? (declaration : FlatFieldDecl) :
   (declaration.toTokenFieldComparison? .stored).map fun (operand, _) =>
     { declaration, operand }
 
+/-- A selected column may additionally author a category; a group slot never can. -/
+def FlatFieldDecl.toTokenSlot? (declaration : FlatFieldDecl) :
+    EnumerationProjectionRef → Option CheckedTokenExpansionSlot
+  | .stored => declaration.toStoredTokenSlot?
+  | projectionRef@(.category _) => (declaration.toTokenFieldComparison? projectionRef).map fun (operand, _) =>
+      { declaration, operand }
+
 /-- One authored group-scope slot certified as String/Enumeration-valued.
 
     `expansionOwned` and `expansionAllToken` together are the certificate: the retained list **is** the group's recursive subtree in declaration order, nonempty by its shape, and no declaration in that subtree was dropped along the way. The second obligation is what makes the first a completeness claim rather than a filter — without it a subtree of Numbers would certify as an empty selection. -/

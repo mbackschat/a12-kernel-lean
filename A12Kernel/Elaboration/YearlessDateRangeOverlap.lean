@@ -274,9 +274,9 @@ def certifyYearlessDateRangeOverlapOperand (model : FlatModel)
     (bindingGroup : GroupPath := declaringGroup) :
       Except YearlessDateRangesOverlapElabError
         (CheckedYearlessDateRangeOverlapOperand model) := match operand with
-  | .indexed source => .indexed source <$>
+  | .indexed source _ => .indexed source <$>
       certifyYearlessDateRangeOverlapField model source.targetDeclaration
-  | .keyed source => do
+  | .keyed source _ => do
       let fields ← source.declarations.mapM (certifyYearlessDateRangeOverlapField model)
       match fields with
       | [] => throw (.groupNotYearless source.entityPath)

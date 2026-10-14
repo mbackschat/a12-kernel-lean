@@ -161,8 +161,8 @@ private def markedReferenceAt (model : FlatModel) (field : FieldId) (query : Ref
 private def rawOperandReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (operand : ResolvedFieldEntityOperand model) : Option Bool :=
   match operand with
-  | .indexed source => some (selectedReferenceAt field query (.inl source))
-  | .keyed source => some (selectedReferenceAt field query (.inr source))
+  | .indexed source _ => some (selectedReferenceAt field query (.inl source))
+  | .keyed source _ => some (selectedReferenceAt field query (.inr source))
   | _ =>
       if !operand.expansionDeclarations.any (·.id == field) then some false
       else some (query.atPath operand.entityPath operand.bindingScope (operand.subtreePath?.any (fun path => path.length == 1)))
@@ -296,7 +296,7 @@ private def tokenOperandReferenceAt? (field : FieldId) (query : ReferenceQuery) 
     CheckedTokenComparisonOperand model → Option Bool
   | .literal _ => some false
   | .field source => some (source.declaration.id == field && query.binds source.declaration.repeatableScope)
-  | .firstFilled source _ => tokenReferenceAt? field query source
+  | .firstFilled source _ | .indexed source => tokenReferenceAt? field query source
 
 private def overlapReferenceAt? (field : FieldId) (query : ReferenceQuery)
     (condition : IteratedDateRangeCondition model) : Option Bool :=

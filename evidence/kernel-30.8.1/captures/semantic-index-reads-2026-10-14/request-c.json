@@ -1,0 +1,87 @@
+{
+ "model": "R4c_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "base",
+   "documentInline": {
+    "P": {
+     "Outer": [
+      {
+       "Mid": [
+        {
+         "K": "a",
+         "RS": "seed",
+         "Items": [
+          {
+           "Sku": "a",
+           "Label": "x",
+           "Count": "2"
+          },
+          {
+           "Sku": "b",
+           "Label": "y",
+           "Count": "1"
+          }
+         ]
+        },
+        {
+         "K": "b",
+         "RS": "seed",
+         "Items": [
+          {
+           "Sku": "a",
+           "Label": "y",
+           "Count": "1"
+          },
+          {
+           "Sku": "b",
+           "Label": "x",
+           "Count": "3"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "Mid": [
+        {
+         "K": "a",
+         "RS": "seed",
+         "Items": [
+          {
+           "Sku": "b",
+           "Label": "x",
+           "Count": "5"
+          }
+         ]
+        },
+        {
+         "K": "b",
+         "RS": "seed",
+         "Items": [
+          {
+           "Sku": "b",
+           "Label": "y",
+           "Count": "1"
+          },
+          {
+           "Sku": "b",
+           "Label": "z",
+           "Count": "1"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

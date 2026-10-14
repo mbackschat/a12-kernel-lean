@@ -261,7 +261,7 @@ private def groupSlotSource? :
   | .group reference => some (.fixed reference)
   | .starredGroup source => some (.starred source)
   | .starredGroupPresence source => some (.starredPresence source)
-  | .indexed _ | .keyed _ | .field .. | .star .. | .starHaving .. => none
+  | .indexed _ _ | .keyed _ _ | .field .. | .star .. | .starHaving .. => none
 
 /-- Certify one group slot against **this** operator's component-set gate. -/
 private def certifyDistinctCountGroup (model : FlatModel)
@@ -323,8 +323,8 @@ private def certifyDistinctCountOperand (model : FlatModel)
     Except TemporalDistinctCountElabError
       (CheckedTemporalDistinctCountOperand model) :=
   match operand with
-  | .indexed source => certifyDistinctCountSelected (.inl source)
-  | .keyed source => certifyDistinctCountSelected (.inr source)
+  | .indexed source _ => certifyDistinctCountSelected (.inl source)
+  | .keyed source _ => certifyDistinctCountSelected (.inr source)
   | _ =>
       match groupSlotSource? operand with
       | some source => certifyDistinctCountGroup model source

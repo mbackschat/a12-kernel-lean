@@ -35,8 +35,8 @@ def shape : CheckedComputationOverlap model → CheckedFieldEntityShape model
 def referencesField (source : CheckedComputationOverlap model) (field : FieldId)
     (filterReads : CorrelatedHaving → FieldId → Bool := CorrelatedHaving.referencesField) : Bool :=
   source.shape.operands.any (fun operand => match operand with
-    | .indexed selected => selected.referencesField field
-    | .keyed selected => selected.referencesField field
+    | .indexed selected _ => selected.referencesField field
+    | .keyed selected _ => selected.referencesField field
     | operand => operand.expansionDeclarations.any (·.id == field)) ||
     source.toValidation.filters.any (filterReads · field)
 

@@ -1,0 +1,191 @@
+[
+ {
+  "id": "v01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And NotAllFieldsFilled(Items/Kind -> Band For \"a\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "v02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And NotAllFieldsFilled(OutE -> Band)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "v03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Packages/Parcels*/PK -> Band For \"p\", OutE -> Band) == \"Hi\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "v04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v04",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Packages/Parcels*/PK For \"p\", OutE) == \"A\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "v05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v05",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And NotAllFieldsFilled(Items/Gp For \"a\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "v06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "v06",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And AllFieldsFilled(Items/Gp For \"a\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "e1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "g01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Items -> Band For \"a\", OutE -> Band) == \"Hi\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "g02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Packages/Parcels* -> Band For \"p\", OutE -> Band) == \"Hi\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "g03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Items/Gp -> Band For \"a\", OutE -> Band) == \"Hi\"",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

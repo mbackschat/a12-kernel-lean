@@ -1,0 +1,3385 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R4Rt_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-14T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "base",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Cp01",
+       "field": "P/O01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/O01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp02",
+       "field": "P/O02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/O02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp03",
+       "field": "P/O03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/O03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp04",
+       "field": "P/OS04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/OS04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp05",
+       "field": "P/OE05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OE05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp06",
+       "field": "P/OS06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OS06",
+        "P/OutE"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp07",
+       "field": "P/O07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/O07"
+       ],
+       "fillToFix": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/O07"
+       ]
+      },
+      {
+       "code": "Cp08",
+       "field": "P/O08",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/O08"
+       ],
+       "fillToFix": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/O08"
+       ]
+      },
+      {
+       "code": "Cp10",
+       "field": "P/Rows/RO10",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/RO10"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "a01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Price",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "a02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Sku",
+        "P/Key",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "a03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Price",
+        "P/Items/Sku",
+        "P/NItems/Count",
+        "P/NItems/NKey",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Due",
+        "P/Items/Sku",
+        "P/OutD",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "d01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/Deep[0]/X",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/Deep[0]/X",
+        "P/Packages/PKey",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "f01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "f03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Key",
+        "P/NItems/Count",
+        "P/NItems/NKey",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k01",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k02",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/NItems/Count",
+        "P/NItems/NKey",
+        "P/Rows/NK",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k02",
+       "field": "P/Rows[2]/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/NItems[2]/Count",
+        "P/NItems[2]/NKey",
+        "P/Rows[2]/NK",
+        "P/Rows[2]/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k03",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Price",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k04",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k04",
+       "field": "P/Rows[2]/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[2]/Label",
+        "P/Items[2]/Sku",
+        "P/Rows[2]/K",
+        "P/Rows[2]/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k05",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/Items[2]/Count",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "m05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m06",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[2]/Gp/A",
+        "P/Items[2]/Gp/B",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "P/Items[2]/Gp/A",
+        "P/Items[2]/Gp/B",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NKeyF",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "q01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Sku",
+        "P/Items[2]/Label",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "q04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/Packages/PKey"
+       ]
+      },
+      {
+       "code": "s01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Due",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Flag",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s06",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/NItems/Label",
+        "P/NItems/NKey",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s07",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s08",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Key",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s09",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/O01",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/O02",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/O03",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/O07",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "P/O08",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "P/O09",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OE05",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "P/OS04",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/OS06",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/Rows/RO10",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/Rows[2]/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/RO10",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Cp01",
+       "field": "P/O01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/O01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp02",
+       "field": "P/O02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/O02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp03",
+       "field": "P/O03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/O03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp04",
+       "field": "P/OS04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/OS04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp05",
+       "field": "P/OE05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OE05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp06",
+       "field": "P/OS06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OS06",
+        "P/OutE"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp07",
+       "field": "P/O07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/O07"
+       ],
+       "fillToFix": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/O07"
+       ]
+      },
+      {
+       "code": "Cp08",
+       "field": "P/O08",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/O08"
+       ],
+       "fillToFix": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/O08"
+       ]
+      },
+      {
+       "code": "Cp10",
+       "field": "P/Rows/RO10",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/RO10"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "a01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Price",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "a02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Sku",
+        "P/Key",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "a03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Price",
+        "P/Items/Sku",
+        "P/NItems/Count",
+        "P/NItems/NKey",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Due",
+        "P/Items/Sku",
+        "P/OutD",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "d01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/Deep[0]/X",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/Deep[0]/X",
+        "P/Packages/PKey",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "f01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "f03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Key",
+        "P/NItems/Count",
+        "P/NItems/NKey",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k01",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k02",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/NItems/Count",
+        "P/NItems/NKey",
+        "P/Rows/NK",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k02",
+       "field": "P/Rows[2]/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/NItems[2]/Count",
+        "P/NItems[2]/NKey",
+        "P/Rows[2]/NK",
+        "P/Rows[2]/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k03",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Price",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k04",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k04",
+       "field": "P/Rows[2]/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[2]/Label",
+        "P/Items[2]/Sku",
+        "P/Rows[2]/K",
+        "P/Rows[2]/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k05",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/Items[2]/Count",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "m05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m06",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[2]/Gp/A",
+        "P/Items[2]/Gp/B",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "P/Items[2]/Gp/A",
+        "P/Items[2]/Gp/B",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NKeyF",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "q01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Sku",
+        "P/Items[2]/Label",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "q04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/Packages/PKey"
+       ]
+      },
+      {
+       "code": "s01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Due",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Flag",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s06",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/NItems/Label",
+        "P/NItems/NKey",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s07",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s08",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Key",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s09",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/O01",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/O02",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/O03",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/O07",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "P/O08",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "P/O09",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OE05",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "P/OS04",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/OS06",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/Rows/RO10",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/Rows[2]/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/RO10",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "nomatch",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Cp06",
+       "field": "P/OS06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OS06",
+        "P/OutE"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OS06",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "Cp07",
+       "field": "P/O07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku",
+        "P/O07"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku",
+        "P/O07"
+       ]
+      },
+      {
+       "code": "Cp08",
+       "field": "P/O08",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku",
+        "P/O08"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku",
+        "P/O08"
+       ]
+      },
+      {
+       "code": "c01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "c02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "c04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Label",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Label",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutS"
+       ]
+      },
+      {
+       "code": "m04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "q03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Count",
+        "/P[1]/Items[-5]/Sku",
+        "/P[1]/NItems[-5]/Count",
+        "/P[1]/NItems[-5]/NKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Count",
+        "/P[1]/Items[-5]/Sku",
+        "/P[1]/NItems[-5]/Count",
+        "/P[1]/NItems[-5]/NKey"
+       ]
+      },
+      {
+       "code": "q04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/O01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O07",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "P/O08",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "P/O09",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OE05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OS04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OS06",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/Rows/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[2]/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/RO10",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Cp06",
+       "field": "P/OS06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OS06",
+        "P/OutE"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OS06",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "Cp07",
+       "field": "P/O07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku",
+        "P/O07"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku",
+        "P/O07"
+       ]
+      },
+      {
+       "code": "Cp08",
+       "field": "P/O08",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku",
+        "P/O08"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku",
+        "P/O08"
+       ]
+      },
+      {
+       "code": "c01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "c02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "c04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Label",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Label",
+        "/P[1]/Items[-5]/Sku",
+        "P/OutS"
+       ]
+      },
+      {
+       "code": "m04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "q03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Count",
+        "/P[1]/Items[-5]/Sku",
+        "/P[1]/NItems[-5]/Count",
+        "/P[1]/NItems[-5]/NKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Count",
+        "/P[1]/Items[-5]/Sku",
+        "/P[1]/NItems[-5]/Count",
+        "/P[1]/NItems[-5]/NKey"
+       ]
+      },
+      {
+       "code": "q04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/O01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O07",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "P/O08",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "P/O09",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OE05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OS04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OS06",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/Rows/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[2]/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/RO10",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "dup",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "k02",
+       "field": "P/Rows[2]/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/NItems[2]/Count",
+        "P/NItems[2]/NKey",
+        "P/Rows[2]/NK",
+        "P/Rows[2]/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k04",
+       "field": "P/Rows[2]/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[3]/Label",
+        "P/Items[3]/Sku",
+        "P/Rows[2]/K",
+        "P/Rows[2]/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "m06",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[3]/Gp/A",
+        "P/Items[3]/Gp/B",
+        "P/Items[3]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "P/Items[3]/Gp/A",
+        "P/Items[3]/Gp/B",
+        "P/Items[3]/Sku",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NKeyF",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "q01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Sku",
+        "P/Items[3]/Label",
+        "P/Items[3]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Items/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Items[2]/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/NItems/NKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/NItems/NKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/NItems[3]/NKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/NItems[3]/NKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages[3]/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages[3]/PKey"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/O01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O07",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O08",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O09",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OE05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OS04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OS06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[2]/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/RO10",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "P/Items/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items/Sku"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/Items[2]/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items[2]/Sku"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/NItems/NKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/NItems/NKey"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/NItems[3]/NKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/NItems[3]/NKey"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "k02",
+       "field": "P/Rows[2]/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/NItems[2]/Count",
+        "P/NItems[2]/NKey",
+        "P/Rows[2]/NK",
+        "P/Rows[2]/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k04",
+       "field": "P/Rows[2]/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[3]/Label",
+        "P/Items[3]/Sku",
+        "P/Rows[2]/K",
+        "P/Rows[2]/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[0]/Gp[1]/A",
+        "/P[1]/Items[0]/Gp[1]/B",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "m06",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[3]/Gp/A",
+        "P/Items[3]/Gp/B",
+        "P/Items[3]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "P/Items[3]/Gp/A",
+        "P/Items[3]/Gp/B",
+        "P/Items[3]/Sku",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NKeyF",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "q01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Count",
+        "P/Items/Sku",
+        "P/Items[3]/Label",
+        "P/Items[3]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Items/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Items[2]/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/NItems/NKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/NItems/NKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/NItems[3]/NKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/NItems[3]/NKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages[3]/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages[3]/PKey"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/O01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O07",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O08",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O09",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OE05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OS04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OS06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[2]/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/RO10",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "P/Items/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items/Sku"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/Items[2]/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items[2]/Sku"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/NItems/NKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/NItems/NKey"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/NItems[3]/NKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/NItems[3]/NKey"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "malformed",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Cp01",
+       "field": "P/O01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/O01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp04",
+       "field": "P/OS04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/OS04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp10",
+       "field": "P/Rows/RO10",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/RO10"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "a01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Price",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/Items/Due",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Due"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k04",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k05",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m06",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[2]/Gp/A",
+        "P/Items[2]/Gp/B",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "P/Items[2]/Gp/A",
+        "P/Items[2]/Gp/B",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NKeyF",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "q04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/Packages/PKey"
+       ]
+      },
+      {
+       "code": "s01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Flag",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s08",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Key",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/Items/Kind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/Items/Count",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Count"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/Items/Gp/A",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Gp/A"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/NItems/Count",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/NItems/Count"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/Packages/Parcels/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/Parcels/W"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/O01",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/O02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O07",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O08",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O09",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OE05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OS04",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/OS06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/RO10",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/Rows[2]/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/RO10",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "stringFalschesMuster",
+        "field": "P/Items/Kind",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items/Kind"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "P/Items/Gp/A",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items/Gp/A"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Cp01",
+       "field": "P/O01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/O01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp04",
+       "field": "P/OS04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/OS04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cp10",
+       "field": "P/Rows/RO10",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/RO10"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "a01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Price",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/Items/Due",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Due"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k04",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "k05",
+       "field": "P/Rows/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "m06",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[2]/Gp/A",
+        "P/Items[2]/Gp/B",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "P/Items[2]/Gp/A",
+        "P/Items[2]/Gp/B",
+        "P/Items[2]/Sku",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ]
+      },
+      {
+       "code": "n02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NKeyF",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "n03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/NPacks[1]/Parcels[0]/W",
+        "P/NPacks/NP",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "q04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/Packages/PKey"
+       ]
+      },
+      {
+       "code": "s01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Flag",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "s08",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Label",
+        "P/Items/Sku",
+        "P/Key",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/Items/Kind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/Items/Count",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Count"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/Items/Gp/A",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Gp/A"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/NItems/Count",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/NItems/Count"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/Packages/Parcels/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/Parcels/W"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/O01",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/O02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O07",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O08",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/O09",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OE05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OS04",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/OS06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/RO10",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "P/Rows[2]/RO10",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/RO10",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "stringFalschesMuster",
+        "field": "P/Items/Kind",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items/Kind"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "P/Items/Gp/A",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items/Gp/A"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

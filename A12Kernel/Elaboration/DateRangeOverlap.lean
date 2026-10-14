@@ -225,10 +225,10 @@ def firstDateRangesOverlapGroup? :
     | .group reference => some reference.path
     | .starredGroup source => some source.group.path
     | .starredGroupPresence source => some source.groupPath
-    | .keyed source => match source.target with
+    | .keyed source _ => match source.target with
         | .group path | .starredGroup path => some path
         | .star _ => none
-    | .indexed _ | .field .. | .star .. | .starHaving .. => none
+    | .indexed _ _ | .field .. | .star .. | .starHaving .. => none
 
 /-- Both overlap operators' field walk: every field the operands expand to, in authored order, must be
 a DateRange declaration without a year interpretation. It completes before the format/year agreement gate over
@@ -310,8 +310,8 @@ def certifyDateRangesOverlapOperand (model : FlatModel)
     (bindingGroup : GroupPath := declaringGroup) :
       Except DateRangesOverlapElabError
         (CheckedDateRangesOverlapOperand model) := match operand with
-  | .indexed source => .indexed source <$> certifyDateRangesOverlapField source.targetDeclaration
-  | .keyed source => match source.target with
+  | .indexed source _ => .indexed source <$> certifyDateRangesOverlapField source.targetDeclaration
+  | .keyed source _ => match source.target with
       | .star path => .keyed source <$> certifyDateRangesOverlapField path.declaration
       | .group path | .starredGroup path => throw (.groupsNotAllowed path)
   | .field declaration .stored =>
@@ -338,7 +338,7 @@ def certifySingularDateRangesOverlapOperand (model : FlatModel)
     (bindingGroup : GroupPath := declaringGroup) :
       Except DateRangesOverlapElabError
         (CheckedSingularDateRangesOverlapOperand model) := match operand with
-  | .indexed selection =>
+  | .indexed selection _ =>
       match certifyDateRangesOverlapField selection.targetDeclaration with
       | .ok source => pure (.canonical (.indexed selection source))
       | .error (.unsupportedPolicy _ _ _) =>

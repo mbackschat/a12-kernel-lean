@@ -199,8 +199,8 @@ private def certifyAtLeastOneDateRangeOverlapScalarShape :
     ResolvedFieldEntityOperand model →
       Except AtLeastOneDateRangeOverlapsElabError
         FlatFieldDecl
-  | .indexed source => pure source.targetDeclaration
-  | .keyed source => match source.target with
+  | .indexed source _ => pure source.targetDeclaration
+  | .keyed source _ => match source.target with
       | .star _ => throw (.scalarStarred source.entityPath)
       | .group path | .starredGroup path => throw (.scalarGroup path)
   | .field declaration .stored => pure declaration
@@ -238,7 +238,7 @@ private def certifyAtLeastOneDateRangeOverlapsListOperand (model : FlatModel)
     (bindingGroup : GroupPath := declaringGroup) :
       Except AtLeastOneDateRangeOverlapsElabError
         (CheckedAtLeastOneDateRangeOverlapsListOperand model) := match operand with
-  | .keyed source => do
+  | .keyed source _ => do
       let fields ← source.declarations.mapM (certifyPluralDateRangeField .list)
       match fields with
       | [] => throw (.groupExpansionEmpty source.entityPath)
@@ -347,7 +347,7 @@ def elaborateAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
           pure {
             shape, scalar, first, rest
             scalarSelection? := match scalarOperand with
-              | .indexed source => some source
+              | .indexed source _ => some source
               | _ => none }
 
 /-- The scalar instance: a source read where the reading rule iterates no level. -/
@@ -400,8 +400,8 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
     |>.mapError fun error => .source (.shape error)
   let scalarDeclaration ←
     match scalarOperand with
-    | .indexed source => pure source.targetDeclaration
-    | .keyed source => throw (.pluralScalarNotDirect source.entityPath)
+    | .indexed source _ => pure source.targetDeclaration
+    | .keyed source _ => throw (.pluralScalarNotDirect source.entityPath)
     | .field declaration .stored => pure declaration
     | .field declaration form => throw (.unsupportedReadForm declaration.path form)
     | .star source _ => throw (.pluralScalarNotDirect source.declaration.path)
@@ -435,7 +435,7 @@ def elaborateYearlessAtLeastOneDateRangeOverlapsSourceIn (model : FlatModel)
       pure {
         shape, scalar, first, rest
         scalarSelection? := match scalarOperand with
-          | .indexed source => some source
+          | .indexed source _ => some source
           | _ => none }
 
 /-! ## Checked plural-overlap assembly -/

@@ -16,8 +16,8 @@ namespace CheckedTemporalExtremumOperands
 /-- Payload and selector reads remain ordinary dependencies regardless of filter group protection. -/
 def operandFieldIds (source : CheckedTemporalExtremumOperands model) : List FieldId :=
   source.shape.operands.flatMap (fun operand => match operand with
-    | .indexed selected => (model.fields.filter (fun field => selected.referencesField field.id)).map (·.id)
-    | .keyed selected => (model.fields.filter (fun field => selected.referencesField field.id)).map (·.id)
+    | .indexed selected _ => (model.fields.filter (fun field => selected.referencesField field.id)).map (·.id)
+    | .keyed selected _ => (model.fields.filter (fun field => selected.referencesField field.id)).map (·.id)
     | operand => operand.expansionDeclarations.map (·.id))
 
 /-- Complete references retain filter members even when a dependency query exempts them. -/
@@ -37,8 +37,8 @@ def bindingScopes (source : CheckedTemporalExtremumOperands model) : List (List 
 turn their payload dependencies into ordinary current-row reads. Dynamic keys still read at the caller’s row (spec/08 §4). -/
 def boundFieldIds (source : CheckedTemporalExtremumOperands model) : List FieldId :=
   source.shape.operands.flatMap (fun operand => match operand with
-    | .indexed selected => match selected.key with | .field field => [field.id] | .literal .. => []
-    | .keyed selected => match selected.selection.key with | .field field => [field.id] | .literal .. => []
+    | .indexed selected _ => match selected.key with | .field field => [field.id] | .literal .. => []
+    | .keyed selected _ => match selected.selection.key with | .field field => [field.id] | .literal .. => []
     | operand => (operand.expansionDeclarations.filter fun field =>
         field.repeatableScope.isPrefixOf operand.bindingScope).map (·.id)) ++
     (source.filters.flatMap (fun filter => filter.toList.flatMap (·.fieldIds))).filter fun field =>
@@ -124,7 +124,7 @@ private def readStar (phase : Phase) (context : ScalarComputationContext)
 private def readOperand (phase : Phase) (context : ScalarComputationContext)
     (filter : Option CorrelatedHaving) : ResolvedFieldEntityOperand model →
     Except ScalarTemporalEvaluationFault (ResolvedTemporalAggregateSide ScalarTemporalValue)
-  | source@(.indexed _) | source@(.keyed _) =>
+  | source@(.indexed _ _) | source@(.keyed _ _) =>
       (TemporalExtremumStream.selectedSide source phase context (fun declaration observation => do
         let some field := declaration.toTemporalField? | throw (.addressing (.unsupportedGroupOperand declaration.groupPath))
         pure (projectScalarTemporalObservation model field observation))).mapError (fun _ => .calendarUnavailable)
@@ -152,9 +152,9 @@ private def readPartialOperand (partialRead : TemporalPartialReadContext model) 
       (·.repeatableScope) |>.mapError (ScalarTemporalEvaluationFault.addressing ∘ CheckedAddressingError.addressing)
     pure (some (.value (addresses, tail)) : Option (CellObservation (List (FlatFieldDecl × Env) × Bool)))
   let extent ← match operand with
-    | .indexed source => (resolvePartialSelectedAddresses (.inl source) document scope outer partialRead.read
+    | .indexed source _ => (resolvePartialSelectedAddresses (.inl source) document scope outer partialRead.read
         (fun declaration bound reopened row => scope.coversAggregateExtent model declaration.path bound reopened row)).mapError .addressing
-    | .keyed source => (resolvePartialSelectedAddresses (.inr source) document scope outer partialRead.read
+    | .keyed source _ => (resolvePartialSelectedAddresses (.inr source) document scope outer partialRead.read
         (fun declaration bound reopened row => scope.coversAggregateExtent model declaration.path bound reopened row)).mapError .addressing
     | .field declaration _ => ordinary [declaration] declaration.repeatableScope.length
     | .star source _ => ordinary [source.declaration] source.path.firstStar
@@ -175,7 +175,7 @@ private def readPartialOperand (partialRead : TemporalPartialReadContext model) 
       -- A missing scalar still occupies an authored slot; an empty selected lower-star does not
       -- (partial-temporal fallback grid, 2026-10-07; spec/05 temporal extrema).
       let operands := match operand with
-        | .indexed _ => if addresses.isEmpty then [.notEvaluated] else operands
+        | .indexed _ _ => if addresses.isEmpty then [.notEvaluated] else operands
         | _ => operands
       pure { operands, hasUninstantiatedTail := tail, hasHaving := false }
 

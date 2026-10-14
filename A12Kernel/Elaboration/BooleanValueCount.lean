@@ -225,8 +225,8 @@ private def certifyBooleanValueCountOperand (model : FlatModel)
     ResolvedFieldEntityOperand model →
       Except BooleanValueCountElabError
         (CheckedBooleanValueCountOperand model expected)
-  | .indexed source => .selected <$> CheckedSelectedBooleanCountEntity.certify expected (.inl source)
-  | .keyed source => .selected <$> CheckedSelectedBooleanCountEntity.certify expected (.inr source)
+  | .indexed source _ => .selected <$> CheckedSelectedBooleanCountEntity.certify expected (.inl source)
+  | .keyed source _ => .selected <$> CheckedSelectedBooleanCountEntity.certify expected (.inr source)
   | .field declaration _ =>
       if hKind :
           booleanValueCountKindAllowed expected declaration.policy.kind = true then

@@ -1,0 +1,465 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R4c_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-14T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "base",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Cu04",
+       "field": "P/Outer/Mid/RS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid/Items/Label",
+        "P/Outer/Mid/Items/Sku",
+        "P/Outer/Mid/K",
+        "P/Outer/Mid/RS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cu04",
+       "field": "P/Outer/Mid[2]/RS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid[2]/Items[2]/Label",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/RS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "u01",
+       "field": "P/Outer/Mid/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid/Items/Label",
+        "P/Outer/Mid/Items/Sku",
+        "P/Outer/Mid/K",
+        "P/Outer/Mid/ROut"
+       ],
+       "fillToFix": [
+        "P/Outer/Mid/Items/Label",
+        "P/Outer/Mid/Items/Sku",
+        "P/Outer/Mid/K",
+        "P/Outer/Mid/ROut"
+       ]
+      },
+      {
+       "code": "u01",
+       "field": "P/Outer/Mid[2]/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid[2]/Items[2]/Label",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/ROut"
+       ],
+       "fillToFix": [
+        "P/Outer/Mid[2]/Items[2]/Label",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/ROut"
+       ]
+      },
+      {
+       "code": "u02",
+       "field": "P/Outer/Mid/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid/Items/Count",
+        "P/Outer/Mid/Items/Label",
+        "P/Outer/Mid/Items/Sku",
+        "P/Outer/Mid/K",
+        "P/Outer/Mid/ROut"
+       ],
+       "fillToFix": [
+        "P/Outer/Mid/ROut"
+       ]
+      },
+      {
+       "code": "u02",
+       "field": "P/Outer/Mid[2]/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid[2]/Items[2]/Count",
+        "P/Outer/Mid[2]/Items[2]/Label",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/ROut"
+       ],
+       "fillToFix": [
+        "P/Outer/Mid[2]/ROut"
+       ]
+      },
+      {
+       "code": "u03",
+       "field": "P/Outer/Mid[2]/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid[2]/Items[2]/Count",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/ROut"
+       ],
+       "fillToFix": [
+        "P/Outer/Mid[2]/Items[2]/Count",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/ROut"
+       ]
+      },
+      {
+       "code": "u03",
+       "field": "P/Outer[2]/Mid/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Outer[2]/Mid[1]/Items[-5]/Count",
+        "/P[1]/Outer[2]/Mid[1]/Items[-5]/Sku",
+        "P/Outer[2]/Mid/Items/Count",
+        "P/Outer[2]/Mid/Items/Sku",
+        "P/Outer[2]/Mid/K",
+        "P/Outer[2]/Mid/ROut"
+       ],
+       "fillToFix": [
+        "/P[1]/Outer[2]/Mid[1]/Items[-5]/Count",
+        "/P[1]/Outer[2]/Mid[1]/Items[-5]/Sku",
+        "P/Outer[2]/Mid/Items/Count",
+        "P/Outer[2]/Mid/Items/Sku",
+        "P/Outer[2]/Mid/K",
+        "P/Outer[2]/Mid/ROut"
+       ]
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Outer[2]/Mid[2]/Items/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Outer[2]/Mid[2]/Items/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Outer[2]/Mid[2]/Items[2]/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Outer[2]/Mid[2]/Items[2]/Sku"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Outer/Mid/RS",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/Outer/Mid[2]/RS",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/Outer[2]/Mid/RS",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Outer[2]/Mid[2]/RS",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "P/Outer[2]/Mid[2]/Items/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Outer[2]/Mid[2]/Items/Sku"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/Outer[2]/Mid[2]/Items[2]/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Outer[2]/Mid[2]/Items[2]/Sku"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Cu04",
+       "field": "P/Outer/Mid/RS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid/Items/Label",
+        "P/Outer/Mid/Items/Sku",
+        "P/Outer/Mid/K",
+        "P/Outer/Mid/RS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cu04",
+       "field": "P/Outer/Mid[2]/RS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid[2]/Items[2]/Label",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/RS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "u01",
+       "field": "P/Outer/Mid/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid/Items/Label",
+        "P/Outer/Mid/Items/Sku",
+        "P/Outer/Mid/K",
+        "P/Outer/Mid/ROut"
+       ],
+       "fillToFix": [
+        "P/Outer/Mid/Items/Label",
+        "P/Outer/Mid/Items/Sku",
+        "P/Outer/Mid/K",
+        "P/Outer/Mid/ROut"
+       ]
+      },
+      {
+       "code": "u01",
+       "field": "P/Outer/Mid[2]/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid[2]/Items[2]/Label",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/ROut"
+       ],
+       "fillToFix": [
+        "P/Outer/Mid[2]/Items[2]/Label",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/ROut"
+       ]
+      },
+      {
+       "code": "u02",
+       "field": "P/Outer/Mid/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid/Items/Count",
+        "P/Outer/Mid/Items/Label",
+        "P/Outer/Mid/Items/Sku",
+        "P/Outer/Mid/K",
+        "P/Outer/Mid/ROut"
+       ],
+       "fillToFix": [
+        "P/Outer/Mid/ROut"
+       ]
+      },
+      {
+       "code": "u02",
+       "field": "P/Outer/Mid[2]/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid[2]/Items[2]/Count",
+        "P/Outer/Mid[2]/Items[2]/Label",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/ROut"
+       ],
+       "fillToFix": [
+        "P/Outer/Mid[2]/ROut"
+       ]
+      },
+      {
+       "code": "u03",
+       "field": "P/Outer/Mid[2]/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Outer/Mid[2]/Items[2]/Count",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/ROut"
+       ],
+       "fillToFix": [
+        "P/Outer/Mid[2]/Items[2]/Count",
+        "P/Outer/Mid[2]/Items[2]/Sku",
+        "P/Outer/Mid[2]/K",
+        "P/Outer/Mid[2]/ROut"
+       ]
+      },
+      {
+       "code": "u03",
+       "field": "P/Outer[2]/Mid/ROut",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Outer[2]/Mid[1]/Items[-5]/Count",
+        "/P[1]/Outer[2]/Mid[1]/Items[-5]/Sku",
+        "P/Outer[2]/Mid/Items/Count",
+        "P/Outer[2]/Mid/Items/Sku",
+        "P/Outer[2]/Mid/K",
+        "P/Outer[2]/Mid/ROut"
+       ],
+       "fillToFix": [
+        "/P[1]/Outer[2]/Mid[1]/Items[-5]/Count",
+        "/P[1]/Outer[2]/Mid[1]/Items[-5]/Sku",
+        "P/Outer[2]/Mid/Items/Count",
+        "P/Outer[2]/Mid/Items/Sku",
+        "P/Outer[2]/Mid/K",
+        "P/Outer[2]/Mid/ROut"
+       ]
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Outer[2]/Mid[2]/Items/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Outer[2]/Mid[2]/Items/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Outer[2]/Mid[2]/Items[2]/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Outer[2]/Mid[2]/Items[2]/Sku"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Outer/Mid/RS",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/Outer/Mid[2]/RS",
+        "cleared": false,
+        "errored": false,
+        "value": "x"
+       },
+       {
+        "field": "P/Outer[2]/Mid/RS",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Outer[2]/Mid[2]/RS",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "P/Outer[2]/Mid[2]/Items/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Outer[2]/Mid[2]/Items/Sku"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/Outer[2]/Mid[2]/Items[2]/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Outer[2]/Mid[2]/Items[2]/Sku"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,263 @@
+{
+ "model": "R4bRt_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "base",
+   "documentInline": {
+    "P": {
+     "Total": "0",
+     "OutE": "A",
+     "Key": "a",
+     "OB2": "Lo",
+     "OB3": "Lo",
+     "OB4": "Lo",
+     "Items": [
+      {
+       "Sku": "a",
+       "Kind": "A",
+       "Gp": {
+        "A": "1"
+       }
+      },
+      {
+       "Sku": "b",
+       "Kind": "B",
+       "Gp": {
+        "A": "1",
+        "B": "2"
+       }
+      }
+     ],
+     "Packages": [
+      {
+       "PKey": "p",
+       "Parcels": [
+        {
+         "W": "1"
+        },
+        {
+         "W": "2",
+         "PK": "B"
+        }
+       ]
+      },
+      {
+       "PKey": "q",
+       "Parcels": [
+        {
+         "PK": "A"
+        }
+       ]
+      }
+     ],
+     "Rows": [
+      {
+       "K": "a",
+       "REnum": "B"
+      },
+      {
+       "K": "b",
+       "REnum": "A"
+      },
+      {
+       "K": "zz",
+       "REnum": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "nomatch",
+   "documentInline": {
+    "P": {
+     "Total": "0",
+     "OutE": "A",
+     "Key": "a",
+     "OB2": "Lo",
+     "OB3": "Lo",
+     "OB4": "Lo",
+     "Items": [
+      {
+       "Sku": "c",
+       "Kind": "B",
+       "Gp": {
+        "A": "1",
+        "B": "2"
+       }
+      }
+     ],
+     "Packages": [
+      {
+       "PKey": "q",
+       "Parcels": [
+        {
+         "PK": "A"
+        }
+       ]
+      }
+     ],
+     "Rows": [
+      {
+       "K": "a",
+       "REnum": "B"
+      },
+      {
+       "K": "b",
+       "REnum": "A"
+      },
+      {
+       "K": "zz",
+       "REnum": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dup",
+   "documentInline": {
+    "P": {
+     "Total": "0",
+     "OutE": "A",
+     "Key": "a",
+     "OB2": "Lo",
+     "OB3": "Lo",
+     "OB4": "Lo",
+     "Items": [
+      {
+       "Sku": "a",
+       "Kind": "A",
+       "Gp": {
+        "A": "1"
+       }
+      },
+      {
+       "Sku": "a",
+       "Kind": "B",
+       "Gp": {
+        "A": "1",
+        "B": "2"
+       }
+      },
+      {
+       "Sku": "b",
+       "Kind": "B",
+       "Gp": {
+        "A": "1",
+        "B": "2"
+       }
+      }
+     ],
+     "Packages": [
+      {
+       "PKey": "p",
+       "Parcels": [
+        {
+         "W": "1"
+        },
+        {
+         "W": "2",
+         "PK": "B"
+        }
+       ]
+      },
+      {
+       "PKey": "q",
+       "Parcels": [
+        {
+         "PK": "A"
+        }
+       ]
+      },
+      {
+       "PKey": "p",
+       "Parcels": [
+        {
+         "PK": "A"
+        }
+       ]
+      }
+     ],
+     "Rows": [
+      {
+       "K": "a",
+       "REnum": "B"
+      },
+      {
+       "K": "b",
+       "REnum": "A"
+      },
+      {
+       "K": "zz",
+       "REnum": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "malformed",
+   "documentInline": {
+    "P": {
+     "Total": "0",
+     "OutE": "A",
+     "Key": "a",
+     "OB2": "Lo",
+     "OB3": "Lo",
+     "OB4": "Lo",
+     "Items": [
+      {
+       "Sku": "a",
+       "Kind": "Z",
+       "Gp": {
+        "A": "1"
+       }
+      },
+      {
+       "Sku": "b",
+       "Kind": "B",
+       "Gp": {
+        "A": "1",
+        "B": "2"
+       }
+      }
+     ],
+     "Packages": [
+      {
+       "PKey": "p",
+       "Parcels": [
+        {
+         "PK": "Z"
+        },
+        {
+         "PK": "B"
+        }
+       ]
+      }
+     ],
+     "Rows": [
+      {
+       "K": "a",
+       "REnum": "B"
+      },
+      {
+       "K": "b",
+       "REnum": "A"
+      },
+      {
+       "K": "zz",
+       "REnum": "A"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

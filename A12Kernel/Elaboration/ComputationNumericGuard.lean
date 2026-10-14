@@ -202,8 +202,8 @@ def FlatModel.elaborateCheckedComputationCondition (model : FlatModel)
             CheckedComputationCondition model × CheckedComputationCondition model :=
           (.leaf (.predicate positive), .leaf (.predicate negative))
         match operand with
-        | .indexed source => pure (pair (.indexedFieldPresence .filled source) (.indexedFieldPresence .notFilled source))
-        | .keyed source =>
+        | .indexed source .stored => pure (pair (.indexedFieldPresence .filled source) (.indexedFieldPresence .notFilled source))
+        | .keyed source .stored =>
             if !source.isGroup then throw .unsupportedOperand
             pure (pair (.keyedGroupPresence .filled source .ordinaryList) (.keyedGroupPresence .notFilled source .ordinaryList))
         | _ => throw .unsupportedOperand)).mapError (.primitive ∘ .groupFill)

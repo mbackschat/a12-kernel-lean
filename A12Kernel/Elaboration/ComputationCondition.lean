@@ -253,7 +253,7 @@ def FlatModel.elaborateComputationGroupListWith (model : FlatModel)
     if operator.requiresMultipleOperands then throw (.rootNotAllowed path)
     if operands.length != 1 then throw (.rootRequiresSoleOperand path)
   let isStarred : ResolvedFieldEntityOperand model → Bool
-    | .keyed source => source.isStarredGroup
+    | .keyed source _ => source.isStarredGroup
     | .starredGroup _ | .starredGroupPresence _ => true
     | _ => false
   if operator.requiresMultipleOperands then
@@ -270,7 +270,7 @@ def FlatModel.elaborateComputationGroupListWith (model : FlatModel)
     (ConditionTree.leaf (.groupPresence .filled source), ConditionTree.leaf (.groupPresence .notFilled source))
   let conditions ← operands.mapM fun operand => match operand with
     | .field declaration .stored => pure (.leaf (.fieldFilled declaration.id), .leaf (.fieldNotFilled declaration.id))
-    | operand@(.indexed _) | operand@(.keyed _) => selected operand
+    | operand@(.indexed _ .stored) | operand@(.keyed _ .stored) => selected operand
     | .group reference => pure (group reference)
     | .starredGroup source => pure (group { path := source.group.path, origin := .path } (some source.path))
     | .starredGroupPresence source => pure (group { path := source.groupPath, origin := .path } (some source.path))

@@ -103,13 +103,18 @@ def referencesField (operand : CheckedFieldFillOperand model) (field : FieldId)
     | _ => false
 
 
+private def keyedValidationSelection (source : CheckedKeyedEntityExtent model)
+    (document : CheckedDocument model) (outer : Env) :
+    Except CheckedAddressingError (CellObservation Env) :=
+  source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read) outer
+    (document.computationContextAt outer).read (document.computationContextAt outer).storedText
+
 def observations (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) (traversalMode : FilterTraversalMode := .requireSmall) :
     CheckedFieldFillOperand model → Except CheckedAddressingError (List CellObservation)
   | .indexed source => List.singleton <$> source.observeDocument document outer .validation
   | .keyed source => do
-      let selected ← source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read) outer
-        (document.computationContextAt outer).read (document.computationContextAt outer).storedText
+      let selected ← keyedValidationSelection source document outer
       source.observationsWith .validation document.source.toDocument selected document.computationFillContext.read
   | .field declaration => do
       -- EntityUtil.resolveIterations retains the bound singleton; RuntimeController's
@@ -129,6 +134,18 @@ def fillCapacity? : CheckedFieldFillOperand model → Option Nat
   | .star source => if source.hasHaving then none else
       model.declarationSlots? source.source.path.firstStar source.source.declaration
   | .group source => source.fillCapacity?
+
+/-- The declared slots this operand contributes at validation. A keyed operand whose selection is
+undecided, by a duplicated or malformed key, reads as its one unknown observation: no declared extent
+is left to be missing, so `NotAllFieldsFilled` stays silent over it (spec/08 §4.1, `q04` of the
+[semantic-index capture](../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)). -/
+def validationFillCapacity? (document : CheckedDocument model) (outer : Env) :
+    CheckedFieldFillOperand model → Except CheckedAddressingError (Option Nat)
+  | .keyed source => do
+      match ← keyedValidationSelection source document outer with
+      | .unknown _ | .poison _ => pure (some 1)
+      | .empty | .value _ => pure source.capacity?
+  | operand => pure operand.fillCapacity?
 
 def countCapacity? : CheckedFieldFillOperand model → Option Nat
   | .group source => source.countCapacity?
@@ -177,7 +194,7 @@ def validationRange? (operand : CheckedFieldFillOperand model) (declared : Bool)
     { filled := 0, empty := 0, unknown := 0, uninstantiated := 0 }
   let missing? ← if !declared then pure (some 0) else match operand with
     | .star source => source.selectedMissingCount? (world := world) document outer
-    | _ => pure (operand.fillCapacity?.map (· - observations.length))
+    | _ => pure ((← operand.validationFillCapacity? document outer).map (· - observations.length))
   pure (missing?.map fun missing =>
     { tally := { tally with uninstantiated := missing }, hasHaving := operand.hasHaving })
 
@@ -434,7 +451,8 @@ def evaluateFill? (list : CheckedFieldFillList model) (operator : FieldFillQuant
     let tally ← list.validationFillTally (world := world) document outer
     match operator with
     | .allFieldsFilled | .notAllFieldsFilled | .fieldsNotCollectivelyFilled =>
-        pure (list.fillCapacity?.map fun capacity =>
+        let capacity? := sum? (← list.operands.mapM (·.validationFillCapacity? document outer))
+        pure (capacity?.map fun capacity =>
           operator.evalValidation { tally with
             uninstantiated := capacity - (tally.filled + tally.empty + tally.unknown) })
     | .noFieldFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled
@@ -486,8 +504,8 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
     (categoryGate := if consumer == .quantifier then .behindRootGate else .aheadOfRepeat)
     (groupReadScope := .ruleBound)).mapError .shape
   let operands ← ((authored.first :: authored.rest).zip shape.operands).mapM fun
-    | (_, .indexed source) => pure (.indexed source)
-    | (_, .keyed source) => pure (.keyed source)
+    | (_, .indexed source .stored) => pure (.indexed source)
+    | (_, .keyed source .stored) => pure (.keyed source)
     | (_, .field declaration .stored) => pure (.field declaration)
     | (_, .star source .stored) => pure (.star (.plain rowGroup source))
     | (_, .starHaving source having .stored) => do
@@ -524,9 +542,11 @@ def elaborateComputationFieldFillList (model : FlatModel)
     | .starHaving source having .stored => do
         pure (.star (← (CheckedFilledFieldStarSource.withHaving model declaringGroup targetGroup
           source having targetGroup).mapError .having))
-    | .indexed source => pure (.indexed source)
-    | .keyed source => pure (.keyed source)
-    | .field _ (.projected _) | .star _ (.projected _) | .starHaving _ _ (.projected _) => throw .unsupportedOperand
+    | .indexed source .stored => pure (.indexed source)
+    | .keyed source .stored => pure (.keyed source)
+    | .field _ (.projected _) | .indexed _ (.projected _) | .keyed _ (.projected _) | .star _ (.projected _)
+      | .starHaving _ _ (.projected _) =>
+        throw .unsupportedOperand
   pure { operands }
 
 end A12Kernel

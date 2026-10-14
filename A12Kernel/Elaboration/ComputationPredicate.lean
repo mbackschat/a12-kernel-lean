@@ -304,7 +304,7 @@ private def readTokenComparisonOperand (context : ScalarComputationContext)
   let operands ← match operand with
     | .literal value => return (if value.isEmpty then .notEvaluated else .value value true)
     | .field source => pure [CheckedTokenEntityOperand.field source]
-    | .firstFilled source _ => pure source.operands
+    | .firstFilled source _ | .indexed source => pure source.operands
   match ← scanOperands (scanToken context filterRead filterStoredText filterNumberText first
       (traversalMode := .dense)) operands () with
   | .exhausted _ => pure .notEvaluated

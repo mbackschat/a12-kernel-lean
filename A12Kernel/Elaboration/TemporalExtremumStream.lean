@@ -74,8 +74,8 @@ namespace TemporalExtremumStream
 private def directDeclaration :
     ResolvedFieldEntityOperand model →
       Except TemporalExtremumStreamError FlatFieldDecl
-  | .indexed source => throw (.indexedOperandNotSupported source.targetDeclaration.path)
-  | .keyed source => throw (.indexedOperandNotSupported source.entityPath)
+  | .indexed source _ => throw (.indexedOperandNotSupported source.targetDeclaration.path)
+  | .keyed source _ => throw (.indexedOperandNotSupported source.entityPath)
   | .field declaration _ => pure declaration
   | .star source _ => throw (.operandNeedsAddressing source.declaration.path)
   | .starHaving source _ _ => throw (.operandNeedsAddressing source.declaration.path)
@@ -264,8 +264,8 @@ private def operandExtent (document : CheckedDocument model) (outer : Env)
     (world : Option World := none) :
     ResolvedFieldEntityOperand model →
       Except TemporalExtremumStreamFault ResolvedCheckedEntityOperandCore
-  | .indexed source => throw (.declined (.indexedOperandNotSupported source.targetDeclaration.path))
-  | .keyed source => throw (.declined (.indexedOperandNotSupported source.entityPath))
+  | .indexed source _ => throw (.declined (.indexedOperandNotSupported source.targetDeclaration.path))
+  | .keyed source _ => throw (.declined (.indexedOperandNotSupported source.entityPath))
   | .field declaration _ =>
       (document.resolveCheckedDirectEntityOperandCore declaration.id).mapError .addressing
   | .star source _ =>
@@ -307,10 +307,10 @@ def selectedSide (source : ResolvedFieldEntityOperand model)
     Except CheckedAddressingError (ResolvedTemporalAggregateSide α) := do
   let some addressed := context.addressed | throw (.checkedDocumentRequired source.entityPath)
   match source with
-  | .indexed selected =>
+  | .indexed selected _ =>
       let observation ← selected.observeColumnWith phase context.semanticIndexColumnReader context.row context.read context.storedText
       pure { operands := [← project selected.targetDeclaration observation], hasUninstantiatedTail := false, hasHaving := false }
-  | .keyed selected =>
+  | .keyed selected _ =>
       match ← selected.selectWith phase context.semanticIndexColumnReader context.row context.read context.storedText with
       | .unknown cause | .poison cause => pure { operands := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
       | .empty =>
@@ -351,7 +351,7 @@ def readAddressedSideWith (expected : TemporalComponents)
       ((admitted.shape.first :: admitted.shape.rest).zip
         admitted.filters).mapM fun (operand, filter) =>
           match operand with
-          | .indexed _ | .keyed _ =>
+          | .indexed _ _ | .keyed _ _ =>
               (selectedSide operand phase {
                 read := (document.computationContextAt outer).read, storedText := (document.computationContextAt outer).storedText, world, row := outer,
                 addressed := some document.indexedComputationFillContext } (fun _ observation => pure (project observation))).mapError .addressing

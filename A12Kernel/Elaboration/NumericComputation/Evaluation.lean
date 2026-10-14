@@ -98,7 +98,7 @@ def evaluateComputation (checked : CheckedNumberEntitySource model)
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
     (world : Option World := none)
-    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath))
+    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError ResolvedNumberEntityAggregateSides := fun source => .error (.unsupportedGroupOperand source.groupPath))
     (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
     (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError NumericComputationResult := do
@@ -542,6 +542,13 @@ def selectedNumberSide (context : NumericComputationEvaluationContext)
   source.sideWith .computation context.document context.outer context.scalar.read
     context.scalar.storedText context.starRead column |>.mapError (fun _ => .unsupportedGroupOperand source.groupPath)
 
+/-- The same selection with `Sum`'s per-declaration missing directions. -/
+def selectedNumberSides (context : NumericComputationEvaluationContext)
+    (source : CheckedSelectedNumberEntity model) : Except StarAddressingError ResolvedNumberEntityAggregateSides := do
+  let some column := context.indexColumn? | throw (.unsupportedGroupOperand source.groupPath)
+  source.aggregateSidesWith .computation context.document context.outer context.scalar.read
+    context.scalar.storedText context.starRead column |>.mapError (fun _ => .unsupportedGroupOperand source.groupPath)
+
 def selectedProductSide (context : NumericComputationEvaluationContext)
     (source : CheckedKeyedNumberProductOperand model) : Except StarAddressingError (ResolvedValueListSide .number) := do
   let some column := context.indexColumn? | throw (.unsupportedGroupOperand source.source.groupPath)
@@ -643,7 +650,7 @@ def readCheckedNumericComputationAtom
       context.scalar.readNumericComputationAtomWith
         (fun op aggregate =>
           (aggregate.evaluateComputation op context.document context.outer
-            context.scalar.read context.filterRead context.starRead context.scalar.world context.selectedNumberSide context.filterStoredText context.filterNumberText).mapError
+            context.scalar.read context.filterRead context.starRead context.scalar.world context.selectedNumberSides context.filterStoredText context.filterNumberText).mapError
               NumericComputationFault.repeatableAddressing)
         (context.readFilledGroupCount model) source
 

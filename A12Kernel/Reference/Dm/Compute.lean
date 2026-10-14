@@ -104,10 +104,10 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       | some path => pure (.fieldNotFilled path)
       | none => refuse "Guard" "FieldNotFilled operand"
   | .call "GroupFilled" [argument@(.mk (.entity { index := some _, filter := none, .. }) none)] none none => do
-      let .keyed source ← lowerEntityOperand model group argument | refuse "Guard/GroupFilled" "group operand"
+      let .keyed source .stored ← lowerEntityOperand model group argument | refuse "Guard/GroupFilled" "group operand"
       pure (.predicate (.keyedGroupPresence .filled source))
   | .call "GroupNotFilled" [argument@(.mk (.entity { index := some _, filter := none, .. }) none)] none none => do
-      let .keyed source ← lowerEntityOperand model group argument | refuse "Guard/GroupNotFilled" "group operand"
+      let .keyed source .stored ← lowerEntityOperand model group argument | refuse "Guard/GroupNotFilled" "group operand"
       pure (.predicate (.keyedGroupPresence .notFilled source))
   | .call "GroupFilled" [.mk group none] none none => match group.groupReference? with
       | some reference => pure (.groupPresence .filled reference)
@@ -197,6 +197,7 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       let tokenSurface := do
         let selected : Expr → Bool
           | .call "FirstFilledValue" _ none none => true
+          | .value { index := some _, category := none, .. } => true
           | _ => false
         if !selected left && !selected right then none else do
           let operator ← match op with | .eq => some EqualityOp.equal | .ne => some .notEqual | _ => none

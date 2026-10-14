@@ -32,16 +32,20 @@ where
         | .unknown _ => pure [entry]
         | _ => pure (entry :: (← readCells rest))
 
-/-- Only homogeneous slots use operand-level signedness; a group must supply its declaration-aware projection. -/
+/-- Only homogeneous slots use operand-level signedness; a group or a selection, whose declarations
+may differ in sign, must supply its declaration-aware projection. -/
 def CheckedNumberEntityOperand.resolveAggregateSidesWith
     (operand : CheckedNumberEntityOperand model)
     (resolve : CheckedNumberEntityOperand model →
       Except Error (Sum (ResolvedValueListSide .number) Terminal))
     (resolveGroup : CheckedNumberEntityGroup model →
+      Except Error (Sum ResolvedNumberEntityAggregateSides Terminal))
+    (resolveSelected : CheckedSelectedNumberEntity model →
       Except Error (Sum ResolvedNumberEntityAggregateSides Terminal)) :
     Except Error (Sum ResolvedNumberEntityAggregateSides Terminal) := do
   match operand with
   | .group slot => resolveGroup slot
+  | .selected source => resolveSelected source
   | _ =>
       match ← resolve operand with
       | .inr result => pure (.inr result)

@@ -1,0 +1,1059 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R4bRt_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-14T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "base",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Ce1",
+       "field": "P/Rows/REnum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/REnum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ce1",
+       "field": "P/Rows[2]/REnum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[2]/Kind",
+        "P/Items[2]/Sku",
+        "P/Rows[2]/K",
+        "P/Rows[2]/REnum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ce2",
+       "field": "P/OB2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OB2",
+        "P/OutE"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ce3",
+       "field": "P/OB3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OB3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "v05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/OB2",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/OB3",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/Rows/REnum",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "P/Rows[2]/REnum",
+        "cleared": false,
+        "errored": false,
+        "value": "B"
+       },
+       {
+        "field": "P/Rows[3]/REnum",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Ce1",
+       "field": "P/Rows/REnum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Rows/K",
+        "P/Rows/REnum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ce1",
+       "field": "P/Rows[2]/REnum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[2]/Kind",
+        "P/Items[2]/Sku",
+        "P/Rows[2]/K",
+        "P/Rows[2]/REnum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ce2",
+       "field": "P/OB2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OB2",
+        "P/OutE"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ce3",
+       "field": "P/OB3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/OB3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "v05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/OB2",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/OB3",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/Rows/REnum",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "P/Rows[2]/REnum",
+        "cleared": false,
+        "errored": false,
+        "value": "B"
+       },
+       {
+        "field": "P/Rows[3]/REnum",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "nomatch",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Ce2",
+       "field": "P/OB2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OB2",
+        "P/OutE"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OB2",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "Ce4",
+       "field": "P/OB4",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OB4",
+        "P/OutE"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OB4",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "v03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "v04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "v05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/OB2",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/OB3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OB4",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/Rows/REnum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[2]/REnum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/REnum",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Ce2",
+       "field": "P/OB2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OB2",
+        "P/OutE"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Kind",
+        "/P[1]/Items[-5]/Sku",
+        "P/OB2",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "Ce4",
+       "field": "P/OB4",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OB4",
+        "P/OutE"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OB4",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "v03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "v04",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OutE",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/PK",
+        "P/OutE"
+       ]
+      },
+      {
+       "code": "v05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Items[-5]/Gp[1]/A",
+        "/P[1]/Items[-5]/Gp[1]/B",
+        "/P[1]/Items[-5]/Sku"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/OB2",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/OB3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OB4",
+        "cleared": false,
+        "errored": false,
+        "value": "Hi"
+       },
+       {
+        "field": "P/Rows/REnum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[2]/REnum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/REnum",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "dup",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Ce1",
+       "field": "P/Rows[2]/REnum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[3]/Kind",
+        "P/Items[3]/Sku",
+        "P/Rows[2]/K",
+        "P/Rows[2]/REnum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Items/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Items[2]/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages[3]/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages[3]/PKey"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/OB2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OB3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OB4",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/REnum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[2]/REnum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/REnum",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "P/Items/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items/Sku"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/Items[2]/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items[2]/Sku"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/Packages/PKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Packages/PKey"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/Packages[3]/PKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Packages[3]/PKey"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Ce1",
+       "field": "P/Rows[2]/REnum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[3]/Kind",
+        "P/Items[3]/Sku",
+        "P/Rows[2]/K",
+        "P/Rows[2]/REnum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Items/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Items[2]/Sku",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages[3]/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages[3]/PKey"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/OB2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OB3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OB4",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/REnum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[2]/REnum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[3]/REnum",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "P/Items/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items/Sku"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/Items[2]/Sku",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items[2]/Sku"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/Packages/PKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Packages/PKey"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "P/Packages[3]/PKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Packages[3]/PKey"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "malformed",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Ce1",
+       "field": "P/Rows[2]/REnum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[2]/Kind",
+        "P/Items[2]/Sku",
+        "P/Rows[2]/K",
+        "P/Rows[2]/REnum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/Items/Kind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/Packages/Parcels/PK",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/Parcels/PK"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "v05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/OB2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OB3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OB4",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/REnum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[2]/REnum",
+        "cleared": false,
+        "errored": false,
+        "value": "B"
+       },
+       {
+        "field": "P/Rows[3]/REnum",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "stringFalschesMuster",
+        "field": "P/Items/Kind",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items/Kind"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "stringFalschesMuster",
+        "field": "P/Packages/Parcels/PK",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Packages/Parcels/PK"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Ce1",
+       "field": "P/Rows[2]/REnum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items[2]/Kind",
+        "P/Items[2]/Sku",
+        "P/Rows[2]/K",
+        "P/Rows[2]/REnum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/Items/Kind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Items/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/Packages/Parcels/PK",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/Parcels/PK"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "v05",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "P/Items/Gp/A",
+        "P/Items/Gp/B",
+        "P/Items/Sku"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/OB2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OB3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/OB4",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows/REnum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "P/Rows[2]/REnum",
+        "cleared": false,
+        "errored": false,
+        "value": "B"
+       },
+       {
+        "field": "P/Rows[3]/REnum",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "stringFalschesMuster",
+        "field": "P/Items/Kind",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Items/Kind"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "stringFalschesMuster",
+        "field": "P/Packages/Parcels/PK",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Packages/Parcels/PK"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

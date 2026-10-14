@@ -206,8 +206,8 @@ error-field membership below intentionally remains the overlap payload/filter ac
 def referencesField (condition : IteratedDateRangeCondition model) (field : FieldId) : Bool :=
   (match condition.overlapShape? with
     | some shape => shape.operands.any fun
-        | .indexed source => source.referencesField field
-        | .keyed source => source.referencesField field
+        | .indexed source _ => source.referencesField field
+        | .keyed source _ => source.referencesField field
         | operand => operand.expansionDeclarations.any (·.id == field)
     | none => condition.operandDeclarations.any (·.id == field)) ||
     condition.filters.any (·.referencesField field) ||

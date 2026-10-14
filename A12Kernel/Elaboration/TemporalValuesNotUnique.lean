@@ -339,8 +339,8 @@ def certifyTemporalUniquenessOperand (model : FlatModel)
       Except TemporalValuesNotUniqueElabError
         (CheckedTemporalUniquenessOperand model) :=
   match operand with
-  | .indexed source => certifySelectedUniqueness (.inl source)
-  | .keyed source => certifySelectedUniqueness (.inr source)
+  | .indexed source _ => certifySelectedUniqueness (.inl source)
+  | .keyed source _ => certifySelectedUniqueness (.inr source)
   | .field declaration _ =>
       do pure (.field (← certifyTemporalUniquenessField declaration))
   | .star source _ =>

@@ -49,8 +49,8 @@ private def groupListOperand? (model : FlatModel) (rowGroup : GroupPath) :
     Expr → Option SurfaceGroupListOperand
   | expression@(.entity { index := some _, filter := none, .. }) => do
       match ← (lowerEntityOperand model rowGroup (.mk expression none)).toOption with
-      | .indexed source => some (.indexed source)
-      | .keyed source => some (.keyed source)
+      | .indexed source .stored => some (.indexed source)
+      | .keyed source .stored => some (.keyed source)
       | _ => none
   | .entity { path, index := none, category := none, filter := none } =>
       if path.correlated then none
@@ -83,6 +83,8 @@ def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
   | .string value => pure (.literal value)
   | .call "FirstFilledValue" arguments none none =>
       (.firstFilled ·) <$> lowerFirstFilledEntitySource model rowGroup arguments bindingGroup?
+  | .value { path, index := some key, category := none, filter := none } =>
+      (.indexed ·) <$> lowerIndexedSource model rowGroup path key
   | expression => match expression.fieldValue? with
       | some field => pure (.field field)
       | none => refuse "TokenComparison" expression.construct
@@ -473,7 +475,7 @@ private def lowerIndexedPresence (model : FlatModel) (rowGroup bindingGroup : Gr
 
 private def lowerKeyedGroupPresence (model : FlatModel) (rowGroup bindingGroup : GroupPath)
     (operator : GroupPresenceOperator) (argument : Argument) : Lowering (CheckedValidationCondition model) := do
-  let .keyed source ← lowerEntityOperand model rowGroup argument | refuse "SemanticIndex" "group operand"
+  let .keyed source .stored ← lowerEntityOperand model rowGroup argument | refuse "SemanticIndex" "group operand"
   let checked ← elaborated "SemanticIndex" (elaborateKeyedEntityExtent model rowGroup source)
   if !checked.isGroup || checked.isStarredGroup then refuse "SemanticIndex" "unstarred group operand"
   elaborated "SemanticIndex" (CheckedValidationCondition.checkCore model bindingGroup

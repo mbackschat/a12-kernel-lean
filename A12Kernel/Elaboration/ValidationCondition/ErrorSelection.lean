@@ -44,8 +44,8 @@ private def selectedErrorReference (field : FieldId)
 private def shapeErrorSelections (field : FieldId) (shape : CheckedFieldEntityShape model) :
     List SelectedErrorReference :=
   shape.operands.flatMap fun
-    | .indexed source => selectedErrorReference field (.inl source)
-    | .keyed source => selectedErrorReference field (.inr source)
+    | .indexed source _ => selectedErrorReference field (.inl source)
+    | .keyed source _ => selectedErrorReference field (.inr source)
     | _ => []
 
 private def numberErrorSelections (field : FieldId) (source : CheckedNumberEntitySource model) :
@@ -105,7 +105,7 @@ private def numericErrorSelections (field : FieldId) :
 
 private def tokenOperandErrorSelections (field : FieldId) :
     CheckedTokenComparisonOperand model → List SelectedErrorReference
-  | .firstFilled source _ => tokenErrorSelections field source
+  | .firstFilled source _ | .indexed source => tokenErrorSelections field source
   | .literal _ | .field _ => []
 
 private def leafErrorSelections (field : FieldId) :

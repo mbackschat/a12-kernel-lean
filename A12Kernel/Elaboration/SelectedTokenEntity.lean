@@ -7,14 +7,16 @@ cannot borrow its first field's token domain (spec/04 value lists, spec/08 §4.1
 structure CheckedSelectedTokenEntity (model : FlatModel) where
   private mk ::
   source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)
+  /-- A category is admitted only on a selected column ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)). -/
+  projectionRef : EnumerationProjectionRef
   first : CheckedTokenExpansionSlot
   rest : List CheckedTokenExpansionSlot
   allToken : (match source with
     | .inl source => [source.targetDeclaration]
-    | .inr source => source.declarations).all (fun d => d.toStoredTokenSlot?.isSome) = true
+    | .inr source => source.declarations).all (fun d => (d.toTokenSlot? projectionRef).isSome) = true
   expansionOwned : (match source with
     | .inl source => [source.targetDeclaration]
-    | .inr source => source.declarations).filterMap FlatFieldDecl.toStoredTokenSlot? = first :: rest
+    | .inr source => source.declarations).filterMap (fun d : FlatFieldDecl => d.toTokenSlot? projectionRef) = first :: rest
 
 namespace CheckedSelectedTokenEntity
 
@@ -34,7 +36,8 @@ def referencesField (source : CheckedSelectedTokenEntity model) (field : FieldId
   | .inl source => source.referencesField field
   | .inr source => source.referencesField field
 
-def certify (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+def certify (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
+    (projectionRef : EnumerationProjectionRef := .stored) :
     Except TokenEntityGroupError (CheckedSelectedTokenEntity model) := do
   let declarations := match source with
     | .inl source => [source.targetDeclaration]
@@ -42,10 +45,10 @@ def certify (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntity
   let path := match source with
     | .inl source => source.targetDeclaration.path
     | .inr source => source.entityPath
-  if allToken : declarations.all (fun d => d.toStoredTokenSlot?.isSome) = true then
-    match owned : declarations.filterMap FlatFieldDecl.toStoredTokenSlot? with
+  if allToken : declarations.all (fun d => (d.toTokenSlot? projectionRef).isSome) = true then
+    match owned : declarations.filterMap (fun d : FlatFieldDecl => d.toTokenSlot? projectionRef) with
     | [] => throw (.expansionEmpty path)
-    | first :: rest => pure { source, first, rest, allToken, expansionOwned := owned }
+    | first :: rest => pure { source, projectionRef, first, rest, allToken, expansionOwned := owned }
   else throw (.expansionNotToken path)
 
 /-- The index selector supplies phase policy and row identity; token classification remains

@@ -14,6 +14,10 @@ inductive FieldEntityReadForm where
   | projected (category : String)
   deriving Repr, DecidableEq
 
+def FieldEntityReadForm.projectionRef : FieldEntityReadForm → EnumerationProjectionRef
+  | .stored => .stored
+  | .projected category => .category category
+
 /-- One direct field operand authored inside a `Having` expression. The origin is part of the
     operand rather than ambient filter state because `$P` and `P` are different exact operands even
     when both paths resolve to the same declaration

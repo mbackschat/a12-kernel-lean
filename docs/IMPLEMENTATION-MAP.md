@@ -398,6 +398,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Repetition-not-unique](implementation/repetition-and-paths.md#cap-repetition-not-unique)
 <a id="cap-semantic-index"></a>
 - [Semantic index](implementation/repetition-and-paths.md#cap-semantic-index)
+<a id="cap-semantic-index-token-reads"></a>
+- [Selected token reads and assignments](implementation/repetition-and-paths.md#cap-semantic-index-token-reads)
 <a id="cap-selected-semantic-index-extents"></a>
 - [Selected extents and parent binding](implementation/repetition-and-paths.md#cap-selected-semantic-index-extents)
 <a id="cap-over-repetition-findings"></a>

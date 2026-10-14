@@ -127,6 +127,21 @@ theorem checkedFieldFillList_tally_uninstantiated_zero
           refine hypothesis _ ?_
           cases head <;> simp [ValidationFillTally.combine, CellObservation.asValidationFillTally, zero]
 
+/-- Only a keyed operand's capacity depends on its runtime selection. -/
+private theorem validationFillCapacities_unindexed (operands : List (CheckedFieldFillOperand model))
+    (document : CheckedDocument model) (outer : Env)
+    (unindexed : (operands.any fun operand => match operand with
+      | .indexed _ | .keyed _ => true
+      | _ => false) = false) :
+    operands.mapM (·.validationFillCapacity? document outer) = .ok (operands.map (·.fillCapacity?)) := by
+  induction operands with
+  | nil => rfl
+  | cons operand rest ih =>
+      simp only [List.any_cons, Bool.or_eq_false_iff] at unindexed
+      cases operand <;>
+        simp_all [CheckedFieldFillOperand.validationFillCapacity?, List.mapM_cons, bind, Except.bind,
+          pure, Except.pure]
+
 /-- With retained capacity, every operator over an unfiltered, unindexed list is the shared validation evaluator on the
 same instantiated classifications plus the missing declared slots. This also preserves the four
 operators whose result ignores the tail. -/
@@ -140,9 +155,11 @@ theorem checkedFieldFillList_fill_with_declared_capacity
     list.evaluateFill? operator document outer =
       .ok (some (operator.evalValidation { tally with
         uninstantiated := capacity - (tally.filled + tally.empty + tally.unknown) })) := by
+  have capacities := validationFillCapacities_unindexed list.operands document outer unindexed
+  simp only [CheckedFieldFillList.fillCapacity?] at available
   cases operator <;>
-    simp [CheckedFieldFillList.evaluateFill?, unfiltered, unindexed, resolved, available, FieldFillQuantifier.evalValidation,
-      bind, Except.bind, pure, Except.pure]
+    simp [CheckedFieldFillList.evaluateFill?, unfiltered, unindexed, resolved, capacities, available,
+      FieldFillQuantifier.evalValidation, bind, Except.bind, pure, Except.pure]
 
 /-- A group operand's list reads the group source's own declared slots, so the capacity theorem
 above specializes to a group with the group's capacity. -/

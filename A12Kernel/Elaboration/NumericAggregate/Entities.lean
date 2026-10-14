@@ -95,28 +95,51 @@ private def resolvedPartialViewSide
   | .inr result => pure (.inr result)
 
 /-- Selected aggregates share the index decision but ask their own all-rows extent gate before
-reading targets; value-count and prefix consumers have different gates (spec/10 §5). -/
+reading targets; value-count and prefix consumers have different gates (spec/10 §5). Each read cell
+and omitted tail keeps its declaration's signedness for `Sum` (spec/10 §4). -/
+private def resolvedSelectedPartialAggregateSides
+    (source : CheckedSelectedNumberEntity model) (document : CheckedDocument model)
+    (outer : Env) (scope : ValidationRelevanceScope)
+    (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
+    Except PartialViewNumberAggregateError
+      (Sum ResolvedNumberEntityAggregateSides PartialValidationNumberAggregateResult) := do
+  let signed (declaration : FlatFieldDecl) : Bool := (declaration.toNumberField?.map (·.info.signed)).getD true
+  let sides (cells : List (FlatFieldDecl × ValueListCell .number)) (omitted : List FlatFieldDecl) :
+      ResolvedNumberEntityAggregateSides :=
+    { values := { cells := cells.map (·.2), hasUninstantiatedTail := !omitted.isEmpty, hasHaving := false }
+      sum := { cells := cells.map fun (declaration, cell) => { cell, declarationSigned := signed declaration }
+               uninstantiatedSignedness := omitted.map signed, hasHaving := false } }
+  let first := match source.source with
+    | .inl index => [index.targetDeclaration]
+    | .inr extent => extent.declarations.take 1
+  let selection ← (resolvePartialSelectedExtent source.source document scope outer read
+    (.consumer fun declaration bound reopened environment =>
+      scope.coversAggregateExtent model declaration.path bound reopened environment)
+    (requireComplete := true) (missingStarIsOmitted := true)).mapError .addressing
+  match selection with
+  | none => pure (.inr .nonRelevant)
+  | some (.unknown cause) | some (.poison cause) => pure (.inr (.evaluated (.unknown cause)))
+  | some .empty => pure (.inl (sides (first.map (·, .empty)) []))
+  | some (.value extent) =>
+      if !extent.extentRelevant then pure (.inr .nonRelevant)
+      else if extent.addresses.isEmpty then
+        let cells := match source.source with | .inl _ => first.map (·, .empty) | .inr _ => []
+        pure (.inl (sides cells extent.omitted))
+      else
+        match ← resolvePartialViewNumberCells read (fun _ cell => (observeCell .validation cell).asNumberValueListCell)
+            (extent.addresses.map fun (declaration, environment) => (environment, declaration.id)) [] with
+        | .inl cells => pure (.inl (sides ((extent.addresses.map (·.1)).zip cells) extent.omitted))
+        | .inr result => pure (.inr result)
+
 private def resolvedSelectedPartialAggregateSide
     (source : CheckedSelectedNumberEntity model) (document : CheckedDocument model)
     (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
     Except PartialViewNumberAggregateError
       (Sum (ResolvedValueListSide .number) PartialValidationNumberAggregateResult) := do
-  let selected ← (resolvePartialSelectedAddresses source.source document scope outer read
-    (fun declaration bound reopened environment =>
-      scope.coversAggregateExtent model declaration.path bound reopened environment)
-    (missingStarIsOmitted := true)).mapError .addressing
-  match selected with
-  | none => pure (.inr .nonRelevant)
-  | some (.unknown cause) | some (.poison cause) => pure (.inr (.evaluated (.unknown cause)))
-  | some .empty => pure (.inl { cells := [.empty], hasUninstantiatedTail := false, hasHaving := false })
-  | some (.value (addresses, hasTail)) =>
-      if addresses.isEmpty then
-        let cells := match source.source with | .inl _ => [.empty] | .inr _ => []
-        pure (.inl { cells, hasUninstantiatedTail := hasTail, hasHaving := false })
-      else
-        resolvedPartialViewSide read (fun _ cell => (observeCell .validation cell).asNumberValueListCell)
-          (addresses.map fun (declaration, environment) => (environment, declaration.id)) hasTail false
+  match ← resolvedSelectedPartialAggregateSides source document outer scope read with
+  | .inl sides => pure (.inl sides.values)
+  | .inr result => pure (.inr result)
 
 /-- Resolve exactly one authored slot. Plain and filtered stars reuse the general checked topology and filter owners; direct fields reuse the checked flat Number reader. -/
 def resolvedAggregateSide (checked : CheckedNumberEntityOperand model)
@@ -484,6 +507,7 @@ def evaluateAggregate (checked : CheckedNumberEntitySource model)
     operand.resolveAggregateSidesWith
       (fun source => .inl <$> source.resolvedAggregateSide document outer direct filterRead starRead)
       (fun group => .error (.unsupportedGroupOperand group.groupPath))
+      (fun selected => .error (.unsupportedGroupOperand selected.groupPath))
 
 /-- Evaluate the same full-validation fold over one caller-prepared checked scalar/repeatable view. Every slot preserves authored order, validation-phase UNKNOWN, declaration-specific missing polarity, and structural address failure. -/
 def evaluateValidationAggregateIn (checked : CheckedNumberEntitySource model)
@@ -494,6 +518,7 @@ def evaluateValidationAggregateIn (checked : CheckedNumberEntitySource model)
     operand.resolveAggregateSidesWith
       (fun source => .inl <$> source.resolvedValidationAggregateSideIn document outer direct read)
       (fun group => .error (.unsupportedGroupOperand group.groupPath))
+      (fun selected => .error (.unsupportedGroupOperand selected.groupPath))
 
 /-- Evaluate a checked ordinary Number entity-list aggregate at computation phase. Operand slots remain authored-order lazy, and each filtered star delegates to the shared one-kept-successor iterator rather than selecting its complete row set eagerly. -/
 def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
@@ -501,7 +526,7 @@ def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
     (directRead : FieldId → CheckedCell)
     (filterRead starRead : Env → FieldId → CheckedCell)
     (world : Option World := none)
-    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError (ResolvedValueListSide .number) := fun source => .error (.unsupportedGroupOperand source.groupPath))
+    (selectedRead : CheckedSelectedNumberEntity model → Except StarAddressingError ResolvedNumberEntityAggregateSides := fun source => .error (.unsupportedGroupOperand source.groupPath))
     (filterStoredText : Env → FieldId → Option String := fun _ _ => none)
     (filterNumberText : Env → FieldId → Option String := fun _ _ => none) :
     Except StarAddressingError NumericOperand :=
@@ -509,9 +534,10 @@ def evaluateComputationAggregate (checked : CheckedNumberEntitySource model)
   checked.evaluateAggregateWith op fun operand =>
     operand.resolveAggregateSidesWith
       (fun source => source.resolvedComputationAggregateSide document outer direct
-        filterRead starRead selectedRead filterStoredText filterNumberText)
+        filterRead starRead (fun selected => (·.values) <$> selectedRead selected) filterStoredText filterNumberText)
       (fun group => .inl <$> group.resolvedAggregateSides document outer id
         (fun row field => pure (observeCell .computation (starRead row field)).asNumberValueListCell))
+      (fun selected => .inl <$> selectedRead selected)
 
 /-- Evaluate validation-phase aggregate accumulation from one immutable model-certified checked document. Every operator resolves through the one capacity-aware side, so `Sum` cannot drift away from the extrema and the distinct count on the extent they share. -/
 def evaluateCheckedDocumentValidationAggregate
@@ -525,6 +551,9 @@ def evaluateCheckedDocumentValidationAggregate
       (fun group => .inl <$> group.resolvedAggregateSides document.source.toDocument outer
         CheckedAddressingError.addressing (fun row field => do
           pure (observeCell .validation (← document.addressedCell row field).cell).asNumberValueListCell))
+      -- A key selecting no row leaves the starred list absent and the aggregate fillable, as in the
+      -- slot resolver above.
+      (fun selected => .inl <$> selected.aggregateSidesIn .validation document outer (missingStarIsOmitted := true))
 
 /-- Evaluate computation-phase aggregate accumulation from the same checked document without changing filter or poison timing. -/
 def evaluateCheckedDocumentComputationAggregate
@@ -538,6 +567,7 @@ def evaluateCheckedDocumentComputationAggregate
       (fun group => .inl <$> group.resolvedAggregateSides document.source.toDocument outer
         CheckedAddressingError.addressing (fun row field => do
           pure (observeCell .computation (← document.addressedCell row field).cell).asNumberValueListCell))
+      (fun selected => .inl <$> selected.aggregateSidesIn .computation document outer)
 
 /-- Run the common partial aggregate fold after the caller selects a raw or checked-document operand resolver. The source-wide filter skip remains before every resolver call. -/
 def evaluatePartialAggregateWith
@@ -570,6 +600,7 @@ def evaluatePartialAggregate (checked : CheckedNumberEntitySource model)
       (fun source => source.resolvedPartialAggregateSide document outer scope
         (model.checkContext directRead) starRead)
       (fun group => .error (.unsupportedGroupOperand group.groupPath))
+      (fun selected => .error (.unsupportedGroupOperand selected.groupPath))
 
 /-- Evaluate partial aggregate accumulation from the immutable checked document with the same filter-skip and relevance gates. -/
 def evaluateCheckedDocumentPartialAggregate
@@ -585,6 +616,12 @@ def evaluateCheckedDocumentPartialAggregate
           CheckedAddressingError.addressing (fun row field => do
             pure (observeCell .validation (← document.addressedCell row field).cell).asNumberValueListCell)
         else pure (.inr .nonRelevant))
+      (fun selected =>
+        match CheckedNumberEntityOperand.resolvedSelectedPartialAggregateSides selected document outer scope
+            (fun row field => (fun addressed => some addressed.cell) <$> document.addressedCell row field) with
+        | .ok result => pure result
+        | .error (.addressing error) => throw error
+        | .error .silentlyUnavailable => pure (.inr .nonRelevant))
 
 /-- Evaluate partial aggregate accumulation through one call-local checked-cell projection while retaining the immutable document only for model-certified topology. -/
 def evaluatePartialViewAggregate
@@ -606,7 +643,8 @@ def evaluatePartialViewAggregate
               match cell with
               | none => throw .silentlyUnavailable
               | some cell => pure (observeCell .validation cell).asNumberValueListCell)
-          else pure (.inr .nonRelevant)) with
+          else pure (.inr .nonRelevant))
+        (fun selected => CheckedNumberEntityOperand.resolvedSelectedPartialAggregateSides selected document outer scope read) with
   | .ok result => .ok (.result result)
   | .error (.addressing error) => .error error
   | .error .silentlyUnavailable => .ok .silentlyUnavailable

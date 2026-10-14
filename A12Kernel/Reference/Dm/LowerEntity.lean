@@ -94,10 +94,11 @@ def lowerEntityOperand (model : FlatModel) (group : GroupPath) (argument : Argum
 where
   lower : Argument → Lowering SurfaceFieldEntityOperand
     | .mk (.constant "RuleGroup") none => pure (.group (.ruleGroup false))
-    | .mk (.entity { path, index := some key, category := none, filter := none }) none =>
+    | .mk (.entity { path, index := some key, category, filter := none }) none =>
+        let form := match category with | some name => .projected name | none => .stored
         if path.toFieldPath?.any (namesField model group) then
-          (.indexed ·) <$> lowerIndexedSource model group path key
-        else (.keyed ·) <$> lowerKeyedExtent model group path key
+          (.indexed · form) <$> lowerIndexedSource model group path key
+        else (.keyed · form) <$> lowerKeyedExtent model group path key
     | .mk (.entity { path, index := none, category, filter }) none => do
         if path.correlated then refuse "EntityOperand" "correlated"
         let terminalStar := path.segments.getLast?.any (·.star)
@@ -182,8 +183,8 @@ def lowerEnumerationFirstFilledSource (model : FlatModel) (group : GroupPath) (a
       if let some bindingGroup := bindingGroup? then
         checkReferenceRead model group bindingGroup reference
       match ← lowerEntityOperand model group argument bindingGroup? with
-      | .indexed source => return .indexed source
-      | .keyed source => return .keyed source
+      | .indexed source form => return .indexed source form
+      | .keyed source form => return .keyed source form
       | _ => refuse "EntityOperand" "indexed source"
     match ← lowerProjectedTokenOperand model group argument bindingGroup? with
     | .field source => pure (.field source)

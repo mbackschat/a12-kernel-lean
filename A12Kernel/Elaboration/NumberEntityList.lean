@@ -111,8 +111,11 @@ def valueListExtentRelevant (group : CheckedNumberEntityGroup model)
 
 end CheckedNumberEntityGroup
 
-/-- Homogeneous Number declarations behind one checked index selection. The complete expansion
-and signedness certificate retain the same aggregate assumptions as an ordinary group slot. -/
+/-- A declaration's own signedness, which `Sum` attaches to each of its missing values (spec/10 §4),
+as an ordinary group slot does, so a keyed group may mix signed and unsigned fields
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads),
+`m01` against `m06`). The selection certificate admits only Number declarations, so the default
+is unreachable. -/
 structure CheckedSelectedNumberEntity (model : FlatModel) where
   private mk ::
   source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)
@@ -124,7 +127,6 @@ structure CheckedSelectedNumberEntity (model : FlatModel) where
   expansionOwned : (match source with
     | .inl source => [source.targetDeclaration]
     | .inr source => source.declarations).filterMap FlatFieldDecl.toNumberField? = first :: rest
-  uniformSigned : rest.all (·.info.signed == first.info.signed) = true
 
 namespace CheckedSelectedNumberEntity
 
@@ -151,12 +153,39 @@ def sideWith (source : CheckedSelectedNumberEntity model) (phase : Phase)
   selectedValueListSideWith (missingStarIsOmitted := missingStarIsOmitted) source.source phase document outer direct stored read column
     (fun _ value => pure value.asNumberValueListCell)
 
+private def declarationSigned (declaration : FlatFieldDecl) : Bool :=
+  (declaration.toNumberField?.map (·.info.signed)).getD true
+
+/-- The selected side with `Sum`'s per-declaration missing directions, as the ordinary group slot
+builds them. -/
+def aggregateSidesWith (source : CheckedSelectedNumberEntity model) (phase : Phase)
+    (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
+    (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
+    (column : SemanticIndexColumnReader) (missingStarIsOmitted : Bool := false) :
+    Except CheckedAddressingError ResolvedNumberEntityAggregateSides := do
+  let selected ← selectedValueListCellsWith (missingStarIsOmitted := missingStarIsOmitted) source.source phase
+    document outer direct stored read column (fun _ value => pure value.asNumberValueListCell)
+  pure {
+    values := selected.side
+    sum := {
+      cells := (selected.side.cells.zip selected.declarations).map fun (cell, declaration) =>
+        { cell, declarationSigned := declarationSigned declaration }
+      uninstantiatedSignedness := selected.omitted.map declarationSigned
+      hasHaving := false } }
+
 def sideIn (source : CheckedSelectedNumberEntity model) (phase : Phase)
     (document : CheckedDocument model) (outer : Env) (missingStarIsOmitted : Bool := false) :
     Except CheckedAddressingError (ResolvedValueListSide .number) :=
   source.sideWith (missingStarIsOmitted := missingStarIsOmitted) phase document.source.toDocument outer (document.computationContextAt outer).read
     (document.computationContextAt outer).storedText document.computationFillContext.read
     (document.resolveSemanticIndexColumnWith document.read)
+
+def aggregateSidesIn (source : CheckedSelectedNumberEntity model) (phase : Phase)
+    (document : CheckedDocument model) (outer : Env) (missingStarIsOmitted : Bool := false) :
+    Except CheckedAddressingError ResolvedNumberEntityAggregateSides :=
+  source.aggregateSidesWith (missingStarIsOmitted := missingStarIsOmitted) phase document.source.toDocument outer
+    (document.computationContextAt outer).read (document.computationContextAt outer).storedText
+    document.computationFillContext.read (document.resolveSemanticIndexColumnWith document.read)
 
 end CheckedSelectedNumberEntity
 
@@ -317,8 +346,6 @@ inductive NumberEntityElabError where
       declared at an empty repeatable group; the shared shape refuses an explicit empty starred
       group first, as `MVK_GROUP_IS_EMPTY`. That spelling is unmeasured, so no class is claimed. -/
   | groupExpansionEmpty (path : List String)
-  /-- A selected group whose declarations disagree on signedness. The selected carrier still requires one sign; ordinary group aggregates retain it per cell. -/
-  | groupExpansionMixedSign (path : List String)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -420,7 +447,7 @@ def aggregateDiagnostic? (op : NumericAggregateOp) :
       -- code is a **first-operand** class only.
       | .distinctCount => some .numberAndNonNumber
       | .sum => if sumRefuseKind actual then some .noNumber else none
-  | .star _ | .groupExpansionEmpty _ | .groupExpansionMixedSign _
+  | .star _ | .groupExpansionEmpty _
   | .incoherentCore => none
 
 end NumberEntityElabError
@@ -474,9 +501,7 @@ private def certifySelectedNumberEntity (model : FlatModel)
     match hFields : declarations.filterMap FlatFieldDecl.toNumberField? with
     | [] => throw (.groupExpansionEmpty path)
     | first :: rest =>
-        if hSigned : rest.all (·.info.signed == first.info.signed) = true then
-          pure (.selected { source, first, rest, allNumber := hAll, expansionOwned := hFields, uniformSigned := hSigned })
-        else throw (.groupExpansionMixedSign path)
+        pure (.selected { source, first, rest, allNumber := hAll, expansionOwned := hFields })
   else
     match source with
     | .inl s => throw (.fieldKindMismatch s.targetDeclaration.path s.targetDeclaration.policy.kind.surfaceKind)
@@ -487,8 +512,8 @@ private def certifySelectedNumberEntity (model : FlatModel)
 private def certifyNumberEntityOperand (model : FlatModel)
     (declaringGroup bindingGroup : GroupPath) : ResolvedFieldEntityOperand model →
       Except NumberEntityElabError (CheckedNumberEntityOperand model)
-  | .indexed source => certifySelectedNumberEntity model (.inl source)
-  | .keyed source => certifySelectedNumberEntity model (.inr source)
+  | .indexed source _ => certifySelectedNumberEntity model (.inl source)
+  | .keyed source _ => certifySelectedNumberEntity model (.inr source)
   | .field declaration _ =>
       match hField : declaration.toNumberField? with
       | none => throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)

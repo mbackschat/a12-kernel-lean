@@ -37,7 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Ten corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Eleven corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+<a id="spec-2026-10-14-07"></a>
+### SPEC-2026-10-14-07 — an undecided keyed selection leaves `NotAllFieldsFilled` silent
+
+- `status`: pending
+- `canonical`: [spec/08 §4](../spec/08-paths-and-references.md#4-rows-are-addressed-by-semantic-key-never-by-position-).
+- `delta`: Over a keyed lower star or a keyed fixed group, a duplicated key leaves `NotAllFieldsFilled` silent, as it leaves `NoFieldFilled`: the undecided selection has no declared slot left to count as missing. A key naming no row fires it with OMISSION.
+- `basis`: [semantic-index checkpoint](sources/model-structure-and-declaration-probes.md#src-semantic-index-reads), rule `q04` over a keyed star and `v05` over a keyed fixed group, each on its duplicate, unmatched and matched documents, at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile the three documents of both carriers. Do not claim whether the silent verdict is UNKNOWN or not-fired, which no row separates, or the other negative fill quantifiers, which no row measured under a duplicate key.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-06"></a>
 ### SPEC-2026-10-14-06 — leaves beside a key join keep their ordinary meaning at the row that binds them, and String and Date targets join

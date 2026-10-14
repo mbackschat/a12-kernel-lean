@@ -40,7 +40,7 @@ structure CheckedAddressedEnumerationFirstFilledComputation
 /-- Check the target before the shared first-filled source, then retain whole-domain compatibility and target exclusion as certificates. -/
 def checkAddressedEnumerationFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceEnumerationFirstFilledSource) :
+    (authored : SurfaceEnumerationFirstFilledSource) (arity : EntityListArity := .manyRequired) :
     Except AddressedEnumerationFirstFilledComputationElabError
       (CheckedAddressedEnumerationFirstFilledComputation model) := do
   let target ← checkAddressedEnumerationTarget model declaringGroup targetField
@@ -48,7 +48,7 @@ def checkAddressedEnumerationFirstFilledComputation
   -- The declaring group, not the target, places a refusal here; no row measures this carrier's
   -- placement ([SG9](../../docs/gaps/paths-and-groups.md)).
   let source ← elaborateEnumerationFirstFilledSource model declaringGroup
-      target.declaration.repeatableScope authored declaringGroup target.declaration.groupPath
+      target.declaration.repeatableScope authored declaringGroup target.declaration.groupPath arity
     |>.mapError .source
   if hReference : source.referencesWith target.field (·.forbidsTarget target.field) = true then
     throw (.targetSelfReference target.field)

@@ -119,9 +119,50 @@ def computationSlotsIn (source : CheckedKeyedEntityExtent model) (context : Scal
 
 end CheckedKeyedEntityExtent
 
+/-- A selected side with the declaration behind each cell and each omitted tail, for consumers
+whose result depends on the declaration a missing value belongs to, such as `Sum`'s signedness
+(spec/10 §4). `declarations` is aligned with `side.cells`. -/
+structure SelectedValueListCells (kind : ValueListKind) where
+  side : ResolvedValueListSide kind
+  declarations : List FlatFieldDecl
+  omitted : List FlatFieldDecl
+
 /-- Selection owns phase policy, row identity and omitted extents (spec/08 §4.1); each value-list
 consumer supplies its declaration-aware cell projection and absent-star policy. Products and list
 quantifiers retain omission on an absent selected star (spec/07 §4 and spec/08 §4.1). -/
+def selectedValueListCellsWith {kind : ValueListKind}
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
+    (phase : Phase) (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
+    (stored : FieldId → Option String) (read : Env → FieldId → CheckedCell)
+    (column : SemanticIndexColumnReader)
+    (classify : FlatFieldDecl → CellObservation → Except CheckedAddressingError (ValueListCell kind))
+    (missingStarIsOmitted : Bool := false) :
+    Except CheckedAddressingError (SelectedValueListCells kind) := do
+  match source with
+  | .inl selected =>
+      let value ← selected.observeColumnWith phase column outer direct stored
+      pure { side := { cells := [← classify selected.targetDeclaration value], hasUninstantiatedTail := false, hasHaving := false }
+             declarations := [selected.targetDeclaration], omitted := [] }
+  | .inr selected =>
+      match ← selected.selectWith phase column outer direct stored with
+      | .empty =>
+          let omitted := match selected.target with
+            | .group _ => true | .star _ | .starredGroup _ => missingStarIsOmitted
+          pure { side := { cells := [], hasUninstantiatedTail := omitted, hasHaving := false }
+                 declarations := [], omitted := if omitted then selected.declarations else [] }
+      | .unknown cause | .poison cause =>
+          pure { side := { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
+                 declarations := selected.declarations.take 1, omitted := [] }
+      | .value environment =>
+          let rows ← selected.rows document environment |>.mapError .addressing
+          let cells ← rows.flatMapM fun (declaration, environments, _) =>
+            environments.mapM fun row => do
+              pure (declaration, ← classify declaration (observeCell phase (read row declaration.id)))
+          let hasEmptyPrefix ← model.groupOperandEmptyPrefix document environment
+            selected.boundLevelCount (selected.declarations.map (·.repeatableScope)) |>.mapError .addressing
+          pure { side := { cells := cells.map (·.2), hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false, hasEmptyPrefix }
+                 declarations := cells.map (·.1), omitted := (rows.filter (·.2.2)).map (·.1) }
+
 def selectedValueListSideWith {kind : ValueListKind}
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
     (phase : Phase) (document : Document) (outer : Env) (direct : FieldId → CheckedCell)
@@ -129,26 +170,8 @@ def selectedValueListSideWith {kind : ValueListKind}
     (column : SemanticIndexColumnReader)
     (classify : FlatFieldDecl → CellObservation → Except CheckedAddressingError (ValueListCell kind))
     (missingStarIsOmitted : Bool := false) :
-    Except CheckedAddressingError (ResolvedValueListSide kind) := do
-  match source with
-  | .inl selected =>
-      let value ← selected.observeColumnWith phase column outer direct stored
-      pure { cells := [← classify selected.targetDeclaration value], hasUninstantiatedTail := false, hasHaving := false }
-  | .inr selected =>
-      match ← selected.selectWith phase column outer direct stored with
-      | .empty =>
-          pure { cells := [], hasUninstantiatedTail := match selected.target with
-                   | .group _ => true | .star _ | .starredGroup _ => missingStarIsOmitted
-                 hasHaving := false }
-      | .unknown cause | .poison cause =>
-          pure { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
-      | .value environment =>
-          let rows ← selected.rows document environment |>.mapError .addressing
-          let cells ← rows.flatMapM fun (declaration, environments, _) =>
-            environments.mapM fun row => classify declaration (observeCell phase (read row declaration.id))
-          let hasEmptyPrefix ← model.groupOperandEmptyPrefix document environment
-            selected.boundLevelCount (selected.declarations.map (·.repeatableScope)) |>.mapError .addressing
-          pure { cells, hasUninstantiatedTail := rows.any (·.2.2), hasHaving := false, hasEmptyPrefix }
+    Except CheckedAddressingError (ResolvedValueListSide kind) :=
+  (·.side) <$> selectedValueListCellsWith source phase document outer direct stored read column classify missingStarIsOmitted
 
 /-- Bind the innermost declared index before checking the remaining unbound extent. A group
 without its own star may retain only nonrepeatable steps below the selected level (`spec/08` §4). -/

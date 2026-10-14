@@ -506,8 +506,8 @@ private def resolvedFieldPointers {model : FlatModel} (field : FieldId) (environ
 private def entityOperandPointers (environment : Env) (inputs : Option MessageReferenceInputs) :
     ResolvedFieldEntityOperand model → Except ReferenceProjectionError (List MessagePointer)
     | .field declaration _ => (concreteFieldPointer declaration environment).map ([·])
-    | .indexed source => source.referencePointers environment inputs
-    | .keyed source => source.referencePointers environment inputs
+    | .indexed source _ => source.referencePointers environment inputs
+    | .keyed source _ => source.referencePointers environment inputs
     | .star source _ => (starFieldPointer source environment).map ([·])
     | .starHaving .. => throw .filteredStarOperand
     | .group reference => fixedGroupPointers model reference environment
@@ -570,7 +570,7 @@ private def tokenComparisonPointers (operand : CheckedTokenComparisonOperand mod
   match operand with
   | .literal _ => pure []
   | .field source => (concreteFieldPointer source.declaration environment).map ([·])
-  | .firstFilled source _ => (·.flatten) <$> source.operands.mapM
+  | .firstFilled source _ | .indexed source => (·.flatten) <$> source.operands.mapM
       (fun operand => operand.referencePointers environment inputs)
 
 /-- The complete ordered atom family. Every constructor is classified, so the only refusals reaching a caller from here are an unsupported sieve shape and a filtered star; there is no catch-all, and a new atom must state its own projection.

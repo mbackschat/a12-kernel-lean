@@ -17,8 +17,8 @@ namespace A12Kernel
 /-- One direct, index-selected, or optionally filtered starred Enumeration/category source in an Enumeration-target `FirstFilledValue`. -/
 inductive SurfaceEnumerationFirstFilledOperand where
   | field (operand : SurfaceTextFieldOperand)
-  | indexed (source : SurfaceSemanticIndex)
-  | keyed (source : SurfaceKeyedEntityExtent)
+  | indexed (source : SurfaceSemanticIndex) (form : FieldEntityReadForm)
+  | keyed (source : SurfaceKeyedEntityExtent) (form : FieldEntityReadForm)
   | star (path : SurfaceStarFieldPath)
       (projectionRef : EnumerationProjectionRef := .stored)
       (having : Option SurfaceCorrelatedHaving := none)
@@ -35,8 +35,8 @@ namespace SurfaceEnumerationFirstFilledOperand
 /-- Lower one slot to the shared entity-list surface, retaining the reading form so the shared repeated-operand gate keeps a stored read and a category projection of one field apart. -/
 def toFieldEntityOperand : SurfaceEnumerationFirstFilledOperand →
     SurfaceFieldEntityOperand
-  | .indexed source => .indexed source
-  | .keyed source => .keyed source
+  | .indexed source form => .indexed source form
+  | .keyed source form => .keyed source form
   | .field (.direct path) => .field path .stored
   | .field (.category path category) => .field path (.projected category)
   | .star path projection none => .star path (match projection with
@@ -179,7 +179,9 @@ structure CheckedEnumerationFirstFilledSource (model : FlatModel)
   first : CheckedEnumerationFirstFilledOperand model scope
   rest : List (CheckedEnumerationFirstFilledOperand model scope)
   modelWellFormed : model.validate.isOk = true
-  requiredMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true
+  /-- `soleAllowed` only for a plain keyed scalar read lowered as a one-operand scan. -/
+  arity : EntityListArity := .manyRequired
+  requiredMultiplicity : (arity.allowsSole || first.isAlreadyMany || !rest.isEmpty) = true
   uniqueDirectOperands :
     firstDuplicateDirectEnumerationFirstFilledField? (first :: rest) = none
 
@@ -311,9 +313,10 @@ private def certifyDirectEnumerationFirstFilledOperand
         (.textFieldOperandKindMismatch declaration.path actual.surfaceKind))
 
 private def certifySelectedEnumerationFirstFilledOperand
-    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
+    (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
+    (form : FieldEntityReadForm) :
     Except EnumerationFirstFilledComputationElabError (CheckedEnumerationFirstFilledOperand model scope) := do
-  let selected ← CheckedSelectedTokenEntity.certify source |>.mapError .selectedSource
+  let selected ← CheckedSelectedTokenEntity.certify source form.projectionRef |>.mapError .selectedSource
   match owned : selected.enumerationProjections? with
   | none => throw (.selectedNotEnumeration selected.path)
   | some projections => pure (.selected selected projections owned)
@@ -323,8 +326,8 @@ private def certifyEnumerationFirstFilledOperand
     ResolvedFieldEntityOperand model → SurfaceEnumerationFirstFilledOperand →
       Except EnumerationFirstFilledComputationElabError
         (CheckedEnumerationFirstFilledOperand model scope)
-  | .indexed source, .indexed _ => certifySelectedEnumerationFirstFilledOperand (.inl source)
-  | .keyed source, .keyed _ => certifySelectedEnumerationFirstFilledOperand (.inr source)
+  | .indexed source form, .indexed _ _ => certifySelectedEnumerationFirstFilledOperand (.inl source) form
+  | .keyed source form, .keyed _ _ => certifySelectedEnumerationFirstFilledOperand (.inr source) form
   | .field declaration form, .field _ =>
       certifyDirectEnumerationFirstFilledOperand model scope declaration
         (match form with
@@ -356,15 +359,15 @@ def elaborateEnumerationFirstFilledSource
     (model : FlatModel) (declaringGroup : GroupPath)
     (scope : List RepeatableLevel)
     (authored : SurfaceEnumerationFirstFilledSource) (targetGroup : GroupPath)
-    (bindingGroup : GroupPath := targetGroup) :
+    (bindingGroup : GroupPath := targetGroup) (arity : EntityListArity := .manyRequired) :
     Except EnumerationFirstFilledComputationElabError
       (CheckedEnumerationFirstFilledSource model scope) := do
   let shape ← elaborateFieldEntityShapeIn model declaringGroup scope
-      authored.toFieldEntitySource (writtenGroup := targetGroup)
+      authored.toFieldEntitySource arity (writtenGroup := targetGroup)
     |>.mapError .shape
   let first ← certifyEnumerationFirstFilledOperand declaringGroup bindingGroup scope shape.first authored.first
   let rest ← certifyEnumerationFirstFilledOperands declaringGroup bindingGroup scope shape.rest authored.rest
-  if hMultiplicity : (first.isAlreadyMany || !rest.isEmpty) = true then
+  if hMultiplicity : (arity.allowsSole || first.isAlreadyMany || !rest.isEmpty) = true then
     match hDuplicate :
         firstDuplicateDirectEnumerationFirstFilledField? (first :: rest) with
     | some _ => throw .incoherentCore
@@ -373,6 +376,7 @@ def elaborateEnumerationFirstFilledSource
           first
           rest
           modelWellFormed := shape.modelWellFormed
+          arity
           requiredMultiplicity := hMultiplicity
           uniqueDirectOperands := hDuplicate
         }
@@ -390,7 +394,7 @@ structure CheckedEnumerationFirstFilledComputationOperation
 /-- Check shape and exact Enumeration/category compatibility before runtime. -/
 def elaborateEnumerationFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (authored : SurfaceEnumerationFirstFilledSource) :
+    (authored : SurfaceEnumerationFirstFilledSource) (arity : EntityListArity := .manyRequired) :
     Except EnumerationFirstFilledComputationElabError
       (CheckedEnumerationFirstFilledComputationOperation model) := do
   let target ← elaborateEnumerationComputationTarget model targetField
@@ -398,7 +402,7 @@ def elaborateEnumerationFirstFilledComputation
   -- The target's group places a refusal, as on every measured computation carrier
   -- ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-walk-batch-reading-scope)).
   let source ← elaborateEnumerationFirstFilledSource model declaringGroup [] authored
-    target.path.dropLast
+    target.path.dropLast (arity := arity)
   if hReference : source.referencesWith target.field (·.forbidsTarget target.field) = true then
     match source.measuredTargetReadMode? target.field target.projection with
     | some .plain => throw (.targetSelfReferenceAtPlainRead target.field)

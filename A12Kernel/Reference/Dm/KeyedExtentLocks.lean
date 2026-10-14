@@ -25,14 +25,16 @@ private def dimsModel : FlatModel :=
         declaration]
       else [declaration] }
 
-private def input (key : String) (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (emptySecond : Bool := false) (sourceModel : FlatModel := model) (header : String := "1") : Option (CheckedDocument sourceModel) := do
+private def input (key : String) (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (emptySecond : Bool := false) (sourceModel : FlatModel := model) (header : String := "1")
+    (dims : String × String := ("3", "4")) : Option (CheckedDocument sourceModel) := do
   let numericIndex := (sourceModel.lookupUniqueId 1).toOption.any (fun field => field.policy.kind.surfaceKind == .number)
   let package (key : String) (weights : List String) := Lean.Json.mkObj ([
     ("Code", .str key), ("Header", .str header),
     ("Items", .arr (weights.map fun weight => Lean.Json.mkObj [
       ("Weight", .str weight), ("Quantity", .str "2")]).toArray)] ++
     if sourceModel.fields.any (·.id == 7) then
-      [("Dims", Lean.Json.mkObj [("Width", .str "3"), ("Depth", .str "4")])] else [])
+      [("Dims", Lean.Json.mkObj ([("Width", dims.1), ("Depth", dims.2)].filterMap fun (name, value) =>
+        if value.isEmpty then none else some (name, .str value)))] else [])
   let data := Lean.Json.mkObj [("Form", Lean.Json.mkObj [
     ("Key", .str key), ("Out", .str "99"),
     ("Packages", .arr #[package (if numericIndex then "1" else "P1") ["2", if bad then "bad" else "5"], package (if invalidIndex then "" else if duplicate then (if numericIndex then "1" else "P1") else (if numericIndex then "2" else "P2")) (if emptySecond then [] else ["11"])])])]
@@ -41,10 +43,11 @@ private def input (key : String) (duplicate : Bool := false) (bad : Bool := fals
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } } builtinStringPatternCompiler sourceModel).toOption
   (checkDocument prepared "en_US" input.data).toOption
 
-private def validationVerdict (expression : String) (key : String := "P1") (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (emptySecond : Bool := false) : Option Verdict := do
-  let checked ← input key duplicate bad invalidIndex emptySecond
+private def validationVerdict (expression : String) (key : String := "P1") (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (emptySecond : Bool := false)
+    (sourceModel : FlatModel := model) (dims : String × String := ("3", "4")) : Option Verdict := do
+  let checked ← input key duplicate bad invalidIndex emptySecond sourceModel (dims := dims)
   let parsed ← (parseText .english expression).toOption
-  let condition ← (lowerCondition model ["Form"] false parsed.body).toOption
+  let condition ← (lowerCondition sourceModel ["Form"] false parsed.body).toOption
   let verdict ← (condition.core.evalAddressed {
     scalar := { fields := checked.flatContext, groups := GroupPresenceContext.unavailable },
     outer := [], input := .checked checked }).toOption
@@ -199,6 +202,34 @@ example : numberFamily "Packages/Items*/Weight For Key" "P1" ["7", "2", "5", "2"
 example : numberFamily "Packages/Items*/Weight For Key" "missing" ["0", "0", "0", "0", "0"] ∧
     computation "FirstFilledValue(Packages/Items*/Weight For Key,Packages/Header For \"P1\")"
       "FieldFilled(Key)" "missing" = some "value 1" := by native_decide
+
+-- A duplicate key leaves no declared slot missing, so `NotAllFieldsFilled` cannot fire; with no
+-- matching row the declared extent is missing (q04 of the
+-- [semantic-index capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)).
+-- The Kernel shows only silence there, so the lock excludes firing rather than choosing unknown.
+example : (validationVerdict "NotAllFieldsFilled(Packages/Items*/Weight For Key)" (duplicate := true)).any
+      (fun | .fired _ => false | _ => true) = true ∧
+    validationVerdict "NotAllFieldsFilled(Packages/Items*/Weight For Key)" "missing" = some (.fired .omission) := by
+  native_decide
+
+-- The keyed fixed group behaves alike (v05 of the same capture).
+example : ["P1", "missing"].all (fun key =>
+      validationVerdict "NotAllFieldsFilled(Packages/Dims For Key)" key (sourceModel := dimsModel) (dims := ("3", "")) ==
+        some (.fired .omission)) ∧
+    (validationVerdict "NotAllFieldsFilled(Packages/Dims For Key)" (duplicate := true) (sourceModel := dimsModel)
+      (dims := ("3", ""))).any (fun | .fired _ => false | _ => true) = true := by native_decide
+
+private def mixedDims : FlatModel :=
+  { dimsModel with fields := dimsModel.fields.map fun declaration =>
+      if declaration.id == 7 then { declaration with policy := { kind := .number { scale := 0, signed := false } } }
+      else declaration }
+
+-- A keyed group may mix signedness: each missing summand takes its polarity from its own declaration,
+-- not from the first or any signed sibling (m01 against m06 of the semantic-index capture).
+example : validationVerdict "Sum(Packages/Dims For Key) > 0" (sourceModel := mixedDims) (dims := ("", "5")) =
+      some (.fired .value) ∧
+    validationVerdict "Sum(Packages/Dims For Key) > 0" (sourceModel := mixedDims) (dims := ("5", "")) =
+      some (.fired .omission) := by native_decide
 
 /-- A key selecting no package leaves the starred list absent, an open extent like an uninstantiated
 tail, so a fired comparison is OMISSION; the matched package's exhausted `Items` stays VALUE. Kernel

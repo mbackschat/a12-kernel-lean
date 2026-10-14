@@ -160,7 +160,7 @@ where
     pure (.indexedFieldPresence operator checked)
   keyedGroup (operator : GroupPresenceOperator) (argument : Argument) :
       Lowering (ValidationConditionLeaf model) := do
-    let .keyed source ← lowerEntityOperand model group argument | refuse "SemanticIndex" "group operand"
+    let .keyed source .stored ← lowerEntityOperand model group argument | refuse "SemanticIndex" "group operand"
     let checked ← elaborated "SemanticIndex"
       (elaborateKeyedEntityExtent model group source (some (model.repeatableScopeForGroupPath bound)))
     if !checked.isGroup || checked.isStarredGroup then refuse "SemanticIndex" "unstarred group operand"

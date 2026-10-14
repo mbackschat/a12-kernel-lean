@@ -322,10 +322,10 @@ private def certifyTokenEntityOperand (model : FlatModel)
       Except TokenEntityElabError (CheckedTokenEntityOperand model)
   -- The authored read form is kept: a category read certifies through its projection, which reading
   -- the field stored would silently replace.
-  | .indexed source => do
-      pure (.selected (← CheckedSelectedTokenEntity.certify (.inl source) |>.mapError .group))
-  | .keyed source => do
-      pure (.selected (← CheckedSelectedTokenEntity.certify (.inr source) |>.mapError .group))
+  | .indexed source form => do
+      pure (.selected (← CheckedSelectedTokenEntity.certify (.inl source) form.projectionRef |>.mapError .group))
+  | .keyed source form => do
+      pure (.selected (← CheckedSelectedTokenEntity.certify (.inr source) form.projectionRef |>.mapError .group))
   | .field declaration form =>
       let projectionRef : EnumerationProjectionRef := match form with
         | .stored => .stored

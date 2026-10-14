@@ -45,6 +45,7 @@ private structure Scenario where
   fixedRows : Bool := false
   stringExpressionTarget : Bool := false
   category : Bool := false
+  bandTarget : Bool := false
 
 private def input (scenario : Scenario) : Lean.Json :=
   let row (key a b : String) (children : List String) := Lean.Json.mkObj [
@@ -75,7 +76,9 @@ private def scenarioModel (enumeration : Bool) (scenario : Scenario) : FlatModel
         if field.id == 7 then { field with policy := { kind := .string }, enumeration := none } else field }
     else model
   let model := { model with fields := model.fields.map fun field =>
-    if scenario.wideTarget && (field.id == 2 || field.id == 10) then
+    if scenario.bandTarget && (field.id == 2 || field.id == 10) then
+      { field with enumeration := some { storedTokens := ["alpha", "beta"] } }
+    else if scenario.wideTarget && (field.id == 2 || field.id == 10) then
       { field with enumeration := some { storedTokens := ["A", "B", "C", "D"] } }
     else if scenario.displaySecond && field.id == 7 then
       { field with enumeration := field.enumeration.map fun specification =>
@@ -693,6 +696,60 @@ example : evaluate true "{[Rows/Body/B For Key]} + \"!\" == \"B!\"" false none
       { displaySecond := true, tokenTarget := true, stringExpressionTarget := true } = some (.inr "value !B") ∧
     (evaluate true "{[Rows/Body/B For Key] + \"!\"} == \"B!\"" false none
       { displaySecond := true }).isNone = true := by native_decide
+
+private def silent : Option (Sum Verdict String) → Bool
+  | some (.inl (.fired _)) | none => false
+  | _ => true
+
+-- A plain keyed token read compares directly on both arms; a missing or duplicated key leaves the
+-- rule silent (s01, s03 and k05 of the semantic-index capture).
+example : [false, true].all (fun enumeration =>
+    evaluate enumeration "[Rows/Body/A For Key] == \"A\"" false == some (.inl (.fired .value)) &&
+    evaluate enumeration "\"B\" != [Rows/Body/A For Key]" false == some (.inl (.fired .value)) &&
+    [({ key := "missing" } : Scenario), { secondCode := "R1" }].all fun scenario =>
+      silent (evaluate enumeration "[Rows/Body/A For Key] == \"A\"" false none scenario)) = true := by native_decide
+
+-- A keyed read assigned to a fixed Enumeration target clears it on a missing, duplicated or invalid
+-- key, as the one-operand scan does (p05 of the semantic-index capture).
+example : evaluate true "[Rows/Body/A For Key]" true none { tokenTarget := true } = some (.inr "value A") ∧
+    [({ key := "missing" } : Scenario), { secondCode := "R1" }, { firstA := "bad" }].all (fun scenario =>
+      evaluate true "[Rows/Body/A For Key]" true none { scenario with tokenTarget := true } ==
+        some (.inr "cleared")) = true := by native_decide
+
+-- A keyed read reaches a repeatable Enumeration target row by row, and a category, on a keyed column
+-- or a keyed star, projects into a target declaring the category's tokens (e1–e4 and v03 of the
+-- semantic-index capture).
+example : evaluate true "[Rows/Body/A For Key]" true none { tokenTarget := true, rowTarget := true } =
+      some (.inr "value A,value A") ∧
+    evaluate true "[Rows/Body/A ->Kind For Key]" true none
+      { category := true, bandTarget := true, tokenTarget := true } = some (.inr "value alpha") ∧
+    [("Rows/Body/A ->Kind For Key", ({ firstA := "B" } : Scenario), "value beta"),
+      ("Rows/Body/A ->Kind For Key", { firstA := "B", key := "missing" }, "value alpha"),
+      ("Rows/Children*/Value ->Kind For Key", { children := ["", "B"] }, "value beta"),
+      ("Rows/Children*/Value ->Kind For Key", { key := "missing" }, "value alpha")].all
+      (fun (operand, scenario, result) =>
+        evaluate true ("FirstFilledValue(" ++ operand ++ ", Ref ->Kind)") true none
+          { scenario with category := true, bandTarget := true, tokenTarget := true } ==
+          some (.inr result)) := by native_decide
+
+
+-- A category on a keyed first-filled operand projects the selected cell; a missing key falls through
+-- to the next operand with OMISSION, and a duplicate or invalid selection stays silent (c01, c05 and
+-- p06 of the semantic-index capture).
+example : [({} : Scenario), { key := "missing" }].all (fun scenario =>
+      evaluate true "FirstFilledValue(Rows/Body/A ->Kind For Key, Ref ->Kind)" true none
+        { scenario with category := true, tokenTarget := true, stringExpressionTarget := true } ==
+        some (.inr "value alpha")) ∧
+    evaluate true "FirstFilledValue(Rows/Body/A ->Kind For Key, Ref ->Kind) == \"alpha\"" false none
+      { category := true } = some (.inl (.fired .value)) ∧
+    evaluate true "FirstFilledValue(Rows/Body/A ->Kind For Key, Ref ->Kind) == \"alpha\"" false none
+      { category := true, key := "missing" } = some (.inl (.fired .omission)) ∧
+    [({ secondCode := "R1" } : Scenario), { firstA := "bad" }].all (fun scenario =>
+      silent (evaluate true "FirstFilledValue(Rows/Body/A ->Kind For Key, Ref ->Kind) == \"alpha\"" false none
+        { scenario with category := true }) &&
+      evaluate true "FirstFilledValue(Rows/Body/A ->Kind For Key, Ref ->Kind)" true none
+        { scenario with category := true, tokenTarget := true, stringExpressionTarget := true } ==
+        some (.inr "cleared")) = true := by native_decide
 
 private def selectedStringBindings (expression : String) : Option (List FieldId × List FieldId) := do
   let m := model false

@@ -81,6 +81,9 @@ structure PartialSelectedExtent where
   addresses : List (FlatFieldDecl × Env)
   hasUninstantiatedTail : Bool
   extentRelevant : Bool
+  /-- The declarations whose selected extent keeps an uninstantiated tail, for `Sum`'s
+  per-declaration missing direction (spec/10 §4). -/
+  omitted : List FlatFieldDecl := []
 
 /-- Consumer-specific extent judgment: list quantifiers cover declared slots, whereas counts and aggregates retain their own predicate (spec/10 §5). -/
 inductive PartialSelectedExtentCoverage where
@@ -120,7 +123,8 @@ def resolvePartialSelectedExtent
       let omitted := match source with
         | .inl _ => false
         | .inr selected => match selected.target with | .group _ => true | _ => missingStarIsOmitted
-      pure (some (.value { addresses := [], hasUninstantiatedTail := omitted, extentRelevant := true }))
+      pure (some (.value { addresses := [], hasUninstantiatedTail := omitted, extentRelevant := true
+                           omitted := if omitted then declarations else [] }))
   | some (.value environment) =>
       let declarations := match source with | .inl selected => [selected.targetDeclaration] | .inr selected => selected.declarations
       let bound := selection.indexDeclaration.repeatableScope
@@ -132,7 +136,8 @@ def resolvePartialSelectedExtent
           let rows ← selected.rows document.source.toDocument environment |>.mapError .addressing
           pure (some (.value {
             addresses := rows.flatMap fun (declaration, environments, _) => environments.map (declaration, ·)
-            hasUninstantiatedTail := rows.any (·.2.2), extentRelevant := complete }))
+            hasUninstantiatedTail := rows.any (·.2.2), extentRelevant := complete
+            omitted := (rows.filter (·.2.2)).map (·.1) }))
 
 /-- Count and aggregate consumers require complete extent before scanning; prefix consumers use
 an always-true extent predicate and retain their call-local per-cell gate. -/

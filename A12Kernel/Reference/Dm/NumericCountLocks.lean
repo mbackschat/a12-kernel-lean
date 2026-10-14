@@ -325,7 +325,7 @@ private def indexedSurface : SurfaceFieldEntitySource := {
   first := .field { base := .absolute, groups := ["Form"], field := "Anchor" }
   rest := [.indexed {
     target := { base := .absolute, groups := ["Form", "Rows"], field := "Qty" }
-    key := .literal (.number 1) }] }
+    key := .literal (.number 1) } .stored] }
 
 private def indexedQuantifierSupported (operator : FieldFillQuantifier) : Option (Bool × Bool) := do
   let world : World := { now := { epochMillis := 0 } }

@@ -215,7 +215,7 @@ private def indexedListModel : FlatModel := {
 private def indexedValue (key : Rat) (spelling : String) : SurfaceFieldEntityOperand :=
   .indexed {
     target := { base := .absolute, groups := ["Probe", "Rows"], field := "Value" }
-    key := .literal (.number key) (some spelling) }
+    key := .literal (.number key) (some spelling) } .stored
 
 private def indexListAdmitted (first : SurfaceFieldEntityOperand)
     (rest : List SurfaceFieldEntityOperand) : Bool :=
