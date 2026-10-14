@@ -319,6 +319,17 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/parallel-instance-leaves-2026-10-14/) with the static model, the runtime models, ops, observations, both requests and artifacts and `MANIFEST.sha256`.
 - `sync`: [SPEC-2026-10-14-02](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-02).
 
+<a id="src-predicate-operand-classes"></a>
+#### A condition call where an operation stands draws the token class at its keyword, after the gates of productions completed before it, measured 2026-10-14
+
+- `producer`: a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`, clean before and after; dmtool `0.13.0`, Kernel `30.8.1`; 30 `rule check` rows in two batches on a form with String `Reference`, Number `Score` and Date `Due`, error field `Score`.
+- `predicate`: a condition call as an operation's operand (`q01`–`q04`, `q07`, `q08`), an arithmetic operand (`t01`, `t02`) or a comparison side (`t04`, `t05`) draws `MVK_UNEXPECTED_TOKEN`, an unresolved name inside it included (`q02`). A rounding of text completed before it keeps `MVK_NO_NUMBER` (`q05`, `t03`, `t06`), and its Number twin draws the token class (`q06`).
+- `date-slot`: text in `YearFromDate` or `AddDays` keeps `MVK_NO_DATE` ahead of a comparison standing as an operand (`d01`), a condition call (`d05`) and a doubled connective (`d03`, `d06`, `d09`); the Date twins draw the token class (`d02`, `d04`), and the defect-free controls draw `MVK_NO_DATE` (`d07`, `d08`).
+- `local`: [ordered admission](../../A12Kernel/Reference/Dm/HavingAdmission.lean) reads a condition call in an operation position as the token defect after the operands before it, and the [parse-defect producer](../../A12Kernel/Reference/Dm/ParseDefectClass.lean) checks each call the parse closed before its defect; [locks](../../A12Kernel/Reference/Dm/ParseDefectClassLocks.lean) replay every row.
+- `limit`: English, one fixed group, the rounding, `YearFromDate` and `AddDays` gates. A completed call inside a filter body before a defect is checked here outside the filter, an unmeasured extension.
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/predicate-operand-classes-2026-10-14/) with the model, both ops and observation files and `MANIFEST.sha256`.
+- `sync`: [SPEC-2026-10-14-05](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-05).
+
 <a id="src-empty-enumeration-token"></a>
 #### An Enumeration declaring an empty stored token loads, admits that token as a value-list literal, and never holds it in a cell, measured 2026-10-14
 

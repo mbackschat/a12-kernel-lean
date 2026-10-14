@@ -89,6 +89,20 @@ def Language.ofCode? : String → Option Language
   | "de_DE" => some .german
   | _ => none
 
+/-- The calls the grammar reads as whole conditions, never as an operation: the field-list, group-list,
+value-list, consistency, validity and repetition conditions (`einfacheBedingung`). Written in an
+operation's position, one is a token defect at its own position (spec/12 §12.3). -/
+def conditionCallIds : List String := [
+  "FieldFilled", "FieldNotFilled", "AtLeastOneFieldFilled", "MoreThanOneFieldFilled", "NoFieldFilled",
+  "AllFieldsFilled", "FieldsNotCollectivelyFilled", "NotAllFieldsFilled", "NotExactlyOneFieldFilled",
+  "DateRangesOverlap", "FieldValuesNotUnique",
+  "GroupFilled", "GroupNotFilled", "AtLeastOneGroupFilled", "NoGroupFilled", "AllGroupsFilled",
+  "GroupsNotCollectivelyFilled", "NotAllGroupsFilled",
+  "FieldValueIncludedInValueList", "FieldValueNotIncludedInValueList",
+  "AtLeastOneFieldValueIncludedInValueList", "NoFieldValueIncludedInValueList",
+  "NotAllFieldValuesIncludedInValueList", "AtLeastOneDateRangeOverlaps", "ValueNotConsistent",
+  "Valid", "Invalid", "RepetitionNotUnique"]
+
 /-- The H-model form constructs, keywords only in a German model and with no English spelling
 (spec §12.1: 125 German spellings against 112 English ones). Each is its own id; no lowering admits
 one, so a rule naming one is refused by it rather than read as a field. -/

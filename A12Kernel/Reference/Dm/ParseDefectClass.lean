@@ -1,5 +1,5 @@
 import A12Kernel.Reference.Dm.Parser
-import A12Kernel.Reference.Dm.LowerCore
+import A12Kernel.Reference.Dm.HavingAdmission
 
 /-! # The first class a text with a parse defect raises
 
@@ -45,11 +45,11 @@ def openPathClass? (model : FlatModel) (group : GroupPath) (path : Path) :
     fieldPathClass? model group step
 
 /-- The class a text with a parse defect raises first: the class of the first completed event that
-resolves to nothing, otherwise the defect's own class. `none` for a text that parses. Only
-`MVK_INVALID_ENTITY` and `MVK_INVALID_ROOT_GROUP` ahead of a token defect are measured; another
-resolution class in that position is this account's extension. A completed operator gate raised ahead
-of the defect is not modelled here and is not claimed. A lexer defect is reported with no event before
-it, because the lexer reads the whole text first; where the Kernel's lexer stops is unmeasured. -/
+resolves to nothing or whose operation gate refuses, otherwise the defect's own class. `none` for a text
+that parses. `MVK_INVALID_ENTITY` and `MVK_INVALID_ROOT_GROUP` and a date operation's `MVK_NO_DATE`
+ahead of a token defect are measured (predicate-operand capture, 2026-10-14); another class in that
+position is this account's extension. A lexer defect is reported with no event before it, because the
+lexer reads the whole text first; where the Kernel's lexer stops is unmeasured. -/
 def parseDefectClass? (model : FlatModel) (group : GroupPath) (language : Language) (text : String) :
     Option String :=
   match lex language text with
@@ -61,6 +61,7 @@ def parseDefectClass? (model : FlatModel) (group : GroupPath) (language : Langua
           let eventClass : ParseEvent → Option KernelStaticDiagnostic
             | .reference path => referenceResolutionClass? model group path
             | .openPath path => openPathClass? model group path
+            | .closedCall call => operationCallClass? model group call
           match completed.toList.findSome? eventClass with
           | some diagnostic => some diagnostic.kernelCode
           | none => some error.errorClass.code

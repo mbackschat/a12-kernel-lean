@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.HavingListAdmission
+import A12Kernel.Reference.Dm.OrderedAdmissionActivation
 import A12Kernel.Reference.Dm.HavingOperationShape
 import A12Kernel.Reference.Dm.FilterReferenceInventory
 import A12Kernel.Elaboration.NumericComputation.OperationTyping
@@ -6,79 +7,6 @@ import A12Kernel.Elaboration.TableEnumeration
 
 namespace A12Kernel.Dm
 open HavingListAdmission
-
-mutual
-/-- Traverse authored references, including keys, scopes and range endpoints, without resolving
-or lowering them. Admission activation must not itself reorder read failures (spec/07 §3). -/
-private partial def Expr.anyReference (test : Reference → Bool) (callTest : String → Bool := fun _ => false) : Expr → Bool
-  | .entity reference | .value reference => reference.anyReference test callTest
-  | .arith _ left right | .compare _ left right => left.anyReference test callTest || right.anyReference test callTest
-  | .braces body | .parens body => body.anyReference test callTest
-  | .logic _ parts => parts.any (Expr.anyReference test callTest)
-  | .call name arguments listed scope =>
-      callTest name ||
-      arguments.any (Argument.anyReference test callTest) || (listed.getD []).any (Argument.anyReference test callTest) ||
-        scope.any (Reference.anyReference test callTest)
-  | _ => false
-
-private partial def Reference.anyReference (test : Reference → Bool) (callTest : String → Bool := fun _ => false) (reference : Reference) : Bool :=
-  test reference || reference.filter.any (Expr.anyReference test callTest) || match reference.index with
-    | some (.reference key) => key.anyReference test callTest
-    | _ => false
-
-private partial def Argument.anyReference (test : Reference → Bool) (callTest : String → Bool := fun _ => false) : Argument → Bool
-  | .mk expression rangeEnd => expression.anyReference test callTest || rangeEnd.any (Expr.anyReference test callTest)
-end
-
-/-- Activate ordered admission across an entire filter-containing expression, including its
-preceding operands and separate lists (spec/07 §3). -/
-def Expr.hasHaving : Expr → Bool := Expr.anyReference (·.filter.isSome)
-def Reference.hasHaving : Reference → Bool := Reference.anyReference (·.filter.isSome)
-def Argument.hasHaving : Argument → Bool := Argument.anyReference (·.filter.isSome)
-
-/-- An operation call (`Abs`, `Min`, `Max`, a rounding or a numeric field form) one of whose
-operands is a comparison or a connective, which the grammar does not admit there. -/
-private partial def Expr.hasConditionAsOperationOperand : Expr → Bool
-  | .call id arguments listed _ =>
-      let operation := id == "Abs" || id == "Min" || id == "Max" ||
-        (roundingMode? id).isSome || isNumericFieldForm id
-      let condition : Expr → Bool
-        | .compare .. | .logic .. => true
-        | _ => false
-      let nested (argument : Argument) : Bool := match argument with
-        | .mk operand rangeEnd => operand.hasConditionAsOperationOperand ||
-            (rangeEnd.map (·.hasConditionAsOperationOperand)).getD false
-      let operandIsCondition (argument : Argument) : Bool := match argument with
-        | .mk operand _ => condition operand
-      (operation && arguments.any operandIsCondition) || arguments.any nested || (listed.getD []).any nested
-  | .compare _ left right | .arith _ left right =>
-      left.hasConditionAsOperationOperand || right.hasConditionAsOperationOperand
-  | .logic _ parts => parts.any (·.hasConditionAsOperationOperand)
-  | .braces body | .parens body => body.hasConditionAsOperationOperand
-  | _ => false
-
-/-- Authored scalar slots, lists and repetition operands need their parse/read diagnostics before
-lowering loses their shape (spec/07 §5–6, spec/08 CurrentRepetition cascade; KF532). -/
-def Expr.needsOrderedAdmission (expression : Expr) : Bool :=
-  expression.hasHaving || expression.hasConditionAsOperationOperand || expression.anyReference (fun _ => false)
-    (fun name => name == "Date" || name == "Time" || name == "CurrentRepetition" ||
-      name == "RepetitionNotUnique" || name == "FirstFilledValue" ||
-      (rawScalarOperator? name).isSome)
-
-/-- Retain projected target identity across all authored fragments before alternative lowering
-(spec/09 §6, self-read alternative-walk matrix). Parse-time admission still runs before refusal. -/
-def Expr.hasProjectedReferenceTo (expression : Expr) (model : FlatModel)
-    (group : GroupPath) (target : FieldId) : Bool :=
-  let namesTarget := fun reference : Reference =>
-    reference.path.toFieldPath?.any fun path =>
-      (model.resolveFieldDeclarationUnchecked group path).toOption.any (·.id == target)
-  expression.anyReference fun reference =>
-    ((reference.index.isSome || reference.category.isSome) && namesTarget reference) ||
-      match reference.index with
-      | some (.reference key) => key.anyReference namesTarget
-      | _ => false
-
-private def Expr.hasIndex : Expr → Bool := Expr.anyReference (·.index.isSome)
 
 private def checkedHaving (result : Except CorrelationElabError α)
     (insideSemanticIndexKey : Bool := false) : Lowering α :=
@@ -625,6 +553,9 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
       checkRawValueCount model reads expected
       pure (.number (.field 0), state)
   | .call id arguments none none => do
+      -- A condition call is no operation, so here it is the token defect at its own position, its
+      -- reads unchecked (`Abs(FieldFilled(NoSuch)) > 0` draws the token class; spec/12 §12.3).
+      if conditionCallIds.contains id then refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
       if id == "DateRange" then
         let (reads, state) ← admitFieldList model group bindingGroup inFilter insideSemanticIndexKey admission arguments
         return (← rawDateRangeConstructorType (reads.map fun read => (read.reference, read.entity)), state)
@@ -736,12 +667,25 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
   | .compare _ left _ => do
       discard <| admitNumericExpression model group bindingGroup inFilter insideSemanticIndexKey admission left
       refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
+  | .call id _ (some _) _ => do
+      if conditionCallIds.contains id then refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
+      refuse "Having" "raw numeric atom"
   | .logic _ (first :: _) => do
       discard <| admitBody model group bindingGroup [] [] admission insideSemanticIndexKey inFilter first
       refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
   | _ => do refuse "Having" "raw numeric atom"
 
 end
+
+/-- The class a completed operation call's own production raises when the parse fails after it, as the
+Kernel checks each production as it completes (spec/12 §12.3): `none` for a condition call, a call that
+passes, or a refusal with no Kernel class. The call is read at `group` outside any filter. -/
+def operationCallClass? (model : FlatModel) (group : GroupPath) (call : Expr) :
+    Option KernelStaticDiagnostic :=
+  if call.isConditionCall then none else
+  match (admitNumericAtom model group group false false {} call).run' {} with
+  | .ok _ => none
+  | .error refusal => KernelStaticDiagnostic.all.find? (·.kernelCode == refusal.detail)
 
 /-- Admit constructor/filter children before lowering and whole-rule gates. Their authored
 read order precedes enclosing checks (KF532; ParserService.checkNormalRule; spec/07 §3). -/

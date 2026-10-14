@@ -1,0 +1,227 @@
+[
+ {
+  "id": "q01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q01",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(FieldFilled(Score)) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q02",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(FieldFilled(NoSuch)) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q03",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(FieldFilled(Reference)) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q04",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Max(FieldFilled(Score), 2) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q05",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(RoundUpValue(Reference, 2) + FieldFilled(Score)) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q06",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(RoundUpValue(Score, 2) + FieldFilled(Score)) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q07",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(FieldValueIncludedInValueList(Reference, \"a\")) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "q08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "q08",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(GroupFilled(/Form)) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d01",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(Year(Reference) > 1) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d02",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(Year(Due) > 1) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d03",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(Year(Reference)) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d04",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(Year(Due)) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d05",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(Year(Reference) + FieldFilled(Score)) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d06",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Year(Reference) > 1 And And FieldFilled(Score)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d07",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Year(Due) > 1 And And FieldFilled(Score)",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

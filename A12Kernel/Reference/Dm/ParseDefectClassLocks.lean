@@ -91,4 +91,53 @@ example :
     admissionClass "Abs(RoundUpValue(Score, 2)) > 0" = none := by
   native_decide
 
+/-- The first class of a whole condition on a form with String `Reference`, Number `Score` and Date
+`Due`: the parse-defect producer's for a text that does not parse, ordered admission's otherwise. -/
+private def firstClass (text : String) : Option String :=
+  let form : FlatModel :=
+    { fields := [{ id := 0, groupPath := ["Form"], name := "Reference", policy := { kind := .string } },
+        { id := 1, groupPath := ["Form"], name := "Score", policy := { kind := .number { scale := 0, signed := true } } },
+        { id := 2, groupPath := ["Form"], name := "Due",
+          policy := { kind := .temporal .date .fullDate } }] }
+  match parseDefectClass? form ["Form"] .english text with
+  | some code => some code
+  | none => match parseText .english text with
+    | .error error => some error.errorClass.code
+    | .ok parsed => match checkOrderedAdmission form ["Form"] ["Form"] parsed.body with
+      | .ok () => none
+      | .error refusal => some refusal.detail
+
+/- A condition call in an operation position is a token defect at its own position, after the checks
+of every production completed before it: a predicate as an operation's operand, inside arithmetic or
+as a comparison side, its own read unchecked (`q02`); a rounding or date operand completed first keeps
+its class (`q05`, `t03`, `t06`, `d01`, `d05`), and a date slot's gate also precedes a connective
+defect (`d03`, `d06`, `d09`) where a sound date read does not (`d04`). Rows of the predicate-operand
+capture, 2026-10-14. -/
+example :
+    firstClass "Abs(FieldFilled(Score)) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "Abs(FieldFilled(NoSuch)) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "Max(FieldFilled(Score), 2) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "Abs(RoundUpValue(Reference, 2) + FieldFilled(Score)) > 0" = some "MVK_NO_NUMBER" ∧
+    firstClass "Abs(RoundUpValue(Score, 2) + FieldFilled(Score)) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "Abs(FieldValueIncludedInValueList(Reference, \"a\")) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "Abs(GroupFilled(/Form)) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "[Score] + FieldFilled(Score) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "FieldFilled(Score) + 1 > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "RoundUpValue(Reference, 2) + FieldFilled(Score) > 0" = some "MVK_NO_NUMBER" ∧
+    firstClass "FieldFilled(Score) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "[Score] > FieldFilled(Score)" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "RoundUpValue(Reference, 2) > FieldFilled(Score)" = some "MVK_NO_NUMBER" := by
+  native_decide
+
+example :
+    firstClass "Abs(YearFromDate(Reference) > 1) > 0" = some "MVK_NO_DATE" ∧
+    firstClass "Abs(YearFromDate(Due) > 1) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "YearFromDate(Reference) > 1 And And FieldFilled(Score)" = some "MVK_NO_DATE" ∧
+    firstClass "YearFromDate(Due) > 1 And And FieldFilled(Score)" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "Abs(YearFromDate(Reference) + FieldFilled(Score)) > 0" = some "MVK_NO_DATE" ∧
+    firstClass "AddDays(Reference, 1) > Today And And FieldFilled(Score)" = some "MVK_NO_DATE" ∧
+    firstClass "FieldFilled(Due) And YearFromDate(Reference) > 1 And And FieldFilled(Score)" =
+      some "MVK_NO_DATE" := by
+  native_decide
+
 end A12Kernel.Dm.ParseDefectClassLocks

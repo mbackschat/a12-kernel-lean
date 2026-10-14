@@ -1,0 +1,227 @@
+[
+ {
+  "id": "d01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d01",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(YearFromDate(Reference) > 1) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d02",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(YearFromDate(Due) > 1) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d03",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "YearFromDate(Reference) > 1 And And FieldFilled(Score)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d04",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "YearFromDate(Due) > 1 And And FieldFilled(Score)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d05",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "Abs(YearFromDate(Reference) + FieldFilled(Score)) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d06",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "AddDays(Reference, 1) > Today And And FieldFilled(Score)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d07",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "YearFromDate(Reference) > 1",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d08",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "AddDays(Reference, 1) > Today",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "d09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "d09",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "FieldFilled(Due) And YearFromDate(Reference) > 1 And And FieldFilled(Score)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t01",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "[Score] + FieldFilled(Score) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t02",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "FieldFilled(Score) + 1 > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t03",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "RoundUpValue(Reference, 2) + FieldFilled(Score) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t04",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "FieldFilled(Score) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t05",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "[Score] > FieldFilled(Score)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "t06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t06",
+   "--field",
+   "/Form/Score",
+   "--condition",
+   "RoundUpValue(Reference, 2) > FieldFilled(Score)",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

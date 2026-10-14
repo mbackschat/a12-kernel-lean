@@ -37,7 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Eight corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Nine corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+<a id="spec-2026-10-14-05"></a>
+### SPEC-2026-10-14-05 — a condition call in an operation position fails at its keyword
+
+- `status`: pending
+- `canonical`: [spec/12 §12.3](../spec/12-concrete-syntax.md).
+- `delta`: A condition call where an operation stands draws `MVK_UNEXPECTED_TOKEN` at its keyword, before its own reads are checked, after the gates of productions completed before it.
+- `basis`: [predicate-operand checkpoint](sources/model-structure-and-declaration-probes.md#src-predicate-operand-classes), 30 static rows at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile the operand, arithmetic and comparison-side rows and the completed rounding and date gates. Do not claim a completed call inside a filter body, which no row measured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-04"></a>
 ### SPEC-2026-10-14-04 — an empty Enumeration token is legal, admitted as a literal, and never a cell value

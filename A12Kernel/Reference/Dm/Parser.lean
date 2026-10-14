@@ -16,10 +16,12 @@ of each check is the static-legality work's, not this reader's.
 namespace A12Kernel.Dm
 
 /-- What the parse completed that the Kernel checks as soon as it completes (spec/12 §12.3): a reference
-whose path closed, and the steps of a path still open, each step a segment the parse read up to its `/`. -/
+whose path closed, the steps of a path still open, each step a segment the parse read up to its `/`,
+and a call whose closing parenthesis the parse read. -/
 inductive ParseEvent where
   | reference (path : Path)
   | openPath (path : Path)
+  | closedCall (call : Expr)
   deriving Repr, BEq
 
 /-- The cursor over the lexemes, and beneath the failure the events completed so far, which survive a
@@ -246,6 +248,11 @@ private partial def atom : P Expr := do
   | _ => failHere .incompleteInput
 
 private partial def call (id : String) : P Expr := do
+  let closed ← callBody id
+  modifyThe (Array ParseEvent) (·.push (.closedCall closed))
+  return closed
+
+private partial def callBody (id : String) : P Expr := do
   if ← acceptSymbol ")" then return .call id [] none none
   let arguments ← argumentList
   -- datumParam uses entitySpec; digit-only names are identifiers here (KF532; grammar idName).
