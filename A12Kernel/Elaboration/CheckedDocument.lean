@@ -555,7 +555,17 @@ def readValidatedAddress (checked : CheckedDocument model) (declaration : FlatFi
     | none => throw (.incoherentRepeatableScope declaration.repeatableScope)
   match checked.checkedCells.find? fun placement => placement.address == address with
   | some placement => pure placement.cell
-  | none => pure ((checkAdmittedRawCell .empty).withOverRepetitionIf overLimit)
+  | none =>
+      -- The over-repetition finding belongs to a stored row beyond capacity. A slot of a row the
+      -- document does not instantiate, such as an unmatched side's key-only row, reads clean empty
+      -- unless an enclosing row is itself beyond capacity.
+      let rowAbsent := match declaration.repeatableScope.getLast? with
+        | some level => !checked.source.instantiatedRows.contains { group := level, path := address.path }
+        | none => false
+      let enclosingOverLimit := model.addressOverLimit? declaration.repeatableScope.dropLast
+        address.path.dropLast == some true
+      pure ((checkAdmittedRawCell .empty).withOverRepetitionIf
+        (overLimit && (!rowAbsent || enclosingOverLimit)))
 
 /-- Query one model-legal instantiated address. Absence of a cell is empty, but absence of its
 physical ancestor rows is an addressing failure. -/

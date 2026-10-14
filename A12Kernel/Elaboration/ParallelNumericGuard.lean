@@ -44,8 +44,10 @@ inductive ParallelNumericGuardPart (model : FlatModel) (joined : List GroupPath)
   ([joined-carrier checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-joined-carrier-admission)). -/
   | ordinary (condition : CheckedComputationCondition model)
   /-- Certified against the model at a row of the joined partner `group`, as a leaf keyed by a
-  partner field is; it evaluates at the partner row the target's key matches, or at a key-only row
-  when none does (joined-carrier-limits capture, `Cp03`, 2026-10-14). -/
+  partner field is; it evaluates at the partner row the target's key matches (joined-carrier-limits
+  capture, `Cp03`, 2026-10-14). When none does it evaluates at an uninstantiated row of the group,
+  whose fields read empty; the capture's row without a partner clears under that account and under
+  one where the partner decides nothing, so it does not separate them. -/
   | partner (group : GroupPath) (condition : CheckedComputationCondition model)
 
 /-- The reads a joined guard evaluates over: the joined row's cells by field identity, the document

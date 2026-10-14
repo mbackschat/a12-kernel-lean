@@ -7,7 +7,7 @@ import A12Kernel.Reference.Dm.ParallelValidation
 
 Reader-to-evaluator locks for the leaves a key join binds to one side's row: a key read off the
 partner row, in a joined computation guard and in a parallel rule; a key read off an error side
-that has no row for the joined key, which reads as a row holding only its key; and a distinct count
+that has no row for the joined key, whose non-key fields read empty; and a distinct count
 or a uniqueness test over one field of each side. The model and documents are reductions of the
 retained Kernel 30.8.1 capture `evidence/kernel-30.8.1/captures/joined-carrier-limits-2026-10-14/`;
 every expectation is the capture's own change or message.
@@ -31,8 +31,8 @@ private def text : Json := Json.mkObj [("type", "StringType")]
 private def number : Json :=
   Json.mkObj [("type", "NumberType"), ("NumberType", Json.mkObj [("maxFractionalDigits", toJson 0)])]
 
-private def keyed (name key : String) (fields : List Json) : Json :=
-  element "Group" s!"/Staffing/{name}" name [("repeatability", toJson 50),
+private def keyed (capacity : Nat) (name key : String) (fields : List Json) : Json :=
+  element "Group" s!"/Staffing/{name}" name [("repeatability", toJson capacity),
     ("elements", Json.arr (field name key text :: fields).toArray), ("indexFieldName", .str key)]
 
 private def message : Json := Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]]
@@ -58,15 +58,15 @@ private def rules : List Json := [
     "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And FieldNotFilled(/Staffing/Ledger/Amount For Supply/Note)",
   rule "d01b" "Note" "NumberOfDifferentValues(Supply/Note, Demand/Label) > 1"]
 
-private def dm? : Option DmModel :=
+private def dmWith (capacity : Nat) : Option DmModel :=
   (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     element "Group" "/Staffing" "Staffing" [("repeatability", toJson 1), ("elements", Json.arr (#[
-      keyed "Demand" "Department" [field "Demand" "Base" number, field "Demand" "Label" text],
-      keyed "Supply" "Department" [field "Supply" "Headcount" number, field "Supply" "Note" text,
+      keyed capacity "Demand" "Department" [field "Demand" "Base" number, field "Demand" "Label" text],
+      keyed capacity "Supply" "Department" [field "Supply" "Headcount" number, field "Supply" "Note" text,
         field "Supply" "Out12" number, field "Supply" "Out13" number,
         computation "Out12" "GroupFilled(/Staffing/Ledger For /Staffing/Demand/Label)",
         computation "Out13" "GroupFilled(/Staffing/Ledger For Note)"],
-      keyed "Ledger" "Code" [field "Ledger" "Amount" number]] ++ rules.toArray))]])])])])).toOption
+      keyed capacity "Ledger" "Code" [field "Ledger" "Amount" number]] ++ rules.toArray))]])])])])).toOption
 
 private def world : World := { now := { epochMillis := 1791972000000 }, modelZoneRules := ModelZone.concreteRules }
 
@@ -77,8 +77,8 @@ private def staffing (groups : List (String × List (List (String × String)))) 
   Json.mkObj [("Staffing", Json.mkObj (groups.map fun (name, rows) => (name, Json.arr (rows.map row).toArray)))]
 
 /-- Every reported target change, as `pointer outcome`. -/
-private def computed (document : Json) : Option (List String) := do
-  let dm ← dm?
+private def computed (document : Json) (capacity : Nat := 50) : Option (List String) := do
+  let dm ← dmWith capacity
   let input ← (readDocument dm document).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
@@ -88,8 +88,8 @@ private def computed (document : Json) : Option (List String) := do
   pure (outcomes.map fun outcome => s!"{outcome.pointer} {outcome.outcome}")
 
 /-- Each rule's firings with their sorted references, as `code pointer type referenced`. -/
-private def fired (document : Json) : Option (List String) := do
-  let dm ← dm?
+private def fired (document : Json) (capacity : Nat := 50) : Option (List String) := do
+  let dm ← dmWith capacity
   let input ← (readDocument dm document).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
@@ -117,7 +117,7 @@ private def noledger : Json := staffing [
   ("Supply", [[("Department", "A"), ("Out12", "999"), ("Out13", "999"), ("Headcount", "1"), ("Note", "x")]])]
 
 -- The partner row's label keys the ledger: `LA` and `k1` name a row, `zz` none, and row E has no
--- partner, whose key-only row names none. The target row's own key agrees on this document.
+-- partner, whose empty label names none. The target row's own key agrees on this document.
 example : computed staff = some [
     "Staffing/Supply/Out12 value 11", "Staffing/Supply[2]/Out12 cleared", "Staffing/Supply[3]/Out12 value 8",
     "Staffing/Supply[4]/Out12 cleared", "Staffing/Supply/Out13 value 11", "Staffing/Supply[2]/Out13 cleared",
@@ -126,10 +126,10 @@ example : computed staff = some [
 example : computed noledger = some ["Staffing/Supply/Out12 cleared", "Staffing/Supply/Out13 cleared"] := by
   native_decide
 
--- Demand row D has no Supply row: the error side reads as a row holding only its key, so its note is
+-- Demand row D has no Supply row: the error side's non-key fields read empty, so its note is
 -- empty, names no ledger row and is reported at the Kernel's key-only address. A distinct count and a
 -- uniqueness test take one value from each side; an empty one makes `< 2` an omission and leaves `> 1`
--- unreported, on row B and on row E, whose partner is key-only.
+-- unreported, on row B and on row E, which has no partner.
 example : fired staff = some [
     "p01 Staffing/Supply/Headcount A12Kernel.Polarity.value [Staffing/Demand/Base, Staffing/Demand/Department, Staffing/Demand/Label, Staffing/Ledger[3]/Amount, Staffing/Ledger[3]/Code, Staffing/Supply/Department, Staffing/Supply/Headcount]",
     "p01 Staffing/Supply[3]/Headcount A12Kernel.Polarity.value [Staffing/Demand[3]/Base, Staffing/Demand[3]/Department, Staffing/Demand[3]/Label, Staffing/Ledger/Amount, Staffing/Ledger/Code, Staffing/Supply[3]/Department, Staffing/Supply[3]/Headcount]",
@@ -150,5 +150,10 @@ example : fired noledger = some [
     "u03b /Staffing[1]/Supply[-5]/Note A12Kernel.Polarity.omission [/Staffing[1]/Ledger[-5]/Amount, /Staffing[1]/Ledger[-5]/Code, /Staffing[1]/Supply[-5]/Department, /Staffing[1]/Supply[-5]/Note, Staffing/Demand[2]/Base, Staffing/Demand[2]/Department]",
     "d01b Staffing/Supply/Note A12Kernel.Polarity.value [Staffing/Demand/Department, Staffing/Demand/Label, Staffing/Supply/Department, Staffing/Supply/Note]"] := by
   native_decide
+
+-- With every group full, an unmatched side has no free row of its group left; its fields still read
+-- empty, so neither the computations nor the rules change. The capture has free
+-- rows on every document, so this invariance is the chosen account, not a measurement.
+example : computed staff 4 = computed staff ∧ fired staff 4 = fired staff := by native_decide
 
 end A12Kernel.Dm.ParallelJoinedLimitsLocks
