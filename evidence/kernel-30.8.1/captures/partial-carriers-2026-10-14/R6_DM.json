@@ -1,0 +1,853 @@
+{
+ "header": {
+  "id": "R6_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R6_DM"
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Opt",
+        "name": "Opt",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Tm",
+        "name": "Tm",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Y",
+        "name": "Y",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": 0,
+           "maxValue": 9999
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/M",
+        "name": "M",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": 0,
+           "maxValue": 12
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Dd",
+        "name": "Dd",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": 0,
+           "maxValue": 31
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/S",
+        "name": "S",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Rows",
+        "name": "Rows",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Rows/Amt",
+           "name": "Amt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/S",
+           "name": "S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/RD",
+           "name": "RD",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/RT",
+           "name": "RT",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/Y",
+           "name": "Y",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "minValue": 0,
+              "maxValue": 9999
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/M",
+           "name": "M",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "minValue": 0,
+              "maxValue": 12
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/Dd",
+           "name": "Dd",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "minValue": 0,
+              "maxValue": 31
+             }
+            }
+           }
+          }
+         ],
+         "repeatability": 4
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Items",
+        "name": "Items",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Items/Sku",
+           "name": "Sku",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Count",
+           "name": "Count",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Label",
+           "name": "Label",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Items/Dt",
+           "name": "Dt",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Items/Grp",
+           "name": "Grp",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Items/Grp/A",
+              "name": "A",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/P/Items/Grp/B",
+              "name": "B",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/P/Items/Sub",
+           "name": "Sub",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/P/Items/Sub/Y",
+              "name": "Y",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ],
+            "repeatability": 3
+           }
+          }
+         ],
+         "repeatability": 4,
+         "indexFieldName": "Sku"
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf01",
+        "name": "Rf01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f01",
+         "errorCondition": "FieldFilled(Total) And FirstFilledValue(Rows*/RD) > [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf02",
+        "name": "Rf02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f02",
+         "errorCondition": "FieldFilled(Total) And FirstFilledValue(Rows*/S) == \"x\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf03",
+        "name": "Rf03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f03",
+         "errorCondition": "FieldFilled(Total) And FirstFilledValue(Rows*/Amt, Opt) > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf04",
+        "name": "Rf04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f04",
+         "errorCondition": "FieldFilled(Total) And FirstFilledValue(Rows*/RT) > [Tm]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rf05",
+        "name": "Rf05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "f05",
+         "errorCondition": "FieldFilled(Total) And FirstFilledValue(Items/Dt For \"a\", D) > [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc01",
+        "name": "Rc01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c01",
+         "errorCondition": "AllFieldsFilled(Y, M, Dd) And Invalid(Date(Dd, M, Y)) And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc02",
+        "name": "Rc02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "c02",
+         "errorCondition": "AtLeastOneFieldFilled(Y, M, Dd) And Valid(Date(Dd, M, Y)) And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc03",
+        "name": "Rc03",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "c03",
+         "errorCondition": "[Rows/Amt] > 0 And AllFieldsFilled(Rows/Y, Rows/M, Rows/Dd) And Invalid(Date(Rows/Dd, Rows/M, Rows/Y))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rc04",
+        "name": "Rc04",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Amt",
+         "errorCode": "c04",
+         "errorCondition": "[Rows/Amt] > 0 And NoFieldFilled(Rows/Y, Rows/M) And FieldFilled(Rows/Dd)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rn01",
+        "name": "Rn01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n01",
+         "errorCondition": "NumberOfFilledFields(Rows*/Amt, Opt) > 2 And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rn02",
+        "name": "Rn02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n02",
+         "errorCondition": "NumberOfFilledFields(Rows*, Opt) > 3 And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rn03",
+        "name": "Rn03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n03",
+         "errorCondition": "NumberOfFilledFields(Y, M, Dd) < 3 And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rn04",
+        "name": "Rn04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "n04",
+         "errorCondition": "NumberOfFilledFields(Rows*/Amt) < 3 And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Re01",
+        "name": "Re01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "e01",
+         "errorCondition": "FieldFilled(Total) And MaxValue(Rows*/RD) > [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Re02",
+        "name": "Re02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "e02",
+         "errorCondition": "FieldFilled(Total) And MinValue(Rows*/RT) < [Tm]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Re03",
+        "name": "Re03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "e03",
+         "errorCondition": "FieldFilled(Total) And MinValue(Rows*/RD) < [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ri01",
+        "name": "Ri01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "i01",
+         "errorCondition": "Sum(Items/Count For \"a\", Opt) > 5 And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ri02",
+        "name": "Ri02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "i02",
+         "errorCondition": "NumberOfFilledFields(Items/Count For \"a\", Opt) > 1 And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ri03",
+        "name": "Ri03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "i03",
+         "errorCondition": "AllFieldsFilled(Items/Label For \"a\", S) And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ri04",
+        "name": "Ri04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "i04",
+         "errorCondition": "NumberOfDifferentValues(Items/Label For \"a\", S) > 1 And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Ri05",
+        "name": "Ri05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "i05",
+         "errorCondition": "NotAllFieldsFilled(Items/Label For \"a\", S) And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rk01",
+        "name": "Rk01",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "k01",
+         "errorCondition": "[Items/Label For \"a\"] == \"q\" And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rk02",
+        "name": "Rk02",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "k02",
+         "errorCondition": "Sum(Items/Grp For \"a\") > 5 And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rk03",
+        "name": "Rk03",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "k03",
+         "errorCondition": "Sum(Items/Sub*/Y For \"a\") > 5 And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rk04",
+        "name": "Rk04",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "k04",
+         "errorCondition": "NotAllFieldsFilled(Items/Sub*/Y For \"a\") And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rk05",
+        "name": "Rk05",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "k05",
+         "errorCondition": "GroupFilled(Items/Grp For \"a\") And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rk06",
+        "name": "Rk06",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "k06",
+         "errorCondition": "FieldFilled(Items/Label For \"a\") And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rk07",
+        "name": "Rk07",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "k07",
+         "errorCondition": "FieldValuesNotUnique(Items/Sub*/Y For \"a\") And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rk08",
+        "name": "Rk08",
+        "Rule": {
+         "errorEntityRelPath": "../Total",
+         "errorCode": "k08",
+         "errorCondition": "NumberOfFilledFields(Items/Grp For \"a\") < 2 And FieldFilled(Total)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}
