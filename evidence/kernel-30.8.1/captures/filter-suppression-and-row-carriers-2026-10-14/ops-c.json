@@ -1,0 +1,218 @@
+[
+ {
+  "id": "a1r",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a1r.json"
+  ]
+ },
+ {
+  "id": "a1b",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a1b.json"
+  ]
+ },
+ {
+  "id": "a1c",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a1c.json"
+  ]
+ },
+ {
+  "id": "a2r",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a2r.json"
+  ]
+ },
+ {
+  "id": "a2b",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a2b.json"
+  ]
+ },
+ {
+  "id": "a2c",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a2c.json"
+  ]
+ },
+ {
+  "id": "a3r",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a3r.json"
+  ]
+ },
+ {
+  "id": "a3b",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a3b.json"
+  ]
+ },
+ {
+  "id": "a3c",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a3c.json"
+  ]
+ },
+ {
+  "id": "a4r",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a4r.json"
+  ]
+ },
+ {
+  "id": "a4b",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a4b.json"
+  ]
+ },
+ {
+  "id": "a4c",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a4c.json"
+  ]
+ },
+ {
+  "id": "a5r",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a5r.json"
+  ]
+ },
+ {
+  "id": "a5b",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a5b.json"
+  ]
+ },
+ {
+  "id": "a5c",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a5c.json"
+  ]
+ },
+ {
+  "id": "a6r",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a6r.json"
+  ]
+ },
+ {
+  "id": "a6b",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a6b.json"
+  ]
+ },
+ {
+  "id": "a6c",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a6c.json"
+  ]
+ },
+ {
+  "id": "a7r",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a7r.json"
+  ]
+ },
+ {
+  "id": "a7b",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a7b.json"
+  ]
+ },
+ {
+  "id": "a7c",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a7c.json"
+  ]
+ },
+ {
+  "id": "a8r",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a8r.json"
+  ]
+ },
+ {
+  "id": "a8b",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a8b.json"
+  ]
+ },
+ {
+  "id": "a8c",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-a8c.json"
+  ]
+ }
+]

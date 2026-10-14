@@ -117,7 +117,7 @@ theorem correlatedHaving_wellFormed_equalityScalesAgree
             CorrelatedHavingLeaf.wellFormedForSingleGroup,
             NumericComparisonOf.havingAdmitted, NumericComparisonOf.admittedWith,
             Bool.and_eq_true] at wellFormed
-          exact wellFormed.2.2
+          exact wellFormed.2
       | stringExpression | selectedComparison | temporalExpression | simpleComparison | compareStringLiteral | literalMembership | fieldMembership | dateRange | uniqueness | fieldFill | presence
           | groupPresence | groupFill | typeValidity | dateValidity | stringPattern =>
           -- Vacuous: the legacy one-group predicate refuses these leaves outright, so each

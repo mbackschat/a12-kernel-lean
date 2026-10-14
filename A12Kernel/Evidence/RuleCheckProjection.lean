@@ -125,7 +125,9 @@ def captures : List (String × String × String) := [
   ("captures/expanded-shift-amounts-2026-10-14/obs3.json", "captures/expanded-shift-amounts-2026-10-14/R8_DM.json", "captures/expanded-shift-amounts-2026-10-14/ops3.json"),
   ("captures/expanded-shift-amounts-2026-10-14/obs-filtered.json", "captures/expanded-shift-amounts-2026-10-14/R8F_DM.json", "captures/expanded-shift-amounts-2026-10-14/ops-filtered.json"),
   ("captures/expanded-shift-amounts-2026-10-14/obs-supplementary.json", "captures/expanded-shift-amounts-2026-10-14/R8S_DM.json", "captures/expanded-shift-amounts-2026-10-14/ops-supplementary.json"),
-  ("captures/entity-list-group-gates-2026-10-14/obs.json", "captures/entity-list-group-gates-2026-10-14/R9_DM.json", "captures/entity-list-group-gates-2026-10-14/ops.json")]
+  ("captures/entity-list-group-gates-2026-10-14/obs.json", "captures/entity-list-group-gates-2026-10-14/R9_DM.json", "captures/entity-list-group-gates-2026-10-14/ops.json"),
+  ("captures/filter-suppression-and-row-carriers-2026-10-14/obs.json", "captures/filter-suppression-and-row-carriers-2026-10-14/R11_DM.json", "captures/filter-suppression-and-row-carriers-2026-10-14/ops.json"),
+  ("captures/filter-suppression-and-row-carriers-2026-10-14/obs-b.json", "captures/filter-suppression-and-row-carriers-2026-10-14/R11BS_DM.json", "captures/filter-suppression-and-row-carriers-2026-10-14/ops-b.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) := [

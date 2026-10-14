@@ -1,0 +1,23 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "405f365baae948396e53e8f3edf3afd87ab2117661009062224ffeaf56e0a218",
+  "observations" : [ {
+    "id" : "k05",
+    "inputHash" : "462d5f89731766246193f976365d96b8d442eed2886122c0daaac75f4de7b219",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_BOOLY_ALLOWED" ]
+  }, {
+    "id" : "k04",
+    "inputHash" : "8ce23d746339e23feeee0da99df08c6631adbaa759c809490ecc45be29a9a2be",
+    "ok" : true,
+    "codes" : [ ]
+  } ]
+}

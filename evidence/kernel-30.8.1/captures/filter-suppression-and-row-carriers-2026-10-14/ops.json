@@ -1,0 +1,189 @@
+[
+ {
+  "id": "w01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] DiffersWithToleranceRange1 1.5) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] DiffersWithToleranceRange1 1.5) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w03",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] == 1.5) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w04",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] == 1.5) > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w05",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And [Tot] DiffersWithToleranceRange1 1.5",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w06",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And [Tot] DiffersWithToleranceRange1 1.5",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w07",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And [Tot] == 1.5",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w08",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And [Tot] == 1.5",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x01",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(/P[1]/Tot)",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x02",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And [/P[1]/N0] > 0",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "x03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x03",
+   "--field",
+   "/P/Tot",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Tot) And [P[1]/N0] > 0",
+   "--message",
+   "en_US=m"
+  ]
+ }
+]

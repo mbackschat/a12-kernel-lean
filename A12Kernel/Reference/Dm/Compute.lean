@@ -116,9 +116,9 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       | some reference => pure (.groupPresence .notFilled reference)
       | none => refuse "Guard/GroupNotFilled" "group operand"
   | .call "Valid" [.mk (.call "Date" arguments none none) none] none none =>
-      (.predicate ∘ .dateValidity .valid) <$> lowerScalarDateComponents model group arguments
+      (.predicate ∘ .dateValidity .valid) <$> lowerScalarDateComponents model group arguments suppress
   | .call "Invalid" [.mk (.call "Date" arguments none none) none] none none =>
-      (.predicate ∘ .dateValidity .invalid) <$> lowerScalarDateComponents model group arguments
+      (.predicate ∘ .dateValidity .invalid) <$> lowerScalarDateComponents model group arguments suppress
   | .call "Valid" [.mk (.entity { path, index := some key, category := none, filter := none }) none, .mk (.string name) none] none none => do
       pure (.predicate (.indexedTypeValidity .valid (← lowerIndexedSource model group path key) name))
   | .call "Invalid" [.mk (.entity { path, index := some key, category := none, filter := none }) none, .mk (.string name) none] none none => do
@@ -130,26 +130,26 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       let some path := field.fieldEntity? | refuse "InvalidType" "field operand"
       pure (.predicate (.typeValidity .invalid path name))
   | .call "FieldValuesNotUnique" arguments none none =>
-      (.predicate ∘ .uniqueness) <$> lowerEntitySource model group arguments filterBinding?
+      (.predicate ∘ .uniqueness) <$> lowerEntitySource model group arguments filterBinding? suppress
   | .call "DateRangesOverlap" arguments none none =>
-      (.predicate ∘ .overlap) <$> lowerEntitySource model group arguments filterBinding?
+      (.predicate ∘ .overlap) <$> lowerEntitySource model group arguments filterBinding? suppress
   | .call "AtLeastOneDateRangeOverlaps" [scalar] (some values) none => do
       pure (.predicate (.scalarOverlap {
-        scalar := ← lowerEntityOperand model group scalar
-        list := ← lowerEntitySource model group values filterBinding? }))
+        scalar := ← lowerEntityOperand model group scalar (suppress := suppress)
+        list := ← lowerEntitySource model group values filterBinding? suppress }))
   | .call id arguments (some values) none => do
       let some quantifier := valueListQuantifier? id | refuse ("Guard/" ++ id)
-      let fields ← lowerEntitySource model group arguments filterBinding?
+      let fields ← lowerEntitySource model group arguments filterBinding? suppress
       match values.mapM (fun | .mk (.string value) none => some value | _ => none) with
       | some literals => pure (.predicate (.tokenLiteralValueList { quantifier, fields, values := literals }))
       | none => pure (.predicate (.entityValueList {
-          quantifier, fields, values := ← lowerEntitySource model group values filterBinding? }))
+          quantifier, fields, values := ← lowerEntitySource model group values filterBinding? suppress }))
   | .call id arguments none none => match scalarMembershipOp? id with
       | some operator => .predicate <$> lowerScalarMembership operator arguments
       | none => match fieldFillOp? id with
-          | some operator => .fieldFill operator <$> lowerEntitySource model group arguments filterBinding?
+          | some operator => .fieldFill operator <$> lowerEntitySource model group arguments filterBinding? suppress
           | none => match groupQuantifier? id with
-              | some operator => .groupFill operator <$> lowerEntitySource model group arguments filterBinding?
+              | some operator => .groupFill operator <$> lowerEntitySource model group arguments filterBinding? suppress
               | none => refuse ("Guard/" ++ id)
   | expression@(.compare op left right) => do
       if let some lowered := lowerDateRangeComparison? model group op left right then
@@ -201,21 +201,21 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
           | _ => false
         if !selected left && !selected right then none else do
           let operator ← match op with | .eq => some EqualityOp.equal | .ne => some .notEqual | _ => none
-          let left ← (lowerTokenComparisonOperand model group filterBinding? left).toOption
-          let right ← (lowerTokenComparisonOperand model group filterBinding? right).toOption
+          let left ← (lowerTokenComparisonOperand model group filterBinding? left suppress).toOption
+          let right ← (lowerTokenComparisonOperand model group filterBinding? right suppress).toOption
           let _ ← (elaborateTokenComparison model group operator left right (targetGroup?.getD group)).toOption
           some (SurfaceComputationConditionOf.predicate (.tokenComparison operator left right))
       let selectedSurface := do
         let operator ← match op with | .eq => some EqualityOp.equal | .ne => some .notEqual | _ => none
-        let left ← (lowerFirstFilledComparisonOperand model group filterBinding? left).toOption
-        let right ← (lowerFirstFilledComparisonOperand model group filterBinding? right).toOption
+        let left ← (lowerFirstFilledComparisonOperand model group filterBinding? left suppress).toOption
+        let right ← (lowerFirstFilledComparisonOperand model group filterBinding? right suppress).toOption
         let _ ← (elaborateFirstFilledComparison model group (targetGroup?.getD group)
           (if operator == .equal then .equal else .notEqual) left right).toOption
         some (SurfaceComputationConditionOf.predicate (.selectedComparison operator left right))
       let temporalSurface := do
         let operator ← op.toSurface?
-        let left ← (lowerScalarTemporalExpression model group left).toOption
-        let right ← (lowerScalarTemporalExpression model group right).toOption
+        let left ← (lowerScalarTemporalExpression model group left suppress).toOption
+        let right ← (lowerScalarTemporalExpression model group right suppress).toOption
         match elaborateScalarTemporalComparison model group operator.toTemporal left right targetGroup? with
         | .error (.nonTemporal _) | .error (.extremum (.firstNotTemporal _ _)) => none
         | _ => some (SurfaceComputationConditionOf.predicate
@@ -225,7 +225,7 @@ partial def lowerGuard (model : FlatModel) (group : GroupPath) (suppress : Bool 
       | some surface => pure surface
       | none => do
           let some operator := op.toNumeric? | refuse "Comparison" "operator"
-          let atom := fun expression => lowerCompleteComputationNumericAtom model group expression filterBinding?
+          let atom := fun expression => lowerCompleteComputationNumericAtom model group expression filterBinding? suppress
           pure (.numeric {
             op := operator
             left := ← lowerNumericExpr atom (lowerNumericFieldAtom model group atom) left
@@ -390,7 +390,7 @@ private def lowerJoinedRows (language : Language) (model : FlatModel) (computati
   let view := model.parallelInstanceView joined
   let some viewTarget := (view.lookupUniqueId target.id).toOption | refuse "ParallelRows" "target"
   let operations ← operations.mapM fun expression => do
-    match ← lowerRowAlternativeOperation view group viewTarget expression with
+    match ← lowerRowAlternativeOperation view group viewTarget expression suppress with
     | .stringExpression operation => pure (ParallelJoinedRowOperation.string operation)
     | .temporalExpression operation => pure (.temporal operation)
     | _ => refuse "ParallelRows" "operation"
@@ -514,7 +514,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
   let row := !target.repeatableScope.isEmpty
   let numericExpressions := operations.mapM fun expression => do
     let filterBinding? := if expression.hasHaving then some target.groupPath else none
-    let atom := fun operand => lowerCompleteComputationNumericAtom model computation.group operand filterBinding?
+    let atom := fun operand => lowerCompleteComputationNumericAtom model computation.group operand filterBinding? suppress
     lowerNumericExpr atom (lowerNumericFieldAtom model computation.group atom) expression
   if allowParallelGuards then
     if !row then refuse "Guard" "joined route"
@@ -524,14 +524,14 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       (← numericExpressions) suppress outputModes))
   let document : Lowering (FlatFieldDecl × LoweredComputation model) := do
     if let ([own], [operation]) := (guards, operations) then
-      let step ← lowerDocumentStep model computation.group target operation
+      let step ← lowerDocumentStep model computation.group target suppress operation
       let step ← match CheckedComputationCondition.withCommon common own with
         | none => pure step
         | some guard => (step.guard? guard).getDM (refuse "DocumentStep" "guard admission")
       pure (target, .document step)
     else
       let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
-        let operation ← lowerDocumentStep model computation.group target expression
+        let operation ← lowerDocumentStep model computation.group target suppress expression
         pure ({ precondition, operation := .document operation } : CheckedComputationAlternative model _)
       let table ← elaborated "DocumentStep" (certifyRowComputationTable alternatives common)
       let step ← (CheckedRowComputationStep.ofTable? table).getDM (refuse "DocumentStep" "target self-read")
@@ -543,7 +543,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       operations.all (isRowAlternativeOperation model computation.group target) then
     let ordinary : Lowering (RowStep model) := do
       let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
-        let operation ← lowerRowAlternativeOperation model computation.group target expression
+        let operation ← lowerRowAlternativeOperation model computation.group target expression suppress
         pure ({ precondition, operation } : CheckedComputationAlternative model _)
       let table ← elaborated "RowComputation" (certifyRowComputationTable alternatives common)
       let some step := CheckedRowComputationStep.ofTable? table
@@ -574,7 +574,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       if row then
         let (none, [none], [operation]) := (common, guards, operations)
           | refuse "StringComputation" "row target"
-        return (target, .rows (← lowerRowStep model computation.group target operation))
+        return (target, .rows (← lowerRowStep model computation.group target suppress operation))
       if operations.any fun | .call "FirstFilledValue" _ none none => true | _ => false then
         return ← document
       let attempts : List (Option (CheckedComputationCondition model) ×
@@ -594,7 +594,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
       if !row then
         return ← document
       else if let (none, [none], [operation]) := (common, guards, operations) then
-        match lowerRowStep model computation.group target operation with
+        match lowerRowStep model computation.group target suppress operation with
         | .ok step => return (target, .rows step)
         -- A carrier's own refusal names the gate; an operation no row carrier names meets the generic one.
         | .error refusal => if refusal.construct != "RowComputation" then throw refusal

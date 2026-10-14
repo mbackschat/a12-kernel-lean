@@ -1,0 +1,237 @@
+{
+ "header": {
+  "id": "R11B_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R11B_DM"
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Tot",
+        "name": "Tot",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Tot2",
+        "name": "Tot2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Rows",
+        "name": "Rows",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Rows/N",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/N2",
+           "name": "N2",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          }
+         ],
+         "repeatability": 4
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs01",
+        "name": "Rs01",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "s01",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] != 1.5) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs03",
+        "name": "Rs03",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "s03",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] != [Rows/N2]) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs05",
+        "name": "Rs05",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "s05",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] + 0 != 1.5) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs07",
+        "name": "Rs07",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "s07",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And NumberOfFilledFields(Rows*/N Having [Rows/N] != 1.5) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs09",
+        "name": "Rs09",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "s09",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And FirstFilledValue(Rows*/N Having [Rows/N] != 1.5) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs11",
+        "name": "Rs11",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "s11",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] != 1.5 And [Rows/N2] == 7.25) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rs13",
+        "name": "Rs13",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "s13",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And NumberOfValueInFields(7 In Rows*/N Having [Rows/N] != 1.5) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Cc01",
+        "name": "Cc01",
+        "Computation": {
+         "computedFieldRelPath": "../Tot2",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/N Having [Rows/N] != 1.5)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "errorCodesToSuppress": [
+          "MVK_INVALID_COMPARE_DEC_PLACES"
+         ]
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

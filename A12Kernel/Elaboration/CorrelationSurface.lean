@@ -588,6 +588,11 @@ inductive SurfaceCorrelatedHaving where
       this is a strong-Kleene `Or` and a true disjunct dominates an unavailable one, keeping its
       row. The legacy one-group route still refuses it; only the star route admits it. -/
   | or (left right : SurfaceCorrelatedHaving)
+  /-- A filter written in a text whose `@SuppressWarning` preamble names the exact-scale warning.
+      The pragma covers the text's filters too, so every `==` and `!=` below it waives its scale
+      gate on each measured carrier, validation and computation alike
+      ([checkpoint](../../docs/sources/having-filter-probes.md#src-having-scale-warning-suppression)). -/
+  | scaleWarningSuppressed (body : SurfaceCorrelatedHaving)
   deriving Repr, DecidableEq
 
 def SurfaceCorrelatedHaving.compareNumbers (op : SurfaceComparisonOp)
@@ -667,6 +672,7 @@ def SurfaceCorrelatedHaving.unboundOuterReference? (model : FlatModel)
   | .and left right | .or left right =>
       (left.unboundOuterReference? model declaringGroup writtenGroup bound).orElse fun _ =>
         right.unboundOuterReference? model declaringGroup writtenGroup bound
+  | .scaleWarningSuppressed body => body.unboundOuterReference? model declaringGroup writtenGroup bound
 where
   entity (ref : SurfaceHavingEntityOperand) : Option (List String × UnboundOperandLevel) := do
     guard (ref.origin == .outer)

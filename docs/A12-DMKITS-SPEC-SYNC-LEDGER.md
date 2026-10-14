@@ -37,7 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Fourteen corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Fifteen corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+<a id="spec-2026-10-14-11"></a>
+### SPEC-2026-10-14-11 — the scale-warning waiver reaches every filter comparison of its text
+
+- `status`: pending
+- `canonical`: [spec/04 §1](../spec/04-numbers-and-decimals.md#1-scale-gates----checked-at-parse-time).
+- `delta`: `@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)` and a computation's `errorCodesToSuppress` waive the `==`/`!=` scale gate inside the text's `Having` filters as well, on literal, field-pair and arithmetic sides under every measured aggregate; unwaived, each such filter draws the class. Evaluation stays exact. Tolerance comparisons draw no scale class inside or outside a filter.
+- `basis`: [filter suppression checkpoint](sources/having-filter-probes.md#src-having-scale-warning-suppression), 22 rule checks, two computations and two runtime documents per model at a12-dmkits `a4091041`, Kernel 30.8.1, both strategies agreeing.
+- `acceptance`: Reconcile the static verdicts of `w01`–`w08` and `s01`–`s14`, `c01` admitted and `c02` refused, and the runtime messages and `Tot2` values of both documents. Do not claim nested filters, temporal filters or a German-condition model.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-10"></a>
 ### SPEC-2026-10-14-10 — the requiredness text substitutes four tokens in succession and checks nothing; an Enumeration text renders its stored value

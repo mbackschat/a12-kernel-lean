@@ -1,0 +1,959 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R11_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-14T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "base",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "w01",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "w02",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Rows/B2k01",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/B2k04",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/B2k14",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/B2k21",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows/C2k02",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/C2k03",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/C2k15",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/D2k06",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-01-02"
+       },
+       {
+        "field": "P/Rows/D2k16",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-05-05"
+       },
+       {
+        "field": "P/Rows/DT2k07",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-01-02T03:04:05"
+       },
+       {
+        "field": "P/Rows/DT2k19",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-05-05T01:02:03"
+       },
+       {
+        "field": "P/Rows/E2k11",
+        "cleared": false,
+        "errored": false,
+        "value": "B"
+       },
+       {
+        "field": "P/Rows/E2k20",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "P/Rows/N2k13",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       },
+       {
+        "field": "P/Rows/R2k09",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-01-01/2026-02-01"
+       },
+       {
+        "field": "P/Rows/R2k10",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-01-02/2026-01-02"
+       },
+       {
+        "field": "P/Rows/R2k17",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-01-01/2025-03-01"
+       },
+       {
+        "field": "P/Rows/R2k22",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-01-01/2026-02-01"
+       },
+       {
+        "field": "P/Rows/S2k12",
+        "cleared": false,
+        "errored": false,
+        "value": "s"
+       },
+       {
+        "field": "P/Rows/T2k08",
+        "cleared": false,
+        "errored": false,
+        "value": "10:30:00"
+       },
+       {
+        "field": "P/Rows/T2k18",
+        "cleared": false,
+        "errored": false,
+        "value": "08:15:00"
+       },
+       {
+        "field": "P/Rows[2]/B2k01",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows[2]/B2k04",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows[2]/B2k14",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows[2]/B2k21",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows[2]/C2k03",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows[2]/C2k15",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows[2]/D2k16",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-05-05"
+       },
+       {
+        "field": "P/Rows[2]/DT2k19",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-05-05T01:02:03"
+       },
+       {
+        "field": "P/Rows[2]/E2k20",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "P/Rows[2]/N2k13",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "P/Rows[2]/R2k17",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-01-01/2025-03-01"
+       },
+       {
+        "field": "P/Rows[2]/R2k22",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-01-01/2025-03-01"
+       },
+       {
+        "field": "P/Rows[2]/T2k18",
+        "cleared": false,
+        "errored": false,
+        "value": "08:15:00"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "w01",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "w02",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Rows/B2k01",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/B2k04",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/B2k14",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/B2k21",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows/C2k02",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/C2k03",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/C2k15",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows/D2k06",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-01-02"
+       },
+       {
+        "field": "P/Rows/D2k16",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-05-05"
+       },
+       {
+        "field": "P/Rows/DT2k07",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-01-02T03:04:05"
+       },
+       {
+        "field": "P/Rows/DT2k19",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-05-05T01:02:03"
+       },
+       {
+        "field": "P/Rows/E2k11",
+        "cleared": false,
+        "errored": false,
+        "value": "B"
+       },
+       {
+        "field": "P/Rows/E2k20",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "P/Rows/N2k13",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       },
+       {
+        "field": "P/Rows/R2k09",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-01-01/2026-02-01"
+       },
+       {
+        "field": "P/Rows/R2k10",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-01-02/2026-01-02"
+       },
+       {
+        "field": "P/Rows/R2k17",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-01-01/2025-03-01"
+       },
+       {
+        "field": "P/Rows/R2k22",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-01-01/2026-02-01"
+       },
+       {
+        "field": "P/Rows/S2k12",
+        "cleared": false,
+        "errored": false,
+        "value": "s"
+       },
+       {
+        "field": "P/Rows/T2k08",
+        "cleared": false,
+        "errored": false,
+        "value": "10:30:00"
+       },
+       {
+        "field": "P/Rows/T2k18",
+        "cleared": false,
+        "errored": false,
+        "value": "08:15:00"
+       },
+       {
+        "field": "P/Rows[2]/B2k01",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows[2]/B2k04",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows[2]/B2k14",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows[2]/B2k21",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows[2]/C2k03",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows[2]/C2k15",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       },
+       {
+        "field": "P/Rows[2]/D2k16",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-05-05"
+       },
+       {
+        "field": "P/Rows[2]/DT2k19",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-05-05T01:02:03"
+       },
+       {
+        "field": "P/Rows[2]/E2k20",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "P/Rows[2]/N2k13",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "P/Rows[2]/R2k17",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-01-01/2025-03-01"
+       },
+       {
+        "field": "P/Rows[2]/R2k22",
+        "cleared": false,
+        "errored": false,
+        "value": "2025-01-01/2025-03-01"
+       },
+       {
+        "field": "P/Rows[2]/T2k18",
+        "cleared": false,
+        "errored": false,
+        "value": "08:15:00"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "bad",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumBereichTrennerFehlt",
+       "field": "P/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/Rows/D",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/D"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/Rows/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/DT"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/Rows/T",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/T"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "feldJaFalsch",
+       "field": "P/Rows/C",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/C"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "feldJaNeinFalsch",
+       "field": "P/B0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/B0"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "feldJaNeinFalsch",
+       "field": "P/Rows/B",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/B"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/E"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/Rows/N",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/N"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Rows/B2k21",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows/C2k03",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumBereichTrennerFehlt",
+        "field": "P/Rows/R",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/R"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "P/Rows/D",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/D"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "P/Rows/DT",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/DT"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "P/Rows/T",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/T"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "feldJaFalsch",
+        "field": "P/Rows/C",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/C"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "feldJaNeinFalsch",
+        "field": "P/B0",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/B0"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "feldJaNeinFalsch",
+        "field": "P/Rows/B",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/B"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "stringFalschesMuster",
+        "field": "P/Rows/E",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/E"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "P/Rows/N",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/N"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumBereichTrennerFehlt",
+       "field": "P/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/Rows/D",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/D"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/Rows/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/DT"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "P/Rows/T",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/T"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "feldJaFalsch",
+       "field": "P/Rows/C",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/C"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "feldJaNeinFalsch",
+       "field": "P/B0",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/B0"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "feldJaNeinFalsch",
+       "field": "P/Rows/B",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/B"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "P/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/E"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "P/Rows/N",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Rows/N"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Rows/B2k21",
+        "cleared": false,
+        "errored": false,
+        "value": "false"
+       },
+       {
+        "field": "P/Rows/C2k03",
+        "cleared": false,
+        "errored": false,
+        "value": "true"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumBereichTrennerFehlt",
+        "field": "P/Rows/R",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/R"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "P/Rows/D",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/D"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "P/Rows/DT",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/DT"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "P/Rows/T",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/T"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "feldJaFalsch",
+        "field": "P/Rows/C",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/C"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "feldJaNeinFalsch",
+        "field": "P/B0",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/B0"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "feldJaNeinFalsch",
+        "field": "P/Rows/B",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/B"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "stringFalschesMuster",
+        "field": "P/Rows/E",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/E"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "P/Rows/N",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "P/Rows/N"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

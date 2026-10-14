@@ -339,7 +339,7 @@ def evalPartialGroupReaders (operator : GroupFillQuantifier)
     scanPartialGroupReaders .notAllGroupsFilled readers
   else scanPartialGroupReaders operator readers
 
-/-- Evaluate one partial addressed leaf. The caller supplies the sole relevance-selected group-product query; `none` is structural unsupported information, not semantic UNKNOWN. A reached but nonrelevant supported source returns the family's exact UNKNOWN result. A missing RNU result means that partial relevance excluded the current composite key, while a mismatched result is a structural preparation error. -/
+/-- Evaluate one partial addressed leaf. `isRelevant` is read as given: the public rule entry adds model globals before normalizing it, so only a caller bypassing that entry can exclude a global source. The caller supplies the sole relevance-selected group-product query; `none` is structural unsupported information, not semantic UNKNOWN. A reached but nonrelevant supported source returns the family's exact UNKNOWN result. A missing RNU result means that partial relevance excluded the current composite key, while a mismatched result is a structural preparation error. -/
 def evalAddressedPartial?
     (context : AddressedValidationEvaluationContext model)
     (scope : ValidationRelevanceScope)

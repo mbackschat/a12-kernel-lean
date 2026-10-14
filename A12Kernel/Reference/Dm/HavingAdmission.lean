@@ -32,6 +32,19 @@ private structure RawAdmissionContext where
 
 private abbrev RawAdmissionM := StateT FilterRuleFacts Lowering
 
+/-- Read and check one ordinary filter leaf under the text's scale-warning suppression. The authored
+leaf is returned unscoped: the filter's root carries the suppression once
+(`docs/sources/having-filter-probes.md#src-having-scale-warning-suppression`). -/
+private def admitFilterLeaf (model : FlatModel) (group bindingGroup : GroupPath)
+    (candidateLevels reopenedLevels : List RepeatableLevel) (admission : RawAdmissionContext)
+    (insideSemanticIndexKey : Bool) (expression : Expr) :
+    Lowering (SurfaceCorrelatedHaving × HavingBodyAdmission) := do
+  let authored ← lowerHaving expression (some (model, group))
+  let body := if admission.suppressExactScaleWarning then .scaleWarningSuppressed authored else authored
+  let checked ← checkedHaving (elaborateHavingBodyAtLevels model group candidateLevels reopenedLevels
+    body bindingGroup admission.compilePattern) insideSemanticIndexKey
+  pure (authored, checked)
+
 mutual
 /-- An entity key finishes its own read before its parent's semantic-index gates.
 Inside an unmarked filter read, index and scope restrictions belong to the later body walk;
@@ -233,8 +246,8 @@ private partial def admitBody (model : FlatModel) (group bindingGroup : GroupPat
               pure state
         return (none, state)
       if !inFilter then refuse "Having" "unsupported post-filter membership"
-      let authored ← lowerHaving expression (some (model, group))
-      let checked ← checkedHaving (elaborateHavingBodyAtLevels model group candidateLevels reopenedLevels authored bindingGroup admission.compilePattern) insideSemanticIndexKey
+      let (authored, checked) ← admitFilterLeaf model group bindingGroup candidateLevels reopenedLevels admission
+        insideSemanticIndexKey expression
       pure (some (authored, checked), inFilter)
   | expression@(.call operator arguments none none) => do
       if operator == "FieldValuesNotUnique" || operator == "DateRangesOverlap" then
@@ -311,8 +324,8 @@ private partial def admitBody (model : FlatModel) (group bindingGroup : GroupPat
           refuse "Having" KernelStaticDiagnostic.paramSizeInvalidN.kernelCode
         return (none, currentState)
       if !inFilter then refuse "Having" "unsupported post-filter operator"
-      let authored ← lowerHaving expression (some (model, group))
-      let checked ← checkedHaving (elaborateHavingBodyAtLevels model group candidateLevels reopenedLevels authored bindingGroup admission.compilePattern) insideSemanticIndexKey
+      let (authored, checked) ← admitFilterLeaf model group bindingGroup candidateLevels reopenedLevels admission
+        insideSemanticIndexKey expression
       pure (some (authored, checked), inFilter)
   | expression@(.compare op left right) => do
       if op == .patternMatched || op == .patternViolated then
@@ -332,13 +345,13 @@ private partial def admitBody (model : FlatModel) (group bindingGroup : GroupPat
         let (right, finalState) ← admitNumericExpression model group bindingGroup nextState insideSemanticIndexKey admission right
         checkRawComparisonOperands model op leftSource rightSource left right admission.suppressExactScaleWarning
         return (none, finalState)
-      let authored ← lowerHaving expression (some (model, group))
-      let checked ← checkedHaving (elaborateHavingBodyAtLevels model group candidateLevels reopenedLevels authored bindingGroup admission.compilePattern) insideSemanticIndexKey
+      let (authored, checked) ← admitFilterLeaf model group bindingGroup candidateLevels reopenedLevels admission
+        insideSemanticIndexKey expression
       pure (some (authored, checked), inFilter)
   | expression => do
       if !inFilter then refuse "Having" "unsupported post-filter expression"
-      let authored ← lowerHaving expression (some (model, group))
-      let checked ← checkedHaving (elaborateHavingBodyAtLevels model group candidateLevels reopenedLevels authored bindingGroup admission.compilePattern) insideSemanticIndexKey
+      let (authored, checked) ← admitFilterLeaf model group bindingGroup candidateLevels reopenedLevels admission
+        insideSemanticIndexKey expression
       pure (some (authored, checked), inFilter)
 
 /-- All entity parameters finish their own reads before the table gate. The existing A12 table
@@ -724,11 +737,12 @@ state is carried independently of executable-body availability (spec/07 §3). -/
 private def admitRawStarHaving (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (expression : Expr)
     (bindingGroup : GroupPath := declaringGroup)
-    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
+    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) (suppress : Bool := false) :
     Lowering (SurfaceCorrelatedHaving × CheckedStarHaving model source bindingGroup) := do
   let candidate := source.path.axes.map (·.level)
+  let admission : RawAdmissionContext := { compilePattern, suppressExactScaleWarning := suppress, inFilterSyntax := true }
   let (body, _) ← (admitBody model declaringGroup bindingGroup candidate (candidate.drop source.path.firstStar)
-    { compilePattern, inFilterSyntax := true } false true expression).run' {}
+    admission false true expression).run' {}
   let (references, forbidden) ← filterBodyInventory model declaringGroup source expression
   if let some diagnostic := filterBodyRefusal references forbidden then
     refuse "Having" diagnostic.kernelCode
@@ -738,12 +752,10 @@ private def admitRawStarHaving (model : FlatModel) (declaringGroup : GroupPath)
         if expression.hasIndex || expression.hasHaving then refuse "Having" "indexed body escaped its filter walk"
         -- Certify the unchanged ordinary tree only after its complete own-read pass and filter walk.
         -- This keeps late typed restrictions behind later parse-time failures (spec/07 §3).
-        let authored ← lowerHaving expression (some (model, declaringGroup))
-        let checked ← checkedHaving (elaborateHavingBodyAtLevels model declaringGroup candidate
-          (candidate.drop source.path.firstStar) authored bindingGroup compilePattern)
-        pure (authored, checked)
+        admitFilterLeaf model declaringGroup bindingGroup candidate (candidate.drop source.path.firstStar)
+          admission false expression
   let checked ← checkedHaving (finishStarHavingBody model declaringGroup source body bindingGroup)
-  pure (authored, checked)
+  pure (if suppress then .scaleWarningSuppressed authored else authored, checked)
 
 def elaborateRawStarHaving (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (expression : Expr)
@@ -755,11 +767,12 @@ def elaborateRawStarHaving (model : FlatModel) (declaringGroup : GroupPath)
 /-- A reader with a known caller binding checks the raw body before returning the existing
 surface tree. Callers without that context retain their deferred typed admission. -/
 def lowerAdmittedHaving (model : FlatModel) (group : GroupPath) (path : SurfaceStarFieldPath)
-    (expression : Expr) (bindingGroup? : Option GroupPath) : Lowering SurfaceCorrelatedHaving := do
+    (expression : Expr) (bindingGroup? : Option GroupPath) (suppress : Bool := false) :
+    Lowering SurfaceCorrelatedHaving := do
   match bindingGroup? with
-  | none => lowerHaving expression (some (model, group))
+  | none => lowerFilter expression (some (model, group)) suppress
   | some bindingGroup =>
       let source ← checkedHaving ((elaborateStarFieldPath model group path).mapError (CorrelationElabError.fieldFill ∘ FieldEntityShapeElabError.starPath))
-      Prod.fst <$> admitRawStarHaving model group source expression bindingGroup
+      Prod.fst <$> admitRawStarHaving model group source expression bindingGroup (suppress := suppress)
 
 end A12Kernel.Dm

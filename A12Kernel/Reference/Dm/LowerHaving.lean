@@ -328,5 +328,10 @@ partial def lowerHaving (expression : Expr) (typing : Option (FlatModel × Group
           (← lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField right))
   | other => refuse "Having" other.construct
 
+/-- A filter body read in its enclosing text, scoped by that text's scale-warning suppression. -/
+def lowerFilter (expression : Expr) (typing : Option (FlatModel × GroupPath) := none)
+    (suppress : Bool := false) : Lowering SurfaceCorrelatedHaving := do
+  let body ← lowerHaving expression typing
+  pure (if suppress then .scaleWarningSuppressed body else body)
 
 end A12Kernel.Dm

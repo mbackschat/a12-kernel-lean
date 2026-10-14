@@ -19,6 +19,9 @@ private def SurfaceComparisonOp.toCorrelation : SurfaceComparisonOp → Correlat
     each route chooses all of them together, and a route that admits no String or presence leaf
     supplies a refusing resolver rather than a different combinator. -/
 structure HavingLeafResolvers extends HavingNumericResolvers where
+  /-- Whether the enclosing text suppresses the exact-scale warning, set by a
+      `scaleWarningSuppressed` scope; it waives every `==`/`!=` scale gate below. -/
+  suppressExactScaleWarning : Bool := false
   repetitionNotUnique : SurfaceHavingEntitySource → Option SurfaceHavingEntityOperand →
     Except CorrelationElabError Bool := fun _ _ => throw .disallowedConstructInFilter
   stringExpression : SurfaceComparisonOp → StringExpr SurfaceHavingSelectedOperand String → StringExpr SurfaceHavingSelectedOperand String →
@@ -83,7 +86,8 @@ private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
   if leftCore.isImmediateLiteral && rightCore.isImmediateLiteral then
     throw .constantNumericComparison
   let comparison : NumericComparisonOf HavingNumericAtom :=
-    { op := op, left := leftCore, right := rightCore }
+    { op := op, left := leftCore, right := rightCore
+      suppressExactScaleWarning := resolvers.suppressExactScaleWarning }
   if !comparison.havingAdmitted (fun _ => true) then
     throw .numericExpressionUnsupported
   pure (.leaf (.numeric comparison))
@@ -105,11 +109,16 @@ private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
                 | .fieldNotNumber path actual => .equalityFieldNotNumber path actual
                 | error => error
             pure (← side left, ← side right)
-      if !coreOp.acceptsScales leftResolved.core.field rightResolved.core.field then
+      if !resolvers.suppressExactScaleWarning &&
+          !coreOp.acceptsScales leftResolved.core.field rightResolved.core.field then
         throw (.equalityScaleMismatch
           leftResolved.declaration.path leftResolved.core.field.info.scale
           rightResolved.declaration.path rightResolved.core.field.info.scale)
-      pure (.compareNumbers coreOp leftResolved.core rightResolved.core)
+      pure (.leaf (.numeric
+        { op := .ordinary coreOp.toNumeric
+          left := .atom (.field leftResolved.core)
+          right := .atom (.field rightResolved.core)
+          suppressExactScaleWarning := resolvers.suppressExactScaleWarning }))
   | .atom (.field reference), .literal literal
   | .literal literal, .atom (.field reference) => do
       let coreOp := op.toCorrelation
@@ -119,13 +128,14 @@ private def elaborateHavingNumeric (resolvers : HavingLeafResolvers)
             | .equal | .notEqual => .literalEqualityFieldNotNumber path actual
             | _ => .orderingFieldNotNumber path actual .number
         | error => error
-      if !coreOp.acceptsLiteralScale resolved.core.field literal then
+      if !resolvers.suppressExactScaleWarning && !coreOp.acceptsLiteralScale resolved.core.field literal then
         throw (.literalScaleMismatch resolved.declaration.path resolved.core.field.info.scale
           literal.authoredScale)
       pure (.leaf (.numeric
         { op := .ordinary coreOp.toNumeric
           left := left.map (fun _ => .field resolved.core)
-          right := right.map (fun _ => .field resolved.core) }))
+          right := right.map (fun _ => .field resolved.core)
+          suppressExactScaleWarning := resolvers.suppressExactScaleWarning }))
   | .atom (.repetition left), .atom (.repetition right) => do
       let coreOp := op.toCorrelation
       pure (.compareRepetitions coreOp
@@ -199,6 +209,8 @@ def elaborateHavingCoreWith (resolvers : HavingLeafResolvers) :
   | .or left right => do
       pure (.or (← elaborateHavingCoreWith resolvers left)
         (← elaborateHavingCoreWith resolvers right))
+  | .scaleWarningSuppressed body =>
+      elaborateHavingCoreWith { resolvers with suppressExactScaleWarning := true } body
 
 /-- The forbidden-construct branch retains checked siblings only for the filter's iteration gate;
 it has no executable body. The construct gate follows body and iteration checks (spec/07 §3). -/
@@ -243,6 +255,8 @@ def elaborateHavingBodyWith (resolvers : HavingLeafResolvers) :
   | .or left right => do
       pure (HavingBodyAdmission.combine .or (← elaborateHavingBodyWith resolvers left)
         (← elaborateHavingBodyWith resolvers right))
+  | .scaleWarningSuppressed body =>
+      elaborateHavingBodyWith { resolvers with suppressExactScaleWarning := true } body
   | source => HavingBodyAdmission.ordinary <$> elaborateHavingCoreWith resolvers source
 
 end A12Kernel

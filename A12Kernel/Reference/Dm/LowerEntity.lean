@@ -83,7 +83,7 @@ private def lowerKeyedExtent (model : FlatModel) (group : GroupPath)
 
 /-- One entity-list operand. -/
 def lowerEntityOperand (model : FlatModel) (group : GroupPath) (argument : Argument)
-    (bindingGroup? : Option GroupPath := none) : Lowering SurfaceFieldEntityOperand := do
+    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) : Lowering SurfaceFieldEntityOperand := do
   let authored ← lower argument
   if let some bindingGroup := bindingGroup? then
     discard <| (resolveFieldEntityOperandIn model group
@@ -116,7 +116,7 @@ where
           let form := match category with | some name => .projected name | none => .stored
           match filter with
           | none => pure (.star star form)
-          | some body => pure (.starHaving star (← lowerAdmittedHaving model group star body bindingGroup?) form)
+          | some body => pure (.starHaving star (← lowerAdmittedHaving model group star body bindingGroup? suppress) form)
         else
           if filter.isSome then refuse "EntityOperand" "filter on an unstarred operand"
           match path.toFieldPath?, path.toGroupPath? with
@@ -134,23 +134,23 @@ where
     | .mk expr _ => refuse "EntityOperand" expr.construct
 
 def lowerEntitySource (model : FlatModel) (group : GroupPath) (arguments : List Argument)
-    (bindingGroup? : Option GroupPath := none) : Lowering SurfaceFieldEntitySource := do
+    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) : Lowering SurfaceFieldEntitySource := do
   -- Each contextual read finishes before a later list can enter a filter (spec/07 §3).
-  let first :: rest ← arguments.mapM (fun argument => lowerEntityOperand model group argument bindingGroup?) | refuse "EntityOperand" "empty"
+  let first :: rest ← arguments.mapM (fun argument => lowerEntityOperand model group argument bindingGroup? suppress) | refuse "EntityOperand" "empty"
   pure { first, rest }
 
 def lowerFirstFilledEntitySource (model : FlatModel) (group : GroupPath) (arguments : List Argument)
-    (bindingGroup? : Option GroupPath := none) : Lowering SurfaceFieldEntitySource := do
+    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) : Lowering SurfaceFieldEntitySource := do
   if let some bindingGroup := bindingGroup? then
     for argument in arguments do
       if let .mk (.entity reference) none := argument then
         checkReferenceRead model group bindingGroup reference
-  lowerEntitySource model group arguments bindingGroup?
+  lowerEntitySource model group arguments bindingGroup? suppress
 
 /-- One operand of a String or Enumeration value count, which keeps its category projection on a
 starred read too. -/
 def lowerProjectedTokenOperand (model : FlatModel) (group : GroupPath) (argument : Argument)
-    (bindingGroup? : Option GroupPath := none) :
+    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) :
     Lowering SurfaceProjectedTokenEntityOperand := do
   if let some bindingGroup := bindingGroup? then
     if let .mk (.entity reference) none := argument then
@@ -164,29 +164,29 @@ def lowerProjectedTokenOperand (model : FlatModel) (group : GroupPath) (argument
         let some star := path.toStarFieldPath? | refuse "EntityOperand" "star path"
         match filter with
         | none => pure (.star star projection)
-        | some body => pure (.starHaving star projection (← lowerHaving body (some (model, group))))
+        | some body => pure (.starHaving star projection (← lowerFilter body (some (model, group)) suppress))
       else
         let some field := path.toFieldPath? | refuse "EntityOperand" "path"
         if filter.isSome then refuse "EntityOperand" "filter on an unstarred operand"
         pure (.field (match category with | some name => .category field name | none => .direct field))
   | _ => do
-      let _ ← lowerEntityOperand model group argument bindingGroup?
+      let _ ← lowerEntityOperand model group argument bindingGroup? suppress
       refuse "EntityOperand" "group in a value count"
 
 /-- An Enumeration `FirstFilledValue` source retains selected identity, direct/category projection,
 and each ordinary star’s own filter. -/
 def lowerEnumerationFirstFilledSource (model : FlatModel) (group : GroupPath) (arguments : List Argument)
-    (bindingGroup? : Option GroupPath := none) :
+    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) :
     Lowering SurfaceEnumerationFirstFilledSource := do
   let operand (argument : Argument) : Lowering SurfaceEnumerationFirstFilledOperand := do
     if let .mk (.entity reference@{ index := some _, filter := none, .. }) none := argument then
       if let some bindingGroup := bindingGroup? then
         checkReferenceRead model group bindingGroup reference
-      match ← lowerEntityOperand model group argument bindingGroup? with
+      match ← lowerEntityOperand model group argument bindingGroup? suppress with
       | .indexed source form => return .indexed source form
       | .keyed source form => return .keyed source form
       | _ => refuse "EntityOperand" "indexed source"
-    match ← lowerProjectedTokenOperand model group argument bindingGroup? with
+    match ← lowerProjectedTokenOperand model group argument bindingGroup? suppress with
     | .field source => pure (.field source)
     | .star source projection => pure (.star source projection)
     | .starHaving source projection having => pure (.star source projection (some having))
@@ -195,7 +195,7 @@ def lowerEnumerationFirstFilledSource (model : FlatModel) (group : GroupPath) (a
 
 /-- `SumOfProducts(left, right)` retains each starred field's key and optional filter for checked admission. -/
 def lowerProductAggregate (model : FlatModel) (group : GroupPath) (arguments : List Argument)
-    (bindingGroup? : Option GroupPath := none) : Lowering SurfaceNumericProductAggregate := do
+    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) : Lowering SurfaceNumericProductAggregate := do
   if let some bindingGroup := bindingGroup? then
     for argument in arguments do
       if let .mk (.entity reference) none := argument then
@@ -205,8 +205,8 @@ def lowerProductAggregate (model : FlatModel) (group : GroupPath) (arguments : L
     | refuse "SumOfProducts" "operands"
   let some left := leftPath.toStarFieldPath? | refuse "SumOfProducts" "operand"
   let some right := rightPath.toStarFieldPath? | refuse "SumOfProducts" "operand"
-  pure { left, right, leftHaving := ← leftFilter.mapM (fun body => lowerHaving body (some (model, group)))
-         rightHaving := ← rightFilter.mapM (fun body => lowerHaving body (some (model, group)))
+  pure { left, right, leftHaving := ← leftFilter.mapM (fun body => lowerFilter body (some (model, group)) suppress)
+         rightHaving := ← rightFilter.mapM (fun body => lowerFilter body (some (model, group)) suppress)
          leftKey := ← leftIndex.mapM (fun key => (·.key) <$> lowerKeyedExtent model group leftPath key)
          rightKey := ← rightIndex.mapM (fun key => (·.key) <$> lowerKeyedExtent model group rightPath key) }
 
@@ -224,14 +224,14 @@ def lowerGroupCountOperand : Argument → Lowering SurfaceGroupCountOperand
 
 /-- The common authored source dispatch for fixed and row first-filled targets. -/
 def lowerFirstFilledSource (model : FlatModel) (group : GroupPath) (arguments : List Argument)
-    (bindingGroup? : Option GroupPath := none) : Lowering SurfaceFirstFilledSource := do
+    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) : Lowering SurfaceFirstFilledSource := do
   match arguments with
   | [.mk (.entity reference@{ path, index := none, category := none, filter := none }) none] => do
       if let some bindingGroup := bindingGroup? then
         checkReferenceRead model group bindingGroup reference
       match path.segments.any (·.star), path.toStarFieldPath? with
       | true, some star => pure (.star star)
-      | _, _ => (.list ·) <$> lowerFirstFilledEntitySource model group arguments bindingGroup?
-  | _ => (.list ·) <$> lowerFirstFilledEntitySource model group arguments bindingGroup?
+      | _, _ => (.list ·) <$> lowerFirstFilledEntitySource model group arguments bindingGroup? suppress
+  | _ => (.list ·) <$> lowerFirstFilledEntitySource model group arguments bindingGroup? suppress
 
 end A12Kernel.Dm

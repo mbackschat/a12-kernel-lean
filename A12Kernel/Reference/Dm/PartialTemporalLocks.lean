@@ -379,4 +379,33 @@ example : ["MinValue", "MaxValue"].all (fun operator =>
     globalSelected (operator ++ "(Rows/D For Key,Low) == \"01.03.2024\"") { key := "Z" } ==
       some (.fired .omission)) = true := by native_decide
 
+/-- The public partial entry adds model globals before normalizing, so a global direct `Date`
+component the caller did not request is relevant there; the leaf callback reads only the coverage it
+is handed, so given the caller's unnormalized set it answers UNKNOWN. A non-global twin is UNKNOWN on
+both, so only a caller bypassing the public entry can exclude a global (spec/10 §5). -/
+private def globalDirectDate (globalBad : Bool) : Option (Verdict × Verdict) := do
+  let fixture : FlatModel := { model with fields := model.fields.map fun field =>
+    { field with isGlobal := globalBad && field.id == 3 } }
+  let dm : DmModel := { flat := fixture, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler fixture).toOption
+  let raw ← (readDocument dm (input { bad := "1" })).toOption
+  let document ← (checkDocument prepared "en_US" raw.data).toOption
+  let scope := coverage []
+  let rule ← (checkRule dm .english {
+      name := "Temporal", group := ["Form"], errorCode := "PROBE", errorEntityRelPath := "../Ref"
+      condition := "FieldFilled(Ref) And Valid(Date(Bad,\"2\",\"2024\"))", severity := "ERROR" } world).toOption
+  let .evaluated outcome ← (rule.evalAddressedPartial document scope (some world)).toOption | none
+  let parsed ← (parseText .english "Valid(Date(Bad,\"2\",\"2024\"))").toOption
+  let condition ← (lowerCondition fixture ["Form"] false parsed.body (world := world)).toOption
+  let .leaf leaf := condition.core | none
+  let context : AddressedValidationEvaluationContext fixture := {
+    scalar := { fields := document.flatContext.withWorld world, groups := GroupPresenceContext.unavailable },
+    outer := [], input := .checked document }
+  let callback ← (← leaf.evalAddressedPartial? context scope (fun field => scope.coversField fixture field [])
+    (fun _ _ => .error (.checkedDocumentRequired [])) none).toOption
+  pure (outcome.verdict, callback)
+
+example : globalDirectDate true = some (.fired .value, .unknown) ∧
+    globalDirectDate false = some (.unknown, .unknown) := by native_decide
+
 end A12Kernel.Dm.PartialTemporalLocks

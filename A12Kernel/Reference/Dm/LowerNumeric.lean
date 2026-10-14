@@ -93,7 +93,7 @@ def lowerValidationNumericAtom : Expr → Lowering SurfaceNumericAtom :=
 /-- A computation operation's atom, whose aggregates, counts and `FirstFilledValue` range over
 entity lists. -/
 def lowerComputationNumericAtom (model : FlatModel) (group : GroupPath) (expression : Expr)
-    (bindingGroup? : Option GroupPath := none) : Lowering SurfaceNumericComputationAtom := match expression with
+    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) : Lowering SurfaceNumericComputationAtom := match expression with
   | .call "Length" [.mk (.entity { path, index := some key, category := none, filter := none }) none] none none =>
       (fun source => .indexedString source .length) <$> lowerIndexedSource model group path key
   | .call "RangeAsNumber" [.mk (.entity { path, index := some key, category := none, filter := none }) none,
@@ -108,23 +108,23 @@ def lowerComputationNumericAtom (model : FlatModel) (group : GroupPath) (express
   | .value { path, index := some key, category := none, filter := none } =>
       (.indexed ·) <$> lowerIndexedSource model group path key
   | .call "NumberOfFilledFields" arguments none none =>
-      (.filledFieldCount ·) <$> lowerEntitySource model group arguments bindingGroup?
+      (.filledFieldCount ·) <$> lowerEntitySource model group arguments bindingGroup? suppress
   | .call "FirstFilledValue" arguments none none =>
-      (.firstFilled ·) <$> lowerEntitySource model group arguments bindingGroup?
-  | .call "SumOfProducts" arguments none none => (.sumOfProducts ·) <$> lowerProductAggregate model group arguments bindingGroup?
+      (.firstFilled ·) <$> lowerEntitySource model group arguments bindingGroup? suppress
+  | .call "SumOfProducts" arguments none none => (.sumOfProducts ·) <$> lowerProductAggregate model group arguments bindingGroup? suppress
   | .call "NumberOfValueInFields" [.mk expected none] (some listed) none =>
       match expected with
       | .number text => match decodeNumber? text with
-          | some literal => (.valueCount literal.value ·) <$> lowerEntitySource model group listed bindingGroup?
+          | some literal => (.valueCount literal.value ·) <$> lowerEntitySource model group listed bindingGroup? suppress
           | none => refuse "NumberOfValueInFields" "expected value"
-      | .constant "True" => (.booleanValueCount true ·) <$> lowerEntitySource model group listed bindingGroup?
-      | .constant "False" => (.booleanValueCount false ·) <$> lowerEntitySource model group listed bindingGroup?
+      | .constant "True" => (.booleanValueCount true ·) <$> lowerEntitySource model group listed bindingGroup? suppress
+      | .constant "False" => (.booleanValueCount false ·) <$> lowerEntitySource model group listed bindingGroup? suppress
       | .string text =>
           if isTemporalConstant text then refuse "NumberOfValueInFields" "temporal constant"
-          else (.tokenEntityValueCount text ·) <$> lowerEntitySource model group listed bindingGroup?
+          else (.tokenEntityValueCount text ·) <$> lowerEntitySource model group listed bindingGroup? suppress
       | _ => refuse "NumberOfValueInFields" "expected value"
   | other => (.numeric ·) <$> lowerNumericAtomWith
-      (fun _ arguments => lowerEntitySource model group arguments bindingGroup?)
+      (fun _ arguments => lowerEntitySource model group arguments bindingGroup? suppress)
       (·.mapM lowerGroupCountOperand) other
 
 end A12Kernel.Dm

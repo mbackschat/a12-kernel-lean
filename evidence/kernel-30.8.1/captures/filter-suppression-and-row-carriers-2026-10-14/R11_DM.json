@@ -1,0 +1,1057 @@
+{
+ "header": {
+  "id": "R11_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R11_DM"
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Tot",
+        "name": "Tot",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/B0",
+        "name": "B0",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/C0",
+        "name": "C0",
+        "Field": {
+         "fieldType": {
+          "type": "ConfirmType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E0",
+        "name": "E0",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/S0",
+        "name": "S0",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/N0",
+        "name": "N0",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/D0",
+        "name": "D0",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/DT0",
+        "name": "DT0",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/T0",
+        "name": "T0",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/R0",
+        "name": "R0",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/P/Rows",
+        "name": "Rows",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/P/Rows/B",
+           "name": "B",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/C",
+           "name": "C",
+           "Field": {
+            "fieldType": {
+             "type": "ConfirmType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/E",
+           "name": "E",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/S",
+           "name": "S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/N",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/D",
+           "name": "D",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/DT",
+           "name": "DT",
+           "Field": {
+            "fieldType": {
+             "type": "DateTimeType",
+             "DateTimeType": {
+              "format": "yyyy-MM-dd'T'HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/T",
+           "name": "T",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/R",
+           "name": "R",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/B2k01",
+           "name": "B2k01",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/C2k02",
+           "name": "C2k02",
+           "Field": {
+            "fieldType": {
+             "type": "ConfirmType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/C2k03",
+           "name": "C2k03",
+           "Field": {
+            "fieldType": {
+             "type": "ConfirmType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/B2k04",
+           "name": "B2k04",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/D2k06",
+           "name": "D2k06",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/DT2k07",
+           "name": "DT2k07",
+           "Field": {
+            "fieldType": {
+             "type": "DateTimeType",
+             "DateTimeType": {
+              "format": "yyyy-MM-dd'T'HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/T2k08",
+           "name": "T2k08",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/R2k09",
+           "name": "R2k09",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/R2k10",
+           "name": "R2k10",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/E2k11",
+           "name": "E2k11",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/S2k12",
+           "name": "S2k12",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/N2k13",
+           "name": "N2k13",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/B2k14",
+           "name": "B2k14",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/C2k15",
+           "name": "C2k15",
+           "Field": {
+            "fieldType": {
+             "type": "ConfirmType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/D2k16",
+           "name": "D2k16",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/R2k17",
+           "name": "R2k17",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/T2k18",
+           "name": "T2k18",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/DT2k19",
+           "name": "DT2k19",
+           "Field": {
+            "fieldType": {
+             "type": "DateTimeType",
+             "DateTimeType": {
+              "format": "yyyy-MM-dd'T'HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/E2k20",
+           "name": "E2k20",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/B2k21",
+           "name": "B2k21",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/P/Rows/R2k22",
+           "name": "R2k22",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          }
+         ],
+         "repeatability": 4
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck01",
+        "name": "Ck01",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/B2k01",
+         "computationAlternatives": [
+          {
+           "operation": "[Rows/B]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck02",
+        "name": "Ck02",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/C2k02",
+         "computationAlternatives": [
+          {
+           "operation": "[Rows/C]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck03",
+        "name": "Ck03",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/C2k03",
+         "computationAlternatives": [
+          {
+           "operation": "True"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck04",
+        "name": "Ck04",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/B2k04",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Rows/B, B0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck06",
+        "name": "Ck06",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/D2k06",
+         "computationAlternatives": [
+          {
+           "operation": "[Rows/D]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck07",
+        "name": "Ck07",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/DT2k07",
+         "computationAlternatives": [
+          {
+           "operation": "[Rows/DT]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck08",
+        "name": "Ck08",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/T2k08",
+         "computationAlternatives": [
+          {
+           "operation": "[Rows/T]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck09",
+        "name": "Ck09",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/R2k09",
+         "computationAlternatives": [
+          {
+           "operation": "[Rows/R]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck10",
+        "name": "Ck10",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/R2k10",
+         "computationAlternatives": [
+          {
+           "operation": "DateRange(Rows/D, Rows/D)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck11",
+        "name": "Ck11",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/E2k11",
+         "computationAlternatives": [
+          {
+           "operation": "[Rows/E]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck12",
+        "name": "Ck12",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/S2k12",
+         "computationAlternatives": [
+          {
+           "operation": "[Rows/S]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck13",
+        "name": "Ck13",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/N2k13",
+         "computationAlternatives": [
+          {
+           "operation": "[Rows/N]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck14",
+        "name": "Ck14",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/B2k14",
+         "computationAlternatives": [
+          {
+           "operation": "[B0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck15",
+        "name": "Ck15",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/C2k15",
+         "computationAlternatives": [
+          {
+           "operation": "[C0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck16",
+        "name": "Ck16",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/D2k16",
+         "computationAlternatives": [
+          {
+           "operation": "[D0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck17",
+        "name": "Ck17",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/R2k17",
+         "computationAlternatives": [
+          {
+           "operation": "[R0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck18",
+        "name": "Ck18",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/T2k18",
+         "computationAlternatives": [
+          {
+           "operation": "[T0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck19",
+        "name": "Ck19",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/DT2k19",
+         "computationAlternatives": [
+          {
+           "operation": "[DT0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck20",
+        "name": "Ck20",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/E2k20",
+         "computationAlternatives": [
+          {
+           "operation": "[E0]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck21",
+        "name": "Ck21",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/B2k21",
+         "computationAlternatives": [
+          {
+           "operation": "False"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/Ck22",
+        "name": "Ck22",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/R2k22",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Rows/R, R0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rw01",
+        "name": "Rw01",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "w01",
+         "errorCondition": "FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] DiffersWithToleranceRange1 1.5) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rw02",
+        "name": "Rw02",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "w02",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] DiffersWithToleranceRange1 1.5) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rw04",
+        "name": "Rw04",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "w04",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And Sum(Rows*/N Having [Rows/N] == 1.5) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rw05",
+        "name": "Rw05",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "w05",
+         "errorCondition": "FieldFilled(Tot) And [Tot] DiffersWithToleranceRange1 1.5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rw06",
+        "name": "Rw06",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "w06",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And [Tot] DiffersWithToleranceRange1 1.5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/Rw08",
+        "name": "Rw08",
+        "Rule": {
+         "errorEntityRelPath": "../Tot",
+         "errorCode": "w08",
+         "errorCondition": "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES) FieldFilled(Tot) And [Tot] == 1.5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

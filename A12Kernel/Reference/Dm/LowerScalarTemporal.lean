@@ -114,9 +114,9 @@ private def filteredEntityCall? : Expr → Bool
       | _ => false
   | _ => false
 
-private def lowerFilteredShiftAmount (model : FlatModel) (rowGroup : GroupPath) (expression : Expr) :
-    Lowering SurfaceFilteredShiftAmount := do
-  match ← lowerComputationNumericAtom model rowGroup expression with
+private def lowerFilteredShiftAmount (model : FlatModel) (rowGroup : GroupPath) (expression : Expr)
+    (suppress : Bool) : Lowering SurfaceFilteredShiftAmount := do
+  match ← lowerComputationNumericAtom model rowGroup expression (suppress := suppress) with
   | .numeric (.aggregate op source) => pure (.aggregate op source)
   | .firstFilled source => pure (.firstFilled source)
   | .valueCount expected source => pure (.valueCount expected source)
@@ -129,14 +129,15 @@ private def lowerFilteredShiftAmount (model : FlatModel) (rowGroup : GroupPath) 
 /-- Field spelling depends on the grammar position (spec/12 §3): value expressions use
 brackets, while temporal source slots take an entity. Keep that distinction until lowering. -/
 private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGroup : GroupPath)
-    (position : TemporalExpressionPosition) (expression : Expr) : Lowering SurfaceScalarTemporalExpression := do
+    (position : TemporalExpressionPosition) (expression : Expr) (suppress : Bool := false) :
+    Lowering SurfaceScalarTemporalExpression := do
   let lowerSourceSlot (source : Expr) : Lowering SurfaceScalarTemporalExpression :=
-    lowerScalarTemporalExpressionAt model rowGroup .source source
+    lowerScalarTemporalExpressionAt model rowGroup .source source suppress
   let lowerNumericAtom := lowerHavingNumericAtomWith lowerSourceSlot
   let lowerAmount : Expr → Lowering (AuthoredNumericExpr
       (Sum (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression) SurfaceFilteredShiftAmount)) :=
     lowerNumericExpr
-      (fun atom => if filteredEntityCall? atom then .inr <$> lowerFilteredShiftAmount model rowGroup atom
+      (fun atom => if filteredEntityCall? atom then .inr <$> lowerFilteredShiftAmount model rowGroup atom suppress
         else .inl <$> lowerNumericAtom atom)
       (fun atom => .inl <$> lowerNumericFieldAtom model rowGroup lowerNumericAtom atom)
   let lowerTimeComponent : Argument → Lowering (SurfaceScalarTimeComponent)
@@ -170,7 +171,7 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
         let some path := source.fieldEntity? | refuse "TemporalExpression" "range entity"
         pure (.rangeBound path bound)
   match expression with
-  | .braces source => (.group ·) <$> lowerScalarTemporalExpressionAt model rowGroup .value source
+  | .braces source => (.group ·) <$> lowerScalarTemporalExpressionAt model rowGroup .value source suppress
   | .value { path, index := some key, category := none, filter := none } =>
       match position with
       | .value => (.indexed ·) <$> lowerIndexedSource model rowGroup path key
@@ -240,7 +241,7 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
       let name := expression.construct
       let first :: rest := operands | refuse name "empty operand list"
       let lowerOperand : Argument → Lowering SurfaceScalarTemporalExpression
-        | .mk operand none => lowerScalarTemporalExpressionAt model rowGroup .value operand
+        | .mk operand none => lowerScalarTemporalExpressionAt model rowGroup .value operand suppress
         | _ => refuse name "operand modifier"
       pure (.combine (if name == "Min" then .minimum else .maximum)
         (← lowerOperand first) (← rest.mapM lowerOperand))
@@ -258,30 +259,32 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
             (← lowerAmount amount))
       | "MinValue" | "MaxValue" =>
           pure (.extremum (if name == "MinValue" then .minimum else .maximum)
-            (← lowerEntitySource model rowGroup [.mk source none, .mk amount none]))
+            (← lowerEntitySource model rowGroup [.mk source none, .mk amount none] (suppress := suppress)))
       | _ => refuse "TemporalExpression" name
   | .call name operands none none => do
       let operator ← match name with
         | "MinValue" => pure TemporalExtremumOp.minimum
         | "MaxValue" => pure TemporalExtremumOp.maximum
         | _ => refuse "TemporalExpression" name
-      pure (.extremum operator (← lowerEntitySource model rowGroup operands))
+      pure (.extremum operator (← lowerEntitySource model rowGroup operands (suppress := suppress)))
   | expression => refuse "TemporalExpression" expression.construct
 
 def lowerScalarTemporalExpression (model : FlatModel) (rowGroup : GroupPath)
-    (expression : Expr) : Lowering SurfaceScalarTemporalExpression :=
-  lowerScalarTemporalExpressionAt model rowGroup .value expression
+    (expression : Expr) (suppress : Bool := false) : Lowering SurfaceScalarTemporalExpression :=
+  lowerScalarTemporalExpressionAt model rowGroup .value expression suppress
 
 def lowerScalarDateComponents (model : FlatModel) (rowGroup : GroupPath)
-    (arguments : List Argument) : Lowering (SurfaceConstructedDateComponents SurfaceScalarDateComponent) := do
-  let .dateConstruction components ← lowerScalarTemporalExpression model rowGroup (.call "Date" arguments none none)
+    (arguments : List Argument) (suppress : Bool := false) :
+    Lowering (SurfaceConstructedDateComponents SurfaceScalarDateComponent) := do
+  let .dateConstruction components ← lowerScalarTemporalExpression model rowGroup (.call "Date" arguments none none) suppress
     | refuse "Date" "component source"
   pure components
 
 /-- Reuse established numeric atoms first; recursive temporal operands retain the common source
 syntax and enter the same checked projection on both numeric arms. -/
 def lowerCompleteComputationNumericAtom (model : FlatModel) (rowGroup : GroupPath)
-    (expression : Expr) (bindingGroup? : Option GroupPath := none) : Lowering SurfaceNumericComputationAtom := do
+    (expression : Expr) (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) :
+    Lowering SurfaceNumericComputationAtom := do
   let surface ← lower
   if let some bindingGroup := bindingGroup? then
     discard <| (model.numericComputationAtomType rowGroup bindingGroup surface).mapError fun error => {
@@ -290,13 +293,13 @@ def lowerCompleteComputationNumericAtom (model : FlatModel) (rowGroup : GroupPat
   pure surface
 where
   lower : Lowering SurfaceNumericComputationAtom :=
-    match lowerComputationNumericAtom model rowGroup expression bindingGroup? with
+    match lowerComputationNumericAtom model rowGroup expression bindingGroup? suppress with
     | .ok source => pure source
     | .error original => do
         match expression with
         | .call name [.mk source none] none none =>
             let some part := temporalNumericPart? name | throw original
-            let source ← lowerScalarTemporalExpressionAt model rowGroup .source source
+            let source ← lowerScalarTemporalExpressionAt model rowGroup .source source suppress
             if !source.admittedSourceSlot .ordinary then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
             pure (.temporalExpression (.projection part source))
         | .call name [.mk left none, .mk right none] none none =>
@@ -309,8 +312,8 @@ where
               | "DifferenceInSeconds" => pure TemporalOperationUnit.seconds
               | _ => throw original
             pure (.temporalExpression (.difference unit
-              (← lowerScalarTemporalExpressionAt model rowGroup .source left)
-              (← lowerScalarTemporalExpressionAt model rowGroup .source right)))
+              (← lowerScalarTemporalExpressionAt model rowGroup .source left suppress)
+              (← lowerScalarTemporalExpressionAt model rowGroup .source right suppress)))
         | _ => throw original
 
 end A12Kernel.Dm

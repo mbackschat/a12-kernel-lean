@@ -20,16 +20,16 @@ private def fixedStep : Option (CheckedDocumentComputationStep model) →
 
 /-- `FirstFilledValue` onto the step of the target's kind, a temporal target's chosen by its profile. -/
 private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
-    (arguments : List Argument) : Lowering (CheckedDocumentComputationStep model) := do
+    (arguments : List Argument) (suppress : Bool) : Lowering (CheckedDocumentComputationStep model) := do
   let bindingGroup? := if arguments.any Argument.hasHaving then some target.groupPath else none
   let check {ε α : Type} [Repr ε] (result : Except ε α) : Lowering α :=
     elaborated "FirstFilledValue" result
   if target.policy.kind == .enumeration then
     let operation ← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
       (elaborateEnumerationFirstFilledComputation model group target.id
-      (← lowerEnumerationFirstFilledSource model group arguments bindingGroup?))
+      (← lowerEnumerationFirstFilledSource model group arguments bindingGroup? suppress))
     return .ofEnumerationFirstFilled operation
-  let source ← lowerFirstFilledSource model group arguments bindingGroup?
+  let source ← lowerFirstFilledSource model group arguments bindingGroup? suppress
   match target.temporalFirstFilledFamily? with
   | some .time =>
       let operation ← check (checkTimeFirstFilledComputation model group target.id source)
@@ -62,13 +62,13 @@ private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : Fl
       if target.customType.isSome then
         return ← fixedStep (CheckedDocumentComputationStep.ofCustomFirstFilled? (← check (checkCustomFirstFilledComputation model group target.id source)))
       let operation ← check (checkStringFirstFilledComputation model group target.id
-        (← lowerFirstFilledEntitySource model group arguments bindingGroup?))
+        (← lowerFirstFilledEntitySource model group arguments bindingGroup? suppress))
       fixedStep (CheckedDocumentComputationStep.ofStringFirstFilled? operation)
   | .enumeration => refuse "FirstFilledValue" "target kind"
   | .number => refuse "FirstFilledValue" "target kind"
 
 /-- One unguarded operation onto its whole-document step, or a refusal naming its construct. -/
-def lowerDocumentStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) :
+def lowerDocumentStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) (suppress : Bool := false) :
     Expr → Lowering (CheckedDocumentComputationStep model)
   | .string text => do
       let some source := authoredDateLiteral? text | return ← temporal (.string text)
@@ -77,12 +77,12 @@ def lowerDocumentStep (model : FlatModel) (group : GroupPath) (target : FlatFiel
         (refuse "DateComputation" "row target")
   | .constant "True" => boolean true
   | .constant "False" => boolean false
-  | .call "FirstFilledValue" arguments none none => firstFilledStep model group target arguments
+  | .call "FirstFilledValue" arguments none none => firstFilledStep model group target arguments suppress
   | other => temporal other
 
 where
   temporal (source : Expr) : Lowering (CheckedDocumentComputationStep model) := do
-    let surface ← lowerScalarTemporalExpression model group source
+    let surface ← lowerScalarTemporalExpression model group source suppress
     let expression ← elaborated "TemporalExpression"
       (elaborateScalarTemporalExpression model group surface)
     (CheckedDocumentComputationStep.ofScalarTemporalExpression? expression target.id).getDM

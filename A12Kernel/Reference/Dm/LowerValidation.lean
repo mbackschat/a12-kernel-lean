@@ -74,7 +74,8 @@ def lowerNumericComparison (model : FlatModel) (rowGroup : GroupPath) (op : Comp
          suppressExactScaleWarning := suppress }
 
 def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
-    (bindingGroup? : Option GroupPath) (expression : Expr) : Lowering SurfaceTokenComparisonOperand := do
+    (bindingGroup? : Option GroupPath) (expression : Expr) (suppress : Bool := false) :
+    Lowering SurfaceTokenComparisonOperand := do
   if let some bindingGroup := bindingGroup? then
     match expression with
     | .entity reference | .value reference => checkReferenceRead model rowGroup bindingGroup reference
@@ -82,7 +83,7 @@ def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
   match expression with
   | .string value => pure (.literal value)
   | .call "FirstFilledValue" arguments none none =>
-      (.firstFilled ·) <$> lowerFirstFilledEntitySource model rowGroup arguments bindingGroup?
+      (.firstFilled ·) <$> lowerFirstFilledEntitySource model rowGroup arguments bindingGroup? suppress
   | .value { path, index := some key, category := none, filter := none } =>
       (.indexed ·) <$> lowerIndexedSource model rowGroup path key
   | expression => match expression.fieldValue? with
@@ -90,7 +91,8 @@ def lowerTokenComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
       | none => refuse "TokenComparison" expression.construct
 
 def lowerFirstFilledComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
-    (bindingGroup? : Option GroupPath) (expression : Expr) : Lowering SurfaceFirstFilledComparisonOperand := do
+    (bindingGroup? : Option GroupPath) (expression : Expr) (suppress : Bool := false) :
+    Lowering SurfaceFirstFilledComparisonOperand := do
   if let some bindingGroup := bindingGroup? then
     match expression with
     | .entity reference | .value reference => checkReferenceRead model rowGroup bindingGroup reference
@@ -99,12 +101,12 @@ def lowerFirstFilledComparisonOperand (model : FlatModel) (rowGroup : GroupPath)
   | .value { path, index := some key, category := none, filter := none } =>
       (.indexed ·) <$> lowerIndexedSource model rowGroup path key
   | .call "FirstFilledValue" arguments none none =>
-      (.firstFilled ·) <$> lowerFirstFilledEntitySource model rowGroup arguments bindingGroup?
+      (.firstFilled ·) <$> lowerFirstFilledEntitySource model rowGroup arguments bindingGroup? suppress
   | .constant "True" => pure (.boolean true)
   | .constant "False" => pure (.boolean false)
   | expression => match expression.fieldValue? with
       | some path => pure (.field path)
-      | none => (.temporal ·) <$> lowerScalarTemporalExpression model rowGroup expression
+      | none => (.temporal ·) <$> lowerScalarTemporalExpression model rowGroup expression suppress
 
 /-- The carriers tried for one leaf, in order; the first to admit it answers. -/
 private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : World)
@@ -134,8 +136,8 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
     | none => []
   let temporal := match leaf with
     | .compare operator left right =>
-        match operator.toSurface?, lowerScalarTemporalExpression model rowGroup left,
-            lowerScalarTemporalExpression model rowGroup right with
+        match operator.toSurface?, lowerScalarTemporalExpression model rowGroup left suppress,
+            lowerScalarTemporalExpression model rowGroup right suppress with
         | some operator, .ok left, .ok right =>
             match elaborateScalarTemporalComparison model rowGroup operator.toTemporal left right (some bindingGroup) with
             | .error (.nonTemporal _) | .error (.extremum (.firstNotTemporal _ _)) => []
@@ -173,8 +175,8 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
           | .eq => some EqualityOp.equal
           | .ne => some EqualityOp.notEqual
           | _ => none
-        match equality, lowerTokenComparisonOperand model rowGroup filterBinding? left,
-            lowerTokenComparisonOperand model rowGroup filterBinding? right with
+        match equality, lowerTokenComparisonOperand model rowGroup filterBinding? left suppress,
+            lowerTokenComparisonOperand model rowGroup filterBinding? right suppress with
         | some op, .ok left, .ok right => [do
             let comparison ← elaborated "TokenComparison" (elaborateTokenComparison model rowGroup op left right bindingGroup)
             elaborated "TokenComparison" (CheckedValidationCondition.fromTokenComparison bindingGroup comparison rowGroup)]
@@ -187,8 +189,8 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
           | .value { index := some _, .. } => true
           | _ => false
         if !selected left && !selected right && !indexed left && !indexed right then [] else
-        match op.toSurface?, lowerFirstFilledComparisonOperand model rowGroup filterBinding? left,
-            lowerFirstFilledComparisonOperand model rowGroup filterBinding? right with
+        match op.toSurface?, lowerFirstFilledComparisonOperand model rowGroup filterBinding? left suppress,
+            lowerFirstFilledComparisonOperand model rowGroup filterBinding? right suppress with
         | some op, .ok left, .ok right => [do
             let comparison ← elaborated "FirstFilledComparison"
               (elaborateFirstFilledComparison model rowGroup bindingGroup op.toTemporal left right)
@@ -204,7 +206,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
           | _ => none
         match operation with
         | some operation => [do
-            let source ← lowerScalarDateComponents model rowGroup arguments
+            let source ← lowerScalarDateComponents model rowGroup arguments suppress
             elaborated id (CheckedValidationCondition.fromConstructedDateValidity
               model rowGroup operation source bindingGroup)]
         | none => []
@@ -228,7 +230,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
     | _ => []
   let uniqueness := match leaf with
     | .call "FieldValuesNotUnique" arguments none none =>
-        let operands := lowerEntitySource model rowGroup arguments filterBinding?
+        let operands := lowerEntitySource model rowGroup arguments filterBinding? suppress
         [do
           let source ← elaborated "FieldValuesNotUnique"
             (elaborateNumberValuesNotUniqueSource model rowGroup (← operands)
@@ -270,7 +272,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         match valueListQuantifier? id with
         | none => []
         | some quantifier =>
-            let fields := lowerEntitySource model rowGroup arguments filterBinding?
+            let fields := lowerEntitySource model rowGroup arguments filterBinding? suppress
             let literals := values.mapM fun
               | .mk (.string value) none => some value
               | _ => none
@@ -281,7 +283,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
                   (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
                 elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.literals source) rowGroup)]
             | none =>
-                let values := lowerEntitySource model rowGroup values filterBinding?
+                let values := lowerEntitySource model rowGroup values filterBinding? suppress
                 [do
                   let source ← elaborated id (elaborateNumberEntityValueListSource model rowGroup
                     { quantifier, fields := ← fields, values := ← values }
@@ -296,7 +298,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
   let fieldFill := match leaf with
     | .call id arguments none none => match fieldFillOp? id with
         | some operator => [do
-            let source ← lowerEntitySource model rowGroup arguments filterBinding?
+            let source ← lowerEntitySource model rowGroup arguments filterBinding? suppress
             elaborated id (CheckedValidationCondition.fromFieldFill model rowGroup operator source bindingGroup)]
         | none => []
     | _ => []
@@ -364,7 +366,7 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
       -- numeric carriers' own refusal is the one reported.
       ++ (match (do
             let some numericOp := op.toNumeric? | refuse "Comparison" "operator"
-            let atom := fun expression => lowerCompleteComputationNumericAtom model rowGroup expression filterBinding?
+            let atom := fun expression => lowerCompleteComputationNumericAtom model rowGroup expression filterBinding? suppress
             match elaborateEntityNumericComparison model rowGroup numericOp
                 (← lowerNumericExpr atom (lowerNumericFieldAtom model rowGroup atom) left) (← lowerNumericExpr atom (lowerNumericFieldAtom model rowGroup atom) right) suppress bindingGroup with
             | .error .readsNoList => pure none
@@ -393,13 +395,13 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         | _ => none).map KernelStaticDiagnostic.kernelCode |>.getD (oneLine ((repr error).pretty 100000)) }
   let overlap := match leaf with
     | .call "DateRangesOverlap" arguments none none => [do
-        let source ← lowerEntitySource model rowGroup arguments filterBinding?
+        let source ← lowerEntitySource model rowGroup arguments filterBinding? suppress
         lowerOverlap "DateRangesOverlap"
           (CheckedValidationCondition.fromIteratedDateRangeOverlap model rowGroup source rowGroup (some bindingGroup))
           (fun _ => CheckedValidationCondition.fromIteratedYearlessDateRangeOverlap model rowGroup source rowGroup (some bindingGroup))]
     | .call "AtLeastOneDateRangeOverlaps" [scalar] (some values) none => [do
-        let source := { scalar := ← lowerEntityOperand model rowGroup scalar
-                        list := ← lowerEntitySource model rowGroup values filterBinding? }
+        let source := { scalar := ← lowerEntityOperand model rowGroup scalar (suppress := suppress)
+                        list := ← lowerEntitySource model rowGroup values filterBinding? suppress }
         lowerOverlap "AtLeastOneDateRangeOverlaps"
           (CheckedValidationCondition.fromIteratedDateRangePluralOverlap model rowGroup source rowGroup (some bindingGroup))
           (fun _ => CheckedValidationCondition.fromIteratedYearlessDateRangePluralOverlap model rowGroup source rowGroup (some bindingGroup))]

@@ -569,3 +569,25 @@
 - `local`: `lake exe a12-kernel-replay` matches all 145 rule, reference and computation instances except the five `CFD` computation instances, which Lean refuses at lowering, the [K19 R7 omission](../PLAN.md#k19-returned-omissions); `CFD`'s generated rule matches. The [generated-table locks](../../A12Kernel/Reference/Dm/GeneratedTableLocks.lean) keep the overlapping, empty-guard and keyed rows.
 - `limits`: one Boolean overlap shape, Number guards only, no DateRange or tolerance table. The nested first-filled carrier is measured for Date only.
 - `artifacts`: [Manifest](../../evidence/kernel-30.8.1/captures/generated-computation-validation-2026-10-14/MANIFEST.sha256): model, model check, request and artifact. Catalog text and temporary paths are redacted. No spec correction.
+
+<a id="src-by-id-temporal-arm-binding"></a>
+#### Fixed-target temporal, construction and extraction arms follow the computation binding table on an unstarred row operand, and the reader refuses each, measured 2026-10-14
+
+- `producer`: a12-dmkits `a4091041fe4d0de02053517f11d12f480b5c2cbc`, clean before and after; dmtool `0.13.0`, Kernel `30.8.1` built and runtime. One `batch … --observations` of 24 `computation add --dry-run` children.
+- `question`: [SG9](../gaps/paths-and-groups.md#gap-sg9) asked whether the carriers that take an operand by field identity, with no declaring group to consult, are reachable from the reader with an operand the Kernel admits, and whether they place the [binding table's](group-list-and-capacity-probes.md#src-computation-star-binding-gate) class.
+- `matrix`: root targets `D2`, `T2`, `R2`, `N2` and a capacity-four `Rows` with `D`, `DT`, `N`, `R`. Arms `a1`–`a8`: a Date copy, a field shift amount, a shift source, `DateFromDateTime`, `TimeFromDateTime`, a DateRange construction, a Date construction and `YearFromDate`. Each reads a row operand unstarred from the root (`r`) and from `Rows` (`b`), beside a root twin (`c`).
+- `static`: every `r` row draws `MVK_NO_WILDCARD` and every `b` row `MVK_ERROR_FIELD_NOT_IN_RULEGROUP`, the table's classes. The root twins are admitted except `Date(N0, N0, N0)` into a Date target, which draws `MVK_WRONG_DATE_FORMAT_FOR_OP`.
+- `local`: the reader refuses all 16 rows and admits the seven twins, refusing `a7c` with the same class ([lock](../../A12Kernel/Reference/Dm/CalendarExpressionLocks.lean)). Only the DateRange construction reaches a by-id carrier with the row operand. It reports the missing-star cause from both declaring groups, where the Kernel draws containment from `Rows`. The other arms read through path-resolving routes that distinguish a bound from an unbound level. Computation refusals on these routes keep their internal cause rather than a projected class.
+- `limits`: one repeatable level and fixed root targets; the indexed DateRange construction's key was not measured.
+- `artifacts`: in [filter-suppression-and-row-carriers-2026-10-14](../../evidence/kernel-30.8.1/captures/filter-suppression-and-row-carriers-2026-10-14/): `R11C_DM`, the 24 specs, `ops-c.json` and `obs-c.json`, under the manifest named by the [filter checkpoint](having-filter-probes.md#src-having-scale-warning-suppression). No spec correction.
+
+<a id="src-row-copy-carriers-and-root-indices"></a>
+#### Row targets accept copies, constants and first-filled values of every scalar kind, Confirm first-fill aside, and an explicit root-instance index is not authorable, measured 2026-10-14
+
+- `producer`: as the [filter checkpoint](having-filter-probes.md#src-having-scale-warning-suppression), plus one `batch` of two `computation add --dry-run` children.
+- `matrix`: in `R11_DM`, 21 row computations `k01`–`k22` write row targets of each kind. They copy the row's own Boolean, Confirm, Date, DateTime, Time, DateRange, Enumeration, String and Number fields; copy the root fields `B0`, `C0`, `D0`, `R0`, `T0`, `DT0` and `E0`; and write `True`, `False`, `FirstFilledValue(Rows/B, B0)`, `DateRange(Rows/D, Rows/D)` and `FirstFilledValue(Rows/R, R0)`. Separately `k05` writes `FirstFilledValue(Rows/C, C0)`. Rules `x01`–`x03` name `/P[1]/Tot`, `[/P[1]/N0]` and `[P[1]/N0]`.
+- `static`: every `k` row except `k05` is admitted; `k05` draws `MVK_NO_BOOLY_ALLOWED`, with its Boolean twin admitted. `x01` and `x02` draw `MVK_UNEXPECTED_TOKEN` and `x03` `MVK_INVALID_ENTITY`.
+- `observed`: on a filled document and on one whose row and root cells are all malformed, every row computation's outcome agrees with the reader's.
+- `local`: replay matches every row computation; the static rows agree through the evidence check, and the [lock](../../A12Kernel/Reference/Dm/CalendarExpressionLocks.lean) pins `k04` and `k05`. No reader change: the row route refuses no carrier the Kernel admits here.
+- `limits`: one repeatable level, unguarded single alternatives; partial validation and multi-level rows are unmeasured. Among the three spellings measured, no explicit root-instance index is authorable; no other spelling is known.
+- `artifacts`: `R11_DM`, `request.json`, `artifact.json`, `ops.json`, `obs.json`, `ops-k.json`, `obs-k.json` and the two specs in the same capture. No spec correction.

@@ -165,7 +165,7 @@ example : numericRows "SecondsFromTime(AddSeconds(Stamp,HoursFromTime(Clock)))" 
 private def operationAdmitted (text : String) : Bool :=
   match parseText .english text, model.lookupUniqueId 7 with
   | .ok parsed, .ok target =>
-      (lowerDocumentStep model ["Order"] target parsed.body).toOption.isSome
+      (lowerDocumentStep model ["Order"] target false parsed.body).toOption.isSome
   | _, _ => false
 
 example :
@@ -188,7 +188,7 @@ example :
 private def stored (targetField : FieldId) (text : String) : Option String := do
   let parsed ← (parseText .english text).toOption
   let target ← (model.lookupUniqueId targetField).toOption
-  let step ← (lowerDocumentStep model ["Order"] target parsed.body).toOption
+  let step ← (lowerDocumentStep model ["Order"] target false parsed.body).toOption
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := [] }).toOption
@@ -228,7 +228,7 @@ private def gapResult (targetField : FieldId) (text : String) (badSource : Bool 
   let berlin := { model with timeZoneId := "Europe/Berlin" }
   let parsed ← (parseText .english text).toOption
   let target ← (berlin.lookupUniqueId targetField).toOption
-  let step ← (lowerDocumentStep berlin ["Order"] target parsed.body).toOption
+  let step ← (lowerDocumentStep berlin ["Order"] target false parsed.body).toOption
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler berlin).toOption
   let document ← (checkDocument prepared "en_US" { instantiatedRows := [], cells := if badSource then

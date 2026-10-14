@@ -165,4 +165,37 @@ example : ["Missing", "Swap"].all (fun category => ("==" :: "!=" :: orderings).a
         else if operator == "==" || operator == "!=" then .invalidCompareToEnumOrString
         else .invalidTypeForComparison))) = true := by native_decide
 
+private def scopedAdmission (filter : String) : Admission :=
+  match parseText .english filter with
+  | .error _ => .readerRefused
+  | .ok parsed => match lowerFilter parsed.body none (suppress := true) with
+    | .error _ => .readerRefused
+    | .ok authored => match elaborateStarFieldPath HavingFixture.model ["Form"] {
+        base := .relative 0, groups := [{ name := "Rows", starred := true }], field := "N" } with
+      | .error _ => .readerRefused
+      | .ok source => match elaborateStarHavingCore HavingFixture.model ["Form"] source authored with
+        | .ok _ => .admitted
+        | .error error => .refused error.diagnostic?
+
+/-- The text's scale-warning suppression reaches its filters: a scale-0 field against a one-digit
+literal or under arithmetic is refused bare and admitted in the suppressed scope, while ordering
+never meets the gate. Rows `w03`, `w04`, `s01`–`s06` of the
+[checkpoint](../../../docs/sources/having-filter-probes.md#src-having-scale-warning-suppression). -/
+example : ["[Rows/N] == 1.5", "[Rows/N] != 1.5", "[Rows/N] + 0 != 1.5", "1.5 == [Rows/N]"].all (fun filter =>
+      admission HavingFixture.model filter != .admitted && scopedAdmission filter == .admitted) &&
+    admission HavingFixture.model "[Rows/N] < 1.5" == .admitted := by native_decide
+
+private def filteredSum (suppressed : List String) : Lowering (FlatFieldDecl × LoweredComputation HavingFixture.model) :=
+  lowerComputation HavingFixture.model .english {
+    group := ["Form"], name := "Total", targetRelPath := "../Out", commonPrecondition := none
+    alternatives := [{ precondition := none, operation := "Sum(Rows*/N Having [Rows/N] != 1.5)" }]
+    errorCodesToSuppress := suppressed }
+
+/-- A computation's `errorCodesToSuppress` covers its operation's filters the same way: `c01`
+is admitted and `c02` refused with the scale class. -/
+example : (filteredSum ["MVK_INVALID_COMPARE_DEC_PLACES"]).isOk = true ∧
+    ((filteredSum []).toOption.isNone && match filteredSum [] with
+      | .error refusal => refusal.detail == "MVK_INVALID_COMPARE_DEC_PLACES"
+      | .ok _ => false) = true := by native_decide
+
 end A12Kernel.Dm.HavingAdmissionLocks

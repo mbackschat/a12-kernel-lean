@@ -117,6 +117,7 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
   | .and left right | .or left right =>
       left.readsGroupNumber model declaringGroup group ||
         right.readsGroupNumber model declaringGroup group
+  | .scaleWarningSuppressed body => body.readsGroupNumber model declaringGroup group
   | .compareStringExpression _ _ _ | .compareSelected _ _ _ | .compareBoolean _ _ _ | .compareStrings _ _ _ | .compareTemporal _ _ _ | .compareTemporalExpression _ _ _ | .fieldFill _ _ | .literalMembership _ _ _ | .fieldMembership _ _ _ | .dateValidity _ _ | .dateRange _ | .uniqueness _ | .literalList _ _ _ | .presence _ _ | .typeValidity _ _ _ | .stringPattern _ _ _ | .groupPresence _ _ _ | .groupFill _ _ _ => false
 
 /-- Elaborate the single-group route's body in two passes. The first reads and compares the whole
@@ -630,6 +631,7 @@ def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
   | .and left right | .or left right =>
       (left.candidateEnvironmentRefusal? model declaringGroup candidateLevels).orElse fun _ =>
         right.candidateEnvironmentRefusal? model declaringGroup candidateLevels
+  | .scaleWarningSuppressed body => body.candidateEnvironmentRefusal? model declaringGroup candidateLevels
 where
   entity (ref : SurfaceHavingEntityOperand) : Option CorrelationElabError := do
     guard (ref.origin == .inner)

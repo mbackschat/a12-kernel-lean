@@ -38,10 +38,10 @@ def CorrelationComparisonOp.acceptsLiteralScale (op : CorrelationComparisonOp)
   op.toNumeric.acceptsScales (.field field.info.scale) (.constant literal.authoredScale)
 
 
-/-- Filter comparisons share numeric admission while retaining the unsuppressed surface boundary. -/
+/-- Filter comparisons share numeric admission, the enclosing text's scale-warning suppression included. -/
 def NumericComparisonOf.havingAdmitted (comparison : NumericComparisonOf HavingNumericAtom)
     (admitted : HavingNumericAtom → Bool) : Bool :=
-  !comparison.suppressExactScaleWarning && comparison.admittedWith admitted HavingNumericAtom.summary
+  comparison.admittedWith admitted HavingNumericAtom.summary
 
 /-- Operator-specific static scale law for one filter leaf: `==` and `!=` are gated; ordering and tolerance are exempt (spec/04 §4). -/
 def CorrelatedHavingLeaf.equalityScalesAgree : CorrelatedHavingLeaf → Bool

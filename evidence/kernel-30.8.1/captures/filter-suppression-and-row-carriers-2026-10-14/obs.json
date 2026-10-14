@@ -1,0 +1,78 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+    "state" : "CLEAN"
+  },
+  "model" : "405f365baae948396e53e8f3edf3afd87ab2117661009062224ffeaf56e0a218",
+  "observations" : [ {
+    "id" : "w01",
+    "inputHash" : "a8073d47322c9885e317571d2a8a0470b27841a79b0337831f0b0b1aa32cc045",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "w02",
+    "inputHash" : "84bcc012932e3fd42de63fca8ae5d9cb3ef487d57eb75a041c92c265f93181d4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "w03",
+    "inputHash" : "eeb4017d53defe2be25e34b682802baddfb10c7e443e4581ba2662ffd33e4a80",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ]
+  }, {
+    "id" : "w04",
+    "inputHash" : "a63f4c07027c5a4f4bbb982fa36b1a7b2fb772df2c2d510d56cbf65ca9f15d7f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "w05",
+    "inputHash" : "a802d4b21727dc79d940b368a3be757f36da5177a1efa7aa3d287624a57a083e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "w06",
+    "inputHash" : "b72edfcedcb6a6ef5cbdf4c7178a28c223fe42cba5d7ad5464f80f87d756b33d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "w07",
+    "inputHash" : "18c2f4b0c2acac894acd4d110dd704ab965bb507b180a309090c634ec9b0ffcd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ]
+  }, {
+    "id" : "w08",
+    "inputHash" : "cb8607ac95dfb32717789f770929df6ed2ae4ff6839bc61741390cfb639a441a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "x01",
+    "inputHash" : "7fbbd5bac3ef9a719aee9629289ef3f2e05ca900cca10224a17b9e29a53aeed7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "x02",
+    "inputHash" : "cb39461fec973f4687421760e30fbbc464cbe41072e61979f299bb679537b2f4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "x03",
+    "inputHash" : "aeaf4216dc0bfbbe947d3431abe7bd521fd942d21c630475c0893ea360294596",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  } ]
+}

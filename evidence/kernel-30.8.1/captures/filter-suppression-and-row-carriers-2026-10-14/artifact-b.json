@@ -1,0 +1,477 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R11B_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-14T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "base",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "s01",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s03",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2"
+       ]
+      },
+      {
+       "code": "s05",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s07",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s09",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s11",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2"
+       ]
+      },
+      {
+       "code": "s13",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Tot2",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "s01",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s03",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2"
+       ]
+      },
+      {
+       "code": "s05",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s07",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s09",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s11",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2"
+       ]
+      },
+      {
+       "code": "s13",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Tot2",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "ints",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "s01",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s03",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2"
+       ]
+      },
+      {
+       "code": "s05",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s07",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s09",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s11",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Tot2",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "s01",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s03",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2"
+       ]
+      },
+      {
+       "code": "s05",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s07",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s09",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N"
+       ]
+      },
+      {
+       "code": "s11",
+       "field": "P/Tot",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2",
+        "P/Tot"
+       ],
+       "fillToFix": [
+        "/P[1]/Rows[0]/N",
+        "/P[1]/Rows[0]/N2"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "P/Tot2",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  }
+ ]
+}

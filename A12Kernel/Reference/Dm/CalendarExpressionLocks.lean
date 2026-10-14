@@ -263,4 +263,63 @@ example : storedYear "dd.MM." "31.12." "AddDays(D,1)" =
     storedYear "yyyy-MM-dd" "2024-12-31" "AddDays(D,1)" =
       some ["Form/InlineYear=value 2025", "Form/N=value 2025", "Form/Result=value 2025-01-01"] := by native_decide
 
+private def bindingModel : FlatModel :=
+  let date (id : FieldId) (name : String) (path : GroupPath) (scope : List RepeatableLevel) : FlatFieldDecl := {
+    id, name, groupPath := path, repeatableScope := scope, policy := { kind := .temporal .date TemporalComponents.fullDate },
+    temporalTargetPolicy := some { format := "yyyy-MM-dd" } }
+  let stamp (id : FieldId) (name : String) (path : GroupPath) (scope : List RepeatableLevel) : FlatFieldDecl := {
+    id, name, groupPath := path, repeatableScope := scope, policy := { kind := .temporal .dateTime .now },
+    temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }
+  let number (id : FieldId) (name : String) (path : GroupPath) (scope : List RepeatableLevel) : FlatFieldDecl := {
+    id, name, groupPath := path, repeatableScope := scope, policy := { kind := .number { scale := 0, signed := true } } }
+  let range (id : FieldId) (name : String) (path : GroupPath) (scope : List RepeatableLevel) : FlatFieldDecl := {
+    id, name, groupPath := path, repeatableScope := scope, policy := { kind := .dateRange }
+    dateRangePolicy := some { format := "yyyy-MM-dd", separator := "/" } }
+  { fields := [number 0 "N0" ["P"] [], date 1 "D0" ["P"] [], stamp 2 "DT0" ["P"] [], date 3 "D2" ["P"] [],
+      { id := 4, name := "T2", groupPath := ["P"], policy := { kind := .temporal .time .time },
+        temporalTargetPolicy := some { format := "HH:mm:ss" } },
+      range 5 "R2" ["P"] [], number 6 "N2" ["P"] [], date 7 "D" ["P", "Rows"] [10], stamp 8 "DT" ["P", "Rows"] [10],
+      number 9 "N" ["P", "Rows"] [10], range 10 "R" ["P", "Rows"] [10],
+      { id := 11, name := "C", groupPath := ["P", "Rows"], repeatableScope := [10], policy := { kind := .confirm } },
+      { id := 12, name := "C0", groupPath := ["P"], policy := { kind := .confirm } },
+      { id := 13, name := "C2", groupPath := ["P", "Rows"], repeatableScope := [10], policy := { kind := .confirm } },
+      { id := 14, name := "B", groupPath := ["P", "Rows"], repeatableScope := [10], policy := { kind := .boolean } },
+      { id := 15, name := "B0", groupPath := ["P"], policy := { kind := .boolean } },
+      { id := 16, name := "B2", groupPath := ["P", "Rows"], repeatableScope := [10], policy := { kind := .boolean } }]
+    repeatableGroups := [{ level := 10, path := ["P", "Rows"], repeatability := some 4 }] }
+
+private def bindingAdmitted (group : GroupPath) (target operation : String) : Bool :=
+  (lowerComputation bindingModel .english {
+    group, name := "C", targetRelPath := (if group.length == 1 then "../" else "../../") ++ target
+    commonPrecondition := none, alternatives := [{ precondition := none, operation }]
+    errorCodesToSuppress := [] }).isOk
+
+/-- The fixed-target arms that read an operand through a temporal or by-id carrier — copy, shift
+amount and source, both extractions from a DateTime, DateRange and Date construction and a Date
+part — refuse an unstarred row operand from the root and from the row's own declaring group, as the
+Kernel does on each (`MVK_NO_WILDCARD`, `MVK_ERROR_FIELD_NOT_IN_RULEGROUP`), and admit the root
+twin. Rows `a1`–`a8` of the
+[checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-by-id-temporal-arm-binding). -/
+example : [("D2", "[Rows/D]", "[D]", "[D0]"), ("D2", "AddDays(D0, [Rows/N])", "AddDays(/P/D0, [N])", "AddDays(D0, [N0])"),
+    ("D2", "AddDays(Rows/D, 1)", "AddDays(D, 1)", "AddDays(D0, 1)"),
+    ("D2", "DateFromDateTime(Rows/DT)", "DateFromDateTime(DT)", "DateFromDateTime(DT0)"),
+    ("T2", "TimeFromDateTime(Rows/DT)", "TimeFromDateTime(DT)", "TimeFromDateTime(DT0)"),
+    ("R2", "DateRange(Rows/D, D0)", "DateRange(D, /P/D0)", "DateRange(D0, D0)"),
+    ("D2", "Date(Rows/N, N0, N0)", "Date(N, /P/N0, /P/N0)", "Date(N0, N0, N0)"),
+    ("N2", "YearFromDate(Rows/D)", "YearFromDate(D)", "YearFromDate(D0)")].map (fun (target, root, row, twin) =>
+      (bindingAdmitted ["P"] target root, bindingAdmitted ["P", "Rows"] target row, bindingAdmitted ["P"] target twin)) =
+    [(false, false, true), (false, false, true), (false, false, true), (false, false, true), (false, false, true),
+      (false, false, true), (false, false, false), (false, false, true)] := by native_decide
+
+/-- A row Boolean target first-fills its own row's Boolean before a root one, while the Confirm
+twin draws `MVK_NO_BOOLY_ALLOWED`: rows `k04` and `k05` of the
+[checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-row-copy-carriers-and-root-indices). -/
+example : bindingAdmitted ["P"] "Rows/B2" "FirstFilledValue(Rows/B, B0)" = true ∧
+    (match lowerComputation bindingModel .english {
+        group := ["P"], name := "C", targetRelPath := "../Rows/C2", commonPrecondition := none
+        alternatives := [{ precondition := none, operation := "FirstFilledValue(Rows/C, C0)" }]
+        errorCodesToSuppress := [] } with
+      | .error refusal => refusal.detail == "MVK_NO_BOOLY_ALLOWED"
+      | .ok _ => false) = true := by native_decide
+
 end A12Kernel.Dm.CalendarExpressionLocks

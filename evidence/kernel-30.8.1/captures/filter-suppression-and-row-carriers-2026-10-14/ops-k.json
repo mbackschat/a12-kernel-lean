@@ -1,0 +1,20 @@
+[
+ {
+  "id": "k05",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-k05.json"
+  ]
+ },
+ {
+  "id": "k04",
+  "verb": "computation",
+  "args": [
+   "add",
+   "--dry-run",
+   "comp-k04.json"
+  ]
+ }
+]

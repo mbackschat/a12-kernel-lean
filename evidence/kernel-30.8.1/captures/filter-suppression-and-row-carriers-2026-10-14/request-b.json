@@ -1,0 +1,46 @@
+{
+ "model": "R11B_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "base",
+   "documentInline": {
+    "P": {
+     "Tot": "1",
+     "Rows": [
+      {
+       "N": "7",
+       "N2": "7.25"
+      },
+      {
+       "N2": "1"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "ints",
+   "documentInline": {
+    "P": {
+     "Tot": "1",
+     "Rows": [
+      {
+       "N": "2",
+       "N2": "2"
+      },
+      {
+       "N": "3",
+       "N2": "7.25"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

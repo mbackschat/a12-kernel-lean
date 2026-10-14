@@ -270,9 +270,13 @@ private def toleranceComparison (range : NumericToleranceRange) : NumericCompari
   left := .atom (.field { origin := .inner, field := { id := 1, info := { scale := 1, signed := true } } })
   right := .atom (.field { origin := .outer, field := { id := 1, info := { scale := 0, signed := true } } }) }
 
+/-- A tolerance comparison carries no scale gate, so the enclosing text's suppression changes
+nothing; rows `w01`, `w02` and `w05`, `w06` of the
+[checkpoint](../../docs/sources/having-filter-probes.md#src-having-scale-warning-suppression). -/
 example : [NumericToleranceRange.range1, .range2, .range5, .range10].all (fun range =>
-    (toleranceComparison range).havingAdmitted (fun _ => true)) = true ∧
-    ({ toleranceComparison .range1 with suppressExactScaleWarning := true }).havingAdmitted (fun _ => true) = false := by native_decide
+    (toleranceComparison range).havingAdmitted (fun _ => true) &&
+      ({ toleranceComparison range with suppressExactScaleWarning := true }).havingAdmitted (fun _ => true)) = true := by
+  native_decide
 
 private def toleranceRead : ResolvingCorrelationContext String := {
   read := fun env _ => if env == frame.innerEnv then .ok invalid else .error "captured read"
