@@ -111,11 +111,8 @@ def valueListExtentRelevant (group : CheckedNumberEntityGroup model)
 
 end CheckedNumberEntityGroup
 
-/-- A declaration's own signedness, which `Sum` attaches to each of its missing values (spec/10 §4),
-as an ordinary group slot does, so a keyed group may mix signed and unsigned fields
-([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads),
-`m01` against `m06`). The selection certificate admits only Number declarations, so the default
-is unreachable. -/
+/-- Homogeneous Number declarations behind one checked index selection, with their complete
+expansion. -/
 structure CheckedSelectedNumberEntity (model : FlatModel) where
   private mk ::
   source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)
@@ -153,7 +150,11 @@ def sideWith (source : CheckedSelectedNumberEntity model) (phase : Phase)
   selectedValueListSideWith (missingStarIsOmitted := missingStarIsOmitted) source.source phase document outer direct stored read column
     (fun _ value => pure value.asNumberValueListCell)
 
-private def declarationSigned (declaration : FlatFieldDecl) : Bool :=
+/-- A declaration's own signedness, which `Sum` attaches to each of its missing values (spec/10 §4),
+as an ordinary group slot does, so a keyed group may mix signed and unsigned fields
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads), `m01` against `m06`). Callers pass Number declarations only, so the default
+is unreachable. -/
+def _root_.A12Kernel.FlatFieldDecl.declaredSigned (declaration : FlatFieldDecl) : Bool :=
   (declaration.toNumberField?.map (·.info.signed)).getD true
 
 /-- The selected side with `Sum`'s per-declaration missing directions, as the ordinary group slot
@@ -169,8 +170,8 @@ def aggregateSidesWith (source : CheckedSelectedNumberEntity model) (phase : Pha
     values := selected.side
     sum := {
       cells := (selected.side.cells.zip selected.declarations).map fun (cell, declaration) =>
-        { cell, declarationSigned := declarationSigned declaration }
-      uninstantiatedSignedness := selected.omitted.map declarationSigned
+        { cell, declarationSigned := declaration.declaredSigned }
+      uninstantiatedSignedness := selected.omitted.map (·.declaredSigned)
       hasHaving := false } }
 
 def sideIn (source : CheckedSelectedNumberEntity model) (phase : Phase)

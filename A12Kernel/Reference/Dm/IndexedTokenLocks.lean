@@ -709,8 +709,8 @@ example : [false, true].all (fun enumeration =>
     [({ key := "missing" } : Scenario), { secondCode := "R1" }].all fun scenario =>
       silent (evaluate enumeration "[Rows/Body/A For Key] == \"A\"" false none scenario)) = true := by native_decide
 
--- A keyed read assigned to a fixed Enumeration target clears it on a missing, duplicated or invalid
--- key, as the one-operand scan does (p05 of the semantic-index capture).
+-- A keyed read assigned to a fixed Enumeration target clears it on a missing or duplicated key or an
+-- invalid selected cell, as the one-operand scan does (p05 of the semantic-index capture).
 example : evaluate true "[Rows/Body/A For Key]" true none { tokenTarget := true } = some (.inr "value A") ∧
     [({ key := "missing" } : Scenario), { secondCode := "R1" }, { firstA := "bad" }].all (fun scenario =>
       evaluate true "[Rows/Body/A For Key]" true none { scenario with tokenTarget := true } ==
@@ -732,6 +732,13 @@ example : evaluate true "[Rows/Body/A For Key]" true none { tokenTarget := true,
           { scenario with category := true, bandTarget := true, tokenTarget := true } ==
           some (.inr result)) := by native_decide
 
+
+-- A category read and the stored read of one keyed column are two operands, while repeating the
+-- stored read is a duplicate (w01); a keyed star assigned directly is no scalar read (e5, e6).
+example : evaluate true "FirstFilledValue(Rows/Body/A ->Kind For Key, Rows/Body/A For Key) == \"alpha\"" false none
+      { category := true } = some (.inl (.fired .value)) ∧
+    (evaluate true "FirstFilledValue(Rows/Body/A For Key, Rows/Body/A For Key) == \"A\"" false).isNone ∧
+    (evaluate true "[Rows/Children*/Value For Key]" true none { tokenTarget := true }).isNone := by native_decide
 
 -- A category on a keyed first-filled operand projects the selected cell; a missing key falls through
 -- to the next operand with OMISSION, and a duplicate or invalid selection stays silent (c01, c05 and

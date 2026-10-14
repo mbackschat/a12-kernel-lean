@@ -1,0 +1,156 @@
+{
+ "model": "R4dRt_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "base",
+   "documentInline": {
+    "P": {
+     "Total": "0",
+     "Items": [
+      {
+       "Sku": "a",
+       "Kind": "A"
+      }
+     ],
+     "Packages": [
+      {
+       "PKey": "p",
+       "Parcels": [
+        {
+         "W": "1"
+        },
+        {
+         "W": "2"
+        }
+       ]
+      }
+     ],
+     "OutS": "x"
+    }
+   }
+  },
+  {
+   "name": "baseE",
+   "documentInline": {
+    "P": {
+     "Total": "0",
+     "Items": [
+      {
+       "Sku": "a",
+       "Kind": "A"
+      }
+     ],
+     "Packages": [
+      {
+       "PKey": "p",
+       "Parcels": [
+        {
+         "W": "1"
+        },
+        {
+         "W": "2"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dupS",
+   "documentInline": {
+    "P": {
+     "Total": "0",
+     "Items": [
+      {
+       "Sku": "a",
+       "Kind": "A"
+      }
+     ],
+     "Packages": [
+      {
+       "PKey": "p",
+       "Parcels": [
+        {
+         "W": "1"
+        },
+        {
+         "W": "2"
+        }
+       ]
+      },
+      {
+       "PKey": "p",
+       "Parcels": [
+        {
+         "W": "3"
+        }
+       ]
+      }
+     ],
+     "OutS": "x"
+    }
+   }
+  },
+  {
+   "name": "dupE",
+   "documentInline": {
+    "P": {
+     "Total": "0",
+     "Items": [
+      {
+       "Sku": "a",
+       "Kind": "A"
+      }
+     ],
+     "Packages": [
+      {
+       "PKey": "p",
+       "Parcels": [
+        {
+         "W": "1"
+        },
+        {
+         "W": "2"
+        }
+       ]
+      },
+      {
+       "PKey": "p",
+       "Parcels": [
+        {
+         "W": "3"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "nomatch",
+   "documentInline": {
+    "P": {
+     "Total": "0",
+     "Items": [
+      {
+       "Sku": "a",
+       "Kind": "A"
+      }
+     ],
+     "Packages": [
+      {
+       "PKey": "q"
+      }
+     ],
+     "OutS": "x"
+    }
+   }
+  }
+ ]
+}

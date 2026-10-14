@@ -44,9 +44,9 @@ Eleven corrections are `pending` below and have not been handed off. The 13 term
 
 - `status`: pending
 - `canonical`: [spec/08 §4](../spec/08-paths-and-references.md#4-rows-are-addressed-by-semantic-key-never-by-position-).
-- `delta`: Over a keyed lower star or a keyed fixed group, a duplicated key leaves `NotAllFieldsFilled` silent, as it leaves `NoFieldFilled`: the undecided selection has no declared slot left to count as missing. A key naming no row fires it with OMISSION.
-- `basis`: [semantic-index checkpoint](sources/model-structure-and-declaration-probes.md#src-semantic-index-reads), rule `q04` over a keyed star and `v05` over a keyed fixed group, each on its duplicate, unmatched and matched documents, at a12-dmkits `a4091041`, Kernel 30.8.1.
-- `acceptance`: Reconcile the three documents of both carriers. Do not claim whether the silent verdict is UNKNOWN or not-fired, which no row separates, or the other negative fill quantifiers, which no row measured under a duplicate key.
+- `delta`: Over a keyed lower star or a keyed fixed group, a duplicated key leaves `NotAllFieldsFilled` silent, as it leaves `NoFieldFilled`: the undecided selection has no declared slot left to count as missing, so beside it only an empty sibling operand fires the rule. A key naming no row fires it with OMISSION.
+- `basis`: [semantic-index checkpoint](sources/model-structure-and-declaration-probes.md#src-semantic-index-reads), rule `q04` over a keyed star and `v05` over a keyed fixed group, each on its duplicate, unmatched and matched documents, and `w02`–`w05` beside a filled or empty fixed operand, at a12-dmkits `a4091041`, Kernel 30.8.1.
+- `acceptance`: Reconcile the documents of both carriers and the fixed-operand compositions. Do not claim whether the silent verdict is UNKNOWN or not-fired, which no row separates, or the remaining fill quantifiers, which no row measured under a duplicate key.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-06"></a>

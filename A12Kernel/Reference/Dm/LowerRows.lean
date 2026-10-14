@@ -79,7 +79,8 @@ def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : 
   | .constant "True" | .constant "False" => target.policy.kind == .boolean || target.policy.kind == .confirm
   | .string text => !isTemporalConstant text
   | .value { index := none, filter := none, .. } => target.policy.kind == .enumeration || target.policy.kind == .boolean || target.policy.kind == .confirm
-  | .value { index := some _, filter := none, .. } => target.policy.kind == .enumeration
+  | .value { path, index := some _, filter := none, .. } =>
+      target.policy.kind == .enumeration && !path.segments.any (·.star)
   | _ => false
 
 private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
@@ -92,9 +93,9 @@ private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
     pure (.enumeration (← elaborated "EnumerationComputation"
       (checkAddressedEnumerationComputation model group target.id source)))
 
-/-- `arity := .soleAllowed` lowers a keyed read, with or without a category, into an Enumeration
-target as the one-operand scan: the Kernel clears that target on a missing, duplicate or formally
-invalid key exactly as the scan does ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)). -/
+/-- `arity := .soleAllowed` lowers a keyed column read, with or without a category, into an
+Enumeration target as the one-operand scan: the Kernel clears that target on a missing or duplicated
+key or a formally invalid selected cell exactly as the scan does ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)). -/
 private def lowerFirstFilledAlternative (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (arguments : List Argument) (arity : EntityListArity := .manyRequired) :
     Lowering (CheckedFirstFilledAlternative model) := do
@@ -139,6 +140,10 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
     return .firstFilled (← lowerFirstFilledAlternative model group target arguments)
   if target.policy.kind == .enumeration then
     if let .value reference@{ index := some _, filter := none, .. } := expression then
+      -- Only a keyed column is a scalar read; a keyed star or group assigned directly draws
+      -- `MVK_NO_WILDCARDS_ALLOWED` (`e5`, `e6` of the semantic-index checkpoint).
+      let .indexed _ _ ← lowerEntityOperand model group (.mk (.entity reference) none)
+        | refuse "EnumerationComputation" "keyed extent"
       return .firstFilled (← lowerFirstFilledAlternative model group target
         [.mk (.entity reference) none] (arity := .soleAllowed))
   if target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .dateRange then

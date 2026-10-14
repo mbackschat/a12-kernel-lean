@@ -94,6 +94,8 @@ end CheckedTokenEntityGroup
 inductive TokenEntityGroupError where
   | expansionNotToken (path : List String)
   | expansionEmpty (path : List String)
+  /-- A category on a selected group extent, which reads no single declaration. -/
+  | categoryOnGroup (path : List String)
   deriving Repr, DecidableEq
 
 /-- Certify one authored group slot by expanding it once through the shared subtree query. -/

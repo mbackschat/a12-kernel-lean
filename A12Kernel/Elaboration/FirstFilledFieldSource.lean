@@ -123,8 +123,8 @@ def elaborateFirstFilledFieldList (model : FlatModel) (declaringGroup writtenGro
       CheckedFilledFieldCountGroupSource.ofResolved model source).mapError FirstFilledListElabError.group
   let operands ← shape.operands.mapM fun
     | .field declaration .stored => pure (FirstFilledFieldOperand.field declaration)
-    | .indexed source _ => pure (.indexed source)
-    | .keyed source _ => pure (.keyed source)
+    | .indexed source .stored => pure (.indexed source)
+    | .keyed source .stored => pure (.keyed source)
     | .star source .stored => pure (.star (.plain declaringGroup source))
     | .starHaving source having .stored =>
         (FirstFilledFieldOperand.star <$> CheckedFilledFieldStarSource.withHaving model

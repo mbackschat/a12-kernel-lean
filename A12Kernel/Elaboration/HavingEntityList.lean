@@ -78,7 +78,7 @@ def checkHavingEntityDuplicates (operands : List (ResolvedHavingEntityOperand mo
   if let some (_, duplicate) := firstDuplicateInEncounterOrder?
       (fun read => read.operand.exactIdentity?.map (read.origin, ·)) operands then
     match duplicate with
-    | .field (field, _) | .indexed (field, _) => throw (.fieldFill (.duplicateOperand field))
+    | .field (field, _) | .indexed (field, _) _ => throw (.fieldFill (.duplicateOperand field))
     | .fixedGroup path | .keyedGroup path _ => throw (.fieldFill (.duplicateGroupOperand path))
   for left in operands do
     if let some right := operands.find? (fun right =>

@@ -103,12 +103,11 @@ private def resolvedSelectedPartialAggregateSides
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
     Except PartialViewNumberAggregateError
       (Sum ResolvedNumberEntityAggregateSides PartialValidationNumberAggregateResult) := do
-  let signed (declaration : FlatFieldDecl) : Bool := (declaration.toNumberField?.map (·.info.signed)).getD true
   let sides (cells : List (FlatFieldDecl × ValueListCell .number)) (omitted : List FlatFieldDecl) :
       ResolvedNumberEntityAggregateSides :=
     { values := { cells := cells.map (·.2), hasUninstantiatedTail := !omitted.isEmpty, hasHaving := false }
-      sum := { cells := cells.map fun (declaration, cell) => { cell, declarationSigned := signed declaration }
-               uninstantiatedSignedness := omitted.map signed, hasHaving := false } }
+      sum := { cells := cells.map fun (declaration, cell) => { cell, declarationSigned := declaration.declaredSigned }
+               uninstantiatedSignedness := omitted.map (·.declaredSigned), hasHaving := false } }
   let first := match source.source with
     | .inl index => [index.targetDeclaration]
     | .inr extent => extent.declarations.take 1

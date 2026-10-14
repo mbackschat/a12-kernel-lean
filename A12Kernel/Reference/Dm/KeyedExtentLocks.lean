@@ -26,7 +26,7 @@ private def dimsModel : FlatModel :=
       else [declaration] }
 
 private def input (key : String) (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (emptySecond : Bool := false) (sourceModel : FlatModel := model) (header : String := "1")
-    (dims : String × String := ("3", "4")) : Option (CheckedDocument sourceModel) := do
+    (dims : String × String := ("3", "4")) (out : String := "99") : Option (CheckedDocument sourceModel) := do
   let numericIndex := (sourceModel.lookupUniqueId 1).toOption.any (fun field => field.policy.kind.surfaceKind == .number)
   let package (key : String) (weights : List String) := Lean.Json.mkObj ([
     ("Code", .str key), ("Header", .str header),
@@ -36,7 +36,7 @@ private def input (key : String) (duplicate : Bool := false) (bad : Bool := fals
       [("Dims", Lean.Json.mkObj ([("Width", dims.1), ("Depth", dims.2)].filterMap fun (name, value) =>
         if value.isEmpty then none else some (name, .str value)))] else [])
   let data := Lean.Json.mkObj [("Form", Lean.Json.mkObj [
-    ("Key", .str key), ("Out", .str "99"),
+    ("Key", .str key), ("Out", if out.isEmpty then .null else .str out),
     ("Packages", .arr #[package (if numericIndex then "1" else "P1") ["2", if bad then "bad" else "5"], package (if invalidIndex then "" else if duplicate then (if numericIndex then "1" else "P1") else (if numericIndex then "2" else "P2")) (if emptySecond then [] else ["11"])])])]
   let dm : DmModel := { flat := sourceModel, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
   let input ← (readDocument dm data).toOption
@@ -44,8 +44,8 @@ private def input (key : String) (duplicate : Bool := false) (bad : Bool := fals
   (checkDocument prepared "en_US" input.data).toOption
 
 private def validationVerdict (expression : String) (key : String := "P1") (duplicate : Bool := false) (bad : Bool := false) (invalidIndex : Bool := false) (emptySecond : Bool := false)
-    (sourceModel : FlatModel := model) (dims : String × String := ("3", "4")) : Option Verdict := do
-  let checked ← input key duplicate bad invalidIndex emptySecond sourceModel (dims := dims)
+    (sourceModel : FlatModel := model) (dims : String × String := ("3", "4")) (out : String := "99") : Option Verdict := do
+  let checked ← input key duplicate bad invalidIndex emptySecond sourceModel (dims := dims) (out := out)
   let parsed ← (parseText .english expression).toOption
   let condition ← (lowerCondition sourceModel ["Form"] false parsed.body).toOption
   let verdict ← (condition.core.evalAddressed {
@@ -210,6 +210,18 @@ example : numberFamily "Packages/Items*/Weight For Key" "missing" ["0", "0", "0"
 example : (validationVerdict "NotAllFieldsFilled(Packages/Items*/Weight For Key)" (duplicate := true)).any
       (fun | .fired _ => false | _ => true) = true ∧
     validationVerdict "NotAllFieldsFilled(Packages/Items*/Weight For Key)" "missing" = some (.fired .omission) := by
+  native_decide
+
+-- Beside another operand the duplicate still leaves no slot missing, so an empty sibling alone fires
+-- the negative quantifier, and a matched row's uninstantiated tail fires it (w02, w03 and q04).
+example : (validationVerdict "NotAllFieldsFilled(Out, Packages/Items*/Weight For Key)" (duplicate := true)).any
+      (fun | .fired _ => false | _ => true) = true ∧
+    validationVerdict "NotAllFieldsFilled(Out, Packages/Items*/Weight For Key)" (duplicate := true) (out := "") =
+      some (.fired .omission) ∧
+    ["99", ""].all (fun out =>
+      (validationVerdict "FieldsNotCollectivelyFilled(Out, Packages/Items*/Weight For Key)" (duplicate := true)
+        (out := out)).any (fun | .fired _ => false | _ => true)) = true ∧
+    validationVerdict "NotAllFieldsFilled(Packages/Items*/Weight For Key)" "P2" = some (.fired .omission) := by
   native_decide
 
 -- The keyed fixed group behaves alike (v05 of the same capture).

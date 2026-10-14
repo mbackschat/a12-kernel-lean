@@ -245,7 +245,7 @@ def FlatModel.elaborateComputationGroupListWith (model : FlatModel)
     targetGroup (authored.first :: authored.rest)).mapError .shape
   if let some duplicate := firstDuplicateResolvedEntityOperand? operands then
     throw (.shape (match duplicate with
-      | .field (field, _) | .indexed (field, _) => .duplicateOperand field
+      | .field (field, _) | .indexed (field, _) _ => .duplicateOperand field
       | .fixedGroup path | .keyedGroup path _ => .duplicateGroupOperand path))
   if let some (left, right) := firstResolvedOperandOverlap? operands then
     throw (.shape (.overlappingOperands left right))

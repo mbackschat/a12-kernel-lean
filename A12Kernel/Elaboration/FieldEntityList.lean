@@ -117,6 +117,7 @@ def indexIdentity? : ResolvedFieldEntityOperand model → Option (GroupPath × C
 private def categoryIdentity? : ResolvedFieldEntityOperand model → Option String
   | .field _ (.projected category) => some category
   | .star _ (.projected category) | .starHaving _ _ (.projected category) => some category
+  | .indexed _ (.projected category) | .keyed _ (.projected category) => some category
   | _ => none
 
 /-- The **indirect** duplicate arm. Two group operands overlap only by strict ancestry, so the same starred group written twice stays two independent authored occurrences while a starred group beside its own starred descendant is rejected. A group overlaps a field-denoting slot inside it only when their index and category identities agree (`CheckEntityListenUtils.isEntityIndirectlyReferenced`, kernel 30.8.1; `spec/08` §4).
@@ -285,10 +286,12 @@ def firstDuplicateDirectField? (directFieldId? : α → Option FieldId) :
   firstDuplicateOptionalIdentity? directFieldId?
 
 /-- One exact non-wildcard operand identity. Field reading form is semantic identity, while fixed
-    groups identify by path. An indexed field retains the key, including literal spelling. Starred occurrences intentionally have no exact identity. -/
+    groups identify by path. An indexed field retains the key, including literal spelling, and its
+    reading form: a category read and the stored read under one key are two operands
+    (`w01` of the [checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)). Starred occurrences intentionally have no exact identity. -/
 inductive ResolvedFieldEntityIdentity where
   | field (identity : FieldId × FieldEntityReadForm)
-  | indexed (identity : FieldId × CheckedSemanticIndexKey)
+  | indexed (identity : FieldId × CheckedSemanticIndexKey) (form : FieldEntityReadForm)
   | keyedGroup (path : GroupPath) (key : CheckedSemanticIndexKey)
   | fixedGroup (path : GroupPath)
   deriving Repr, DecidableEq
@@ -296,7 +299,7 @@ inductive ResolvedFieldEntityIdentity where
 def ResolvedFieldEntityOperand.exactIdentity? :
     ResolvedFieldEntityOperand model → Option ResolvedFieldEntityIdentity
   | .field declaration form => some (.field (declaration.id, form))
-  | .indexed source _ => some (.indexed (source.targetDeclaration.id, source.key))
+  | .indexed source form => some (.indexed (source.targetDeclaration.id, source.key) form)
   | .keyed source _ => match source.target with
     | .group path => some (.keyedGroup path source.selection.key)
     | .star _ | .starredGroup _ => none
@@ -323,7 +326,7 @@ side's own admission gates ([inbound](../../docs/sources/inbound-handbacks.md#in
 def crossFieldEntityListRepeat? (operands : List (ResolvedFieldEntityOperand model)) :
     Option FieldEntityShapeElabError :=
   match firstDuplicateResolvedEntityOperand? operands with
-  | some (.field (field, _)) | some (.indexed (field, _)) => some (.duplicateOperand field)
+  | some (.field (field, _)) | some (.indexed (field, _) _) => some (.duplicateOperand field)
   | some (.fixedGroup path) | some (.keyedGroup path _) => some (.duplicateGroupOperand path)
   | none => (firstResolvedOperandOverlap? operands).map fun (ancestor, descendant) =>
       .overlappingOperands ancestor descendant
@@ -531,7 +534,7 @@ def elaborateFieldEntityShapeIn (model : FlatModel)
         if let some path := (first :: rest).findSome? ResolvedFieldEntityOperand.categoryPath? then
           throw (.categoryNotAllowed path)
       match hDuplicate : firstDuplicateResolvedEntityOperand? (first :: rest) with
-      | some (.field (field, _)) | some (.indexed (field, _)) => throw (.duplicateOperand field)
+      | some (.field (field, _)) | some (.indexed (field, _) _) => throw (.duplicateOperand field)
       | some (.fixedGroup path) | some (.keyedGroup path _) => throw (.duplicateGroupOperand path)
       | none =>
           match hOverlap : firstResolvedOperandOverlap? (first :: rest) with

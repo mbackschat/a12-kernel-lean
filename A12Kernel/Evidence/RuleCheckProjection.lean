@@ -117,7 +117,8 @@ def captures : List (String × String × String) := [
   ("captures/having-ordinary-leaves-2026-10-14/obs3.json", "captures/having-ordinary-leaves-2026-10-14/R3_DM.json", "captures/having-ordinary-leaves-2026-10-14/ops3.json"),
   ("captures/having-ordinary-leaves-2026-10-14/obs4.json", "captures/having-ordinary-leaves-2026-10-14/R3_DM.json", "captures/having-ordinary-leaves-2026-10-14/ops4.json"),
   ("captures/semantic-index-reads-2026-10-14/obs.json", "captures/semantic-index-reads-2026-10-14/R4_DM.json", "captures/semantic-index-reads-2026-10-14/ops.json"),
-  ("captures/semantic-index-reads-2026-10-14/obs-b.json", "captures/semantic-index-reads-2026-10-14/R4b_DM.json", "captures/semantic-index-reads-2026-10-14/ops-b.json")]
+  ("captures/semantic-index-reads-2026-10-14/obs-b.json", "captures/semantic-index-reads-2026-10-14/R4b_DM.json", "captures/semantic-index-reads-2026-10-14/ops-b.json"),
+  ("captures/semantic-index-reads-2026-10-14/obs-d.json", "captures/semantic-index-reads-2026-10-14/R4b_DM.json", "captures/semantic-index-reads-2026-10-14/ops-d.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) := [

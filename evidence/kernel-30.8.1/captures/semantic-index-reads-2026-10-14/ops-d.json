@@ -1,0 +1,105 @@
+[
+ {
+  "id": "w01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w01",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FirstFilledValue(Items/Kind -> Band For \"a\", Items/Kind For \"a\") == \"Hi\"",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w02",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And NotAllFieldsFilled(OutS, Packages/Parcels*/W For \"p\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w03",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And FieldsNotCollectivelyFilled(OutS, Packages/Parcels*/W For \"p\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w04",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And AllFieldsFilled(Packages/Parcels*/W For \"p\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "w05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w05",
+   "--field",
+   "/P/Total",
+   "--group",
+   "/P",
+   "--condition",
+   "FieldFilled(Total) And AllFieldsFilled(OutS, Packages/Parcels*/W For \"p\")",
+   "--message",
+   "en_US=m"
+  ]
+ },
+ {
+  "id": "e5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "e6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "e6.json",
+   "--dry-run"
+  ]
+ }
+]

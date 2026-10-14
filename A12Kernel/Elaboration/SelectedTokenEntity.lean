@@ -7,7 +7,7 @@ cannot borrow its first field's token domain (spec/04 value lists, spec/08 §4.1
 structure CheckedSelectedTokenEntity (model : FlatModel) where
   private mk ::
   source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)
-  /-- A category is admitted only on a selected column ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)). -/
+  /-- A category is admitted only on a selected column or keyed star ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)). -/
   projectionRef : EnumerationProjectionRef
   first : CheckedTokenExpansionSlot
   rest : List CheckedTokenExpansionSlot
@@ -45,6 +45,8 @@ def certify (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntity
   let path := match source with
     | .inl source => source.targetDeclaration.path
     | .inr source => source.entityPath
+  if let (.inr extent, .category _) := (source, projectionRef) then
+    if !(extent.target matches .star _) then throw (.categoryOnGroup path)
   if allToken : declarations.all (fun d => (d.toTokenSlot? projectionRef).isSome) = true then
     match owned : declarations.filterMap (fun d : FlatFieldDecl => d.toTokenSlot? projectionRef) with
     | [] => throw (.expansionEmpty path)

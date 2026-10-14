@@ -136,8 +136,8 @@ def fillCapacity? : CheckedFieldFillOperand model → Option Nat
   | .group source => source.fillCapacity?
 
 /-- The declared slots this operand contributes at validation. A keyed operand whose selection is
-undecided, by a duplicated or malformed key, reads as its one unknown observation: no declared extent
-is left to be missing, so `NotAllFieldsFilled` stays silent over it (spec/08 §4.1, `q04` of the
+undecided by a duplicated key reads as its one unknown observation: no declared extent
+is left to be missing, so `NotAllFieldsFilled` stays silent over it (spec/08 §4.1, `q04` and `w02` of the
 [semantic-index capture](../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)). -/
 def validationFillCapacity? (document : CheckedDocument model) (outer : Env) :
     CheckedFieldFillOperand model → Except CheckedAddressingError (Option Nat)

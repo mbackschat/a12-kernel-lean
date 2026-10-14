@@ -1,0 +1,571 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R4dRt_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-14T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "base",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "w01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey"
+       ]
+      },
+      {
+       "code": "w03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "w01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey"
+       ]
+      },
+      {
+       "code": "w03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "baseE",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "w01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey"
+       ]
+      },
+      {
+       "code": "w03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "w01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey"
+       ]
+      },
+      {
+       "code": "w03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "dupS",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages[2]/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages[2]/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages[2]/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages[2]/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "dupE",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages[2]/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages[2]/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "P/Packages[2]/PKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "P/Packages[2]/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[1]/Parcels[0]/W",
+        "P/OutS",
+        "P/Packages/PKey"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "nomatch",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "w01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W",
+        "P/OutS"
+       ]
+      },
+      {
+       "code": "w03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W",
+        "P/OutS"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "w01",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "P/Items/Kind",
+        "P/Items/Sku",
+        "P/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "w02",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W",
+        "P/OutS"
+       ]
+      },
+      {
+       "code": "w03",
+       "field": "P/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W",
+        "P/OutS",
+        "P/Total"
+       ],
+       "fillToFix": [
+        "/P[1]/Packages[-5]/PKey",
+        "/P[1]/Packages[-5]/Parcels[0]/W",
+        "P/OutS"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
