@@ -98,8 +98,9 @@ def reads (pair : CheckedParallelFieldPair model) (document : CheckedDocument mo
   | .ordinary leaf => ordinaryReads pair document row outer inputs leaf
 where
   -- The ordinary projection at the leaf's binding; a keyed read names the row the index context
-  -- places. A read of the bound side's own row is a joined read, which brings that side's index
-  -- field (KF539).
+  -- places. A read of the bound side's own row, or below it through stars and fixed groups, is a
+  -- joined read: it brings that side's index field (KF539) and names an unmatched side's row at the
+  -- unknown level (parallel-child capture, `q01`, `q02`, `q08`, 2026-10-14).
   ordinaryReads (pair : CheckedParallelFieldPair model) (document : CheckedDocument model)
       (row : ResolvedParallelIndexRow) (outer : Env) (inputs : Option MessageReferenceInputs)
       (leaf : ValidationConditionLeaf model) : Except ParallelReferenceError ParallelLeafReads := do
@@ -108,9 +109,14 @@ where
     let classify := fun (pointer : MessagePointer) =>
       match pair.ordinaryBinding? leaf, model.lookupUniqueId pointer.field with
       | some (.side side), .ok declaration =>
-          let joined := match side with | .left => row.left | .right => row.right
+          let (joined, index) := match side with
+            | .left => (row.left, pair.groups.leftIndexDeclaration)
+            | .right => (row.right, pair.groups.rightIndexDeclaration)
+          let depth := index.repeatableScope.length
           if joined.group.path.isPrefixOf declaration.groupPath &&
-              (concreteFieldPointer declaration environment).toOption == some pointer then .joined declaration
+              ((concreteFieldPointer index environment).toOption.map (·.coordinates)) ==
+                some (pointer.coordinates.take depth) &&
+              (pointer.coordinates.drop depth).all (· == .wildcard) then .joined declaration
           else .expanded pointer
       | _, _ => .expanded pointer
     pure ⟨(← condition.referencePointers environment inputs |>.mapError .outer).map classify,

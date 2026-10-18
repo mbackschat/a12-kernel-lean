@@ -152,8 +152,9 @@ example : fired noledger = some [
   native_decide
 
 -- With Demand and Supply full, an unmatched side has no free row of its group left; its fields still read
--- empty, so neither the computations nor the rules change. The capture has free
--- rows on every document, so this invariance is the chosen account, not a measurement.
+-- empty, so neither the computations nor the rules change. This capture has free rows on every
+-- document; the parallel-child capture measures the full case for a presence test and child reads
+-- ([locks](ParallelChildReadLocks.lean)), and for these keyed reads it stays the chosen account.
 example : computed staff 4 = computed staff ∧ fired staff 4 = fired staff := by native_decide
 
 end A12Kernel.Dm.ParallelJoinedLimitsLocks

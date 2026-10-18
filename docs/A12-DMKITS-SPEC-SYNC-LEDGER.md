@@ -37,7 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Fifteen corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Sixteen corrections are `pending` below and have not been handed off. The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+
+<a id="spec-2026-10-14-12"></a>
+### SPEC-2026-10-14-12 — a parallel rule's read below a joined group binds that side's joined row
+
+- `status`: pending
+- `canonical`: [spec/07 §2](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key).
+- `delta`: Beside a key join, starred children at one or two starred levels and a fixed subgroup of either side are admitted, read at that side's joined row, and alone anchor the join. An unmatched side's children read empty, also when its key-only row lies beyond capacity, and are referenced at its `-5` row with starred levels at `[0]` and a fixed subgroup at `[1]`; a read below a side's row adds that side's index field to the fill-to-fix set. A filtered star below either joined group draws `MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED` after `RepetitionNotUnique` beside the join, one in an unjoined group is admitted, and an unstarred child read draws `MVK_NO_WILDCARD`.
+- `basis`: [parallel child-read checkpoint](sources/model-structure-and-declaration-probes.md#src-parallel-child-reads), 24 static rules and two runtime rounds over the `free` and `full` documents, at a12-dmkits `a4091041`, Kernel 30.8.1, both strategies agreeing.
+- `acceptance`: Reconcile the static verdicts of `q00`–`q12`, `r01`–`r05`, `y1`, `y2`, `x1`, `x2` and the messages with their references on both documents of both rounds. Do not claim partial calls over these reads, a runtime row for a rule declared inside a joined group, a keyed read into a child group, a filtered star in a frame enclosing a joined group, or a keyed read on a key-only row beyond capacity, which this entry does not cover.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-14-11"></a>
 ### SPEC-2026-10-14-11 — the scale-warning waiver reaches every filter comparison of its text

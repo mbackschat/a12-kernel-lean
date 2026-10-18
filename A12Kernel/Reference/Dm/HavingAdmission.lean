@@ -29,6 +29,8 @@ private structure RawAdmissionContext where
   compilePattern : StringPatternCompiler := builtinStringPatternCompiler
   suppressExactScaleWarning : Bool := false
   inFilterSyntax : Bool := false
+  /-- The levels a key join iterates in parallel, empty outside a parallel rule. -/
+  joinedLevels : List RepeatableLevel := []
 
 private abbrev RawAdmissionM := StateT FilterRuleFacts Lowering
 
@@ -150,6 +152,11 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
       else if starredAt (repeated.path.length - 1) then
         outerWildcard := true
       else
+        -- A joined level iterates in parallel even where it holds the written field, so a filter
+        -- below either joined group is a filtered entity under parallel iteration
+        -- (parallel-child capture, `q05`, `q10`, `y1`, 2026-10-14).
+        if reference.filter.isSome && admission.joinedLevels.contains level then
+          modify fun facts => { facts with parallelFilteredEntity := true }
         if !group.isPrefixOf bindingGroup then
           refuse "Having" KernelStaticDiagnostic.fieldNotInRuleGroup.kernelCode
         if let some refusal := levelIterationRefusal { marker := .iteration }
@@ -710,10 +717,13 @@ def checkOrderedAdmission (model : FlatModel) (group bindingGroup : GroupPath)
   if expression.hasHaving then
     if let some diagnostic := facts.beforeIterationRefusal? then refuse "Having" diagnostic.kernelCode
 
-/-- Admit one fragment and retain its contribution to the generated rule's global checks. -/
+/-- Admit one fragment and retain its contribution to the generated rule's global checks.
+`joinedLevels` are the levels a parallel rule's key join iterates. -/
 def checkRawConditionBeforeGlobals (model : FlatModel) (group bindingGroup : GroupPath)
-    (expression : Expr) (suppressExactScaleWarning : Bool) : Lowering FilterRuleFacts := do
-  let (_, facts) ← (admitBody model group bindingGroup [] [] { suppressExactScaleWarning } false false expression).run {}
+    (expression : Expr) (suppressExactScaleWarning : Bool) (joinedLevels : List RepeatableLevel := []) :
+    Lowering FilterRuleFacts := do
+  let (_, facts) ← (admitBody model group bindingGroup [] [] { suppressExactScaleWarning, joinedLevels }
+    false false expression).run {}
   pure facts
 
 /-- The generated target bracket is read before the authored operation (spec/09 §6). -/

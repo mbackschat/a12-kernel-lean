@@ -1,0 +1,17 @@
+{
+ "kernel": "30.8.1",
+ "producer": "a4091041",
+ "route": "dmtool model check",
+ "model": "R13S_DM.json",
+ "valid": false,
+ "diagnostics": [
+  {
+   "path": "/Staffing/q05",
+   "code": "MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED"
+  },
+  {
+   "path": "/Staffing/q07",
+   "code": "MVK_NO_WILDCARD"
+  }
+ ]
+}

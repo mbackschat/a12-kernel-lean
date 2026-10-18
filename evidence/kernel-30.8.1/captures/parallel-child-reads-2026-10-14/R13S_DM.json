@@ -1,0 +1,380 @@
+{
+ "header": {
+  "id": "R13S_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R13S_DM"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Staffing",
+     "name": "Staffing",
+     "Group": {
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Staffing/Demand",
+        "name": "Demand",
+        "Group": {
+         "repeatability": 4,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Staffing/Demand/Department",
+           "name": "Department",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Demand/Base",
+           "name": "Base",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Staffing/Demand/DItems",
+           "name": "DItems",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Staffing/Demand/DItems/P",
+              "name": "P",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ],
+            "repeatability": 2
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Staffing/Demand/DSub",
+           "name": "DSub",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Staffing/Demand/DSub/Y",
+              "name": "Y",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "Department"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Staffing/Supply",
+        "name": "Supply",
+        "Group": {
+         "repeatability": 4,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Department",
+           "name": "Department",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Headcount",
+           "name": "Headcount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Staffing/Supply/Items",
+           "name": "Items",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Staffing/Supply/Items/Q",
+              "name": "Q",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ],
+            "repeatability": 2
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Staffing/Supply/Sub",
+           "name": "Sub",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Staffing/Supply/Sub/X",
+              "name": "X",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "Department"
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Staffing/q01",
+        "name": "q01",
+        "Rule": {
+         "errorEntityRelPath": "../Supply/Note",
+         "errorCode": "q01",
+         "errorCondition": "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And NumberOfFilledFields(Supply/Items*/Q) == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Staffing/q02",
+        "name": "q02",
+        "Rule": {
+         "errorEntityRelPath": "../Supply/Note",
+         "errorCode": "q02",
+         "errorCondition": "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And Sum(Supply/Items*/Q) == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Staffing/q03",
+        "name": "q03",
+        "Rule": {
+         "errorEntityRelPath": "../Supply/Note",
+         "errorCode": "q03",
+         "errorCondition": "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And FirstFilledValue(Supply/Items*/Q) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Staffing/q04",
+        "name": "q04",
+        "Rule": {
+         "errorEntityRelPath": "../Supply/Note",
+         "errorCode": "q04",
+         "errorCondition": "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And AtLeastOneFieldFilled(Supply/Items*/Q)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Staffing/q05",
+        "name": "q05",
+        "Rule": {
+         "errorEntityRelPath": "../Supply/Note",
+         "errorCode": "q05",
+         "errorCondition": "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And NumberOfFilledFields(Supply/Items*/Q Having [Supply/Items/Q] > 1) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Staffing/q06",
+        "name": "q06",
+        "Rule": {
+         "errorEntityRelPath": "../Supply/Note",
+         "errorCode": "q06",
+         "errorCondition": "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And FieldFilled(Supply/Sub/X)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Staffing/q07",
+        "name": "q07",
+        "Rule": {
+         "errorEntityRelPath": "../Supply/Note",
+         "errorCode": "q07",
+         "errorCondition": "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And [Supply/Items/Q] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Staffing/q08",
+        "name": "q08",
+        "Rule": {
+         "errorEntityRelPath": "../Supply/Note",
+         "errorCode": "q08",
+         "errorCondition": "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And NumberOfFilledFields(Demand/DItems*/P) == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Staffing/q09",
+        "name": "q09",
+        "Rule": {
+         "errorEntityRelPath": "../Supply/Note",
+         "errorCode": "q09",
+         "errorCondition": "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And FieldNotFilled(Demand/DSub/Y)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Staffing/q00",
+        "name": "q00",
+        "Rule": {
+         "errorEntityRelPath": "../Supply/Note",
+         "errorCode": "q00",
+         "errorCondition": "FieldFilled(Demand/Base) And FieldNotFilled(Supply/Note) And FieldFilled(Supply/Headcount)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "repeatability": 1
+     }
+    }
+   ]
+  }
+ }
+}

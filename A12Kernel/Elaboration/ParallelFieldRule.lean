@@ -122,19 +122,23 @@ def CheckedParallelFieldPair.ordinaryBinding? (pair : CheckedParallelFieldPair m
       else none
   | .error _ => none
 
-/-- Whether a binding fixes every iterating read of an ordinary leaf. A read below a joined group or
-in a repeatable frame enclosing one is unmeasured beside a join, as are current-repetition and custom
-leaves; a join inside an indexed group is refused as a whole (`MVK_MULTIPLE_INDEX_FIELDS`), and so is
-`RepetitionNotUnique` beside one (`MVK_PARALLEL_ITERATION_NOT_ALLOWED`; joined-carrier-limits capture
-rows `e01`–`e05`, `d06`, 2026-10-14). -/
+/-- Whether a binding fixes every iterating read of an ordinary leaf. A read below a joined group,
+through starred children or a fixed subgroup, binds that side's joined row, an unmatched side's
+key-only row included, whose children read empty (parallel-child capture, rows `q01`–`q09` and
+`r01`–`r05`, two starred levels deep in `r04`, 2026-10-14). A rule declared inside a joined group
+is admitted on the same account; the capture checks one statically (`y2`), not at runtime. A read
+in a repeatable frame enclosing a joined group is unmeasured beside a join, as are
+current-repetition and custom leaves. The Kernel refuses a join inside an indexed group as a whole
+(`MVK_MULTIPLE_INDEX_FIELDS`, joined-carrier-limits rows `e01`–`e05`), which this gate refuses
+without a class; `RepetitionNotUnique` beside a join takes its class from the reader's whole-rule
+gate first (`d06`). -/
 def CheckedParallelFieldPair.ordinaryAdmitted (pair : CheckedParallelFieldPair model)
     (leaf : ValidationConditionLeaf model) : Bool :=
   let joined := [pair.groups.leftGroup.path, pair.groups.rightGroup.path]
   let placed := model.fields.all fun declaration =>
     !leaf.referencesField declaration.id || joined.all fun path =>
-      declaration.groupPath == path ||
-        (!path.isPrefixOf declaration.groupPath &&
-          (!declaration.groupPath.isPrefixOf path || declaration.repeatableScope.isEmpty))
+      path.isPrefixOf declaration.groupPath ||
+        !declaration.groupPath.isPrefixOf path || declaration.repeatableScope.isEmpty
   let measured := match leaf with
     | .repetitionNotUnique .. | .guardedRootCurrentRepetition ..
     | .guardedRepeatableCurrentRepetition .. | .customCondition _ | .customFieldValidity _

@@ -39,7 +39,8 @@ private inductive PairSyntaxLeaf where
       (mixed : Option (ParallelFieldLeafOf FieldId Empty Expr) := none)
 
 /-- Every plain field path an expression reads, in authored order. A starred, keyed or filtered
-reference reads no single joined row, so it never anchors the join. -/
+reference reads no single field of a joined row; a star below a joined group anchors the join
+through its prefix instead (`Expr.starredReadPrefixes`). -/
 private partial def Expr.fieldPaths : Expr → List SurfaceFieldPath
   | .value reference | .entity reference =>
       if reference.index.isSome || reference.filter.isSome || reference.path.segments.any (·.star) then []
@@ -50,6 +51,23 @@ private partial def Expr.fieldPaths : Expr → List SurfaceFieldPath
   | .arith _ left right | .compare _ left right => left.fieldPaths ++ right.fieldPaths
   | .braces body | .parens body => body.fieldPaths
   | .logic _ parts => parts.flatMap Expr.fieldPaths
+  | .number _ | .string _ | .constant _ | .custom _ _ => []
+
+/-- The unstarred prefix of every unkeyed starred read, in authored order. A star below a joined
+group still reads that group's joined row, so the prefix anchors the join (parallel-child capture,
+`r02`, 2026-10-14); a prefix of the error side's or an unjoined group anchors nothing. -/
+private partial def Expr.starredReadPrefixes : Expr → List Path
+  | .value reference | .entity reference =>
+      let unstarred := reference.path.segments.takeWhile (!·.star)
+      if reference.index.isSome || unstarred.isEmpty ||
+          unstarred.length == reference.path.segments.length then []
+      else [{ reference.path with segments := unstarred }]
+  | .call _ arguments listed _ =>
+      (arguments ++ listed.getD []).flatMap fun (.mk expression rangeEnd) =>
+        expression.starredReadPrefixes ++ (rangeEnd.map Expr.starredReadPrefixes).getD []
+  | .arith _ left right | .compare _ left right => left.starredReadPrefixes ++ right.starredReadPrefixes
+  | .braces body | .parens body => body.starredReadPrefixes
+  | .logic _ parts => parts.flatMap Expr.starredReadPrefixes
   | .number _ | .string _ | .constant _ | .custom _ _ => []
 
 private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr →
@@ -233,10 +251,13 @@ where
     | .flat condition reads => pure (.flat condition (← reads.mapM operand))
     | .ordinary leaf => nomatch leaf
 
-private def pairGroupReferences : ConditionTree PairSyntaxLeaf → List GroupPath
+private def pairGroupReferences (group : GroupPath) : ConditionTree PairSyntaxLeaf → List GroupPath
   | .leaf (.pair (.groupPresence _ reference)) => [reference.path]
+  | .leaf (.ordinary expression _ _) => expression.starredReadPrefixes.filterMap fun path =>
+      ((Expr.entity { path }).groupReference?.bind fun reference =>
+        (reference.resolveAgainst group).toOption).map (·.path)
   | .leaf _ => []
-  | .and left right | .or left right => pairGroupReferences left ++ pairGroupReferences right
+  | .and left right | .or left right => pairGroupReferences group left ++ pairGroupReferences group right
 
 private def bindPairCondition (model : FlatModel) (group : GroupPath) (suppress : Bool) (left right : FieldId) :
     ConditionTree PairSyntaxLeaf → Lowering (ParallelFieldCondition model)
@@ -249,7 +270,7 @@ private def bindPairCondition (model : FlatModel) (group : GroupPath) (suppress 
       pure (.or a (← bindPairCondition model group suppress left right b))
 
 /-- Resolve topology without inserting the anchors into the condition's authored references. -/
-private def pairAnchors (model : FlatModel) (errorField : FieldId)
+private def pairAnchors (model : FlatModel) (group : GroupPath) (errorField : FieldId)
     (condition : ConditionTree PairSyntaxLeaf) : Lowering (FieldId × FieldId) := do
   let errorDeclaration ← elaborated "ParallelRule" (model.lookupUniqueId errorField)
   let [errorGroup] := model.indexedAncestorGroups errorDeclaration
@@ -261,7 +282,7 @@ private def pairAnchors (model : FlatModel) (errorField : FieldId)
   let candidates := model.repeatableGroups.filter fun candidate =>
     candidate.path != errorGroup.path && candidate.indexField.isSome &&
       (far.any (candidate.path.isPrefixOf ·.groupPath) ||
-        (pairGroupReferences condition).any (candidate.path.isPrefixOf ·))
+        (pairGroupReferences group condition).any (candidate.path.isPrefixOf ·))
   let [candidate] := candidates
     | refuse "ParallelRule" "one opposite indexed group required"
   let some right := candidate.indexField | refuse "ParallelRule" "missing group index"
@@ -278,10 +299,19 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
   -- Authored reads precede pair construction: an unbound ordinary frame reports its missing
   -- wildcard, even when the error target has no indexed ancestor (ParallelValidationDispatchDiffTest,
   -- anUnrelatedFixedErrorBranchRefusesTheFramedOperandBeforeRuntime, 2026-10-12).
-  discard <| (checkRawConditionBeforeGlobals model.flat rule.group errorDeclaration.groupPath
-    text.body (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES")).mapError
+  -- The walk needs the joined levels before the pair is built; a condition with no pair is refused
+  -- by `pairAnchors` below, after its authored reads.
+  let joinedLevels := ((pairAnchors model.flat rule.group errorField parsedCondition).toOption.map
+    fun (left, right) => (pairGroupPaths model.flat left right).filterMap fun path =>
+      (model.flat.repeatableScopeForGroupPath path).getLast?).getD []
+  let facts ← (checkRawConditionBeforeGlobals model.flat rule.group errorDeclaration.groupPath
+    text.body (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") joinedLevels).mapError
       (fun refusal => { refusal with construct := "ParallelAdmission" })
-  let (left, right) ← pairAnchors model.flat errorField parsedCondition
+  -- The whole-rule gates in their order: `RepetitionNotUnique` beside the join before a filter below
+  -- either joined group (parallel-child capture, `x1`, `x2`, `q05`, `q10`, `y1`; joined-carrier-limits
+  -- `d06`; 2026-10-14). A filter in an unjoined group is admitted (`q11`).
+  if let some diagnostic := facts.refusal? then refuse "ParallelAdmission" diagnostic.kernelCode
+  let (left, right) ← pairAnchors model.flat rule.group errorField parsedCondition
   let some severity := severity? rule.severity | refuse "Severity" rule.severity
   let condition ← bindPairCondition model.flat rule.group
     (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") left right parsedCondition

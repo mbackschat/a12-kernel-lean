@@ -1,0 +1,851 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "a4091041fe4d0de02053517f11d12f480b5c2cbc",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "R13B_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-14T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "free",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "r01",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Q",
+                "/Staffing[1]/Supply[-5]/Note",
+                "Staffing/Demand[3]/Base",
+                "Staffing/Demand[3]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Q",
+                "/Staffing[1]/Supply[-5]/Note"
+              ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[2]/Items[0]/Q",
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[2]/Items[0]/Q",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[2]/DItems[0]/P",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[2]/DItems[0]/P",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Staffing/Supply[3]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Headcount",
+                "Staffing/Supply[3]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/DSub/Y",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "Staffing/Demand[2]/DSub/Y",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply[3]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Headcount",
+                "Staffing/Supply[3]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Note"
+              ]
+            },
+            {
+              "code" : "r04",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Deep[0]/R",
+                "/Staffing[1]/Supply[-5]/Note",
+                "Staffing/Demand[3]/Base",
+                "Staffing/Demand[3]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Deep[0]/R",
+                "/Staffing[1]/Supply[-5]/Note"
+              ]
+            },
+            {
+              "code" : "r04",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[2]/Items[0]/Deep[0]/R",
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[2]/Items[0]/Deep[0]/R",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r05",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Note",
+                "/Staffing[1]/Supply[-5]/Sub[1]/X",
+                "Staffing/Demand[3]/Base",
+                "Staffing/Demand[3]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Note",
+                "/Staffing[1]/Supply[-5]/Sub[1]/X"
+              ]
+            },
+            {
+              "code" : "r05",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note",
+                "Staffing/Supply[2]/Sub/X"
+              ],
+              "fillToFix" : [
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note",
+                "Staffing/Supply[2]/Sub/X"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "r01",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Q",
+                "/Staffing[1]/Supply[-5]/Note",
+                "Staffing/Demand[3]/Base",
+                "Staffing/Demand[3]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Q",
+                "/Staffing[1]/Supply[-5]/Note"
+              ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[2]/Items[0]/Q",
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[2]/Items[0]/Q",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[2]/DItems[0]/P",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[2]/DItems[0]/P",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Staffing/Supply[3]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Headcount",
+                "Staffing/Supply[3]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/DSub/Y",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "Staffing/Demand[2]/DSub/Y",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply[3]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Headcount",
+                "Staffing/Supply[3]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Note"
+              ]
+            },
+            {
+              "code" : "r04",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Deep[0]/R",
+                "/Staffing[1]/Supply[-5]/Note",
+                "Staffing/Demand[3]/Base",
+                "Staffing/Demand[3]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Deep[0]/R",
+                "/Staffing[1]/Supply[-5]/Note"
+              ]
+            },
+            {
+              "code" : "r04",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[2]/Items[0]/Deep[0]/R",
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[2]/Items[0]/Deep[0]/R",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r05",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Note",
+                "/Staffing[1]/Supply[-5]/Sub[1]/X",
+                "Staffing/Demand[3]/Base",
+                "Staffing/Demand[3]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Note",
+                "/Staffing[1]/Supply[-5]/Sub[1]/X"
+              ]
+            },
+            {
+              "code" : "r05",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note",
+                "Staffing/Supply[2]/Sub/X"
+              ],
+              "fillToFix" : [
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note",
+                "Staffing/Supply[2]/Sub/X"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "full",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "r01",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Q",
+                "/Staffing[1]/Supply[-5]/Note",
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Q",
+                "/Staffing[1]/Supply[-5]/Note"
+              ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Staffing/Supply[3]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Headcount",
+                "Staffing/Supply[3]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Note"
+              ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Staffing/Supply[4]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[4]/Department",
+                "Staffing/Supply[4]/Headcount",
+                "Staffing/Supply[4]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[4]/Department",
+                "Staffing/Supply[4]/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/DSub/Y",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/Note"
+              ],
+              "fillToFix" : [
+                "Staffing/Demand/DSub/Y",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply[3]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Headcount",
+                "Staffing/Supply[3]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply[4]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[4]/Department",
+                "Staffing/Supply[4]/Headcount",
+                "Staffing/Supply[4]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[4]/Department",
+                "Staffing/Supply[4]/Note"
+              ]
+            },
+            {
+              "code" : "r04",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Deep[0]/R",
+                "/Staffing[1]/Supply[-5]/Note",
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Deep[0]/R",
+                "/Staffing[1]/Supply[-5]/Note"
+              ]
+            },
+            {
+              "code" : "r05",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Note",
+                "/Staffing[1]/Supply[-5]/Sub[1]/X",
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Note",
+                "/Staffing[1]/Supply[-5]/Sub[1]/X"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "r01",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Q",
+                "/Staffing[1]/Supply[-5]/Note",
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Q",
+                "/Staffing[1]/Supply[-5]/Note"
+              ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Staffing/Supply[3]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Headcount",
+                "Staffing/Supply[3]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Note"
+              ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Staffing/Supply[4]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[4]/Department",
+                "Staffing/Supply[4]/Headcount",
+                "Staffing/Supply[4]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DItems[0]/P",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[4]/Department",
+                "Staffing/Supply[4]/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Staffing/Demand/DSub/Y",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Headcount",
+                "Staffing/Supply/Note"
+              ],
+              "fillToFix" : [
+                "Staffing/Demand/DSub/Y",
+                "Staffing/Demand/Department",
+                "Staffing/Supply/Department",
+                "Staffing/Supply/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Headcount",
+                "Staffing/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[2]/Department",
+                "Staffing/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply[3]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Headcount",
+                "Staffing/Supply[3]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[3]/Department",
+                "Staffing/Supply[3]/Note"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Staffing/Supply[4]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[4]/Department",
+                "Staffing/Supply[4]/Headcount",
+                "Staffing/Supply[4]/Note"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Demand[-5]/DSub[1]/Y",
+                "/Staffing[1]/Demand[-5]/Department",
+                "Staffing/Supply[4]/Department",
+                "Staffing/Supply[4]/Note"
+              ]
+            },
+            {
+              "code" : "r04",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Deep[0]/R",
+                "/Staffing[1]/Supply[-5]/Note",
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Items[0]/Deep[0]/R",
+                "/Staffing[1]/Supply[-5]/Note"
+              ]
+            },
+            {
+              "code" : "r05",
+              "field" : "/Staffing[1]/Supply[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Note",
+                "/Staffing[1]/Supply[-5]/Sub[1]/X",
+                "Staffing/Demand[2]/Base",
+                "Staffing/Demand[2]/Department"
+              ],
+              "fillToFix" : [
+                "/Staffing[1]/Supply[-5]/Department",
+                "/Staffing[1]/Supply[-5]/Note",
+                "/Staffing[1]/Supply[-5]/Sub[1]/X"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

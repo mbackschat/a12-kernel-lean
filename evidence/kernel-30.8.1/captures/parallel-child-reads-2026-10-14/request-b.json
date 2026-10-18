@@ -1,0 +1,167 @@
+{
+ "model": "R13B_DM.json",
+ "locale": "en_US",
+ "clock": "2026-10-14T10:00:00Z",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "free",
+   "documentInline": {
+    "Staffing": {
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "1",
+       "DItems": [
+        {},
+        {
+         "P": "3"
+        }
+       ],
+       "DSub": {
+        "Y": "1"
+       }
+      },
+      {
+       "Department": "B",
+       "Base": "1",
+       "DItems": []
+      },
+      {
+       "Department": "C",
+       "Base": "1",
+       "DItems": [
+        {
+         "P": "2"
+        }
+       ],
+       "DSub": {
+        "Y": "5"
+       }
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1",
+       "Items": [
+        {},
+        {
+         "Q": "2",
+         "Deep": [
+          {
+           "R": "7"
+          }
+         ]
+        }
+       ],
+       "Sub": {
+        "X": "4"
+       }
+      },
+      {
+       "Department": "B",
+       "Headcount": "1",
+       "Items": []
+      },
+      {
+       "Department": "E",
+       "Headcount": "1",
+       "Items": [
+        {
+         "Q": "5"
+        }
+       ],
+       "Sub": {
+        "X": "6"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "full",
+   "documentInline": {
+    "Staffing": {
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "1",
+       "DItems": [
+        {},
+        {
+         "P": "3"
+        }
+       ]
+      },
+      {
+       "Department": "C",
+       "Base": "1",
+       "DItems": [
+        {
+         "P": "2"
+        }
+       ],
+       "DSub": {
+        "Y": "5"
+       }
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1",
+       "Items": [
+        {},
+        {
+         "Q": "2",
+         "Deep": [
+          {
+           "R": "7"
+          }
+         ]
+        }
+       ],
+       "Sub": {
+        "X": "4"
+       }
+      },
+      {
+       "Department": "B",
+       "Headcount": "1",
+       "Items": [
+        {
+         "Q": "1"
+        }
+       ],
+       "Sub": {
+        "X": "1"
+       }
+      },
+      {
+       "Department": "D",
+       "Headcount": "1",
+       "Items": []
+      },
+      {
+       "Department": "E",
+       "Headcount": "1",
+       "Items": [
+        {
+         "Q": "5"
+        }
+       ],
+       "Sub": {
+        "X": "6"
+       }
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

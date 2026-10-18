@@ -556,16 +556,15 @@ def readValidatedAddress (checked : CheckedDocument model) (declaration : FlatFi
   match checked.checkedCells.find? fun placement => placement.address == address with
   | some placement => pure placement.cell
   | none =>
-      -- The over-repetition finding belongs to a stored row beyond capacity. A slot of a row the
-      -- document does not instantiate, such as an unmatched side's key-only row, reads clean empty
-      -- unless an enclosing row is itself beyond capacity.
-      let rowAbsent := match declaration.repeatableScope.getLast? with
-        | some level => !checked.source.instantiatedRows.contains { group := level, path := address.path }
-        | none => false
-      let enclosingOverLimit := model.addressOverLimit? declaration.repeatableScope.dropLast
-        address.path.dropLast == some true
-      pure ((checkAdmittedRawCell .empty).withOverRepetitionIf
-        (overLimit && (!rowAbsent || enclosingOverLimit)))
+      -- The over-repetition finding belongs to a stored row beyond capacity, so only the leading
+      -- instantiated rows of the address count. A slot of a row the document does not instantiate,
+      -- such as an unmatched side's key-only row or a child of one, reads clean empty even beyond
+      -- capacity (parallel-child capture, `full` document, 2026-10-14).
+      let instantiated := ((repeatableAncestorRowsFor declaration.repeatableScope address.path).takeWhile
+        checked.source.instantiatedRows.contains).length
+      pure ((checkAdmittedRawCell .empty).withOverRepetitionIf (overLimit &&
+        model.addressOverLimit? (declaration.repeatableScope.take instantiated)
+          (address.path.take instantiated) == some true))
 
 /-- Query one model-legal instantiated address. Absence of a cell is empty, but absence of its
 physical ancestor rows is an addressing failure. -/
