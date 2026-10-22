@@ -8,6 +8,7 @@ import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.NumericValidation.EntityComparison
 import A12Kernel.Elaboration.FieldFillRule
 import A12Kernel.Elaboration.StringContext
+import A12Kernel.Reference.Dm.RefusalClass
 
 /-! # Lowering a rule condition onto the checked validation carriers
 
@@ -537,10 +538,15 @@ partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress 
       for part in rest do
         result ← elaborated "Connective" (join result (← lowerCondition model rowGroup suppress part world bindingGroup))
       pure result
-  | none, leaf =>
+  | none, leaf => do
       let construct := match leaf with
         | .compare _ _ _ => (leaf.leadingCall?.map ("Comparison/" ++ ·)).getD leaf.construct
         | _ => leaf.construct
+      -- A field-fill predicate reads one field, and a second operand draws the arity class ahead of
+      -- the slot's gates (spec/02; static-legality sweep row `P30`).
+      if let .call id (_ :: _ :: _) none none := leaf then
+        if id == "FieldFilled" || id == "FieldNotFilled" then
+          refuse construct KernelStaticDiagnostic.paramSizeInvalid1.kernelCode
       firstAdmitted construct ((leafCarriers model rowGroup world suppress leaf bindingGroup).map fun attempt =>
         attempt.bind fun checked => elaborated construct (checked.atBinding bindingGroup))
 

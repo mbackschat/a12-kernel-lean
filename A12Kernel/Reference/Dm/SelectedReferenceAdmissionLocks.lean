@@ -21,8 +21,8 @@ private def admission (condition : String) (error : String := "Rows/Body/N") (fi
     errorEntityRelPath := "../" ++ error, condition, severity := "ERROR" } with
   | .ok _ => "admitted"
   | .error refusal =>
-      if refusal.detail.startsWith "A12Kernel.FlatRuleAssemblyError.errorFieldIterationInvalid" then "iteration"
-      else if refusal.detail.startsWith "A12Kernel.FlatRuleAssemblyError.errorFieldNotReferenced" then "unreferenced"
+      if refusal.detail.startsWith "MVK_ERROR_FIELD_AND_ITERATION_INVALID A12Kernel.FlatRuleAssemblyError.errorFieldIterationInvalid" then "iteration"
+      else if refusal.detail.startsWith "MVK_ERROR_FIELD_NOT_REFERENCED A12Kernel.FlatRuleAssemblyError.errorFieldNotReferenced" then "unreferenced"
       else refusal.detail
 
 private def conditions := [

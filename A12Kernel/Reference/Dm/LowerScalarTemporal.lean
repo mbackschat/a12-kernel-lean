@@ -3,6 +3,7 @@ import A12Kernel.Reference.Dm.LowerHavingNumeric
 import A12Kernel.Elaboration.TemporalNumericExpression
 import A12Kernel.Elaboration.NumericComputation.Core
 import A12Kernel.Elaboration.DateRangePredicate
+import A12Kernel.Reference.Dm.RefusalClass
 
 /-! # Scalar temporal source and numeric projection lowering -/
 

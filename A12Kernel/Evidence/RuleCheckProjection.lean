@@ -8,12 +8,11 @@ import A12Kernel.Reference.Dm.GeneratedComputationRule
 
 Every retained `rule check --message` batch is replayed row by row: the DM reader, the ordinary or
 parallel condition check, and the error-text checker over each declared locale's text, composed as the
-[declaration report](../Elaboration/DeclarationReport.lean) composes them. A row agrees when the Kernel
-refuses wherever the condition is refused here, and otherwise when the classes and the Kernel's own
-verdict both agree. Which class a refused condition draws is the condition producers' responsibility
-and is not compared here. The Kernel's internal-error class is matched by an unclassed refusal, which
-this project deliberately keeps without a class. A row with no Kernel verdict, which the instrument
-stopped first, is skipped.
+[declaration report](../Elaboration/DeclarationReport.lean) composes them. A refused condition agrees
+when the Kernel refuses it with the class the refusal leads with; a refusal without a class agrees only
+with a Kernel verdict naming none but the internal-error class, which this project deliberately keeps
+without a class. An admitted condition agrees when the classes and the Kernel's own verdict both agree.
+A row with no Kernel verdict, which the instrument stopped first, is skipped.
 
 `deferred` names each row whose divergence another obligation owns. A deferred row that agrees fails,
 so the list cannot outlive its cause.
@@ -134,7 +133,8 @@ def captures : List (String × String × String) := [
 def deferred : List (String × String) := [
   ("comparison-entry-gates/observations.json#groupregex", "host pattern compiler, SG7"),
   ("comparison-entry-gates/observations2.json#violatedcontrol", "host pattern compiler, SG7"),
-  ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7")]
+  ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7"),
+  ("comparison-entry-gates/observations.json#regex", "host pattern compiler, SG7")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with
@@ -238,7 +238,12 @@ private def compare (dm : DmModel) (locales : List String) (rule : DmRule)
   let language := if dm.conditionLanguage.startsWith "de" then Language.german else .english
   let profile := language.messageKeywordProfile
   let outcome := match checkValidationRule dm language rule with
-    | .error refusal => if valid then some s!"refused {refusal.construct}" else none
+    | .error refusal =>
+        let named := kernel.filter (· != "MVK_INTERNAL_ERROR")
+        if valid then some s!"refused {refusal.construct}"
+        else match refusal.kernelClass? with
+          | some code => if named.contains code then none else some s!"class {code} against {kernel}"
+          | none => if named.isEmpty then none else some s!"unclassed {refusal.construct} against {kernel}"
     | .ok checked =>
         let (codes, unclassed) := match checked with
           | .ordinary checked => reported dm.flat profile (.rule checked) locales entries

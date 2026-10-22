@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.LowerStringCore
 import A12Kernel.Reference.Dm.LowerEntity
 import A12Kernel.Elaboration.StringExpression
+import A12Kernel.Reference.Dm.RefusalClass
 
 namespace A12Kernel.Dm
 

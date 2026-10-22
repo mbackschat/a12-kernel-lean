@@ -190,7 +190,7 @@ private def mixedStarAdmission (text : String) (errorField : String := "Qty") : 
       errorCode := "MIXED", severity := "ERROR", condition := text } with
   | .ok _ => some true
   | .error { construct := "RuleAssembly", detail, .. } =>
-      if detail == reprStr (FlatRuleAssemblyError.negativeConditionInIteration 1) then some false else none
+      if detail == (FlatRuleAssemblyError.negativeConditionInIteration 1).refusalDetail then some false else none
   | .error _ => none
 
 -- The retained iteration-domain binding fixture refuses Max without the positive guard.

@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.LowerCore
+import A12Kernel.Reference.Dm.RefusalClass
 
 /-! # Lowering a condition onto the flat surface
 

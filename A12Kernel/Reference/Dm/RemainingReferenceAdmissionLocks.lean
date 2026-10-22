@@ -49,7 +49,7 @@ private def rowProduct := "SumOfProducts(/Form/Rows/Items*/N,/Form/Rows/Items*/M
 private def refusedAs (condition errorPath : String) (error : FlatRuleAssemblyError) : Bool :=
   match checked condition errorPath with
   | .ok _ => false
-  | .error refusal => refusal.construct == "RuleAssembly" && refusal.detail == (repr error).pretty
+  | .error refusal => refusal.construct == "RuleAssembly" && refusal.detail == error.refusalDetail
 
 private def scalarReferences (condition : String) (field : FieldId) (level : RepeatableLevel) := do
   let parsed ← (parseText .english condition).toOption

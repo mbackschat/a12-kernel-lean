@@ -11,6 +11,7 @@ import A12Kernel.Elaboration.NumericAggregate.Products
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 
 import A12Kernel.Reference.Dm.HavingAdmission
+import A12Kernel.Reference.Dm.RefusalClass
 
 namespace A12Kernel.Dm
 

@@ -66,6 +66,10 @@ def parseValidationText (language : Language) (condition : String) : Lowering Te
     refuse "SuppressWarning" KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
   pure text
 
+/-- A rule-gate refusal's detail, the class the gate draws ahead of the cause. -/
+def _root_.A12Kernel.FlatRuleAssemblyError.refusalDetail (error : FlatRuleAssemblyError) : String :=
+  classifiedDetail error
+
 /-- Parse, lower and assemble one rule, retaining named-type validity resolution from the supplied
 world. Replay supplies the same registry used to prepare and evaluate the document. -/
 private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language : Language) (rule : DmRule)
@@ -86,9 +90,10 @@ private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language :
   let condition ← lowerCondition model.flat rule.group suppress text.body world bindingGroup
   let errorField ← errorFieldOf language model.flat rule
   let some severity := severity? rule.severity | refuse "Severity" rule.severity
-  elaborated "RuleAssembly"
-    (assembleResolvedValidationRule model.flat condition errorField rule.errorCode severity
-      { parts := [] })
+  match assembleResolvedValidationRule model.flat condition errorField rule.errorCode severity
+      { parts := [] } with
+  | .ok checked => pure checked
+  | .error error => refuse "RuleAssembly" error.refusalDetail
 
 /-- Ordered authored admission uses the error field's scope from the first attempt, including refused reads.
 Other rules retain the compatibility fallback; lexical paths resolve at the declaring group. -/

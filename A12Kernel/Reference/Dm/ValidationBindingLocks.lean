@@ -31,7 +31,7 @@ private def capturedRepetitionFilter :=
 example : ["AtLeastOneFieldFilled", "MoreThanOneFieldFilled"].all (fun operator =>
     match checkRule dm .english (rule (operator ++ "(" ++ capturedRepetitionFilter ++ ")")) with
     | .error refusal => refusal.construct == "RuleAssembly" &&
-        refusal.detail == reprStr (FlatRuleAssemblyError.negativeConditionInIteration 10)
+        refusal.detail == (FlatRuleAssemblyError.negativeConditionInIteration 10).refusalDetail
     | .ok _ => false) := by native_decide
 
 example : (checkRule dm .english
@@ -45,7 +45,7 @@ example : (match checkRule dm .english {
       (rule ("AtLeastOneFieldFilled(" ++ capturedRepetitionFilter ++ ")")) with
       errorEntityRelPath := "../Rows/Key" } with
     | .error refusal => refusal.construct == "RuleAssembly" &&
-        refusal.detail == reprStr (FlatRuleAssemblyError.negativeConditionInIteration 10)
+        refusal.detail == (FlatRuleAssemblyError.negativeConditionInIteration 10).refusalDetail
     | .ok _ => false) = true := by native_decide
 
 private def nestedRepetitionCases : List String := [
@@ -69,7 +69,7 @@ example : (match checkRule dm .english {
     (rule "AllFieldsFilled(Rows*/Qty Having CurrentRepetition(Rows) > 0)") with
     errorEntityRelPath := "../Rows/Key" } with
   | .error refusal => refusal.construct == "RuleAssembly" &&
-      refusal.detail == reprStr (FlatRuleAssemblyError.errorFieldNotReferenced 3)
+      refusal.detail == (FlatRuleAssemblyError.errorFieldNotReferenced 3).refusalDetail
   | .ok _ => false) = true := by native_decide
 
 private def fixedModel : FlatModel := { model with
@@ -97,7 +97,7 @@ example : (match checkRule fixedDm .english {
     (rule ("AtLeastOneFieldFilled(" ++ fixedRepetitionFilter ++ ")")) with
     errorEntityRelPath := "../Rows/Box/NestedQty" } with
   | .error refusal => refusal.construct == "RuleAssembly" &&
-      refusal.detail == reprStr (FlatRuleAssemblyError.negativeConditionInIteration 10)
+      refusal.detail == (FlatRuleAssemblyError.negativeConditionInIteration 10).refusalDetail
   | .ok _ => false) = true := by native_decide
 
 private def run (text : String) (rows : List Json) (errorField : String := "../Rows/Qty") : Option (List String) := do

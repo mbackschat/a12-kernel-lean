@@ -59,11 +59,25 @@ private def acceptKeyword (id : String) : P Bool := do
 private partial def skipComments : P Unit := do
   if (← peek) == some .comment then advance; skipComments
 
+/-- The date-shift operators, whose second argument is an amount. -/
+private def shiftOperators : List String :=
+  ["AddDays", "AddMonths", "AddYears", "AddHours", "AddMinutes", "AddSeconds"]
+
 /-- Keywords that never open an operand. -/
 private def separatorKeywords : List String :=
   ["And", "Or", "In", "To", "Having", "For", "@From", "@SuppressWarning", "PatternMatched",
    "PatternViolated", "DiffersWithToleranceRange1", "DiffersWithToleranceRange2",
    "DiffersWithToleranceRange5", "DiffersWithToleranceRange10"]
+
+/-- Whether the cursor starts a call argument: it follows a call's `(`, a `,`, or the `In` or `To` of
+an argument list, comments aside. Only there may a bare name stand (spec/12 §12.3). A `(` after a
+connective or `Having` opens a condition, whose sides are values (static-legality sweep row `P70`). -/
+private def startsArgument : P Bool := do
+  let before := ((← read).toList.take (← get)).reverse.filter (·.token != .comment)
+  return match (before.map (·.token) : List Token) with
+    | Token.symbol "(" :: Token.keyword id :: _ => !separatorKeywords.contains id
+    | Token.symbol "," :: _ | Token.keyword "In" :: _ | Token.keyword "To" :: _ => true
+    | _ => false
 
 private def compareOp? : Option Token → Option CompareOp
   | some (.symbol "==") => some .eq
@@ -134,6 +148,14 @@ private partial def indexSuffix : P (Option IndexKey) := do
   if ← acceptKeyword "For" then
     match ← peek with
     | some (.string text) => advance; pure (some (.literal text))
+    -- A digit-only key is a name, as the grammar's identifiers admit digits (KF532), so it resolves
+    -- and draws the entity class (keyed-membership rows `f00`–`f03`, 2026-10-13).
+    | some (.number digits) =>
+        if digits.isEmpty || !digits.toList.all Char.isDigit then failHere .expectedTokenNotFound
+        advance
+        let target : Path := { segments := [{ name := digits, star := false }] }
+        modifyThe (Array ParseEvent) (·.push (.reference target))
+        pure (some (.reference { path := target }))
     | _ => pure (some (.reference (← reference)))
   else pure none
 
@@ -233,7 +255,13 @@ private partial def atom : P Expr := do
           else failHere .expectedTokenNotFound
       | _ => failHere .expectedTokenNotFound
   | some (.keyword "RuleGroup") =>
+      let inArgument ← startsArgument
       advance
+      -- In an entity slot a star after the rule-context group is its repetition star, refused by
+      -- the entity list (static-legality sweep row `R70`).
+      if inArgument && (← peek) == some (.symbol "*") then
+        advance
+        return .constant "RuleGroup*"
       match ← indexSuffix with
       | none => return .constant "RuleGroup"
       | some key =>
@@ -244,6 +272,14 @@ private partial def atom : P Expr := do
       advance
       if ← acceptSymbol "(" then call id else return .constant id
   | some (.name _ _) | some (.symbol "/") | some (.symbol "..") | some (.symbol "$") =>
+      -- A field's value is read only through a bracket, so a bare name elsewhere, a comparison side
+      -- or an arithmetic term, is a token defect at the name: nothing after it is read, and the name
+      -- is never resolved (spec/12 §12.3; `NoSuchField > 0` draws the token class).
+      if !(← startsArgument) then failHere .incompleteInput
+      -- A name that is no keyword before `(` is a token defect too, raised before the name is resolved
+      -- (predicate-operand capture rows `d01`–`d05`, 2026-10-14).
+      if let some (.name _ _) := ← peek then
+        if (← peekAt 1) == some (.symbol "(") then failHere .incompleteInput
       return .entity (← reference)
   | _ => failHere .incompleteInput
 
@@ -254,7 +290,7 @@ private partial def call (id : String) : P Expr := do
 
 private partial def callBody (id : String) : P Expr := do
   if ← acceptSymbol ")" then return .call id [] none none
-  let arguments ← argumentList
+  let arguments ← argumentList id
   -- datumParam uses entitySpec; digit-only names are identifiers here (KF532; grammar idName).
   -- Keep invalid shapes for the ordered admission walk, where earlier entity failures still win.
   let arguments := if id == "Date" || id == "Time" then arguments.map (fun
@@ -263,16 +299,30 @@ private partial def callBody (id : String) : P Expr := do
             .mk (.entity { path := { segments := [{ name := digits, star := false }] } }) none
           else .mk (.number digits) none
       | argument => argument) else arguments
-  let listed ← if ← acceptKeyword "In" then pure (some (← argumentList)) else pure none
+  let listed ← if ← acceptKeyword "In" then pure (some (← argumentList "In")) else pure none
   let scope ← if ← acceptKeyword "@From" then pure (some (← reference)) else pure none
+  -- Validity takes a constructed Date or a field and a type name, so a lone field operand meets `)`
+  -- where the grammar expects `,` (spec/05; parallel-instance-leaves rows `v17`, `v18`, 2026-10-14).
+  if (id == "Valid" || id == "Invalid") && (match arguments with
+      | [.mk (.call "Date" _ none none) none] => false
+      | [_] => true
+      | _ => false) then failHere .expectedTokenNotFound
   expectSymbol ")"
   return .call id arguments listed scope
 
-private partial def argumentList : P (List Argument) := do
-  let first ← argument
-  if ← acceptSymbol "," then return first :: (← argumentList) else return [first]
+private partial def argumentList (id : String) (index : Nat := 0) : P (List Argument) := do
+  let first ← argument id index
+  if ← acceptSymbol "," then return first :: (← argumentList id (index + 1)) else return [first]
 
-private partial def argument : P Argument := do
+private partial def argument (id : String) (index : Nat) : P Argument := do
+  -- A date shift's amount is a value, so a bare name there is a token defect like any bare value
+  -- (spec/12 §12.3). `AddDays` is measured (static-legality sweep row `R40`); the other shifts share
+  -- its production, an assumption no row measures.
+  if index == 1 && shiftOperators.contains id then
+    match ← peek with
+    | some (.name _ _) | some (.symbol "/") | some (.symbol "..") | some (.symbol "$") =>
+        failHere .incompleteInput
+    | _ => pure ()
   let expr ← condition false
   let rangeEnd ← if ← acceptKeyword "To" then pure (some (← condition false)) else pure none
   return .mk expr rangeEnd

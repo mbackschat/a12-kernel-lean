@@ -136,14 +136,14 @@ private def bareRuleResult (condition : String) (row : Bool := false) : String :
   | .ok _ => "admitted"
   | .error refusal => refusal.detail
 
-example : bareRuleResult plain == "A12Kernel.FlatRuleAssemblyError.errorFieldNotReferenced 1" ∧
+example : bareRuleResult plain == "MVK_ERROR_FIELD_NOT_REFERENCED A12Kernel.FlatRuleAssemblyError.errorFieldNotReferenced 1" ∧
     bareRuleResult (plain ++ " And Length(Raw) > 2") == "MVK_INVALID_LENGTH_OF_RAW_TYPE" ∧
     bareRuleResult ordinary == "MVK_SEMANTIC_INDEX_NOT_ALLOWED" := by native_decide
 
 private def negative : String :=
   "FieldNotFilled(Rows/RowOut) And NoFieldFilled(Rows*/N Having FieldFilled(Rows/N))"
 
-example : bareRuleResult negative true == "A12Kernel.FlatRuleAssemblyError.negativeConditionInIteration 10" ∧
+example : bareRuleResult negative true == "MVK_NEG_CONDITION_IN_ITERATION A12Kernel.FlatRuleAssemblyError.negativeConditionInIteration 10" ∧
     bareRuleResult (negative.replace "FieldNotFilled(Rows/RowOut)" "FieldFilled(Rows/RowOut)") true == "admitted" ∧
     bareRuleResult (negative.replace "FieldFilled(Rows/N)" (marked ++ " And FieldFilled(Rows/N)")) true ==
       "MVK_SEMANTIC_INDEX_NOT_ALLOWED" ∧
@@ -230,9 +230,9 @@ private def referenceResult (errorField condition : String)
   let report {α : Type} : Lowering α → String
     | .ok _ => "admitted"
     | .error refusal =>
-        if refusal.detail.startsWith "A12Kernel.FlatRuleAssemblyError.errorFieldNotReferenced" then "MVK_ERROR_FIELD_NOT_REFERENCED"
-        else if refusal.detail.startsWith "A12Kernel.FlatRuleAssemblyError.negativeConditionInIteration" then "MVK_NEG_CONDITION_IN_ITERATION"
-        else if refusal.detail.startsWith "A12Kernel.FlatRuleAssemblyError.errorFieldIterationInvalid" then "MVK_ERROR_FIELD_AND_ITERATION_INVALID"
+        if refusal.detail.startsWith "MVK_ERROR_FIELD_NOT_REFERENCED A12Kernel.FlatRuleAssemblyError.errorFieldNotReferenced" then "MVK_ERROR_FIELD_NOT_REFERENCED"
+        else if refusal.detail.startsWith "MVK_NEG_CONDITION_IN_ITERATION A12Kernel.FlatRuleAssemblyError.negativeConditionInIteration" then "MVK_NEG_CONDITION_IN_ITERATION"
+        else if refusal.detail.startsWith "MVK_ERROR_FIELD_AND_ITERATION_INVALID A12Kernel.FlatRuleAssemblyError.errorFieldIterationInvalid" then "MVK_ERROR_FIELD_AND_ITERATION_INVALID"
         else refusal.detail
   (report (checkRule dm .english {
     group := ["Probe"], name := "Selected", errorCode := "SELECTED", errorEntityRelPath := "../" ++ errorField,
@@ -506,8 +506,8 @@ private def markedGroupResult (nested own : Bool) : String :=
   | .error refusal => refusal.detail
 
 example : nestedReferenceModel.validate.isOk = true ∧
-    markedGroupResult false false = "A12Kernel.FlatRuleAssemblyError.errorFieldIterationInvalid 3 10" ∧
-    markedGroupResult true false = "A12Kernel.FlatRuleAssemblyError.errorFieldIterationInvalid 12 20" ∧
+    markedGroupResult false false = "MVK_ERROR_FIELD_AND_ITERATION_INVALID A12Kernel.FlatRuleAssemblyError.errorFieldIterationInvalid 3 10" ∧
+    markedGroupResult true false = "MVK_ERROR_FIELD_AND_ITERATION_INVALID A12Kernel.FlatRuleAssemblyError.errorFieldIterationInvalid 12 20" ∧
     [false, true].all (fun nested => markedGroupResult nested true == "admitted") = true := by native_decide
 
 private def firstFieldComparisons : List String :=

@@ -179,8 +179,10 @@ example : mixed.all (fun condition =>
 example : model.validate.isOk = true ∧
     [false, true].all (fun yearless => predicates.all (fun condition =>
       admission condition (model yearless) == some (true, true))) = true ∧
+    -- A bare name as a comparison side is a parse defect (spec/12 §12.3), refused before lowering.
+    ["DateRange(Start,Finish) == Range", "Range == DateRange(Start,Finish)"].all
+      (fun condition => admission condition == none) = true ∧
     ["DateRange([Start],Finish) == [Range]", "DateRange(Start,[Finish]) == [Range]",
-     "DateRange(Start,Finish) == Range", "Range == DateRange(Start,Finish)",
      "DateRange(Start,Finish) < [Range]", "[Range] > DateRange(Start,Finish)",
      "DateRange(Start,Finish) <= DateRange(Start,Finish)", "[Range] >= [Range]",
      "DateRange(Out,Finish) == [Range]", "DateRange(Start,Finish) == [Out]",

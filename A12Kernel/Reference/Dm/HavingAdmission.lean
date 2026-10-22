@@ -56,6 +56,10 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
     (reference : Reference) (inFilter insideSemanticIndexKey : Bool)
     (admission : RawAdmissionContext) : RawAdmissionM ((Sum FlatFieldDecl GroupPath) × Bool) := do
   let mut inFilter := inFilter
+  -- `RuleGroup For key` is the declaring group under its key (spec/08 §1).
+  let reference := if reference.path == { segments := [] } then
+      { reference with path := { absolute := true, segments := group.map fun name => { name, star := false } } }
+    else reference
   let plain : Path := { reference.path with
     correlated := false
     segments := reference.path.segments.map fun segment => { segment with star := false } }
@@ -447,6 +451,11 @@ private partial def admitFieldList (model : FlatModel) (group bindingGroup : Gro
       | .mk (.entity reference) none => pure reference
       | .mk (.constant "RuleGroup") none =>
           pure ({ path := { absolute := true, segments := group.map fun name => { name, star := false } } } : Reference)
+      -- An entity list holds entity specifications, so a bracket there is a token defect
+      -- (condition-class rows `O08`, `O09`, 2026-10-01; spec/12 §12.3).
+      | .mk (.value _) none => do refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
+      | .mk (.constant "RuleGroup*") none => do
+          refuse "Having" KernelStaticDiagnostic.wildcardOnRuleContext.kernelCode
       | _ => do refuse "Having" "raw field-list operand"
     let (entity, nextState) ← admitEntityRead model group bindingGroup reference currentState insideSemanticIndexKey admission
     currentState := nextState

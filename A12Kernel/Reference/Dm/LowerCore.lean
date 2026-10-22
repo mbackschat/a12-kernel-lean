@@ -59,10 +59,37 @@ def admitDeclarations (declarations : List ExecutableDeclaration) : Lowering Uni
 def oneLine (text : String) : String :=
   String.ofList (text.toList.map fun c => if c == '\n' || c == '\t' then ' ' else c)
 
+/-- The Kernel class a reader refusal reports for an elaboration error. An error type the reader has no
+settled projection for reports none; `RefusalClass` supplies the projections. -/
+class StaticClassified (ε : Type) where
+  diagnostic? : ε → Option KernelStaticDiagnostic
+
+instance (priority := low) noStaticClass : StaticClassified ε := ⟨fun _ => none⟩
+
+/-- A refusal's detail: the Kernel class first, where the error carries one, then the cause, so a
+comparison reads the class off the first word and a lock the whole cause. -/
+def classifiedDetail [Repr ε] [StaticClassified ε] (error : ε) : String :=
+  let cause := oneLine ((repr error).pretty 100000)
+  match StaticClassified.diagnostic? error with
+  | some diagnostic => s!"{diagnostic.kernelCode} {cause}"
+  | none => cause
+
+/-- The Kernel class a refusal detail leads with, if any. -/
+def Refusal.kernelClass? (refusal : Refusal) : Option String :=
+  (refusal.detail.splitOn " ").head?.filter (·.startsWith "MVK_")
+
+/-- A refusal detail without its leading Kernel class: the structural cause alone, or the class when
+the detail is nothing else. -/
+def Refusal.cause (refusal : Refusal) : String :=
+  match refusal.kernelClass? with
+  | some code => if refusal.detail.length ≤ code.length then refusal.detail
+      else (refusal.detail.drop (code.length + 1)).toString
+  | none => refusal.detail
+
 /-- Lift an elaborator's result, naming the construct it was asked for. -/
-def elaborated [Repr ε] (construct : String) : Except ε α → Lowering α
+def elaborated [Repr ε] [StaticClassified ε] (construct : String) : Except ε α → Lowering α
   | .ok value => .ok value
-  | .error error => .error { construct, detail := oneLine ((repr error).pretty 100000) }
+  | .error error => .error { construct, detail := classifiedDetail error }
 
 def Path.base : Path → PathBase
   | path => if path.absolute then .absolute else .relative path.ups

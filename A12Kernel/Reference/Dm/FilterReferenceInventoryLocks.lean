@@ -20,8 +20,7 @@ private def model : FlatModel := { HavingFixture.model with
     { level := 30, path := ["Form", "Parties"], repeatability := some 2 }] }
 
 private def walk (target body : String) : Option (Option KernelStaticDiagnostic) := do
-  let .entity reference := (← (parseText .english target).toOption).body | none
-  let source ← reference.path.toStarFieldPath?
+  let source ← (← (parseModelPath .english target).toOption).toStarFieldPath?
   let checked ← (elaborateStarFieldPath model ["Form"] source).toOption
   let expression := (← (parseText .english body).toOption).body
   let (references, forbidden) ← (filterBodyInventory model ["Form"] checked expression).toOption

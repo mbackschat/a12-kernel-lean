@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.Validate
+import A12Kernel.Reference.Dm.ParseDefectClass
 import A12Kernel.Elaboration.PartialParallelFieldRule
 import A12Kernel.Elaboration.CheckedMessageCache
 import A12Kernel.Elaboration.ParallelFieldReference
@@ -273,8 +274,8 @@ private def bindPairCondition (model : FlatModel) (group : GroupPath) (suppress 
 private def pairAnchors (model : FlatModel) (group : GroupPath) (errorField : FieldId)
     (condition : ConditionTree PairSyntaxLeaf) : Lowering (FieldId × FieldId) := do
   let errorDeclaration ← elaborated "ParallelRule" (model.lookupUniqueId errorField)
-  let [errorGroup] := model.indexedAncestorGroups errorDeclaration
-    | refuse "ParallelRule" "one indexed error ancestor required"
+  let errorGroups := model.indexedAncestorGroups errorDeclaration
+  let some errorGroup := errorGroups.getLast? | refuse "ParallelRule" "one indexed error ancestor required"
   let fields := (pairReferences condition).eraseDups
   let declarations ← fields.mapM fun field => elaborated "ParallelRule" (model.lookupUniqueId field)
   let far := declarations.filter fun field =>
@@ -283,6 +284,11 @@ private def pairAnchors (model : FlatModel) (group : GroupPath) (errorField : Fi
     candidate.path != errorGroup.path && candidate.indexField.isSome &&
       (far.any (candidate.path.isPrefixOf ·.groupPath) ||
         (pairGroupReferences group condition).any (candidate.path.isPrefixOf ·))
+  -- A join whose error field sits two index groups deep is refused with its own class
+  -- (joined-carrier-limits rows `e01`–`e05`; model-structure checkpoint, two-groups class).
+  if 1 < errorGroups.length then
+    if candidates.isEmpty then refuse "ParallelRule" "one indexed error ancestor required"
+    refuse "ParallelRule" KernelStaticDiagnostic.multipleIndexFields.kernelCode
   let [candidate] := candidates
     | refuse "ParallelRule" "one opposite indexed group required"
   let some right := candidate.indexField | refuse "ParallelRule" "missing group index"
@@ -301,17 +307,24 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
   -- anUnrelatedFixedErrorBranchRefusesTheFramedOperandBeforeRuntime, 2026-10-12).
   -- The walk needs the joined levels before the pair is built; a condition with no pair is refused
   -- by `pairAnchors` below, after its authored reads.
-  let joinedLevels := ((pairAnchors model.flat rule.group errorField parsedCondition).toOption.map
+  let anchors := pairAnchors model.flat rule.group errorField parsedCondition
+  let joinedLevels := (anchors.toOption.map
     fun (left, right) => (pairGroupPaths model.flat left right).filterMap fun path =>
       (model.flat.repeatableScopeForGroupPath path).getLast?).getD []
-  let facts ← (checkRawConditionBeforeGlobals model.flat rule.group errorDeclaration.groupPath
-    text.body (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") joinedLevels).mapError
-      (fun refusal => { refusal with construct := "ParallelAdmission" })
+  -- A walk refusal the reader cannot classify yields to a classed join refusal, which the walk
+  -- meets only because the join it needs is missing.
+  let facts ← match checkRawConditionBeforeGlobals model.flat rule.group errorDeclaration.groupPath
+      text.body (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") joinedLevels, anchors with
+    | .ok facts, _ => pure facts
+    | .error refusal, .error join =>
+        .error { (if refusal.kernelClass?.isNone && join.kernelClass?.isSome then join else refusal) with
+          construct := "ParallelAdmission" }
+    | .error refusal, .ok _ => .error { refusal with construct := "ParallelAdmission" }
   -- The whole-rule gates in their order: `RepetitionNotUnique` beside the join before a filter below
   -- either joined group (parallel-child capture, `x1`, `x2`, `q05`, `q10`, `y1`; joined-carrier-limits
   -- `d06`; 2026-10-14). A filter in an unjoined group is admitted (`q11`).
   if let some diagnostic := facts.refusal? then refuse "ParallelAdmission" diagnostic.kernelCode
-  let (left, right) ← pairAnchors model.flat rule.group errorField parsedCondition
+  let (left, right) ← anchors
   let some severity := severity? rule.severity | refuse "Severity" rule.severity
   let condition ← bindPairCondition model.flat rule.group
     (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") left right parsedCondition
@@ -327,6 +340,20 @@ inductive CheckedDmValidationRule (model : FlatModel) where
   | ordinary (rule : CheckedResolvedValidationRule model)
   | parallel (rule : CheckedParallelFieldRule model)
 
+/-- The class the ordered admission walk raises for a rule's condition, its reads bound at the error
+field's group: the Kernel checks each read as its bracket closes, ahead of the construct around it
+(spec/08 §3), and an admitted walk leaves the whole-rule gates that precede iteration, raw `Length`
+among them (spec/07 §3). `none` when neither raises a class. -/
+private def orderedAdmissionClass? (model : DmModel) (language : Language) (rule : DmRule) :
+    Option String := do
+  let text ← (parseValidationText language rule.condition).toOption
+  let errorField ← (errorFieldOf language model.flat rule).toOption
+  let declaration ← (model.flat.lookupUniqueId errorField).toOption
+  match checkRawConditionBeforeGlobals model.flat rule.group declaration.groupPath text.body
+      (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") with
+  | .ok facts => facts.beforeIterationRefusal?.map (·.kernelCode)
+  | .error refusal => refusal.kernelClass?
+
 def checkValidationRule (model : DmModel) (language : Language) (rule : DmRule)
     (world : World := { now := { epochMillis := 0 } }) : Lowering (CheckedDmValidationRule model.flat) :=
   match checkRule model language rule world with
@@ -334,8 +361,22 @@ def checkValidationRule (model : DmModel) (language : Language) (rule : DmRule)
   | .error refusal => match checkParallelRule model language rule with
     | .ok checked => .ok (.parallel checked)
     | .error parallelRefusal =>
+        -- A parallel gate speaks for the rule only with a class; the walk's own unsupported shapes
+        -- leave the ordinary account's refusal standing.
         if parallelRefusal.construct == "ParallelErrorTarget" ||
-            parallelRefusal.construct == "ParallelAdmission" then .error parallelRefusal else .error refusal
+            (parallelRefusal.construct == "ParallelAdmission" && parallelRefusal.kernelClass?.isSome) then
+          .error parallelRefusal
+        -- A text that does not parse reports the first class a production completed before the
+        -- defect raised, as the Kernel checks each production as it completes (spec/12 §12.3).
+        else if refusal.construct == "Syntax" then
+          .error { refusal with detail :=
+            (parseDefectClass? model.flat rule.group language rule.condition).getD refusal.detail }
+        -- A lowering refusal without a class takes the class the ordered reads raise first.
+        else if refusal.kernelClass?.isNone then
+          match orderedAdmissionClass? model language rule with
+          | some code => .error { refusal with detail := s!"{code} {refusal.detail}" }
+          | none => .error refusal
+        else .error refusal
 
 /-- Execute a checked rule. Explicit cache context takes precedence; otherwise whole-population derivation supplies duplicate parallel error coordinates where its host profile settles them. Value reads are unchanged. A supplied cache remains caller-owned (spec/08 §4.3). Ordinary message-reference projection retains its separate API. -/
 def runValidationRule (world : World) (document : CheckedDocument model)

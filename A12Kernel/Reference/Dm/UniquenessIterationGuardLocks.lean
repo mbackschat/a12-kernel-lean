@@ -57,7 +57,7 @@ private def verdictIn (flat : FlatModel) (target condition : String) : String :=
       condition, severity := "ERROR" } with
   | .ok _ => "admitted"
   | .error refusal =>
-      if refusal.detail.startsWith "A12Kernel.FlatRuleAssemblyError.negativeConditionInIteration"
+      if refusal.detail.startsWith "MVK_NEG_CONDITION_IN_ITERATION A12Kernel.FlatRuleAssemblyError.negativeConditionInIteration"
       then "MVK_NEG_CONDITION_IN_ITERATION" else refusal.detail
 
 private def verdict := verdictIn model

@@ -187,7 +187,9 @@ sharing a refused computation's target or reading one, directly or through other
 therefore not attributable to it, agreeing or not), `tier2` (Lean cannot represent the
 rule, the computation, the model or the document), `fault` (Lean admitted the rule or plan but
 failed running it), or `absent` (no comparable Kernel observation: none retained, an unreadable
-artifact or model file, or engines that disagree). A row whose document or model cannot be read
+artifact or model file, or engines that disagree). A request with no artifact replays its computations
+against a retained outcome table beside it, when one names the row; such a row's rules are `absent`,
+since the table keeps no complete message list. A row whose document or model cannot be read
 prints one line with the rule column `-`. The Kernel's first engine is the reference.
 
 A rule or computation reading `Today` or `Now` is refused when the request pins no clock, since the
@@ -224,6 +226,38 @@ private def artifactPath (requestPath : System.FilePath) : System.FilePath :=
   let stem := requestPath.fileStem.getD ""
   let suffix := (stem.dropWhile Char.isAlpha).toString
   (requestPath.parent.getD ".") / s!"artifact{suffix}.json"
+
+/-- The computation outcomes a capture retained as a table rather than an artifact, by row name:
+every `.tsv` beside the request headed `# row field outcome value`, or `# run row field outcome value`
+with the run naming this request's suffix. Formal, operand-error and message lines are no outcomes and
+are skipped. Every named row is listed, even one with no outcome line. -/
+private def tableOutcomes (requestPath : System.FilePath) :
+    IO (List String × List (String × ComputedOutcome)) := do
+  let directory := requestPath.parent.getD "."
+  let run := (((requestPath.fileStem.getD "").dropWhile Char.isAlpha).dropWhile
+    (fun c => c == '-' || c == '.')).toString
+  let mut rows : List String := []
+  let mut outcomes : List (String × ComputedOutcome) := []
+  for entry in ← directory.readDir do
+    if entry.path.extension != some "tsv" then continue
+    let lines := ((← IO.FS.readFile entry.path).splitOn "\n").filter (· != "")
+    let runColumn ← match lines.head? with
+      | some "# row\tfield\toutcome\tvalue" => pure false
+      | some "# run\trow\tfield\toutcome\tvalue" => pure true
+      | _ => continue
+    for line in lines.drop 1 do
+      let cells := line.splitOn "\t"
+      let cells := if runColumn then (if cells.head? == some run then cells.drop 1 else []) else cells
+      let row :: pointer :: outcome :: rest := cells | continue
+      if !rows.contains row then rows := rows ++ [row]
+      let value := rest.headD ""
+      let text? := match outcome with
+        | "value" => some s!"value {value}"
+        | "cleared" => some "cleared"
+        | "errored" => some s!"errored {value}"
+        | _ => none
+      if let some text := text? then outcomes := outcomes ++ [(row, { pointer, outcome := text })]
+  pure (rows, outcomes)
 
 private def kernelMessages (row : Json) : Option (Bool × List ObservedMessage) := do
   let engines ← (row.getObjValAs? (Array Json) "engines").toOption
@@ -391,6 +425,7 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
         line "-" "-" "-" "absent" s!"Artifact\tunreadable: {error}"; return
     else pure none
   let artifactRows := (artifact.bind fun json => (json.getObjValAs? (Array Json) "rows").toOption).getD #[]
+  let (tabledRows, tabled) ← if artifact.isNone then tableOutcomes requestPath else pure ([], [])
   let prepared ← match prepareFlatStringContext world builtinStringPatternCompiler model.flat with
     | .ok prepared => pure prepared
     | .error error => do line "-" "-" "-" "tier2" s!"Prepare\t{repr error}"; return
@@ -398,9 +433,14 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
     let name := (row.getObjValAs? String "name").toOption.getD "?"
     let observedRow := artifactRows.find? fun observed =>
       (observed.getObjValAs? String "name").toOption == some name
-    let some (agree, kernel) := observedRow.bind kernelMessages
-      | line name "-" "-" "absent" "Artifact\tno retained observation"
-    if !agree then line name "-" "-" "absent" "Engines\tthe Kernel's engines disagree"; continue
+    let observed := observedRow.bind kernelMessages
+    let table := if tabledRows.contains name then
+        some (tabled.filterMap fun (row, outcome) => if row == name then some outcome else none)
+      else none
+    if observed.isNone && table.isNone then
+      line name "-" "-" "absent" "Artifact\tno retained observation"; continue
+    if let some (false, _) := observed then
+      line name "-" "-" "absent" "Engines\tthe Kernel's engines disagree"; continue
     let document ← match row.getObjVal? "documentInline", row.getObjValAs? String "document" with
       | .ok inline, _ => pure inline
       | _, .ok file =>
@@ -418,6 +458,12 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
         | .error error => line name "-" "-" "tier2" s!"Document\t{(repr error).pretty 200}"
         | .ok checked =>
             let references := observedRow.map kernelReferences |>.getD []
+            -- A table records no complete message list, so its rows leave the rules unobserved.
+            let some (_, kernel) := observed
+              | do
+                  line name "-" "-" "absent" "Table\tthe retained table holds computation outcomes only"
+                  if let some computed := table then
+                    replayComputations (line name) clock?.isSome model language world prepared checked computed
             for verdict in replayRules model language world checked kernel references (some (prepared, locale)) do
               let ruleName := replayName (model.rules.map (·.name)) verdict.rule.group verdict.rule.name
               if clock?.isNone && readsClock language verdict.rule.condition then

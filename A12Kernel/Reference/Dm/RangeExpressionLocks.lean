@@ -280,6 +280,13 @@ example : [IndexKind.string, .number].all (fun kind =>
             selectedComparisonRun kind mode shape scenario == some (comparisonExpected mode scenario)) := by
   native_decide
 
+/-- A selected endpoint as it stands in a construction's first slot: a bare path reads only as an operator
+argument (spec/12 §12.3), so the fragment is parsed inside `DateRange`. -/
+private def endpointExpr (endpoint : String) : Option Expr := do
+  match (← (parseText .english s!"DateRange({endpoint},Finish)").toOption).body with
+  | .call "DateRange" (.mk start none :: _) none none => some start
+  | _ => none
+
 private def selectedReferences : Option (List String × Bool × Bool × Bool × Bool) := do
   let model := selectionModel .number
   let (_, checked) ← selectionChecked .number .ordinary (rangeStored := "2024-02/2024-06")
@@ -287,8 +294,8 @@ private def selectedReferences : Option (List String × Bool × Bool × Bool × 
   let preliminary ← checked.applyFullIndexPreliminary.toOption
   let inputs ← preliminary.messageReferenceInputs.toOption
   let pointers ← (rule.condition.core.referencePointers [] (some inputs)).toOption
-  let parsed ← (parseText .english "Rows/Start For KeyStart").toOption
-  let surface ← (lowerDateRangeEndpoint model ["Form"] parsed.body).toOption
+  let endpoint ← endpointExpr "Rows/Start For KeyStart"
+  let surface ← (lowerDateRangeEndpoint model ["Form"] endpoint).toOption
   let source ← (elaborateDateRangeEndpointSource model ["Form"] [] surface).toOption
   pure ((pointers.map (renderPointer model)).eraseDups.mergeSort (fun a b => decide (a ≤ b)),
     source.referencesField 3, source.referencesErrorField 3,
@@ -304,9 +311,8 @@ private def endpointAdmission (wrongKind wrongKey : Bool) :
   let base := selectionModel .number
   let model := if wrongKey then { base with fields := base.fields.map fun field =>
     if field.id == 1 then { field with policy := { kind := .string } } else field } else base
-  let parsed ← (parseText .english
-    ((if wrongKind then "Rows/Id" else "Rows/Start") ++ " For KeyStart")).toOption
-  let surface ← (lowerDateRangeEndpoint model ["Form"] parsed.body).toOption
+  let endpoint ← endpointExpr ((if wrongKind then "Rows/Id" else "Rows/Start") ++ " For KeyStart")
+  let surface ← (lowerDateRangeEndpoint model ["Form"] endpoint).toOption
   pure (match elaborateDateRangeEndpointSource model ["Form"] [] surface with
     | .ok _ => (true, none)
     | .error error => (false, error.diagnostic?))
@@ -338,8 +344,8 @@ private def implicitSelection (phase : Phase) (row : Nat := 2) : Option DateRang
   let prepared ← (prepareFlatStringContext selectionWorld builtinStringPatternCompiler virtualModel).toOption
   let checked ← (checkDocument prepared "en_US" raw.data).toOption
   let endpoint (name : String) := do
-    let parsed ← (parseText .english ("Rows/" ++ name ++ " For Calls/Key" ++ name)).toOption
-    let surface ← (lowerDateRangeEndpoint virtualModel ["Form"] parsed.body).toOption
+    let surface ← (lowerDateRangeEndpoint virtualModel ["Form"]
+      (← endpointExpr ("Rows/" ++ name ++ " For Calls/Key" ++ name))).toOption
     (elaborateDateRangeEndpointSource virtualModel ["Form"] [11] surface).toOption
   let construction ← (checkDateRangeConstructionEndpoints (← endpoint "Start") (← endpoint "Finish")).toOption
   (construction.evaluateAt phase checked [(11, row)]).toOption

@@ -129,6 +129,16 @@ example :
     firstClass "RoundUpValue(Reference, 2) > FieldFilled(Score)" = some "MVK_NO_NUMBER" := by
   native_decide
 
+-- A name that is no keyword before `(` fails at the name, unresolved: `Year` is no operator, so
+-- `Reference` and `Due` alike draw the token class (rows `d01`–`d05` of the first predicate-operand
+-- file), where a resolution-first account would report the unknown `Year` as an entity.
+example :
+    firstClass "Abs(Year(Reference) > 1) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "Abs(Year(Due) > 1) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "Abs(Year(Reference)) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "Abs(Year(Reference) + FieldFilled(Score)) > 0" = some "MVK_UNEXPECTED_TOKEN" := by
+  native_decide
+
 example :
     firstClass "Abs(YearFromDate(Reference) > 1) > 0" = some "MVK_NO_DATE" ∧
     firstClass "Abs(YearFromDate(Due) > 1) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧

@@ -18,7 +18,7 @@ private def admission (condition : String) (fixture : FlatModel := model) : Stri
     group := ["Et", "Rows"], name := "Root", errorCode := "ROOT", errorEntityRelPath := "../Note",
     condition, severity := "ERROR" } with
   | .ok _ => "admitted"
-  | .error refusal => refusal.detail
+  | .error refusal => refusal.cause
 
 example : model.validate.isOk = true := by native_decide
 
