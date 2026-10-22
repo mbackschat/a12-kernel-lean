@@ -84,6 +84,12 @@ The scalar, fixed, and nonrepeatable half. Exact-address repeatable families liv
 - `remains`: a Number literal's authored scale, which the flat condition does not keep ([SG5](../gaps/numeric-and-temporal.md#gap-sg5)).
 - `remains`: ordering operators, which draw `MVK_INVALID_TYPE_FOR_COMPARISON` for a wrong kind ([`kf270`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf270)) and need the operator carried with the error; `!=`; value lists and memberships, whose Enumeration literal class [`enumConstantRefusal`](../../A12Kernel/Elaboration/EnumerationCategoryConstant.lean) owns per carrier; the German condition language; and the admissions this route refuses: the same-kind field pairs, two Confirm fields under `!=` ([`kf383`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf383)) and `Length` under `==`.
 
+<a id="cap-computation-static-verdict"></a>
+#### A computation's static verdict and class
+
+- `boundary`: `checkComputation` lowers a computation and, when its own refusal names no Kernel class, takes the class its generated rule's check draws ([spec/09 §6](../../spec/09-computations.md#6-the-implicit-validation-rule-precisely)); a classed own refusal keeps its class, and the order in which the Kernel applies the two checks is unmeasured. The computation's own carriers class a `FirstFilledValue` self-read on String and Enumeration targets, the Enumeration plain read including a keyed partner, and a resolver miss in a row String expression.
+- `owner`: [`ComputationCheck.lean`](../../A12Kernel/Reference/Dm/ComputationCheck.lean); [`RefusalClass.lean`](../../A12Kernel/Reference/Dm/RefusalClass.lean) for the carrier classes.
+- `assurance`: the [rule-check projection](../../A12Kernel/Evidence/RuleCheckProjection.lean) compares every retained `computation add` row, 418 as of 2026-10-22: admission against the Kernel's verdict, a refusal's class against its codes, and an admitted computation's generated rule as a rule row.
 <a id="cap-boolean-confirm-constant-computation-target-admission"></a>
 #### Boolean/Confirm constant computation target and result/application
 

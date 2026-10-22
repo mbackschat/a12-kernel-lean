@@ -3,6 +3,8 @@ import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Elaboration.ValidationMessageDiagnostic
 import A12Kernel.Elaboration.DeclarationReport
 import A12Kernel.Reference.Dm.GeneratedComputationRule
+import A12Kernel.Reference.Dm.ComputationCheck
+import A12Kernel.Reference.Dm.LoneSurrogate
 
 /-! # Retained rule-check observations through the reader and the message checker
 
@@ -12,7 +14,9 @@ parallel condition check, and the error-text checker over each declared locale's
 when the Kernel refuses it with the class the refusal leads with; a refusal without a class agrees only
 with a Kernel verdict naming none but the internal-error class, which this project deliberately keeps
 without a class. An admitted condition agrees when the classes and the Kernel's own verdict both agree.
-A row with no Kernel verdict, which the instrument stopped first, is skipped.
+A row with no Kernel verdict, which the instrument stopped first, is skipped. A `computation add` row
+is compared through [`checkComputation`](../Reference/Dm/ComputationCheck.lean) the same way, an
+admitted computation's generated rule standing as its rule row.
 
 `deferred` names each row whose divergence another obligation owns. A deferred row that agrees fails,
 so the list cannot outlive its cause.
@@ -218,6 +222,14 @@ private def specEntries (locales : List String) (spec : Json) : List (String × 
     ((entry.getObjValAs? String "locale").toOption.getD "", (entry.getObjValAs? String "text").toOption.getD "")
   (locales.filter (fun locale => !written.any (·.1 == locale))).map (·, "placeholder") ++ written
 
+/-- How one refusal meets the Kernel's verdict and codes, `none` when they agree. -/
+private def refusedAgainst (refusal : Refusal) (valid : Bool) (kernel : List String) : Option String :=
+  let named := kernel.filter (· != "MVK_INTERNAL_ERROR")
+  if valid then some s!"refused {refusal.construct}"
+  else match refusal.kernelClass? with
+    | some code => if named.contains code then none else some s!"class {code} against {kernel}"
+    | none => if named.isEmpty then none else some s!"unclassed {refusal.construct} ({refusal.detail}) against {kernel}"
+
 inductive Outcome where
   | skipped
   | agrees
@@ -238,12 +250,7 @@ private def compare (dm : DmModel) (locales : List String) (rule : DmRule)
   let language := if dm.conditionLanguage.startsWith "de" then Language.german else .english
   let profile := language.messageKeywordProfile
   let outcome := match checkValidationRule dm language rule with
-    | .error refusal =>
-        let named := kernel.filter (· != "MVK_INTERNAL_ERROR")
-        if valid then some s!"refused {refusal.construct}"
-        else match refusal.kernelClass? with
-          | some code => if named.contains code then none else some s!"class {code} against {kernel}"
-          | none => if named.isEmpty then none else some s!"unclassed {refusal.construct} against {kernel}"
+    | .error refusal => refusedAgainst refusal valid kernel
     | .ok checked =>
         let (codes, unclassed) := match checked with
           | .ordinary checked => reported dm.flat profile (.rule checked) locales entries
@@ -258,6 +265,24 @@ private def compare (dm : DmModel) (locales : List String) (rule : DmRule)
   | some detail => .diverges detail
   | none => .agrees
 
+/-- Compare one `computation add` row: the computation's own admission first, then the rule it
+generates, whose message is the computation's. -/
+private def compareComputation (dm : DmModel) (locales : List String) (computation : DmComputation)
+    (entries : List (String × String)) (observation : Json) : Outcome :=
+  match (observation.getObjValAs? Bool "ok").toOption with
+  | none => .skipped
+  | some valid =>
+  let kernel := ((observation.getObjValAs? (Array String) "codes").toOption.getD #[]).toList.filter
+    (!·.startsWith "RK_")
+  let language := if dm.conditionLanguage.startsWith "de" then Language.german else .english
+  match checkComputation dm language computation with
+  | .error refusal => match refusedAgainst refusal valid kernel with
+    | some detail => .diverges detail
+    | none => .agrees
+  | .ok _ => match computation.generatedRule? language with
+    | some rule => compare dm locales rule entries observation true
+    | none => .diverges "admitted computation without a generated rule"
+
 /-- Replay every batch and return the agreeing and skipped row counts. -/
 def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
   let mut agreeing := 0
@@ -265,32 +290,33 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
   let mut failures : Array String := #[]
   let mut deferredSeen : Array String := #[]
   for (observations, modelPath, requests) in captures do
-    let modelJson ← readJson (root / modelPath)
+    let modelJson ← match parseModelJson (← IO.FS.readFile (root / modelPath)) with
+      | .ok json => pure json
+      | .error message => throw (IO.userError s!"{modelPath}: {message}")
     let some dm := (readModel modelJson).toOption
       | throw (IO.userError s!"{modelPath}: unreadable model")
     let locales := (((modelJson.getObjValD "header").getObjValAs? (Array Json) "locales").toOption.getD #[]).toList.filterMap
       fun locale => (locale.getObjValAs? String "code").toOption
     let batch := ((← readJson (root / observations)).getObjValAs? (Array Json) "observations").toOption.getD #[]
-    let language := if dm.conditionLanguage.startsWith "de" then Language.german else .english
     for request in ((← readJson (root / requests)).getArr?).toOption.getD #[] do
       let args := ((request.getObjValAs? (Array String) "args").toOption.getD #[]).toList
-      -- A batch may interleave other verbs. A rule check is its rule's static verdict; a computation
-      -- preview is compared only when its message carries a parameter, since the computation's own
-      -- members are other families' obligations.
+      -- A batch may interleave other verbs. A rule check is its rule's static verdict, a computation
+      -- preview its computation's.
       let declaration ← match (request.getObjValAs? String "verb").toOption, args with
-        | some "rule", "check" :: _ => pure (some (requestedRule args, messageEntries locales args, false))
+        | some "rule", "check" :: _ => pure (some (Sum.inl (requestedRule args), messageEntries locales args))
         | some "computation", "add" :: file :: _ => do
             let spec ← readJson ((root / requests).parent.getD root / file)
-            let entries := specEntries locales spec
-            pure (if entries.any (·.2.contains '$') then
-              ((requestedComputation spec).generatedRule? language).map (·, entries, true) else none)
+            pure (some (Sum.inr (requestedComputation spec), specEntries locales spec))
         | _, _ => pure none
-      let some (rule, entries, preview) := declaration | continue
+      let some (declaration, entries) := declaration | continue
       let id := (request.getObjValAs? String "id").toOption.getD ""
       let some observation := batch.find? (fun row => (row.getObjValAs? String "id").toOption == some id)
         | continue
       let key := s!"{(observations.drop "captures/".length)}#{id}"
-      match compare dm locales rule entries observation preview, deferred.lookup key with
+      let outcome := match declaration with
+        | .inl rule => compare dm locales rule entries observation false
+        | .inr computation => compareComputation dm locales computation entries observation
+      match outcome, deferred.lookup key with
       | .skipped, _ => skipped := skipped + 1
       | .agrees, none => agreeing := agreeing + 1
       | .agrees, some owner => failures := failures.push s!"{key}: deferred to {owner} but agrees"

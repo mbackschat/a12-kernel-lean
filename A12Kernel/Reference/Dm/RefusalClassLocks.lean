@@ -1,5 +1,5 @@
 import A12Kernel.Reference.Dm.Validate
-import A12Kernel.Reference.Dm.Compute
+import A12Kernel.Reference.Dm.ComputationCheck
 
 /-! # The Kernel class a reader refusal leads with
 
@@ -48,7 +48,7 @@ private def computationClassOf (group : List String) (target operation : String)
   let computation : DmComputation := {
     group, name := "C", targetRelPath := target, commonPrecondition := none,
     alternatives := [{ operation, precondition := none }], errorCodesToSuppress := [] }
-  classOfRefusal (lowerComputation model.flat .english computation)
+  classOfRefusal (checkComputation model .english computation)
 
 /- An unstarred operand on a level the rule binds, by its error field or its declaring group, draws
 the lowest-star class; an error field outside `Items` leaves the missing star. -/

@@ -7,6 +7,9 @@ import A12Kernel.Elaboration.NumericValidation.EntityComparison
 import A12Kernel.Elaboration.ValidationCondition.Assembly
 import A12Kernel.Elaboration.ValidationRule.AssemblyError
 import A12Kernel.Elaboration.NumericComputation.Table
+import A12Kernel.Elaboration.StringFirstFilledComputation
+import A12Kernel.Elaboration.AddressedEnumerationFirstFilledComputation
+import A12Kernel.Elaboration.StringExpression
 
 /-! # The Kernel class of a reader refusal
 
@@ -54,6 +57,19 @@ instance : StaticClassified EntityNumericComparisonElabError := ⟨fun
 /-- A Number computation's refusal, through the table's own projection, which classes only causes
 whose carrier was measured (`NumericComputationTableElabError.diagnostic?`). -/
 instance : StaticClassified NumericComputationTableElabError := ⟨NumericComputationTableElabError.diagnostic?⟩
+
+instance : StaticClassified StringFirstFilledComputationElabError :=
+  ⟨StringFirstFilledComputationElabError.diagnostic?⟩
+instance : StaticClassified EnumerationFirstFilledComputationElabError :=
+  ⟨EnumerationFirstFilledComputationElabError.targetDiagnostic?⟩
+
+instance : StaticClassified AddressedEnumerationFirstFilledComputationElabError := ⟨fun
+  | .source cause => cause.targetDiagnostic?
+  | _ => none⟩
+
+instance : StaticClassified RowStringExpressionElabError := ⟨fun
+  | .expression (.resolve error) => error.diagnostic?
+  | _ => none⟩
 
 instance : StaticClassified ValidationConditionAssemblyError := ⟨fun
   | .fieldReference error => error.diagnostic?

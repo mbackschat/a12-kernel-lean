@@ -144,6 +144,10 @@ private def isCategory : CheckedEnumerationFirstFilledOperand model scope → Bo
       | .category _ => true
   | .star _ | .selected .. => false
 
+private def isSelected : CheckedEnumerationFirstFilledOperand model scope → Bool
+  | .selected .. => true
+  | .field .. | .star _ => false
+
 def allowedFor (operand : CheckedEnumerationFirstFilledOperand model scope)
     (target : CheckedEnumerationProjection) : Bool :=
   operand.projections.all (·.compatibleWithTarget target)
@@ -215,8 +219,10 @@ The class is decided by *how* the target is read, so one category occurrence
 selects the projected mode however the rest of the list reads. The surrounding
 bound is the measured one and differs per mode: compatible stored-direct lists
 were measured at length two and three, while a list carrying a projection was
-measured at length two only. A star never contributes a mode, and an
-incompatible source stays outside the denominator entirely.
+measured at length two only. A keyed or indexed read beside a stored-direct
+self-read was measured at length two (`semantic-index-reads-2026-10-14` row
+`p11`). A star never contributes a mode, and an incompatible source stays
+outside the denominator entirely.
 
 Every two-entry pairing this fold classifies is externally measured, including
 the one whose plain entry names a *different* field: such a read is inert for
@@ -240,6 +246,8 @@ private def measuredTargetReadMode?
   else if selfReads.any (fun operand => operand.isStoredDirect) then
     if (operands.length == 2 || operands.length == 3) &&
         operands.all (fun operand => operand.isStoredDirect) then
+      some .plain
+    else if operands.length == 2 && operands.all (fun operand => operand.isStoredDirect || operand.isSelected) then
       some .plain
     else
       none

@@ -15,13 +15,13 @@ import A12Kernel.Reference.Dm.RefusalClass
 
 namespace A12Kernel.Dm
 
-/-- Fixed and addressed Enumeration first-filled carriers retain the same calculation refusal identity; unclassified carrier errors keep their local detail. -/
-def elaboratedEnumerationFirstFilled [Repr ε] (calculationRefusal : ε → Option CalculationRefusal) :
+/-- Fixed and addressed Enumeration first-filled carriers retain the same calculation refusal identity; any other carrier error keeps its static class, where it has one, before its local detail. -/
+def elaboratedEnumerationFirstFilled [Repr ε] [StaticClassified ε] (calculationRefusal : ε → Option CalculationRefusal) :
     Except ε α → Lowering α
   | .ok value => .ok value
   | .error error => .error {
       construct := "FirstFilledValue"
-      detail := (calculationRefusal error).map (·.catalogKey) |>.getD (oneLine ((repr error).pretty 100000)) }
+      detail := (calculationRefusal error).map (·.catalogKey) |>.getD (classifiedDetail error) }
 
 /-- Whether an unstarred path names a field of the model, read at the operator's group. -/
 def namesField (model : FlatModel) (group : GroupPath) (path : SurfaceFieldPath) : Bool :=
