@@ -589,14 +589,18 @@ where
       { sameEntity := declaration.id == pair.errorField }
 
 /-- Whether a reference naming the error entity iterates the error side's joined level, and so
-takes part in the parallel iteration. A joined-row read takes part, and a group reference
-containing the error field is taken to, which no row measures; an ordinary leaf answers by its own
-references, `none` where its carrier leaves them unresolved. -/
+takes part in the parallel iteration. A joined-row read takes part, and so does a group reference
+containing the error field at or below the error side's joined group, but not one above it
+([capture](../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04)
+rows `v12`, `v13`); an ordinary leaf answers by its own references, `none` where its carrier leaves
+them unresolved. -/
 def errorSideIterated? (pair : CheckedParallelFieldPair model) :
     ParallelFieldCondition model → Option Bool
-  | .leaf (.groupPresence _ reference) => some (reference.path.length > 1 && reference.path.isPrefixOf
-      (if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration.groupPath
-       else pair.rightDeclaration.groupPath))
+  | .leaf (.groupPresence _ reference) =>
+      let (joined, errorGroup) := if pair.errorField == pair.leftDeclaration.id
+        then (pair.groups.leftGroup.path, pair.leftDeclaration.groupPath)
+        else (pair.groups.rightGroup.path, pair.rightDeclaration.groupPath)
+      some (joined.isPrefixOf reference.path && reference.path.isPrefixOf errorGroup)
   | .leaf (.ordinary leaf) => ordinary leaf
   | .leaf leaf => anyReference (some (leaf.fields.any fun field => (pair.declaration field).id == pair.errorField) ::
       leaf.atomLeaves.map ordinary)

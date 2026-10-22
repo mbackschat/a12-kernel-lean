@@ -89,11 +89,11 @@ Six entries are `pending`. The 16 terminal receipts closed at the [October 18 re
 - `acceptance`: Reconcile the guard's outcome on those rows. The clause's source-read extensions, the nested `CurrentRepetition` and filter-read rules, a non-constant side and an H model's exemption are unmeasured; do not claim them as measured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
-### SPEC-2026-10-23-01 — a parallel iteration needs the error field's own read, and a field-keyed selection guards its key's row
+### SPEC-2026-10-23-01 — selections bind and weigh alike for fields and groups, and only a join's own group joins its error field
 
 - `status`: pending
 - `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) and its parallel-iteration constraints.
-- `delta`: Beyond the [October 22c rows](sources/inbound-handbacks.md#src-inbound-2026-10-22c): the error-field iteration class follows the parallel iteration, so beside an unkeyed group the same starred-only error field draws `MVK_NO_WILDCARD`; it also refuses a starred `Sum` beside a positive of the keyed side, and an unstarred positive of the error field admits the list; a field-keyed selection is admitted below the iterated row and guards that row as a positive, while `NoFieldFilled` beside it refuses.
-- `basis`: [Binding checkpoint](sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04), discriminator rows `d1`–`d6`, measured locally 2026-10-23, Kernel 30.8.1, at the measurement pin `09f1352e5`.
-- `acceptance`: Reconcile the class and admission of rows `d1`–`d6`. The runtime of a field-keyed selection read at the rule's row is unmeasured; do not claim it as measured.
+- `delta`: Beyond the [October 22c rows](sources/inbound-handbacks.md#src-inbound-2026-10-22c): the error-field iteration class follows the parallel iteration, so beside an unkeyed group a starred-only error field draws `MVK_NO_WILDCARD`; a presence of a group above the joined one does not join the error field, one of the joined group does; a field-keyed field or group selection is admitted with its key read from the iterated row and guards that row as a positive, while `NoFieldFilled` beside a field-keyed selection refuses; a negative field or group selection alone fails its parent's level; a constant group selection binds below an unkeyed iterated row; and a constant selection of the iterated group's own field is one independent slot in the field-fill quantifiers and `FieldValuesNotUnique`.
+- `basis`: [Binding checkpoint](sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04), discriminator rows `d1`, `d2`, `d5`, `d6` and the `review` rows `v1`–`v18`, measured locally 2026-10-23, Kernel 30.8.1, at the measurement pin `09f1352e5`.
+- `acceptance`: Reconcile the class and admission of those rows. The runtime of a selection read at the rule's row is unmeasured; do not claim it as measured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

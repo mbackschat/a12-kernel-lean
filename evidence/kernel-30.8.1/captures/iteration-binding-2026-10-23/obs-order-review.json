@@ -1,0 +1,78 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+    "state" : "CLEAN"
+  },
+  "model" : "86303a8f16e4674a6f0d9726c482cd7f0c7a91bba918913afc0b9ff099a80beb",
+  "observations" : [ {
+    "id" : "v1",
+    "inputHash" : "db0dc71ae3eb66e22b84774d773119d91cf817e12c827988388bf7c273c0a517",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "v2",
+    "inputHash" : "828212d88a07d5dbeb9fb4466028e42cec94b52b869868cf624496af2d82279c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "v3",
+    "inputHash" : "4da962024a5b928e83008974a6b9cbaa5784c4d914c9d09f67331e7add05b6bc",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v4",
+    "inputHash" : "bf966fb4538cd5eee6dcd83ba9162b47a76b51d9aff97020213faf7249537214",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "v5",
+    "inputHash" : "c52592996ca0cb3d1f54ddf5fe57693322736b25ce5a16ca51dc1e1900657ba8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "v6",
+    "inputHash" : "271cfab23dbc7ac2ffbae67a33753ee19287a806baee669f37adc22619f36e82",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "v7",
+    "inputHash" : "57c6a49f991aad534d10a654cb3cfe54a9a270d262916cdd9cabb28acf3012f9",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "v8",
+    "inputHash" : "3b5bd2618a3527f24d333396e54afc6204fc9392123f208714f184addf673aa0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v9",
+    "inputHash" : "99038c759112515b3890425cf9a679c71a1090791640134296de56ed23e9d5aa",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "v10",
+    "inputHash" : "c56cefa437e33dadbeec4b4d61c185b05ce4f1872e329aa0534c4bbb35fea104",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v11",
+    "inputHash" : "8996eb98117263fc202b0be2ae27077ee6444c46184191e1d46eb2fd460908e2",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_NEG_CONDITION_IN_ITERATION" ]
+  } ]
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+    "state" : "CLEAN"
+  },
+  "model" : "86303a8f16e4674a6f0d9726c482cd7f0c7a91bba918913afc0b9ff099a80beb",
+  "observations" : [ {
+    "id" : "v15",
+    "inputHash" : "b5f5fbc3d2c576757aa0bbd1a1519dfae6329f87a3e7e24de450d9b52744faa3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "v16",
+    "inputHash" : "85f47ca61212dbf1a7794d57231559815f2bf814b46da34f2d3bdcf27c12fc18",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "v17",
+    "inputHash" : "93ee9078f0f0aa5795ec445af42e3e75f30933e491331fea807133465c76b183",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "v18",
+    "inputHash" : "d1efe4317babba430e894e0046d5269c79700c2c20d337d6a9b319034a3d3eaa",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

@@ -279,7 +279,11 @@ private def groupIterationExtents? (model : FlatModel) (source : CheckedEntityGr
     (model.declarationSlots? source.boundLevelCount declaration).map (declaration.repeatableScope, ·)
 
 /-- A semantic-index selection reads one row of its keyed level; each selected field supplies the
-row combinations of its repeatable levels below that row. -/
+row combinations of its repeatable levels below that row. Its scope is the parent and key levels it
+reads at the rule's row plus those lower levels, never the selected level, so a constant selection
+of the iterated group's own field is an independent slot too
+([capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04)
+rows `v4`–`v6`, `v15`, `v16`). -/
 private def selectedIterationExtents?
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
     Option (List (List RepeatableLevel × Nat)) :=
@@ -288,7 +292,8 @@ private def selectedIterationExtents?
     | .inr source =>
         ((model.repeatableScopeForGroupPath source.selection.group.path).length, source.declarations)
   declarations.mapM fun declaration =>
-    (model.declarationSlots? enclosing declaration).map (declaration.repeatableScope, ·)
+    (model.declarationSlots? enclosing declaration).map
+      (selectedEntityGuardScope source ++ declaration.repeatableScope.drop enclosing, ·)
 
 /-- A selection weighs as in the uniqueness guard, one slot per row below its selected row, so a
 constant selection of a row's own field is one independent slot
@@ -418,16 +423,22 @@ private def ValidationConditionLeaf.iterationGuardAt
         | .notFilled => .unguarded
       else
         .noReference
-  -- A selection references its parent's and its key's rows, not the row it selects
+  -- A selection references its parent's and its key's rows, not the row it selects, with a
+  -- presence leaf's polarity, for a field and a group alike
   -- ([capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04)
-  -- rows `s1`, `s6`, `d6`); its polarity is a presence leaf's.
+  -- rows `s1`, `s6`, `d6`, `v1`–`v3`, `v7`–`v11`, `v17`, `v18`).
   | .indexedFieldPresence operator source =>
       if (selectedEntityGuardScope (.inl source)).contains level then
         match operator with
         | .filled => .guarded
         | .notFilled => .unguarded
       else .noReference
-  | .keyedGroupPresence _ _ => .noReference
+  | .keyedGroupPresence operator source =>
+      if (selectedEntityGuardScope (.inr source)).contains level then
+        match operator with
+        | .filled => .guarded
+        | .notFilled => .unguarded
+      else .noReference
   | .repeatableFieldPresence operator declaration =>
       if declaration.repeatableScope.contains level then
         match operator with

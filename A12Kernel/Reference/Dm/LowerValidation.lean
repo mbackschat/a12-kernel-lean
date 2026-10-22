@@ -483,7 +483,8 @@ private def lowerIndexedPresence (model : FlatModel) (rowGroup bindingGroup : Gr
     Lowering (CheckedValidationCondition model) := do
   let source ← lowerIndexedSource model rowGroup path key
   -- The selection's group and a row-field key bind at the error field's rows, as the list route
-  -- binds them ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04), rows s6–s8, d6).
+  -- binds them ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04), rows s6–s8, d6;
+  -- a group selection below, rows v7–v11).
   let checked ← elaborated "SemanticIndex" (elaborateSemanticIndexSource model rowGroup source
     (some (model.repeatableScopeForGroupPath bindingGroup)))
   elaborated "SemanticIndex" (CheckedValidationCondition.checkCore model bindingGroup
@@ -492,7 +493,8 @@ private def lowerIndexedPresence (model : FlatModel) (rowGroup bindingGroup : Gr
 private def lowerKeyedGroupPresence (model : FlatModel) (rowGroup bindingGroup : GroupPath)
     (operator : GroupPresenceOperator) (argument : Argument) : Lowering (CheckedValidationCondition model) := do
   let .keyed source .stored ← lowerEntityOperand model rowGroup argument | refuse "SemanticIndex" "group operand"
-  let checked ← elaborated "SemanticIndex" (elaborateKeyedEntityExtent model rowGroup source)
+  let checked ← elaborated "SemanticIndex" (elaborateKeyedEntityExtent model rowGroup source
+    (some (model.repeatableScopeForGroupPath bindingGroup)))
   if !checked.isGroup || checked.isStarredGroup then refuse "SemanticIndex" "unstarred group operand"
   elaborated "SemanticIndex" (CheckedValidationCondition.checkCore model bindingGroup
     (.leaf (.keyedGroupPresence operator checked)) checked.selection.indexSource.modelWellFormed rowGroup)

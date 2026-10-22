@@ -27,7 +27,7 @@ private def L : GroupPath := ["Order", "Lines"]
 private def W : GroupPath := ["Order", "Wraps"]
 
 /-- The capture's [order model](../../../evidence/kernel-30.8.1/captures/iteration-binding-2026-10-23/Order22c_DM.json):
-the K04 order shape, whose `Lines` and `Picks` are both keyed by `LineNo`, with `Wraps` (2, unkeyed)
+the part of it the rows read: `Lines` and `Picks` both keyed by `LineNo`, and `Wraps` (2, unkeyed)
 holding `Bows` (3, keyed by `BowNo`). -/
 private def order : FlatModel :=
   { fields := [text 1 O "Email" [], text 2 O "Phone" [], text 3 O "Tier" [], number 4 O "Budget" [],
@@ -105,6 +105,26 @@ private def rows : List (String × String × String) := [
   ("s8", rule order O "Lines/Qty" "FieldFilled(Lines/Qty) And FieldNotFilled(Picks/Ref For Lines/LineNo)", "admitted"),
   ("d5", rule order O "Lines/Sku" "NoFieldFilled(Lines/Sku, Picks/Ref For Lines/LineNo)", NEG),
   ("d6", rule order O "Lines/Qty" "FieldNotFilled(Lines/Qty) And FieldFilled(Picks/Ref For Lines/LineNo)", "admitted"),
+  -- A negative selection alone fails the level it references, a positive guards it.
+  ("v1", rule order O "Wraps/Style" "FieldFilled(Wraps/Style) Or FieldNotFilled(Wraps/Bows/Shade For \"a\")", NEG),
+  ("v2", rule order O "Wraps/Bows/Shade" "FieldNotFilled(Wraps/Bows/Shade For \"a\")", NEG),
+  ("v3", rule order O "Wraps/Bows/Shade" "FieldFilled(Wraps/Bows/Shade For \"a\")", "admitted"),
+  -- A constant selection of the iterated group's own field is one independent slot.
+  ("v4", rule order O "Lines/Qty" "AtLeastOneFieldFilled(Lines/Qty, Lines/Sku For \"1\")", NEG),
+  ("v5", rule order O "Lines/Qty" "MoreThanOneFieldFilled(Lines/Qty, Lines/Sku For \"1\") And FieldNotFilled(Lines/Qty)",
+    "admitted"),
+  ("v6", rule order O "Lines/Qty"
+    "MoreThanOneFieldFilled(Lines/Qty, Lines/Sku For \"1\", Lines/Sku For \"2\") And FieldNotFilled(Lines/Qty)", NEG),
+  ("v15", rule order O "Lines/Sku" "FieldValuesNotUnique(Lines/Sku, Lines/Code For \"1\", Lines/Code For \"2\")", NEG),
+  ("v16", rule order O "Lines/Sku" "FieldValuesNotUnique(Lines/Sku, Lines/Code For \"1\")", "admitted"),
+  -- A group selection binds and guards as a field selection does.
+  ("v7", rule order O "Wraps/Style" "GroupFilled(Wraps/Bows For \"a\") And FieldNotFilled(Wraps/Style)", "admitted"),
+  ("v8", rule order O "Wraps/Style" "FieldFilled(Wraps/Style) And GroupNotFilled(Wraps/Bows For \"a\")", "admitted"),
+  ("v9", rule order O "Lines/Qty" "GroupFilled(Picks For Lines/LineNo) And FieldNotFilled(Lines/Qty)", "admitted"),
+  ("v10", rule order O "Lines/Qty" "FieldFilled(Lines/Qty) And GroupNotFilled(Picks For Lines/LineNo)", "admitted"),
+  ("v11", rule order O "Wraps/Style" "FieldNotFilled(Wraps/Style) And GroupFilled(Wraps/Bows For \"a\")", "admitted"),
+  ("v17", rule order O "Wraps/Bows/Shade" "GroupNotFilled(Wraps/Bows For \"a\")", NEG),
+  ("v18", rule order O "Wraps/Bows/Shade" "GroupFilled(Wraps/Bows For \"a\")", "admitted"),
   -- An error field read only through a star: beside the unkeyed `Wraps` its row is unbound, beside
   -- the keyed `Picks` the join lacks it, until an unstarred read of it joins.
   ("d1", rule order O "Lines/Sku" "FieldsNotCollectivelyFilled(Lines*/Sku, Wraps/Style)", STAR),
@@ -129,6 +149,16 @@ private def rows : List (String × String × String) := [
     "NoFieldFilled(Weeks/Demand*/Headcount, Weeks/Supply/Headcount)", BIND),
   ("w2", rule (staffing ["Weeks"] [10]) ["Plan"] "Weeks/Demand/Headcount"
     "NoFieldFilled(Weeks/Demand/Headcount, Weeks/Supply/Headcount)", "MVK_PARALLEL_ITERATION_INVALID"),
+  -- A containing group joins only at or below the joined group: `Weeks` does not, `Weeks/Demand` does.
+  ("v12", rule (staffing ["Weeks"] [10]) ["Plan"] "Weeks/Demand/Headcount"
+    "GroupFilled(Weeks) And FieldFilled(Weeks/Demand/Note) And FieldsNotCollectivelyFilled(Weeks/Demand*/Headcount, Weeks/Supply/Headcount)",
+    BIND),
+  ("v13", rule (staffing ["Weeks"] [10]) ["Plan"] "Weeks/Demand/Headcount"
+    "GroupFilled(Weeks/Demand) And FieldFilled(Weeks/Demand/Note) And FieldsNotCollectivelyFilled(Weeks/Demand*/Headcount, Weeks/Supply/Headcount)",
+    "admitted"),
+  ("v14", rule (staffing ["Weeks"] [10]) ["Plan"] "Weeks/Demand/Headcount"
+    "FieldFilled(Weeks/Demand/Headcount) And FieldsNotCollectivelyFilled(Weeks/Demand*/Headcount, Weeks/Supply/Headcount)",
+    "admitted"),
   -- A computation precondition meets no negative-condition gate; a nested read of the line is unbound.
   ("k01", guarded "FieldNotFilled(Lines/Sku)", "admitted"),
   ("k02", guarded "NoFieldFilled(Lines/Sku, Picks/Ref)", "admitted"),
@@ -150,17 +180,17 @@ example : mismatches = [] := by native_decide
 
 open Lean in
 /-- The error pointers a rule over `Lines` rows of `(LineNo, Qty)` fires at, beside `Picks` rows of
-`(LineNo, Ref)` and one `Wraps` row holding `Bows` rows of `(BowNo, Shade)`. -/
+`(LineNo, Ref)` and `Wraps` rows, each holding `Bows` rows of `(BowNo, Shade)`. -/
 private def fired (errorField condition : String) (lines : List (String × String))
-    (picks : List (String × Option String)) (bows : List (String × String)) : Option (List String) := do
+    (picks : List (String × Option String)) (wraps : List (List (String × String))) : Option (List String) := do
   let world : World := { now := { epochMillis := 0 } }
   let lineRows := lines.map fun (no, qty) => Json.mkObj [("LineNo", Json.str no), ("Qty", Json.str qty)]
   let pickRows := picks.map fun (no, ref) =>
     Json.mkObj ([("LineNo", Json.str no)] ++ ref.toList.map (("Ref", Json.str ·)))
-  let bowRows := bows.map fun (no, shade) => Json.mkObj [("BowNo", Json.str no), ("Shade", Json.str shade)]
-  let wraps := Json.mkObj [("Style", Json.str "s"), ("Bows", Json.arr bowRows.toArray)]
+  let wrapRows := wraps.map fun bows => Json.mkObj [("Style", Json.str "s"), ("Bows", Json.arr (bows.map fun (no, shade) =>
+    Json.mkObj [("BowNo", Json.str no), ("Shade", Json.str shade)]).toArray)]
   let input ← (readDocument (dm order) (Json.mkObj [("Order", Json.mkObj [
-    ("Lines", Json.arr lineRows.toArray), ("Picks", Json.arr pickRows.toArray), ("Wraps", Json.arr #[wraps])])])).toOption
+    ("Lines", Json.arr lineRows.toArray), ("Picks", Json.arr pickRows.toArray), ("Wraps", Json.arr wrapRows.toArray)])])).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler order).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
@@ -172,13 +202,14 @@ private def fired (errorField condition : String) (lines : List (String × Strin
 
 /-- Internal witnesses, `external evidence pending`: the key is read at the rule's `Lines` row, so
 only the line whose `LineNo` selects no filled `Picks` row fires; a read of one fixed line would fire
-at every row or none. A constant selection below `Wraps` reads that `Wraps` row's `Bows`. -/
+at every row or none. A constant selection below `Wraps` reads the rule's own `Wraps` row's `Bows`,
+so of two rows only the second, whose `Bows` hold the key, fires. -/
 example : fired "Lines/Qty" "FieldFilled(Lines/Qty) And FieldNotFilled(Picks/Ref For Lines/LineNo)"
       [("1", "5"), ("2", "6"), ("3", "7")] [("1", some "r"), ("3", none)] [] =
       some ["Order/Lines[2]/Qty", "Order/Lines[3]/Qty"] ∧
     fired "Wraps/Style" "FieldFilled(Wraps/Bows/Shade For \"a\") And FieldFilled(Wraps/Style)" []
-      [] [("a", "red"), ("b", "blue")] = some ["Order/Wraps/Style"] ∧
+      [] [[("b", "blue")], [("a", "red"), ("c", "green")]] = some ["Order/Wraps[2]/Style"] ∧
     fired "Wraps/Style" "FieldFilled(Wraps/Bows/Shade For \"c\") And FieldFilled(Wraps/Style)" []
-      [] [("a", "red")] = some [] := by native_decide
+      [] [[("a", "red")]] = some [] := by native_decide
 
 end A12Kernel.Dm.IterationBindingLocks
