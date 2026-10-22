@@ -573,8 +573,9 @@ private def enumerationNotifications (context : FieldTypeContext)
     (countedTexts.filter hasSeparator).map (.declared .displayValueInvalid [·]) ++
     (categoryTokens.filter hasSeparator).map (.declared .categoryValueInvalid [·]) ++
     raiseIf ((tokens ++ countedTexts ++ categoryTokens).any hasLineBreak) .lineBreak ++
+    -- Both sides are compared after Java's `trim` (inbound 2026-10-18, `checkConsistency` rows).
     raiseIf (declaration.sValue.any fun sValue =>
-      !ExecutableDeclaration.blank sValue && !tokens.contains sValue) .sValueInvalid ++
+      !(javaTrim sValue).isEmpty && !(tokens.map javaTrim).contains (javaTrim sValue)) .sValueInvalid ++
     messageNotifications context .enumerationInvalidValue declaration.messages
 
 /-! ## The judgement of one field -/

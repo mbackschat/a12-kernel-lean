@@ -1,0 +1,137 @@
+import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.LowerCore
+
+/-! # How the DM-JSON readers bind non-text members, and how a date constant is typed
+
+Each expectation is a Kernel row the a12-dmkits handbacks of 2026-10-18 and 2026-10-21 retain
+([October 18](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18),
+[October 21](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21)). A model the Kernel
+does not build is a read error or a refused declaration here; neither is a Kernel class. -/
+
+namespace A12Kernel.Dm.MemberBindingLocks
+
+open Lean A12Kernel
+
+private def model (fieldMembers typeBody : String) (typeName : String := "StringType")
+    (groupMembers : String := "") (info : String := "{}") (config : String := "{}")
+    (definitions : String := "[]") : Json :=
+  (Json.parse s!"\{\"content\":\{\"modelInfo\":{info},\"modelConfig\":{config},\"typeDefinitions\":{definitions},\"modelRoot\":\{\"rootGroups\":[\{\"type\":\"Group\",\"name\":\"Form\",\"Group\":\{\"elements\":[\{\"type\":\"Group\",\"name\":\"Rows\",\"Group\":\{{groupMembers}\"elements\":[\{\"type\":\"Field\",\"name\":\"Value\",\"Field\":\{{fieldMembers}\"fieldType\":\{\"type\":\"{typeName}\",\"{typeName}\":{typeBody}}}}]}}]}}]}}}").toOption.getD .null
+
+/-- The read model, or `none` when the read fails or refuses a declaration. -/
+private def built? (json : Json) : Option DmModel :=
+  match readModel json with
+  | .ok read => if read.refusals.isEmpty then some read else none
+  | .error _ => none
+
+private def field? (json : Json) : Option FlatFieldDecl :=
+  (built? json).bind (·.flat.fields.head?)
+
+private def refusalCodes (json : Json) : List String :=
+  match readModel json with
+  | .ok read => read.refusals.map (·.2)
+  | .error _ => []
+
+/-- `noValueValidation`, written as the member's JSON value. -/
+private def rawString (written : String) : Option Bool :=
+  (field? (model "" s!"\{\"lineBreaksPermitted\":true,\"noValueValidation\":{written}}")).map
+    (·.stringValueMode == .raw)
+
+/-- The boolean law, measured on `noValueValidation` and `fieldRefByShortNameAllowed`: Java's `trim`,
+then six spellings; the text `null` and a blank text are the default; an integer is set unless zero. -/
+example :
+    ["true", "\"true\"", "\"True\"", "\"TRUE\"", "\" true\"", "\"\\ttrue\"", "\"true\\n\"", "\" TRUE\"",
+      "1", "2", "-1", "12345678901234567890123456"].all (rawString · == some true) ∧
+    ["false", "\"false\"", "\"False\"", "\"FALSE\"", "\"\"", "\" \"", "\"null\"", "\" null\"", "0", "null"].all
+      (rawString · == some false) ∧
+    ["\"tRUE\"", "\"FaLsE\"", "\"NULL\"", "\"yes\"", "\"1\"", "\"\\u00A0true\"", "\"\\u2003true\"", "0.5",
+      "1.5", "1.0", "{}", "[]"].all (rawString · == none) := by
+  native_decide
+
+private def signed? (written : String) : Option Bool :=
+  match field? (model "" s!"\{\"positivesOnly\":{written}}" "NumberType") with
+  | some { policy := { kind := .number info }, .. } => some info.signed
+  | _ => none
+
+/-- Every primitive boolean member binds by the same law, a field the variant filter deletes included,
+and a type definition no field references too. -/
+example :
+    signed? "\" TRUE\"" = some false ∧ signed? "\"tRUE\"" = none ∧ signed? "1.5" = none ∧
+    (field? (model "\"global\":\" TRUE\"," "{}")).map (·.isGlobal) = some true ∧
+    field? (model "\"global\":\"yes\"," "{}") = none ∧
+    field? (model "\"transient\":\"tRUE\"," "{}") = none ∧
+    field? (model "" "{\"alphabeticalSorting\":1.5}") = none ∧
+    field? (model "" "{\"zeroNotAllowed\":\"tRUE\"}" "NumberType") = none ∧
+    field? (model "" "{\"leadingZerosAllowed\":\"tRUE\"}" "NumberType") = none ∧
+    field? (model "" "{\"youngerThan1900Check\":\"tRUE\"}" "DateType") = none ∧
+    field? (model "\"variantFilter\":{\"filterType\":\"ONLY\",\"variants\":[\"other\"]},"
+      "{\"lineBreaksPermitted\":\"tRUE\"}") = none ∧
+    built? (model "" "{}" (definitions :=
+      "[{\"id\":\"T\",\"fieldType\":{\"type\":\"NumberType\",\"NumberType\":{\"positivesOnly\":\"tRUE\"}}}]")) = none ∧
+    built? (model "" "{}" (info := "{\"immutable\":1.5}")) = none ∧
+    built? (model "" "{}" (info := "{\"metaData\":\"tRUE\"}")) = none ∧
+    (built? (model "" "{}" (config := "{\"fieldRefByShortNameAllowed\":\" TRUE\"}"))).map
+      (·.flat.fieldRefByShortNameAllowed) = some true ∧
+    built? (model "" "{}" (config := "{\"fieldRefByShortNameAllowed\":\"tRUE\"}")) = none := by
+  native_decide
+
+private def count? (written : String) : Option (Option Nat) :=
+  (built? (model "" "{}" (groupMembers := s!"\"repeatability\":{written},"))).map fun read =>
+    read.flat.repeatableGroups.head?.bind (·.repeatability)
+
+/-- A count binds through `Integer.parseInt` after `trim`, a JSON number truncated toward zero inside
+the `int` range; a count below one, `null` and its text are `MVK_MAX_VALUES_INVALID`. -/
+example :
+    ["3", "\"3\"", "\" 3 \"", "\"\\t3\\n\"", "\"+3\"", "\"03\"", "\"\\u0663\"", "\"\\uFF13\"", "3.7"].all
+      (count? · == some (some 3)) ∧
+    count? "1e1" = some (some 10) ∧
+    ["\"3.7\"", "\"1e1\"", "\"0x3\"", "\"\\u00A03\"", "\"3\\u00A0\"", "\"99999999999\"", "2147483648",
+      "3e10", "true", "{}", "[]", "\"NULL\"", "2147483647.5"].all (count? · == none) ∧
+    ["0", "-1", "\"-1\"", "-3.7", "\"\"", "null", "\"null\"", "\" null \""].all fun written =>
+      refusalCodes (model "" "{}" (groupMembers := s!"\"repeatability\":{written},")) ==
+        ["MVK_MAX_VALUES_INVALID"] := by
+  native_decide
+
+private def baseYear? (written : String) : Option (Option Int) :=
+  (built? (model "" "{}" (info := s!"\{\"baseYear\":{written}}"))).map (·.flat.baseYear)
+
+/-- The base year binds by the same integer law; a blank text and the text `null` are no year. -/
+example :
+    ["\"2024\"", "\" 2024 \"", "\"\\u0662\\u0660\\u0662\\u0664\"", "2024", "2024.7"].all
+      (baseYear? · == some (some 2024)) ∧
+    baseYear? "2147483647.0" = some (some 2147483647) ∧
+    ["\"\"", "\"  \"", "\"null\"", "\" null \"", "null"].all (baseYear? · == some none) ∧
+    ["\"\\u00A02024\"", "\"2024.0\"", "\"x\"", "\"NULL\"", "\"Null\"", "\"2147483648\"", "2147483648",
+      "-2147483649", "2147483647.5", "{}", "[2024]", "true"].all (baseYear? · == none) := by
+  native_decide
+
+/-- The text `null` is no Number bound. -/
+example :
+    (field? (model "" "{\"minValue\":\"null\"}" "NumberType")).map
+      (·.numericTargetConstraints.minimum) = some none := by
+  native_decide
+
+private def booleanCell (stored : String) : String :=
+  let declaration : FlatFieldDecl := { id := 0, groupPath := ["Form"], name := "B", policy := { kind := .boolean } }
+  match classifyStored { fields := [declaration] } declaration { field := 0, path := [] } stored with
+  | .ok { raw := .parsed (.bool value), .. } => toString value
+  | .ok { raw := .rejected .booleanToken, .. } => "token"
+  | _ => "other"
+
+/-- A Boolean cell is compared with Java's `equalsIgnoreCase`, which folds the long s onto `s`. -/
+example :
+    ["true", "TRUE", "tRuE"].all (booleanCell · == "true") ∧
+    ["fal\u017Fe", "FAL\u017FE"].all (booleanCell · == "false") ∧
+    booleanCell "\u017F" = "token" := by
+  native_decide
+
+/-- A `DD.MM.YYYY` constant is real on the hybrid calendar: the ten cutover labels are text and a
+Julian leap day is a date, which the proleptic value carrier cannot hold and so leaves unvalued. -/
+example :
+    ["04.10.1582", "15.10.1582"].all (civilDateConstant? · |>.isSome) ∧
+    ["05.10.1582", "14.10.1582", "29.02.1700"].all (!isTemporalConstant ·) ∧
+    ["29.02.1500", "29.02.1300"].all isTemporalConstant ∧
+    ["29.02.1500", "29.02.1300"].all (civilDateConstant? · |>.isNone) ∧
+    (dateTimeConstant? "05.10.1582T00:00:00").isNone ∧ (dateTimeConstant? "04.10.1582T23:00:00").isSome := by
+  native_decide
+
+end A12Kernel.Dm.MemberBindingLocks

@@ -6,6 +6,7 @@ import A12Kernel.Elaboration.DeclarationAdmission
 import A12Kernel.Elaboration.LegalCharset
 import A12Kernel.Elaboration.IndexAndSortDeclaration
 import A12Kernel.Semantics.NumberBound
+import A12Kernel.Reference.Dm.MemberBinding
 
 /-! # Reading a DM-JSON document model
 
@@ -91,9 +92,6 @@ private def str? (json : Json) (key : String) : Option String :=
 private def nat? (json : Json) (key : String) : Option Nat :=
   (json.getObjValAs? Nat key).toOption
 
-private def bool? (json : Json) (key : String) : Option Bool :=
-  (json.getObjValAs? Bool key).toOption
-
 /-- A Number bound written as text, read by the decimal grammar the Kernel's DM-JSON binding applies:
 surrounding spaces trimmed, an optional sign, digits with an optional point and an optional exponent
 (rows `sb-str`, `sb-str-exp`, `sb-str-plus`, `sb-str-space`, `sb-str-frac`, while `sb-str-abc` is
@@ -132,28 +130,13 @@ def decimalMember? (json : Json) (key : String) : Except String (Option Rat) :=
   match json.getObjVal? key with
   | .ok (.num number) => pure (some (Rat.ofScientific number.mantissa.natAbs true number.exponent *
       (if number.mantissa < 0 then -1 else 1)))
-  | .ok (.str text) => match boundText? text with
-    | some value => pure (some value)
-    | none => throw s!"{key} {text}"
+  | .ok (.str text) =>
+      -- The text `null` binds as no bound (2026-10-21 §2.22).
+      if javaTrim text == "null" then pure none else
+      match boundText? text with
+      | some value => pure (some value)
+      | none => throw s!"{key} {text}"
   | .ok .null | .error _ => pure none
-  | .ok other => throw s!"{key} {other.compress}"
-
-/-- A DM flag as the Kernel's binding coerces it: `true`, `false`, `null` or absent; a JSON number
-written without a fraction, non-zero being true; and the texts `true` and `false` in any letter case.
-A number written with a fraction and any other text are unreadable. Measured on `noValueValidation`
-and `lineBreaksPermitted` (rows `nv-coerce`, `nv-coerce-zero`, `fc-*`), where the case variants
-measured are `true`, `TRUE` and `false` and a number written with an exponent is not; every other flag
-keeps its own reading. -/
-def flagMember? (json : Json) (key : String) : Except String Bool :=
-  match json.getObjVal? key with
-  | .error _ | .ok .null => pure false
-  | .ok (.bool value) => pure value
-  | .ok (.num number) =>
-      if number.exponent == 0 then pure (number.mantissa != 0) else throw s!"{key} {number}"
-  | .ok (.str text) => match text.toLower with
-    | "true" => pure true
-    | "false" => pure false
-    | _ => throw s!"{key} {text}"
   | .ok other => throw s!"{key} {other.compress}"
 
 /-- The partial precision a `datePrecision` member declares; an absent member is the full date. -/
@@ -213,7 +196,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
   let typeName ← fieldType.getObjValAs? String "type"
   let body := (fieldType.getObjVal? typeName).toOption.getD (Json.mkObj [])
   let base : FlatFieldDecl := { id, groupPath, name, policy := { kind := .string }, repeatableScope := scope
-                                isGlobal := (bool? fieldJson "global").getD false }
+                                isGlobal := ← booleanMember? fieldJson "global" }
   let requiredness ← match (fieldJson.getObjVal? "requirednessConfig").toOption.bind (str? · "mode") with
     | none => pure none
     | some "relativeToParent" => pure (some RequirednessMode.relativeToParent)
@@ -222,8 +205,8 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
   let base := { base with requiredness }
   match typeName with
   | "StringType" =>
-      let lineBreaksPermitted ← flagMember? body "lineBreaksPermitted"
-      let noValueValidation ← flagMember? body "noValueValidation"
+      let lineBreaksPermitted ← booleanMember? body "lineBreaksPermitted"
+      let noValueValidation ← booleanMember? body "noValueValidation"
       pure { base with
         stringPolicy := { lineBreaksPermitted
                           minLength := nat? body "minLength", maxLength := nat? body "maxLength" }
@@ -257,12 +240,12 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
           | some value => pure (some value)
           | none => throw s!"NumberType {key} lies outside the normal double range"
       pure { base with
-        policy := { kind := .number { scale, signed := !(bool? body "positivesOnly").getD false } }
+        policy := { kind := .number { scale, signed := !(← booleanMember? body "positivesOnly") } }
         numericTargetConstraints := {
           minFractionalDigits
           maxIntegerDigits := (nat? body "maxIntegerDigits").orElse fun _ => traitCap
-          zeroAllowed := !(bool? body "zeroNotAllowed").getD false
-          leadingZerosAllowed := (bool? body "leadingZerosAllowed").getD false
+          zeroAllowed := !(← booleanMember? body "zeroNotAllowed")
+          leadingZerosAllowed := ← booleanMember? body "leadingZerosAllowed"
           amount := traitCap.isSome
           minStoredLength := nat? body "minLength", maxStoredLength := nat? body "maxLength"
           minimum := ← printedBound "minValue", maximum := ← printedBound "maxValue"
@@ -294,7 +277,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         policy := { kind := .temporal kind (TemporalComponents.ofFormat format) }
         temporalTargetPolicy := some {
           format, partialMode := ← partialMode? (str? body "datePrecision")
-          youngerThan1900Check := (bool? body "youngerThan1900Check").getD false } }
+          youngerThan1900Check := ← booleanMember? body "youngerThan1900Check" } }
   | "DateRangeType" =>
       let interpretationOfYear ← match str? body "interpretationOfYear" with
         | none => pure none
@@ -315,7 +298,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
           format := format
           separator := separator
           interpretationOfYear := interpretationOfYear
-          youngerThan1900Check := (bool? body "youngerThan1900Check").getD false } }
+          youngerThan1900Check := ← booleanMember? body "youngerThan1900Check" } }
   | "CustomFieldType" =>
       let customName ← body.getObjValAs? String "name"
       pure { base with customType := some {
@@ -455,8 +438,16 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
   let body ← element.getObjVal? kind
   match kind with
   | "Group" =>
-      let repeatability := (nat? body "repeatability").getD 1
       let groupPath := path ++ [name]
+      -- An absent count is a single group; a `null` count or one below one is
+      -- `MVK_MAX_VALUES_INVALID`, read on as a single group (2026-10-21 §2.17, §2.19).
+      let count? ← StateT.lift (intMember? body "repeatability")
+      let invalid : Bool := match count? with
+        | some count => decide (count < 1)
+        | none => (body.getObjVal? "repeatability").isOk
+      if invalid then
+        modify fun state => { state with refusals := state.refusals.push (groupPath, "MVK_MAX_VALUES_INVALID") }
+      let repeatability : Nat := if invalid then 1 else (count?.map Int.toNat).getD 1
       let scope ← if repeatability > 1 then do
           let level := (← get).groups.size + 1
           modify fun state => { state with
@@ -480,6 +471,11 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
           emptyNonrepeatableGroups := state.emptyNonrepeatableGroups.push groupPath }
   | "Field" =>
       let state ← get
+      -- Binding precedes the variant filter, so a deleted field's unbindable member still leaves no
+      -- model (2026-10-18 binding rows).
+      if let some reason := fieldBindingRefusal? body then
+        modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
+        return
       if !(← StateT.lift (acceptedByVariant state.variant body)) then
         match filteredFieldRefusal? state.typeDefinitions body with
         | some reason => modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
@@ -614,16 +610,14 @@ private def readModelCore (json : Json)
   let ((), state) ← (roots.toList.forM (readElement [] [])).run { legalCharset, typeDefinitions, variant }
   let fieldId (group : GroupPath) (name : String) : Option FieldId :=
     (state.fields.find? fun field => field.groupPath == group && field.name == name).map (·.id)
-  -- The file writes the Base Year as a string; an unreadable one fails the read rather than leave
-  -- the model without the year its partial dates are supplemented by.
-  let baseYear ← match info.getObjVal? "baseYear" with
-    | .error _ | .ok .null => pure none
-    | .ok (.str text) => match text.toInt? with
-        | some year => pure (some year)
-        | none => throw s!"baseYear {text} is no integer"
-    | .ok other => match other.getInt? with
-        | .ok year => pure (some year)
-        | .error _ => throw "baseYear is no integer"
+  -- An unbindable Base Year fails the read rather than leave the model without the year its partial
+  -- dates are supplemented by.
+  let baseYear ← intMember? info "baseYear"
+  discard <| booleanMember? info "immutable"
+  discard <| booleanMember? info "metaData"
+  for (_, definition) in typeDefinitions do
+    if let some reason := (definition.getObjVal? "fieldType").toOption.bind fieldTypeBindingRefusal? then
+      throw reason
   let mut refusals := state.refusals.toList
   let groups := state.groups.toList.map fun group =>
     let index := (state.indexFields.find? (·.1 == group.level)).bind fun (_, path, nomination) =>
@@ -637,7 +631,7 @@ private def readModelCore (json : Json)
     nonrepeatableIndexFields
     emptyNonrepeatableGroups := state.emptyNonrepeatableGroups.toList
     legalCharset
-    fieldRefByShortNameAllowed := (bool? config "fieldRefByShortNameAllowed").getD false
+    fieldRefByShortNameAllowed := ← booleanMember? config "fieldRefByShortNameAllowed"
     baseYear
     timeZoneId := (str? config "timeZone").getD "UTC" }
   refusals := refusals ++ nominationRefusals flat state

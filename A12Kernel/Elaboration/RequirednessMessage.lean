@@ -2,14 +2,18 @@
 
 A required field's own message (`requirednessConfig.errorMessage`) is a third field-owned producer,
 distinct from the String-pattern and Enumeration texts and from a rule's error text. The Kernel checks
-none of its parameters: every text is admitted, and rendering substitutes four fixed tokens, the
-English and German spellings of the field and of its value, whatever else the text holds. Anything
-else, an unknown or malformed parameter and a `$$` pair included, stays verbatim.
+none of its parameters: every text is admitted, and rendering substitutes five fixed tokens, the
+literal `$<fieldName>.Value$` and the English and German spellings of the field and of its value,
+whatever else the text holds. Anything else, an unknown or malformed parameter and a `$$` pair
+included, stays verbatim.
 
-The substitution is four successive replacements over the whole text, not one left-to-right scan:
-`$Feld$`, then `$field$`, then `$Feld.Wert$`, then `$field.value$`. Overlapping spellings separate the
-two accounts, `$field$Feld$` keeping `$field` before the name, and fix that order
-(`docs/sources/message-parameter-rendering-probes.md#src-field-owned-message-producers`). The producer
+The substitution is five successive replacements over the whole text, not one left-to-right scan:
+`$<fieldName>.Value$`, then `$Feld$`, then `$field$`, then `$Feld.Wert$`, then `$field.value$`.
+Overlapping spellings separate the two accounts and fix that order: `$field$Feld$` keeps `$field`
+before the name (`docs/sources/message-parameter-rendering-probes.md#src-field-owned-message-producers`),
+and `$field$<fieldName>.Value$` keeps `$field` alone, the peer's row `r14`
+(`docs/sources/inbound-handbacks.md#src-inbound-2026-10-18`). Whether the field's own name in place of
+`<fieldName>` is replaced is unmeasured. The producer
 fires only on an empty field, so the value is always the empty text. Both spellings substitute in a
 model whose conditions are English; a German-condition model is unmeasured.
 
@@ -27,7 +31,7 @@ def fieldOwnedDisplayName (label? : Option String) (name : String) : String :=
 
 /-- Render an authored requiredness message for the field displayed as `displayName`. -/
 def renderRequirednessMessage (template displayName : String) : String :=
-  (((template.replace "$Feld$" displayName).replace "$field$" displayName).replace "$Feld.Wert$" "").replace
-    "$field.value$" ""
+  ((((template.replace "$<fieldName>.Value$" "").replace "$Feld$" displayName).replace "$field$"
+    displayName).replace "$Feld.Wert$" "").replace "$field.value$" ""
 
 end A12Kernel

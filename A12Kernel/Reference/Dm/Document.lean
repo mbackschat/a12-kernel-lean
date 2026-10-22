@@ -148,6 +148,19 @@ private def hasLeadingZeros (text : String) : Bool :=
   | '0' :: next :: _ => next != '.'
   | _ => false
 
+/-- Java's `equalsIgnoreCase` against an ASCII word: equal per character after upper-casing, or after
+lower-casing the upper-cased character. Beyond ASCII case it identifies exactly the four characters
+whose Java case mapping lands on an ASCII letter: the long s (U+017F, measured, 2026-10-21 §1.13), the
+dotless and dotted i (U+0131, U+0130) and the Kelvin sign (U+212A), the last three read from Java's
+`Character` mappings and unmeasured. -/
+private def javaEqualsIgnoreCase (text word : String) : Bool :=
+  let fold (character : Char) : Char := match character.toNat with
+    | 0x017F => 's'
+    | 0x0131 | 0x0130 => 'i'
+    | 0x212A => 'k'
+    | _ => character.toLower
+  text.length == word.length && (text.toList.zip word.toList).all fun (left, right) => fold left == fold right
+
 /-- The cell one declaration takes for its stored text, or the reason none is derivable. A Number
 text the document conversion parses is decimal-valued and every other filled Number text keeps the
 String-valued regime, as does a leading-zero value on a field allowing leading zeros (spec §4,
@@ -171,10 +184,11 @@ def classifyStored (model : FlatModel) (declaration : FlatFieldDecl) (address : 
                      numericDecimal := some value }
           | _ => throw s!"Number text {stored} exceeds the represented decimal conversion profile"
   | .boolean =>
-      let token := match stored.toLower with | "true" => "true" | "false" => "false" | _ => stored
+      let token := if javaEqualsIgnoreCase stored "true" then "true"
+        else if javaEqualsIgnoreCase stored "false" then "false" else stored
       pure { address, stored := token, raw := classifyStoredBooleanText token }
   | .confirm =>
-      let token := if stored.toLower == "true" then "true" else stored
+      let token := if javaEqualsIgnoreCase stored "true" then "true" else stored
       pure { address, stored := token, raw := classifyStoredConfirmText token }
   | .string => pure (cell (.parsed (.str stored)))
   | .enumeration => pure (cell (.parsed (.enum stored)))

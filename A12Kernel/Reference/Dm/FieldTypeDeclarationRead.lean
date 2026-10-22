@@ -12,8 +12,8 @@ after its type definition is resolved per referencing field (a definition no fie
 nothing, and one that two fields reference draws its notifications at both), a group's name,
 repeatability, sort fields and row-key nominations, a rule's or computation's name and error code, and
 the supplementary scalars of an element's annotations. It reads only the members those laws consume, keeps
-integer members raw so a refused one stays visible, and reads the two String flags with the Kernel's
-coercion (`flagMember?`).
+integer members raw so a refused one stays visible, and binds every boolean member as the Kernel
+does (`booleanMember?`).
 
 The names above an element decide what it may report: a path class on a group or field name hands the
 group-path codeless notification to everything below it and withholds the path class, the `xml` group
@@ -51,10 +51,6 @@ private def arrayMembers (json : Json) (key : String) : Except String (List Json
   | .error _ | .ok .null => pure []
   | .ok value => (value.getArr?).map Array.toList
 
-/-- A flag read as a JSON boolean only, the reading every flag but the two coerced String ones keeps. -/
-private def strictFlag (json : Json) (key : String) : Bool :=
-  (json.getObjValAs? Bool key).toOption.getD false
-
 /-- Locale-keyed entries, `[{locale, text}]`, as a field's messages and an Enumeration value's labels
 write them. -/
 def localizedTexts (json : Json) (key : String) : Except String (List (String × String)) := do
@@ -68,8 +64,8 @@ private def readString (body : Json) : Except String StringTypeDeclaration := do
   pure {
     minLength := ← optionalInt body "minLength"
     maxLength := ← optionalInt body "maxLength"
-    noValueValidation := ← flagMember? body "noValueValidation"
-    lineBreaksPermitted := ← flagMember? body "lineBreaksPermitted"
+    noValueValidation := ← booleanMember? body "noValueValidation"
+    lineBreaksPermitted := ← booleanMember? body "lineBreaksPermitted"
     pattern := ← optionalString body "pattern"
     hintList := ← (← arrayMembers body "hintList").mapM fun entry => do
       pure { locale := ← entry.getObjValAs? String "locale"
@@ -87,7 +83,7 @@ private def readNumber (body : Json) : Except String NumberTypeDeclaration := do
     maxIntegerDigits := ← optionalInt body "maxIntegerDigits"
     minFractionalDigits := ← optionalInt body "minFractionalDigits"
     maxFractionalDigits := ← optionalInt body "maxFractionalDigits"
-    positivesOnly := strictFlag body "positivesOnly"
+    positivesOnly := ← booleanMember? body "positivesOnly"
     amount
     minValue := ← decimalMember? body "minValue"
     maxValue := ← decimalMember? body "maxValue" }
@@ -130,11 +126,11 @@ private def readDeclaration (fieldJson : Json) : Except String FieldTypeDeclarat
   | "DateType" =>
       pure (.date { format := ← optionalString body "format"
                     partialMode := ← partialMode? (← optionalString body "datePrecision")
-                    youngerThan1900Check := strictFlag body "youngerThan1900Check" })
+                    youngerThan1900Check := ← booleanMember? body "youngerThan1900Check" })
   | "TimeType" | "DateTimeType" => pure (.temporal { format := ← optionalString body "format" })
   | "DateFragmentType" =>
       pure (.dateFragment { format := ← optionalString body "formatOfFragment"
-                            youngerThan1900Check := strictFlag body "youngerThan1900Check" })
+                            youngerThan1900Check := ← booleanMember? body "youngerThan1900Check" })
   | "DateRangeType" =>
       pure (.dateRange { format := ← optionalString body "format"
                          separator := ← optionalString body "rangeSeparator" })
@@ -285,7 +281,7 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
       if name.isEmpty then return [{ path, unbuilt := true }]
       let isRoot := parent.isEmpty
       let judgement := groupName isRoot name
-      let repeatability ← optionalInt body "repeatability"
+      let repeatability ← intMember? body "repeatability"
       if repeatability.any (2147483647 < ·) then
         throw s!"group {name} declares a repeatability the Kernel does not read"
       let children ← arrayMembers body "elements"
@@ -353,8 +349,8 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
       charset }
     valueWord
     roots
-    shortNamesAllowed := ((content.getObjVal? "modelConfig").toOption.bind fun config =>
-      (config.getObjValAs? Bool "fieldRefByShortNameAllowed").toOption).getD false }
+    shortNamesAllowed := ← booleanMember? ((content.getObjVal? "modelConfig").toOption.getD (Json.mkObj []))
+      "fieldRefByShortNameAllowed" }
   let reports := (← roots.mapM (judgeElement environment {} [])).flatten
   if reports.any (·.unbuilt) then
     pure [(modelNotBuiltLabel, "")]
@@ -385,22 +381,22 @@ example :
       (fun text => (decimalMember? (member (.str text)) "k").toOption.isNone) = true := by
   native_decide
 
-/- The two String flags coerce: a JSON number written without a fraction is true unless zero, the two
-   words read as their Boolean in any letter case, `null` and absence are false, and a fraction, another
-   text or another shape is unreadable (`fc-*`). -/
+/- A boolean member binds: a JSON number written without a fraction is true unless zero, `null` and
+   absence are false, and a fraction, another text or another shape is unreadable (`fc-*`). The text
+   law is locked in [the binding locks](MemberBindingLocks.lean). -/
 example :
-    (flagMember? (member (.bool true)) "k").toOption = some true ∧
-    (flagMember? (member (.num 1)) "k").toOption = some true ∧
-    (flagMember? (member (.num 0)) "k").toOption = some false ∧
-    (flagMember? (member (.str "true")) "k").toOption = some true ∧
-    (flagMember? (member (.str "false")) "k").toOption = some false ∧
-    (flagMember? (member .null) "k").toOption = some false ∧
-    (flagMember? (Json.mkObj []) "k").toOption = some false ∧
-    (flagMember? (member (.num (-1))) "k").toOption = some true ∧
-    (flagMember? (member (.str "TRUE")) "k").toOption = some true ∧
-    (flagMember? (member (.num { mantissa := 5, exponent := 1 })) "k").toOption = none ∧
-    (flagMember? (member (.str "yes")) "k").toOption = none ∧
-    (flagMember? (member (.arr #[])) "k").toOption = none := by
+    (booleanMember? (member (.bool true)) "k").toOption = some true ∧
+    (booleanMember? (member (.num 1)) "k").toOption = some true ∧
+    (booleanMember? (member (.num 0)) "k").toOption = some false ∧
+    (booleanMember? (member (.str "true")) "k").toOption = some true ∧
+    (booleanMember? (member (.str "false")) "k").toOption = some false ∧
+    (booleanMember? (member .null) "k").toOption = some false ∧
+    (booleanMember? (Json.mkObj []) "k").toOption = some false ∧
+    (booleanMember? (member (.num (-1))) "k").toOption = some true ∧
+    (booleanMember? (member (.str "TRUE")) "k").toOption = some true ∧
+    (booleanMember? (member (.num { mantissa := 5, exponent := 1 })) "k").toOption = none ∧
+    (booleanMember? (member (.str "yes")) "k").toOption = none ∧
+    (booleanMember? (member (.arr #[])) "k").toOption = none := by
   native_decide
 
 /-! ## Locks on the row-key nominations -/

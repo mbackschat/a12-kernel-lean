@@ -127,6 +127,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Generated required staging](implementation/data-and-core.md#cap-generated-required-staging)
 <a id="cap-model-declaration-legality"></a>
 - [Model declaration legality](implementation/data-and-core.md#cap-model-declaration-legality)
+<a id="cap-reader-binding-and-literal-readings"></a>
+- [Reader binding and literal readings](implementation/data-and-core.md#cap-reader-binding-and-literal-readings)
 <a id="cap-model-reader-declaration-surface"></a>
 - [Model reader declaration surface](implementation/data-and-core.md#cap-model-reader-declaration-surface)
 <a id="cap-model-consistency-rules"></a>

@@ -328,7 +328,7 @@ example :
     labels (custom { name := some " " }) = ["CUSTOM_FIELD_TYPE_CODENAME_MISSING"] ∧
     labels (custom { name := some "" }) = ["CUSTOM_FIELD_TYPE_CODENAME_MISSING"] ∧
     labels (custom {}) = ["CUSTOM_FIELD_TYPE_CODENAME_MISSING"] ∧
-    labels (custom { name := some " " }) = ["codeless:custom-name-content"] ∧
+    labels (custom { name := some "\u00A0" }) = ["codeless:custom-name-content"] ∧
     labels (custom { name := some "Sig" }) = [] ∧
     labels (custom { name := some "1Sig" }) = [] ∧
     labels (custom { name := some "S_g" }) = [] ∧
@@ -457,6 +457,16 @@ example :
     labels (enumeration [("A", []), ("B", [])] { sValue := some " " }) = [] ∧
     labels (enumeration [("A", []), ("B", [])] { sValue := some "a" }) = ["MVK_S_VALUE_INVALID"] ∧
     labels (enumeration [("", []), ("B", [])]) = [] := by
+  native_decide
+
+/- The default and the tokens are compared after Java's `String.trim`, which keeps a no-break space
+   (peer `checkConsistency` rows at a12-dmkits `d26873580`, inbound 2026-10-18). -/
+example :
+    labels (enumeration [("BASIC", [])] { sValue := some " BASIC" }) = [] ∧
+    labels (enumeration [("BASIC", [])] { sValue := some "BASIC " }) = [] ∧
+    labels (enumeration [(" BASIC", [])] { sValue := some "BASIC" }) = [] ∧
+    labels (enumeration [("BASIC", [])] { sValue := some "BA SIC" }) = ["MVK_S_VALUE_INVALID"] ∧
+    labels (enumeration [("BASIC", [])] { sValue := some "\u00A0" }) = ["MVK_S_VALUE_INVALID"] := by
   native_decide
 
 /- The Enumeration blocks the declaration owner already answers are part of the field's collection

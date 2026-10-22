@@ -39,7 +39,7 @@ private def readConsistencyFieldType (fieldType : Json) : Except String Consiste
   | "NumberType" =>
       pure (.number (← whole body "minFractionalDigits") (← whole body "maxFractionalDigits")
         (← decimalMember? body "minValue") (← decimalMember? body "maxValue"))
-  | "StringType" => pure (.string (← flagMember? body "noValueValidation") (← flagMember? body "lineBreaksPermitted"))
+  | "StringType" => pure (.string (← booleanMember? body "noValueValidation") (← booleanMember? body "lineBreaksPermitted"))
   | "EnumerationType" =>
       pure (.enumeration ((← members body "categories").map (text · "name")))
   | "TypeDefType" => pure (.typeDefinition (text body "typeDefinitionId"))

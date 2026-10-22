@@ -410,7 +410,7 @@ private partial def admitPatternOperand (model : FlatModel) (group bindingGroup 
       pure (declaration.policy.kind.surfaceKind, state)
   | .braces body | .parens body => admitPatternOperand model group bindingGroup inFilter insideSemanticIndexKey admission body
   | .string text => pure (
-      if (civilDateConstant? text).isSome || (yearlessDateConstant? text).isSome then .temporal .date
+      if (hybridDateConstant? text).isSome || (yearlessDateConstant? text).isSome then .temporal .date
       else if (timeConstant? text).isSome then .temporal .time
       else if (dateTimeConstant? text).isSome then .temporal .dateTime else .string, inFilter)
   | .entity _ => do refuse "Having" "bare pattern operand"

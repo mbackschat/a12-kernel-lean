@@ -165,11 +165,21 @@ private def dateConstantParts? (text : String) : Option (Nat × Nat × Nat) := d
   if year.length != 4 || !year.all Char.isDigit then none
   pure (← year.toNat?, month, day)
 
-/-- The calendar date a `DD.MM.YYYY` literal names; any other text is not a date (spec §12.2: zero
-padding and a real calendar date are part of the shape). -/
-def civilDateConstant? (text : String) : Option CivilDate := do
+/-- The parts of a `DD.MM.YYYY` literal that names a real date on the legacy hybrid calendar; any other
+text is not a date (spec §12.2: zero padding and a real date are part of the shape). Before the 1582
+cutover the year is Julian, so `29.02.1500` is a date and the ten cutover labels are text (2026-10-21
+§2.15). -/
+def hybridDateConstant? (text : String) : Option DateParts := do
   let (year, month, day) ← dateConstantParts? text
-  CivilDate.ofYmd? year month day
+  let parts : DateParts := { year, month, day }
+  if DateParts.LegacyHybrid.isReal parts then pure parts else none
+
+/-- The calendar date a hybrid-real `DD.MM.YYYY` literal names, where the proleptic date carrier holds
+it: a Julian leap day the proleptic calendar lacks is a date constant with no value here, which its
+consumers refuse rather than read as text. -/
+def civilDateConstant? (text : String) : Option CivilDate := do
+  let parts ← hybridDateConstant? text
+  CivilDate.ofYmd? parts.year parts.month parts.day
 
 /-- The clock an exact `HH:mm:ss` literal names, a real one only ([`spec/05`](../../../spec/05-dates-and-time.md)
 §1, the literal typing note). -/
@@ -180,9 +190,9 @@ def timeConstant? (text : String) : Option TimeOfDay := do
 /-- The wall label a date literal joined by `T` to a clock literal names. -/
 def dateTimeConstant? (text : String) : Option LocalDateTime := do
   let [date, clock] := text.splitOn "T" | none
-  let (year, month, day) ← dateConstantParts? date
+  let parts ← hybridDateConstant? date
   let time ← timeConstant? clock
-  LocalDateTime.ofYmdHms? year month day time.hour time.minute time.second
+  LocalDateTime.ofYmdHms? parts.year parts.month parts.day time.hour time.minute time.second
 
 /-- The month and day an omitted-year `DD.MM.` literal names, a real date in a common year only,
 whatever the Base Year ([`spec/05`](../../../spec/05-dates-and-time.md) §1): `"30.04."` names one,
@@ -197,8 +207,8 @@ def yearlessDateConstant? (text : String) : Option (Nat × Nat) := do
 
 /-- Preserve a date literal's written year presence for arithmetic and assignment alike. -/
 def authoredDateLiteral? (text : String) : Option AuthoredDateLiteral :=
-  match civilDateConstant? text, yearlessDateConstant? text with
-  | some date, _ => some { year := some date.parts.year, month := date.parts.month, day := date.parts.day }
+  match hybridDateConstant? text, yearlessDateConstant? text with
+  | some parts, _ => some { year := some parts.year, month := parts.month, day := parts.day }
   | _, some (month, day) => some { year := none, month, day }
   | _, _ => none
 
@@ -224,7 +234,7 @@ alone: a date with or without its year, a clock, or a date and a clock joined by
 precedes every operand walk, so a site reading the literal as text must refuse it instead
 ([`spec/05`](../../../spec/05-dates-and-time.md) §1, [`spec/12`](../../../spec/12-concrete-syntax.md) §2). -/
 def isTemporalConstant (text : String) : Bool :=
-  (civilDateConstant? text).isSome || (yearlessDateConstant? text).isSome ||
+  (hybridDateConstant? text).isSome || (yearlessDateConstant? text).isSome ||
     (timeConstant? text).isSome || (dateTimeConstant? text).isSome
 
 /-- Preserve authored year presence while resolving Date literals in the model zone (spec/05 §1). -/

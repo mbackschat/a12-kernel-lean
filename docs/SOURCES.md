@@ -149,6 +149,8 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Partial declared-slot walks (KF527)](sources/inbound-handbacks.md#inbound-2026-10-09-extensions): inbound `f641cc24f`, `PartialFillWalkRelevanceDiffTest` and `PartialProductCapacityDiffTest`; the route for fill, prefix and product relevance distinctions adopted in spec/10 §5.
 - [Model-check class multiplicity (KF558)](sources/inbound-handbacks.md#src-inbound-kf558-multiplicity): inbound a12-dmkits `18dd8a23dedbdfc96bc62a6b0832c8aea4645430`, `CheckerClassMultiplicityAgreementTest`; the per-locale `RULE_HAS_NO_ERRORTEXT` is confirmed locally by three retained rows.
 - [October 13 peer response](sources/inbound-handbacks.md#src-inbound-2026-10-13): reviewed a12-dmkits `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`; dispositions of thirteen entries, the computed String maximum, per-entry sort capacity, per-value charset collapse, the row-loop key fault and the declaration member ranges.
+- [October 18 peer response](sources/inbound-handbacks.md#src-inbound-2026-10-18): reviewed a12-dmkits `d2687358024c8622a02eb054fd4fdcffc8825807`; dispositions of sixteen entries, the boolean binding law, the trimmed `sValue`, the fifth requiredness token and the probe's `customConditions` key.
+- [October 21 peer measurements](sources/inbound-handbacks.md#src-inbound-2026-10-21): a12-dmkits `dbbbdb5d8294f48f7c8187773c7168ecb230968c`; unsolicited Kernel facts on the hybrid calendar, member binding, the Boolean cell fold and model-admission notifications.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route

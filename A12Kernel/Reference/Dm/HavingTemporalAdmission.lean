@@ -68,7 +68,7 @@ def rawTemporalField (reference : Reference) (entity : Sum FlatFieldDecl GroupPa
   pure (.temporal kind components, declaration)
 
 def rawTemporalLiteral (text : String) : Lowering NumericOperandType :=
-  if (civilDateConstant? text).isSome then pure (.temporal .date .fullDate)
+  if (hybridDateConstant? text).isSome then pure (.temporal .date .fullDate)
   else if (yearlessDateConstant? text).isSome then pure (.temporal .date (TemporalComponents.ofFormat "MM-dd"))
   else if (timeConstant? text).isSome then pure (.temporal .time .time)
   else if (dateTimeConstant? text).isSome then pure (.temporal .dateTime .now)

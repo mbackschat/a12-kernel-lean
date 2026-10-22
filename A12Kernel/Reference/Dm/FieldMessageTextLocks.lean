@@ -63,6 +63,17 @@ example :
     requiredText "q23" "$Feld.Wert$field$" "Label q23" = some "$Feld.WertLabel q23" := by
   native_decide
 
+/-- A fifth fixed token, the literal `$<fieldName>.Value$`, is replaced by the empty text before the
+other four: `r14` would keep the label after `$field` if it ran last. Each pass reads the running
+text, so a token a label carries in meets every later pass: `r10` and `r11`. Peer rows on the Kernel's
+dynamic strategy ([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18)). -/
+example :
+    requiredText "r13" "r13 $<fieldName>.Value$ end" "Label r13" = some "r13  end" ∧
+    requiredText "r14" "r14 $field$<fieldName>.Value$" "Label r14" = some "r14 $field" ∧
+    requiredText "r10" "r10 $field$" "Insurer $field.value$ x" = some "r10 Insurer  x" ∧
+    requiredText "r11" "r11 $Feld$" "Carrier $field$" = some "r11 Carrier Carrier $field$" := by
+  native_decide
+
 /-- An Enumeration's text renders the label and the stored value; it meets the String-pattern grammar,
 so an empty pair, `BaseYear`, another field, a category and a wrong case are refused, while a
 required field's text draws no class. Rows `n01`–`n07` and `q05`, `q06`, `q10`. -/

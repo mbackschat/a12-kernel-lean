@@ -622,6 +622,61 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `local-confirmation`: rows `m-two-locales-no-text`, `m-three-locales-one-text` and `m-two-locales-two-empty` of the [R1 supplement](model-structure-and-declaration-probes.md#src-sort-list-capacity) reproduce the per-locale `RULE_HAS_NO_ERRORTEXT` at the measurement pin; [report locks](../../A12Kernel/Conformance/DeclarationReport.lean) assert them.
 - `routing`: inbound, so no outbound ledger entry. The xml-prefix, value-validation-off String and unspecified-type multiplicities have no local implementation and join [K17](../PLAN.md#k17--model-declarations-and-static-denominator)'s matrix.
 
+<a id="src-inbound-2026-10-18"></a>
+## Reviewed October 18 peer response
+
+- `source`: Owner-delivered `a12-kernel-lean-spec-corrections-2026-10-18.md`, SHA-256 `b026cbcfb6d313f796f2838dfc1f1f3b289f21c32c48e88b10be58b4e7396528`. It answers the sixteen pending entries `SPEC-2026-10-13-13` to `-16` and `SPEC-2026-10-14-01` to `-12` as committed at `84f50280`.
+- `revision`: Reviewed a12-dmkits `d26873580`. Every checkpoint the letter names resolves, and every named lock class exists there; files were read with `git show` at this revision.
+- `review`: A read-only HIGH review of the named Kernel-differential, `checkConsistency` and `rule check` assertions against each acceptance condition. No peer suite, Kernel call or replay of ours was run; the peer's replays of our captures through its interpreter and checker, and its lane counts, are peer-reported.
+- `receipt`: [The reconciliation ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue) owns the per-entry dispositions.
+
+| SPEC-2026 suffix | Committed lock class | Status |
+|---|---|---|
+| 10-13-13 | `NumberDeclarationIngressDiffTest` | accepted, extended |
+| 10-13-14 | none | answered |
+| 10-13-15 | `NumberDeclarationIngressDiffTest` | accepted |
+| 10-13-16 | `CheckerDeclarationAdmissionAgreementTest`, `ShortNameFlagSpellingLawsTest`, `BooleanMemberBindingDiffTest`, `IndexDefaultStagingDiffTest` | accepted, corrected |
+| 10-14-01 | none | answered |
+| 10-14-02 | `ValidityConditionOperandLawsTest` | accepted, extended |
+| 10-14-03 | `JoinedRowAggregateDiffTest` | accepted, extended |
+| 10-14-04 | `EmptyEnumerationTokenDiffTest` | accepted, extended |
+| 10-14-05 | `CheckerConditionCallOperandAgreementTest` | accepted |
+| 10-14-06 | `CheckerKeyedReadErrorReferenceAgreementTest`, `JoinedRowAggregateDiffTest` | accepted |
+| 10-14-07 | `KeyedNotAllFieldsFilledDiffTest` | accepted, extended |
+| 10-14-08 | `CheckerSumOfProductsBoundOperandAgreementTest`, `SumOfProductsLawsTest` | accepted, extended |
+| 10-14-09 | `RepetitionNotUniqueSiblingGroupKeyDiffTest` | accepted, extended |
+| 10-14-10 | `RequirednessTextSubstitutionDiffTest` | accepted, corrected |
+| 10-14-11 | `RuleConditionPreambleDiffTest`, `ScaleWaiverLanguageLawsTest`, `CheckerScaleWaiverAgreementTest` | accepted, extended |
+| 10-14-12 | `JoinedSideChildReadDiffTest` | accepted, extended |
+
+- `correction-a`: A boolean member binds by Java's `trim` and six exact spellings, the empty text and the text `null` being the default; our account read the text `true` in any letter case as set and every padded text as unreadable. The law binds every primitive boolean member, before the variant filter ([spec/01 §1.1](../../spec/01-data-model.md#11-the-two-special-model-level-configurations), [locks](../../A12Kernel/Reference/Dm/MemberBindingLocks.lean)). The spellings `1e0` and `-0` rest on the peer's own predicate only; Lean's JSON reader cannot tell `1e0` from `1`.
+- `correction-b`: An `sValue` is judged after `trim` against trimmed tokens, so `" BASIC"` names `BASIC` ([spec/01 §1.3](../../spec/01-data-model.md#13-declaration-generation-classes), [conformance](../../A12Kernel/Conformance/FieldTypeDeclarationNotification.lean)). The runtime stages a padded default as written; the Lean reader still refuses such a declaration, a [returned omission](../PLAN.md#k19-returned-omissions).
+- `correction-c`: The requiredness text replaces a fifth literal token, `$<fieldName>.Value$`, before the other four, and each pass reads the running text, so a token a label carries in meets every later pass; a German-condition model replaces both languages' tokens (rows `r10`–`r14`, `d01`; [spec/11](../../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation), [locks](../../A12Kernel/Reference/Dm/FieldMessageTextLocks.lean)).
+- `extension`: `Valid` and `Invalid` parse only `Date(...)` or a field and a type name ([spec/05 §3](../../spec/05-dates-and-time.md#3-constructing-dates-and-checking-validity)); `SumOfProducts`' lowest-level class needs no star once the level is bound, and its filter and star gates run operand by operand from the left ([spec/07](../../spec/07-repetition-and-iteration.md)). Lean refuses both families' witnesses without the class, a [returned omission](../PLAN.md#k19-returned-omissions).
+- `replay-only`: These acceptance rows rest on the peer's replay of our captures rather than a committed Kernel lock: `-13-13`'s cascade order, `-14-02`'s `v01`–`v16` and `g01`–`g20` with its runtime rows, `-14-06`'s values and references, `-14-09`'s static refusals, `-14-10`'s `q01`–`q23`, `rq` and `n01`–`n07`, `-14-11`'s static verdicts, on which the checker answers inconclusive, and `-14-12`'s filtered-star classes. Our own captures remain their Kernel evidence.
+- `answered`: `-13-14` found no contradiction and claims no notification order; `-14-01`'s parallel refusals fall under a peer scoping decision pending with its owner. Neither reconciles its acceptance rows.
+- `instrument`: The kernel-probe request now carries a `customConditions` key (`bf56df1cd`, `14818d417`, lock `KernelProbeCustomConditionTest`), the capability [K18](../PLAN.md#k18--customcondition-callback-contract-and-calibration) waits on; using it needs a deliberate re-pin of the measurement checkout.
+- `sync`: Inbound corrections to clauses this project owns; no outbound ledger entry is created.
+
+<a id="src-inbound-2026-10-21"></a>
+## Reviewed October 21 peer measurements
+
+- `source`: Owner-delivered `a12-kernel-lean-spec-corrections-2026-10-21.md`, SHA-256 `f3b764cfdfaf0ee0c2d495b445ed0d2e8a8d1ce98df63e4348051827de0574f0`, at a12-dmkits `dbbbdb5d8`. It answers no entry: every row is a Kernel fact the peer measured on its own models.
+- `review`: A read-only HIGH triage of every row against `spec/` and the Lean theory at `63813608`, classifying agreement, contradiction and new behaviour. The rows' own revisions and locks were not reread; they are peer-reported Kernel outcomes. The letter's source readings and Section 4 hypotheses are not adopted as mechanisms.
+- `implemented`: the boolean and `int` binding laws, with the base year, the bound text `null` and a count below one (§1.3, §2.17–§2.22); the document Boolean cell's `equalsIgnoreCase` fold (§1.13); date constants typed on the hybrid calendar (§2.15, §1.12). [Locks](../../A12Kernel/Reference/Dm/MemberBindingLocks.lean).
+- `spec-only`: Each of these is stated in its clause, and its Lean gap is a [returned omission](../PLAN.md#k19-returned-omissions):
+  - `Today`, `Now` and a pre-cutover constant's value on the hybrid calendar (§1.2, §1.12), which Lean refuses as unsupported;
+  - the inversion class withheld beside a refused printed bound (§2.1), and rule readers judging an out-of-range length (§2.2);
+  - trimmed Enumeration texts, whose supplementary characters withhold their coded classes (§2.3, §2.4);
+  - trimmed name and code alphabets and the empty-code notification under `ONLY` (§2.5, §2.6);
+  - the group-path notification at rules and computations, and trimmed group names (§2.7);
+  - the composed date-range format and a blank date format (§2.8, §2.12);
+  - dotted and lexed computed paths, and blank names (§2.11, §2.13);
+  - the ordering gates and the member alphabet (§2.16).
+- `agrees`: §1.1 and §2.14 (ASCII digits, stated in [spec/12 §1](../../spec/12-concrete-syntax.md#1-lexical-structure)), §1.4–§1.11 (two message-key rows added to [spec/11](../../spec/11-messages-and-custom.md)), stored-date reality on the hybrid calendar (§1.12, stated in [spec/05 §4](../../spec/05-dates-and-time.md#4-the-gregorian-floor)), §2.9, §2.10, §2.20, and the time-zone and type-definition rows of §2.21. Report order (§1.6) matches `SPEC-2026-10-13-06`.
+- `unmodeled`: Includes, model references and type-definition libraries (§2.21–§2.23); the reader reads no included model.
+- `sync`: Inbound facts about clauses this project owns; no outbound ledger entry is created.
+
 <a id="src-inbound-2026-10-13"></a>
 ## Reviewed October 13 peer response
 
