@@ -1,0 +1,59 @@
+{
+ "producer": {
+  "dmtool": "0.13.0",
+  "kernelBuilt": "30.8.1",
+  "kernelRuntime": "30.8.1",
+  "source": {
+   "revision": "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+   "state": "CLEAN"
+  }
+ },
+ "command": "model check",
+ "model": "95f82ebbe58d12a00ae2021e0ec13330f57cd545f3d9d99989aeee758dcca725",
+ "verification": "KERNEL_CONFIRMED",
+ "valid": false,
+ "observations": [
+  {
+   "id": "g01",
+   "target": "../Lines/Parts",
+   "condition": "GroupNotFilled(Lines/Parts)",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  {
+   "id": "g02",
+   "target": "../Lines/Parts",
+   "condition": "GroupFilled(Lines/Parts)",
+   "codes": []
+  },
+  {
+   "id": "g03",
+   "target": "../Lines/Parts",
+   "condition": "FieldFilled(Lines/Sku) And GroupNotFilled(Lines/Parts)",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  {
+   "id": "g04",
+   "target": "../Gifts/Card",
+   "condition": "GroupNotFilled(Gifts/Card)",
+   "codes": []
+  },
+  {
+   "id": "g05",
+   "target": "../Wraps/Ribbon",
+   "condition": "GroupNotFilled(Wraps/Ribbon)",
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  {
+   "id": "g06",
+   "target": "../Wraps/Ribbon",
+   "condition": "GroupFilled(Wraps/Ribbon)",
+   "codes": []
+  }
+ ]
+}

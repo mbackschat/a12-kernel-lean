@@ -1,0 +1,769 @@
+[
+ {
+  "id": "c01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Lines/Sku)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "c02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Qty) And FieldNotFilled(Lines/Sku)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Gifts/Card/Text",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Gifts/Card/Text)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Gifts/Note",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Gifts/Note)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Wraps/Ribbon/Color",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Wraps/Ribbon/Color)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Gifts/Note",
+   "--group=/Order/Gifts",
+   "--condition=FieldNotFilled(Note)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Gifts/GiftNo",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Gifts/GiftNo)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Slots/Mark",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Lines/Slots/Mark)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Slots/Mark",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Sku) And FieldNotFilled(Lines/Slots/Mark)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Gifts/Note",
+   "--group=/Order",
+   "--condition=NoFieldFilled(Gifts/Note, Gifts/GiftNo)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Gifts/Note",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Gifts/Note, Gifts/GiftNo) < 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Picks/Ref",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Picks/Ref)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Gifts/Note",
+   "--group=/Order",
+   "--condition=GroupNotFilled(Gifts/Card) And FieldFilled(Gifts/Note)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Lines/Qty, Lines/Price) < 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Lines/Qty, Lines/Price) <= 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Lines/Qty, Lines/Price) != 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=1 > NumberOfFilledFields(Lines/Qty, Lines/Price)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=1 >= NumberOfFilledFields(Lines/Qty, Lines/Price)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=1 != NumberOfFilledFields(Lines/Qty, Lines/Price)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition={NumberOfFilledFields(Lines/Qty, Lines/Price)} < 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Lines/Qty, Lines/Price) > 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=1 < NumberOfFilledFields(Lines/Qty, Lines/Price)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Lines/Qty, Lines/Price) <= 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Lines/Qty, Lines/Price) == 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Lines/Qty, Email) > 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Lines/Qty, Email) > 1234567890123456",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Lines/Qty, Lines/Price) >= 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=NumberOfDifferentValues(Lines/Sku, Lines/Code) < 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=NumberOfDifferentValues(Lines/Sku, Lines/Code) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Sku) Or CurrentRepetition(Lines) > 2",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Sku) And CurrentRepetition(Lines) > 2",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=NoFieldValueIncludedInValueList(Lines/Sku In \"X\", \"Y\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Qty) And NoFieldValueIncludedInValueList(Lines/Sku In \"X\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Code",
+   "--group=/Order",
+   "--condition=NotAllFieldValuesIncludedInValueList(Tier, Lines/Code In \"X\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Code",
+   "--group=/Order",
+   "--condition=NotAllFieldValuesIncludedInValueList(Lines/Code In \"X\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Code",
+   "--group=/Order",
+   "--condition=AtLeastOneFieldValueIncludedInValueList(Tier, Lines/Code In \"X\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Code",
+   "--group=/Order",
+   "--condition=AtLeastOneFieldValueIncludedInValueList(Lines/Code In \"X\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=Max([Lines/Qty], [Budget]) > 5",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u26",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=Max([Lines/Qty], [Lines/Price]) > 5",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u27",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Price",
+   "--group=/Order",
+   "--condition=[Lines/Price] == {0}",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u28",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Price",
+   "--group=/Order",
+   "--condition=[Lines/Price] == 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u29",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Price",
+   "--group=/Order",
+   "--condition=[Lines/Price] == {1}",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "u30",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Price",
+   "--group=/Order",
+   "--condition={[Lines/Price]} == 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "o01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Lines/Qty)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "o02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Qty)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "o03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=NumberOfFilledFields(Lines/Qty, Lines/Price) < 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "o04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Email",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Email) And FieldNotFilled(Lines/Qty)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=Sum(Lines/Qty, Lines/Price) == 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=Sum(Lines/Qty, Lines/Price) == 0.5",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=MinValue(Lines/Qty, Lines/Price) == 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=MaxValue(Lines/Qty, Lines/Price) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Day",
+   "--group=/Order",
+   "--condition=Sum(Lines/Day, Lines/Month) > 31",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=Sum(Lines/Qty, Budget) > 5",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Parts",
+   "--group=/Order",
+   "--condition=GroupNotFilled(Lines/Parts)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Parts",
+   "--group=/Order",
+   "--condition=GroupFilled(Lines/Parts)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldsNotCollectivelyFilled(Lines*/Sku, Picks/Ref)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Parts/PartNo",
+   "--group=/Order",
+   "--condition=NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Parts/PartNo",
+   "--group=/Order",
+   "--condition=AtLeastOneFieldFilled(Lines/Parts/PartNo, Picks/Ref)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "a12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=NoFieldFilled(Lines/Sku, Picks/Ref)",
+   "--message=en_US=x"
+  ]
+ }
+]
