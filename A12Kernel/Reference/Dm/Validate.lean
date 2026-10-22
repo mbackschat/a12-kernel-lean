@@ -154,14 +154,15 @@ def observe (model : FlatModel) (message : FlatRuleMessage) : ObservedMessage :=
 /-- Run one checked rule over a checked document on its certified iteration plan, keeping the
 environment each message fired at, which its reference channels are projected from. -/
 def runRuleAt (world : World) (checked : CheckedDocument model)
-    (rule : CheckedResolvedValidationRule model) : Except String (List (Env × FlatRuleMessage)) :=
+    (rule : CheckedResolvedValidationRule model) (registry : CustomValidationRegistry model := {}) :
+    Except String (List (Env × FlatRuleMessage)) :=
   match rule.ordinaryIterationPlan with
   | .rows _ =>
-      match rule.evalOrdinaryRepeatableFull checked (some world) with
+      match rule.evalOrdinaryRepeatableFull checked (some world) registry with
       | .ok rows => .ok (rows.filterMap fun (environment, outcome) => outcome.message?.map (environment, ·))
       | .error error => .error (repr error).pretty
   | .once _ =>
-      match rule.evalOrdinaryOnceFull checked (some world) with
+      match rule.evalOrdinaryOnceFull checked (some world) registry with
       | .ok (environment, outcome) => .ok (outcome.message?.toList.map (environment, ·))
       | .error error => .error (repr error).pretty
   | .scalar =>
@@ -179,14 +180,15 @@ def runRuleAt (world : World) (checked : CheckedDocument model)
       match rule.ordinaryOnceRootHasContent checked [] with
       | .error error => .error (repr error).pretty
       | .ok hasContent =>
-          match rule.evalAddressedFull context hasContent with
+          match rule.evalAddressedFull context hasContent registry with
           | .ok outcome => .ok (outcome.message?.toList.map ([], ·))
           | .error error => .error (repr error).pretty
 
 
 /-- Run one checked rule over a checked document on its certified iteration plan. -/
 def runRule (world : World) (checked : CheckedDocument model)
-    (rule : CheckedResolvedValidationRule model) : Except String (List FlatRuleMessage) :=
-  (runRuleAt world checked rule).map (·.map (·.2))
+    (rule : CheckedResolvedValidationRule model) (registry : CustomValidationRegistry model := {}) :
+    Except String (List FlatRuleMessage) :=
+  (runRuleAt world checked rule registry).map (·.map (·.2))
 
 end A12Kernel.Dm

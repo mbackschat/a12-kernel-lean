@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-One entry is `pending`. The 16 terminal receipts closed at the [October 18 response](sources/inbound-handbacks.md#src-inbound-2026-10-18), fourteen `accepted` and two `answered`, remain in [the ledger at `bf2216b6`](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Three entries are `pending`. The 16 terminal receipts closed at the [October 18 response](sources/inbound-handbacks.md#src-inbound-2026-10-18), fourteen `accepted` and two `answered`, remain in [the ledger at `bf2216b6`](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
 
 <a id="spec-2026-10-22-01"></a>
 ### SPEC-2026-10-22-01 — a bracketed read inside `Length` or a day difference is a token defect
@@ -47,4 +47,24 @@ One entry is `pending`. The 16 terminal receipts closed at the [October 18 respo
 - `delta`: `Length` names its field as an entity, and `DifferenceInDays` takes a bare path, so a bracketed read in either slot draws `MVK_UNEXPECTED_TOKEN` rather than being read as the field's value; `Length(/Order/Note)` is the admitted String control. Other entity-typed slots, the other differences included, are unmeasured.
 - `basis`: [condition-class checkpoint](sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection), rows `O08` (`Length([/Order/Qty])`), `O09` (`Length([/Order/Note])`) and `O09b`, measured locally 2026-10-01, Kernel 30.8.1, replayed by the [rule-check projection](../A12Kernel/Evidence/RuleCheckProjection.lean); the [yearless-anchor checkpoint](sources/temporal-constant-and-base-year-probes.md#src-yearless-anchor-is-the-base-year)'s `instrument` row `DifferenceInDays([/G/F], …)`, measured locally 2026-09-04.
 - `acceptance`: Reconcile the class of the three bracketed rows, and the `Length([F]) > 5` spelling of [KF34](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf34) whose rule read it names. Do not claim a class for a relative bracketed read or for another entity-typed slot.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-22-02"></a>
+### SPEC-2026-10-22-02 — the document conversion drops a member the model does not declare
+
+- `status`: pending
+- `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands).
+- `delta`: Kernel Document JSON conversion drops an undeclared string member of a fixed group, an undeclared object and an undeclared key inside a repeatable row, so the document validates exactly as the one without them. Other JSON kinds and the conversion's notifications for a dropped member are unmeasured.
+- `basis`: [undeclared-member checkpoint](sources/domain-ingestion-probes.md#src-undeclared-document-members), rows `f-extra` against `f-full`, measured locally 2026-10-22, Kernel 30.8.1, both strategies, at the measurement pin `09f1352e5`.
+- `acceptance`: Reconcile the interpreter's document reader with the three dropped shapes. Do not claim an outcome for an undeclared array, a scalar of another JSON kind or the deserializer's notification channel.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-22-03"></a>
+### SPEC-2026-10-22-03 — a repeatable or parallel rule reports a reached unregistered name at its first error address
+
+- `status`: pending
+- `canonical`: [spec/11 §14](../spec/11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch).
+- `delta`: The VALUE report of a reached unregistered custom condition ([KF52](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf52)) stands once, at the iterator's first error address, on a repeatable, root-iterated and parallel rule, even when a later row reached the name; earlier firing rows keep their messages and later rows are not evaluated; a partial call's iterator starts at its first relevant row.
+- `basis`: [call checkpoint](sources/model-structure-and-declaration-probes.md#src-custom-condition-calls), rules `M01`–`M04` and `E01` of `request-missing`, rows `m-claim`, `m-row3` and `m-keep`, measured locally 2026-10-22, Kernel 30.8.1, both strategies, at the measurement pin `09f1352e5`.
+- `acceptance`: Reconcile the address, the single report per rule and the retained earlier firing for the five rules. Do not claim an outcome under a repeatable outer row of a parallel rule or for a parallel rule with an earlier firing row.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

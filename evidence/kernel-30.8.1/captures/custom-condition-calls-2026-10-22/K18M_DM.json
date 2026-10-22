@@ -1,0 +1,280 @@
+{
+ "header": {
+  "id": "k18-missing-carriers",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "k18-missing-carriers",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Claim",
+     "name": "Claim",
+     "Group": {
+      "elements": [
+       {
+        "type": "Rule",
+        "id": "/Claim/M03",
+        "name": "M03",
+        "Rule": {
+         "errorEntityRelPath": "../Items/Qty",
+         "errorCode": "M03",
+         "errorCondition": "[Items/Qty] > 1 And CustomCondition Ghost",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/M04",
+        "name": "M04",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Headcount",
+         "errorCode": "M04",
+         "errorCondition": "FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount) And CustomCondition Ghost",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/M05",
+        "name": "M05",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "M05",
+         "errorCondition": "FieldFilled(Note) And CustomCondition K01",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Claim/Note",
+        "name": "Note",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Claim/Amount",
+        "name": "Amount",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Claim/Stage",
+        "name": "Stage",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Claim/Items",
+        "name": "Items",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Claim/Items/Name",
+           "name": "Name",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Claim/Items/Qty",
+           "name": "Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Items/M01",
+           "name": "M01",
+           "Rule": {
+            "errorEntityRelPath": "../Name",
+            "errorCode": "M01",
+            "errorCondition": "FieldFilled(Name) And CustomCondition Ghost",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "x"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Items/M02",
+           "name": "M02",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "M02",
+            "errorCondition": "[Qty] > 1 And CustomCondition Ghost",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "x"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Items/E01",
+           "name": "E01",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "E01",
+            "errorCondition": "FieldFilled(Name) Or (FieldFilled(Qty) And CustomCondition Ghost)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "x"
+             }
+            ]
+           }
+          }
+         ],
+         "repeatability": 5
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Claim/Demand",
+        "name": "Demand",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Claim/Demand/Department",
+           "name": "Department",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Claim/Demand/Headcount",
+           "name": "Headcount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "repeatability": 3,
+         "indexFieldName": "Department"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Claim/Supply",
+        "name": "Supply",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Claim/Supply/Department",
+           "name": "Department",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Claim/Supply/Headcount",
+           "name": "Headcount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "repeatability": 3,
+         "indexFieldName": "Department"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

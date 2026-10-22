@@ -33,6 +33,7 @@ import A12Kernel.Reference.Dm.HavingRangeEndpointLocks
 import A12Kernel.Reference.Dm.DateRangeSharedInputLocks
 import A12Kernel.Reference.Dm.HavingPatternLocks
 import A12Kernel.Reference.Dm.CustomConditionLocks
+import A12Kernel.Reference.Dm.CustomConditionCaptureLocks
 import A12Kernel.Reference.Dm.RepetitionNotUniqueLocks
 import A12Kernel.Reference.Dm.ScalarMembershipLocks
 import A12Kernel.Reference.Dm.BoundScalarMembershipLocks
@@ -404,6 +405,27 @@ private def replayComputations (line : String → String → String → String �
         else if lean == expected then line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "match" ""
         else line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "tier1" s!"Divergence\tlean={lean} kernel={expected}"
 
+/-- The request's declared custom conditions as the host's one factory: `returns` answers a constant,
+`whenFilled` whether the named cell holds a stored text, and any other name is unregistered
+(a12-dmkits `DeclarativeCustomConditions` at the measurement pin). Only a nonrepeatable field path
+is read; the retained rows reach `whenFilled` on a filled cell only, so an empty stored text is
+this reader's choice, not a measurement. -/
+private def declaredConditions (model : FlatModel) (request : Json) :
+    Except String (CustomValidationRegistry model) := do
+  let .ok declared := request.getObjVal? "customConditions" | pure {}
+  let .obj entries := declared | throw "customConditions is no object"
+  let answers ← entries.toList.mapM fun (name, spec) =>
+    match spec.getObjValAs? Bool "returns", spec.getObjValAs? String "whenFilled" with
+    | .ok value, .error _ => pure (name, fun (_ : CustomValidationInvocation model) => value)
+    | .error _, .ok pointer =>
+        match model.fields.find? fun declaration => declaration.repeatableScope.isEmpty &&
+            declaration.groupPath ++ [declaration.name] == pointer.splitOn "/" with
+        | some field => pure (name, fun (input : CustomValidationInvocation model) =>
+            !((input.data.storedTextAt { field := field.id, path := [] }).getD "").isEmpty)
+        | none => throw s!"whenFilled {pointer} names no nonrepeatable field"
+    | _, _ => throw s!"{name} declares neither returns nor whenFilled"
+  pure { configured := some fun name => (answers.find? (·.1 == name)).map (·.2) }
+
 private def replayRequest (requestPath : System.FilePath) : IO Unit := do
   let line (row rule code tier rest : String) :=
     IO.println s!"{requestPath}\t{row}\t{rule}\t{code}\t{tier}\t{rest.replace "\n" " "}"
@@ -420,6 +442,9 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
     line "-" "-" "-" "tier2" s!"Model\t{"/".intercalate path}: {reason}"; return
   let some language := Language.ofCode? model.conditionLanguage
     | line "-" "-" "-" "tier2" s!"Language\t{model.conditionLanguage}"
+  let registry ← match declaredConditions model.flat request with
+    | .ok registry => pure registry
+    | .error reason => do line "-" "-" "-" "tier2" s!"Request\tcustomConditions: {reason}"; return
   let locale := (request.getObjValAs? String "locale").toOption.getD "en_US"
   let clock? := (request.getObjValAs? String "clock").toOption.bind clockMillis?
   let world : World := { now := { epochMillis := clock?.getD 0 }, modelZoneRules := ModelZone.concreteRules }
@@ -468,7 +493,7 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
                   line name "-" "-" "absent" "Table\tthe retained table holds computation outcomes only"
                   if let some computed := table then
                     replayComputations (line name) clock?.isSome model language world prepared checked computed
-            for verdict in replayRules model language world checked kernel references (some (prepared, locale)) do
+            for verdict in replayRules model language world checked kernel references (some (prepared, locale)) registry do
               let ruleName := replayName (model.rules.map (·.name)) verdict.rule.group verdict.rule.name
               if clock?.isNone && readsClock language verdict.rule.condition then
                 line name ruleName verdict.rule.errorCode "tier2" "Clock\tthe request pins no clock"

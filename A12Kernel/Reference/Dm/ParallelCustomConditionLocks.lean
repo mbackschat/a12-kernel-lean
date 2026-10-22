@@ -4,8 +4,9 @@ import A12Kernel.Reference.Dm.Document
 /-! Reader-to-evaluator controls for a custom-condition leaf in a parallel rule. The staffing model
 mirrors the retained `staffing-coverage-pair` shape: two keyed repeatable groups under one
 non-repeatable root, with the error field on the Demand side. The nested model adds an outer
-repeatable level to pin the pointer's outer coordinate. Kernel runtime calibration of the callback
-payload is not retained; these locks are internal. -/
+repeatable level to pin the pointer's outer coordinate. The
+[call capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-custom-condition-calls)
+calibrates the joined-row pointer and the missing registration on a single outer row. -/
 namespace A12Kernel.Dm.ParallelCustomConditionLocks
 open Lean
 
@@ -66,8 +67,12 @@ private abbrev Coordinates := List (List MessageRepetitionCoordinate)
 private def errorCoordinates (outcome : Outcome) : Option Coordinates :=
   outcome.toOption.map (·.filterMap fun row => row.outcome.message?.map (·.errorAddress.coordinates))
 
-private def failure (outcome : Outcome) : Option ParallelPresenceRuleEvaluationError :=
-  match outcome with | .error error => some error | .ok _ => none
+/-- The coordinates of a run whose every message is the whole-rule handler's VALUE report. -/
+private def caught (outcome : Outcome) : Option Coordinates := do
+  let messages := (← outcome.toOption).filterMap (·.outcome.message?)
+  if messages.all fun message => message.origin == .runtimeFailure && message.messageType == .value then
+    pure (messages.map (·.errorAddress.coordinates))
+  else none
 
 private def registered (callback : CustomValidationInvocation flat → Bool) : CustomValidationRegistry flat :=
   { configured := some fun name => if name == "Check" then some callback else none }
@@ -126,23 +131,26 @@ example : routes.all (fun route =>
   native_decide
 
 -- Lookup happens when the fold reaches the leaf. A clean-false presence leaf ends the `And` before
--- it; `Check` stays unregistered, so only a reached row reports the missing registration.
+-- it; `Check` stays unregistered, so a reached row ends the rule with one VALUE report at the first
+-- joined row's pointer, whichever row reached it (rule `M04` of the call capture). In `mixed`, row A
+-- stops before the leaf and row B reaches it.
 private def reachless := document [("A", "5"), ("C", "5")] [("A", "")]
 private def reaching := document [("B", "5")] [("B", "7")]
-private def missing : ParallelPresenceRuleEvaluationError := .customCondition (.missingRegistration "Check")
 
 example : routes.all (fun route =>
     (reachless.bind fun checked => (route (rule (bothFilled ++ " And " ++ custom)) dm checked {})
       |>.bind errorCoordinates) == some [] &&
     (reaching.bind fun checked => (route (rule (bothFilled ++ " And " ++ custom)) dm checked {})
-      |>.bind failure) == some missing &&
+      |>.bind caught) == some [row 1] &&
+    (mixed.bind fun checked => (route (rule (bothFilled ++ " And " ++ custom)) dm checked {})
+      |>.bind caught) == some [row 1] &&
     (reachless.bind fun checked => (route (rule (custom ++ " And " ++ bothFilled)) dm checked {})
-      |>.bind failure) == some missing) = true := by native_decide
+      |>.bind caught) == some [row 1]) = true := by native_decide
 
 -- A fill quantifier's non-firing result is UNKNOWN, not a decided false, so it does not end an `And`.
 example : routes.all (fun route =>
     (reaching.bind fun checked => (route (rule (control ++ " And " ++ custom)) dm checked {})
-      |>.bind failure) == some missing) = true := by native_decide
+      |>.bind caught) == some [row 1]) = true := by native_decide
 
 -- Unmatched Demand key D has no Demand row: its error pointer carries the unknown coordinate.
 private def pointerIs (coordinates : List MessageRepetitionCoordinate) :

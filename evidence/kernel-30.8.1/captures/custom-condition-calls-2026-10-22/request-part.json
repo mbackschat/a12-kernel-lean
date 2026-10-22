@@ -1,0 +1,87 @@
+{
+ "model": "K18_DM.json",
+ "customConditions": {
+  "K01": {
+   "returns": true
+  },
+  "K04": {
+   "returns": true
+  },
+  "K05": {
+   "returns": true
+  },
+  "K06": {
+   "returns": true
+  },
+  "K07": {
+   "returns": true
+  },
+  "K08": {
+   "returns": true
+  },
+  "K11": {
+   "returns": true
+  },
+  "K12": {
+   "returns": true
+  },
+  "K13": {
+   "returns": true
+  },
+  "K14": {
+   "returns": true
+  },
+  "K21": {
+   "returns": true
+  },
+  "K02": {
+   "returns": false
+  },
+  "K03": {
+   "whenFilled": "Claim/Amount"
+  }
+ },
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "rows": [
+  {
+   "name": "p-note",
+   "document": "doc-full.json",
+   "relevant": [
+    {
+     "path": "/Claim/Note"
+    }
+   ]
+  },
+  {
+   "name": "p-none",
+   "document": "doc-full.json",
+   "relevant": []
+  },
+  {
+   "name": "p-row2",
+   "document": "doc-full.json",
+   "relevant": [
+    {
+     "path": "/Claim/Items/Qty",
+     "reps": [
+      1,
+      2,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p-claim-bad",
+   "document": "doc-bad.json",
+   "relevant": [
+    {
+     "path": "/Claim"
+    }
+   ]
+  }
+ ]
+}

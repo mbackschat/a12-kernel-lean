@@ -1,0 +1,65 @@
+{
+ "model": "K18_DM.json",
+ "customConditions": {
+  "K01": {
+   "returns": true
+  },
+  "K04": {
+   "returns": true
+  },
+  "K05": {
+   "returns": true
+  },
+  "K06": {
+   "returns": true
+  },
+  "K07": {
+   "returns": true
+  },
+  "K08": {
+   "returns": true
+  },
+  "K11": {
+   "returns": true
+  },
+  "K12": {
+   "returns": true
+  },
+  "K13": {
+   "returns": true
+  },
+  "K14": {
+   "returns": true
+  },
+  "K21": {
+   "returns": true
+  },
+  "K02": {
+   "returns": false
+  },
+  "K03": {
+   "whenFilled": "Claim/Amount"
+  }
+ },
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "f-empty",
+   "document": "doc-empty.json"
+  },
+  {
+   "name": "f-full",
+   "document": "doc-full.json"
+  },
+  {
+   "name": "f-bad",
+   "document": "doc-bad.json"
+  },
+  {
+   "name": "f-extra",
+   "document": "doc-extra.json"
+  }
+ ]
+}

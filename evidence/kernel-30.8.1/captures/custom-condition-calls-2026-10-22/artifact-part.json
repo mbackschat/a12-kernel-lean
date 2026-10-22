@@ -1,0 +1,3454 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "K18_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "p-note",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "C01",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C03",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C04",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C05",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C06",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C09",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "C10",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "P01",
+       "field": "Claim/Demand[2]/Headcount",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ],
+       "fillToFix": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ]
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[2]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[3]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R04",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "/Claim[1]/Items[0]/Qty",
+        "Claim/Note"
+       ],
+       "fillToFix": [
+        "/Claim[1]/Items[0]/Qty"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "C01",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C03",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C09",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K02",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "K03",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K04",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K05",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K08",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K01",
+       "relevant": [
+        "/Claim[0]/Note"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K02",
+       "relevant": [
+        "/Claim[0]/Note"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "K03",
+       "relevant": [
+        "/Claim[0]/Note"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "C01",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C03",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C04",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C05",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C06",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C09",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "C10",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "P01",
+       "field": "Claim/Demand[2]/Headcount",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ],
+       "fillToFix": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ]
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[2]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[3]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R04",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "/Claim[1]/Items[0]/Qty",
+        "Claim/Note"
+       ],
+       "fillToFix": [
+        "/Claim[1]/Items[0]/Qty"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "C01",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C03",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C09",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K02",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "K03",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K04",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K05",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K08",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K01",
+       "relevant": [
+        "/Claim[0]/Note"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K02",
+       "relevant": [
+        "/Claim[0]/Note"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "K03",
+       "relevant": [
+        "/Claim[0]/Note"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p-none",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "C01",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C03",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C04",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C05",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C06",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C09",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "C10",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "P01",
+       "field": "Claim/Demand[2]/Headcount",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ],
+       "fillToFix": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ]
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[2]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[3]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R04",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "/Claim[1]/Items[0]/Qty",
+        "Claim/Note"
+       ],
+       "fillToFix": [
+        "/Claim[1]/Items[0]/Qty"
+       ]
+      }
+     ],
+     "partialMessages": [],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K02",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "K03",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K04",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K05",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K08",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "C01",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C03",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C04",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C05",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C06",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C09",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "C10",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "P01",
+       "field": "Claim/Demand[2]/Headcount",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ],
+       "fillToFix": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ]
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[2]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[3]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R04",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "/Claim[1]/Items[0]/Qty",
+        "Claim/Note"
+       ],
+       "fillToFix": [
+        "/Claim[1]/Items[0]/Qty"
+       ]
+      }
+     ],
+     "partialMessages": [],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K02",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "K03",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K04",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K05",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K08",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p-row2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "C01",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C03",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C04",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C05",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C06",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C09",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "C10",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "P01",
+       "field": "Claim/Demand[2]/Headcount",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ],
+       "fillToFix": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ]
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[2]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[3]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R04",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "/Claim[1]/Items[0]/Qty",
+        "Claim/Note"
+       ],
+       "fillToFix": [
+        "/Claim[1]/Items[0]/Qty"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K02",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "K03",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K04",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K05",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K08",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K13",
+       "relevant": [
+        "Claim/Items[2]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K13",
+       "relevant": [
+        "Claim/Items[2]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K12",
+       "relevant": [
+        "Claim/Items[2]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K12",
+       "relevant": [
+        "Claim/Items[2]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "C01",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C03",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C04",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C05",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C06",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C09",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "C10",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "P01",
+       "field": "Claim/Demand[2]/Headcount",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ],
+       "fillToFix": [
+        "Claim/Demand[2]/Department",
+        "Claim/Demand[2]/Headcount",
+        "Claim/Supply[2]/Department",
+        "Claim/Supply[2]/Headcount"
+       ]
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[2]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[3]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R04",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "/Claim[1]/Items[0]/Qty",
+        "Claim/Note"
+       ],
+       "fillToFix": [
+        "/Claim[1]/Items[0]/Qty"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K02",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "K03",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K04",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K05",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K08",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K14",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K21",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Demand[2]/Headcount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[3]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K13",
+       "relevant": [
+        "Claim/Items[2]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K13",
+       "relevant": [
+        "Claim/Items[2]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K12",
+       "relevant": [
+        "Claim/Items[2]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K12",
+       "relevant": [
+        "Claim/Items[2]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p-claim-bad",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "C06",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C07",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Stage"
+       ],
+       "fillToFix": [
+        "Claim/Stage"
+       ]
+      },
+      {
+       "code": "C08",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Stage"
+       ],
+       "fillToFix": [
+        "Claim/Stage"
+       ]
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[2]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "C06",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C07",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Stage"
+       ],
+       "fillToFix": [
+        "Claim/Stage"
+       ]
+      },
+      {
+       "code": "C08",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Stage"
+       ],
+       "fillToFix": [
+        "Claim/Stage"
+       ]
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[2]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K05",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K06",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K07",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K07",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K08",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K08",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K13",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K13",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K12",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K12",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K05",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K06",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K07",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K07",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K08",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K08",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K11",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items/Name",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K11",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Name",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "C06",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C07",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Stage"
+       ],
+       "fillToFix": [
+        "Claim/Stage"
+       ]
+      },
+      {
+       "code": "C08",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Stage"
+       ],
+       "fillToFix": [
+        "Claim/Stage"
+       ]
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[2]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "C06",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "C07",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Stage"
+       ],
+       "fillToFix": [
+        "Claim/Stage"
+       ]
+      },
+      {
+       "code": "C08",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Stage"
+       ],
+       "fillToFix": [
+        "Claim/Stage"
+       ]
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R01",
+       "field": "Claim/Items[2]/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R02",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "R03",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K05",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K06",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K07",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K07",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K08",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K08",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K13",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K11",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Name",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "K12",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K13",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K13",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K12",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K12",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K05",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K06",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Amount",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K07",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K07",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K08",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K08",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Stage",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K11",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items/Name",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K11",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [
+        "Claim/Amount",
+        "Claim/Items/Qty"
+       ],
+       "errorEntity": "Claim/Items[2]/Name",
+       "result": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

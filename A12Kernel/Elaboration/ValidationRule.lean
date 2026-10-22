@@ -383,7 +383,7 @@ def _root_.A12Kernel.ValidationCondition.evalPartialAddressedResult (condition :
       | none => .error (.inl .unsupportedCondition)) (.error (.inl .unsupportedCondition))
       (onTemporalValueFailure := fun fault => .error (.inr fault))
       (leafRuntimeFault? := fun
-        | .inl (.conditionAddressing error) => ValidationCondition.addressedValueFailure? error
+        | .inl (.conditionAddressing error) => ValidationCondition.ruleRuntimeFailure? error
         | _ => none)
       (firstFilledResult := fun comparison =>
         match comparison.evaluatePartial? checked environment context.scalar.fields scope context.readPartialCell with
@@ -425,10 +425,10 @@ private def evalOrdinaryPartialAdmittedAt
         (fun _ => preliminary.messageReferenceInputs |>.mapError .messageCache)
       pure (.next environment outcome)
   | .error (.inl error) => throw error
-  | .error (.inr (.addressing .typeValidityValueFailure))
-  | .error (.inr (.addressing (.stringExpression .emptyPattern))) =>
-      pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
-  | .error (.inr (.addressing error)) => throw (.conditionAddressing error)
+  | .error (.inr (.addressing error)) =>
+      if ValidationCondition.caughtByRule error then
+        pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
+      else throw (.conditionAddressing error)
   | .error (.inr _) => pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
 
 /-- Execute one checked nonrepeatable addressed rule against the normalized partial document view. The scalar iteration plan fixes the empty environment and root error path; filtering and error-field relevance still gate execution before addressed leaf reads, while unsupported shapes and addressing failures remain structural errors outside semantic UNKNOWN. -/
@@ -548,10 +548,10 @@ private def evalOrdinaryRepeatableAt
         (fun _ => fullMessageReferenceInputs checked)
       pure (.next environment outcome)
   | .error (.inl error) => throw (.conditionAddressing error)
-  | .error (.inr (.addressing .typeValidityValueFailure))
-  | .error (.inr (.addressing (.stringExpression .emptyPattern))) =>
-      pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
-  | .error (.inr (.addressing error)) => throw (.conditionAddressing error)
+  | .error (.inr (.addressing error)) =>
+      if ValidationCondition.caughtByRule error then
+        pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
+      else throw (.conditionAddressing error)
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported) => throw (.conditionAddressing .temporalUnavailable)
   | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid) =>
       pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
@@ -707,7 +707,8 @@ def evalOrdinaryRepeatablePartialPrepared
       else
         rule.repetitionNotUniqueResults checked preliminary.relevance
           admittedEnvironments
-    let failureErrorPath ← match environments with
+    -- A partial iterator starts at its first relevant row (custom-condition call capture, `m-row3`).
+    let failureErrorPath ← match admittedEnvironments with
       | [] => pure []
       | first :: _ =>
           rule.errorPathAt first

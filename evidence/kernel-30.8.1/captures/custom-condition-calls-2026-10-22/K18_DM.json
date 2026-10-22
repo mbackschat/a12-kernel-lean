@@ -1,0 +1,433 @@
+{
+ "header": {
+  "id": "k18-custom-calls",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "k18-custom-calls",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Claim",
+     "name": "Claim",
+     "Group": {
+      "elements": [
+       {
+        "type": "Rule",
+        "id": "/Claim/C01",
+        "name": "C01",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "C01",
+         "errorCondition": "FieldFilled(Note) And CustomCondition K01",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/C02",
+        "name": "C02",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "C02",
+         "errorCondition": "FieldFilled(Note) And CustomCondition K02",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/C03",
+        "name": "C03",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "C03",
+         "errorCondition": "FieldFilled(Note) And CustomCondition K03",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/C04",
+        "name": "C04",
+        "Rule": {
+         "errorEntityRelPath": "../Amount",
+         "errorCode": "C04",
+         "errorCondition": "FieldFilled(Amount) And CustomCondition K04",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/C05",
+        "name": "C05",
+        "Rule": {
+         "errorEntityRelPath": "../Amount",
+         "errorCode": "C05",
+         "errorCondition": "CustomCondition K05 And FieldFilled(Amount)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/C06",
+        "name": "C06",
+        "Rule": {
+         "errorEntityRelPath": "../Amount",
+         "errorCode": "C06",
+         "errorCondition": "FieldFilled(Amount) Or CustomCondition K06",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/C07",
+        "name": "C07",
+        "Rule": {
+         "errorEntityRelPath": "../Stage",
+         "errorCode": "C07",
+         "errorCondition": "FieldNotFilled(Stage) And CustomCondition K07",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/C08",
+        "name": "C08",
+        "Rule": {
+         "errorEntityRelPath": "../Stage",
+         "errorCode": "C08",
+         "errorCondition": "CustomCondition K08 And FieldNotFilled(Stage)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/C09",
+        "name": "C09",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "C09",
+         "errorCondition": "FieldFilled(Note) And CustomCondition Ghost",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/C10",
+        "name": "C10",
+        "Rule": {
+         "errorEntityRelPath": "../Stage",
+         "errorCode": "C10",
+         "errorCondition": "FieldFilled(Stage) And CustomCondition Ghost",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/R03",
+        "name": "R03",
+        "Rule": {
+         "errorEntityRelPath": "../Items/Qty",
+         "errorCode": "R03",
+         "errorCondition": "[Items/Qty] > 1 And CustomCondition K13",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/R04",
+        "name": "R04",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "R04",
+         "errorCondition": "FieldFilled(Note) And Sum(Items*/Qty) > 1 And CustomCondition K14",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/P01",
+        "name": "P01",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Headcount",
+         "errorCode": "P01",
+         "errorCondition": "FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount) And CustomCondition K21",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "x"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Claim/Note",
+        "name": "Note",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Claim/Amount",
+        "name": "Amount",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Claim/Stage",
+        "name": "Stage",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Claim/Items",
+        "name": "Items",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Claim/Items/Name",
+           "name": "Name",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Claim/Items/Qty",
+           "name": "Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Items/R01",
+           "name": "R01",
+           "Rule": {
+            "errorEntityRelPath": "../Name",
+            "errorCode": "R01",
+            "errorCondition": "FieldFilled(Name) And CustomCondition K11",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "x"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Items/R02",
+           "name": "R02",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "R02",
+            "errorCondition": "[Qty] > 1 And CustomCondition K12",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "x"
+             }
+            ]
+           }
+          }
+         ],
+         "repeatability": 5
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Claim/Demand",
+        "name": "Demand",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Claim/Demand/Department",
+           "name": "Department",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Claim/Demand/Headcount",
+           "name": "Headcount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "repeatability": 3,
+         "indexFieldName": "Department"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Claim/Supply",
+        "name": "Supply",
+        "Group": {
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Claim/Supply/Department",
+           "name": "Department",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Claim/Supply/Headcount",
+           "name": "Headcount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "repeatability": 3,
+         "indexFieldName": "Department"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

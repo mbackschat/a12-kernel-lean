@@ -111,7 +111,7 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
     | .common shared | .framed _ shared _ => shared
   let environments ← if common.isEmpty then pure [[]]
     else view.index.base.inCapacityRowEnvironments common |>.mapError .rows
-  pure (← environments.mapM (fun outer =>
+  ParallelRuleRowOutcome.untilCaught (fun outer =>
     rule.pair.evalWith rule.condition
       (fun rowOuter row _ =>
         let custom := rule.pair.customConditions registry view.index.base (.partialEntities view.relevance)
@@ -143,6 +143,7 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
                 (atom.resolveAddressed (view.addressedValidationContext environment world)).mapError .addressing)
           leaf custom world))
       view.index outer messageCache view.isAddressRelevant
-      (rule.pair.admitsPartialOuter view.relevance))).flatten
+      (rule.pair.admitsPartialOuter view.relevance) ParallelPresenceRuleEvaluationError.caughtByRule)
+    environments
 
 end A12Kernel

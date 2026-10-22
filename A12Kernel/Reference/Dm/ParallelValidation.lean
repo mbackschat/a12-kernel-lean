@@ -380,16 +380,17 @@ def checkValidationRule (model : DmModel) (language : Language) (rule : DmRule)
 
 /-- Execute a checked rule. Explicit cache context takes precedence; otherwise whole-population derivation supplies duplicate parallel error coordinates where its host profile settles them. Value reads are unchanged. A supplied cache remains caller-owned (spec/08 §4.3). Ordinary message-reference projection retains its separate API. -/
 def runValidationRule (world : World) (document : CheckedDocument model)
-    (rule : CheckedDmValidationRule model) (messageCache : Option MessageIndexCache := none) :
+    (rule : CheckedDmValidationRule model) (messageCache : Option MessageIndexCache := none)
+    (registry : CustomValidationRegistry model := {}) :
     Except String (List FlatRuleMessage) := match rule with
-  | .ordinary rule => runRule world document rule
+  | .ordinary rule => runRule world document rule registry
   | .parallel rule => do
       let preliminary ← document.applyFullIndexPreliminary |>.mapError (fun error => (repr error).pretty)
-      let initial := rule.evalDocument preliminary (messageCache.map MessageIndexContext.known) (world := some world)
+      let initial := rule.evalDocument preliminary (messageCache.map MessageIndexContext.known) registry (some world)
       let evaluated := match messageCache, initial with
         | none, .error (.join (.unresolvedDuplicatePointer _ _)) =>
             match preliminary.messageCacheContext with
-            | .ok cache => rule.evalDocument preliminary (some cache) (world := some world)
+            | .ok cache => rule.evalDocument preliminary (some cache) registry (some world)
             | .error _ => initial
         | _, _ => initial
       let rows ← evaluated.mapError (fun error => (repr error).pretty)
@@ -400,12 +401,12 @@ channels at the row it fired on. Evaluation uses the document's message cache wh
 ordinary projection does; the cache only decides pointers of a duplicate-key side, so rows without one are
 unaffected. A projection failure stays with its message instead of failing the run. -/
 def runParallelRuleReferences (document : CheckedDocument model) (rule : CheckedParallelFieldRule model)
-    (world : Option World := none) :
+    (world : Option World := none) (registry : CustomValidationRegistry model := {}) :
     Except String (List (FlatRuleMessage × Except ParallelReferenceError ValidationMessageReferences)) := do
   let preliminary ← document.applyFullIndexPreliminary |>.mapError (fun error => (repr error).pretty)
   let cache := preliminary.messageCacheContext.toOption
   let inputs := preliminary.messageReferenceInputs.toOption
-  let rows ← rule.evalDocument preliminary cache (world := world) |>.mapError (fun error => (repr error).pretty)
+  let rows ← rule.evalDocument preliminary cache registry world |>.mapError (fun error => (repr error).pretty)
   pure (rows.filterMap fun row => row.outcome.message?.map fun message =>
     (message, rule.condition.messageReferences rule.pair preliminary.base row.row row.outerEnvironment cache message inputs))
 

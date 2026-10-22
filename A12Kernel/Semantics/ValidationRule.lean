@@ -221,6 +221,13 @@ def emitRuntimeFailureAt (rule : ResolvedRule Condition) (errorPath : List Nat) 
   | .fired message => .fired { message with origin := .runtimeFailure }
   | other => other
 
+/-- The whole-rule catch at coordinates that need not form a physical row, as a joined row's may not. -/
+def emitRuntimeFailureAtCoordinates (rule : ResolvedRule Condition)
+    (coordinates : List MessageRepetitionCoordinate) : FlatRuleOutcome :=
+  match rule.emitAtCoordinates coordinates (.fired .value) with
+  | .fired message => .fired { message with origin := .runtimeFailure }
+  | other => other
+
 /-- The established nonrepeatable emitter is the empty-path specialization. -/
 def emit (rule : ResolvedRule Condition) (verdict : Verdict) : FlatRuleOutcome :=
   rule.emitAt [] verdict

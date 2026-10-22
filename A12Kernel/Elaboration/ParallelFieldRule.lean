@@ -639,6 +639,23 @@ def CheckedParallelFieldPair.customConditions (pair : CheckedParallelFieldPair m
     (CustomValidationInvocation.ofDocument document relevance (pair.customErrorPointer row outer)
       generatedFormalFailures)
 
+/-- The failure the rule's whole-rule handler catches: a reached custom condition no factory registers (spec/11 §14). -/
+def ParallelPresenceRuleEvaluationError.caughtByRule : ParallelPresenceRuleEvaluationError → Bool
+  | .customCondition (.missingRegistration _) => true
+  | _ => false
+
+/-- Run each outer row in order, ending after the first whose traversal a caught failure stopped.
+A failure in a later outer row reports at that row's first joined row; the capture measures a single
+outer row only. -/
+def ParallelRuleRowOutcome.untilCaught
+    (run : Env → Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome)) :
+    List Env → Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome)
+  | [] => pure []
+  | outer :: remaining => do
+      let outcomes ← run outer
+      if outcomes.any (·.outcome.message?.any (·.origin == .runtimeFailure)) then pure outcomes
+      else pure (outcomes ++ (← untilCaught run remaining))
+
 /-- Execute the certified tree on the shared lexical join/frame traversal. Structural failures stay separate from semantic UNKNOWN. Full validation hands a custom callback the all-relevant marker and the base document's own findings. -/
 def CheckedParallelFieldRule.evalFull (rule : CheckedParallelFieldRule model)
     (preliminary : CheckedIndexPreliminary model) (outer : Env := [])
@@ -649,7 +666,7 @@ def CheckedParallelFieldRule.evalFull (rule : CheckedParallelFieldRule model)
     (fun outer row view => rule.condition.evalVerdictExcept
       (ParallelFieldLeaf.eval rule.pair row view outer
         (rule.pair.customConditions registry view.base .all [] row outer) world))
-    preliminary outer messageCache
+    preliminary outer messageCache (caught := ParallelPresenceRuleEvaluationError.caughtByRule)
 
 /-- Parallel unions are local to each in-capacity common outer row. An implicit outer row has no child index entries, hence no parallel evaluation to fabricate. -/
 def CheckedParallelFieldRule.evalDocument (rule : CheckedParallelFieldRule model)
@@ -661,6 +678,7 @@ def CheckedParallelFieldRule.evalDocument (rule : CheckedParallelFieldRule model
     | .common shared | .framed _ shared _ => shared
   let environments ← if scope.isEmpty then pure [[]]
     else preliminary.base.inCapacityRowEnvironments scope |>.mapError .rows
-  pure (← environments.mapM (fun outer => rule.evalFull preliminary outer messageCache registry world)).flatten
+  ParallelRuleRowOutcome.untilCaught (fun outer => rule.evalFull preliminary outer messageCache registry world)
+    environments
 
 end A12Kernel

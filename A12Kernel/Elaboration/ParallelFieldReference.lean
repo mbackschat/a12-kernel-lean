@@ -163,6 +163,8 @@ def messageReferences (pair : CheckedParallelFieldPair model) (document : Checke
     (row : ResolvedParallelIndexRow) (outer : Env) (cache : Option MessageIndexContext)
     (message : FlatRuleMessage) (inputs : Option MessageReferenceInputs := none) :
     Except ParallelReferenceError ValidationMessageReferences := do
+  -- The whole-rule handler's report names no reads, as on the ordinary carrier.
+  if message.origin == .runtimeFailure then return { referenced := [], fillToFix := [] }
   let reads ← leafReads pair document row outer inputs condition
   let project := fun (reads : List ParallelRead) => do
     let joined := reads.filterMap fun | .joined declaration => some declaration | .expanded _ => none

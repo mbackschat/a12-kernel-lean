@@ -76,13 +76,17 @@ example :
         (·.data.cells.length)) == some 0].all id := by
   native_decide
 
-/- An object member the model declares no field below is refused, not read as an empty group. -/
+/- An object member the model declares no field below is dropped, as the Kernel's conversion drops
+it ([checkpoint](../../../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members));
+an undeclared array stays refused. -/
 example :
     let dm : DmModel := { flat := model flag, rules := [], computations := [], conditionLanguage := "en_US",
                           refusals := [] }
     [((readDocument dm (Json.mkObj [("Order", Json.mkObj [("Typo", Json.mkObj [])])])).toOption.map
+        (fun read => (read.refusals.length, read.data.groupOccurrences.length))) == some (0, 1),
+     ((readDocument dm (Json.mkObj [("Nope", Json.mkObj [])])).toOption.map (·.refusals.length)) == some 0,
+     ((readDocument dm (Json.mkObj [("Order", Json.mkObj [("Typo", Json.arr #[])])])).toOption.map
         (·.refusals.length)) == some 1,
-     ((readDocument dm (Json.mkObj [("Nope", Json.mkObj [])])).toOption.map (·.refusals.length)) == some 1,
      ((readDocument dm (Json.mkObj [("Order", Json.mkObj [])])).toOption.map (·.refusals.length)) ==
         some 0].all id := by
   native_decide
@@ -179,7 +183,7 @@ example : rowShape #[Json.mkObj [], .null, Json.mkObj [("Value", .null)]] =
         [{ field := 0, path := [2] }], 0) ∧
     (rowInput #[Json.mkObj [("Value", .null)]]).map (·.data.cells.map (·.raw)) =
       some [.presentEmpty] ∧
-    (rowInput #[Json.mkObj [("Unknown", .str "x")]]).map (·.refusals.length) = some 1 := by
+    (rowInput #[Json.mkObj [("Unknown", .str "x")]]).map (·.refusals.length) = some 0 := by
   native_decide
 
 private def nestedRowModel : DmModel := { rowModel with flat := {

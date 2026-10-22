@@ -164,8 +164,8 @@ def replayReferences (model : FlatModel) (document : CheckedDocument model)
 row, so a duplicate side or an unmatched side is pointed at as the error pointer is. -/
 def replayParallelReferences (model : FlatModel) (document : CheckedDocument model)
     (rule : CheckedParallelFieldRule model) (kernel : List ObservedReferences)
-    (world : Option World := none) : RuleStatus :=
-  match runParallelRuleReferences document rule world with
+    (world : Option World := none) (registry : CustomValidationRegistry model := {}) : RuleStatus :=
+  match runParallelRuleReferences document rule world registry with
   | .error detail => .runFault detail
   | .ok fired =>
       match fired.mapM fun (message, references) => references.map (observedReferences model message) with
@@ -174,11 +174,13 @@ def replayParallelReferences (model : FlatModel) (document : CheckedDocument mod
 
 /-- Compare every authored and generated rule of `model` on one checked document against the
 Kernel's messages, attributed by code and error field. With `rendering`, an ordinary rule's firings
-first pass through `renderFirings` for that prepared context and locale. -/
+first pass through `renderFirings` for that prepared context and locale. A custom condition resolves
+through `registry`, the host's factories. -/
 def replayRules (model : DmModel) (language : Language) (world : World)
     (checked : CheckedDocument model.flat) (kernel : List ObservedMessage)
     (kernelReferences : List ObservedReferences := [])
-    (rendering : Option (PreparedFlatStringContext model.flat builtinStringPatternCompiler × String) := none) :
+    (rendering : Option (PreparedFlatStringContext model.flat builtinStringPatternCompiler × String) := none)
+    (registry : CustomValidationRegistry model.flat := {}) :
     List RuleVerdict :=
   -- Rules read required-empty cells as formally unavailable (spec/03 §B.2), so they run on the
   -- document carrying full validation's generated `.required` findings.
@@ -199,8 +201,8 @@ def replayRules (model : DmModel) (language : Language) (world : World)
     | .ok checked', .ok document =>
         let run : Except String (List FlatRuleMessage × Option (List (Env × FlatRuleMessage))) :=
           match checked' with
-          | .parallel _ => (runValidationRule world document checked').map (·, none)
-          | .ordinary ordinary => (runRuleAt world document ordinary).map fun fired =>
+          | .parallel _ => (runValidationRule world document checked' (registry := registry)).map (·, none)
+          | .ordinary ordinary => (runRuleAt world document ordinary registry).map fun fired =>
               let fired := match rendering with
                 | some (prepared, locale) => renderFirings prepared language locale document rule ordinary fired
                 | none => fired
@@ -212,7 +214,7 @@ def replayRules (model : DmModel) (language : Language) (world : World)
             if actual != expected then { rule, status := .diverged actual expected } else
             let references := match checked', fired with
               | .parallel parallel, _ => some (replayParallelReferences model.flat document parallel
-                  (kernelReferences.filter (attributed ·.message)) (some world))
+                  (kernelReferences.filter (attributed ·.message)) (some world) registry)
               | .ordinary ordinary, some fired => some (replayReferences model.flat document ordinary fired
                   (kernelReferences.filter (attributed ·.message)))
               | .ordinary _, none => none

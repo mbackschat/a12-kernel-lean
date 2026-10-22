@@ -1,0 +1,46 @@
+{
+ "model": "K18M_DM.json",
+ "customConditions": {
+  "K01": {
+   "returns": true
+  }
+ },
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "rows": [
+  {
+   "name": "m-claim",
+   "document": "doc-full.json",
+   "relevant": [
+    {
+     "path": "/Claim"
+    }
+   ]
+  },
+  {
+   "name": "m-row3",
+   "document": "doc-full.json",
+   "relevant": [
+    {
+     "path": "/Claim/Items/Qty",
+     "reps": [
+      1,
+      3,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "m-keep",
+   "document": "doc-keep.json",
+   "relevant": [
+    {
+     "path": "/Claim"
+    }
+   ]
+  }
+ ]
+}

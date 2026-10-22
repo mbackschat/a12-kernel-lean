@@ -12,9 +12,13 @@ token and a JSON number its scale-preserving decimal-node text. A JSON `null` is
 a12-dmkits' `document-instance.schema.json` reads the Kernel's document format, and a missing key is an
 absent field.
 
-A field the model reader refused, a key or object the model declares nothing for, an out-of-profile
-numeric scale, or a temporal text no classifier owns is reported in `DmDocument.refusals` rather than placed, so a replay row depending on it is refused
-as unrepresented instead of evaluated against a guess.
+The Kernel's document conversion drops a string member or an object the model declares nothing for,
+whether in a fixed group or a repeatable row: both strategies report a document carrying them exactly
+as the one without ([undeclared-member checkpoint](../../../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members)),
+so this reader drops them too. A field the model reader refused, an undeclared member of another JSON
+kind, which is unmeasured, an out-of-profile numeric scale, or a temporal text no classifier owns is
+reported in `DmDocument.refusals` rather than placed, so a replay row depending on it is refused as
+unrepresented instead of evaluated against a guess.
 -/
 
 namespace A12Kernel.Dm
@@ -247,10 +251,17 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
             else if model.flat.fields.any (childPath.isPrefixOf ·.groupPath) then do
               modify fun state => { state with groups := state.groups.push { path := childPath, coordinates := path } }
               readInstance model childPath path members.toList
-            else refuse childPath "member the model does not declare"
+            -- Nothing can read a declared empty group, and an undeclared object is dropped.
+            else pure ()
         | _, _ =>
             if model.refusals.any (·.1 == childPath) then refuse childPath "declaration refused by the model reader"
-            else refuse childPath "member the model does not declare"
+            else if model.flat.repeatableGroups.any (·.path == childPath) ||
+                model.flat.fields.any (childPath.isPrefixOf ·.groupPath) ||
+                model.flat.declaresEmptyGroup childPath then
+              refuse childPath "group value of the wrong JSON kind"
+            else match value with
+              | .str _ => pure ()
+              | _ => refuse childPath "member the model does not declare"
 
 /-- Read one document, given as the object holding its root groups. -/
 def readDocument (model : DmModel) (json : Json) : Except String DmDocument := do

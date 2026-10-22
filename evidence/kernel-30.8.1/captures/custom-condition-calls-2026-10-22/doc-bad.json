@@ -1,0 +1,16 @@
+{
+ "Claim": {
+  "Note": "",
+  "Amount": "abc",
+  "Items": [
+   {
+    "Name": "a",
+    "Qty": "x"
+   },
+   {
+    "Name": "b",
+    "Qty": "2"
+   }
+  ]
+ }
+}

@@ -1,0 +1,45 @@
+{
+ "Claim": {
+  "Note": "n",
+  "Amount": "7",
+  "Stage": "s",
+  "Items": [
+   {
+    "Name": "a",
+    "Qty": "1",
+    "Extra": "e"
+   },
+   {
+    "Name": "b",
+    "Qty": "2"
+   },
+   {
+    "Name": "c",
+    "Qty": "3"
+   }
+  ],
+  "Demand": [
+   {
+    "Department": "x",
+    "Headcount": "1"
+   },
+   {
+    "Department": "y"
+   }
+  ],
+  "Supply": [
+   {
+    "Department": "x",
+    "Headcount": "2"
+   },
+   {
+    "Department": "y",
+    "Headcount": "3"
+   }
+  ],
+  "Ghost": "g",
+  "Phantom": {
+   "F": "1"
+  }
+ }
+}
