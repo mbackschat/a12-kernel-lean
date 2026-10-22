@@ -1,0 +1,91 @@
+{
+ "producer": {
+  "dmtool": "0.13.0",
+  "kernelBuilt": "30.8.1",
+  "kernelRuntime": "30.8.1",
+  "source": {
+   "revision": "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+   "state": "CLEAN"
+  }
+ },
+ "command": "batch of rule add --dry-run",
+ "model": "86303a8f16e4674a6f0d9726c482cd7f0c7a91bba918913afc0b9ff099a80beb",
+ "observations": [
+  {
+   "id": "t1",
+   "exit": 0,
+   "ok": true,
+   "valid": null,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "t2",
+   "exit": 0,
+   "ok": true,
+   "valid": null,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "t3",
+   "exit": 1,
+   "ok": false,
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ]
+  },
+  {
+   "id": "t4",
+   "exit": 0,
+   "ok": true,
+   "valid": null,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "t5",
+   "exit": 1,
+   "ok": false,
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ]
+  },
+  {
+   "id": "t6",
+   "exit": 0,
+   "ok": true,
+   "valid": null,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "t7",
+   "exit": 0,
+   "ok": true,
+   "valid": null,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "t8",
+   "exit": 0,
+   "ok": true,
+   "valid": null,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "t0",
+   "exit": 0,
+   "ok": true,
+   "valid": null,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  }
+ ]
+}

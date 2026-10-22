@@ -1,0 +1,895 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "Order23u_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-23T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "mixed",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "t1",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t1",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t1",
+       "field": "Order/Lines[3]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Parts/PartNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t2",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "Order/Lines/Parts/PartNo"
+       ]
+      },
+      {
+       "code": "t2",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Parts/PartNo"
+       ]
+      },
+      {
+       "code": "t2",
+       "field": "Order/Lines[3]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "Order/Lines[3]/Parts/PartNo"
+       ]
+      },
+      {
+       "code": "t4",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[1]/Parts[0]/Count",
+        "/Order[1]/Lines[1]/Parts[0]/PartNo",
+        "/Order[1]/Lines[1]/Slots[0]/Mark",
+        "/Order[1]/Lines[1]/Slots[0]/SlotNo",
+        "Order/Lines/Code",
+        "Order/Lines/Day",
+        "Order/Lines/LineNo",
+        "Order/Lines/Month",
+        "Order/Lines/Price",
+        "Order/Lines/Qty",
+        "Order/Lines/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t4",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "/Order[1]/Lines[2]/Parts[0]/PartNo",
+        "/Order[1]/Lines[2]/Slots[0]/Mark",
+        "/Order[1]/Lines[2]/Slots[0]/SlotNo",
+        "Order/Lines[2]/Code",
+        "Order/Lines[2]/Day",
+        "Order/Lines[2]/LineNo",
+        "Order/Lines[2]/Month",
+        "Order/Lines[2]/Price",
+        "Order/Lines[2]/Qty",
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t4",
+       "field": "Order/Lines[3]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[3]/Parts[0]/Count",
+        "/Order[1]/Lines[3]/Parts[0]/PartNo",
+        "/Order[1]/Lines[3]/Slots[0]/Mark",
+        "/Order[1]/Lines[3]/Slots[0]/SlotNo",
+        "Order/Lines[3]/Code",
+        "Order/Lines[3]/Day",
+        "Order/Lines[3]/LineNo",
+        "Order/Lines[3]/Month",
+        "Order/Lines[3]/Price",
+        "Order/Lines[3]/Qty",
+        "Order/Lines[3]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t6",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[1]/Parts[0]/Count",
+        "/Order[1]/Lines[1]/Parts[0]/PartNo",
+        "/Order[1]/Lines[1]/Slots[0]/Mark",
+        "/Order[1]/Lines[1]/Slots[0]/SlotNo",
+        "Order/Lines/Code",
+        "Order/Lines/Day",
+        "Order/Lines/LineNo",
+        "Order/Lines/Month",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Price",
+        "Order/Lines/Qty",
+        "Order/Lines/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t6",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "/Order[1]/Lines[2]/Parts[0]/PartNo",
+        "/Order[1]/Lines[2]/Slots[0]/Mark",
+        "/Order[1]/Lines[2]/Slots[0]/SlotNo",
+        "Order/Lines[2]/Code",
+        "Order/Lines[2]/Day",
+        "Order/Lines[2]/LineNo",
+        "Order/Lines[2]/Month",
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Price",
+        "Order/Lines[2]/Qty",
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t6",
+       "field": "Order/Lines[3]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[3]/Parts[0]/Count",
+        "/Order[1]/Lines[3]/Parts[0]/PartNo",
+        "/Order[1]/Lines[3]/Slots[0]/Mark",
+        "/Order[1]/Lines[3]/Slots[0]/SlotNo",
+        "Order/Lines[3]/Code",
+        "Order/Lines[3]/Day",
+        "Order/Lines[3]/LineNo",
+        "Order/Lines[3]/Month",
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Price",
+        "Order/Lines[3]/Qty",
+        "Order/Lines[3]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t7",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[1]/Parts[0]/Count",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[1]/Parts[0]/Count"
+       ]
+      },
+      {
+       "code": "t7",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[2]/Parts[0]/Count"
+       ]
+      },
+      {
+       "code": "t7",
+       "field": "Order/Lines[3]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[3]/Parts[0]/Count",
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[3]/Parts[0]/Count"
+       ]
+      },
+      {
+       "code": "t8",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/LineNo",
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo",
+        "Order/Picks[2]/LineNo",
+        "Order/Picks[2]/Ref"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "t1",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t1",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t1",
+       "field": "Order/Lines[3]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Parts/PartNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t2",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "Order/Lines/Parts/PartNo"
+       ]
+      },
+      {
+       "code": "t2",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Parts/PartNo"
+       ]
+      },
+      {
+       "code": "t2",
+       "field": "Order/Lines[3]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "Order/Lines[3]/Parts/PartNo"
+       ]
+      },
+      {
+       "code": "t4",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[1]/Parts[0]/Count",
+        "/Order[1]/Lines[1]/Parts[0]/PartNo",
+        "/Order[1]/Lines[1]/Slots[0]/Mark",
+        "/Order[1]/Lines[1]/Slots[0]/SlotNo",
+        "Order/Lines/Code",
+        "Order/Lines/Day",
+        "Order/Lines/LineNo",
+        "Order/Lines/Month",
+        "Order/Lines/Price",
+        "Order/Lines/Qty",
+        "Order/Lines/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t4",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "/Order[1]/Lines[2]/Parts[0]/PartNo",
+        "/Order[1]/Lines[2]/Slots[0]/Mark",
+        "/Order[1]/Lines[2]/Slots[0]/SlotNo",
+        "Order/Lines[2]/Code",
+        "Order/Lines[2]/Day",
+        "Order/Lines[2]/LineNo",
+        "Order/Lines[2]/Month",
+        "Order/Lines[2]/Price",
+        "Order/Lines[2]/Qty",
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t4",
+       "field": "Order/Lines[3]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[3]/Parts[0]/Count",
+        "/Order[1]/Lines[3]/Parts[0]/PartNo",
+        "/Order[1]/Lines[3]/Slots[0]/Mark",
+        "/Order[1]/Lines[3]/Slots[0]/SlotNo",
+        "Order/Lines[3]/Code",
+        "Order/Lines[3]/Day",
+        "Order/Lines[3]/LineNo",
+        "Order/Lines[3]/Month",
+        "Order/Lines[3]/Price",
+        "Order/Lines[3]/Qty",
+        "Order/Lines[3]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t6",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[1]/Parts[0]/Count",
+        "/Order[1]/Lines[1]/Parts[0]/PartNo",
+        "/Order[1]/Lines[1]/Slots[0]/Mark",
+        "/Order[1]/Lines[1]/Slots[0]/SlotNo",
+        "Order/Lines/Code",
+        "Order/Lines/Day",
+        "Order/Lines/LineNo",
+        "Order/Lines/Month",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Price",
+        "Order/Lines/Qty",
+        "Order/Lines/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t6",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "/Order[1]/Lines[2]/Parts[0]/PartNo",
+        "/Order[1]/Lines[2]/Slots[0]/Mark",
+        "/Order[1]/Lines[2]/Slots[0]/SlotNo",
+        "Order/Lines[2]/Code",
+        "Order/Lines[2]/Day",
+        "Order/Lines[2]/LineNo",
+        "Order/Lines[2]/Month",
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Price",
+        "Order/Lines[2]/Qty",
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t6",
+       "field": "Order/Lines[3]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[3]/Parts[0]/Count",
+        "/Order[1]/Lines[3]/Parts[0]/PartNo",
+        "/Order[1]/Lines[3]/Slots[0]/Mark",
+        "/Order[1]/Lines[3]/Slots[0]/SlotNo",
+        "Order/Lines[3]/Code",
+        "Order/Lines[3]/Day",
+        "Order/Lines[3]/LineNo",
+        "Order/Lines[3]/Month",
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Price",
+        "Order/Lines[3]/Qty",
+        "Order/Lines[3]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t7",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[1]/Parts[0]/Count",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[1]/Parts[0]/Count"
+       ]
+      },
+      {
+       "code": "t7",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[2]/Parts[0]/Count"
+       ]
+      },
+      {
+       "code": "t7",
+       "field": "Order/Lines[3]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[3]/Parts[0]/Count",
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[3]/Parts[0]/Count"
+       ]
+      },
+      {
+       "code": "t8",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/LineNo",
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo",
+        "Order/Picks[2]/LineNo",
+        "Order/Picks[2]/Ref"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "gaps",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/LineNo",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/LineNo"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/LineNo"
+       ]
+      },
+      {
+       "code": "t1",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t2",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "Order/Lines/Parts/PartNo"
+       ]
+      },
+      {
+       "code": "t2",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Parts/PartNo"
+       ]
+      },
+      {
+       "code": "t4",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[1]/Parts[0]/Count",
+        "/Order[1]/Lines[1]/Parts[0]/PartNo",
+        "/Order[1]/Lines[1]/Slots[0]/Mark",
+        "/Order[1]/Lines[1]/Slots[0]/SlotNo",
+        "Order/Lines/Code",
+        "Order/Lines/Day",
+        "Order/Lines/LineNo",
+        "Order/Lines/Month",
+        "Order/Lines/Price",
+        "Order/Lines/Qty",
+        "Order/Lines/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t4",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "/Order[1]/Lines[2]/Parts[0]/PartNo",
+        "/Order[1]/Lines[2]/Slots[0]/Mark",
+        "/Order[1]/Lines[2]/Slots[0]/SlotNo",
+        "Order/Lines[2]/Code",
+        "Order/Lines[2]/Day",
+        "Order/Lines[2]/LineNo",
+        "Order/Lines[2]/Month",
+        "Order/Lines[2]/Price",
+        "Order/Lines[2]/Qty",
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t6",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "/Order[1]/Lines[2]/Parts[0]/PartNo",
+        "/Order[1]/Lines[2]/Slots[0]/Mark",
+        "/Order[1]/Lines[2]/Slots[0]/SlotNo",
+        "Order/Lines[2]/Code",
+        "Order/Lines[2]/Day",
+        "Order/Lines[2]/LineNo",
+        "Order/Lines[2]/Month",
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Price",
+        "Order/Lines[2]/Qty",
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t7",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[1]/Parts[0]/Count",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[1]/Parts[0]/Count"
+       ]
+      },
+      {
+       "code": "t7",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[2]/Parts[0]/Count"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/LineNo",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/LineNo"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/LineNo"
+       ]
+      },
+      {
+       "code": "t1",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t2",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "Order/Lines/Parts/PartNo"
+       ]
+      },
+      {
+       "code": "t2",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Parts/PartNo"
+       ]
+      },
+      {
+       "code": "t4",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[1]/Parts[0]/Count",
+        "/Order[1]/Lines[1]/Parts[0]/PartNo",
+        "/Order[1]/Lines[1]/Slots[0]/Mark",
+        "/Order[1]/Lines[1]/Slots[0]/SlotNo",
+        "Order/Lines/Code",
+        "Order/Lines/Day",
+        "Order/Lines/LineNo",
+        "Order/Lines/Month",
+        "Order/Lines/Price",
+        "Order/Lines/Qty",
+        "Order/Lines/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t4",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "/Order[1]/Lines[2]/Parts[0]/PartNo",
+        "/Order[1]/Lines[2]/Slots[0]/Mark",
+        "/Order[1]/Lines[2]/Slots[0]/SlotNo",
+        "Order/Lines[2]/Code",
+        "Order/Lines[2]/Day",
+        "Order/Lines[2]/LineNo",
+        "Order/Lines[2]/Month",
+        "Order/Lines[2]/Price",
+        "Order/Lines[2]/Qty",
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t6",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "/Order[1]/Lines[2]/Parts[0]/PartNo",
+        "/Order[1]/Lines[2]/Slots[0]/Mark",
+        "/Order[1]/Lines[2]/Slots[0]/SlotNo",
+        "Order/Lines[2]/Code",
+        "Order/Lines[2]/Day",
+        "Order/Lines[2]/LineNo",
+        "Order/Lines[2]/Month",
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Price",
+        "Order/Lines[2]/Qty",
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "t7",
+       "field": "Order/Lines/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[1]/Parts[0]/Count",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[1]/Parts[0]/Count"
+       ]
+      },
+      {
+       "code": "t7",
+       "field": "Order/Lines[2]/Parts",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Lines[2]/Parts[0]/Count",
+        "Order/Lines[2]/Parts/Count",
+        "Order/Lines[2]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[2]/Parts[0]/Count"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  }
+ ]
+}

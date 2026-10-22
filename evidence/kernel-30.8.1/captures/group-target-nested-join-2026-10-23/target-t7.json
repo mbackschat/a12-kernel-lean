@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Parts", "group": "/Order", "condition": "Sum(Lines/Parts*/Count) > 0 And GroupFilled(Lines/Parts)", "code": "t7", "name": "t7", "messages": [{"locale": "en_US", "text": "probe"}]}
