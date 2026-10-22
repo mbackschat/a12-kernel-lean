@@ -164,7 +164,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 - [ ] Close the remaining callback invocation evidence in [SG11](gaps/strings-and-messages.md#gap-sg11) and [SG12](gaps/conformance-evidence.md#gap-sg12).
 - Matrix: successful/missing factory lookup and precedence; fixed/repeated/parallel contexts; full/partial relevance; exact row coordinates and invalid-pointer payload; reached versus bypassed call.
 - Done: the pure callback contract is usable by an independent interpreter, and the currently uncalibrated validation construct cell has retained correspondence evidence. Mutable host effects and arbitrary thrown exceptions remain explicit external behavior, not invented pure semantics.
-- `resumes`: closure only. The [call capture](sources/model-structure-and-declaration-probes.md#src-custom-condition-calls), measured at the pin `09f1352e5` on 2026-10-22, settles payloads, reach, multiplicity and the reached missing registration on every carrier, which the ordinary handler and the joined-row traversal now catch. The parallel-carrier slice since `c74d6d95` takes its triggered cold review with this batch.
+- `resumes`: closure only. The [call capture](sources/model-structure-and-declaration-probes.md#src-custom-condition-calls), measured at the pin `09f1352e5` on 2026-10-22, settles payloads, reach, multiplicity and the reached missing registration on every carrier, which the ordinary handler and the joined-row traversal now catch. Its triggered cold review, of `83f063bc..9123c730` with the parallel-carrier slice, was dispositioned and landed at `d7e33525`; what remains is the final population replay, the Axis R refresh and closing K18 and K20.
 
 ### K19 — host boundaries and relevance disposition
 
