@@ -107,12 +107,14 @@ def checkRule (model : DmModel) (language : Language) (rule : DmRule)
       | .ok checked => .ok checked
       | .error boundRefusal =>
           -- A fully lowered row-bound tree reaches the rule gates; its refusal takes precedence
-          -- over the lexical attempt's unbound read (H10 iteration-guard matrix). So does any bound
-          -- refusal when the lexical one is a missing star: that level is the one the error field
-          -- binds, so only the bound attempt judges the read as the Kernel does (spec/07 §3;
-          -- SumOfProducts rows of inbound 2026-10-18, SPEC-2026-10-14-08).
+          -- over the lexical attempt's unbound read (H10 iteration-guard matrix). So does a bound
+          -- refusal past the error field when the lexical one is a missing star: that level is the
+          -- one the error field binds, so only the bound attempt judges the read as the Kernel does
+          -- (spec/07 §3; SumOfProducts rows of inbound 2026-10-18, SPEC-2026-10-14-08). An error
+          -- field that does not resolve binds nothing, so the lexical refusal stands.
           if boundRefusal.construct == "RuleAssembly" ||
-              refusal.kernelClass? == some KernelStaticDiagnostic.noWildcard.kernelCode then
+              (refusal.kernelClass? == some KernelStaticDiagnostic.noWildcard.kernelCode &&
+                boundRefusal.construct != "ErrorEntity") then
             .error boundRefusal
           else .error refusal
 

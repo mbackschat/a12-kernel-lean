@@ -6,6 +6,7 @@ import A12Kernel.Elaboration.FilledFieldGroupCount
 import A12Kernel.Elaboration.NumericValidation.EntityComparison
 import A12Kernel.Elaboration.ValidationCondition.Assembly
 import A12Kernel.Elaboration.ValidationRule.AssemblyError
+import A12Kernel.Elaboration.NumericComputation.Table
 
 /-! # The Kernel class of a reader refusal
 
@@ -49,6 +50,10 @@ instance : StaticClassified EntityNumericComparisonElabError := ⟨fun
   | .fieldFillSource (.group (.shape error)) => error.diagnostic?
   | .productSource error => error.diagnostic?
   | _ => none⟩
+
+/-- A Number computation's refusal, through the table's own projection, which classes only causes
+whose carrier was measured (`NumericComputationTableElabError.diagnostic?`). -/
+instance : StaticClassified NumericComputationTableElabError := ⟨NumericComputationTableElabError.diagnostic?⟩
 
 instance : StaticClassified ValidationConditionAssemblyError := ⟨fun
   | .fieldReference error => error.diagnostic?

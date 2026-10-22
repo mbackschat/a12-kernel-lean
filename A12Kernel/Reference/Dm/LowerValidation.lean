@@ -146,6 +146,10 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
                 let comparison ← elaborated "TemporalComparison" result
                 elaborated "TemporalComparison"
                   (CheckedValidationCondition.fromScalarTemporal bindingGroup comparison rowGroup)]
+        -- A side that is no temporal expression leaves this carrier silent, except for a token
+        -- defect, which `firstAdmitted` reports whichever carrier would have typed the text.
+        | some _, .error refusal, _ | some _, .ok _, .error refusal =>
+            if refusal.kernelClass? == some SyntaxErrorClass.unexpectedToken.code then [.error refusal] else []
         | _, _, _ => []
     | _ => []
   let stringExpression := match leaf with
@@ -448,9 +452,15 @@ private def firstAdmitted (construct : String) :
   | attempts =>
       match attempts.find? (·.toOption.isSome) with
       | some admitted => admitted
-      | none => match attempts.getLast? with
-        | some (.error refusal) => .error { refusal with construct }
-        | _ => refuse construct
+      | none =>
+          -- The Kernel parses before it types, so a token defect any carrier finds is the text's
+          -- answer whichever carrier would have typed it (spec/12 §3); otherwise the last carrier's.
+          let token? := attempts.find? fun
+            | .error refusal => refusal.kernelClass? == some SyntaxErrorClass.unexpectedToken.code
+            | .ok _ => false
+          match token?.orElse fun _ => attempts.getLast? with
+          | some (.error refusal) => .error { refusal with construct }
+          | _ => refuse construct
 
 /-- The first comparison whose sides' decimal places the exact-scale gate refuses, unless the
 preamble suppresses it. The flat carrier has no scale gate of its own, so the gate runs here over

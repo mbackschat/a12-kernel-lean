@@ -134,6 +134,10 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
     Lowering SurfaceScalarTemporalExpression := do
   let lowerSourceSlot (source : Expr) : Lowering SurfaceScalarTemporalExpression :=
     lowerScalarTemporalExpressionAt model rowGroup .source source suppress
+  -- A source slot takes a bare path, so a bracket there is a token defect, measured on
+  -- `DifferenceInDays` and `DateFromDateTime` (spec/12 §1, bare-name token positions).
+  let bracketedSource : Lowering SurfaceScalarTemporalExpression :=
+    refuse "TemporalExpression" s!"{SyntaxErrorClass.unexpectedToken.code} bracketed read in temporal source slot"
   let lowerNumericAtom := lowerHavingNumericAtomWith lowerSourceSlot
   let lowerAmount : Expr → Lowering (AuthoredNumericExpr
       (Sum (SurfaceHavingNumericAtomOf SurfaceScalarTemporalExpression) SurfaceFilteredShiftAmount)) :=
@@ -176,7 +180,7 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
   | .value { path, index := some key, category := none, filter := none } =>
       match position with
       | .value => (.indexed ·) <$> lowerIndexedSource model rowGroup path key
-      | .source => refuse "TemporalExpression" "bracketed read in temporal source slot"
+      | .source => bracketedSource
   | .entity { path, index := some key, category := none, filter := none } =>
       match position with
       | .source => (.indexed ·) <$> lowerIndexedSource model rowGroup path key
@@ -184,7 +188,7 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
   | .value { path, index := none, category := none, filter := none } =>
       match position, path.toFieldPath? with
       | .value, some field => pure (.field field)
-      | .source, _ => refuse "TemporalExpression" "bracketed read in temporal source slot"
+      | .source, _ => bracketedSource
       | _, none => refuse "TemporalExpression" "field path"
   | .entity { path, index := none, category := none, filter := none } =>
       match position, path.toFieldPath? with

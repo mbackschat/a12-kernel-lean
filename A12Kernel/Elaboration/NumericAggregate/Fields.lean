@@ -107,7 +107,8 @@ private def NumericProductOperandShape.groupPath :
 /-- One operand as the reference reader leaves it: a field on no repeatable level, or a star path
 the declaring scope binds above its first star. The reader answers as each operand is read — a name
 resolving to nothing, containment below a star or outside the rule group, a repeatable level left
-unstarred — so its classes come before the operator's own gates, which ask the pair. -/
+unstarred that nothing binds — so its classes come before the operator's own gates, which ask the
+pair. A bound unstarred level is the operator's own star question instead. -/
 private inductive NumericProductOperandRead (model : FlatModel) (declaringGroup : GroupPath) where
   | fixed (declaration : FlatFieldDecl)
   /-- An unstarred field whose every repeatable level the rule already binds, by its declaring group
@@ -191,6 +192,8 @@ private def NumericProductOperandRead.toShape :
       match declaration.toNumberField? with
       | some _ => pure (.fixed declaration)
       | none => throw (.source (.fieldNotNumber declaration.path))
+  -- `requireLowestStar` refuses this arm before the Number question; the class is repeated only to
+  -- keep the function total.
   | .unstarredBound _ => throw .wildcardAtLowestLevelRequired
   | .starred source hBound =>
       match hField : source.declaration.toNumberField? with
