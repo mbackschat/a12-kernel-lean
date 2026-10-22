@@ -294,7 +294,7 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `local-readback`: [Consistency locks](../../A12Kernel/Reference/Dm/ModelConsistencyLocks.lean) replay all 89 rows through the [consistency reader](../../A12Kernel/Reference/Dm/ModelConsistencyRead.lean) and [checker](../../A12Kernel/Elaboration/ModelConsistency.lean), comparing the classes this rule set owns; `MVK_*` codes in the same rows belong to their declaration owners.
 - `limit`: The order of distinct duplicated identifiers, two build failures in one model, attachment rule texts under another condition language and a bound outside the normal double range are unmeasured; the checker refuses the last two instead of answering. The schema-version rules read the host header and are not modelled. The checker is a separate entry point: the replay reader's admission does not consult it.
 - `bytes`: [main capture](../../evidence/kernel-30.8.1/captures/model-consistency-2026-10-13/) and [bound-order capture](../../evidence/kernel-30.8.1/captures/model-consistency-bound-order-2026-10-13/), each with its base model, rows, redacted observations and `MANIFEST.sha256`.
-- `sync`: [SPEC-2026-10-13-14](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-13-14).
+- `sync`: [SPEC-2026-10-13-14](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-13-14).
 
 <a id="src-parallel-custom-condition"></a>
 #### A CustomCondition leaf in a parallel rule is admitted beside the pair under And and refused under Or with the parallel-iteration class, measured 2026-10-14
@@ -304,7 +304,7 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `local`: the [parallel reader](../../A12Kernel/Reference/Dm/ParallelValidation.lean) lowers the leaf, the [assembly](../../A12Kernel/Elaboration/ParallelFieldRule.lean) refuses an unguarded admitted tree with the parallel-iteration class, and the [parallel custom locks](../../A12Kernel/Reference/Dm/ParallelCustomConditionLocks.lean) replay the rows and the per-row callback inputs; the [rule-check projection](../../A12Kernel/Evidence/RuleCheckProjection.lean) replays the verdicts.
 - `limit`: static admission only. The callback's runtime inputs in a parallel row, its reach and an unregistered name's runtime outcome are `external evidence pending`, because the runtime probe registers no custom condition ([K18](../PLAN.md#k18--customcondition-callback-contract-and-calibration)).
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/parallel-custom-condition-2026-10-14/) with model, ops, observations and `MANIFEST.sha256`.
-- `sync`: [SPEC-2026-10-14-01](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-01).
+- `sync`: [SPEC-2026-10-14-01](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-01).
 
 <a id="src-parallel-instance-leaves"></a>
 #### Ordinary leaves and guards of a key join read one joined row, an unmatched partner reading as empty, measured 2026-10-14
@@ -317,7 +317,7 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `local`: the [parallel reader](../../A12Kernel/Reference/Dm/ParallelValidation.lean) lowers a leaf without a pair form through the ordinary reader against the [instance view](../../A12Kernel/Elaboration/ParallelInstanceView.lean); the [computation reader](../../A12Kernel/Reference/Dm/Compute.lean) checks joined guards as [parallel guards](../../A12Kernel/Elaboration/ParallelNumericGuard.lean). The [instance-view locks](../../A12Kernel/Reference/Dm/ParallelInstanceViewLocks.lean) replay one row per branch; the [rule-check projection](../../A12Kernel/Evidence/RuleCheckProjection.lean) replays the 19 verdicts; `lake exe a12-kernel-replay` matches all 249 instances of both runtime requests.
 - `limit`: A group strictly enclosing the joined groups keeps its whole content, an assumption: every captured row holds under that account and under one narrowing it to the joined row. Guards that read a clock, a filter, a star, an index or a pattern are measured at the [joined-carrier checkpoint](#src-joined-carrier-admission).
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/parallel-instance-leaves-2026-10-14/) with the static model, the runtime models, ops, observations, both requests and artifacts and `MANIFEST.sha256`.
-- `sync`: [SPEC-2026-10-14-02](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-02).
+- `sync`: [SPEC-2026-10-14-02](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-02).
 
 <a id="src-joined-carrier-admission"></a>
 #### A joined computation or parallel rule admits clock, starred, filtered, keyed and pattern leaves, which keep their ordinary meaning at the common row, measured 2026-10-14
@@ -366,7 +366,7 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `local`: [ordered admission](../../A12Kernel/Reference/Dm/HavingAdmission.lean) reads a condition call in an operation position as the token defect after the operands before it, and the [parse-defect producer](../../A12Kernel/Reference/Dm/ParseDefectClass.lean) checks each call the parse closed before its defect; [locks](../../A12Kernel/Reference/Dm/ParseDefectClassLocks.lean) replay every row.
 - `limit`: English, one fixed group, the rounding, `YearFromDate` and `AddDays` gates. A completed call inside a filter body before a defect is checked here outside the filter, an unmeasured extension.
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/predicate-operand-classes-2026-10-14/) with the model, both ops and observation files and `MANIFEST.sha256`.
-- `sync`: [SPEC-2026-10-14-05](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-05).
+- `sync`: [SPEC-2026-10-14-05](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-05).
 
 <a id="src-empty-enumeration-token"></a>
 #### An Enumeration declaring an empty stored token loads, admits that token as a value-list literal, and never holds it in a cell, measured 2026-10-14
@@ -377,7 +377,7 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `local`: the [declaration check](../../A12Kernel/Elaboration/Enumeration.lean) admits an empty stored token, and the existing value classification already reads a stored `""` as empty. The replay first diverged on `rNe0`, where Lean fired the token inequality on `B`; the [shared literal rule](../../A12Kernel/Semantics/ScalarEquality.lean) now suppresses an empty literal on Enumeration reads as on String ones.
 - `limit`: one declaration with the empty token first, `en_US`, a fixed root group. An empty category token, a labelled empty token and an empty token as an index field's value are not measured.
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/empty-enumeration-token-2026-10-14/) with the model, ops, observations, request and artifact (Kernel message texts redacted) and `MANIFEST.sha256`.
-- `sync`: [SPEC-2026-10-14-04](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-04).
+- `sync`: [SPEC-2026-10-14-04](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-04).
 
 <a id="src-semantic-index-reads"></a>
 #### Keyed reads admit every token, category and mixed-sign carrier the selection grammar allows, and an undecided selection leaves no declared slot missing, measured 2026-10-14
@@ -395,7 +395,7 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `local`: before this batch Lean refused the keyed token, category, Enumeration-target and mixed-sign rows and fired `q04` on the duplicate. The [selected token certificate](../../A12Kernel/Elaboration/SelectedTokenEntity.lean) now carries the read's projection. The [group aggregate](../../A12Kernel/Elaboration/NumberEntityList.lean) reads each cell's declaration, and the [fill capacity](../../A12Kernel/Elaboration/FieldFillList.lean) counts an undecided keyed operand as its one observation. All four requests and all 76 static rows now match.
 - `limit`: String and Number index fields, fixed-root rules, one unindexed row group, and two unindexed ancestors in the third request, capacity at most ten. Other key kinds, three or more bound ancestors and partial validation of these carriers are outside this matrix.
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/semantic-index-reads-2026-10-14/) with the four models, ops, observations, computation specs, requests and artifacts (Kernel message texts redacted) and `MANIFEST.sha256`.
-- `sync`: [SPEC-2026-10-14-07](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-07).
+- `sync`: [SPEC-2026-10-14-07](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-14-07).
 
 <a id="src-field-declaration-notifications-k17"></a>
 #### The declaration-generation rule reports field-type, element-name, group and element-text classes as one unordered set over the variant-filtered model, measured 2026-10-13
@@ -420,7 +420,7 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `local-readback`: the [declaration projection](../../A12Kernel/Evidence/DeclarationNotificationProjection.lean) replays the rows through the [declaration reader](../../A12Kernel/Reference/Dm/FieldTypeDeclarationRead.lean), comparing the multiset of classes and element paths, and requires a read refusal where the Kernel refused the input; condition, suppression and empty-group classes in the same rows belong to their own owners. The five `pp-*` rows are deferred: the reader ignores a member a type body does not declare.
 - `limit`: no order is claimed. Unmeasured choices are listed in the owning modules: a body under a `PATHS_INCONSISTENT` name, an `xml` root's prefix below it, a group name holding `/`, the encoding gate's effect on the pairing classes, a repeated hint locale on an undeclared locale, a nomination inside a model the flat validator refuses (a read refusal here), the letter cases of a flag text beyond `true`, `TRUE` and `false`, a flag number written with an exponent, trimmed characters other than a space, and whether the message carrier's exemption covers every supplementary character the invalid-character class names, of which `U+10FFFF` is measured. The Java pattern compilation is a host input; the projection supplies the capture's verdicts.
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/field-declaration-notifications-2026-10-13/) with its base model, rows, redacted observations and `MANIFEST.sha256`.
-- `sync`: [SPEC-2026-10-13-16](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-13-16).
+- `sync`: [SPEC-2026-10-13-16](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-13-16).
 
 <a id="src-partial-carrier-calibration"></a>
 #### Partial validation over typed first-filled, extremum, filled-count, constructed-date fill and keyed carriers reads only the relevant extent, and a duplicate key outside it does not compromise selection, measured 2026-10-14
