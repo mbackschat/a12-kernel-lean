@@ -93,7 +93,7 @@ Each gate is non-writing. Exact bundle binding uses `sha256sum` with a `shasum -
 <a id="population-replay-scope"></a>
 ## Population-replay scope
 
-The [population replay](TESTING.md#the-population-replay) compares every retained request whose model declares a rule or computation. Its run of 2026-10-22 at `d1729d6e` over 507 requests found 178196 instances matching, 211 absent and 64 at tier 2, with none at tier 1, unattributed or faulting. Each row below names what checks the instances that run could not compare, or why nothing can.
+The [population replay](TESTING.md#the-population-replay) compares every retained request whose model declares a rule or computation. Its run of 2026-10-22 at `6e6ad094` over 511 requests found 178528 instances matching, 211 absent and 64 at tier 2, with none at tier 1, unattributed or faulting. Each row below names what checks the instances that run could not compare, or why nothing can.
 
 | replay outcome | captures (instances) | disposition |
 |---|---|---|

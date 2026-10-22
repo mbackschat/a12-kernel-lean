@@ -153,6 +153,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 21 peer measurements](sources/inbound-handbacks.md#src-inbound-2026-10-21): a12-dmkits `dbbbdb5d8294f48f7c8187773c7168ecb230968c`; unsolicited Kernel facts on the hybrid calendar, member binding, the Boolean cell fold and model-admission notifications.
 - [October 22 peer answers](sources/inbound-handbacks.md#src-inbound-2026-10-22): a12-dmkits `09f1352e5d24e9d661f692ddc5b2fdcf65a786e6`; the boolean-member token kind, the relabelled `int` rows, two more Boolean-fold characters, and a scope for `SPEC-2026-10-14-01` that the peer withdrew the same day.
 - [October 22b iteration-guard rows](sources/inbound-handbacks.md#src-inbound-2026-10-22b): a12-dmkits `532cd2b28`; Kernel classes for the ordinary and parallel iteration guards on an order model, and the levels exempt from them.
+- [October 22c selection, computation and binding rows](sources/inbound-handbacks.md#src-inbound-2026-10-22c): a12-dmkits `e9747abbf`; Kernel classes for the guard beside constant and field-keyed selections, five computation preconditions, and the error-field binding under parallel iteration.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route
