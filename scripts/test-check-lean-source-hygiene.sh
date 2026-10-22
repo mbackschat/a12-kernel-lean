@@ -181,7 +181,15 @@ printf '%s\n' 'def topologyCaller := "StarPath.resolveTopology"' \
 track_fixture "$quoted_topology_caller"
 expect_failure "$quoted_topology_caller" "StarPath.resolveTopology callers changed"
 
+unreached="$(new_fixture unreached-module)"
+printf '%s\n' '-- smoke' > "$unreached/A12Kernel/Unreached.lean"
+track_fixture "$unreached"
+expect_failure "$unreached" "A12Kernel/Unreached.lean: no tracked module imports it and no lakefile root names it"
+
 green="$(new_fixture green)"
+printf '%s\n' 'import A12Kernel.Basic' 'import A12Kernel.Ordinary' 'import A12Kernel.Reviewed' \
+  'import A12Kernel.Elaboration.CheckedStarDocument' 'import A12Kernel.Elaboration.RepetitionNotUnique' \
+  'import A12Kernel.Elaboration.StarGroup' 'import A12Kernel.Semantics.StarAddressing' > "$green/A12Kernel.lean"
 write_nonblank_lines "$green/A12Kernel/Ordinary.lean" 800
 write_nonblank_lines "$green/A12Kernel/Reviewed.lean" 801
 write_registry_lines "$green/A12Kernel/TrustAudit.lean" 1201

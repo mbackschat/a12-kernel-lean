@@ -426,13 +426,36 @@ topology_callers_actual="$(for source in "${tracked_files[@]}"; do
     }
     while ((at = index(code, "resolveTopology")) > 0) { total++; code = substr(code, at + 15) }
   } END { print total + 0 }' "$source")"
-  (( count > 0 )) && printf '%s\t%s\n' "$source" "$count"
+  if (( count > 0 )); then printf '%s\t%s\n' "$source" "$count"; fi
 done | sort)"
 if [[ "$topology_callers_actual" != "$topology_callers_expected" ]]; then
   echo "StarPath.resolveTopology callers changed; an operand stream reads StarPath.resolveInCapacity. Expected:" >&2
   printf '%s\n' "$topology_callers_expected" >&2
   echo "Actual:" >&2
   printf '%s\n' "$topology_callers_actual" >&2
+  exit 1
+fi
+
+# Every tracked module below `A12Kernel/` must be imported by another tracked module or named as a
+# lakefile root, or no build compiles it and its locks assert nothing: a lock module shipped
+# uncompiled on 2026-10-22 for want of one import line. The trust script compiles `A12Kernel/Trust/`
+# and `TrustAudit.lean` directly, so they are exempt.
+imported_modules=$'\n'"$(awk '/^[[:space:]]*(public[[:space:]]+)?import[[:space:]]+[A-Za-z_][A-Za-z0-9_.]*[[:space:]]*$/ { print $NF }' "${tracked_files[@]}" | sort -u)"$'\n'
+if [[ -f lakefile.toml ]]; then
+  imported_modules+="$(sed -n 's/^root = "\(.*\)"$/\1/p' lakefile.toml)"$'\n'
+fi
+unreached_modules=()
+for source in "${tracked_files[@]}"; do
+  [[ "$source" == A12Kernel/*.lean ]] || continue
+  [[ "$source" == A12Kernel/Trust/* || "$source" == A12Kernel/TrustAudit.lean ]] && continue
+  module="${source%.lean}"
+  module="${module//\//.}"
+  [[ "$imported_modules" == *$'\n'"$module"$'\n'* ]] || unreached_modules+=("$source")
+done
+if (( ${#unreached_modules[@]} > 0 )); then
+  for source in "${unreached_modules[@]}"; do
+    echo "${source}: no tracked module imports it and no lakefile root names it, so no build compiles it" >&2
+  done
   exit 1
 fi
 
