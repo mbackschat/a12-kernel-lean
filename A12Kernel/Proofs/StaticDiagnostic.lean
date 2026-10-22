@@ -21,7 +21,8 @@ theorem kernelStaticDiagnostic_kernelCode_nodup :
 /-- The enumeration is complete, so a consumer may treat `all` as the exact covered surface rather than a curated subset. -/
 theorem kernelStaticDiagnostic_mem_all (code : KernelStaticDiagnostic) :
     code ∈ KernelStaticDiagnostic.all := by
-  -- `decide` compares constructors directly; per-case `simp` cost 22 s here on 2026-10-22, this 2.7 s.
+  -- `decide` compares constructors directly: measured alone on 2026-10-22, per-case `simp` took
+  -- 17 s and this takes 3.4 s, leaving the distinctness proof above as the module's slowest.
   cases code <;> decide
 
 end A12Kernel
