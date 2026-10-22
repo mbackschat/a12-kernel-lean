@@ -171,9 +171,11 @@ def admitted (atom : OrderedNumericValidationAtom model)
       | .sameGroupAddressed => source.directFields?.isNone
       | .modelWideNonrepeatable => source.directFields?.isSome
       | .modelWideCheckedComputation => true
+  -- A direct list of fixed fields keeps its scalar owner. One naming a row field is admitted here and
+  -- its slots read at the rule's row, whose runtime is `external evidence pending`.
   | .aggregate _ source => bound source.bindingScopes &&
       (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed) &&
-        source.directAggregateFields?.isNone
+        (source.directAggregateFields?.isNone || source.bindingScopes.any (!·.isEmpty))
   | .sumOfProducts source => bound source.bindingScopes &&
       (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed)
   | .filledGroupCountMixed operands =>

@@ -823,14 +823,15 @@ def assembleResolvedValidationRule (model : FlatModel)
       if condition.core.authoredErrorReference? errorField == some false then
         .error (.errorFieldNotReferenced errorField)
       else .ok rule
-  -- The walk's refusal answers ahead of the per-level negative-condition gate, which is measured only
-  -- where the error field binds the level; every other refusal keeps its place behind that gate
-  -- ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-group-operand-walk)).
+  -- The walk's refusal, measured only where the error field binds the level ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-group-operand-walk)),
+  -- and an error field the condition never names ([capture](../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04)
+  -- rows `o01`–`o03`) answer ahead of the per-level negative-condition gate; other refusals follow it.
   match assembled with
   | .error error =>
-      match error.unboundLevel? model condition.declaringGroup with
-      | some (field, unbound) => .error (.unboundOperandLevel field unbound)
-      | none =>
+      match error.unboundLevel? model condition.declaringGroup, error with
+      | some (field, unbound), _ => .error (.unboundOperandLevel field unbound)
+      | none, .errorFieldNotReferenced _ => .error error
+      | none, _ =>
           match condition.core.iterationLegality with
           | .ok (.invalid level) => .error (.negativeConditionInIteration level)
           | .ok .legal | .ok (.insufficient _) | .error _ => .error error

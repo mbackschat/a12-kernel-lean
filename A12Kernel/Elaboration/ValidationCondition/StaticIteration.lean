@@ -402,26 +402,6 @@ inductive IterationLegality where
   | insufficient (level : RepeatableLevel)
   deriving Repr, DecidableEq
 
-/-- The kernel's direct Number/literal visitor treats exactly these ordinary operators as empty-zero negative conditions. Tolerance and the other ordinary directions remain admitted for this source shape. -/
-def directEmptyZeroIsUnguarded := NumericValidationOp.zeroSensitiveIteration
-
-def directOrdinaryZeroSensitiveScope?
-    (model : FlatModel) :
-    AuthoredNumericExpr (OrderedNumericValidationAtom model) →
-      Option (List RepeatableLevel)
-  | .atom (.ordinary source) =>
-      match ordinaryNumericAtomFieldDeclarations? model source with
-      | none => none
-      | some declarations =>
-          match mergeIterationScopeList (declarations.map fun declaration =>
-              if declaration.repeatableScope.isEmpty then
-                none
-              else
-                some declaration.repeatableScope) with
-          | .ok scope => scope
-          | .error _ => none
-  | _ => none
-
 end ValidationCondition
 
 end A12Kernel

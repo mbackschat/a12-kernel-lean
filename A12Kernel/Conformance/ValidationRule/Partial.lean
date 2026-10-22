@@ -221,17 +221,23 @@ private def repBase : FlatFieldDecl :=
 private def repModel : FlatModel :=
   { fields := [repErr, repBase],
     repeatableGroups := [{ level := 10, path := repRows, repeatability := some 5 }] }
-/-- `Length(Err)` stands in for the Kernel fixture's `FieldFilled(Err)` guard. Both rules carry it
-    identically and it names the error field, which the rule assembly requires; because it is the
-    same operand in both, any difference below is the second operand's. -/
-private def repGuard : AuthoredNumericExpr SurfaceNumericAtom :=
-  .atom (.stringLength { base := .absolute, groups := repRows, field := "Err" })
+private def repComparison? (left : AuthoredNumericExpr SurfaceNumericAtom) (bound : Rat) :
+    Option (CheckedValidationCondition repModel) := do
+  let comparison ← (elaborateRepeatableNumericComparison repModel repRows
+    { op := .ordinary .greater, left, right := .literal { value := bound, authoredScale := 0 } }).toOption
+  (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+/-- `Length(Err) > 0` stands in for the Kernel fixture's `FieldFilled(Err)` guard, conjoined with the
+    second operand's `> 1` as there. Both rules carry it identically and it names the error field,
+    which the rule assembly requires; because it is the same conjunct in both, any difference below is
+    the second operand's. The guard stays a separate conjunct: the Kernel visitor refuses a
+    `CurrentRepetition` read anywhere inside one comparison, the nested case by source reading only;
+    as its own comparison it is measured unguarded
+    ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04)
+    rows `u17`, `u18`). -/
 private def repRule? (second : AuthoredNumericExpr SurfaceNumericAtom) :
     Option (CheckedResolvedValidationRule repModel) := do
-  let comparison ← (elaborateRepeatableNumericComparison repModel repRows
-    { op := .ordinary .greater, left := .binary .add repGuard second,
-      right := .literal { value := 2, authoredScale := 0 } }).toOption
-  let condition ← (CheckedValidationCondition.fromOrderedNumeric comparison).toOption
+  let guard ← repComparison? (.atom (.stringLength { base := .absolute, groups := repRows, field := "Err" })) 0
+  let condition ← (guard.and (← repComparison? second 1)).toOption
   (assembleResolvedValidationRule repModel condition repErr.id "R" .error { parts := [] }).toOption
 private def repetitionOperand : AuthoredNumericExpr SurfaceNumericAtom :=
   .atom (.currentRepetition { base := .absolute, groups := repRows })

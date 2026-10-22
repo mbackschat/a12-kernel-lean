@@ -253,8 +253,8 @@ theorem checkedValidationRule_once_plan_exact
   simp [CheckedResolvedValidationRule.ordinaryIterationPlan,
     noScope, repeatable]
 
-/-- An unguarded repeatable condition is refused, possibly first by the error field's scope or
-reference-binding gate (spec/07 §1). -/
+/-- An unguarded repeatable condition is refused, possibly first by the error field's scope,
+reference-binding or reference gate (spec/07 §1). -/
 theorem assembleResolvedValidationRule_rejects_negativeIteration
     (model : FlatModel) (condition : CheckedValidationCondition model)
     (errorField : FieldId) (errorCode : String)
@@ -267,19 +267,20 @@ theorem assembleResolvedValidationRule_rejects_negativeIteration
       (error = .negativeConditionInIteration level ∨
         (∃ field unbound, error = .unboundOperandLevel field unbound) ∨
         (∃ field level, error = .errorFieldIterationInvalid field level) ∨
-        ∃ field level, error = .formOnlyIteration field level) := by
+        (∃ field level, error = .formOnlyIteration field level) ∨
+        ∃ field, error = .errorFieldNotReferenced field) := by
   unfold assembleResolvedValidationRule
   simp only [invalid]
   split
-  · rename_i error _
-    cases hWalk : error.unboundLevel? model condition.declaringGroup with
-    | some refusal => exact ⟨_, rfl, Or.inr (Or.inl ⟨refusal.1, refusal.2, rfl⟩)⟩
-    | none => exact ⟨_, rfl, Or.inl rfl⟩
+  · split
+    · exact ⟨_, rfl, Or.inr (Or.inl ⟨_, _, rfl⟩)⟩
+    · exact ⟨_, rfl, Or.inr (Or.inr (Or.inr (Or.inr ⟨_, rfl⟩)))⟩
+    · exact ⟨_, rfl, Or.inl rfl⟩
   · split
     · exact ⟨_, rfl, Or.inr (Or.inl ⟨_, _, rfl⟩)⟩
     · split
       · split
-        · exact ⟨_, rfl, Or.inr (Or.inr (Or.inr ⟨_, _, rfl⟩))⟩
+        · exact ⟨_, rfl, Or.inr (Or.inr (Or.inr (Or.inl ⟨_, _, rfl⟩)))⟩
         · unfold assembleResolvedValidationRule.finish
           simp only [invalid]
           split

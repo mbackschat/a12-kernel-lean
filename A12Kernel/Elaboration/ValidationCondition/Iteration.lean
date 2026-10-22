@@ -11,96 +11,17 @@ def iterationHostInt32? := javaRoundedInt32?
 
 end DecodedNumericLiteral
 
+/-- Whether the ordinary iteration guard skips this level: Kernel
+`IterationNotValidVisitor.getIterationLevels` leaves out a level whose group repeats exactly twice and
+declares an index field, on A12 models, so a negative read there needs no positive guard; a level
+nested in a judged one stays skipped while its parent is judged
+([capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04)
+rows `e01`–`e11`, `g04`). H models, whose two-row levels need no index field, are not modelled. -/
+def FlatModel.iterationGuardSkips (model : FlatModel) (level : RepeatableLevel) : Bool :=
+  (model.repeatableGroupAtLevel? level).any fun group =>
+    group.repeatability == some 2 && group.indexField.isSome
+
 namespace ValidationCondition
-
-private def hostConvertedLiteralValue? :
-    AuthoredNumericExpr Atom → Option Int
-  | .literal literal => literal.iterationHostInt32?
-  | _ => none
-
-/-- Apply the source-closed host-converted literal partition after an exact operand-shape recognizer supplies its model-owned scope. -/
-private def orderedNumericScopedLiteralGuardAt
-    (scopeOf :
-      AuthoredNumericExpr (OrderedNumericValidationAtom model) →
-        Option (List RepeatableLevel))
-    (level : RepeatableLevel)
-    (comparison : OrderedNumericComparison model) :
-    Option IterationGuardStatus :=
-  let classify scopedExpr literalExpr := do
-    let scope ← scopeOf scopedExpr
-    let literal ← hostConvertedLiteralValue? literalExpr
-    some (comparison.op.literalIterationGuard literal [scope.contains level])
-  match classify comparison.left comparison.right with
-  | some status => some status
-  | none => classify comparison.right comparison.left
-
-private def orderedNumericDirectFieldLiteralGuardAt
-    (level : RepeatableLevel)
-    (comparison : OrderedNumericComparison model) :
-    Option IterationGuardStatus :=
-  orderedNumericScopedLiteralGuardAt
-    (directOrdinaryZeroSensitiveScope? model) level comparison
-
-/-- Collect only direct Number references from one operation-list body without flattening away their model-owned scopes. Specialized entity-list atoms retain their separate packet. -/
-private def directOrdinaryNumberReferenceScopes?
-    (model : FlatModel) :
-    AuthoredNumericExpr (OrderedNumericValidationAtom model) →
-      Option (List (List RepeatableLevel))
-  | expression@(.atom (.ordinary (.field _))) => do
-      let scope ← directOrdinaryZeroSensitiveScope? model expression
-      pure [scope]
-  | .literal _ => some []
-  | .group body | .abs body | .extremumCall _ body
-  | .round _ _ body =>
-      directOrdinaryNumberReferenceScopes? model body
-  | .binary _ left right | .power left right | .extremum _ left right => do
-      let leftScopes ← directOrdinaryNumberReferenceScopes? model left
-      let rightScopes ← directOrdinaryNumberReferenceScopes? model right
-      pure (leftScopes ++ rightScopes)
-  | .atom _ => none
-
-private inductive LevelReferenceShape where
-  | none
-  | allIterating
-  | mixed
-
-private def levelReferenceShapeAt (level : RepeatableLevel)
-    (scopes : List (List RepeatableLevel)) : LevelReferenceShape :=
-  let iterating := scopes.map (·.contains level)
-  if iterating.any id then
-    if iterating.all id then .allIterating else .mixed
-  else
-    .none
-
-/-- Direct-field `Abs`, rounding, and Min/Max are operation-list consumers of the same per-level reference classifier. -/
-private def directNumberWrapperReferenceScopes?
-    (model : FlatModel) :
-    AuthoredNumericExpr (OrderedNumericValidationAtom model) →
-      Option (List (List RepeatableLevel))
-  | .group body => directNumberWrapperReferenceScopes? model body
-  | .abs body | .round _ _ body | .extremumCall _ body =>
-      directOrdinaryNumberReferenceScopes? model body
-  | _ => none
-
-private def orderedNumericDirectWrapperLiteralGuardAt
-    (level : RepeatableLevel)
-    (comparison : OrderedNumericComparison model) :
-    Option IterationGuardStatus :=
-  let classify wrapperExpr literalExpr := do
-    let scopes ← directNumberWrapperReferenceScopes? model wrapperExpr
-    match literalExpr with
-    | .literal _ =>
-        match levelReferenceShapeAt level scopes with
-        | .none => some .noReference
-        | .mixed => some .unguarded
-        | .allIterating =>
-            let literal ← hostConvertedLiteralValue? literalExpr
-            some (comparison.op.literalIterationGuard literal
-              (scopes.map (·.contains level)) true)
-    | _ => none
-  match classify comparison.left comparison.right with
-  | some status => some status
-  | none => classify comparison.right comparison.left
 
 /-- A selected entity still references its enclosing parent and dynamic key scopes. The selected level itself is supplied by lookup (`SemanticIndex.bindingScopes`); the Kernel's `IterationNotValidVisitor.isIteration(IEntityId)` also follows the key's iteration. -/
 private def selectedEntityGuardScope
@@ -150,35 +71,6 @@ private def productReferenceScopes :
       source.right.source.bindingScopes.flatten]
   | .row source => [source.left.source.bindingScope, source.right.source.bindingScope]
 
-private structure NumericEntityGuardShape where
-  referenceScopes : List (List RepeatableLevel)
-  zeroSensitive : Bool
-  positiveSensitive : Bool
-  rejectsMixedReferences : Bool
-
-/-- The source visitor gives Number entity operations two independent static sensitivities plus an operator-specific rejection of mixed references. The Kernel visitor excludes `SumOfProducts` from its mixed-reference rejection, while preserving its zero sensitivity. -/
-private def numericEntityGuardShape? :
-    OrderedNumericValidationAtom model → Option NumericEntityGuardShape
-  | .firstFilled source =>
-      some ⟨numberEntityReferenceScopes source, true, false, true⟩
-  | .valueCount _ source =>
-      some ⟨numberEntityReferenceScopes source, true, true, true⟩
-  | .aggregate op source =>
-      let scopes := numberEntityReferenceScopes source
-      some (match op with
-        | .sum | .minimum | .maximum => ⟨scopes, true, false, true⟩
-        | .distinctCount => ⟨scopes, false, true, true⟩)
-  | .sumOfProducts source =>
-      some ⟨productReferenceScopes source, true, false, false⟩
-  | .tokenValueCount source =>
-      some ⟨tokenEntityReferenceScopes source.source, true, true, true⟩
-  | .booleanValueCount source =>
-      some ⟨booleanValueCountReferenceScopes source, true, true, true⟩
-  -- Group counts reference groups; the remaining families have no classifier here.
-  -- Their existing assembly boundary, rather than this entity-list classifier, owns admission.
-  | .indexed _ | .indexedString _ | .temporalExpression _ | .ordinary _ | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
-  | .temporalDistinctCount _ => none
-
 /-- Whether a count compared with a positive literal leaves its iteration unguarded: an upper bound
 or an inequality, read from the count's side. -/
 def positiveCountThresholdIsUnguarded
@@ -194,56 +86,164 @@ def positiveCountThresholdIsUnguarded
         | .greater | .greaterEqual | .notEqual => true
         | .equal | .less | .lessEqual => false
 
-private def orderedNumericPlainStarLiteralGuardAt
-    (level : RepeatableLevel)
-    (comparison : OrderedNumericComparison model) :
-    Option IterationGuardStatus :=
-  let classify entityExpr literalExpr entityOnLeft := do
-    let atom ← match entityExpr with
-      | .atom atom => some atom
-      | _ => none
-    let shape ← numericEntityGuardShape? atom
-    match literalExpr with
-    | .literal _ =>
-        match levelReferenceShapeAt level shape.referenceScopes with
-        | .none => some .noReference
-        | .mixed => some (if shape.rejectsMixedReferences then .unguarded else .guarded)
-        | .allIterating =>
-            let literal ← hostConvertedLiteralValue? literalExpr
-            if (shape.zeroSensitive && literal == 0 &&
-                  directEmptyZeroIsUnguarded comparison.op) ||
-                (shape.positiveSensitive && 0 < literal &&
-                  positiveCountThresholdIsUnguarded
-                    entityOnLeft comparison.op) then
-              some .unguarded
-            else
-              some .guarded
-    | _ => none
-  match classify comparison.left comparison.right true with
-  | some status => some status
-  | none => classify comparison.right comparison.left false
+/-- What the Kernel's comparison visitor reads off one operand's top operation
+(`IterationNotValidVisitor.visit(IComparisonCondition)`): a count lets its leaf fire on an unfilled
+row below a positive constant, a value operation beside a zero, and an operation mixing iterated
+and other reads beside any number constant. The Kernel's parse tree keeps no bracket, so grouping is
+transparent ([capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04)
+rows `u07`, `u27`, `u30`). -/
+private structure ComparisonOperandProfile where
+  /-- Each entity reference's binding scope, or `none` where this carrier keeps no per-reference
+  scope; a reference iterates exactly the levels its scope contains. -/
+  references : Option (List (List RepeatableLevel)) := some []
+  belowPositive : Bool := false
+  equalsZero : Bool := false
+  mixedAgainstConstant : Bool := false
+  /-- The scope of each `CurrentRepetition` read, which refuses at every level it iterates. -/
+  currentRepetitions : List (List RepeatableLevel) := []
+  /-- The host-converted value when the operand is a number constant, and `some none` for a
+  constant outside the checked decimal shape, whose conversion is not modelled. -/
+  constant? : Option (Option Int) := none
 
-/-- Preserve the source visitor's top-level parse-tree distinction: ordinary binary arithmetic and power are composite operations, so the direct field/list-versus-constant branches do not classify them. Grouping retains the underlying operation root. -/
-private def isTopLevelCompositeNumericOperation :
-    AuthoredNumericExpr Atom → Bool
-  | .group body => isTopLevelCompositeNumericOperation body
-  | .binary _ _ _ | .power _ _ => true
-  | .atom _ | .literal _ | .abs _ | .extremum _ _ _
-  | .extremumCall _ _ | .round _ _ _ => false
+private def ComparisonOperandProfile.combine (profiles : List ComparisonOperandProfile) :
+    ComparisonOperandProfile :=
+  { references := profiles.foldr (fun profile all => do pure ((← profile.references) ++ (← all))) (some [])
+    currentRepetitions := profiles.flatMap (·.currentRepetitions) }
 
-private def orderedNumericCompositeGuardAt
-    (level : RepeatableLevel)
-    (comparison : OrderedNumericComparison model) :
-    Option IterationGuardStatus :=
-  if isTopLevelCompositeNumericOperation comparison.left ||
-      isTopLevelCompositeNumericOperation comparison.right then
-    match orderedNumericComparisonIterationScope comparison with
-    | .ok (some scope) =>
-        some (if scope.contains level then .guarded else .noReference)
-    | .ok none => some .noReference
-    | .error _ => none
-  else
-    none
+private def ordinaryAtomProfile (model : FlatModel) : NumericValidationAtom → ComparisonOperandProfile
+  | .boundCurrentRepetition repetition =>
+      { references := some [repetition.scope], currentRepetitions := [repetition.scope] }
+  | .filledGroupCount groups =>
+      { references := some (groups.map (·.boundRepeatableScope)), belowPositive := true,
+        mixedAgainstConstant := true }
+  | .aggregate op _ =>
+      { references := none, belowPositive := op == .distinctCount,
+        equalsZero := op != .distinctCount, mixedAgainstConstant := true }
+  | source =>
+      match ordinaryNumericAtomFieldDeclarations? model source with
+      | some declarations =>
+          { references := some (declarations.map (·.repeatableScope)), equalsZero := true }
+      | none => {}
+
+private def entityListProfile (references : List (List RepeatableLevel))
+    (belowPositive equalsZero mixedAgainstConstant : Bool) : ComparisonOperandProfile :=
+  { references := some references, belowPositive, equalsZero, mixedAgainstConstant }
+
+private def atomProfile : OrderedNumericValidationAtom model → ComparisonOperandProfile
+  | .ordinary source => ordinaryAtomProfile model source
+  -- A selected read and a temporal operation are value operations whose per-reference scopes this
+  -- carrier does not keep, so a check that needs them stays unjudged.
+  | .indexed _ | .indexedString _ | .temporalExpression _ => { references := none, equalsZero := true }
+  | .firstFilled source => entityListProfile (numberEntityReferenceScopes source) false true true
+  | .valueCount _ source => entityListProfile (numberEntityReferenceScopes source) true true true
+  | .tokenValueCount source => entityListProfile (tokenEntityReferenceScopes source.source) true true true
+  | .booleanValueCount source => entityListProfile (booleanValueCountReferenceScopes source) true true true
+  | .aggregate op source =>
+      entityListProfile (numberEntityReferenceScopes source)
+        (op == .distinctCount) (op != .distinctCount) true
+  -- The Kernel exempts `SumOfProducts` from the mixed-read refusal and keeps its zero refusal.
+  | .sumOfProducts source => entityListProfile (productReferenceScopes source) false true false
+  | .filledGroupCountMixed operands => entityListProfile (operands.map (·.bindingScope)) true false true
+  | .filledFieldCount source => entityListProfile (source.operands.map (·.bindingScope)) true false true
+  | .tokenDistinctCount source => entityListProfile (tokenEntityReferenceScopes source) true false true
+  | .temporalDistinctCount _ => { references := none, belowPositive := true, mixedAgainstConstant := true }
+
+/-- An operand list (`Min`/`Max`, `Abs`, rounding) is a value operation over every read beneath it;
+arithmetic is none of the visitor's operation kinds, so it carries no check of its own. -/
+private def operandProfile : AuthoredNumericExpr (OrderedNumericValidationAtom model) →
+    ComparisonOperandProfile
+  | .atom atom => atomProfile atom
+  | .literal literal => { constant? := some literal.iterationHostInt32? }
+  | .group body => operandProfile body
+  | .abs body | .round _ _ body | .extremumCall _ body =>
+      { ComparisonOperandProfile.combine [operandProfile body] with
+        equalsZero := true, mixedAgainstConstant := true }
+  | .extremum _ left right =>
+      { ComparisonOperandProfile.combine [operandProfile left, operandProfile right] with
+        equalsZero := true, mixedAgainstConstant := true }
+  | .binary _ left right | .power left right =>
+      ComparisonOperandProfile.combine [operandProfile left, operandProfile right]
+
+/-- Whether every read of an operand iterates `level`; `none` where the operand keeps no
+per-reference scopes. -/
+private def ComparisonOperandProfile.allIterate (profile : ComparisonOperandProfile)
+    (level : RepeatableLevel) : Option Bool :=
+  profile.references.map fun scopes => scopes.any (·.contains level) && scopes.all (·.contains level)
+
+/-- Whether an operand's reads mix ones iterating `level` with others; `none` as above. -/
+private def ComparisonOperandProfile.mixesIterated (profile : ComparisonOperandProfile)
+    (level : RepeatableLevel) : Option Bool :=
+  profile.references.map fun scopes => scopes.any (·.contains level) && scopes.any (!·.contains level)
+
+/-- `some true` when one of the visitor's checks lets the comparison fire on an unfilled row, `none`
+when a check depends on a scope or constant this carrier does not keep. A non-constant operand
+reads as no constant, as the Kernel reads it as `-1`. -/
+private def comparisonFiresUnfilled (level : RepeatableLevel) (op : NumericValidationOp)
+    (left right : ComparisonOperandProfile) : Option Bool :=
+  let belowPositive (side other : ComparisonOperandProfile) (sideOnLeft : Bool) : Option Bool :=
+    if !side.belowPositive then some false else
+      match other.constant? with
+      | some (some value) =>
+          if 0 < value && positiveCountThresholdIsUnguarded sideOnLeft op then side.allIterate level
+          else some false
+      | some none => none
+      | none => some false
+  -- The visitor reads the zero check off the first value operand only.
+  let equalsZero : Option Bool :=
+    let pair := if left.equalsZero then some (left, right) else if right.equalsZero then some (right, left) else none
+    match pair, op.zeroSensitiveIteration with
+    | some (side, other), true =>
+        match other.constant? with
+        | some (some 0) => side.allIterate level
+        | some (some _) | none => some false
+        | some none => none
+    | _, _ => some false
+  let mixedAgainstConstant (side other : ComparisonOperandProfile) : Option Bool :=
+    if side.mixedAgainstConstant && other.constant?.isSome then side.mixesIterated level else some false
+  let checks := [belowPositive left right true, belowPositive right left false, equalsZero,
+    mixedAgainstConstant left right, mixedAgainstConstant right left]
+  if checks.any (· == some true) then some true
+  else if checks.any (·.isNone) then none
+  else some false
+
+private def orderedNumericGuardAt (level : RepeatableLevel)
+    (comparison : OrderedNumericComparison model) : IterationGuardStatus :=
+  match orderedNumericComparisonIterationScope comparison with
+  | .error _ => .unclassified
+  | .ok none => .noReference
+  | .ok (some scope) =>
+      let left := operandProfile comparison.left
+      let right := operandProfile comparison.right
+      -- The visitor's own reference test skips filter bodies (`AnalyseService.isIteration` with
+      -- `useFilterCondition = false`), so a `$` read inside a `Having` lists the level without
+      -- referencing it; the per-reference scopes leave those reads out. A carrier keeping no such
+      -- scopes falls back to the whole iteration scope, which still counts a `$` read of its own.
+      let references := match (ComparisonOperandProfile.combine [left, right]).references with
+        | some scopes => scopes.any (·.contains level)
+        | none => scope.contains level
+      if !references then .noReference else
+        if (left.currentRepetitions ++ right.currentRepetitions).any (·.contains level) then .unguarded
+        else match comparisonFiresUnfilled level comparison.op left right with
+          | some true => .unguarded
+          | some false => .guarded
+          | none => .unclassified
+
+/-- Kernel `IterationNotValidVisitor.visit(IEntityListAndValueListCondition)`: `No…` refuses whenever
+it iterates, `NotAll…` when a subject reads outside the iteration, and `AtLeastOne…` when a subject
+and a value also do, a literal value counting as one. -/
+private def valueListGuardAt (level : RepeatableLevel) (source : CheckedValueListCondition model) :
+    IterationGuardStatus :=
+  let (subjects, values, literals) := match source with
+    | .number source => (numberEntityReferenceScopes source.fields, numberEntityReferenceScopes source.values, false)
+    | .token source => (tokenEntityReferenceScopes source.fields, tokenEntityReferenceScopes source.values, false)
+    | .literals source => (tokenEntityReferenceScopes source.fields, [], true)
+  let outside (scopes : List (List RepeatableLevel)) := scopes.any (!·.contains level)
+  -- As for a comparison, a `$` read inside a filter does not reference the level.
+  if !(subjects ++ values).flatten.contains level then .noReference
+  else match source.quantifier with
+    | .no => .unguarded
+    | .notAll => if outside subjects then .unguarded else .guarded
+    | .atLeastOne => if outside subjects && (outside values || literals) then .unguarded else .guarded
 
 def ResolvedGroupListOperands.iterationGuardAt
     (operator : GroupFillQuantifier)
@@ -394,33 +394,17 @@ private def ValidationConditionLeaf.iterationGuardAt
   | .groupList operator operands =>
       ResolvedGroupListOperands.iterationGuardAt operator operands level
   | .fieldFill operator source => fieldFillIterationGuardAt level operator source
+  -- A String, token or first-filled comparison has no number constant or count for the visitor's
+  -- comparison checks to read, so it guards every level it iterates.
   | .stringExpression comparison =>
-      if comparison.bindingScopes.any (·.contains level) then .unclassified else .noReference
+      if comparison.bindingScopes.any (·.contains level) then .guarded else .noReference
   | .firstFilledComparison comparison =>
-      if comparison.bindingScopes.flatten.contains level then .unclassified else .noReference
+      if comparison.bindingScopes.flatten.contains level then .guarded else .noReference
   | .tokenComparison comparison =>
-      if comparison.bindingScopes.flatten.contains level then .unclassified else .noReference
-  | .valueList source =>
-      if source.bindingScopes.flatten.contains level then .unclassified else .noReference
+      if comparison.bindingScopes.flatten.contains level then .guarded else .noReference
+  | .valueList source => valueListGuardAt level source
   | .valuesNotUnique source => uniquenessIterationGuardAt level source
-  | .orderedNumeric _ comparison =>
-      match orderedNumericCompositeGuardAt level comparison with
-      | some status => status
-      | none =>
-          match orderedNumericPlainStarLiteralGuardAt level comparison with
-          | some status => status
-          | none =>
-              match orderedNumericDirectWrapperLiteralGuardAt level comparison with
-              | some status => status
-              | none =>
-                  match orderedNumericDirectFieldLiteralGuardAt level comparison with
-                  | some status => status
-                  | none =>
-                      match orderedNumericComparisonIterationScope comparison with
-                      | .ok (some scope) =>
-                          if scope.contains level then .unclassified else .noReference
-                      | .ok none => .noReference
-                      | .error _ => .unclassified
+  | .orderedNumeric _ comparison => orderedNumericGuardAt level comparison
   | .groupPresence operator reference =>
       if (model.repeatableScopeForGroupPath reference.path).contains level then
         match operator with
@@ -465,12 +449,13 @@ private def iterationLegalityForLevels
       | .unguarded => .invalid level
       | .noReference | .unclassified => .insufficient level
 
-/-- Analyze the levels already derived from the complete checked condition, outermost first. Scope incompatibility remains the existing separate assembly error. -/
+/-- Analyze the levels already derived from the complete checked condition, outermost first, except the
+ones the guard skips. Scope incompatibility remains the existing separate assembly error. -/
 def iterationLegality (condition : ValidationCondition model) :
     Except RuleIterationScopeError IterationLegality := do
   match ← condition.ordinaryIterationScope with
   | none => pure .legal
-  | some scope => pure (iterationLegalityForLevels condition scope)
+  | some scope => pure (iterationLegalityForLevels condition (scope.filter (!model.iterationGuardSkips ·)))
 
 /-- Ordinary repeatable Number declarations retained by one ordered expression in authored order. -/
 private def ordinaryNumericAtomRepeatableFields

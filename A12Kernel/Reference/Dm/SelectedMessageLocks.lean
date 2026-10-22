@@ -594,8 +594,10 @@ example : [false, true].all (fun partialCall =>
       "Rows/N" partialCall ==
       some ["Form/Parents/Rows/N", "Form/Parents[2]/Rows/N"]) = true := by native_decide
 
+-- The unkeyed read makes `Rows` iterate, where the off-level `Anchor` disjunct leaves the `Or`
+-- unguarded; the filled index field guards it as a conjunct.
 example : [false, true].all (fun partialCall =>
-    selectedErrorMessages "FieldFilled(Anchor) Or [Rows/N] > 0 Or [Rows/N For Key] > 0"
+    selectedErrorMessages "FieldFilled(Rows/Id) And (FieldFilled(Anchor) Or [Rows/N] > 0 Or [Rows/N For Key] > 0)"
       "Rows/N" partialCall ==
       some ["Form/Parents/Rows/N", "Form/Parents/Rows[2]/N",
         "Form/Parents[2]/Rows/N", "Form/Parents[2]/Rows[2]/N"]) = true := by native_decide

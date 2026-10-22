@@ -674,7 +674,12 @@ private def boundListVerdicts (kind : FieldKind) (operator : String) (literal : 
   let rule ← (checkRule dm .english {
     group := ruleGroup, name := "BoundList", errorCode := "BOUND_LIST"
     errorEntityRelPath := if outsideError then "/Form/Out" else "../" ++ rowPrefix ++ "Weight"
-    condition := operator ++ "(" ++ subject ++ " In " ++ members ++ ")" ++
+    -- The filled error field guards the row level, where a bare `No…` quantifier and one whose
+    -- subject reads outside the row are refused
+    -- ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04)
+    -- rows `u19`–`u24`), without changing any verdict.
+    condition := "FieldFilled(" ++ rowPrefix ++ "Weight) And " ++
+      operator ++ "(" ++ subject ++ " In " ++ members ++ ")" ++
       (if composed then " And FieldFilled(Key)" else ""), severity := "ERROR" }).toOption
   if let some scope := partialScope then
     match ← (rule.evalOrdinaryRepeatablePartial document scope).toOption with

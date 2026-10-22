@@ -494,15 +494,18 @@ theorem validationConditionLeaf_repetitionNotUnique_partialResult
         | none => pure .unknown) := by
   rfl
 
-/-- At a singleton ordinary scope, one source-classified unguarded condition becomes the exact static rejection level. -/
+/-- At a singleton ordinary scope whose level the guard judges, one source-classified unguarded condition becomes the exact static rejection level. -/
 theorem validationCondition_iterationLegality_singleton_unguarded
     (condition : ValidationCondition model) (level : RepeatableLevel)
     (scope :
       condition.ordinaryIterationScope = .ok (some [level]))
+    (judged : model.iterationGuardSkips level = false)
     (unguarded :
       condition.iterationGuardStatusAt level = .unguarded) :
     condition.iterationLegality = .ok (.invalid level) := by
   rw [ValidationCondition.iterationLegality, scope]
+  simp only [bind, Except.bind, pure, Except.pure, List.filter_cons, judged, Bool.not_false,
+    ite_true, List.filter_nil]
   change Except.ok
     (match condition.iterationGuardStatusAt level with
     | .guarded => ValidationCondition.IterationLegality.legal
@@ -513,15 +516,18 @@ theorem validationCondition_iterationLegality_singleton_unguarded
       .ok (ValidationCondition.IterationLegality.invalid level)
   rw [unguarded]
 
-/-- The same singleton route is legal when its complete tree supplies a source-classified guard at that level. -/
+/-- The same judged singleton route is legal when its complete tree supplies a source-classified guard at that level. -/
 theorem validationCondition_iterationLegality_singleton_guarded
     (condition : ValidationCondition model) (level : RepeatableLevel)
     (scope :
       condition.ordinaryIterationScope = .ok (some [level]))
+    (judged : model.iterationGuardSkips level = false)
     (guarded :
       condition.iterationGuardStatusAt level = .guarded) :
     condition.iterationLegality = .ok .legal := by
   rw [ValidationCondition.iterationLegality, scope]
+  simp only [bind, Except.bind, pure, Except.pure, List.filter_cons, judged, Bool.not_false,
+    ite_true, List.filter_nil]
   change Except.ok
     (match condition.iterationGuardStatusAt level with
     | .guarded => ValidationCondition.IterationLegality.legal
