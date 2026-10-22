@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Parts/Count", "group": "/Order", "condition": "FieldFilled(Lines/Parts/Count) And NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)", "code": "C1", "name": "C1", "messages": [{"locale": "en_US", "text": "probe"}]}

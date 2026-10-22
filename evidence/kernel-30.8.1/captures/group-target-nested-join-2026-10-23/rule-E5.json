@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Parts/Count", "group": "/Order", "condition": "GroupFilled(Lines/Parts) And FieldFilled(Lines/Parts/Count)", "code": "E5", "name": "E5", "messages": [{"locale": "en_US", "text": "probe"}]}

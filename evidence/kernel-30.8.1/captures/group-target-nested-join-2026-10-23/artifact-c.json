@@ -1,0 +1,345 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "Order23c_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-23T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "seeded",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CountComp",
+       "field": "Order/Lines/Parts/Count",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines/LineNo",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "Order/Lines/LineNo",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ]
+      },
+      {
+       "code": "CountComp",
+       "field": "Order/Lines[3]/Parts/Count",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Picks[-5]/LineNo",
+        "/Order[1]/Picks[-5]/Ref",
+        "Order/Lines[3]/LineNo",
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Picks[-5]/LineNo",
+        "/Order[1]/Picks[-5]/Ref",
+        "Order/Lines[3]/LineNo",
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Parts/PartNo"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Order/Lines/Parts/Count",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Order/Lines/Parts[2]/Count",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Order/Lines/Parts[3]/Count",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Order/Lines[2]/Parts/Count",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Order/Lines[3]/Parts/Count",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Order/Lines[3]/Price",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CountComp",
+       "field": "Order/Lines/Parts/Count",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines/LineNo",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "Order/Lines/LineNo",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ]
+      },
+      {
+       "code": "CountComp",
+       "field": "Order/Lines[3]/Parts/Count",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Order[1]/Picks[-5]/LineNo",
+        "/Order[1]/Picks[-5]/Ref",
+        "Order/Lines[3]/LineNo",
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Parts/PartNo"
+       ],
+       "fillToFix": [
+        "/Order[1]/Picks[-5]/LineNo",
+        "/Order[1]/Picks[-5]/Ref",
+        "Order/Lines[3]/LineNo",
+        "Order/Lines[3]/Parts/Count",
+        "Order/Lines[3]/Parts/PartNo"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Order/Lines/Parts/Count",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Order/Lines/Parts[2]/Count",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Order/Lines/Parts[3]/Count",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Order/Lines[2]/Parts/Count",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Order/Lines[3]/Parts/Count",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Order/Lines[3]/Price",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "mixed",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CountComp",
+       "field": "Order/Lines/Parts/Count",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines/LineNo",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "Order/Lines/LineNo",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Order/Lines/Parts/Count",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Order/Lines/Parts[2]/Count",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Order/Lines/Parts[3]/Count",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Order/Lines[2]/Parts/Count",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Order/Lines[3]/Price",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CountComp",
+       "field": "Order/Lines/Parts/Count",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Lines/LineNo",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "Order/Lines/LineNo",
+        "Order/Lines/Parts/Count",
+        "Order/Lines/Parts/PartNo",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Order/Lines/Parts/Count",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Order/Lines/Parts[2]/Count",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Order/Lines/Parts[3]/Count",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Order/Lines[2]/Parts/Count",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Order/Lines[3]/Price",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [],
+     "computations": {
+      "outcomes": [],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [],
+     "computations": {
+      "outcomes": [],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  }
+ ]
+}

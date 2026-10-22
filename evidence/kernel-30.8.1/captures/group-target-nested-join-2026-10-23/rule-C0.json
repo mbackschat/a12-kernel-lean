@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Sku", "group": "/Order", "condition": "FieldFilled(Lines/Sku) And NoFieldFilled(Lines/Code, Picks/Ref)", "code": "C0", "name": "C0", "messages": [{"locale": "en_US", "text": "probe"}]}
