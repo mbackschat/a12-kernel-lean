@@ -372,6 +372,15 @@ example :
     labels (enumeration [("A", [("fr_FR", "Alpha")]), ("B", [])]) = [] := by
   native_decide
 
+/- Law 7's blank text is Java's `Character.isWhitespace`: an empty or U+2003 label is blank and a
+   U+00A0 label is not (a12-dmkits letter of 2026-10-21, §1.13). -/
+example :
+    ["", "\u2003"].all (fun text =>
+      labels (enumeration [("A", [("en_US", "Alpha")]), ("B", [("en_US", text)])]) ==
+        ["MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES"]) ∧
+    labels (enumeration [("A", [("en_US", "Alpha")]), ("B", [("en_US", "\u00A0")])]) = [] := by
+  native_decide
+
 /- Law 7, a carrying value needs a non-blank text in every declared locale, once per field however
    many locales fall short; a value that does not carry is not asked, and partial labelling beside a
    second locale draws both classes (ed-blank, ed-bi, ed-tri, ed-half, ec-2loc-partial, ec-2loc-de,

@@ -172,6 +172,7 @@ import A12Kernel.Reference.Dm.DateLiteralLocks
 import A12Kernel.Reference.Dm.ConstructedDateValidityLocks
 import A12Kernel.Reference.Dm.BooleanComparisonLocks
 import A12Kernel.Elaboration.StringContext
+import A12Kernel.Reference.Dm.LoneSurrogate
 
 /-! # A12Kernel.ReplayMain — replay retained `kernelProbe` requests through Lean
 
@@ -410,7 +411,7 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
   let directory := requestPath.parent.getD "."
   let some modelName := (request.getObjValAs? String "model").toOption
     | line "-" "-" "-" "tier2" "Request\tno model"
-  let model ← match readModel (← readJson (directory / modelName)) with
+  let model ← match (parseModelJson (← IO.FS.readFile (directory / modelName))).bind (readModel ·) with
     | .ok model => pure model
     | .error reason => do line "-" "-" "-" "tier2" s!"Model\t{reason}"; return
   -- A declaration the reader could not map leaves every rule and computation reading it

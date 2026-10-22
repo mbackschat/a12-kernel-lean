@@ -38,9 +38,12 @@ example :
        (fun (token, expected) =>
          (parseDocumentJson token).toOption == some (.str expected)) := by native_decide
 
+/- An unquoted cell that is no JSON number leaves the document unread, beside the three tokens the
+a12-dmkits letter of 2026-10-21 (§1.14) measured read. -/
 example :
-    ["01", "1.", "1e", "1e+-3", "+1", "{1:2}", "[1,]", "[1 2]", "1e100001"].all
-      (fun text => !(parseDocumentJson text).isOk) := by native_decide
+    ["01", "1.", "1e", "1e+-3", "+1", "{1:2}", "[1,]", "[1 2]", "1e100001", "abc", "True", "NaN",
+      "0x10", ".5"].all (fun text => !(parseDocumentJson text).isOk) ∧
+    ["-0", "1E1", "5"].all (fun text => (parseDocumentJson text).isOk) := by native_decide
 
 /- Only an object of root groups is a document: well-formed JSON of any other shape is refused by
 the reader, not read as an empty document. -/

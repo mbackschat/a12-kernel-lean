@@ -1,12 +1,15 @@
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.LowerCore
+import A12Kernel.Reference.Dm.LoneSurrogate
 
 /-! # How the DM-JSON readers bind non-text members, and how a date constant is typed
 
-Each expectation is a Kernel row the a12-dmkits handbacks of 2026-10-18 and 2026-10-21 retain
-([October 18](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18),
-[October 21](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21)). A model the Kernel
-does not build is a read error or a refused declaration here; neither is a Kernel class. -/
+Each expectation is a Kernel row the a12-dmkits handbacks of 2026-10-18, 2026-10-21 and 2026-10-22
+retain ([October 18](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18),
+[October 21](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21),
+[October 22](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-22)). A model the Kernel
+does not build is a read error or a refused declaration here; neither is a Kernel class. Each model is
+written as text and parsed as the readers parse a model file. -/
 
 namespace A12Kernel.Dm.MemberBindingLocks
 
@@ -15,7 +18,7 @@ open Lean A12Kernel
 private def model (fieldMembers typeBody : String) (typeName : String := "StringType")
     (groupMembers : String := "") (info : String := "{}") (config : String := "{}")
     (definitions : String := "[]") : Json :=
-  (Json.parse s!"\{\"content\":\{\"modelInfo\":{info},\"modelConfig\":{config},\"typeDefinitions\":{definitions},\"modelRoot\":\{\"rootGroups\":[\{\"type\":\"Group\",\"name\":\"Form\",\"Group\":\{\"elements\":[\{\"type\":\"Group\",\"name\":\"Rows\",\"Group\":\{{groupMembers}\"elements\":[\{\"type\":\"Field\",\"name\":\"Value\",\"Field\":\{{fieldMembers}\"fieldType\":\{\"type\":\"{typeName}\",\"{typeName}\":{typeBody}}}}]}}]}}]}}}").toOption.getD .null
+  (parseModelJson s!"\{\"content\":\{\"modelInfo\":{info},\"modelConfig\":{config},\"typeDefinitions\":{definitions},\"modelRoot\":\{\"rootGroups\":[\{\"type\":\"Group\",\"name\":\"Form\",\"Group\":\{\"elements\":[\{\"type\":\"Group\",\"name\":\"Rows\",\"Group\":\{{groupMembers}\"elements\":[\{\"type\":\"Field\",\"name\":\"Value\",\"Field\":\{{fieldMembers}\"fieldType\":\{\"type\":\"{typeName}\",\"{typeName}\":{typeBody}}}}]}}]}}]}}}").toOption.getD .null
 
 /-- The read model, or `none` when the read fails or refuses a declaration. -/
 private def built? (json : Json) : Option DmModel :=
@@ -45,6 +48,24 @@ example :
       (rawString · == some false) ∧
     ["\"tRUE\"", "\"FaLsE\"", "\"NULL\"", "\"yes\"", "\"1\"", "\"\\u00A0true\"", "\"\\u2003true\"", "0.5",
       "1.5", "1.0", "{}", "[]"].all (rawString · == none) := by
+  native_decide
+
+/-- A boolean member reads a number token by its kind: an integer is set unless zero, `-0` clearing, and
+a fraction or an exponent is refused even where it is worth one or zero. -/
+example :
+    rawString "-0" = some false ∧
+    ["1e0", "1E+0", "0e0", "1.0e1", "0.1e1", "10e-1", "1e1", "-0.0"].all (rawString · == none) ∧
+    field? (model "" "{\"positivesOnly\":1e0}" "NumberType") = none ∧
+    field? (model "" "{\"youngerThan1900Check\":1E+0}" "DateType") = none ∧
+    field? (model "\"global\":1e0," "{}") = none ∧
+    (field? (model "\"global\":-0," "{}")).map (·.isGlobal) = some false ∧
+    ["1", "0", "-0"].all (fun written =>
+      (built? (model "" "{}" (info := s!"\{\"immutable\":{written},\"metaData\":{written}}"))).isSome &&
+        (built? (model "" "{}" (config := s!"\{\"fieldRefByShortNameAllowed\":{written}}"))).isSome) ∧
+    ["1e0", "0e0", "1.0e1", "0.1e1", "1.0", "1e1", "10e-1", "-0.0"].all (fun written =>
+      (built? (model "" "{}" (info := s!"\{\"immutable\":{written}}"))).isNone &&
+        (built? (model "" "{}" (info := s!"\{\"metaData\":{written}}"))).isNone &&
+        (built? (model "" "{}" (config := s!"\{\"fieldRefByShortNameAllowed\":{written}}"))).isNone) := by
   native_decide
 
 private def signed? (written : String) : Option Bool :=
@@ -104,6 +125,31 @@ example :
       "-2147483649", "2147483647.5", "{}", "[2024]", "true"].all (baseYear? · == none) := by
   native_decide
 
+/-- An `int` member reads a number alike in its plain and its exponent spelling. -/
+example :
+    ["1e1", "10.0"].all (count? · == some (some 10)) ∧
+    ["1.0E9", "1000000000.0"].all (count? · == some (some 1000000000)) ∧
+    ["2147483647.0", "2.147483647E9"].all (count? · == some (some 2147483647)) ∧
+    ["3e10", "3.0E10", "2147483647.5", "2.1474836475E9", "-2147483648.5", "-2.1474836485E9",
+      "2147483648.0", "2.147483648E9", "-2147483649.0", "-2.147483649E9"].all (count? · == none) ∧
+    ["2147483647.0", "2.147483647E9"].all (baseYear? · == some (some 2147483647)) ∧
+    ["2147483647.5", "2.1474836475E9", "-2147483648.5", "-2.1474836485E9", "2147483648.0",
+      "2.147483648E9"].all (baseYear? · == none) := by
+  native_decide
+
+/- The respelling keeps each token's value and gives an exponent token a fraction digit; a string is
+untouched, and an exponent past the represented bound refuses the model before any power is taken, as
+an `int` read bounds its power by the mantissa's digits. -/
+example :
+    ((parseModelJson "[1e0,-0,1.5e-2,0E5,10E+2,\"1e0\"]").toOption ==
+      (Json.parse "[1.0,0,0.015,0.0,1000.0,\"1e0\"]").toOption) = true ∧
+    (parseModelJson "{\"a\":1e1000000000}").isOk = false ∧
+    (parseModelJson "{\"a\":1e-1000000000}").isOk = false ∧
+    (parseModelJson "[01e1]").isOk = false ∧ (parseModelJson "[1.e1]").isOk = false ∧
+    (intMember? (Json.mkObj [("k", .num { mantissa := 5, exponent := 1000000000 })]) "k").toOption =
+      some (some 0) := by
+  native_decide
+
 /-- The text `null` is no Number bound. -/
 example :
     (field? (model "" "{\"minValue\":\"null\"}" "NumberType")).map
@@ -117,11 +163,30 @@ private def booleanCell (stored : String) : String :=
   | .ok { raw := .rejected .booleanToken, .. } => "token"
   | _ => "other"
 
-/-- A Boolean cell is compared with Java's `equalsIgnoreCase`, which folds the long s onto `s`. -/
+/-- A Boolean cell is compared with Java's `equalsIgnoreCase`, which folds the long s onto `s`; the dotted
+capital I and the Kelvin sign fold onto letters neither word holds, so alone each is the long s's token
+class. -/
 example :
     ["true", "TRUE", "tRuE"].all (booleanCell · == "true") ∧
     ["fal\u017Fe", "FAL\u017FE"].all (booleanCell · == "false") ∧
-    booleanCell "\u017F" = "token" := by
+    ["\u017F", "\u0130", "\u212A"].all (booleanCell · == "token") := by
+  native_decide
+
+private def builtYear : FlatFieldDecl :=
+  { id := 0, groupPath := ["Form"], name := "Built",
+    policy := { kind := .temporal .date (TemporalComponents.ofFormat "yyyy") },
+    temporalTargetPolicy := some { format := "yyyy" } }
+
+/-- A stored year reads ASCII digits only: Arabic-Indic and fullwidth digits are a date-format error
+(2026-10-21 §1.14). -/
+example :
+    ["\u0661\u0669\u0666\u0663", "\uFF11\uFF19\uFF16\uFF13"].all (fun stored =>
+      match classifyStored { fields := [builtYear] } builtYear { field := 0, path := [] } stored with
+      | .ok { raw := .rejected .dateFormat, .. } => true
+      | _ => false) &&
+    (match classifyStored { fields := [builtYear] } builtYear { field := 0, path := [] } "1963" with
+      | .ok { raw := .parsed _, .. } => true
+      | _ => false) = true := by
   native_decide
 
 /-- A `DD.MM.YYYY` constant is real on the hybrid calendar: the ten cutover labels are text and a

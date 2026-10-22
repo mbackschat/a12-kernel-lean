@@ -1,5 +1,6 @@
 import Lean.Data.Json
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.LoneSurrogate
 
 /-! # Retained Number formal observations through the reader
 
@@ -70,7 +71,7 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
     let directory := (root / requestPath).parent.getD root
     let some modelName := (request.getObjValAs? String "model").toOption
       | throw (IO.userError s!"{requestPath}: no model")
-    let some model := (readModel (← readJson (directory / modelName))).toOption
+    let some model := ((parseModelJson (← IO.FS.readFile (directory / modelName))).bind (readModel ·)).toOption
       | throw (IO.userError s!"{requestPath}: unreadable model")
     let observed := ((← readJson (root / artifactPath)).getObjValAs? (Array Json) "rows").toOption.getD #[]
     let rows := (request.getObjValAs? (Array Json) "rows").toOption.getD #[]

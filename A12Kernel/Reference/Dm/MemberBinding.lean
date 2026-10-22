@@ -9,21 +9,102 @@ bind leaves no model at all: that is a read failure here, never a Kernel class. 
 non-text member measured, on every carrier the a12-dmkits handbacks of 2026-10-18 and 2026-10-21 name
 (`docs/sources/inbound-handbacks.md#src-inbound-2026-10-18`, `#src-inbound-2026-10-21`):
 
-* A primitive `boolean` reads a JSON boolean, an integer as set unless zero, and text after Java's
-  `String.trim` as exactly `true`, `True`, `TRUE`, `false`, `False` or `FALSE`. The empty text and the
-  text `null` are the member's default, as JSON `null` and absence are. A number written with a
-  fraction, any other text and a container are unbindable.
+* A primitive `boolean` reads a JSON boolean, an integer token as set unless zero, and text after
+  Java's `String.trim` as exactly `true`, `True`, `TRUE`, `false`, `False` or `FALSE`. The empty text
+  and the text `null` are the member's default, as JSON `null` and absence are. A number token with a
+  fraction or an exponent is unbindable whatever its value, `1e0` and `0.0` included, while `-0`
+  clears (2026-10-22 §1.2). Any other text and a container are unbindable.
 * An `int` member, a group count or the base year, reads text after `trim` through `Integer.parseInt`,
   whose digits are Java's BMP decimal digits, and a JSON number truncated toward zero when its value
-  lies within the `int` range. The empty text and the text `null` are no value. Anything else is
-  unbindable.
+  lies within the `int` range, in either spelling: `1e1` reads as `10.0` does (2026-10-22 §1.3). The
+  empty text and the text `null` are no value. Anything else is unbindable.
 
-Lean's JSON reader keeps a number's value, not its spelling, so `1e0` reads as the integer `1` while
-the peer reports it unbindable on a boolean; no Kernel row measures that spelling. -/
+Lean's JSON parser folds an exponent into the value, so `1e0` and `1` parse alike. The model-file
+parser (`parseModelJson`) therefore first rewrites every exponent token as its plain decimal spelling
+(`respellExponentTokens`), which keeps a fraction digit and with it the token's kind. -/
 
 namespace A12Kernel.Dm
 
 open Lean A12Kernel
+
+/-- The widest exponent `respellExponentTokens` writes out, as many zeros at most. A model carrying a wider one
+is refused as outside the represented profile: how the Kernel binds such a member is unmeasured. -/
+def modelNumberExponentBound : Nat := 100000
+
+/-- A strict JSON number token with an exponent, respelled in plain decimal with at least one fraction
+digit (`1e0` as `1.0`, `1.5e-2` as `0.015`); `none` for every other token, which stays as written. -/
+private def plainSpelling? (token : String) : Except String (Option String) :=
+  let (negative, rest) := match token.toList with
+    | '-' :: rest => (true, rest)
+    | rest => (false, rest)
+  let (integer, rest) := rest.span Char.isDigit
+  let (fraction, rest) := match rest with
+    | '.' :: rest => rest.span Char.isDigit
+    | rest => ([], rest)
+  let pointWritten := token.contains '.'
+  match rest with
+  | marker :: exponent =>
+      let (exponentNegative, exponentDigits) := match exponent with
+        | '-' :: digits => (true, digits)
+        | '+' :: digits => (false, digits)
+        | digits => (false, digits)
+      if (marker != 'e' && marker != 'E') || integer.isEmpty || (integer.length > 1 && integer.head? == some '0') ||
+          (pointWritten && fraction.isEmpty) || exponentDigits.isEmpty || !exponentDigits.all Char.isDigit then
+        pure none
+      else
+        let significant := exponentDigits.dropWhile (· == '0')
+        let magnitude := significant.foldl (fun value digit => value * 10 + (digit.toNat - '0'.toNat)) 0
+        if significant.length > 6 || magnitude > modelNumberExponentBound then
+          throw s!"model number {token} exceeds the represented exponent"
+        else
+          let shift : Int := magnitude
+          let point : Int := integer.length + (if exponentNegative then -shift else shift)
+          let digits := integer ++ fraction
+          let (whole, part) :=
+            if point ≤ 0 then (['0'], List.replicate point.natAbs '0' ++ digits)
+            else if digits.length ≤ point.toNat then (digits ++ List.replicate (point.toNat - digits.length) '0', ['0'])
+            else (digits.take point.toNat, digits.drop point.toNat)
+          let whole := match whole.dropWhile (· == '0') with
+            | [] => ['0']
+            | kept => kept
+          pure (some ((if negative then "-" else "") ++ String.ofList whole ++ "." ++ String.ofList part))
+  | [] => pure none
+
+private inductive ModelLexState where
+  | plain | quoted | escaped | number
+
+/-- Model text with each exponent token respelled by `plainSpelling?`, so it parses with a fraction as
+its plain spelling does. Every other character, and every token that is no strict JSON number, passes
+through for the JSON parser to judge. -/
+def respellExponentTokens (text : String) : Except String String := do
+  let mut state := ModelLexState.plain
+  let mut token := ""
+  let mut output := ""
+  for char in text.toList do
+    match state with
+    | .quoted =>
+        output := output.push char
+        if char == '\\' then state := .escaped
+        else if char == '"' then state := .plain
+    | .escaped =>
+        output := output.push char
+        state := .quoted
+    | .plain =>
+        if char.isDigit || char == '-' then
+          token := String.singleton char
+          state := .number
+        else
+          output := output.push char
+          if char == '"' then state := .quoted
+    | .number =>
+        if char.isDigit || char == '.' || char == 'e' || char == 'E' || char == '+' || char == '-' then
+          token := token.push char
+        else
+          output := output ++ ((← plainSpelling? token).getD token)
+          output := output.push char
+          state := if char == '"' then .quoted else .plain
+  if let .number := state then output := output ++ ((← plainSpelling? token).getD token)
+  pure output
 
 /-- A text member that reads as no value: blank after `trim`, or the text `null`. -/
 private def absentText (text : String) : Bool :=
@@ -67,6 +148,9 @@ def intMember? (json : Json) (key : String) : Except String (Option Int) :=
   match json.getObjVal? key with
   | .error _ | .ok .null => pure none
   | .ok (.num number) =>
+      -- A fraction at least as long as the mantissa's digits is below one in magnitude and truncates
+      -- to zero, which bounds the power below by the written digits.
+      if (toString number.mantissa.natAbs).length ≤ number.exponent then pure (some 0) else
       -- The value is compared before truncation, so `2147483647.5` lies outside the range.
       let scale : Int := 10 ^ number.exponent
       if number.mantissa < intMinimum * scale || intMaximum * scale < number.mantissa then

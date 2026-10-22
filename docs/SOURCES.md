@@ -151,6 +151,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 13 peer response](sources/inbound-handbacks.md#src-inbound-2026-10-13): reviewed a12-dmkits `8addfd0bf5e1e6f1c21d20d49c1eb0acaac85358`; dispositions of thirteen entries, the computed String maximum, per-entry sort capacity, per-value charset collapse, the row-loop key fault and the declaration member ranges.
 - [October 18 peer response](sources/inbound-handbacks.md#src-inbound-2026-10-18): reviewed a12-dmkits `d2687358024c8622a02eb054fd4fdcffc8825807`; dispositions of sixteen entries, the boolean binding law, the trimmed `sValue`, the fifth requiredness token and the probe's `customConditions` key.
 - [October 21 peer measurements](sources/inbound-handbacks.md#src-inbound-2026-10-21): a12-dmkits `dbbbdb5d8294f48f7c8187773c7168ecb230968c`; unsolicited Kernel facts on the hybrid calendar, member binding, the Boolean cell fold and model-admission notifications.
+- [October 22 peer answers](sources/inbound-handbacks.md#src-inbound-2026-10-22): a12-dmkits `09f1352e5d24e9d661f692ddc5b2fdcf65a786e6`; the boolean-member token kind, the relabelled `int` rows, two more Boolean-fold characters and the closing scope for `SPEC-2026-10-14-01`.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route

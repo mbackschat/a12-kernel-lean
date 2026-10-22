@@ -1,5 +1,6 @@
 import Lean.Data.Json
 import A12Kernel.Elaboration.FieldMessageCheck
+import A12Kernel.Reference.Dm.MemberBinding
 
 /-! # Reading a DM-JSON file that holds a lone UTF-16 surrogate
 
@@ -72,8 +73,10 @@ private partial def rewrite : List Char → List Char
 /-- The text with every escaped lone surrogate replaced by the escape pair of `loneSurrogateStandIn`. -/
 def replaceLoneSurrogates (text : String) : String := String.ofList (rewrite text.toList)
 
-/-- Parse a DM-JSON file's text, keeping a lone surrogate visible as `loneSurrogateStandIn`. -/
-def parseModelJson (text : String) : Except String Json := Json.parse (replaceLoneSurrogates text)
+/-- Parse a DM-JSON file's text, keeping a lone surrogate visible as `loneSurrogateStandIn` and a number
+token's kind as `respellExponentTokens` keeps it. -/
+def parseModelJson (text : String) : Except String Json := do
+  Json.parse (replaceLoneSurrogates (← respellExponentTokens text))
 
 private def parsedString? (json : String) : Option String :=
   match parseModelJson json with
