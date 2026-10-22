@@ -588,14 +588,45 @@ where
     (model.fields.filter (leaf.referencesField ·.id)).map fun declaration =>
       { sameEntity := declaration.id == pair.errorField }
 
+/-- Whether a reference naming the error entity iterates the error side's joined level, and so
+takes part in the parallel iteration. A joined-row read takes part, and a group reference
+containing the error field is taken to, which no row measures; an ordinary leaf answers by its own
+references, `none` where its carrier leaves them unresolved. -/
+def errorSideIterated? (pair : CheckedParallelFieldPair model) :
+    ParallelFieldCondition model → Option Bool
+  | .leaf (.groupPresence _ reference) => some (reference.path.length > 1 && reference.path.isPrefixOf
+      (if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration.groupPath
+       else pair.rightDeclaration.groupPath))
+  | .leaf (.ordinary leaf) => ordinary leaf
+  | .leaf leaf => anyReference (some (leaf.fields.any fun field => (pair.declaration field).id == pair.errorField) ::
+      leaf.atomLeaves.map ordinary)
+  | .and left right | .or left right =>
+      anyReference [errorSideIterated? pair left, errorSideIterated? pair right]
+where
+  ordinary (leaf : ValidationConditionLeaf model) : Option Bool :=
+    match (model.repeatableScopeForGroupPath (if pair.errorField == pair.leftDeclaration.id
+        then pair.groups.leftGroup.path else pair.groups.rightGroup.path)).getLast? with
+    | some level => ValidationCondition.errorReferenceAt? (.leaf leaf) pair.errorField level
+    | none => none
+  anyReference (answers : List (Option Bool)) : Option Bool :=
+    if answers.any (· == some true) then some true
+    else if answers.any (·.isNone) then none
+    else some false
+
+/-- The reference gate, then the parallel iteration's binding of the error field: with no
+reference of the error entity in the parallel iteration, the Kernel draws the error-field iteration
+class ahead of the guard (`IterationChecker.checkIteration4NotOnlyVRefs`;
+[capture](../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04)
+rows `a09`, `d3`, `b1`–`b3`, `w1` refuse; `d4` and `b4` are admitted). -/
 def errorTargetRefusal (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition model) :
     Option KernelStaticDiagnostic :=
-  conditionSideRefusal {
+  (conditionSideRefusal {
     declaration := .declared true, references := condition.references pair,
     iteration := {
       parallelIteration := true
       indexFieldLevel := (if pair.errorField == pair.leftDeclaration.id then pair.groups.leftGroup.path
-        else pair.groups.rightGroup.path).length - 1 } }
+        else pair.groups.rightGroup.path).length - 1 } }).orElse fun _ =>
+    if errorSideIterated? pair condition == some false then some .errorFieldIterationInvalid else none
 
 end ParallelFieldCondition
 

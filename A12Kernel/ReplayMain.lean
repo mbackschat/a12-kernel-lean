@@ -101,6 +101,7 @@ import A12Kernel.Reference.Dm.ComputationOverlapLocks
 import A12Kernel.Reference.Dm.UniquenessGuardLocks
 import A12Kernel.Reference.Dm.UniquenessIterationGuardLocks
 import A12Kernel.Reference.Dm.IterationGuardLocks
+import A12Kernel.Reference.Dm.IterationBindingLocks
 import A12Kernel.Reference.Dm.CapturedFilterScopeLocks
 import A12Kernel.Reference.Dm.TypeValidityGuardLocks
 import A12Kernel.Reference.Dm.IndexedTypeValidityLocks

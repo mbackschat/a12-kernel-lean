@@ -270,13 +270,6 @@ private def starIterationExtent? (source : CheckedStarFieldPath model) :
     Option (List RepeatableLevel × Nat) :=
   (model.declarationSlots? source.path.firstStar source.declaration).map (source.bindingScope, ·)
 
-private def fieldFillIterationExtents? (source : CheckedFieldFillList model) :
-    Option (List (List RepeatableLevel × Nat)) :=
-  source.operands.mapM fun
-    | .field declaration => some (declaration.repeatableScope, 1)
-    | .star source => starIterationExtent? source.source
-    | .indexed _ | .keyed _ | .group _ => none
-
 /-- A group operand supplies, per field it expands to, the row combinations its repeatable levels
 below the operand's own depth reach, as a wildcard does below its star: a starred repeatable group
 weighs its own level too (`uniqueness-iteration-guard-2026-10-13` row `GDEEPSTAR`). -/
@@ -297,8 +290,21 @@ private def selectedIterationExtents?
   declarations.mapM fun declaration =>
     (model.declarationSlots? enclosing declaration).map (declaration.repeatableScope, ·)
 
-/-- Every overload weighs its operands alike: direct fields and wildcards as for field fill,
-selections and groups by the fields they read (`uniqueness-iteration-guard-2026-10-13`). -/
+/-- A selection weighs as in the uniqueness guard, one slot per row below its selected row, so a
+constant selection of a row's own field is one independent slot
+([capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04)
+rows `s4`, `s5`). -/
+private def fieldFillIterationExtents? (source : CheckedFieldFillList model) :
+    Option (List (List RepeatableLevel × Nat)) :=
+  (·.flatten) <$> source.operands.mapM fun
+    | .field declaration => some [(declaration.repeatableScope, 1)]
+    | .star source => (starIterationExtent? source.source).map ([·])
+    | .indexed source => selectedIterationExtents? (.inl source)
+    | .keyed source => selectedIterationExtents? (.inr source)
+    | .group _ => none
+
+/-- Every overload weighs its operands alike: direct fields, wildcards and selections as for field
+fill, and groups by the fields they read (`uniqueness-iteration-guard-2026-10-13`). -/
 private def uniquenessIterationExtents? : CheckedValuesNotUniqueCondition model →
     Option (List (List RepeatableLevel × Nat))
   | .number source => (·.flatten) <$> source.operands.mapM fun
@@ -412,7 +418,16 @@ private def ValidationConditionLeaf.iterationGuardAt
         | .notFilled => .unguarded
       else
         .noReference
-  | .keyedGroupPresence _ _ | .indexedFieldPresence _ _ => .noReference
+  -- A selection references its parent's and its key's rows, not the row it selects
+  -- ([capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04)
+  -- rows `s1`, `s6`, `d6`); its polarity is a presence leaf's.
+  | .indexedFieldPresence operator source =>
+      if (selectedEntityGuardScope (.inl source)).contains level then
+        match operator with
+        | .filled => .guarded
+        | .notFilled => .unguarded
+      else .noReference
+  | .keyedGroupPresence _ _ => .noReference
   | .repeatableFieldPresence operator declaration =>
       if declaration.repeatableScope.contains level then
         match operator with

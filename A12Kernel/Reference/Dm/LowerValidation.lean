@@ -482,7 +482,10 @@ private def lowerIndexedPresence (model : FlatModel) (rowGroup bindingGroup : Gr
     (operator : RepeatableFieldPresenceOperator) (path : Path) (key : IndexKey) :
     Lowering (CheckedValidationCondition model) := do
   let source ← lowerIndexedSource model rowGroup path key
-  let checked ← elaborated "SemanticIndex" (elaborateSemanticIndexSource model rowGroup source)
+  -- The selection's group and a row-field key bind at the error field's rows, as the list route
+  -- binds them ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04), rows s6–s8, d6).
+  let checked ← elaborated "SemanticIndex" (elaborateSemanticIndexSource model rowGroup source
+    (some (model.repeatableScopeForGroupPath bindingGroup)))
   elaborated "SemanticIndex" (CheckedValidationCondition.checkCore model bindingGroup
     (.leaf (.indexedFieldPresence operator checked)) checked.modelWellFormed rowGroup)
 
