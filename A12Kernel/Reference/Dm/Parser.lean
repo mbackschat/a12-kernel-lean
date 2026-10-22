@@ -302,10 +302,11 @@ private partial def callBody (id : String) : P Expr := do
   let listed ← if ← acceptKeyword "In" then pure (some (← argumentList "In")) else pure none
   let scope ← if ← acceptKeyword "@From" then pure (some (← reference)) else pure none
   -- Validity takes a constructed Date or a field and a type name, so a lone field operand meets `)`
-  -- where the grammar expects `,` (spec/05; parallel-instance-leaves rows `v17`, `v18`, 2026-10-14).
+  -- where the grammar expects `,` (spec/05; parallel-instance-leaves rows `v17`, `v18`, 2026-10-14),
+  -- and a third operand is a token defect too ([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18)).
   if (id == "Valid" || id == "Invalid") && (match arguments with
       | [.mk (.call "Date" _ none none) none] => false
-      | [_] => true
+      | [_] | _ :: _ :: _ :: _ => true
       | _ => false) then failHere .expectedTokenNotFound
   expectSymbol ")"
   return .call id arguments listed scope

@@ -196,6 +196,41 @@ example :
         some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" := by
   native_decide
 
+/- **An unstarred operand on a level the rule binds draws the lowest-star class, with or without a
+star beside it**, the peer's rows mirrored with `Rows` for its `Items`
+([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18)). The level is bound by the error
+field iterating it or by the declaring group; an error field outside it leaves the reader's missing
+star, and the owning groups still answer first. -/
+example :
+    let plain := plainProductPath ["Form", "Rows"]
+    let relative (field : String) : SurfaceStarFieldPath := { base := .relative 0, groups := [], field }
+    productDiagnosticCode? (plain "Amount") (productStar "Price") (writtenGroup := ["Form", "Rows"]) =
+        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+      productDiagnosticCode? (productStar "Price") (plain "Amount") (writtenGroup := ["Form", "Rows"]) =
+        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+      productDiagnosticCode? (plain "Amount") (plain "Price") (writtenGroup := ["Form", "Rows"]) =
+        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+      productDiagnosticCode? (relative "Amount") (productStar "Price") ["Form", "Rows"] =
+        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+      productDiagnosticCode? (relative "Amount") (relative "Price") ["Form", "Rows"] =
+        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+      productDiagnosticCode? (plain "Amount") (plainProductPath ["Form"] "UnsignedA")
+          (writtenGroup := ["Form", "Rows"]) = some "MVK_DIFFERENT_GROUPS" ∧
+      productDiagnosticCode? (plain "Amount") (productStar "Price") = some "MVK_NO_WILDCARD" ∧
+      productDiagnosticCode? aggregateStar (productStar "Price") (writtenGroup := ["Form", "Rows"]) = none := by
+  native_decide
+
+/- **The filter and star gates run operand by operand from the left**: with both operands starring
+two levels, a filter on the left draws the filter class and the same filter on the right the star
+class, the left operand's stars answering first
+([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18)). -/
+example :
+    productDiagnosticCode? (nestedProductStar true) (nestedProductStar true)
+        (rightHaving := some productHaving) = some "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ∧
+      productDiagnosticCode? (nestedProductStar true) (nestedProductStar true)
+        (leftHaving := some productHaving) = some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" := by
+  native_decide
+
 /- The five external classes remain independently enumerable rather than collapsing static
 refusals into one generic authoring failure. -/
 example :

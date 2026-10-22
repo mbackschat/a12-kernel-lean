@@ -47,6 +47,7 @@ instance : StaticClassified EntityNumericComparisonElabError := ⟨fun
   | .numberSource (.shape error) => error.diagnostic?
   | .fieldFillSource (.shape error) => error.diagnostic?
   | .fieldFillSource (.group (.shape error)) => error.diagnostic?
+  | .productSource error => error.diagnostic?
   | _ => none⟩
 
 instance : StaticClassified ValidationConditionAssemblyError := ⟨fun

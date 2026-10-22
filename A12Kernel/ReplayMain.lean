@@ -158,6 +158,7 @@ import A12Kernel.Reference.Dm.PartialCarrierLocks
 import A12Kernel.Reference.Dm.FilteredShiftAmountLocks
 import A12Kernel.Reference.Dm.FieldMessageTextLocks
 import A12Kernel.Reference.Dm.MemberBindingLocks
+import A12Kernel.Reference.Dm.RefusalClassLocks
 import A12Kernel.Reference.Dm.SelectedFirstFilledLocks
 import A12Kernel.Reference.Dm.SelectedMessageLocks
 import A12Kernel.Reference.Dm.IndexKeyLiteralLocks

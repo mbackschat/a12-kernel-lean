@@ -75,8 +75,10 @@ def elaborateNumericProductAggregate (model : FlatModel) (declaringGroup : Group
       let right ← elaborateKeyedEntityExtent model declaringGroup { target := .star authored.right, key := rightKey }
         (some (model.repeatableScopeForGroupPath writtenGroup)) |>.mapError .keyed
       if left.groupPath != right.groupPath then throw (.differentGroups left.groupPath right.groupPath)
-      if authored.leftHaving.isSome || authored.rightHaving.isSome then throw .wildcardAtLowestLevelRequired
+      -- Operand by operand from the left, as for an unkeyed pair (spec/07 §4).
+      if authored.leftHaving.isSome then throw .wildcardAtLowestLevelRequired
       requireKeyedProductLowestStar left
+      if authored.rightHaving.isSome then throw .wildcardAtLowestLevelRequired
       requireKeyedProductLowestStar right
       let left ← certifyKeyedProductOperand left
       let right ← certifyKeyedProductOperand right

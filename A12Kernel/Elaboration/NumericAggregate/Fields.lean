@@ -110,6 +110,10 @@ resolving to nothing, containment below a star or outside the rule group, a repe
 unstarred — so its classes come before the operator's own gates, which ask the pair. -/
 private inductive NumericProductOperandRead (model : FlatModel) (declaringGroup : GroupPath) where
   | fixed (declaration : FlatFieldDecl)
+  /-- An unstarred field whose every repeatable level the rule already binds, by its declaring group
+  or by the error field or computation target holding the level: the reader admits the per-row
+  read, and the operator's star gate refuses the missing lowest star. -/
+  | unstarredBound (declaration : FlatFieldDecl)
   | starred (source : CheckedStarFieldPath model)
       (bindingScopeBound :
         source.bindingScope.isPrefixOf (model.repeatableScopeForGroupPath declaringGroup) = true)
@@ -117,6 +121,7 @@ private inductive NumericProductOperandRead (model : FlatModel) (declaringGroup 
 private def NumericProductOperandRead.declaration :
     NumericProductOperandRead model declaringGroup → FlatFieldDecl
   | .fixed declaration => declaration
+  | .unstarredBound declaration => declaration
   | .starred source _ => source.declaration
 
 /-- Refuse a per-row read by containment when the rule's error field lies outside the declaring
@@ -140,9 +145,15 @@ private def readNumericProductOperand (model : FlatModel)
   let read : Except StarPathElabError (CheckedStarFieldPath model) :=
     (elaborateStarFieldPath model declaringGroup authored).mapError
       (·.placeBelowStar model declaringGroup writtenGroup)
+  let declaringScope := model.repeatableScopeForGroupPath declaringGroup
   match read with
   | .error (.missingWildcard _) =>
       if declaration.repeatableScope.isEmpty then pure (.fixed declaration)
+      -- Bound by the rule, the class is the operator's own and needs no star anywhere in the pair
+      -- ([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18), `SPEC-2026-10-14-08`).
+      else if declaration.repeatableScope.all fun level => declaringScope.contains level ||
+          (model.unboundOperandLevel declaringGroup writtenGroup level).writtenBound then
+        pure (.unstarredBound declaration)
       else
         requireReadInsideRuleGroup model declaringGroup writtenGroup declaration.path
           declaration.repeatableScope
@@ -158,14 +169,19 @@ private def readNumericProductOperand (model : FlatModel)
       else
         throw (.noWildcard source.declaration.path)
 
-/-- The operator's star gate: only the path's lowest repeatable level may be starred, a level the
-declaring scope binds counted too. -/
-private def NumericProductOperandRead.requireLowestStar :
+/-- The operator's filter and star gates for one operand: a filtered operand and one leaving its
+bound lowest level unstarred both lack the required lowest star, and only the path's lowest
+repeatable level may be starred, a level the declaring scope binds counted too. -/
+private def NumericProductOperandRead.requireLowestStar (having : Option SurfaceCorrelatedHaving) :
     NumericProductOperandRead model declaringGroup → Except NumericProductAggregateElabError Unit
-  | .fixed _ => pure ()
-  | .starred source _ =>
-      if source.path.firstStar + 1 = source.path.axes.length then pure ()
-      else throw (.wildcardOnlyAtLowestLevel source.declaration.path)
+  | operand => do
+      if having.isSome then throw .wildcardAtLowestLevelRequired
+      match operand with
+      | .fixed _ => pure ()
+      | .unstarredBound _ => throw .wildcardAtLowestLevelRequired
+      | .starred source _ =>
+          if source.path.firstStar + 1 = source.path.axes.length then pure ()
+          else throw (.wildcardOnlyAtLowestLevel source.declaration.path)
 
 /-- The Number question, asked of an operand only once the stars have passed. -/
 private def NumericProductOperandRead.toShape :
@@ -175,6 +191,7 @@ private def NumericProductOperandRead.toShape :
       match declaration.toNumberField? with
       | some _ => pure (.fixed declaration)
       | none => throw (.source (.fieldNotNumber declaration.path))
+  | .unstarredBound _ => throw .wildcardAtLowestLevelRequired
   | .starred source hBound =>
       match hField : source.declaration.toNumberField? with
       | none => throw (.source (.fieldNotNumber source.declaration.path))
@@ -187,8 +204,10 @@ private def NumericProductOperandRead.toShape :
           else
             throw (.wildcardOnlyAtLowestLevel source.declaration.path)
 
-/-- Read both operands, then ask the operator's chain in the Kernel's order: the owning groups, the
-filter, the stars, the Number question, and last whether any repeatable level is crossed. Owning
+/-- Read both operands, then ask the operator's chain in the Kernel's order: the owning groups, each
+operand's filter and stars from the left, the Number question, and last whether any repeatable level
+is crossed. The left-to-right order is measured with both operands starring two levels and one
+filter ([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18)). Owning
 groups before the stars, the filter before the stars and the stars before the Number question are
 measured on a pair read from outside its fields' groups
 ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-25e-sum-of-products-reach)); owning groups before
@@ -206,10 +225,10 @@ def elaborateRowNumericProductAggregate (model : FlatModel)
   let rightRead ← readNumericProductOperand model declaringGroup writtenGroup authored.right
   if leftRead.declaration.groupPath != rightRead.declaration.groupPath then
     throw (.differentGroups leftRead.declaration.groupPath rightRead.declaration.groupPath)
-  if authored.leftHaving.isSome || authored.rightHaving.isSome then
-    throw .wildcardAtLowestLevelRequired
-  leftRead.requireLowestStar
-  rightRead.requireLowestStar
+  -- The filter and star gates are asked operand by operand from the left, so the left operand's
+  -- stars answer before the right operand's filter is read (spec/07 §4).
+  leftRead.requireLowestStar authored.leftHaving
+  rightRead.requireLowestStar authored.rightHaving
   let left ← leftRead.toShape
   let right ← rightRead.toShape
   if hGroup : left.groupPath = right.groupPath then
