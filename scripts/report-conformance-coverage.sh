@@ -292,7 +292,7 @@ observation_rows="$(find evidence -type f \
 # compared with the Kernel's retained artifact. The replay executable owns the comparison; this
 # section only counts its lines, so a count here can never disagree with what the replay printed.
 # ---------------------------------------------------------------------------
-if ! lake build a12-kernel-replay >/dev/null; then
+if ! ./scripts/lake.sh build a12-kernel-replay >/dev/null; then
   echo "failed to build the population replay" >&2
   exit 1
 fi

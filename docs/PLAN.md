@@ -256,6 +256,16 @@ The old D identifiers explain the C01–C22 boundary only. They no longer exclud
 | D23 capacity/category/filter calibration | K03, K06, K13 and K20 |
 | D24 structural faults/unobservable choices | K02, K08 and K19: preserve total semantics, require a discriminator before another measurement |
 
+<a id="build-audit-deferrals"></a>
+## Deferred build work
+
+These come from the owner-approved build audit of 2026-10-22. Each waits on its named trigger and does not interrupt the K sequence.
+
+- [ ] **B01 — single CI evidence replay.** With the next change that touches [the CI workflow](../.github/workflows/lean_action_ci.yml), delete its explicit `lake test` step: lean-action's auto-configuration already runs `lake test`.
+- [ ] **B02 — vocabulary distinctness cost.** When `KernelStaticDiagnostic` passes about 350 classes or [its laws module](../A12Kernel/Proofs/StaticDiagnostic.lean) peaks above about 2.5 GiB, move the distinctness check to the conformance lane as a `native_decide` lock. Nothing consumes it as a theorem. That module's comment records why the cheaper kernel routes measured slower.
+- [ ] **B03 — shared host lock.** [`scripts/lake.sh`](../scripts/lake.sh) sees another project's Lean build only if that project's wrapper takes the same lock path. bpmn-lean-experiment's wrapper still uses its own; switching it is an owner change in that repository.
+- [ ] **B04 — line budget and comments.** If WHY-comments are cut to keep a module under the 800-line review target, count only code lines for that target and keep the 1,200-line ceiling on all nonblank lines.
+
 ## Historical navigation
 
 <a id="reconciliation-checklist"></a>
