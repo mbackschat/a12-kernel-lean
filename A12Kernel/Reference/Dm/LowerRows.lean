@@ -48,6 +48,7 @@ def rowConstant (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
           if operation.outcome?.isNone then refuse "DateTimeComputation" "label in a zone gap"
           pure fun _ => .ofRepeatableDateTimeConstant operation
       | none, none, none => do
+          if isDateTimeConstant literal then refuse "DateTimeComputation" "label before the value floor"
           let operation ← elaborated "StringComputation"
             (checkRepeatableStringConstantComputation model group target.id literal)
           pure fun _ => .ofRepeatableStringConstant operation

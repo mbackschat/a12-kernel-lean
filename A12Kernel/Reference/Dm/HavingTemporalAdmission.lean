@@ -71,7 +71,7 @@ def rawTemporalLiteral (text : String) : Lowering NumericOperandType :=
   if (hybridDateConstant? text).isSome then pure (.temporal .date .fullDate)
   else if (yearlessDateConstant? text).isSome then pure (.temporal .date (TemporalComponents.ofFormat "MM-dd"))
   else if (timeConstant? text).isSome then pure (.temporal .time .time)
-  else if (dateTimeConstant? text).isSome then pure (.temporal .dateTime .now)
+  else if isDateTimeConstant text then pure (.temporal .dateTime .now)
   else refuse "Having" KernelStaticDiagnostic.invalidDateString.kernelCode
 
 /-- The temporal source closes before the extractor's precision/literal/format gates

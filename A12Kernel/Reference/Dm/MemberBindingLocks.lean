@@ -125,13 +125,15 @@ example :
   native_decide
 
 /-- A `DD.MM.YYYY` constant is real on the hybrid calendar: the ten cutover labels are text and a
-Julian leap day is a date, which the proleptic value carrier cannot hold and so leaves unvalued. -/
+Julian leap day is a date, which the proleptic value carrier cannot hold and so leaves unvalued. A
+date-time constant is typed by the same calendar, and one before the value floor stays unvalued. -/
 example :
     ["04.10.1582", "15.10.1582"].all (civilDateConstant? · |>.isSome) ∧
     ["05.10.1582", "14.10.1582", "29.02.1700"].all (!isTemporalConstant ·) ∧
     ["29.02.1500", "29.02.1300"].all isTemporalConstant ∧
     ["29.02.1500", "29.02.1300"].all (civilDateConstant? · |>.isNone) ∧
-    (dateTimeConstant? "05.10.1582T00:00:00").isNone ∧ (dateTimeConstant? "04.10.1582T23:00:00").isSome := by
+    !isTemporalConstant "05.10.1582T00:00:00" ∧ isTemporalConstant "04.10.1582T23:00:00" ∧
+    (dateTimeConstant? "04.10.1582T23:00:00").isNone := by
   native_decide
 
 end A12Kernel.Dm.MemberBindingLocks

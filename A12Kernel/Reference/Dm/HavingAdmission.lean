@@ -412,7 +412,7 @@ private partial def admitPatternOperand (model : FlatModel) (group bindingGroup 
   | .string text => pure (
       if (hybridDateConstant? text).isSome || (yearlessDateConstant? text).isSome then .temporal .date
       else if (timeConstant? text).isSome then .temporal .time
-      else if (dateTimeConstant? text).isSome then .temporal .dateTime else .string, inFilter)
+      else if isDateTimeConstant text then .temporal .dateTime else .string, inFilter)
   | .entity _ => do refuse "Having" "bare pattern operand"
   | .constant "Today" => pure (.temporal .date, inFilter)
   | .constant "Now" => pure (.temporal .dateTime, inFilter)

@@ -194,6 +194,15 @@ def dateTimeConstant? (text : String) : Option LocalDateTime := do
   let time ← timeConstant? clock
   LocalDateTime.ofYmdHms? parts.year parts.month parts.day time.hour time.minute time.second
 
+/-- Whether a literal is a date joined by `T` to a clock, its date judged on the hybrid calendar.
+This is the typing, kept apart from `dateTimeConstant?`, whose carrier holds no label before the
+1583-10-16 floor: the Kernel reads `"04.10.1582T23:00:00"` as a date-time instant (2026-10-21 §1.12),
+so a consumer without its value refuses it rather than reading text. -/
+def isDateTimeConstant (text : String) : Bool :=
+  match text.splitOn "T" with
+  | [date, clock] => (hybridDateConstant? date).isSome && (timeConstant? clock).isSome
+  | _ => false
+
 /-- The month and day an omitted-year `DD.MM.` literal names, a real date in a common year only,
 whatever the Base Year ([`spec/05`](../../../spec/05-dates-and-time.md) §1): `"30.04."` names one,
 `"31.04."` and `"29.02."` are strings. -/
@@ -235,7 +244,7 @@ precedes every operand walk, so a site reading the literal as text must refuse i
 ([`spec/05`](../../../spec/05-dates-and-time.md) §1, [`spec/12`](../../../spec/12-concrete-syntax.md) §2). -/
 def isTemporalConstant (text : String) : Bool :=
   (hybridDateConstant? text).isSome || (yearlessDateConstant? text).isSome ||
-    (timeConstant? text).isSome || (dateTimeConstant? text).isSome
+    (timeConstant? text).isSome || isDateTimeConstant text
 
 /-- Preserve authored year presence while resolving Date literals in the model zone (spec/05 §1). -/
 def dateConstant? (model : FlatModel) (text : String) : Option SurfaceLiteral := do
