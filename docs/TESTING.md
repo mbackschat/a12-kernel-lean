@@ -20,7 +20,7 @@ The compatibility headings below preserve existing links to specialized procedur
 
 ## Command ladder
 
-Run every local `lake` command, including `lake env lean`, as `./scripts/lake.sh` with the same arguments. The wrapper refuses to start while another Lean build holds the host-wide lock and pins the thread count, as its header explains; on a refusal, wait for the other build instead of bypassing it. Commands below spelled with plain `lake` take the same substitution.
+Run every local `lake` command, including `lake env lean`, as `./scripts/lake.sh` with the same arguments. The wrapper refuses to start while another Lean build holds the host-wide lock and pins the thread count, as its header explains; on a refusal, wait for the other build instead of bypassing it. The lock cannot see a Lean build inside a Docker container, so until [plan item B03](PLAN.md#build-audit-deferrals) closes, also confirm that `docker ps -q` prints nothing before an integrated build or `lake test`. Commands below spelled with plain `lake` take the same substitution.
 
 Pay only for the narrowest rung that can answer the current question:
 

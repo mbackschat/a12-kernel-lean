@@ -263,7 +263,7 @@ These come from the owner-approved build audit of 2026-10-22. Each waits on its 
 
 - [ ] **B01 — single CI evidence replay.** With the next change that touches [the CI workflow](../.github/workflows/lean_action_ci.yml), delete its explicit `lake test` step: lean-action's auto-configuration already runs `lake test`.
 - [ ] **B02 — vocabulary distinctness cost.** When `KernelStaticDiagnostic` passes about 350 classes or [its laws module](../A12Kernel/Proofs/StaticDiagnostic.lean) peaks above about 2.5 GiB, move the distinctness check to the conformance lane as a `native_decide` lock. Nothing consumes it as a theorem. That module's comment records why the cheaper kernel routes measured slower.
-- [ ] **B03 — shared host lock.** [`scripts/lake.sh`](../scripts/lake.sh) sees another project's Lean build only if that project's wrapper takes the same lock path. bpmn-lean-experiment's wrapper still uses its own; switching it is an owner change in that repository.
+- [ ] **B03 — container builds outside the shared lock.** bpmn-lean-experiment's wrapper now takes the same host lock as [`scripts/lake.sh`](../scripts/lake.sh), but its hard-ceiling measurements run that wrapper inside a Docker container, whose own `/tmp` lock the host never sees. Close this when that project's container launch holds the host lock for the container's lifetime; until then the [command ladder](TESTING.md#command-ladder) requires a container check before a build.
 - [ ] **B04 — line budget and comments.** If WHY-comments are cut to keep a module under the 800-line review target, count only code lines for that target and keep the 1,200-line ceiling on all nonblank lines.
 
 ## Historical navigation
