@@ -235,18 +235,31 @@ inductive Outcome where
   | agrees
   | diverges (detail : String)
 
+/-- The Kernel's codes on one row, without the instrument's own `RK_` refusals. -/
+private def kernelCodes (observation : Json) : List String :=
+  ((observation.getObjValAs? (Array String) "codes").toOption.getD #[]).toList.filter (!·.startsWith "RK_")
+
+/-- The Kernel's verdict on one row, `none` when the instrument stopped before the Kernel answered.
+A row's `valid` decides; a computation preview reports only `ok` for an admitted spec, and a failed
+preview carrying no Kernel code was refused by the instrument. -/
+private def kernelVerdict? (observation : Json) (preview : Bool) : Option Bool :=
+  match (observation.getObjValAs? Bool "valid").toOption with
+  | some valid => some valid
+  | none =>
+      if !preview then none else
+      match (observation.getObjValAs? Bool "ok").toOption with
+      | some true => some true
+      | some false => if (kernelCodes observation).isEmpty then none else some false
+      | none => none
+
 /-- Compare one declaration with its Kernel verdict: a `rule check` row's own rule, or the rule a
 `computation add` row's computation generates, whose message is the computation's. -/
 private def compare (dm : DmModel) (locales : List String) (rule : DmRule)
     (entries : List (String × String)) (observation : Json) (preview : Bool) : Outcome :=
-  -- A computation preview reports only `ok` for an admitted spec; a rule check without `valid` was
-  -- stopped by the instrument before the Kernel answered.
-  let okVerdict := if preview then (observation.getObjValAs? Bool "ok").toOption else none
-  match (observation.getObjValAs? Bool "valid").toOption <|> okVerdict with
+  match kernelVerdict? observation preview with
   | none => .skipped
   | some valid =>
-  let kernel := ((observation.getObjValAs? (Array String) "codes").toOption.getD #[]).toList.filter
-    (!·.startsWith "RK_")
+  let kernel := kernelCodes observation
   let language := if dm.conditionLanguage.startsWith "de" then Language.german else .english
   let profile := language.messageKeywordProfile
   let outcome := match checkValidationRule dm language rule with
@@ -269,11 +282,10 @@ private def compare (dm : DmModel) (locales : List String) (rule : DmRule)
 generates, whose message is the computation's. -/
 private def compareComputation (dm : DmModel) (locales : List String) (computation : DmComputation)
     (entries : List (String × String)) (observation : Json) : Outcome :=
-  match (observation.getObjValAs? Bool "ok").toOption with
+  match kernelVerdict? observation true with
   | none => .skipped
   | some valid =>
-  let kernel := ((observation.getObjValAs? (Array String) "codes").toOption.getD #[]).toList.filter
-    (!·.startsWith "RK_")
+  let kernel := kernelCodes observation
   let language := if dm.conditionLanguage.startsWith "de" then Language.german else .english
   match checkComputation dm language computation with
   | .error refusal => match refusedAgainst refusal valid kernel with

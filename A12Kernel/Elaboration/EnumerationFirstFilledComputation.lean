@@ -219,9 +219,9 @@ The class is decided by *how* the target is read, so one category occurrence
 selects the projected mode however the rest of the list reads. The surrounding
 bound is the measured one and differs per mode: compatible stored-direct lists
 were measured at length two and three, while a list carrying a projection was
-measured at length two only. A keyed or indexed read beside a stored-direct
-self-read was measured at length two (`semantic-index-reads-2026-10-14` row
-`p11`). A star never contributes a mode, and an incompatible source stays
+measured at length two only. A keyed or indexed read of another field ahead of
+a stored-direct self-read was measured at length two (`semantic-index-reads-2026-10-14`
+row `p11`); the reversed order and a selected self-read stay outside it. A star never contributes a mode, and an incompatible source stays
 outside the denominator entirely.
 
 Every two-entry pairing this fold classifies is externally measured, including
@@ -247,10 +247,11 @@ private def measuredTargetReadMode?
     if (operands.length == 2 || operands.length == 3) &&
         operands.all (fun operand => operand.isStoredDirect) then
       some .plain
-    else if operands.length == 2 && operands.all (fun operand => operand.isStoredDirect || operand.isSelected) then
-      some .plain
-    else
-      none
+    else match operands with
+      | [selected, direct] =>
+          if selected.isSelected && !selected.referencesField targetField &&
+              direct.isStoredDirect && direct.referencesField targetField then some .plain else none
+      | _ => none
   else
     none
 

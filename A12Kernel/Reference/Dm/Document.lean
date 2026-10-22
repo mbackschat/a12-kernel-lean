@@ -12,10 +12,11 @@ token and a JSON number its scale-preserving decimal-node text. A JSON `null` is
 a12-dmkits' `document-instance.schema.json` reads the Kernel's document format, and a missing key is an
 absent field.
 
-The Kernel's document conversion drops a string member or an object the model declares nothing for,
-whether in a fixed group or a repeatable row: both strategies report a document carrying them exactly
-as the one without ([undeclared-member checkpoint](../../../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members)),
-so this reader drops them too. A field the model reader refused, an undeclared member of another JSON
+The Kernel's document conversion drops a string or object member of a fixed group and a string key of
+a repeatable row that the model declares nothing for: both strategies report a document carrying them
+exactly as the one without ([undeclared-member checkpoint](../../../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members)),
+so this reader drops them too. It drops the same shapes at the document root and an object in a row,
+which are unmeasured. A field the model reader refused, an undeclared member of another JSON
 kind, which is unmeasured, an out-of-profile numeric scale, or a temporal text no classifier owns is
 reported in `DmDocument.refusals` rather than placed, so a replay row depending on it is refused as
 unrepresented instead of evaluated against a guess.

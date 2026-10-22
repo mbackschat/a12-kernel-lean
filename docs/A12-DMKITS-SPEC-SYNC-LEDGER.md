@@ -37,7 +37,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-Three entries are `pending`. The 16 terminal receipts closed at the [October 18 response](sources/inbound-handbacks.md#src-inbound-2026-10-18), fourteen `accepted` and two `answered`, remain in [the ledger at `bf2216b6`](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+Four entries are `pending`. The 16 terminal receipts closed at the [October 18 response](sources/inbound-handbacks.md#src-inbound-2026-10-18), fourteen `accepted` and two `answered`, remain in [the ledger at `bf2216b6`](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
 
 <a id="spec-2026-10-22-01"></a>
 ### SPEC-2026-10-22-01 — a bracketed read inside `Length` or a day difference is a token defect
@@ -54,9 +54,9 @@ Three entries are `pending`. The 16 terminal receipts closed at the [October 18 
 
 - `status`: pending
 - `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands).
-- `delta`: Kernel Document JSON conversion drops an undeclared string member of a fixed group, an undeclared object and an undeclared key inside a repeatable row, so the document validates exactly as the one without them. Other JSON kinds and the conversion's notifications for a dropped member are unmeasured.
+- `delta`: Kernel Document JSON conversion drops an undeclared string or object member of a fixed group and an undeclared string key inside a repeatable row, so the document validates exactly as the one without them. Other JSON kinds, an object inside a row, a member at the document root and the conversion's notifications for a dropped member are unmeasured.
 - `basis`: [undeclared-member checkpoint](sources/domain-ingestion-probes.md#src-undeclared-document-members), rows `f-extra` against `f-full`, measured locally 2026-10-22, Kernel 30.8.1, both strategies, at the measurement pin `09f1352e5`.
-- `acceptance`: Reconcile the interpreter's document reader with the three dropped shapes. Do not claim an outcome for an undeclared array, a scalar of another JSON kind or the deserializer's notification channel.
+- `acceptance`: Reconcile the interpreter's document reader with the three dropped shapes. Do not claim an outcome for an undeclared array, a scalar of another JSON kind, an object inside a row, a member at the document root or the deserializer's notification channel.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-22-03"></a>
@@ -64,7 +64,17 @@ Three entries are `pending`. The 16 terminal receipts closed at the [October 18 
 
 - `status`: pending
 - `canonical`: [spec/11 §14](../spec/11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch).
-- `delta`: The VALUE report of a reached unregistered custom condition ([KF52](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf52)) stands once, at the iterator's first error address, on a repeatable, root-iterated and parallel rule, even when a later row reached the name; earlier firing rows keep their messages and later rows are not evaluated; a partial call's iterator starts at its first relevant row.
-- `basis`: [call checkpoint](sources/model-structure-and-declaration-probes.md#src-custom-condition-calls), rules `M01`–`M04` and `E01` of `request-missing`, rows `m-claim`, `m-row3` and `m-keep`, measured locally 2026-10-22, Kernel 30.8.1, both strategies, at the measurement pin `09f1352e5`.
-- `acceptance`: Reconcile the address, the single report per rule and the retained earlier firing for the five rules. Do not claim an outcome under a repeatable outer row of a parallel rule or for a parallel rule with an earlier firing row.
+- `delta`: The VALUE report of a reached unregistered custom condition ([KF52](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf52)) stands once, at the iterator's first error address, on a repeatable, root-iterated and parallel rule, even when a later row reached the name. On a repeatable rule earlier firing rows keep their messages and later rows are not evaluated. A partial call's iterator starts where its relevant set's error-field selectors, compressed into one, start it: at their one row, or at the first row when they name different rows. A parallel rule's first address is the join's first row, an unmatched one with its `UNKNOWN` coordinate included; its later rows and earlier firings are unmeasured.
+- `basis`: [call checkpoint](sources/model-structure-and-declaration-probes.md#src-custom-condition-calls), rules `M01`–`M04` and `E01` of `request-missing`, rows `m-claim`, `m-row3` and `m-keep`, and of `request-review`, rows `r1-rows23`, `r2-order` and `r3-supply-first`, measured locally 2026-10-22, Kernel 30.8.1, both strategies, at the measurement pin `09f1352e5`.
+- `acceptance`: Reconcile the address, the single report per rule, the compressed partial start and the retained earlier firing for the five rules. Do not claim an outcome under a repeatable outer row of a parallel rule, for its later joined rows or for a parallel rule with an earlier firing row.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-22-04"></a>
+### SPEC-2026-10-22-04 — a custom-condition name is reached by the rule's two evaluation passes
+
+- `status`: pending
+- `canonical`: [spec/11 §14](../spec/11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch).
+- `delta`: Replaces "a guard that decides the condition first leaves the lookup unreached". A false conjunct ahead of the name in an `And` leaves it unreached, and so does a disjunct already true when the tree needs no classification pass; a holding tree that needs one evaluates again past that disjunct, so `FieldNotFilled(Stage) Or CustomCondition X` reaches the name with `Stage` empty or filled. In a parallel rule a field pair whose fill quantifier does not fire on a joined row ends the `And` there.
+- `basis`: [call checkpoint](sources/model-structure-and-declaration-probes.md#src-custom-condition-calls), rule `M06` in rows `r1-rows23` and `r2-order`, `E01` in `m-claim` and `M04` in `r1-rows23`, measured locally 2026-10-22, Kernel 30.8.1, both strategies, at the measurement pin `09f1352e5`.
+- `acceptance`: Reconcile reach of the unregistered name for the three rules on both channels. Do not claim an outcome for a classification pass of a parallel rule or for a callback that throws.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

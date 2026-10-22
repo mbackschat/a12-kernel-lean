@@ -18,14 +18,20 @@ abbrev CustomValidationInvocation (model : FlatModel) :=
 abbrev CustomValidationRegistry (model : FlatModel) :=
   CustomConditionRegistry (CustomValidationInvocation model)
 
-/-- The callback's four channels at one evaluation point, shared by every carrier that reaches a custom leaf. Formal findings are never filtered by callback-hidden dependencies; generated formal failures augment the base findings (spec/11 §14). -/
+/-- The callback's four channels at one evaluation point, shared by every carrier that reaches a custom leaf. Formal findings are never filtered by callback-hidden dependencies; generated formal failures augment the base findings (spec/11 §14). A partial call formally checks only the cells it covers, so a malformed cell outside its relevant set is not among them (peer KF52; row `r4-formal` of the custom-condition call capture). -/
 def CustomValidationInvocation.ofDocument (document : CheckedDocument model)
     (relevance : CustomConditionRelevance ValidationRelevanceScope) (errorPointer : MessagePointer)
     (generatedFormalFailures : List CellAddr := []) : CustomValidationInvocation model :=
+  let checked (address : CellAddr) : Bool := match relevance, model.lookupUniqueId address.field with
+    | .all, _ => true
+    | .partialEntities scope, .ok declaration =>
+        scope.coversCell model declaration.path (declaration.repeatableScope.zip address.path)
+    | .partialEntities _, .error _ => false
   { data := document
     relevance
     formallyIncorrect := ((document.checkedCells.filterMap fun cell =>
-      if cell.cell.findings.isEmpty then none else some cell.address) ++ generatedFormalFailures).eraseDups
+      if cell.cell.findings.isEmpty || !checked cell.address then none else some cell.address) ++
+        generatedFormalFailures).eraseDups
     errorPointer }
 
 /-- The formal failures a partial call generates beyond the base findings: the index preliminary's findings and every required evaluation that fired. -/

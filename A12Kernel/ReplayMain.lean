@@ -414,7 +414,11 @@ private def declaredConditions (model : FlatModel) (request : Json) :
     Except String (CustomValidationRegistry model) := do
   let .ok declared := request.getObjVal? "customConditions" | pure {}
   let .obj entries := declared | throw "customConditions is no object"
-  let answers ← entries.toList.mapM fun (name, spec) =>
+  let answers ← entries.toList.mapM fun (name, spec) => do
+    -- An answer key this replay does not know would otherwise be read as one it does.
+    let .obj members := spec | throw s!"{name} is no object"
+    if let some key := members.toList.find? (!["returns", "whenFilled"].contains ·.1) then
+      throw s!"{name} declares an unknown key {key.1}"
     match spec.getObjValAs? Bool "returns", spec.getObjValAs? String "whenFilled" with
     | .ok value, .error _ => pure (name, fun (_ : CustomValidationInvocation model) => value)
     | .error _, .ok pointer =>
@@ -423,7 +427,7 @@ private def declaredConditions (model : FlatModel) (request : Json) :
         | some field => pure (name, fun (input : CustomValidationInvocation model) =>
             !((input.data.storedTextAt { field := field.id, path := [] }).getD "").isEmpty)
         | none => throw s!"whenFilled {pointer} names no nonrepeatable field"
-    | _, _ => throw s!"{name} declares neither returns nor whenFilled"
+    | _, _ => throw s!"{name} must declare exactly one of returns and whenFilled"
   pure { configured := some fun name => (answers.find? (·.1 == name)).map (·.2) }
 
 private def replayRequest (requestPath : System.FilePath) : IO Unit := do

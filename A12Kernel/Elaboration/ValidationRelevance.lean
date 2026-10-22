@@ -323,6 +323,27 @@ def coversField (scope : ValidationRelevanceScope) (model : FlatModel)
   | .ok declaration => scope.coversCell model declaration.path environment
   | .error _ => false
 
+/-- The partial dispatch envelope of a target path: the call's selectors projected onto it, a
+coordinate on which they differ compressed to a wildcard (`compressRelevantFieldsForValidationCall`,
+spec/10). `none` when no selector reaches the path. -/
+def compressedSelector? (entities : List RelevantEntityPattern) (targetPath : List String) :
+    Option RelevantEntityPattern :=
+  match entities.filterMap (·.projectOntoTarget? targetPath) with
+  | [] => none
+  | first :: rest => some (rest.foldl (fun acc next =>
+      { acc with indices := acc.indices.zipWith (fun a b => if a == b then a else .all) next.indices }) first)
+
+/-- The first environment of a rule's iteration domain that its iterator visits, where the whole-rule
+handler reports a caught failure: the first the compressed error-field selector admits at the bound
+levels, so one concrete row starts it there and differing rows compress to a wildcard that starts it
+at the domain's first row (rows `m-row3` and `r1-rows23` of the custom-condition call capture). -/
+def iteratorStart? (scope : ValidationRelevanceScope) (model : FlatModel) (errorPath : List String)
+    (boundLevels : List RepeatableLevel) (environments : List Env) : Option Env :=
+  match scope with
+  | .full => environments.head?
+  | .partialSet entities => (compressedSelector? entities errorPath).bind fun selector =>
+      environments.find? (selector.matchesBoundSubtree model boundLevels ·)
+
 /-- Resolve the partial rule-run gate at exactly the repeatable levels bound by the rule's checked iteration plan. A relevant field or ancestor must still project onto the error path, coordinates at bound levels must match the current environment, and deeper coordinates are deliberately ignored because iteration did not choose them. This is distinct from exact per-cell relevance used by condition leaves. -/
 def coversFieldAtBoundLevels (scope : ValidationRelevanceScope)
     (model : FlatModel) (field : FieldId)

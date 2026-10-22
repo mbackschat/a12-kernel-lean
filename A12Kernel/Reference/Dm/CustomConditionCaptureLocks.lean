@@ -36,21 +36,31 @@ private def document (bad : Bool) : Lean.Json :=
 
 private def qty (row : Nat) : CellAddr := { field := 5, path := [row] }
 
-/-- The Kernel's recorded payload of every true answer: `formallyIncorrect` is `Claim/Amount` and the
-first row's `Qty` in the bad document and empty otherwise. -/
-private def registry (bad : Bool) (relevance : CustomConditionRelevance ValidationRelevanceScope)
+private def entity (field : Nat) (path : List Nat := []) : MessagePointer :=
+  MessagePointer.ofCellAddr { field, path }
+
+/-- Every error entity the Kernel passed to each name across the capture's three batches. A name
+outside this table is unregistered, so a call with an entity the Kernel never passed silences its
+rule instead of passing by default. -/
+private def recorded : List (String × List MessagePointer) :=
+  [("K01", [entity 1]), ("K02", [entity 1]), ("K03", [entity 1]), ("K14", [entity 1]),
+    ("K04", [entity 2]), ("K05", [entity 2]), ("K06", [entity 2]), ("K07", [entity 3]), ("K08", [entity 3]),
+    ("K11", [entity 4 [1], entity 4 [2], entity 4 [3]]),
+    ("K12", [entity 5 [2], entity 5 [3]]), ("K13", [entity 5 [2], entity 5 [3]])]
+
+/-- The Kernel's recorded payload of every true answer, given the `formallyIncorrect` cells it passed. `K02` answers false; `K03` asks whether
+`Claim/Amount` is filled, which it is in every document reaching it. `pointers` narrows a name to the
+single entity one row passed. -/
+private def registry (formal : List CellAddr) (relevance : CustomConditionRelevance ValidationRelevanceScope)
     (pointers : List (String × MessagePointer)) : CustomValidationRegistry model :=
-  let formal := if bad then [{ field := 2, path := [] }, qty 1] else []
-  { configured := some fun name =>
-      if name == "K02" then some fun _ => false
-      else if name.startsWith "K" then some fun input =>
-        (match input.relevance, relevance with
-          | .all, .all => true
-          | .partialEntities actual, .partialEntities expected => actual == expected
-          | _, _ => false) &&
-        input.formallyIncorrect.length == formal.length && formal.all input.formallyIncorrect.contains &&
-        (pointers.lookup name).all (· == input.errorPointer)
-      else none }
+  { configured := some fun name => (recorded.lookup name).map fun entities input =>
+      name != "K02" &&
+      (match input.relevance, relevance with
+        | .all, .all => true
+        | .partialEntities actual, .partialEntities expected => actual == expected
+        | _, _ => false) &&
+      input.formallyIncorrect.length == formal.length && formal.all input.formallyIncorrect.contains &&
+      entities.contains input.errorPointer && (pointers.lookup name).all (· == input.errorPointer) }
 
 /-- Full validation runs on the document carrying its generated findings, as the replay does; a
 partial call derives its own from `checked`. -/
@@ -74,13 +84,15 @@ private def run (world : World) (checked validated : CheckedDocument model) (sco
           | .evaluated outcome => outcome.message?.toList
 
 /-- Each finding as `code type pointer`, a caught failure marked `!`, or `none` when the rule, the
-document or the run is refused. -/
+document or the run is refused. `formal` is the call's recorded `formallyIncorrect`: in `doc-bad`,
+`Claim/Amount` and the first row's `Qty`. -/
 private def fired (group : GroupPath) (errorField condition : String) (scope : ValidationRelevanceScope := .full)
-    (bad : Bool := false) (pointers : List (String × MessagePointer) := []) : Option (List String) := do
+    (bad : Bool := false) (pointers : List (String × MessagePointer) := []) (json : Lean.Json := document bad)
+    (formal : List CellAddr := if bad then [{ field := 2, path := [] }, qty 1] else []) : Option (List String) := do
   let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let world : World := { now := { epochMillis := 0 }, modelZoneRules := ModelZone.concreteRules }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
-  let read ← (readDocument dm (document bad)).toOption
+  let read ← (readDocument dm json).toOption
   let checked ← (checkDocument prepared "en_US" read.data).toOption
   let validated ← checked.fullValidationDocument.toOption
   let .ok (.ordinary rule) := checkValidationRule dm .english {
@@ -89,7 +101,7 @@ private def fired (group : GroupPath) (errorField condition : String) (scope : V
   let relevance := match scope with
     | .full => .all
     | .partialSet _ => .partialEntities scope
-  let messages ← run world checked validated scope (registry bad relevance pointers) rule
+  let messages ← run world checked validated scope (registry formal relevance pointers) rule
   pure (messages.map fun message =>
     let observed := observe model message
     s!"{observed.messageType} {observed.pointer}{if message.origin == .runtimeFailure then "!" else ""}")
@@ -110,48 +122,79 @@ example :
     fired claim "Note" "FieldFilled(Note) And CustomCondition K02" = some [] := by
   native_decide
 
+/-- The capture's `doc-keep`, whose second row has no `Name`, and the review batch's `doc-r1` and
+`doc-r4`, without their undeclared parallel groups. -/
+private def keep : Lean.Json :=
+  Lean.Json.mkObj [("Claim", Lean.Json.mkObj [("Note", .str "n"),
+    ("Items", .arr #[item "a" "1", Lean.Json.mkObj [("Qty", .str "2")], item "c" "3"])])]
+private def r1 : Lean.Json :=
+  Lean.Json.mkObj [("Claim", Lean.Json.mkObj [("Note", .str "n"),
+    ("Items", .arr #[item "a" "1", item "b" "1", item "c" "3"])])]
+private def r4 : Lean.Json :=
+  Lean.Json.mkObj [("Claim", Lean.Json.mkObj [("Note", .str "n"), ("Stage", .str "s"), ("Amount", .str "abc")])]
+
+private def e01 := "FieldFilled(Name) Or (FieldFilled(Qty) And CustomCondition Ghost)"
+private def rows23 : ValidationRelevanceScope :=
+  .partialSet [{ path := ["Claim", "Items", "Qty"], indices := [.concrete 1, .concrete 2, .concrete 1] },
+    { path := ["Claim", "Items", "Qty"], indices := [.concrete 1, .concrete 3, .concrete 1] }]
+
 /-- A repeatable rule's handler reports once, at its iterator's first error address, whichever row
-reached the name, and stops; a partial call's iterator starts at its first relevant row. Rules
-`M01`–`M03` of `request-missing`, rows `m-claim` and `m-row3`: the first row's `Qty` of `1` does
-not reach the name, the second's does. -/
+reached the name, and stops. A partial call's iterator starts where the relevant set's compressed
+error-field selector does: at its one concrete row, or at row 1 when the rows differ. Rules
+`M01`–`M03` and `E01` of `request-missing` rows `m-claim` and `m-row3`, whose first row's `Qty` of `1`
+does not reach the name, and of `request-review` row `r1-rows23`. A relevant set without `Name` leaves
+it unknown, so `E01` reaches the name in `m-row3` and `r1-rows23`. -/
 example :
     fired items "Name" "FieldFilled(Name) And CustomCondition Ghost" = some ["VALUE_ERROR Claim/Items/Name!"] ∧
     fired items "Qty" "[Qty] > 1 And CustomCondition Ghost" = some ["VALUE_ERROR Claim/Items/Qty!"] ∧
     fired claim "Items/Qty" "[Items/Qty] > 1 And CustomCondition Ghost" = some ["VALUE_ERROR Claim/Items/Qty!"] ∧
+    fired items "Name" "FieldFilled(Name) And CustomCondition Ghost" (relevant [] [.all]) =
+      some ["VALUE_ERROR Claim/Items/Name!"] ∧
     fired items "Qty" "[Qty] > 1 And CustomCondition Ghost" (relevant [] [.all]) =
       some ["VALUE_ERROR Claim/Items/Qty!"] ∧
+    fired claim "Items/Qty" "[Items/Qty] > 1 And CustomCondition Ghost" (relevant [] [.all]) =
+      some ["VALUE_ERROR Claim/Items/Qty!"] ∧
+    fired items "Qty" e01 (relevant [] [.all]) =
+      some ["VALUE_ERROR Claim/Items/Qty", "VALUE_ERROR Claim/Items[2]/Qty", "VALUE_ERROR Claim/Items[3]/Qty"] ∧
     fired items "Qty" "[Qty] > 1 And CustomCondition Ghost"
         (relevant ["Items", "Qty"] [.concrete 1, .concrete 3, .concrete 1]) =
       some ["VALUE_ERROR Claim/Items[3]/Qty!"] ∧
     fired claim "Items/Qty" "[Items/Qty] > 1 And CustomCondition Ghost"
         (relevant ["Items", "Qty"] [.concrete 1, .concrete 3, .concrete 1]) =
       some ["VALUE_ERROR Claim/Items[3]/Qty!"] ∧
+    fired items "Qty" e01 (relevant ["Items", "Qty"] [.concrete 1, .concrete 3, .concrete 1]) =
+      some ["VALUE_ERROR Claim/Items[3]/Qty!"] ∧
     fired items "Name" "FieldFilled(Name) And CustomCondition Ghost"
-        (relevant ["Items", "Qty"] [.concrete 1, .concrete 3, .concrete 1]) = some [] := by
+        (relevant ["Items", "Qty"] [.concrete 1, .concrete 3, .concrete 1]) = some [] ∧
+    fired items "Qty" e01 rows23 (json := r1) = some ["VALUE_ERROR Claim/Items/Qty!"] ∧
+    fired items "Qty" "[Qty] > 1 And CustomCondition Ghost" rows23 (json := r1) =
+      some ["VALUE_ERROR Claim/Items/Qty!"] ∧
+    fired claim "Items/Qty" "[Items/Qty] > 1 And CustomCondition Ghost" rows23 (json := r1) =
+      some ["VALUE_ERROR Claim/Items/Qty!"] ∧
+    fired items "Name" "FieldFilled(Name) And CustomCondition Ghost" rows23 (json := r1) = some [] := by
   native_decide
 
 /-- Messages fired before the failing row stand beside the handler's report at the same first
-address, and later rows are not evaluated. Rule `E01` in `m-keep`, whose second row has no `Name`. -/
+address, and later rows are not evaluated. Rule `E01` in `m-keep`, full and partial. -/
 example :
-    (do
-      let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
-      let world : World := { now := { epochMillis := 0 }, modelZoneRules := ModelZone.concreteRules }
-      let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
-      let read ← (readDocument dm (Lean.Json.mkObj [("Claim", Lean.Json.mkObj [("Note", .str "n"),
-        ("Items", .arr #[item "a" "1", Lean.Json.mkObj [("Qty", .str "2")], item "c" "3"])])])).toOption
-      let checked ← (checkDocument prepared "en_US" read.data).toOption
-      let validated ← checked.fullValidationDocument.toOption
-      let .ok (.ordinary rule) := checkValidationRule dm .english {
-          name := "Rule", group := items, errorCode := "R", errorEntityRelPath := "../Qty",
-          condition := "FieldFilled(Name) Or (FieldFilled(Qty) And CustomCondition Ghost)", severity := "ERROR" } world | none
-      let messages ← (runRule world validated rule).toOption
-      pure (messages.map fun message => (renderPointer model message.errorAddress, message.origin))) =
-    some [("Claim/Items/Qty", .condition), ("Claim/Items/Qty", .runtimeFailure)] := by
+    fired items "Qty" e01 (json := keep) = some ["VALUE_ERROR Claim/Items/Qty", "VALUE_ERROR Claim/Items/Qty!"] ∧
+    fired items "Qty" e01 (relevant [] [.all]) (json := keep) =
+      some ["VALUE_ERROR Claim/Items/Qty", "VALUE_ERROR Claim/Items/Qty!"] := by
+  native_decide
+
+/-- A tree whose classification pass runs reaches the name behind a disjunct already true. Rule `M06`
+of `request-review`, in `r1-rows23` with `Stage` absent and `r4-formal` with it filled. -/
+example :
+    fired claim "Stage" "FieldNotFilled(Stage) Or CustomCondition Ghost" (json := r1) =
+      some ["VALUE_ERROR Claim/Stage!"] ∧
+    fired claim "Stage" "FieldNotFilled(Stage) Or CustomCondition Ghost" (json := r4) =
+      some ["VALUE_ERROR Claim/Stage!"] := by
   native_decide
 
 /-- Full validation passes no relevance, the formally incorrect cells of the whole document and the
 iterated row's error entity: a callback expecting another row's pointer silences that row. Rules
-`R01`–`R03` in `f-full` and `f-bad`; `R03` iterates from the root group through its error field. -/
+`R01`–`R03` in `f-full` and `f-bad`; `R03` iterates from the root group through its error field.
+Rule `M05` in `r4-formal` passes the invalid `Amount`. -/
 example :
     fired items "Qty" "[Qty] > 1 And CustomCondition K12" (pointers := [("K12", pointer 2)]) =
       some ["VALUE_ERROR Claim/Items[2]/Qty"] ∧
@@ -162,25 +205,53 @@ example :
     fired claim "Items/Qty" "[Items/Qty] > 1 And CustomCondition K13" (bad := true) (pointers := [("K13", pointer 2)]) =
       some ["VALUE_ERROR Claim/Items[2]/Qty"] ∧
     fired items "Name" "FieldFilled(Name) And CustomCondition K11" (bad := true) =
-      some ["VALUE_ERROR Claim/Items/Name", "VALUE_ERROR Claim/Items[2]/Name"] := by
+      some ["VALUE_ERROR Claim/Items/Name", "VALUE_ERROR Claim/Items[2]/Name"] ∧
+    fired claim "Note" "FieldFilled(Note) And CustomCondition K01" (json := r4) (formal := [{ field := 2, path := [] }]) =
+      some ["VALUE_ERROR Claim/Note"] := by
   native_decide
 
-/-- Partial validation passes the caller's relevant set unchanged and reaches only rules whose error
-field it covers. Rows `p-note`, `p-none`, `p-row2` and `p-claim-bad`. -/
+/-- Partial validation passes the caller's relevant set unchanged, and only the formally incorrect
+cells it covers, and reaches only rules whose error field it covers. Rows `p-note`, `p-none`,
+`p-row2`, `p-claim-bad`, `m-claim` and `r4-formal`. -/
 example :
     fired claim "Note" "FieldFilled(Note) And CustomCondition K01" (relevant ["Note"] [.all, .all]) =
       some ["VALUE_ERROR Claim/Note"] ∧
+    fired claim "Note" "FieldFilled(Note) And CustomCondition K02" (relevant ["Note"] [.all, .all]) = some [] ∧
+    fired claim "Note" "FieldFilled(Note) And CustomCondition K03" (relevant ["Note"] [.all, .all]) =
+      some ["VALUE_ERROR Claim/Note"] ∧
     fired claim "Note" "FieldFilled(Note) And CustomCondition Ghost" (relevant ["Note"] [.all, .all]) =
       some ["VALUE_ERROR Claim/Note!"] ∧
+    fired claim "Note" "FieldFilled(Note) And Sum(Items*/Qty) > 1 And CustomCondition K14"
+      (relevant ["Note"] [.all, .all]) = some [] ∧
+    fired claim "Stage" "FieldFilled(Stage) And CustomCondition Ghost" (relevant ["Note"] [.all, .all]) = some [] ∧
     fired claim "Amount" "FieldFilled(Amount) And CustomCondition K04" (relevant ["Note"] [.all, .all]) = some [] ∧
     fired claim "Note" "FieldFilled(Note) And CustomCondition K01" (.partialSet []) = some [] ∧
     fired items "Qty" "[Qty] > 1 And CustomCondition K12"
         (relevant ["Items", "Qty"] [.concrete 1, .concrete 2, .concrete 1]) (pointers := [("K12", pointer 2)]) =
       some ["VALUE_ERROR Claim/Items[2]/Qty"] ∧
+    fired claim "Items/Qty" "[Items/Qty] > 1 And CustomCondition K13"
+        (relevant ["Items", "Qty"] [.concrete 1, .concrete 2, .concrete 1]) (pointers := [("K13", pointer 2)]) =
+      some ["VALUE_ERROR Claim/Items[2]/Qty"] ∧
     fired items "Name" "FieldFilled(Name) And CustomCondition K11"
         (relevant ["Items", "Qty"] [.concrete 1, .concrete 2, .concrete 1]) = some [] ∧
     fired items "Qty" "[Qty] > 1 And CustomCondition K12" (relevant [] [.all]) (bad := true) =
-      some ["VALUE_ERROR Claim/Items[2]/Qty"] := by
+      some ["VALUE_ERROR Claim/Items[2]/Qty"] ∧
+    fired claim "Items/Qty" "[Items/Qty] > 1 And CustomCondition K13" (relevant [] [.all]) (bad := true) =
+      some ["VALUE_ERROR Claim/Items[2]/Qty"] ∧
+    fired items "Name" "FieldFilled(Name) And CustomCondition K11" (relevant [] [.all]) (bad := true) =
+      some ["VALUE_ERROR Claim/Items/Name", "VALUE_ERROR Claim/Items[2]/Name"] ∧
+    fired claim "Amount" "FieldFilled(Amount) And CustomCondition K04" (relevant [] [.all]) (bad := true) = some [] ∧
+    fired claim "Amount" "CustomCondition K05 And FieldFilled(Amount)" (relevant [] [.all]) (bad := true) = some [] ∧
+    fired claim "Amount" "FieldFilled(Amount) Or CustomCondition K06" (relevant [] [.all]) (bad := true) =
+      some ["VALUE_ERROR Claim/Amount"] ∧
+    fired claim "Stage" "FieldNotFilled(Stage) And CustomCondition K07" (relevant [] [.all]) (bad := true) =
+      some ["OMISSION_ERROR Claim/Stage"] ∧
+    fired claim "Stage" "CustomCondition K08 And FieldNotFilled(Stage)" (relevant [] [.all]) (bad := true) =
+      some ["OMISSION_ERROR Claim/Stage"] ∧
+    fired claim "Note" "FieldFilled(Note) And CustomCondition K01" (relevant [] [.all]) =
+      some ["VALUE_ERROR Claim/Note"] ∧
+    fired claim "Note" "FieldFilled(Note) And CustomCondition K01" (relevant ["Note"] [.all, .all]) (json := r4)
+      (formal := []) = some ["VALUE_ERROR Claim/Note"] := by
   native_decide
 
 private def classifies (group : GroupPath) (errorField condition : String) : Option Bool := do
@@ -207,16 +278,17 @@ example :
     classifies items "Name" "FieldFilled(Name) And CustomCondition K11" = some false := by
   native_decide
 
-/-- The undeclared members of `doc-extra` are dropped: the document reads exactly as `doc-full`. -/
+/-- The undeclared members of `doc-extra`, a string and an object beside the declared fields and a
+string inside a row, are dropped: the document reads exactly as `doc-full`. -/
 example :
     (readDocument { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
       (Lean.Json.mkObj [("Claim", Lean.Json.mkObj [("Note", .str "n"), ("Amount", .str "7"), ("Stage", .str "s"),
         ("Items", .arr #[Lean.Json.mkObj [("Name", .str "a"), ("Qty", .str "1"), ("Extra", .str "e")],
           item "b" "2", item "c" "3"]),
         ("Ghost", .str "g"), ("Phantom", Lean.Json.mkObj [("F", .str "1")])])])).toOption.map
-      (fun read => (read.refusals.isEmpty, read.data.cells.length)) =
+      (fun read => (read.refusals.isEmpty, read.data)) =
     (readDocument { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
-      (document false)).toOption.map (fun read => (read.refusals.isEmpty, read.data.cells.length)) := by
+      (document false)).toOption.map (fun read => (read.refusals.isEmpty, read.data)) := by
   native_decide
 
 end A12Kernel.Dm.CustomConditionCaptureLocks

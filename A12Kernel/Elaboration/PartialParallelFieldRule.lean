@@ -12,16 +12,13 @@ def admitsPartialOuter (pair : CheckedParallelFieldPair model)
   | .partialSet entities =>
       let declaration := if pair.errorField == pair.leftDeclaration.id then
         pair.leftDeclaration else pair.rightDeclaration
-      let patterns := entities.filterMap (·.projectOntoTarget? declaration.path)
-      match patterns with
-      | [] => false
-      | first :: rest =>
+      match ValidationRelevanceScope.compressedSelector? entities declaration.path with
+      | none => false
+      | some compressed =>
           let bounds := declaration.repeatableScope.dropLast
           let ordinary := bounds.any fun level => model.repeatableGroups.any fun group =>
             group.level == level && group.repeatability != some 1
           if !ordinary then true else
-            let compressed := rest.foldl (fun acc next =>
-              { acc with indices := acc.indices.zipWith (fun a b => if a == b then a else .all) next.indices }) first
             compressed.matchesBoundSubtree model bounds outer &&
               compressed.wildcardsLevels model [if pair.errorField == pair.leftDeclaration.id then
                 pair.groups.leftGroup.level else pair.groups.rightGroup.level]
@@ -116,7 +113,7 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
       (fun rowOuter row _ =>
         let custom := rule.pair.customConditions registry view.index.base (.partialEntities view.relevance)
           view.generatedFormalFailures row rowOuter
-        rule.condition.evalVerdictExcept (fun leaf => ParallelFieldLeaf.evalWith rule.pair
+        rule.condition.evalReached (fun leaf => ParallelFieldLeaf.evalWith rule.pair
           (fun field => do
             let declaration := rule.pair.declaration field
             if row.left.group.path.isPrefixOf declaration.groupPath then

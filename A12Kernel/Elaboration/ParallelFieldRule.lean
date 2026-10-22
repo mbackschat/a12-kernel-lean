@@ -639,6 +639,32 @@ def CheckedParallelFieldPair.customConditions (pair : CheckedParallelFieldPair m
     (CustomValidationInvocation.ofDocument document relevance (pair.customErrorPointer row outer)
       generatedFormalFailures)
 
+/-- Whether a leaf enables the classification pass, as its ordinary counterpart does
+(`ValidationConditionLeaf.requiresClassificationPass`). Of these, only the fill quantifier is measured
+on this carrier: `P01` of the custom-condition call capture calls its callback twice. -/
+def ParallelFieldLeaf.requiresClassificationPass : ParallelFieldLeaf model → Bool
+  | .groupPresence op reference => !reference.isRoot || op == .notFilled
+  | .presence _ op => op == .notFilled
+  | .numeric .. | .comparison _ => true
+  | .fill op _ _ => match op with
+    | .allFieldsFilled | .moreThanOneFieldFilled => false
+    | _ => true
+  | .customCondition _ | .valuesNotUnique _ => false
+  | .flat condition _ => (ValidationConditionLeaf.flat (model := model) condition).requiresClassificationPass
+  | .ordinary leaf => leaf.requiresClassificationPass
+
+/-- A tree holding a custom leaf reaches it as the generated rule does: a Boolean pass that ends an
+`And` at a non-firing operand, then the classification pass only when the tree holds and enables it
+(`ConditionTree.evalObservedM`). `P01`'s callback is called only at the joined row where its fill
+quantifier fires, and `M04` stays silent where every key has both sides filled (rows `f-full` and
+`r1-rows23` of the custom-condition call capture). Other trees keep the verdict fold and its UNKNOWN. -/
+def ParallelFieldCondition.evalReached (condition : ParallelFieldCondition model)
+    (evalLeaf : ParallelFieldLeaf model → Except ParallelPresenceRuleEvaluationError Verdict) :
+    Except ParallelPresenceRuleEvaluationError Verdict :=
+  if condition.anyLeaf (fun | .customCondition _ => true | _ => false) then
+    condition.evalObservedM (condition.anyLeaf ParallelFieldLeaf.requiresClassificationPass) evalLeaf
+  else condition.evalVerdictExcept evalLeaf
+
 /-- The failure the rule's whole-rule handler catches: a reached custom condition no factory registers (spec/11 §14). -/
 def ParallelPresenceRuleEvaluationError.caughtByRule : ParallelPresenceRuleEvaluationError → Bool
   | .customCondition (.missingRegistration _) => true
@@ -663,7 +689,7 @@ def CheckedParallelFieldRule.evalFull (rule : CheckedParallelFieldRule model)
     (registry : CustomValidationRegistry model := {}) (world : Option World := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) :=
   rule.pair.evalWith rule.condition
-    (fun outer row view => rule.condition.evalVerdictExcept
+    (fun outer row view => rule.condition.evalReached
       (ParallelFieldLeaf.eval rule.pair row view outer
         (rule.pair.customConditions registry view.base .all [] row outer) world))
     preliminary outer messageCache (caught := ParallelPresenceRuleEvaluationError.caughtByRule)

@@ -17,12 +17,12 @@
 - `limit`: General population replay has no custom registry, so the 160 comparisons are purpose-specific readback, not a population gain. Conversion-enabled presentation profiles, host grapheme segmentation and validator algorithms remain explicit host inputs; no new host implementation is inferred.
 
 <a id="src-undeclared-document-members"></a>
-#### The Kernel's Document JSON conversion drops undeclared string members, objects and row keys without a finding, measured 2026-10-22
+#### The Kernel's Document JSON conversion drops an undeclared string or object of a fixed group and an undeclared string key of a row without a validation finding, measured 2026-10-22
 
 - `producer`: the [call capture](model-structure-and-declaration-probes.md#src-custom-condition-calls)'s rows `f-extra` and `f-full`; the probe hands the document text to the Kernel's `IDocumentV2Serializer.deserializeV2` and discards its notifications (`RuntimeLaws.deserializeV2` at a12-dmkits `09f1352e5`).
 - `result`: `doc-extra` is `doc-full` plus a string `Ghost` in the fixed group `Claim`, an object `Phantom` there and a key `Extra` in the first `Items` row; both strategies report identical messages and callback calls for the two documents.
 - `local`: the [document reader](../../A12Kernel/Reference/Dm/Document.lean) drops those shapes, at the document root too, which is unmeasured, and keeps refusing other undeclared JSON kinds and a declared group of the wrong kind; [capture locks](../../A12Kernel/Reference/Dm/CustomConditionCaptureLocks.lean) read both documents alike.
-- `limit`: an undeclared array, number, boolean or `null`, and any notification the conversion raises, are unmeasured on this route.
+- `limit`: an undeclared array, number, boolean or `null`, an undeclared object inside a row, any undeclared member at the document root, and any notification the conversion raises, are unmeasured on this route.
 - `sync`: [SPEC-2026-10-22-02](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-22-02).
 
 <a id="src-technical-length-k13"></a>

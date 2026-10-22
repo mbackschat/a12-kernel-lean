@@ -147,10 +147,24 @@ example : routes.all (fun route =>
     (reachless.bind fun checked => (route (rule (custom ++ " And " ++ bothFilled)) dm checked {})
       |>.bind caught) == some [row 1]) = true := by native_decide
 
--- A fill quantifier's non-firing result is UNKNOWN, not a decided false, so it does not end an `And`.
+-- A tree with a custom leaf takes the generated rule's Boolean pass: a fill quantifier that does not
+-- fire ends the `And` before the leaf, though its verdict alone is UNKNOWN (rule `M04`, row
+-- `r1-rows23`). The report then lands at the first joined key's error row, Demand row 2 when that
+-- key is `x` (`r2-order`), and at the unknown coordinate when the first key is Supply-only
+-- (`r3-supply-first`).
+private def keysFilled := document [("x", "1"), ("y", "4")] [("x", "2"), ("y", "3")]
+private def keyOrder := document [("y", ""), ("x", "1")] [("x", "2"), ("y", "3")]
+private def supplyFirst := document [("B", "")] [("A", ""), ("B", "2")]
+
 example : routes.all (fun route =>
     (reaching.bind fun checked => (route (rule (control ++ " And " ++ custom)) dm checked {})
-      |>.bind caught) == some [row 1]) = true := by native_decide
+      |>.bind errorCoordinates) == some [] &&
+    (keysFilled.bind fun checked => (route (rule (control ++ " And " ++ custom)) dm checked {})
+      |>.bind errorCoordinates) == some [] &&
+    (keyOrder.bind fun checked => (route (rule (control ++ " And " ++ custom)) dm checked {})
+      |>.bind caught) == some [row 2] &&
+    (supplyFirst.bind fun checked => (route (rule (control ++ " And " ++ custom)) dm checked {})
+      |>.bind caught) == some [unmatched]) = true := by native_decide
 
 -- Unmatched Demand key D has no Demand row: its error pointer carries the unknown coordinate.
 private def pointerIs (coordinates : List MessageRepetitionCoordinate) :

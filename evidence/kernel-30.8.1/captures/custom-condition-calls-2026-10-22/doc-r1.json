@@ -1,0 +1,39 @@
+{
+ "Claim": {
+  "Note": "n",
+  "Items": [
+   {
+    "Name": "a",
+    "Qty": "1"
+   },
+   {
+    "Name": "b",
+    "Qty": "1"
+   },
+   {
+    "Name": "c",
+    "Qty": "3"
+   }
+  ],
+  "Demand": [
+   {
+    "Department": "x",
+    "Headcount": "1"
+   },
+   {
+    "Department": "y",
+    "Headcount": "4"
+   }
+  ],
+  "Supply": [
+   {
+    "Department": "x",
+    "Headcount": "2"
+   },
+   {
+    "Department": "y",
+    "Headcount": "3"
+   }
+  ]
+ }
+}

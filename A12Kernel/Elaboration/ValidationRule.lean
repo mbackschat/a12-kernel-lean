@@ -707,11 +707,10 @@ def evalOrdinaryRepeatablePartialPrepared
       else
         rule.repetitionNotUniqueResults checked preliminary.relevance
           admittedEnvironments
-    -- A partial iterator starts at its first relevant row (custom-condition call capture, `m-row3`).
-    let failureErrorPath ← match admittedEnvironments with
-      | [] => pure []
-      | first :: _ =>
-          rule.errorPathAt first
+    let failureErrorPath ← match preliminary.relevance.iteratorStart? model rule.errorDeclaration.path
+        rule.partialErrorBoundLevels environments with
+      | none => pure []
+      | some first => rule.errorPathAt first
     let rec evaluate : List Env → Except OrdinaryRepeatableRuleEvaluationError
         (List (Env × PartialRuleOutcome))
       | [] => pure []

@@ -1,0 +1,25 @@
+{
+ "Claim": {
+  "Note": "n",
+  "Stage": "s",
+  "Demand": [
+   {
+    "Department": "y"
+   },
+   {
+    "Department": "x",
+    "Headcount": "1"
+   }
+  ],
+  "Supply": [
+   {
+    "Department": "x",
+    "Headcount": "2"
+   },
+   {
+    "Department": "y",
+    "Headcount": "3"
+   }
+  ]
+ }
+}

@@ -96,7 +96,8 @@ private def partialRule (scope : ValidationRelevanceScope) : Option (Option Verd
   let registry : CustomValidationRegistry model := {
     configured := some fun name => if name == "Check" then some fun input =>
       input.errorPointer == MessagePointer.ofCellAddr { field := 1, path := [] } &&
-      input.formallyIncorrect == [{ field := 2, path := [] }] &&
+      -- The malformed `Other` lies outside the partial call's set, which checks it nowhere (KF52).
+      input.formallyIncorrect == [] &&
       input.data.storedTextAt { field := 1, path := [] } == some "ready" &&
       (match input.relevance with | .all => false | .partialEntities actual => actual == scope)
     else none }
@@ -138,7 +139,7 @@ private def repeatedRule (isPartial : Bool) : Option (List MessagePointer) := do
     configured := some fun name => if name == "Check" then some fun input =>
       input.errorPointer == MessagePointer.ofCellAddr { field := 3, path := [2] } &&
       input.data.storedTextAt { field := 3, path := [2] } == some "b" &&
-      input.formallyIncorrect == [{ field := 2, path := [] }] &&
+      input.formallyIncorrect == (if isPartial then [] else [{ field := 2, path := [] }]) &&
       (match input.relevance with | .all => !isPartial | .partialEntities actual => isPartial && actual == scope)
     else none }
   let unbound := rule.withCustomConditions {
@@ -206,11 +207,12 @@ private def generatedFormalInputs (includeGenerated : Bool) : Option Verdict := 
     else { path := ["Form", "Error"], indices := [.all, .all] }]
   let registry : CustomValidationRegistry generatedModel := {
     configured := some fun _ => some fun input =>
-      input.formallyIncorrect.contains { field := 2, path := [] } &&
+      -- `Other` is malformed but outside the narrower set, so that call never checks it (KF52).
+      input.formallyIncorrect.contains { field := 2, path := [] } == includeGenerated &&
       input.formallyIncorrect.contains { field := 3, path := [] } == includeGenerated &&
       input.formallyIncorrect.contains { field := 4, path := [1] } == includeGenerated &&
       input.formallyIncorrect.contains { field := 4, path := [2] } == includeGenerated &&
-      input.formallyIncorrect.length == (if includeGenerated then 4 else 1) }
+      input.formallyIncorrect.length == (if includeGenerated then 4 else 0) }
   match ← (rule.evalAddressedPartial document scope (registry := registry)).toOption with
   | .skipped => none
   | .evaluated result => pure result.verdict

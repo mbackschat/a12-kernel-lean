@@ -1,0 +1,780 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "K18R_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "r1-rows23",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "E01",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name",
+        "Claim/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "E01",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name",
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "E01",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Name",
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M02",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M03",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "E01",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M02",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M03",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "E01",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items/Name",
+        "Claim/Items/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "E01",
+       "field": "Claim/Items[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[2]/Name",
+        "Claim/Items[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "E01",
+       "field": "Claim/Items[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Items[3]/Name",
+        "Claim/Items[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M01",
+       "field": "Claim/Items/Name",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M02",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M03",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "E01",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M02",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M03",
+       "field": "Claim/Items/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "r2-order",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "M04",
+       "field": "Claim/Demand[2]/Headcount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "M04",
+       "field": "Claim/Demand[2]/Headcount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K01",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "M04",
+       "field": "Claim/Demand[2]/Headcount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "M04",
+       "field": "Claim/Demand[2]/Headcount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K01",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "r3-supply-first",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "M04",
+       "field": "/Claim[1]/Demand[-5]/Headcount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "M04",
+       "field": "/Claim[1]/Demand[-5]/Headcount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K01",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "M04",
+       "field": "/Claim[1]/Demand[-5]/Headcount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "M04",
+       "field": "/Claim[1]/Demand[-5]/Headcount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K01",
+       "relevant": [
+        "Claim[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "r4-formal",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount"
+       ],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K01",
+       "relevant": [
+        "/Claim[0]/Note"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M06",
+       "field": "Claim/Stage",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Claim/Amount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Amount"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "M05",
+       "field": "Claim/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Claim/Note"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "K01",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Claim/Amount"
+       ],
+       "errorEntity": "Claim/Note",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "K01",
+       "relevant": [
+        "/Claim[0]/Note"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Claim/Note",
+       "result": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

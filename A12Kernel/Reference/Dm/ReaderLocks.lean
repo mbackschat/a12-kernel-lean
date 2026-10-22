@@ -77,8 +77,8 @@ example :
   native_decide
 
 /- An object member the model declares no field below is dropped, as the Kernel's conversion drops
-it ([checkpoint](../../../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members));
-an undeclared array stays refused. -/
+one in a fixed group ([checkpoint](../../../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members));
+the root's `Nope` locks this reader's unmeasured drop there, and an undeclared array stays refused. -/
 example :
     let dm : DmModel := { flat := model flag, rules := [], computations := [], conditionLanguage := "en_US",
                           refusals := [] }
