@@ -20,8 +20,6 @@ The compatibility headings below preserve existing links to specialized procedur
 
 ## Command ladder
 
-Run every local `lake` command, including `lake env lean`, as `./scripts/lake.sh` with the same arguments. The wrapper refuses to start while another Lean build holds the host-wide lock and pins the thread count, as its header explains; on a refusal, wait for the other build instead of bypassing it. The lock cannot see a Lean build inside a Docker container, so until [plan item B03](PLAN.md#build-audit-deferrals) closes, also confirm that `docker ps -q` prints nothing before an integrated build or `lake test`. Commands below spelled with plain `lake` take the same substitution.
-
 Pay only for the narrowest rung that can answer the current question:
 
 1. **Red/green loop:** build the focused semantic-family Lake target, for example `lake build A12Kernel.Conformance.NumericValidation.Comparison`, not its import-only `A12Kernel.Conformance.NumericValidation` umbrella. This refreshes changed imported modules before checking the consumer; direct `lake env lean` elaboration may otherwise read an older built dependency. Stay on this rung while changing the capsule. If the smallest target is an umbrella or a legacy file containing unrelated families, extract the family being changed before extending it; focused compilation is part of the module-boundary acceptance criterion.
@@ -194,12 +192,12 @@ For checked lowering, distinguish static rejection from runtime routing. Reject 
 Run a focused executable file after its imports have been built:
 
 ```sh
-./scripts/lake.sh build A12Kernel.Semantics.Iteration
-./scripts/lake.sh env lean A12Kernel/Conformance/Iteration.lean
-./scripts/lake.sh build A12Kernel.Semantics.Correlation
-./scripts/lake.sh env lean A12Kernel/Conformance/Correlation.lean
-./scripts/lake.sh build A12Kernel.Elaboration.Correlation
-./scripts/lake.sh env lean A12Kernel/Conformance/CorrelationElaboration.lean
+lake build A12Kernel.Semantics.Iteration
+lake env lean A12Kernel/Conformance/Iteration.lean
+lake build A12Kernel.Semantics.Correlation
+lake env lean A12Kernel/Conformance/Correlation.lean
+lake build A12Kernel.Elaboration.Correlation
+lake env lean A12Kernel/Conformance/CorrelationElaboration.lean
 ```
 
 Run `lake build` before handoff so the same examples also pass through the actual library import graph.
@@ -210,7 +208,7 @@ Run `lake build` before handoff so the same examples also pass through the actua
 
 ```sh
 printf 'import A12Kernel.Semantics.NumericAggregate\nopen A12Kernel\n#eval repr (someQuery args)\n' \
-  | ./scripts/lake.sh env lean /dev/stdin
+  | lake env lean /dev/stdin
 ```
 
 Run it from the repository root so Lake resolves the package; a path outside the package loses the build search path. This leaves nothing to clean up, so it never creates an untracked project file and never needs a deletion. Use it before writing expected values rather than inferring a fixture's legality from a failing case: probe first, then write the case. `#eval` needs a `Repr` instance and aborts on a term that depends on `sorry`, so project a decidable view when the type has none. A probe resolves imports from built artefacts, not sources, so it still elaborates against a module deleted since the last build: on 2026-10-22 one such import succeeded from its leftover `.olean`, while `lake build` rejected the same import as a bad import. Check that every module a probe imports still has its source file.
@@ -314,8 +312,8 @@ When coordinating an authorized peer handoff or reconciling a returned result, r
 Run this Tier 1 gate for an internal semantic capsule:
 
 ```sh
-./scripts/lake.sh build
-./scripts/lake.sh test
+lake build
+lake test
 ./scripts/check-lean-trust.sh
 git diff --check
 ./scripts/check-spec-sync.sh
@@ -337,12 +335,12 @@ When `check-spec-sync.sh` reports a behavioral `spec/` change, classify its sync
 Run the complete Tier 3 gate only when the change affects a public process, independent-consumer shipment, qualification mechanism, packaging, or release—or before an actual release:
 
 ```sh
-./scripts/lake.sh build
-./scripts/lake.sh test
-./scripts/lake.sh exe checkReferenceProcess
-./scripts/lake.sh exe checkBoundedProcess
-./scripts/lake.sh exe checkCandidateConformance --self-test --suite reference/single-group-correlation-v2.conformance.json
-./scripts/lake.sh exe checkCandidateConformance --self-test --suite reference/flat-validation-empty-logic-v2.conformance.json
+lake build
+lake test
+lake exe checkReferenceProcess
+lake exe checkBoundedProcess
+lake exe checkCandidateConformance --self-test --suite reference/single-group-correlation-v2.conformance.json
+lake exe checkCandidateConformance --self-test --suite reference/flat-validation-empty-logic-v2.conformance.json
 ./scripts/check-lean-trust.sh
 git diff --check
 ./scripts/check-spec-sync.sh

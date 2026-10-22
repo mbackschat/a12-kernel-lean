@@ -349,20 +349,20 @@ if checked_grep -En -- "$banned_trust_pattern" \
   exit 1
 fi
 
-if ! ./scripts/lake.sh build A12Kernel A12Kernel.Trust.Environment >/dev/null; then
+if ! lake build A12Kernel A12Kernel.Trust.Environment >/dev/null; then
   echo "failed to refresh the elaborated environment under audit" >&2
   exit 1
 fi
 
 adversarial_probe_output=""
-if ! adversarial_probe_output="$(./scripts/lake.sh env lean A12Kernel/Trust/Adversarial.lean 2>&1)"; then
+if ! adversarial_probe_output="$(lake env lean A12Kernel/Trust/Adversarial.lean 2>&1)"; then
   printf '%s\n' "$adversarial_probe_output" >&2
   echo "environment trust adversarial probes failed" >&2
   exit 1
 fi
 
 audit=""
-if ! audit="$(./scripts/lake.sh env lean A12Kernel/TrustAudit.lean 2>&1)"; then
+if ! audit="$(lake env lean A12Kernel/TrustAudit.lean 2>&1)"; then
   printf '%s\n' "$audit" >&2
   echo "failed to elaborate the trusted theorem audit" >&2
   exit 1
