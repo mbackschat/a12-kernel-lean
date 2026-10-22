@@ -341,6 +341,19 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `limit`: Static admission only, on one model; H models are not measured. Row `o04` reported the error field outside the iteration and drew `MVK_NO_WILDCARD`, so it settles no order.
 - `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/iteration-guard-2026-10-22/) retains both models, the batch, its observations and a code-only projection of the `model check` rows. [Manifest](../../evidence/kernel-30.8.1/captures/iteration-guard-2026-10-22/MANIFEST.sha256).
 
+<a id="src-iteration-binding-k04"></a>
+#### A constant selection is one independent slot in the field-fill guard, a field-keyed selection guards its key's row, and a parallel iteration binds the error field only through an unstarred reference, measured 2026-10-23
+
+- `producer`: a12-dmkits `09f1352e5d24e9d661f692ddc5b2fdcf65a786e6`, measurement checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1` built and runtime. Three `batch --observations` runs: 15 `rule check` and 10 `computation add --dry-run` children on the order model, six rules on a staffing plan and two on a rota; each model passes `model check`.
+- `model`: The [K04 order model](#src-iteration-guard-k04) with `Wraps` holding `Bows`, three rows keyed by `BowNo`. The plan's `Demand` and `Supply` repeat six times keyed by `Shift`; the rota nests both in `Weeks`, four rows without a key. Each rule sits at its model's root group.
+- `rows`: Rows `s1`–`s9`, `k01`–`k10`, `b1`–`b6` and `w1`–`w2` repeat the [October 22c letter](inbound-handbacks.md#src-inbound-2026-10-22c) and each draws the class it reports. Rows `d1`–`d6` are this project's discriminators.
+- `selections`: `MoreThanOneFieldFilled` over a row field is admitted beside one constant selection and refuses beside two, so each selection is one independent slot (`s4`, `s5`). `NoFieldFilled` over a row field refuses beside a constant or a field-keyed selection, as beside any field (`s3`, `d5`). A constant selection is admitted below an unkeyed iterated row, as a positive guard there or as a negative beside one (`s6`, `s7`). A field-keyed selection is admitted as a negative beside a row positive and guards its key's row as a positive (`s8`, `d6`).
+- `binding`: A rule whose only error-field references are starred and which reads the keyed `Picks` unstarred draws `MVK_ERROR_FIELD_AND_ITERATION_INVALID`, in one field list or as a starred `Sum` beside a `Picks` positive, and is admitted once an unstarred error-field positive is conjoined (row `a09` of the K04 capture, `d3`, `d4`). Beside the unkeyed `Wraps` the same two shapes draw `MVK_NO_WILDCARD` (`d1`, `d2`), so the class follows the parallel iteration rather than the starred reference. The plan and rota rows draw it beside a named row positive and below an unkeyed outer row too (`b1`–`b3`, `w1`).
+- `computations`: Every precondition is admitted, a parallel pair computing the nested part included (`k01`–`k08`); a nested part read computing the line draws `MVK_NO_WILDCARD` (`k09`, `k10`).
+- `lean`: At `6e6ad094`, 19 rows agree. Three field-fill rows beside a selection are admitted, the four selection rows are refused with no class, the guarded nested pair and its computation twin are refused with no class, and the five binding rows draw no class or another outcome.
+- `limit`: Static admission only. `rule check` rows carry the instrument's own `RK_` codes beside admitted Kernel verdicts on `s4`, `s6` and `d6`; they are not Kernel classes.
+- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/iteration-binding-2026-10-23/) retains the three models, the ten computation specs, the batches and their observations. [Manifest](../../evidence/kernel-30.8.1/captures/iteration-binding-2026-10-23/MANIFEST.sha256).
+
 <a id="src-parallel-instance-leaves"></a>
 #### Ordinary leaves and guards of a key join read one joined row, an unmatched partner reading as empty, measured 2026-10-14
 

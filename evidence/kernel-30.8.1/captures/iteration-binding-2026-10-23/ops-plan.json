@@ -1,0 +1,80 @@
+[
+ {
+  "id": "b1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Plan/Demand/Headcount",
+   "--group=/Plan",
+   "--condition=FieldsNotCollectivelyFilled(Demand*/Headcount, Supply/Headcount)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "b2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Plan/Demand/Headcount",
+   "--group=/Plan",
+   "--condition=FieldFilled(Demand/Note) And NoFieldFilled(Demand*/Headcount, Supply/Headcount)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "b3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Plan/Demand/Headcount",
+   "--group=/Plan",
+   "--condition=Sum(Demand*/Headcount) > 0 And FieldFilled(Supply/Note)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "b4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Plan/Demand/Headcount",
+   "--group=/Plan",
+   "--condition=FieldFilled(Demand/Headcount) And FieldsNotCollectivelyFilled(Demand*/Headcount, Supply/Headcount)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "b5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Plan/Demand/Headcount",
+   "--group=/Plan",
+   "--condition=AtLeastOneFieldFilled(Demand/Headcount, Supply/Headcount)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "b6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Plan/Demand/Headcount",
+   "--group=/Plan",
+   "--condition=Sum(Demand*/Headcount) > 0",
+   "--message=en_US=x"
+  ]
+ }
+]

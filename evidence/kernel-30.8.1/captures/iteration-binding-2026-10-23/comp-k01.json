@@ -1,0 +1,1 @@
+{"computedField": "/Order/Lines/Price", "group": "/Order", "alternatives": [{"operation": "1"}], "messages": [{"locale": "en_US", "text": "probe"}], "commonPrecondition": "FieldNotFilled(Lines/Sku)"}

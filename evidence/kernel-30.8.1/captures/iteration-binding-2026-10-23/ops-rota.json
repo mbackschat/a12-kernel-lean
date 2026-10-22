@@ -1,0 +1,28 @@
+[
+ {
+  "id": "w1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Plan/Weeks/Demand/Headcount",
+   "--group=/Plan",
+   "--condition=NoFieldFilled(Weeks/Demand*/Headcount, Weeks/Supply/Headcount)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "w2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Plan/Weeks/Demand/Headcount",
+   "--group=/Plan",
+   "--condition=NoFieldFilled(Weeks/Demand/Headcount, Weeks/Supply/Headcount)",
+   "--message=en_US=x"
+  ]
+ }
+]

@@ -1,0 +1,287 @@
+[
+ {
+  "id": "s1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Lines/Qty) And FieldFilled(Lines/Sku For \"1\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "s2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Qty) And FieldNotFilled(Lines/Sku For \"1\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "s3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=NoFieldFilled(Lines/Sku, Picks/Ref For \"1\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "s4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=MoreThanOneFieldFilled(Lines/Qty, Picks/Ref For \"1\") And FieldNotFilled(Lines/Sku)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "s5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=MoreThanOneFieldFilled(Lines/Qty, Picks/Ref For \"1\", Picks/Ref For \"2\") And FieldNotFilled(Lines/Sku)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "s6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Wraps/Style",
+   "--group=/Order",
+   "--condition=FieldFilled(Wraps/Bows/Shade For \"a\") And FieldNotFilled(Wraps/Style)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "s7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Wraps/Style",
+   "--group=/Order",
+   "--condition=FieldFilled(Wraps/Style) And FieldNotFilled(Wraps/Bows/Shade For \"a\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "s8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Qty) And FieldNotFilled(Picks/Ref For Lines/LineNo)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "s9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Parts/Count",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Parts/Count) And (NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)\n) And [Lines/Parts/Count] != 1",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "d1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldsNotCollectivelyFilled(Lines*/Sku, Wraps/Style)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "d2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=Sum(Lines*/Qty) > 0 And FieldFilled(Wraps/Style)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "d3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=Sum(Lines*/Qty) > 0 And FieldFilled(Picks/Ref)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "d4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Sku) And FieldsNotCollectivelyFilled(Lines*/Sku, Picks/Ref)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "d5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=NoFieldFilled(Lines/Sku, Picks/Ref For Lines/LineNo)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "d6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Qty",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Lines/Qty) And FieldFilled(Picks/Ref For Lines/LineNo)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "k01",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-k01.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k02",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-k02.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k03",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-k03.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k04",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-k04.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k05",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-k05.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k06",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-k06.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k07",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-k07.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k08",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-k08.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k09",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-k09.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "comp-k10.json",
+   "--dry-run"
+  ]
+ }
+]

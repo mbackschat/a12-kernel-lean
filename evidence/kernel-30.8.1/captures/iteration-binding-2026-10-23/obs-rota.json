@@ -1,0 +1,24 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+    "state" : "CLEAN"
+  },
+  "model" : "6bc4644ce568e1ce9b8598afe6be81f6b70914ce01470621d190b51211bdf3cb",
+  "observations" : [ {
+    "id" : "w1",
+    "inputHash" : "7c7bb3ad7fbb8a67d9d72af1f73ac01997c772d7dce0c074232a6f7690b5b170",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_AND_ITERATION_INVALID" ]
+  }, {
+    "id" : "w2",
+    "inputHash" : "2a10082498031f5fda60d6d117242e73d456f00ea007ea5006392c50b5d739b1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARALLEL_ITERATION_INVALID" ]
+  } ]
+}
