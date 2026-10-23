@@ -162,7 +162,7 @@ def rawScalarType (operator : RawScalarOperator) (reference : Reference)
       match declaration.policy.kind with
       | .string =>
           if declaration.stringPatternSource != some asciiDigitsPatternSource ||
-              !declaration.stringPolicy.maxLength.any (· ≤ maxFieldValueAsNumberDigits) then
+              !declaration.writtenStringMaxLength.any (· ≤ (maxFieldValueAsNumberDigits : Int)) then
             refuse "Having" KernelStaticDiagnostic.noConvertInNumber.kernelCode
           if declaration.isRawString then refuse "Having" KernelStaticDiagnostic.rawTypeOperandInvalid.kernelCode
       | .enumeration => pure ()

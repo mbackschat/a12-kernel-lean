@@ -210,6 +210,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
       pure { base with
         stringPolicy := { lineBreaksPermitted
                           minLength := nat? body "minLength", maxLength := nat? body "maxLength" }
+        stringSignedMaxLength := (body.getObjValAs? Int "maxLength").toOption.filter (· < -1)
         stringPatternSource := str? body "pattern"
         stringValueMode := if noValueValidation then .raw else .evaluated }
   | "NumberType" =>

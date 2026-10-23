@@ -69,7 +69,7 @@ private def stringPolicyError? : List FlatFieldDecl → Option ResolveError
       | .string, none =>
           if declaration.stringValueMode == .raw && !policy.lineBreaksPermitted then
             some (.rawStringRequiresLineBreakPermission declaration.path)
-          else if declaration.stringValueMode == .raw && policy.minLength.isSome then
+          else if declaration.stringValueMode == .raw && policy.minLength.any StringFieldPolicy.lengthMemberInRange then
             some (.rawStringForbidsMinimumLength declaration.path)
           else if policy.minimumExceedsMaximum then
             some (.stringMinimumExceedsMaximum declaration.path)

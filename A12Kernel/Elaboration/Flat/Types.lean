@@ -236,6 +236,10 @@ structure FlatFieldDecl where
   policy : FieldPolicy
   stringValueMode : StringValueMode := .evaluated
   stringPolicy : StringFieldPolicy := {}
+  /-- A String `maxLength` written below `-1`, signed in the members' range. `stringPolicy` holds only
+  nonnegative bounds and no law of the type reads a signed one, but a rule reader judging with the
+  written maximum does (peer KF556). -/
+  stringSignedMaxLength : Option Int := none
   /-- Exact declared pattern source retained independently of condition-pattern execution. String-value consumers receive the declaration capability here and rely on their prepared or caller-checked context for pattern execution. -/
   stringPatternSource : Option String := none
   /-- Client-SPI String capability that bypasses constructor digit-pattern admission (spec/05 §3). This is not an Enumeration declaration or a DM-JSON property. -/
@@ -269,6 +273,11 @@ def toStringValueField? (declaration : FlatFieldDecl) : Option FlatStringField :
 
 def isRawString (declaration : FlatFieldDecl) : Bool :=
   declaration.policy.kind == .string && declaration.stringValueMode == .raw
+
+/-- The String `maxLength` as written, in range or not, `-1` read as absent: what a rule reader judges
+with (peer KF556), unlike the type's own laws. -/
+def writtenStringMaxLength (declaration : FlatFieldDecl) : Option Int :=
+  (declaration.stringPolicy.maxLength.map Int.ofNat).orElse fun _ => declaration.stringSignedMaxLength
 
 /-- A Date declaring a partial precision. Only a Date carries one, since the declaration layer
     refuses a partial mode on a Time or a DateTime (`TemporalTargetPolicy.errorFor?`). -/

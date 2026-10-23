@@ -53,13 +53,6 @@ inductive DeclarationAdmissionFailure where
   | notifications (findings : List DeclarationNotification)
   deriving Repr, BEq, DecidableEq
 
-/-- Java's `String.trim`: every leading and trailing character at or below U+0020. A no-break space
-and an em space are kept, which the alphabet and boolean binding rows measure (a12-dmkits handbacks of
-2026-10-18 and 2026-10-21). -/
-def javaTrim (text : String) : String :=
-  let trim (characters : List Char) := characters.dropWhile (·.toNat ≤ 0x20)
-  String.ofList (trim (trim text.toList).reverse).reverse
-
 namespace ExecutableDeclaration
 
 /-- Java blankness differs from both DSL whitespace and no-break-space trimming (spec/01 §3.2). -/

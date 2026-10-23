@@ -47,6 +47,15 @@ example : rejectsWith {
   } (.unknownDefaultStoredToken "C") := by
   native_decide
 
+/- The S-value law reads both sides after Java's `trim` and asks nothing of a blank default, while a
+no-break space is no trimmed character and a case difference names nothing (spec/01 §1.3). -/
+example : [" B", "B\t", " ", "\t"].all (fun token => isAccepted { storedTokens := ["A", "B"], defaultStoredToken := some token }) ∧
+    isAccepted { storedTokens := [" B"], defaultStoredToken := some "B" } ∧
+    rejectsWith { storedTokens := ["A", "B"], defaultStoredToken := some "b" } (.unknownDefaultStoredToken "b") ∧
+    rejectsWith { storedTokens := ["A", "B"], defaultStoredToken := some "\u00A0B" }
+      (.unknownDefaultStoredToken "\u00A0B") := by
+  native_decide
+
 example : rejectsWith (declaration ["A"] [display "en" "B" "Bee"])
     (.unknownDisplayStoredToken "en" "B") := by native_decide
 

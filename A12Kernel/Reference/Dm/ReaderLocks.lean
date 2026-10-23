@@ -217,9 +217,11 @@ example : (readEnumDefault (some "a")).toOption = some (some "a") ∧
     (readEnumDefault (some "b")).toOption = some (some "b") ∧
     (readEnumDefault none).toOption = some none ∧
     (readEnumDefault (some .null)).toOption = some none ∧
-    (readEnumDefault (some "")).toOption = some none := by native_decide
+    (readEnumDefault (some "")).toOption = some none ∧
+    (readEnumDefault (some " b")).toOption = some (some " b") ∧
+    (readEnumDefault (some " ")).toOption = some (some " ") := by native_decide
 
-example : [Json.str "outside", toJson (1 : Nat), Json.bool true,
+example : [Json.str "outside", Json.str "B", toJson (1 : Nat), Json.bool true,
     Json.arr #[], Json.mkObj []].all (fun value => !(readEnumDefault (some value)).isOk) := by
   native_decide
 

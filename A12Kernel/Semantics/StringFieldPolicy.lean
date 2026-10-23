@@ -93,9 +93,18 @@ def checkText (policy : StringFieldPolicy) (text : String) :
     Except StringFieldError (Option String) :=
   policy.checkTextWithPattern none text
 
+/-- The largest String, Custom or Number length member in range; the smallest is `1` (spec/01 §1). -/
+def lengthMemberMaximum : Nat := 99999
+
+/-- Whether a nonnegative length member lies in its range. A member outside it binds no law of the type
+(spec/01 §1), though the formal check and a key still judge a positive one. -/
+def lengthMemberInRange (bound : Nat) : Bool :=
+  0 < bound && bound ≤ lengthMemberMaximum
+
+/-- Whether both bounds are in range and the minimum exceeds the maximum. -/
 def minimumExceedsMaximum (policy : StringFieldPolicy) : Bool :=
   match policy.minLength, policy.maxLength with
-  | some minimum, some maximum => maximum < minimum
+  | some minimum, some maximum => lengthMemberInRange minimum && lengthMemberInRange maximum && maximum < minimum
   | _, _ => false
 
 def lineBreakMaximumInvalid (policy : StringFieldPolicy) : Bool :=

@@ -390,10 +390,17 @@ private def reanchorSelectedError (rule : CheckedResolvedValidationRule model)
   pure (.fired { message with errorAddress := { message.errorAddress with
     coordinates := message.errorAddress.coordinates.set position coordinate } })
 
-private def fullMessageReferenceInputs (checked : CheckedDocument model) :
-    Except OrdinaryRepeatableRuleEvaluationError MessageReferenceInputs := do
-  let preliminary ← checked.applyFullIndexPreliminary |>.mapError .preliminary
+private def fullMessageReferenceInputs (preliminary : CheckedIndexPreliminary model) :
+    Except OrdinaryRepeatableRuleEvaluationError MessageReferenceInputs :=
   preliminary.messageReferenceInputs |>.mapError .messageCache
+
+/-- Full validation's authored reads see the index defaults and generated index findings it staged
+before authored rules run (spec/10 §5), as the partial route reads its own preliminary view. The
+message cache stays with the preliminary of the original document, which appends the defaults after
+the original population (spec/08). -/
+private def fullPreliminary (checked : CheckedDocument model) :
+    Except OrdinaryRepeatableRuleEvaluationError (CheckedIndexPreliminary model) :=
+  checked.applyFullIndexPreliminary |>.mapError .preliminary
 
 /-- The addressed context of one partial instance, before any custom-condition callbacks. -/
 def _root_.A12Kernel.CheckedPartialPreliminary.addressedValidationContext
@@ -570,12 +577,13 @@ def evalOrdinaryRepeatablePartialAt
 
 private def evalOrdinaryRepeatableAt
     (rule : CheckedResolvedValidationRule model)
-    (checked : CheckedDocument model) (environment : Env)
+    (preliminary : CheckedIndexPreliminary model) (environment : Env)
     (failureErrorPath : List Nat)
     (repetitionNotUniqueResult? : Option RepetitionNotUniqueResult := none)
     (world : Option World := none)
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError OrdinaryRuleStep := do
+  let checked := preliminary.computationInput
   let _ ← rule.ordinaryRepeatableFieldIds.mapM fun field =>
     (checked.fullValidationAddressedCell environment field)
       |>.mapError .addressing
@@ -592,7 +600,7 @@ private def evalOrdinaryRepeatableAt
       context repetitionNotUniqueResult? with
   | .ok verdict => do
       let outcome ← rule.reanchorSelectedError environment (rule.core.emitAt errorPath verdict)
-        (fun _ => fullMessageReferenceInputs checked)
+        (fun _ => fullMessageReferenceInputs preliminary)
       pure (.next environment outcome)
   | .error (.inl error) => throw (.conditionAddressing error)
   | .error (.inr (.addressing error)) =>
@@ -609,6 +617,7 @@ def fullRowsAndRepetitionResults
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) :
     Except OrdinaryRepeatableRuleEvaluationError (List Env × List RepetitionNotUniqueResult) := do
+  let checked := (← fullPreliminary checked).computationInput
   let scope ← match rule.iteratedScope with
     | some scope => pure scope
     | none => throw .missingIterationScope
@@ -627,6 +636,7 @@ def evalOrdinaryRepeatableFull
       (List (Env × FlatRuleOutcome)) := do
   if !rule.condition.core.supportsOrdinaryIteration then
     throw .unsupportedCondition
+  let preliminary ← fullPreliminary checked
   let (environments, repetitionNotUniqueResults) ← rule.fullRowsAndRepetitionResults checked
   -- The generated rule handler surrounds the whole loop (CodeGenRuleDefinition.st), so a
   -- reached runtime failure keeps earlier messages and terminates before later row reads.
@@ -642,7 +652,7 @@ def evalOrdinaryRepeatableFull
         let result? := (repetitionNotUniqueResults.find? (·.row == environment)).orElse fun _ =>
           rule.condition.core.repetitionNotUniqueSource?.map fun _ =>
             { row := environment, verdict := .notFired, cluster := [] }
-        match ← rule.evalOrdinaryRepeatableAt checked environment failureErrorPath result? world registry with
+        match ← rule.evalOrdinaryRepeatableAt preliminary environment failureErrorPath result? world registry with
         | .next row outcome => pure ((row, outcome) :: (← evaluate remaining))
         | .abort row outcome => pure [(row, outcome)]
   evaluate environments
@@ -656,6 +666,8 @@ def evalOrdinaryOnceFull
       (Env × FlatRuleOutcome) := do
   if !rule.condition.core.supportsOrdinaryIteration then
     throw .unsupportedCondition
+  let preliminary ← fullPreliminary checked
+  let checked := preliminary.computationInput
   let environment ← rule.onceEnvironment
   -- A once rule whose error field lies in a repeatable root group runs with no content gate: the
   -- Kernel fires `Sum(/Rep*/P) < 5` declared on a `max 3` root once, at its first row, over a blank
@@ -683,7 +695,7 @@ def evalOrdinaryOnceFull
     (rule.core.evalAddressedFullAt context hasContent errorPath)
       |>.mapError .conditionAddressing
   let outcome ← rule.reanchorSelectedError environment outcome
-    (fun _ => fullMessageReferenceInputs checked)
+    (fun _ => fullMessageReferenceInputs preliminary)
   pure (environment, outcome)
 
 /-- Execute the once plan against an already-normalized partial preliminary view. A filtered rule skips before plan construction, an error path absent from the relevant set skips before condition reads, and an admitted path bypasses the full root-content gate. A once plan binds no repeatable level for this gate even though its message pointer defaults to the all-one environment. Relevance never creates the target row. -/

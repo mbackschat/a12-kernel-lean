@@ -36,11 +36,13 @@ def FlatFieldDecl.resolveFieldValueAsNumberSource
   match declaration.customType, declaration.policy.kind,
       declaration.enumeration, projectionRef with
   | none, .string, none, .stored =>
+      -- The gate judges the written maximum, out of range included: `0` and `-5` convert, `100000`
+      -- does not (peer KF556).
       match declaration.toStringValueField?, declaration.stringPatternSource,
-          declaration.stringPolicy.maxLength with
+          declaration.writtenStringMaxLength with
       | some field, some pattern, some maximum =>
           if pattern == asciiDigitsPatternSource &&
-              maximum ≤ maxFieldValueAsNumberDigits then
+              maximum ≤ (maxFieldValueAsNumberDigits : Int) then
             .ok { operand := .string field, scale := 0 }
           else
             .error .notConvertible

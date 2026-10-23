@@ -63,9 +63,10 @@ inductive IndexFieldType where
   | other
   deriving Repr, DecidableEq
 
-/-- **The non-repeatable branch's admitting shape.** The Kernel tests that the s-value is *set*, never
-that it names the declared value; the stronger reading is unreachable because a non-member s-value is
-refused by the model gate before any parameter is examined. -/
+/-- **The non-repeatable branch's admitting shape.** The Kernel tests that the s-value is *set*, a
+nonempty text, never that it names the declared value. The model gate refuses an s-value whose trim names
+no value before any parameter is examined, so the readings differ only on a blank s-value, which is set
+though it names nothing; that row is source-read (`checkNonRepIndexFieldType`), not measured. -/
 def IndexFieldType.admitsNonRepeatable : IndexFieldType → Bool
   | .enumeration valueCount sValueSet => valueCount == 1 && sValueSet
   | .other => false

@@ -12,6 +12,13 @@ def normalizeCrlfCharacters : List Char → List Char
 def normalizeEvaluatedString (value : String) : String :=
   String.ofList (normalizeCrlfCharacters value.toList)
 
+/-- Java's `String.trim`: every leading and trailing character at or below U+0020. A no-break space
+and an em space are kept, which the alphabet and boolean binding rows measure (a12-dmkits handbacks of
+2026-10-18 and 2026-10-21). -/
+def javaTrim (text : String) : String :=
+  let trim (characters : List Char) := characters.dropWhile (·.toNat ≤ 0x20)
+  String.ofList (trim (trim text.toList).reverse).reverse
+
 /-- Count UTF-16 code units, matching the JVM/JavaScript kernel boundary rather than Unicode scalar values or grapheme clusters. -/
 def utf16CodeUnitLength (value : String) : Nat :=
   value.foldl (fun units character =>

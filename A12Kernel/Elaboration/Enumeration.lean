@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.Enumeration
 import A12Kernel.Elaboration.EnumerationComparability
+import A12Kernel.Semantics.String
 
 /-! # A12Kernel.Elaboration.Enumeration — checked ordinary closed declarations
 
@@ -19,7 +20,8 @@ structure EnumerationDeclaration where
   storedTokens : List String
   displayFacts : List EnumerationDisplayFact := []
   categories : List EnumerationCategoryDeclaration := []
-  /-- The optional model-owned stored token used by eligible index-default staging. -/
+  /-- The optional model-owned default text used by eligible index-default staging, as written: a padded
+  or blank one is admitted by its trim yet staged untrimmed, so it need not be a stored token (peer KF574). -/
   defaultStoredToken : Option String := none
   deriving Repr, DecidableEq
 
@@ -49,11 +51,13 @@ private def firstDuplicate? : List String → Option String
   | value :: remaining =>
       if remaining.contains value then some value else firstDuplicate? remaining
 
+/-- The S-value law reads the default and the tokens after Java's `String.trim`, and asks nothing of a
+default that trims to nothing (spec/01 §1.3). -/
 private def invalidDefaultStoredToken? (storedTokens : List String) :
     Option String → Option EnumerationDeclarationError
   | none => none
   | some token =>
-      if storedTokens.contains token then none
+      if (javaTrim token).isEmpty || (storedTokens.map javaTrim).contains (javaTrim token) then none
       else some (.unknownDefaultStoredToken token)
 
 private def invalidDisplayFact? (storedTokens : List String) :
@@ -195,19 +199,21 @@ theorem elaborateEnumeration_declaration_eq
     rfl
   · contradiction
 
-/-- A checked S-value is an admitted stored token of that exact Enumeration declaration. -/
+/-- A checked S-value trims to nothing or to the trim of a stored token. It need not be a stored token
+itself, since staging keeps the text as written. -/
 theorem CheckedEnumerationDeclaration.defaultStoredToken_admitted
     (checked : CheckedEnumerationDeclaration) (token : String)
     (selected : checked.declaration.defaultStoredToken = some token) :
-    token ∈ checked.declaration.storedTokens := by
-  by_cases admitted : token ∈ checked.declaration.storedTokens
-  · exact admitted
+    (javaTrim token).isEmpty ∨ javaTrim token ∈ checked.declaration.storedTokens.map javaTrim := by
   have valid := checked.wellFormed
   unfold EnumerationDeclaration.validate at valid
   rw [selected] at valid
-  simp [invalidDefaultStoredToken?, admitted] at valid
-  repeat' split at valid
-  all_goals contradiction
+  cases named : ((javaTrim token).isEmpty ||
+      (checked.declaration.storedTokens.map javaTrim).contains (javaTrim token))
+  · simp only [invalidDefaultStoredToken?, named, Bool.false_eq_true, ↓reduceIte] at valid
+    repeat' split at valid
+    all_goals contradiction
+  · simpa using named
 
 def CheckedEnumerationDeclaration.displayProfile
     (checked : CheckedEnumerationDeclaration) : ResolvedEnumerationDisplay :=

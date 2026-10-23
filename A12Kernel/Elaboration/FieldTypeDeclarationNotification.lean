@@ -299,7 +299,7 @@ def length (minusOneUnbounded : Bool) : Option Int → MemberReading
       if value == -1 && minusOneUnbounded then unbounded
       else if value < 0 then refused .memberSigned
       else if value == 0 then refused .memberNotPositive
-      else if 99999 < value then refused .memberAbove99999
+      else if StringFieldPolicy.lengthMemberMaximum < value then refused .memberAbove99999
       else admitted value
 
 /-- A Number's integer digits, `1..15` (`r-int15`, `r-int16`). -/

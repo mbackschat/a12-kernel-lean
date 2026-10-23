@@ -210,23 +210,29 @@ def runRuleAt (world : World) (checked : CheckedDocument model)
       | .ok (environment, outcome) => .ok (outcome.message?.toList.map (environment, ·))
       | .error error => .error (repr error).pretty
   | .scalar =>
-      let context : AddressedValidationEvaluationContext model := {
-        scalar := {
-          fields := checked.flatContext.withWorld world
-          -- A fixed group operand reads its full-validation slice of the document, as the
-          -- addressed numeric route does for the same groups. This context has no error channel, so
-          -- an addressing error, which only a group below an unbound repeatable level could raise,
-          -- reads as an unavailable group, UNKNOWN rather than a fault.
-          groups := fun path =>
-            (checked.groupPresenceInput path [] .fullyRelevant false).toOption.map (·.derive) }
-        outer := []
-        input := .checked checked }
-      match rule.ordinaryOnceRootHasContent checked [] with
+      -- The scalar plan reads full validation's staged view too, as the row and once plans do
+      -- (spec/10 §5).
+      match checked.applyFullIndexPreliminary with
       | .error error => .error (repr error).pretty
-      | .ok hasContent =>
-          match rule.evalAddressedFull context hasContent registry with
-          | .ok outcome => .ok (outcome.message?.toList.map ([], ·))
+      | .ok preliminary =>
+          let checked := preliminary.computationInput
+          let context : AddressedValidationEvaluationContext model := {
+            scalar := {
+              fields := checked.flatContext.withWorld world
+              -- A fixed group operand reads its full-validation slice of the document, as the
+              -- addressed numeric route does for the same groups. This context has no error channel, so
+              -- an addressing error, which only a group below an unbound repeatable level could raise,
+              -- reads as an unavailable group, UNKNOWN rather than a fault.
+              groups := fun path =>
+                (checked.groupPresenceInput path [] .fullyRelevant false).toOption.map (·.derive) }
+            outer := []
+            input := .checked checked }
+          match rule.ordinaryOnceRootHasContent checked [] with
           | .error error => .error (repr error).pretty
+          | .ok hasContent =>
+              match rule.evalAddressedFull context hasContent registry with
+              | .ok outcome => .ok (outcome.message?.toList.map ([], ·))
+              | .error error => .error (repr error).pretty
 
 
 /-- Run one checked rule over a checked document on its certified iteration plan. -/
