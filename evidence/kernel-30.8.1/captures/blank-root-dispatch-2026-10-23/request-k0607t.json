@@ -1,0 +1,56 @@
+{
+ "model": "K0607t_DM.json",
+ "clock": "2026-10-23T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "blank",
+   "documentInline": {}
+  },
+  {
+   "name": "emptyOrder",
+   "documentInline": {
+    "Order": {}
+   }
+  },
+  {
+   "name": "other9",
+   "documentInline": {
+    "Other": {
+     "O": "9"
+    }
+   }
+  },
+  {
+   "name": "other1",
+   "documentInline": {
+    "Other": {
+     "O": "1"
+    }
+   }
+  },
+  {
+   "name": "order_other9",
+   "documentInline": {
+    "Order": {},
+    "Other": {
+     "O": "9"
+    }
+   }
+  },
+  {
+   "name": "email_other1",
+   "documentInline": {
+    "Order": {
+     "Email": "e"
+    },
+    "Other": {
+     "O": "1"
+    }
+   }
+  }
+ ]
+}

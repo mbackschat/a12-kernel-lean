@@ -189,6 +189,70 @@
    "admitted": true,
    "codes": [],
    "model": "K0607s_DM.json without its rules"
+  },
+  "m1": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NO_INDEX"
+   ]
+  },
+  "m1f": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NO_INDEX"
+   ]
+  },
+  "m2": {
+   "admitted": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ]
+  },
+  "m2f": {
+   "admitted": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ]
+  },
+  "m3": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  "m3f": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  "m4": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  "m4f": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  "m5": {
+   "admitted": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ]
+  },
+  "m5f": {
+   "admitted": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ]
+  },
+  "r1": {
+   "admitted": true,
+   "codes": []
   }
  }
 }

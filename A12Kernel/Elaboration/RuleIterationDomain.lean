@@ -49,7 +49,8 @@ none, as the Kernel's global rule bucket does
 ([KF507](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf507)): a negative, a small-side count or a
 second root's read over a keyed level fires at its declared rows on a blank root
 ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06)).
-A repeatable root keeps its dispatcher: every such row rule measured over one is refused statically. -/
+A repeatable root keeps its dispatcher: every negative or small-side count measured over one is
+refused statically, and the second-root rule measured there needs content beside it. -/
 def fullValidationRowEnvironments (checked : CheckedDocument model)
     (scope : List RepeatableLevel) (ungated : Bool := false) :
     Except ActualRowEnvironmentError (List Env) := do

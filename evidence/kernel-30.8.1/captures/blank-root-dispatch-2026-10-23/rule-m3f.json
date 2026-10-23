@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Slots/Tagged/Flag", "group": "/Order", "condition": "FieldFilled(Lines/Parts/Count) And GroupFilled(Lines/Slots/Tagged) And FieldFilled(Picks/Ref)", "code": "m3f", "name": "m3f", "messages": [{"locale": "en_US", "text": "probe"}]}

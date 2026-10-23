@@ -31,7 +31,8 @@ private def W : GroupPath := ["Order", "Wraps"]
 /-- The rows' part of the capture's [order model](../../../evidence/kernel-30.8.1/captures/group-target-nested-join-2026-10-23/Order23u_DM.json):
 `Lines` (50, keyed) holds `Parts` (5) and keyed `Slots` (2) with a fixed `Tagged`; `Picks` (10, keyed
 by `LineNo`), `Gifts` (2, keyed) with a fixed `Card`, and `Wraps` (2, unkeyed) with fixed `Ribbon` and
-`Tag` and keyed `Bows` (3); and the second root `Other` of the
+`Tag` and keyed `Bows` (3); and the roots `Other`, `Reps` (3, keyed) and `Bins` (2, unkeyed) and the
+`Mark` of `Slots` of the
 [blank-root capture](../../../evidence/kernel-30.8.1/captures/blank-root-dispatch-2026-10-23/K0607_DM.json). -/
 private def model : FlatModel :=
   { fields := [text 1 O "Email" [],
@@ -43,7 +44,9 @@ private def model : FlatModel :=
       text 50 W "Style" [15], text 51 (W ++ ["Ribbon"]) "Color" [15], text 52 (W ++ ["Tag"]) "Label" [15],
       text 53 (W ++ ["Bows"]) "BowNo" [15, 16], text 54 (W ++ ["Bows"]) "Shade" [15, 16],
       text 60 (L ++ ["Slots"]) "SlotNo" [10, 12], text 61 (L ++ ["Slots", "Tagged"]) "Flag" [10, 12],
-      number 70 ["Other"] "O" []]
+      text 62 (L ++ ["Slots"]) "Mark" [10, 12],
+      number 70 ["Other"] "O" [], text 80 ["Reps"] "RepNo" [17], text 81 ["Reps"] "Mark" [17],
+      text 90 ["Bins"] "Item" [18]]
     repeatableGroups := [
       { level := 10, path := L, repeatability := some 50, indexField := some 10 },
       { level := 11, path := L ++ ["Parts"], repeatability := some 5 },
@@ -51,7 +54,9 @@ private def model : FlatModel :=
       { level := 13, path := O ++ ["Picks"], repeatability := some 10, indexField := some 30 },
       { level := 14, path := O ++ ["Gifts"], repeatability := some 2, indexField := some 40 },
       { level := 15, path := W, repeatability := some 2 },
-      { level := 16, path := W ++ ["Bows"], repeatability := some 3, indexField := some 53 }] }
+      { level := 16, path := W ++ ["Bows"], repeatability := some 3, indexField := some 53 },
+      { level := 17, path := ["Reps"], repeatability := some 3, indexField := some 80 },
+      { level := 18, path := ["Bins"], repeatability := some 2 }] }
 
 example : model.validate.isOk = true := by native_decide
 
@@ -60,9 +65,9 @@ private def dm : DmModel :=
 
 /-- The class this reader answers, `admitted`, or the refusal's detail when it carries no class, so
 a refusal without a class fails a row rather than passing as any expected class. -/
-private def verdict (errorEntity condition : String) : String :=
+private def verdict (errorEntity condition : String) (group : GroupPath := O) : String :=
   let rule : DmRule :=
-    { group := O, name := "GroupProbe", errorCode := "P", errorEntityRelPath := "../" ++ errorEntity,
+    { group, name := "GroupProbe", errorCode := "P", errorEntityRelPath := "../" ++ errorEntity,
       condition, severity := "ERROR" }
   match checkValidationRule dm .english rule with
   | .ok _ => "admitted"
@@ -100,7 +105,8 @@ example : mismatches = [] := by native_decide
 
 /-- `(row, error entity, condition, Kernel class)` of the
 [blank-root batch](../../../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06):
-beside the joined `Picks` a group target draws its field twin's class. -/
+beside the joined `Picks` a group target draws its field twin's class, a group read reaching the
+join as a field read does, and a read ahead of the target's own presence answers first. -/
 private def twinRows : List (String × String × String × String) := [
   ("p1", "Lines/Slots/Tagged", "GroupFilled(Lines/Slots/Tagged) And FieldFilled(Picks/Ref)", "MVK_MULTIPLE_INDEX_FIELDS"),
   ("p2", "Lines/Slots/Tagged/Flag", "FieldFilled(Lines/Slots/Tagged/Flag) And FieldFilled(Picks/Ref)", "MVK_MULTIPLE_INDEX_FIELDS"),
@@ -119,7 +125,26 @@ private def twinRows : List (String × String × String × String) := [
   ("q1f", "Wraps/Bows/Shade", "FieldFilled(Wraps/Bows/Shade) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_INVALID_INDEX"),
   ("q2", "Wraps", "GroupFilled(Wraps) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_NO_INDEX"),
   ("q2f", "Wraps/Style", "FieldFilled(Wraps/Style) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_NO_INDEX"),
-  ("q3", "Lines", "GroupFilled(Lines) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_NO_INDEX")]
+  ("q3", "Lines", "GroupFilled(Lines) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_NO_INDEX"),
+  ("m1", "Wraps", "GroupFilled(Wraps) And GroupFilled(Picks)", "MVK_ERROR_FIELD_NO_INDEX"),
+  ("m1f", "Wraps/Style", "FieldFilled(Wraps/Style) And GroupFilled(Picks)", "MVK_ERROR_FIELD_NO_INDEX"),
+  ("m2", "Lines/Slots/Tagged", "GroupFilled(Lines/Slots/Tagged) And GroupFilled(Picks)", "MVK_MULTIPLE_INDEX_FIELDS"),
+  ("m2f", "Lines/Slots/Tagged/Flag", "FieldFilled(Lines/Slots/Tagged/Flag) And GroupFilled(Picks)",
+    "MVK_MULTIPLE_INDEX_FIELDS"),
+  ("m3", "Lines/Slots/Tagged",
+    "FieldFilled(Lines/Parts/Count) And GroupFilled(Lines/Slots/Tagged) And FieldFilled(Picks/Ref)", "MVK_NO_WILDCARD"),
+  ("m3f", "Lines/Slots/Tagged/Flag",
+    "FieldFilled(Lines/Parts/Count) And GroupFilled(Lines/Slots/Tagged) And FieldFilled(Picks/Ref)", "MVK_NO_WILDCARD"),
+  ("m4", "Lines/Slots/Tagged",
+    "FieldFilled(Wraps/Style) And GroupFilled(Lines/Slots/Tagged) And FieldFilled(Picks/Ref)", "MVK_NO_WILDCARD"),
+  ("m4f", "Lines/Slots/Tagged/Flag",
+    "FieldFilled(Wraps/Style) And GroupFilled(Lines/Slots/Tagged) And FieldFilled(Picks/Ref)", "MVK_NO_WILDCARD"),
+  ("m5", "Lines/Slots/Tagged",
+    "GroupFilled(Lines/Slots/Tagged) And FieldFilled(Picks/Ref) And FieldFilled(Lines/Parts/Count)",
+    "MVK_MULTIPLE_INDEX_FIELDS"),
+  ("m5f", "Lines/Slots/Tagged/Flag",
+    "GroupFilled(Lines/Slots/Tagged) And FieldFilled(Picks/Ref) And FieldFilled(Lines/Parts/Count)",
+    "MVK_MULTIPLE_INDEX_FIELDS")]
 
 example : (twinRows.filter fun (_, entity, condition, expected) => verdict entity condition != expected).map (·.1) = [] := by
   native_decide
@@ -181,6 +206,24 @@ example :
       [("1", ["", "x"]), ("2", ["y"]), ("3", ["z"])] [("1", "r"), ("2", "q")] =
       some ["Order/Lines[2]/Parts"] := by native_decide
 
+/-- `(row, rule group, error entity, condition, Kernel verdict)` of the blank-root batch's static rows:
+a condition able to fire on empty over a nested keyed level, a repeatable root or an unkeyed one
+draws the negative-iteration class or its own, while a second root's read beside a positive guard is
+admitted. These rows carry the restriction of the blank-root dispatch to a nonrepeatable root. -/
+private def rootRows : List (String × GroupPath × String × String × String) := [
+  ("d4", O, "Lines/Slots/Mark", "FieldNotFilled(Lines/Slots/Mark)", "MVK_NEG_CONDITION_IN_ITERATION"),
+  ("d6", ["Reps"], "Mark", "FieldNotFilled(Mark)", "MVK_NEG_CONDITION_IN_ITERATION"),
+  ("d7", ["Bins"], "Item", "FieldNotFilled(Item)", "MVK_NEG_CONDITION_IN_ITERATION"),
+  ("d9", ["Reps"], "Mark", "NumberOfFilledFields(Mark, RepNo) < 1", "MVK_NEG_CONDITION_IN_ITERATION"),
+  ("d10", O, "Lines/Slots/Mark", "NumberOfFilledFields(Lines/Slots/Mark, Lines/Slots/SlotNo) < 1",
+    "MVK_NEG_CONDITION_IN_ITERATION"),
+  ("d11", ["Bins"], "Item", "NumberOfFilledFields(Item) < 1", "MVK_PARAMSIZE_INVALIDN"),
+  ("d13", ["Reps"], "Mark", "[/Other/O] < 5 And FieldFilled(RepNo) And FieldNotFilled(Mark)", "admitted")]
+
+example : (rootRows.filter fun (_, group, entity, condition, expected) =>
+    verdict entity condition group != expected).map (·.1) = [] := by
+  native_decide
+
 open Lean in
 /-- The pointers a rule in `/Order` reporting on `entity` fires at over `document`. -/
 private def firedOn (entity condition : String) (document : Json) : Option (List String) := do
@@ -198,7 +241,8 @@ open Lean in
 /- The blank-root batch's runtime rows: a rule evaluated without admitted content, by a negative, a
    small-side count, an `Or` beside a negative or a second root's read, fires at both declared rows
    of the keyed `Gifts` on a blank and an empty root, and on one holding only `Other`, while a
-   condition gated on `Email` waits for it and the second-root read waits for `O` below five. -/
+   condition gated on `Email` waits for it and the second-root read waits for `O` below five. A
+   second root's read beside no negative, `r1`, fires under a blank root once `O` exceeds five. -/
 example :
     let both := some ["Order/Gifts/Note", "Order/Gifts[2]/Note"]
     let blank := [Json.mkObj [], Json.mkObj [("Order", Json.mkObj [])],
@@ -211,7 +255,11 @@ example :
     firedOn "Gifts/Note" "[/Other/O] < 5 And FieldNotFilled(Gifts/Note)" (Json.mkObj [("Other", Json.mkObj [("O", "9")])]) =
       some [] ∧
     firedOn "Gifts/Note" "[Email] == \"e\" And FieldNotFilled(Gifts/Note)" (Json.mkObj [("Order", Json.mkObj [("Email", "e")])]) =
-      both := by
+      both ∧
+    [Json.mkObj [("Other", Json.mkObj [("O", "9")])], Json.mkObj [("Order", Json.mkObj []), ("Other", Json.mkObj [("O", "9")])]].all
+      (firedOn "Gifts/Note" "[/Other/O] > 5 Or FieldFilled(Gifts/Note)" · == both) ∧
+    firedOn "Gifts/Note" "[/Other/O] > 5 Or FieldFilled(Gifts/Note)" (Json.mkObj [("Other", Json.mkObj [("O", "1")])]) =
+      some [] := by
   native_decide
 
 /-- The [inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)'s

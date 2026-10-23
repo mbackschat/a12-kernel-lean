@@ -1,0 +1,205 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "K0607t_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-23T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "blank",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "emptyOrder",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "other9",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "r1",
+              "field" : "Order/Gifts/Note",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Gifts/Note",
+                "Other/O"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r1",
+              "field" : "Order/Gifts[2]/Note",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Gifts[2]/Note",
+                "Other/O"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "r1",
+              "field" : "Order/Gifts/Note",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Gifts/Note",
+                "Other/O"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r1",
+              "field" : "Order/Gifts[2]/Note",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Gifts[2]/Note",
+                "Other/O"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "other1",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "order_other9",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "r1",
+              "field" : "Order/Gifts/Note",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Gifts/Note",
+                "Other/O"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r1",
+              "field" : "Order/Gifts[2]/Note",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Gifts[2]/Note",
+                "Other/O"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "r1",
+              "field" : "Order/Gifts/Note",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Gifts/Note",
+                "Other/O"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r1",
+              "field" : "Order/Gifts[2]/Note",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Gifts[2]/Note",
+                "Other/O"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "email_other1",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    }
+  ]
+}
