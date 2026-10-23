@@ -22,6 +22,7 @@ inductive ParallelPresenceRuleAssemblyError where
       (groups : List GroupPath)
   | errorFieldNotOperand (field left right : FieldId)
   | errorFieldNotOnFramedSide (field : FieldId)
+  | errorGroupPlacement (path : GroupPath)
   deriving Repr, DecidableEq
 
 inductive ParallelPresenceRuleEvaluationError where
@@ -44,7 +45,22 @@ structure ParallelRuleRowOutcome where
   outcome : FlatRuleOutcome
   deriving Repr, DecidableEq
 
-/-- Two anchor declarations share a checked join and an error side with complete outer coordinates. Group-only conditions may use an index declaration as a topology anchor; authored reference membership remains the condition’s responsibility. Each anchor's scope extends its joined group's, and only the error anchor's may be longer: its levels below the joined group are iterated within each joined row. -/
+/-- Whether a rule's error group sits directly inside the error side's joined row: below the joined
+group, its parent's levels the joined group's, with the anchor at the joined group's level. The
+[checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
+measures a repeatable child of the joined group (`group-level`, `t8`). -/
+def errorGroupPlacement (model : FlatModel) (groups : CheckedParallelIndexGroups model)
+    (leftDeclaration rightDeclaration : FlatFieldDecl) (errorField : FieldId) :
+    Option GroupPath → Bool
+  | none => true
+  | some path =>
+      let (joined, anchor) := if errorField == leftDeclaration.id then (groups.leftGroup, leftDeclaration)
+        else (groups.rightGroup, rightDeclaration)
+      model.hasGroupPath path && joined.path.isPrefixOf path && path != joined.path &&
+        anchor.repeatableScope == model.repeatableScopeForGroupPath joined.path &&
+        model.repeatableScopeForGroupPath path.dropLast == anchor.repeatableScope
+
+/-- Two anchor declarations share a checked join and an error side with complete outer coordinates. Group-only conditions may use an index declaration as a topology anchor; authored reference membership remains the condition’s responsibility. Each anchor's scope extends its joined group's, and only the error anchor's may be longer: its levels below the joined group are iterated within each joined row. A rule reporting on a group names it in `errorGroup`, a group directly inside the error side's joined row, whose anchor is then a field of the joined group itself. -/
 structure CheckedParallelFieldPair (model : FlatModel) where
   private mk ::
   groups : CheckedParallelIndexGroups model
@@ -75,12 +91,16 @@ structure CheckedParallelFieldPair (model : FlatModel) where
   errorFieldOnFramedSide :
     groups.outerScopePlan.admitsErrorOnLeft
       (errorField == leftDeclaration.id) = true
+  errorGroup : Option GroupPath
+  errorGroupPlaced : errorGroupPlacement model groups leftDeclaration rightDeclaration errorField errorGroup = true
 
 namespace CheckedParallelFieldPair
 
 def core (pair : CheckedParallelFieldPair model) (condition : Condition) : ResolvedRule Condition := {
   condition
-  errorEntity := .field pair.errorField
+  errorEntity := match pair.errorGroup with
+    | some path => .group path
+    | none => .field pair.errorField
   errorCode := pair.errorCode
   severity := pair.severity
   messagePlan := pair.messagePlan
@@ -101,6 +121,24 @@ def innerScope (pair : CheckedParallelFieldPair model) : List RepeatableLevel :=
     else pair.groups.rightGroup
   pair.errorDeclaration.repeatableScope.drop (model.repeatableScopeForGroupPath joined.path).length
 
+/-- An error group's own repeatable level, which the rule does not iterate: its reads take the
+group's first row, as the ordinary carrier pins it (`pinUnindexed`), and only its own presence reads
+every row. -/
+def pinnedLevel? (pair : CheckedParallelFieldPair model) : Option RepeatableLevel :=
+  pair.errorGroup.bind fun path =>
+    let scope := model.repeatableScopeForGroupPath path
+    if scope.length > pair.errorDeclaration.repeatableScope.length then scope.getLast? else none
+
+/-- `row` with the error side's environment binding the error group's own level at its first row. -/
+def pinned (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow) : ResolvedParallelIndexRow :=
+  match pair.pinnedLevel? with
+  | none => row
+  | some level =>
+      let pin := fun (side : ResolvedParallelIndexSide) =>
+        { side with environment := side.environment.map (· ++ [(level, 1)]) }
+      if pair.errorField == pair.leftDeclaration.id then { row with left := pin row.left }
+      else { row with right := pin row.right }
+
 /-- The error field's full-validation rows, enumerated once for every joined row's `innerRows`;
 none for a field at its joined group's level. -/
 def innerEnvironments (pair : CheckedParallelFieldPair model) (preliminary : CheckedIndexPreliminary model) :
@@ -118,7 +156,7 @@ Kernel iterates a nested level within each joined row for a rule and for a compu
 def innerRows (pair : CheckedParallelFieldPair model) (environments : List Env)
     (row : ResolvedParallelIndexRow) :
     Except ParallelPresenceRuleEvaluationError (List ResolvedParallelIndexRow) := do
-  if pair.innerScope.isEmpty then return [row]
+  if pair.innerScope.isEmpty then return [pair.pinned row]
   let side := pair.errorSide row
   let some environment := side.environment | return []
   let joinedScope := model.repeatableScopeForGroupPath side.group.path
@@ -137,6 +175,15 @@ def customErrorPointer (pair : CheckedParallelFieldPair model)
     coordinates := declaration.repeatableScope.map fun level =>
       (environment.uniqueRowAt? level).map MessageRepetitionCoordinate.concrete |>.getD .unknown }
 
+/-- The error entity's coordinates at one joined row: the anchor's, and an error group's own level at
+its first row (`group-level`, `t8`). -/
+private def errorCoordinates (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
+    (outer : Env) (messageCache : Option MessageIndexContext) :
+    Except ParallelPresenceRuleEvaluationError (List MessageRepetitionCoordinate) := do
+  let pointer ← (pair.errorSide row).messagePointer model outer pair.errorField
+    (messageCache.map fun cache => (cache, row.key)) |>.mapError .join
+  pure (pointer.coordinates ++ pair.pinnedLevel?.toList.map fun _ => .concrete 1)
+
 private def evalRow (pair : CheckedParallelFieldPair model) (condition : Condition)
     (evaluate : ResolvedParallelIndexRow → CheckedIndexPreliminary model →
       Except ParallelPresenceRuleEvaluationError Verdict)
@@ -147,10 +194,8 @@ private def evalRow (pair : CheckedParallelFieldPair model) (condition : Conditi
   let verdict ← evaluate row preliminary
   let outcome ← match verdict with
     | .fired _ => do
-        let pointer ← (pair.errorSide row).messagePointer model outerEnvironment pair.errorField
-          (messageCache.map fun cache => (cache, row.key))
-          |>.mapError .join
-        pure ((pair.core condition).emitAtCoordinates pointer.coordinates verdict)
+        let coordinates ← pair.errorCoordinates row outerEnvironment messageCache
+        pure ((pair.core condition).emitAtCoordinates coordinates verdict)
     | .notFired | .unknown => pure ((pair.core condition).emitAt [] verdict)
   pure { outerEnvironment, iterationToken := row.iterationToken, key := row.key, row, outcome }
 
@@ -178,9 +223,8 @@ private def evalRows (pair : CheckedParallelFieldPair model) (condition : Condit
           pure (outcome :: outcomes, first?, stopped)
       | .error error =>
           if !caught error then throw error
-          let pointer ← (pair.errorSide first.2).messagePointer model first.1 pair.errorField
-            (messageCache.map fun cache => (cache, first.2.key)) |>.mapError .join
-          let outcome := (pair.core condition).emitRuntimeFailureAtCoordinates pointer.coordinates
+          let coordinates ← pair.errorCoordinates first.2 first.1 messageCache
+          let outcome := (pair.core condition).emitRuntimeFailureAtCoordinates coordinates
           let reported : ParallelRuleRowOutcome :=
             { outerEnvironment := frameOuter, iterationToken := row.iterationToken, key := row.key, row, outcome }
           pure ([reported], some first, true)
@@ -242,7 +286,7 @@ private def indexedOperandGroup (model : FlatModel)
 def checkParallelFieldPair (model : FlatModel)
     (leftField rightField errorField : FieldId)
     (errorCode : String) (severity : ValidationSeverity)
-    (messagePlan : MessageRenderPlan) :
+    (messagePlan : MessageRenderPlan) (errorGroup : Option GroupPath := none) :
     Except ParallelPresenceRuleAssemblyError
       (CheckedParallelFieldPair model) := do
   let leftDeclaration ←
@@ -276,6 +320,8 @@ def checkParallelFieldPair (model : FlatModel)
               if hFrameError :
                   groups.outerScopePlan.admitsErrorOnLeft
                     (errorField == leftDeclaration.id) = true then
+               if hGroup : errorGroupPlacement model groups leftDeclaration rightDeclaration errorField
+                   errorGroup = true then
                 pure {
                   groups
                   leftDeclaration
@@ -291,7 +337,11 @@ def checkParallelFieldPair (model : FlatModel)
                   partnerOperandScope := hPartner
                   errorFieldIsOperand := hError
                   errorFieldOnFramedSide := hFrameError
+                  errorGroup
+                  errorGroupPlaced := hGroup
                 }
+               else
+                throw (.errorGroupPlacement (errorGroup.getD []))
               else
                 throw (.errorFieldNotOnFramedSide errorField)
             else

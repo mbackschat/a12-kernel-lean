@@ -310,8 +310,17 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
   let text ← parseValidationText language rule.condition
   if !model.flat.hasGroupPath rule.group then refuse "ParallelRule" "unknown declaring group"
   let parsedCondition ← pairSyntax model.flat rule.group text.body
-  let errorField ← errorFieldOf language model.flat rule
-  let errorDeclaration ← elaborated "ErrorEntity" (model.flat.lookupUniqueId errorField)
+  let errorEntity ← errorEntityOf language model.flat rule
+  let errorGroupPath ← errorGroupOf model.flat errorEntity
+  -- A rule reporting on a group joins at the group's keyed ancestor, anchored at its index field
+  -- (`group-level`, `t8`); a group below two keyed groups has no measured join.
+  let (errorField, errorGroup) ← match errorEntity with
+    | .field field => pure (field, none)
+    | .group path =>
+        match model.flat.repeatableGroups.filter fun group =>
+            group.indexField.isSome && group.path.isPrefixOf path && group.path != path with
+        | [{ indexField := some index, .. }] => pure (index, some path)
+        | _ => refuse "ParallelRule" "one indexed error ancestor required"
   -- Authored reads precede pair construction: an unbound ordinary frame reports its missing
   -- wildcard, even when the error target has no indexed ancestor (ParallelValidationDispatchDiffTest,
   -- anUnrelatedFixedErrorBranchRefusesTheFramedOperandBeforeRuntime, 2026-10-12).
@@ -323,7 +332,7 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
       (model.flat.repeatableScopeForGroupPath path).getLast?).getD []
   -- A walk refusal the reader cannot classify yields to a classed join refusal, which the walk
   -- meets only because the join it needs is missing.
-  let facts ← match checkRawConditionBeforeGlobals model.flat rule.group errorDeclaration.groupPath
+  let facts ← match checkRawConditionBeforeGlobals model.flat rule.group errorGroupPath
       text.body (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") joinedLevels, anchors with
     | .ok facts, _ => pure facts
     | .error refusal, .error join =>
@@ -340,7 +349,7 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
     (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") left right parsedCondition
   match checkParallelFieldRule model.flat left right errorField
       condition rule.errorCode severity { parts := [] }
-      (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") with
+      (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") errorGroup with
   | .ok checked => pure checked
   | .error (.static diagnostic) => refuse "ParallelErrorTarget" diagnostic.kernelCode
   | .error error => elaborated "ParallelRule" (.error error : Except _ (CheckedParallelFieldRule model.flat))

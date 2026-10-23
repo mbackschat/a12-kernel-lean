@@ -307,10 +307,10 @@ def computationInput (preliminary : CheckedIndexPreliminary model) : CheckedDocu
 /-- Reuse the sole resolved group-scope owner with the addressed preliminary cell view, including required findings on physically absent index cells. -/
 def groupPresenceInput (preliminary : CheckedIndexPreliminary model)
     (groupPath : GroupPath) (environment : Env)
-    (relevance : GroupRelevance) (structuralError : Bool) :
+    (relevance : GroupRelevance) (structuralError : Bool) (released : List RepeatableLevel := []) :
     Except CheckedGroupPresenceError ResolvedGroupPresenceInput :=
   preliminary.base.groupPresenceInputFromCells preliminary.placements
-    groupPath environment relevance structuralError
+    groupPath environment relevance structuralError released
 
 end CheckedIndexPreliminary
 

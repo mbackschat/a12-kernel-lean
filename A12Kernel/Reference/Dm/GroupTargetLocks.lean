@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.Validate
 
@@ -63,8 +64,8 @@ private def verdict (errorEntity condition : String) : String :=
 
 private def UNREFERENCED := "MVK_ERROR_FIELD_NOT_REFERENCED"
 
-/-- `(capture row, error entity, condition, Kernel class)`. Row `t8` reports on a group in a
-parallel iteration, which the parallel carrier does not represent. -/
+/-- `(capture row, error entity, condition, Kernel class)`. Row `t8` reports on a group beside the
+joined `Picks`. -/
 private def rows : List (String × String × String × String) := [
   ("t0", "Lines/Parts", "GroupFilled(Lines/Parts)", "admitted"),
   ("t1", "Lines/Parts", "FieldFilled(Lines/Parts/Count) And GroupFilled(Lines/Parts)", "admitted"),
@@ -75,6 +76,7 @@ private def rows : List (String × String × String × String) := [
   -- Only `Lines` is checked: the reference to the containing group need not bind `Parts`.
   ("t6", "Lines/Parts", "GroupFilled(Lines) And FieldFilled(Lines/Parts/Count)", "admitted"),
   ("t7", "Lines/Parts", "Sum(Lines/Parts*/Count) > 0 And GroupFilled(Lines/Parts)", "admitted"),
+  ("t8", "Lines/Parts", "GroupFilled(Lines/Parts) And FieldFilled(Picks/Ref)", "admitted"),
   ("E2", "Wraps/Ribbon", "GroupFilled(Wraps/Ribbon)", "admitted"),
   ("E3", "Gifts/Card", "GroupNotFilled(Gifts/Card)", "admitted"),
   ("E4", "Lines/Parts", "FieldFilled(Lines/Sku) And GroupFilled(Lines/Parts)", "admitted"),
@@ -89,6 +91,62 @@ private def mismatches : List (String × String × String) :=
     if actual == expected then none else some (id, expected, actual)
 
 example : mismatches = [] := by native_decide
+
+/-- Whether this reader refuses a rule without a Kernel class. -/
+private def unclassed (errorEntity condition : String) : Bool :=
+  match checkValidationRule dm .english
+      { group := O, name := "GroupProbe", errorCode := "P", errorEntityRelPath := "../" ++ errorEntity,
+        condition, severity := "ERROR" } with
+  | .ok _ => false
+  | .error refusal => refusal.kernelClass?.isNone
+
+/-- This reader's account of a group target beside a join where no capture measures the composition:
+the ordinary carrier's gates, so a field inside the group does not reference it (`t3`) and a negative
+presence of the group leaves its own level unguarded (`g03`), while a field inside it is read at its
+first row (`t2`). A leaf the ordinary group target refuses and the joined group itself are refused
+without a class. -/
+example :
+    verdict "Lines/Parts" "FieldFilled(Lines/Parts/Count) And FieldFilled(Picks/Ref)" = UNREFERENCED ∧
+    verdict "Lines/Parts" "GroupNotFilled(Lines/Parts) And FieldFilled(Picks/Ref)" =
+      "MVK_NEG_CONDITION_IN_ITERATION" ∧
+    verdict "Lines/Parts" "GroupFilled(Lines/Parts) And FieldNotFilled(Lines/Parts/PartNo) And FieldFilled(Picks/Ref)" =
+      "admitted" ∧
+    verdict "Lines/Parts" "GroupFilled(Lines) And FieldFilled(Picks/Ref)" = "admitted" ∧
+    unclassed "Lines/Parts" "GroupFilled(Lines/Parts) And AtLeastOneFieldFilled(Lines/Sku, Picks/Ref)" ∧
+    unclassed "Lines" "GroupFilled(Lines) And FieldFilled(Picks/Ref)" := by native_decide
+
+open Lean in
+/-- The pointers a rule reporting on `Lines/Parts` fires at over `Lines` rows of `(LineNo, parts)`,
+each part a `PartNo`, empty for a part holding no field, beside `Picks` rows of `(LineNo, Ref)`. -/
+private def fired (condition : String) (lines : List (String × List String)) (picks : List (String × String)) :
+    Option (List String) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let part := fun (partNo : String) =>
+    if partNo.isEmpty then Json.mkObj [("Count", Json.str "1")] else Json.mkObj [("PartNo", Json.str partNo)]
+  let lineRows := lines.map fun (no, parts) =>
+    Json.mkObj [("LineNo", Json.str no), ("Parts", Json.arr (parts.map part).toArray)]
+  let pickRows := picks.map fun (no, ref) => Json.mkObj [("LineNo", Json.str no), ("Ref", Json.str ref)]
+  let input ← (readDocument dm (Json.mkObj [("Order", Json.mkObj [
+    ("Lines", Json.arr lineRows.toArray), ("Picks", Json.arr pickRows.toArray)])])).toOption
+  if !input.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let checked ← (checkValidationRule dm .english
+    { group := O, name := "GroupProbe", errorCode := "P", errorEntityRelPath := "../Lines/Parts", condition,
+      severity := "ERROR" }).toOption
+  pure ((← (runValidationRule world document checked).toOption).map fun message => (observe model message).pointer)
+
+/-- Internal witnesses, `external evidence pending` beyond `t8`'s capture: the group's own presence
+reads every part of the joined line, so the first line, whose second part alone holds `PartNo`, fires
+there, while a field inside the group reads only the first part and so does not; the third line's
+missing pick keeps it silent. -/
+example :
+    fired "GroupFilled(Lines/Parts) And FieldFilled(Picks/Ref)"
+      [("1", ["", "x"]), ("2", ["y"]), ("3", ["z"])] [("1", "r"), ("2", "q")] =
+      some ["Order/Lines/Parts", "Order/Lines[2]/Parts"] ∧
+    fired "GroupFilled(Lines/Parts) And FieldFilled(Lines/Parts/PartNo) And FieldFilled(Picks/Ref)"
+      [("1", ["", "x"]), ("2", ["y"]), ("3", ["z"])] [("1", "r"), ("2", "q")] =
+      some ["Order/Lines[2]/Parts"] := by native_decide
 
 /-- The [inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)'s
 model: `/Order` holds `Code`, the group `Meta` holds `Ref`, and `Lines` repeats. -/

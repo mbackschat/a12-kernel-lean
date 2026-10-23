@@ -64,8 +64,7 @@ def errorDeclaration? : ValidationMessageCondition model → Option FlatFieldDec
   | .rule checkedRule => checkedRule.errorPlacement.fieldDeclaration?
   | .parallel parallelRule _ =>
       let pair := parallelRule.pair
-      some (if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration
-        else pair.rightDeclaration)
+      if pair.errorGroup.isSome then none else some pair.errorDeclaration
 
 /-- Whether the condition iterates two indexed groups in parallel. -/
 def parallelIteration : ValidationMessageCondition model → Bool

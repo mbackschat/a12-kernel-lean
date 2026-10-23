@@ -412,6 +412,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Computation over-repetition channel](implementation/repetition-and-paths.md#cap-computation-over-repetition-channel)
 <a id="cap-repeatable-validation"></a>
 - [Repeatable validation](implementation/repeatable-validation.md#cap-repeatable-validation)
+<a id="cap-parallel-validation"></a>
+- [Parallel validation](implementation/repeatable-validation.md#cap-parallel-validation)
 <a id="cap-repeatable-number-computation"></a>
 - [Repeatable Number computation](implementation/repetition-and-paths.md#cap-repeatable-number-computation)
 <a id="cap-group-list-count-terminals"></a>

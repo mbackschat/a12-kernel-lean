@@ -147,14 +147,16 @@ def CheckedParallelFieldPair.ordinaryAdmitted (pair : CheckedParallelFieldPair m
   measured && placed && (pair.ordinaryBinding? leaf).isSome
 
 /-- Whether a scope read inside a joined group is one the joined row binds: from the group's own
-level down to its anchor's, so the error side's levels below the join and none of the partner's. -/
+level down to its anchor's, so the error side's levels below the join and none of the partner's, and
+an error group's own level, which the row binds at its first row. -/
 def CheckedParallelFieldPair.sideBinds (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
     (scope : List RepeatableLevel) : Bool :=
   let (group, anchor) := match side with
     | .left => (pair.groups.leftGroup, pair.leftDeclaration)
     | .right => (pair.groups.rightGroup, pair.rightDeclaration)
+  let pinned := if anchor.id == pair.errorField then pair.pinnedLevel?.toList else []
   (model.repeatableScopeForGroupPath group.path).isPrefixOf scope &&
-    scope.isPrefixOf anchor.repeatableScope
+    scope.isPrefixOf (anchor.repeatableScope ++ pinned)
 
 def CheckedParallelFieldPair.admitsOperand (pair : CheckedParallelFieldPair model)
     (operand : ParallelFieldOperand) : Bool :=
@@ -287,9 +289,17 @@ def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
   | _ => leaf.fields.any (fun field => group.path.isPrefixOf (pair.declaration field).groupPath) ||
       leaf.atomLeaves.any (pair.ordinaryBinding? · == some (.side side))
 
+/-- The leaves a rule reporting on a group admits, as the ordinary carrier's group target does
+(`supportsGroupTarget`): presence and value leaves. The [checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
+measures group and field presence beside a join (`t8`); the value leaves reuse it unmeasured. -/
+def supportsGroupTarget : ParallelFieldLeaf model → Bool
+  | .groupPresence .. | .presence .. | .numeric .. | .comparison _ | .flat .. => true
+  | .fill .. | .customCondition _ | .valuesNotUnique _ | .ordinary _ => false
+
 /-- Every payload is model-owned and addressable from the join or frame; comparisons reuse the shared authoring and scale gates. -/
 def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
     (leaf : ParallelFieldLeaf model) : Bool :=
+  (pair.errorGroup.isNone || leaf.supportsGroupTarget) &&
   leaf.fields.all (CheckedParallelFieldPair.admitsOperand pair) && match leaf with
   | .numeric op lhs rhs =>
       match (pair.declaration lhs).toNumberField?, (pair.declaration rhs).toNumberField? with
@@ -301,7 +311,9 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
       model.hasGroupPath reference.path && reference.boundRepeatableScope == scope &&
         ((pair.groups.leftGroup.path.isPrefixOf reference.path && pair.sideBinds .left scope) ||
          (pair.groups.rightGroup.path.isPrefixOf reference.path && pair.sideBinds .right scope) ||
-         reference.path.isPrefixOf pair.groups.commonParent)
+         reference.path.isPrefixOf pair.groups.commonParent ||
+         -- An error group's own presence reads each of its rows inside the joined row (`t8`).
+         pair.errorGroup == some reference.path)
   | .presence _ _ => true
   | .fill _ lhs rhs => (pair.declaration lhs).id != (pair.declaration rhs).id
   | .comparison value =>
@@ -408,7 +420,7 @@ def guardAt (pair : CheckedParallelFieldPair model) (level : RepeatableLevel)
         (pair.declaration operand).repeatableScope.contains level
 
 /-- Joined group reads preserve index unavailability before deriving physical group content; ancestors use the same outer coordinates without acquiring a join-level reference. -/
-private def groupState (row : ResolvedParallelIndexRow)
+private def groupState (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
     (preliminary : CheckedIndexPreliminary model) (reference : ResolvedGroupReference) :
     Except ParallelPresenceRuleEvaluationError GroupPresenceState := do
   let side := if row.left.group.path.isPrefixOf reference.path then some row.left
@@ -418,7 +430,8 @@ private def groupState (row : ResolvedParallelIndexRow)
     | none => row.left.environment.orElse fun _ => row.right.environment
   match environment with
   | some environment =>
-      let input ← preliminary.groupPresenceInput reference.path environment .fullyRelevant false
+      let released := if pair.errorGroup == some reference.path then pair.pinnedLevel?.toList else []
+      let input ← preliminary.groupPresenceInput reference.path environment .fullyRelevant false released
         |>.mapError .group
       pure input.derive
   | none =>
@@ -533,7 +546,7 @@ def eval (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow
         let cell ← preliminary.readAuthoredValidation { field := declaration.id, path }
           |>.mapError (fun error => .join (.document error))
         pure (some (observeCell .validation cell)))
-    (groupState row preliminary)
+    (groupState pair row preliminary)
     -- The full evaluator reads only instantiated rows; a key-only row is read through the
     -- full-relevance partial view, which reads an absent declared slot as empty.
     (fun leaf => match ordinaryEnvironment? pair preliminary.base row outer leaf with
@@ -590,28 +603,35 @@ def innerUnguarded (pair : CheckedParallelFieldPair model) (condition : Parallel
   let status := fun level => condition.iterationGuardStatus (ParallelFieldLeaf.guardAt pair level)
   (pair.innerScope.find? (status · != .guarded)).any (status · == .unguarded)
 
+/-- Whether an error group's own level is not left unguarded. The ordinary carrier judges that level
+by the guard table although it does not iterate it, and refuses a negative presence of the group
+there ([K04 checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04)
+rows `g01`, `g03`; `group-level` row `t2` is admitted). -/
+def pinnedGuarded (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition model) : Bool :=
+  pair.pinnedLevel?.all fun level =>
+    condition.iterationGuardStatus (ParallelFieldLeaf.guardAt pair level) != .unguarded
+
 def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
     (condition : ParallelFieldCondition model) : Bool :=
   condition.allLeaves (ParallelFieldLeaf.admitted pair suppress) &&
     condition.anyLeaf (ParallelFieldLeaf.uses pair .left) &&
     condition.anyLeaf (ParallelFieldLeaf.uses pair .right) && condition.guarded pair &&
-    framesGuarded pair condition && innerGuarded pair condition
+    framesGuarded pair condition && innerGuarded pair condition && pinnedGuarded pair condition
 
 /-- Authored references alone satisfy the error-target gate; topology anchor declarations are not implicit condition references. -/
 def references (pair : CheckedParallelFieldPair model) : ParallelFieldCondition model → List ConditionReference
   | .leaf (.groupPresence _ reference) => [{
       isGroup := true, isRootGroup := reference.path.length == 1,
-      ancestorOrEqual := reference.path.isPrefixOf
-        (if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration.groupPath
-         else pair.rightDeclaration.groupPath) }]
+      ancestorOrEqual := reference.path.isPrefixOf (pair.errorGroup.getD pair.errorDeclaration.groupPath) }]
   | .leaf (.ordinary leaf) => ordinaryReferences leaf
   | .leaf leaf => leaf.fields.map (fun field =>
-      { sameEntity := (pair.declaration field).id == pair.errorField }) ++ leaf.atomLeaves.flatMap ordinaryReferences
+      { sameEntity := pair.errorGroup.isNone && (pair.declaration field).id == pair.errorField }) ++
+        leaf.atomLeaves.flatMap ordinaryReferences
   | .and left right | .or left right => references pair left ++ references pair right
 where
   ordinaryReferences (leaf : ValidationConditionLeaf model) : List ConditionReference :=
     (model.fields.filter (leaf.referencesField ·.id)).map fun declaration =>
-      { sameEntity := declaration.id == pair.errorField }
+      { sameEntity := pair.errorGroup.isNone && declaration.id == pair.errorField }
 
 /-- Whether a reference naming the error entity iterates the error side's joined level, and so
 takes part in the parallel iteration. A joined-row read takes part, and so does a group reference
@@ -622,12 +642,13 @@ them unresolved. -/
 def errorSideIterated? (pair : CheckedParallelFieldPair model) :
     ParallelFieldCondition model → Option Bool
   | .leaf (.groupPresence _ reference) =>
-      let (joined, errorGroup) := if pair.errorField == pair.leftDeclaration.id
-        then (pair.groups.leftGroup.path, pair.leftDeclaration.groupPath)
-        else (pair.groups.rightGroup.path, pair.rightDeclaration.groupPath)
+      let joined := if pair.errorField == pair.leftDeclaration.id then pair.groups.leftGroup.path
+        else pair.groups.rightGroup.path
+      let errorGroup := pair.errorGroup.getD pair.errorDeclaration.groupPath
       some (joined.isPrefixOf reference.path && reference.path.isPrefixOf errorGroup)
   | .leaf (.ordinary leaf) => ordinary leaf
-  | .leaf leaf => anyReference (some (leaf.fields.any fun field => (pair.declaration field).id == pair.errorField) ::
+  | .leaf leaf => anyReference (some (pair.errorGroup.isNone &&
+      leaf.fields.any fun field => (pair.declaration field).id == pair.errorField) ::
       leaf.atomLeaves.map ordinary)
   | .and left right | .or left right =>
       anyReference [errorSideIterated? pair left, errorSideIterated? pair right]
@@ -671,9 +692,9 @@ structure CheckedParallelFieldRule (model : FlatModel) where
 def checkParallelFieldRule (model : FlatModel)
     (leftField rightField errorField : FieldId) (condition : ParallelFieldCondition model)
     (errorCode : String) (severity : ValidationSeverity) (messagePlan : MessageRenderPlan)
-    (suppressExactScaleWarning : Bool := false) :
+    (suppressExactScaleWarning : Bool := false) (errorGroup : Option GroupPath := none) :
     Except ParallelPresenceRuleAssemblyError (CheckedParallelFieldRule model) := do
-  let pair ← checkParallelFieldPair model leftField rightField errorField errorCode severity messagePlan
+  let pair ← checkParallelFieldPair model leftField rightField errorField errorCode severity messagePlan errorGroup
   if hTarget : condition.errorTargetRefusal pair = none then
     if h : condition.admitted pair suppressExactScaleWarning = true then
       pure { pair, condition, suppressExactScaleWarning, errorTargetAllowed := hTarget, admitted := h }
@@ -684,7 +705,8 @@ def checkParallelFieldRule (model : FlatModel)
         condition.anyLeaf (ParallelFieldLeaf.uses pair .left) &&
         condition.anyLeaf (ParallelFieldLeaf.uses pair .right) then
       if !condition.guarded pair then throw (.static .parallelIterationInvalid)
-      else if ParallelFieldCondition.framesGuarded pair condition && condition.innerUnguarded pair then
+      else if ParallelFieldCondition.framesGuarded pair condition &&
+          (condition.innerUnguarded pair || !condition.pinnedGuarded pair) then
         throw (.static .negativeConditionInIteration)
       else throw .incoherentCondition
     else throw .incoherentCondition

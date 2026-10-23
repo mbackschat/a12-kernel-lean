@@ -58,7 +58,8 @@ theorem checkedParallelFieldRule_wellFormed (rule : CheckedParallelFieldRule mod
     rule.condition.anyLeaf (ParallelFieldLeaf.uses rule.pair .right) = true ∧
     rule.condition.guarded rule.pair = true ∧
     ParallelFieldCondition.framesGuarded rule.pair rule.condition = true ∧
-    ParallelFieldCondition.innerGuarded rule.pair rule.condition = true := by
+    ParallelFieldCondition.innerGuarded rule.pair rule.condition = true ∧
+    ParallelFieldCondition.pinnedGuarded rule.pair rule.condition = true := by
   refine ⟨checkedParallelIndexGroups_wellFormed rule.pair.groups,
     rule.pair.groups.modelWellFormed, rule.errorTargetAllowed, ?_⟩
   simpa only [ParallelFieldCondition.admitted, Bool.and_eq_true, and_assoc] using rule.admitted
