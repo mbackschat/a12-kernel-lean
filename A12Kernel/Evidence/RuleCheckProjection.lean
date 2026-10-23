@@ -206,14 +206,17 @@ private def requestedComputation (spec : Json) : DmComputation :=
   let group := match (spec.getObjValAs? String "group").toOption with
     | some path => segments path
     | none => field.dropLast
-  let ups := group.length - (field.length - 1) + 1
+  -- The path climbs and descends as `requestedRule`'s does, so a target below the declaring group
+  -- keeps its intermediate groups.
+  let shared := ((group.zip field.dropLast).takeWhile fun (a, b) => a == b).length
+  let ups := group.length - shared + 1
   let alternatives := ((spec.getObjValAs? (Array Json) "alternatives").toOption.getD #[]).toList.map
     fun alternative => {
       precondition := (alternative.getObjValAs? String "precondition").toOption
       operation := (alternative.getObjValAs? String "operation").toOption.getD ""
       toleranceRangeOp := (alternative.getObjValAs? String "toleranceRangeOp").toOption }
   { group, name := "Probe", alternatives, errorCodesToSuppress := []
-    targetRelPath := String.intercalate "/" (List.replicate ups ".." ++ field.drop (field.length - 1))
+    targetRelPath := String.intercalate "/" (List.replicate ups ".." ++ field.drop shared)
     commonPrecondition := (spec.getObjValAs? String "commonPrecondition").toOption }
 
 /-- A computation spec's written texts, with the instrument's placeholder for each omitted locale. -/
