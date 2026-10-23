@@ -56,10 +56,22 @@ def lexicalErrorPath (group : GroupPath) (text : String) : Option GroupPath := d
 
 /-- The entity an error-entity path names: a field, or else a declared group. The path is relative
 to the rule element, so its first `..` climbs from the rule to the group declaring it, and it is
-read lexically (`lexicalErrorPath`). A path naming neither keeps the field resolution's refusal. -/
+read lexically (`lexicalErrorPath`). A path naming neither keeps the field resolution's refusal.
+
+Only the written text meets the condition lexer: a lexically read path names the model's own group and
+field names, which the walk judges and which may hold a `.` or `-` beside its path class, so it is
+resolved by segment unless the written text holds a character the lexer has no terminal for. That the
+error entity, like a computed field (spec/01 §1.3), reads its segments through no other part of the
+grammar is unmeasured. -/
 def errorEntityOf (language : Language) (model : FlatModel) (rule : DmRule) :
     Lowering RuleErrorEntity := do
-  let text := match lexicalErrorPath rule.group rule.errorEntityRelPath with
+  let lexical := lexicalErrorPath rule.group rule.errorEntityRelPath
+  let written := parseModelPath language rule.errorEntityRelPath
+  if let some named := lexical then
+    if !(match written with | .error error => error.errorClass == .lexer | .ok _ => false) then
+      if let some declaration := model.fields.find? (·.path == named) then return .field declaration.id
+      if model.hasGroupPath named then return .group named
+  let text := match lexical with
     | some path => "/" ++ "/".intercalate path
     | none => rule.errorEntityRelPath
   let path ← match parseModelPath language text with

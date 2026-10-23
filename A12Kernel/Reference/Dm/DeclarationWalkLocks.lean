@@ -242,10 +242,11 @@ example :
 
 /-! ## §2.11: the computed path -/
 
-/-- The verdict on a computation `Fill` of `../label` in `/Order/part/Bin`: `admitted`, the refusal's
-class, or its construct when it has none. -/
-private def computed (part label : String) (operation := "\"bin\"") : String :=
-  let json := model [group "Order" [group part [group "Bin" [field "Slot", field label]]]]
+/-- The verdict on a computation `Fill` of `../label` in `/Order/part/Bin`, `Bin` keyed by `label`
+when `keyed`: `admitted`, the refusal's class, or its construct when it has none. -/
+private def computed (part label : String) (operation := "\"bin\"") (keyed := false) : String :=
+  let bin := if keyed then [("repeatability", toJson (3 : Int)), ("indexFieldName", Json.str label)] else []
+  let json := model [group "Order" [group part [group "Bin" [field "Slot", field label] bin]]]
   match readModel json with
   | .error reason => s!"unread {reason}"
   | .ok dm =>
@@ -269,6 +270,41 @@ example :
     computed "Part" "Ns:Label" = "MVK_ERROR_INVALID_FIELDNAME" ∧
     computed "Co-de" "Label" = "admitted" ∧ computed "Part" "Label" = "admitted" ∧
     computed "Part" "La\u00A0bel" = "MVK_LEXER_STANDARD_ERROR" := by
+  native_decide
+
+/- The classes before the path stage are drawn beneath a refused group name as anywhere: the
+   operation's unknown entity, and the index stage, which a String computation reaches as a Number one
+   does, so either replaces the path class. -/
+example :
+    computed "Co.de" "Label" "[Nope]" = "MVK_INVALID_ENTITY" ∧
+    computed "Co.de" "Label" (keyed := true) = "MVK_ERROR_INDEX_AS_CALCULATED_FIELD" ∧
+    computed "Part" "Label" (keyed := true) = "MVK_ERROR_INDEX_AS_CALCULATED_FIELD" ∧
+    computed "Part" "Label" "[Nope]" = "MVK_INVALID_ENTITY" := by
+  native_decide
+
+/-- The class a rule in `/Order/part/Bin` reporting on `Label` draws for `condition`, `admitted`, or
+its construct when the refusal has no class. -/
+private def ruled (part condition : String) : String :=
+  match readModel (model [group "Order" [group part [group "Bin" [field "Slot", field "Label"]]]]) with
+  | .error reason => s!"unread {reason}"
+  | .ok dm =>
+      let checked : DmRule := {
+        group := ["Order", part, "Bin"]
+        name := "R"
+        errorCode := "R"
+        errorEntityRelPath := "../Label"
+        condition
+        severity := "ERROR" }
+      match checkValidationRule dm .english checked with
+      | .ok _ => "admitted"
+      | .error refusal => refusal.kernelClass?.getD refusal.construct
+
+/- A rule's error entity is resolved by the model's own segments, which the condition lexer never
+   reads, so a refused group name above it changes no condition class. -/
+example :
+    ruled "Co-de" "[Label] == \"x\"" = "admitted" ∧ ruled "Co.de" "FieldFilled(Label)" = "admitted" ∧
+    ruled "Co-de" "[Nope] == \"x\"" = "MVK_INVALID_ENTITY" ∧
+    ruled "Co-de" "[Nope] == \"x\"" = ruled "Part" "[Nope] == \"x\"" := by
   native_decide
 
 end A12Kernel.Dm.DeclarationWalkLocks

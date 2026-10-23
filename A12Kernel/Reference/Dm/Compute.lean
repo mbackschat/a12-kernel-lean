@@ -623,13 +623,26 @@ the joined route reached its guard's target ban. -/
 def lowerComputation (model : FlatModel) (language : Language) (computation : DmComputation) :
     Lowering (FlatFieldDecl × LoweredComputation model) := do
   admitDeclarations [computation.declaration]
-  let checked ← match lowerComputationWith false model language computation with
+  let lowered : Lowering (FlatFieldDecl × LoweredComputation model) :=
+    match lowerComputationWith false model language computation with
     | .ok checked => .ok checked
     | .error refusal =>
         if refusal.construct != "Guard" then .error refusal
         else match lowerComputationWith true model language computation with
           | .ok checked => .ok checked
           | .error parallel => .error (refusal.orGuardBan parallel)
+  -- The index stage follows the condition reads, so a classed refusal keeps its class while a
+  -- classless one, or an admission, onto an index field draws the index class (spec/09; 2026-10-21
+  -- §2.11). Each carrier's own index refusal is subsumed here.
+  let indexTarget := (targetOf language model computation).toOption.any (model.isIndexField ·.id)
+  let checked ← match lowered with
+    | .error refusal =>
+        if indexTarget && refusal.kernelClass?.isNone then
+          refuse "Computation" KernelStaticDiagnostic.errorIndexAsCalculatedField.kernelCode
+        else .error refusal
+    | .ok checked =>
+        if indexTarget then refuse "Computation" KernelStaticDiagnostic.errorIndexAsCalculatedField.kernelCode
+        else pure checked
   -- The computed field's full path is judged last, after every other check passes, so a dotted
   -- group or field name refuses an otherwise admitted computation (2026-10-21 §2.11).
   if (checked.1.groupPath ++ [checked.1.name]).any fun name => name.contains '.' || name.contains ':' then
