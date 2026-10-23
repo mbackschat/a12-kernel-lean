@@ -32,8 +32,8 @@ structure ParallelLeafReads where
 
 namespace ParallelFieldLeaf
 
-private def isDistinctCount : ParallelNumericAtom model → Bool
-  | .aggregate .distinctCount _ => true
+private def isCount : ParallelNumericAtom model → Bool
+  | .aggregate .distinctCount _ | .filledCount _ => true
   | _ => false
 
 /-- A group operand's whole subtree. Below a joined group each field keeps the joined row; above both,
@@ -54,8 +54,8 @@ private def groupReads (pair : CheckedParallelFieldPair model) (outer : Env)
       else pure ((model.groupSubtreeFields reference.path).map .joined)
 
 /-- The authored reads of one leaf. A filled-presence operator can never be repaired by filling more,
-and a distinct count asked to be larger is repaired by changing values, not by filling; both mirror
-the ordinary carrier's omission selection. The root group's filled-presence names no field. -/
+and a distinct or filled count asked to be larger contributes no omission-responsible operand
+(spec/01 §3.1); both mirror the ordinary carrier's omission selection. The root group's filled-presence names no field. -/
 def reads (pair : CheckedParallelFieldPair model) (document : CheckedDocument model)
     (row : ResolvedParallelIndexRow) (outer : Env)
     (inputs : Option MessageReferenceInputs) : ParallelFieldLeaf model →
@@ -88,7 +88,7 @@ def reads (pair : CheckedParallelFieldPair model) (document : CheckedDocument mo
       let atoms ← leaf.atomLeaves.mapM (ordinaryReads pair document row outer inputs)
       pure ⟨all ++ atoms.flatMap (·.referenced), do
         let responsible ← atoms.mapM (·.responsible)
-        pure ((if upwardOmissionCount isDistinctCount value then [] else all) ++ responsible.flatten)⟩
+        pure ((if upwardOmissionCount isCount value then [] else all) ++ responsible.flatten)⟩
   | .customCondition _ => pure ⟨[], pure []⟩
   | .valuesNotUnique operands =>
       let all := operands.map (.joined ∘ pair.declaration)

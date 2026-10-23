@@ -24,6 +24,10 @@ private def pairNumericAtom (model : FlatModel) (group : GroupPath) (expression 
     Lowering (ParallelNumericAtomOf FieldId Expr) := do
   if expression.fieldValue?.isSome then
     return .field (← pairField model group true expression)
+  if let .call "NumberOfFilledFields" arguments none none := expression then
+    let some paths := arguments.mapM (fun | .mk operand none => operand.fieldEntity? | _ => none)
+      | refuse "NumberOfFilledFields" "plain field operand required"
+    return .filledCount (← paths.mapM (pairPath model group))
   match ← lowerValidationNumericAtom expression with
   | .temporalFieldPart path part => pure (.temporalPart (← pairPath model group path) part)
   | .aggregate op source =>
@@ -71,18 +75,6 @@ private partial def Expr.starredReadPrefixes : Expr → List Path
   | .logic _ parts => parts.flatMap Expr.starredReadPrefixes
   | .number _ | .string _ | .constant _ | .custom _ _ => []
 
-/-- The fill quantifier a filled-field count states against an integral threshold, where the two agree
-both in truth and in the iteration guard's syntactic verdict: at least one, the refused none, or more
-than one. `<= 0` and `== 0` state none in truth, yet the guard admits them where it refuses
-`NoFieldFilled` (handback rows `sg10`, `sg11`), so they, like every other comparison, have no
-quantifier. -/
-private def filledCountQuantifier? (op : CompareOp) (threshold : String) : Option FieldFillQuantifier :=
-  match op, threshold with
-  | .gt, "0" | .ge, "1" | .ne, "0" => some .atLeastOneFieldFilled
-  | .lt, "1" => some .noFieldFilled
-  | .gt, "1" | .ge, "2" => some .moreThanOneFieldFilled
-  | _, _ => none
-
 private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr →
     Lowering (ConditionTree PairSyntaxLeaf)
   | .parens body => pairSyntax model group body
@@ -93,7 +85,6 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
       | first :: rest => pure (rest.foldl
           (fun tree next => match op with | .and => .and tree next | .or => .or tree next) first)
   | expression@(.compare op left right) => do
-      if let some leaf ← filledCount op left right then return leaf
       -- The pair carrier owns Number comparisons; any other comparison is an ordinary leaf over the
       -- joined instance (parallel-flat-leaves capture, 2026-10-14).
       let strict := lowerNumericExpr (pairNumericAtom model group) ((.field ·) <$> pairField model group true ·)
@@ -148,18 +139,6 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
       pure (.leaf (.pair (.customCondition checkedName)))
   | expression => ordinary expression
 where
-  /-- A filled-field count of two fields against a threshold a fill quantifier states is that quantifier:
-  `> 0`, `>= 1` and `!= 0` are admitted, `< 1` draws the parallel-iteration class and `>= 2` is
-  admitted, as `AtLeastOneFieldFilled`, `NoFieldFilled` and `MoreThanOneFieldFilled` answer (handback
-  rows `sg1`–`sg9`, `okt006`), and `> 0` and `>= 2` fire, type and reference as their quantifiers do
-  ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-handback-rows-2026-10-23),
-  `filled-count-runtime`). `>= 1` and `!= 0` are assumed to run as `> 0` does, unmeasured. -/
-  filledCount (op : CompareOp) (left right : Expr) : Lowering (Option (ConditionTree PairSyntaxLeaf)) := do
-    let .call "NumberOfFilledFields" [.mk first none, .mk second none] none none := left | return none
-    let .number threshold := right | return none
-    let some quantifier := filledCountQuantifier? op threshold | return none
-    if first.fieldEntity?.isNone || second.fieldEntity?.isNone then return none
-    return some (.leaf (.pair (.fill quantifier (← pairField model group false first) (← pairField model group false second))))
   /-- A leaf the pair carrier has no form for, kept with the plain fields it reads. -/
   ordinary (expression : Expr) : Lowering (ConditionTree PairSyntaxLeaf) := do
     let reads ← expression.fieldPaths.mapM (pairPath model group)

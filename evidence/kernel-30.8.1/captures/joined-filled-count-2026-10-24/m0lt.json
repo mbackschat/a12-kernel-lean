@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Qty", "group": "/Order", "condition": "0 < NumberOfFilledFields(Lines/Qty, Picks/Ref)", "code": "m0lt", "name": "m0lt", "messages": [{"locale": "en_US", "text": "x"}]}

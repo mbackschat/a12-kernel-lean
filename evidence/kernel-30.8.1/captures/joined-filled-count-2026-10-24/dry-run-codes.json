@@ -1,0 +1,188 @@
+{
+ "kernel": "30.8.1",
+ "verb": "rule add --dry-run",
+ "producer": {
+  "revision": "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+  "state": "CLEAN"
+ },
+ "dmtool": "0.13.0",
+ "rows": {
+  "nlt0": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "nlt1": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "nlt2": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "nlt3": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "nle0": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "nle1": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "nle2": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "nle3": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "neq0": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "neq1": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "neq2": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "neq3": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "nne0": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "nne1": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "nne2": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "nne3": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "ngt0": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ngt1": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ngt2": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ngt3": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "nge0": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "nge1": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "nge2": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "nge3": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "m0lt": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "m1gt": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "m0eq": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "m2lt": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "mb": {
+   "admitted": true,
+   "codes": [],
+   "instrument": [
+    "RK_UNGUARDED_NUMBER_COMPARISON"
+   ]
+  },
+  "g1gt": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "g0le": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  }
+ }
+}

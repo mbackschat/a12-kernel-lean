@@ -34,6 +34,10 @@ inductive ParallelNumericAtomOf (Field Ordinary : Type) where
   | field (operand : Field)
   | temporalPart (operand : Field) (part : TemporalNumericPart)
   | aggregate (op : NumericAggregateOp) (operands : List Field)
+  /-- `NumberOfFilledFields` over fields of the joined row, an unmatched partner's read as empty and
+  any invalid operand making the count unavailable, as the ordinary validation count does
+  ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-joined-filled-count), `runtime`). -/
+  | filledCount (operands : List Field)
   | ordinary (atom : Ordinary)
   deriving Repr, DecidableEq
 
@@ -42,7 +46,7 @@ namespace ParallelNumericAtomOf
 /-- Every joined field the atom reads, in authored order. -/
 def operands : ParallelNumericAtomOf Field Ordinary → List Field
   | .field operand | .temporalPart operand _ => [operand]
-  | .aggregate _ operands => operands
+  | .aggregate _ operands | .filledCount operands => operands
   | .ordinary _ => []
 
 def mapM [Monad m] (bind : Field → m Target) (bindOrdinary : Ordinary → m Ordinary') :
@@ -50,6 +54,7 @@ def mapM [Monad m] (bind : Field → m Target) (bindOrdinary : Ordinary → m Or
   | .field operand => .field <$> bind operand
   | .temporalPart operand part => (.temporalPart · part) <$> bind operand
   | .aggregate op operands => .aggregate op <$> operands.mapM bind
+  | .filledCount operands => .filledCount <$> operands.mapM bind
   | .ordinary atom => .ordinary <$> bindOrdinary atom
 
 end ParallelNumericAtomOf
@@ -207,6 +212,7 @@ def admitted (pair : CheckedParallelFieldPair model) : ParallelNumericAtom model
       | none => false
   | .aggregate op operands => tokenDistinct pair op operands || (aggregateFields? pair operands).any fun source =>
       source.hasMultipleFields && source.hasUniqueFields
+  | .filledCount operands => !operands.isEmpty && (operands.map (pair.declaration · |>.id)).Nodup
   | .ordinary leaf => leaf.orderedAtom?.isSome && pair.ordinaryAdmitted leaf
 
 def scaleSummary (pair : CheckedParallelFieldPair model) :
@@ -215,7 +221,7 @@ def scaleSummary (pair : CheckedParallelFieldPair model) :
       match (pair.declaration operand).toNumberField? with
       | some number => .field number.info.scale
       | none => { scale := .unknown, canExpandScale := false }
-  | .temporalPart .. => .field 0
+  | .temporalPart .. | .filledCount _ => .field 0
   | .aggregate op operands =>
       match aggregateFields? pair operands with
       | some source => op.scaleSummary source
@@ -256,6 +262,12 @@ def resolveValidation (pair : CheckedParallelFieldPair model)
       | none => pure (.error NumericValidationUnavailable.silentlyUnavailable)
       | some cells => pure (source.evaluate op
           (fun id => (cells.lookup id).getD (.unknown .malformed))).toValidationArithmetic
+  | .filledCount operands => do
+      let some cells := (← operands.mapM read).mapM id
+        | return .error NumericValidationUnavailable.silentlyUnavailable
+      pure (match (numberOfFilledFields cells).availableWithFillability? operands.length with
+        | some (count, fillability) => (NumericOperand.value count fillability).toValidationArithmetic
+        | none => .error NumericValidationUnavailable.silentlyUnavailable)
   | .ordinary leaf => readOrdinary leaf
 
 end ParallelNumericAtomOf
@@ -335,14 +347,14 @@ private def numericGuard (participates : ParallelFieldOperand → Bool)
     (value : NumericComparisonOf (ParallelNumericAtom model)) : IterationGuardStatus :=
   let rec sensitive : AuthoredNumericExpr (ParallelNumericAtom model) → Option Bool
     | .group body => sensitive body
-    | .atom (.aggregate ..) => some true
+    | .atom (.aggregate ..) | .atom (.filledCount _) => some true
     -- An ordinary atom reads no joined field, so it neither participates nor wraps one.
     | .atom _ => some false
     | .abs _ | .round _ _ _ | .extremum _ _ _ | .extremumCall _ _ => some true
     | _ => none
-  let rec distinctCount : AuthoredNumericExpr (ParallelNumericAtom model) → Bool
-    | .group body => distinctCount body
-    | .atom (.aggregate .distinctCount _) => true
+  let rec count : AuthoredNumericExpr (ParallelNumericAtom model) → Bool
+    | .group body => count body
+    | .atom (.aggregate .distinctCount _) | .atom (.filledCount _) => true
     | _ => false
   let atomOperands := fun (expression : AuthoredNumericExpr (ParallelNumericAtom model)) =>
     expression.atoms.flatMap (·.operands)
@@ -353,9 +365,10 @@ private def numericGuard (participates : ParallelFieldOperand → Bool)
     if !bits.any id then return IterationGuardStatus.noReference
     if rejectMixed && !bits.all id then return .unguarded
     let some converted := literal.javaRoundedInt32? | return .unclassified
-    -- The ordinary carrier's positive-threshold rule: `> 1` guards, `< 2` does not
-    -- (joined-carrier-limits capture, rows `d01b` and `d02b`, 2026-10-14).
-    if distinctCount expression then
+    -- The ordinary carrier's positive-threshold rule: `> 1` guards, `< 2` does not, for a distinct
+    -- count (joined-carrier-limits capture, rows `d01b` and `d02b`, 2026-10-14) and a filled count
+    -- (joined filled-count checkpoint, `admission`).
+    if count expression then
       return if 0 < converted && ValidationCondition.positiveCountThresholdIsUnguarded entityOnLeft value.op then .unguarded
         else .guarded
     pure (value.op.literalIterationGuard converted bits rejectMixed)

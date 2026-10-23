@@ -474,4 +474,33 @@ example :
       some [["Order/Lines/Parts/Info/Text", "Order/Lines/Parts/PartNo", "Order/Picks/Ref",
         "Order/Lines/LineNo", "Order/Picks/LineNo"]] := by native_decide
 
+
+/-- The order fixture with the Number `Lines/Qty` the joined filled-count capture reads. -/
+private def countDm : DmModel :=
+  { dm with flat := { model with fields := model.fields ++ [number 12 L "Qty" [10]] } }
+
+open Lean in
+/- A filled count over the joined pair is the ordinary count, at every constant the guard admits
+   ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-joined-filled-count),
+   `runtime`): a malformed `Qty` makes `> 0` silent where the at-least-one quantifier would fire on the
+   filled `Ref` (`badQty`), `== 0` fires where neither is filled, and `== 1` counts an unmatched
+   partner as empty on both sides of the join (`unmatched`). -/
+example :
+    let order := fun (lines picks : List Json) => Json.mkObj [("Order", Json.mkObj [
+      ("Lines", Json.arr lines.toArray), ("Picks", Json.arr picks.toArray)])]
+    let line := fun (qty : Option String) => Json.mkObj ([("LineNo", Json.str "A")] ++
+      (qty.map fun value => [("Qty", Json.str value)]).getD [])
+    let pick := fun (key : String) (ref : Bool) => Json.mkObj ([("LineNo", Json.str key)] ++
+      (if ref then [("Ref", Json.str "r")] else []))
+    let count := fun (comparison : String) document =>
+      firedOn "Lines/Qty" s!"NumberOfFilledFields(Lines/Qty, Picks/Ref) {comparison}" document countDm
+    count "> 0" (order [line (some "x")] [pick "A" true]) = some [] ∧
+    count "> 0" (order [line (some "1")] [pick "A" true]) = some ["Order/Lines/Qty"] ∧
+    count "== 0" (order [line none] [pick "A" false]) = some ["Order/Lines/Qty"] ∧
+    count "== 0" (order [line none] [pick "A" true]) = some [] ∧
+    ((count "== 1" (order [line (some "1")] [pick "B" true])).map fun pointers =>
+      pointers.length == 2 && pointers.contains "Order/Lines/Qty" &&
+        pointers.contains "/Order[1]/Lines[-5]/Qty") = some true := by
+  native_decide
+
 end A12Kernel.Dm.GroupTargetLocks

@@ -1,0 +1,281 @@
+[
+ {
+  "id": "nlt0",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nlt0.json"
+  ]
+ },
+ {
+  "id": "nlt1",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nlt1.json"
+  ]
+ },
+ {
+  "id": "nlt2",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nlt2.json"
+  ]
+ },
+ {
+  "id": "nlt3",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nlt3.json"
+  ]
+ },
+ {
+  "id": "nle0",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nle0.json"
+  ]
+ },
+ {
+  "id": "nle1",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nle1.json"
+  ]
+ },
+ {
+  "id": "nle2",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nle2.json"
+  ]
+ },
+ {
+  "id": "nle3",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nle3.json"
+  ]
+ },
+ {
+  "id": "neq0",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "neq0.json"
+  ]
+ },
+ {
+  "id": "neq1",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "neq1.json"
+  ]
+ },
+ {
+  "id": "neq2",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "neq2.json"
+  ]
+ },
+ {
+  "id": "neq3",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "neq3.json"
+  ]
+ },
+ {
+  "id": "nne0",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nne0.json"
+  ]
+ },
+ {
+  "id": "nne1",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nne1.json"
+  ]
+ },
+ {
+  "id": "nne2",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nne2.json"
+  ]
+ },
+ {
+  "id": "nne3",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nne3.json"
+  ]
+ },
+ {
+  "id": "ngt0",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ngt0.json"
+  ]
+ },
+ {
+  "id": "ngt1",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ngt1.json"
+  ]
+ },
+ {
+  "id": "ngt2",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ngt2.json"
+  ]
+ },
+ {
+  "id": "ngt3",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ngt3.json"
+  ]
+ },
+ {
+  "id": "nge0",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nge0.json"
+  ]
+ },
+ {
+  "id": "nge1",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nge1.json"
+  ]
+ },
+ {
+  "id": "nge2",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nge2.json"
+  ]
+ },
+ {
+  "id": "nge3",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "nge3.json"
+  ]
+ },
+ {
+  "id": "m0lt",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "m0lt.json"
+  ]
+ },
+ {
+  "id": "m1gt",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "m1gt.json"
+  ]
+ },
+ {
+  "id": "m0eq",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "m0eq.json"
+  ]
+ },
+ {
+  "id": "m2lt",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "m2lt.json"
+  ]
+ },
+ {
+  "id": "mb",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "mb.json"
+  ]
+ },
+ {
+  "id": "g1gt",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "g1gt.json"
+  ]
+ },
+ {
+  "id": "g0le",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "g0le.json"
+  ]
+ }
+]
