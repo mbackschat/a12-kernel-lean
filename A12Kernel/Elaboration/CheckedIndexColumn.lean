@@ -224,7 +224,8 @@ private def CheckedIndexPreliminary.storedAt?
     Option String :=
   match preliminary.defaultStoredAt? address with
   | some stored => some stored
-  | none =>
+  -- As `CheckedIndexPreliminary.storedAt?`: an overlaid base carries its spelling on the placement.
+  | none => (preliminary.base.storedTextAt address).orElse fun _ =>
       (preliminary.base.source.cells.find? fun input =>
         input.address == address).map (·.stored)
 

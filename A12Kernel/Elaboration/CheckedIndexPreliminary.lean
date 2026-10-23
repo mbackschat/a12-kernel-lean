@@ -74,7 +74,9 @@ private def storedAt? (checked : CheckedDocument model)
     Option String :=
   match defaulted.find? fun input => input.address == address with
   | some input => some input.stored
-  | none =>
+  -- An overlaid document, a staged default included, carries its spelling on the placement, so a
+  -- preliminary derived again from such a view reads it there before the authored source.
+  | none => (checked.storedTextAt address).orElse fun _ =>
       (checked.source.cells.find? fun input =>
         input.address == address).map (·.stored)
 

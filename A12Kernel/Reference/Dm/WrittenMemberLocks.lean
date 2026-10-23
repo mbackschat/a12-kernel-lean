@@ -102,6 +102,38 @@ example :
     (order "std").isNone ∧ (order "\u00A0STD").isNone := by
   native_decide
 
+/-- KF574's `Lines` beside a root `Total`, which `Sel` reports on while it selects the row keyed `STD`. -/
+private def selecting (sValue : String) : Option DmModel :=
+  built? ("{\"content\":{\"modelInfo\":{},\"modelConfig\":{\"conditionLanguage\":{\"code\":\"en_US\"}},\"modelRoot\":{\"rootGroups\":[{\"type\":\"Group\",\"name\":\"Order\",\"Group\":{\"elements\":["
+    ++ field "Total" "NumberType" "{\"maxFractionalDigits\":0}" ++ ","
+    ++ "{\"type\":\"Rule\",\"name\":\"Sel\",\"Rule\":{\"errorEntityRelPath\":\"../Total\",\"errorCode\":\"SEL\",\"errorCondition\":\"FieldFilled(Total) And [Lines/Qty For \\\"STD\\\"] >= 0\",\"severity\":\"ERROR\",\"errorMessage\":[{\"locale\":\"en_US\",\"text\":\"m\"}]}},"
+    ++ "{\"type\":\"Group\",\"name\":\"Lines\",\"Group\":{\"repeatability\":10,\"indexFieldName\":\"ServiceLevel\",\"elements\":["
+    ++ field "ServiceLevel" "EnumerationType"
+      s!"\{\"values\":[\{\"value\":\"STD\"},\{\"value\":\"EXPRESS\"}],\"sValue\":{(toJson sValue).compress}}" ++ ","
+    ++ field "Qty" "NumberType" "{\"maxFractionalDigits\":0}" ++ "]}}]}}]}}}")
+
+/-- `Sel`'s messages over one `Lines` row whose index is `level`, absent when `none`. -/
+private def selected (sValue : String) (level : Option String) : Option (List String) := do
+  let dm ← selecting sValue
+  let row := Json.mkObj ([("Qty", Json.str "5")] ++ level.toList.map fun text => ("ServiceLevel", Json.str text))
+  let input ← (readDocument dm (Json.mkObj [("Order", Json.mkObj [("Total", Json.str "1"),
+    ("Lines", Json.arr #[row])])])).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
+  let validated ← ((← (checkDocument prepared "en_US" input.data).toOption).fullValidationDocument).toOption
+  let messages ← dm.rules.mapM fun definition => do
+    let rule ← (checkValidationRule dm .english definition world).toOption
+    (runValidationRule world validated rule).toOption
+  pure (messages.flatten.map fun message => s!"{message.errorCode}@{(observe dm.flat message).pointer}")
+
+/-- A selection derives its own index preliminary from the staged view, so it reads a staged
+default's spelling from its placement: the row whose index is absent or empty is selected by the
+staged `STD`, as the message-cache capture's `singleton-empty` row measured on its own model
+([checkpoint](../../../docs/sources/message-cache-probes.md#src-message-cache-default-and-names)). -/
+example :
+    selected "STD" none = some ["SEL@Order/Total"] ∧ selected "STD" (some "") = some ["SEL@Order/Total"] ∧
+    selected "STD" (some "STD") = some ["SEL@Order/Total"] := by
+  native_decide
+
 /-- A form with a digit String `Code` and a `Day` of `codeBody`, a Number `N`, and a keyed `Tags`
 whose String index `Key` declares `keyBody`. -/
 private def form (codeBody keyBody : String) : Option DmModel :=
