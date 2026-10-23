@@ -12,11 +12,14 @@ open A12Kernel
 private def dateTime (year : Int) (month day hour minute second : Nat)
     (admissible :
       (LocalDateTime.ofYmdHms? year month day hour minute second).isSome) :
-    LocalDateTime :=
-  (LocalDateTime.ofYmdHms? year month day hour minute second).get admissible
+    LegacyCalendarLabel :=
+  .ofLocal ((LocalDateTime.ofYmdHms? year month day hour minute second).get admissible)
 
-private def berlinDayLanding? (source : LocalDateTime) (days : Int) := do
-  let sourceInstant ← EuropeBerlinLegacyProfile.resolveLocal? source
+private def resolveBerlin? : LegacyCalendarLabel → Option Instant :=
+  ModelZone.ConcreteProfile.europeBerlin.resolveCalendarLabel?
+
+private def berlinDayLanding? (source : LegacyCalendarLabel) (days : Int) := do
+  let sourceInstant ← resolveBerlin? source
   EuropeBerlinLegacyProfile.calendarDayLanding? source sourceInstant days
 
 /- A source carrying the post-transition offset into a backward day landing re-fits the nominal gap label to the post-gap wall clock. -/
@@ -81,7 +84,7 @@ example :
 example :
     (do
       let source := dateTime 1915 10 1 0 0 0 (by native_decide)
-      let sourceInstant ← EuropeBerlinLegacyProfile.resolveLocal? source
+      let sourceInstant ← resolveBerlin? source
       EuropeBerlinLegacyProfile.calendarYearLanding?
         source sourceInstant 1) =
       some (
@@ -89,7 +92,7 @@ example :
         { epochMillis := -1680483600000 }) ∧
     (do
       let source := dateTime 1915 4 30 23 30 0 (by native_decide)
-      let sourceInstant ← EuropeBerlinLegacyProfile.resolveLocal? source
+      let sourceInstant ← resolveBerlin? source
       EuropeBerlinLegacyProfile.calendarYearLanding?
         source sourceInstant 1) =
       some (
@@ -102,7 +105,7 @@ example :
     (do
       let daySource := dateTime 1916 9 30 0 0 0 (by native_decide)
       let yearSource := dateTime 1915 10 1 0 0 0 (by native_decide)
-      let yearInstant ← EuropeBerlinLegacyProfile.resolveLocal? yearSource
+      let yearInstant ← resolveBerlin? yearSource
       let dayLanding ← berlinDayLanding? daySource 1
       let yearLanding ←
         EuropeBerlinLegacyProfile.calendarYearLanding?
@@ -115,7 +118,7 @@ example :
 example :
     (do
       let source := dateTime 2024 1 31 2 30 0 (by native_decide)
-      let sourceInstant ← EuropeBerlinLegacyProfile.resolveLocal? source
+      let sourceInstant ← resolveBerlin? source
       EuropeBerlinLegacyProfile.calendarMonthLanding?
         source sourceInstant 2) =
       some (
@@ -128,8 +131,8 @@ example :
     (do
       let firstLabel := dateTime 1916 3 30 23 30 0 (by native_decide)
       let secondLabel := dateTime 1916 5 1 0 0 0 (by native_decide)
-      let first ← EuropeBerlinLegacyProfile.resolveLocal? firstLabel
-      let second ← EuropeBerlinLegacyProfile.resolveLocal? secondLabel
+      let first ← resolveBerlin? firstLabel
+      let second ← resolveBerlin? secondLabel
       EuropeBerlinLegacyProfile.differenceResolvedInMonths?
         firstLabel first secondLabel second) =
       some 0 := by
@@ -139,7 +142,7 @@ example :
 example :
     (do
       let source := dateTime 2000 2 28 2 30 0 (by native_decide)
-      let sourceInstant ← EuropeBerlinLegacyProfile.resolveLocal? source
+      let sourceInstant ← resolveBerlin? source
       EuropeBerlinLegacyProfile.calendarYearLanding?
         source sourceInstant (-1)) =
       some (

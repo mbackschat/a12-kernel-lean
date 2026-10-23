@@ -82,12 +82,12 @@ theorem checkedConstructedDateTodayExtractor_requires_world
 /-- A resolved `Today` projects exactly the certified local calendar component. -/
 theorem checkedConstructedDateTodayExtractor_read
     (checked : CheckedConstructedDatePointInTimeExtractor model)
-    (world : World) (instant : Instant) (date : FullDate)
+    (world : World) (instant : Instant) (label : LegacyCalendarLabel)
     (isToday : checked.point = .today)
     (resolved : world.today? model.timeZoneId = some instant)
-    (decoded : checked.profile.localDate? instant = some date) :
+    (decoded : checked.profile.calendarLabel? instant = some label) :
     checked.read (some world) =
-      .ok (.value (checked.part.extract date.civil.parts).num) := by
+      .ok (.value (checked.part.extract label.parts).num) := by
   simp [CheckedConstructedDatePointInTimeExtractor.read, readConstructedDateClock, projectConstructedDateClock,
     ConstructedDateComponentFault.toEvaluationFault, isToday,
     CheckedConstructedDatePointInTimeExtractor.project, resolved, decoded]
@@ -105,11 +105,11 @@ theorem checkedConstructedDateNowExtractor_requires_world
 /-- `Now` projects the retained exact world instant without consulting zone rules. -/
 theorem checkedConstructedDateNowExtractor_read
     (checked : CheckedConstructedDatePointInTimeExtractor model)
-    (world : World) (date : FullDate)
+    (world : World) (label : LegacyCalendarLabel)
     (isNow : checked.point = .now)
-    (decoded : checked.profile.localDate? world.now = some date) :
+    (decoded : checked.profile.calendarLabel? world.now = some label) :
     checked.read (some world) =
-      .ok (.value (checked.part.extract date.civil.parts).num) := by
+      .ok (.value (checked.part.extract label.parts).num) := by
   simp [CheckedConstructedDatePointInTimeExtractor.read, readConstructedDateClock, projectConstructedDateClock,
     ConstructedDateComponentFault.toEvaluationFault,
     CheckedConstructedDatePointInTimeExtractor.project, isNow, decoded]

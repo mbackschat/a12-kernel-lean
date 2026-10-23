@@ -135,8 +135,8 @@ def wellFormed (source : HavingTemporalExpression) (model : FlatModel)
       | .timeConstruction components => timeComponentsWellFormed components model candidateLevels outerLevels
       | .dateConstruction components => dateComponentsWellFormed components model candidateLevels outerLevels
       | .dateLiteral value false =>
-          let authored : AuthoredDateLiteral := { year := none, month := value.civil.parts.month, day := value.civil.parts.day }
-          ((authored.completedDate? model).bind FullDate.ofCivil?) == some value
+          let authored : AuthoredDateLiteral := { year := none, month := value.month, day := value.day }
+          authored.completedParts? model == some value
       | .baseYearBound _ => model.hasBaseYear
       | _ => true
 
@@ -173,7 +173,7 @@ private def resolveCore (model : FlatModel) (numeric : HavingNumericResolvers)
   | .dateConstruction components => do
       pure (.atom (.dateConstruction (← resolveDateComponents model numeric resolveSelection resolve components)))
   | .dateLiteral authored => do
-      let some value := (authored.completedDate? model).bind FullDate.ofCivil? | throw .numericExpressionUnsupported
+      let some value := authored.completedParts? model | throw .numericExpressionUnsupported
       pure (.atom (.dateLiteral value authored.year.isSome))
   | .timeLiteral value => pure (.atom (.timeLiteral value))
   | .dateTimeLiteral value => pure (.atom (.dateTimeLiteral value))

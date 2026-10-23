@@ -116,7 +116,7 @@ def HavingClockSource.admits (source : HavingClockSource) : TemporalNumericPart 
   | .date part => part.admittedBy false source.components
   | .time part => part.admittedBy source.components
 
-/-- Clock extraction follows the ordinary temporal source account: Today uses the resolved local civil date,
+/-- Clock extraction follows the ordinary temporal source account: Today uses the resolved local hybrid-calendar date,
 while Now projects the legacy calendar label (spec/05 §7 and TemporalNumericPart.projectScalar).
 Both decode the caller's exact clock, without caching a label or substituting zero. -/
 def HavingClockSource.numericPart? (source : HavingClockSource)
@@ -124,11 +124,9 @@ def HavingClockSource.numericPart? (source : HavingClockSource)
   let world ← world
   match source with
   | .today =>
-      let date ← profile.localDate? world.now
-      let _ ← profile.resolveLocal? {
-        date, time := { hour := 0, minute := 0, second := 0, valid := by decide } }
+      let (parts, _) ← profile.todayLabel? world.now
       match part with
-      | .date part => pure (part.extract date.civil.parts)
+      | .date part => pure (part.extract parts)
       | .time _ => none
   | .now =>
       let label ← profile.calendarLabel? world.now

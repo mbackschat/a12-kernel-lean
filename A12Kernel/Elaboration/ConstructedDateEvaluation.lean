@@ -146,10 +146,10 @@ def project
     (checked : CheckedConstructedDatePointInTimeExtractor model)
     (instant : Instant) (unavailable : ConstructedDateEvaluationFault) :
     Except ConstructedDateEvaluationFault CheckedConstructedDateComponent :=
-  match checked.profile.localDate? instant with
+  match checked.profile.calendarLabel? instant with
   | none => throw unavailable
-  | some date =>
-      pure (.value (checked.part.extract date.civil.parts).num)
+  | some label =>
+      pure (.value (checked.part.extract label.parts).num)
 
 /-- Resolve the selected point in time from the supplied execution world, then project
     the matching local calendar component through the model-certified zone profile.

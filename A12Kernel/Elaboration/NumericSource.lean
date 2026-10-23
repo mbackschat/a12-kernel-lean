@@ -90,16 +90,17 @@ namespace AuthoredDateLiteral
 def admittedIn (literal : AuthoredDateLiteral) (model : FlatModel) (anchorYear : Int) : Bool :=
   literal.valid && anchorYear == model.baseYearOrDefault
 
-/-- Literal validity uses the authored common-year rule; runtime completion uses the model's shared anchor (spec/05 §1). Year agreement remains an admission question for the consuming operator. -/
-def completedDate? (literal : AuthoredDateLiteral) (model : FlatModel) : Option CivilDate := do
+/-- Literal validity uses the authored calendar rule; runtime completion uses the model's shared anchor (spec/05 §1). Year agreement remains an admission question for the consuming operator. A completed label must be real on the hybrid calendar, which a common-year label in a 1582 Base Year can fail. -/
+def completedParts? (literal : AuthoredDateLiteral) (model : FlatModel) : Option DateParts := do
   if !literal.valid then none
   let parts := literal.parts model.baseYearOrDefault
-  CivilDate.ofYmd? parts.year parts.month parts.day
+  if DateParts.LegacyHybrid.isReal parts then some parts else none
 
+/-- A date constant is the hybrid-calendar instant of its completed label's model-zone midnight, a Julian one before the 1582 cutover (2026-10-21 letter §1.12, KF588). -/
 def comparisonInstant? (literal : AuthoredDateLiteral) (model : FlatModel) : Option Instant := do
-  let civil ← literal.completedDate? model
+  let parts ← literal.completedParts? model
   let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
-  let value ← profile.resolveStoredDate? civil
+  let value ← profile.resolveCompletedDateParts? parts
   pure value.instant
 
 end AuthoredDateLiteral

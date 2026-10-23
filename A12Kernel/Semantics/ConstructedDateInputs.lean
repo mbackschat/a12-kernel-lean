@@ -209,13 +209,14 @@ def ResolvedConstructedDateSource.fieldId? : ResolvedConstructedDateSource → O
   | .dateYearField source | .extractor source _ _ => some source.id
   | _ => none
 
-/-- Clock acquisition and profile decoding remain separate capabilities, as in spec/05 §7. -/
+/-- Clock acquisition and profile decoding remain separate capabilities, as in spec/05 §7. The
+clock decodes on the hybrid calendar, Julian before the 1582 cutover (2026-10-21 letter §1.2, KF576). -/
 def projectConstructedDateClock (profile : ModelZone.ConcreteProfile) (part : DateNumericPart)
     (instant : Instant) (unavailable : ConstructedDateComponentFault) :
     Except ConstructedDateComponentFault CheckedConstructedDateComponent :=
-  match profile.localDate? instant with
+  match profile.calendarLabel? instant with
   | none => throw unavailable
-  | some date => pure (.value (part.extract date.civil.parts).num)
+  | some label => pure (.value (part.extract label.parts).num)
 
 def readConstructedDateClock (point : ConstructedDatePointInTime) (part : DateNumericPart)
     (zone : String) (profile : ModelZone.ConcreteProfile) (world : Option World) :

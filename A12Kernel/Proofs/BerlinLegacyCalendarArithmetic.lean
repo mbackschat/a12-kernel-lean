@@ -11,7 +11,7 @@ namespace A12Kernel
 /-- A zero-day Berlin landing preserves both the decoded local state and its already
     selected exact instant; it never re-resolves an ambiguous wall label. -/
 @[simp] theorem berlin_calendarDayLanding_zero
-    (dateTime : LocalDateTime) (instant : Instant) :
+    (dateTime : LegacyCalendarLabel) (instant : Instant) :
     EuropeBerlinLegacyProfile.calendarDayLanding?
         dateTime instant 0 =
       some (dateTime, instant) := by
@@ -19,7 +19,7 @@ namespace A12Kernel
 
 /-- A zero-month Berlin mutation preserves the already selected exact instant; even an ambiguous source label is not resolved again. -/
 @[simp] theorem berlin_calendarMonthLanding_zero
-    (dateTime : LocalDateTime) (instant : Instant) :
+    (dateTime : LegacyCalendarLabel) (instant : Instant) :
     EuropeBerlinLegacyProfile.calendarMonthLanding?
         dateTime instant 0 =
       some (dateTime, instant) := by
@@ -27,44 +27,39 @@ namespace A12Kernel
 
 /-- A zero-year Berlin mutation preserves the already selected exact instant; even an ambiguous source label is not resolved again. -/
 @[simp] theorem berlin_calendarYearLanding_zero
-    (dateTime : LocalDateTime) (instant : Instant) :
+    (dateTime : LegacyCalendarLabel) (instant : Instant) :
     EuropeBerlinLegacyProfile.calendarYearLanding?
         dateTime instant 0 =
       some (dateTime, instant) := by
   simp [EuropeBerlinLegacyProfile.calendarYearLanding?]
 
-/-- Every successful Berlin day mutation preserves its nominal target civil date even when an offset re-fit changes the clock or exact instant. -/
+/-- Every successful nonzero Berlin day mutation lands on its nominal hybrid-calendar target date even when an offset re-fit changes the clock or exact instant. A zero mutation returns its source unchanged, whether or not that label is real. -/
 theorem berlin_calendarDayLanding_preserves_date
-    (current landed : LocalDateTime) (currentInstant landedInstant : Instant)
-    (days : Int)
+    (current landed : LegacyCalendarLabel) (currentInstant landedInstant : Instant)
+    (days : Int) (nonzero : days ≠ 0)
     (result :
       EuropeBerlinLegacyProfile.calendarDayLanding?
           current currentInstant days =
         some (landed, landedInstant)) :
-    current.date.addDays? days = some landed.date := by
-  by_cases zero : days = 0
-  · subst days
-    simp [EuropeBerlinLegacyProfile.calendarDayLanding?] at result
-    rcases result with ⟨rfl, rfl⟩
-    exact fullDate_addDays_zero current.date
-  · simp only [EuropeBerlinLegacyProfile.calendarDayLanding?, zero,
-      ↓reduceIte] at result
-    cases nextDateEq : current.date.addDays? days with
-    | none => simp [nextDateEq] at result
-    | some nextDate =>
-        cases landingEq :
-            EuropeBerlinLegacyProfile.calendarDayTargetLanding?
-              current currentInstant nextDate with
-        | none => simp [nextDateEq, landingEq] at result
-        | some landing =>
-            simp [nextDateEq, landingEq] at result
-            have dateEq : nextDate = landed.date :=
-              congrArg LocalDateTime.date result.1
-            simp [dateEq]
+    DateParts.LegacyHybrid.addDays? current.parts days = some landed.parts := by
+  simp only [EuropeBerlinLegacyProfile.calendarDayLanding?, nonzero,
+    ↓reduceIte] at result
+  cases nextDateEq : DateParts.LegacyHybrid.addDays? current.parts days with
+  | none => simp [nextDateEq] at result
+  | some nextDate =>
+      cases landingEq :
+          EuropeBerlinLegacyProfile.calendarDayTargetLanding?
+            current currentInstant nextDate with
+      | none => simp [nextDateEq, landingEq] at result
+      | some landing =>
+          simp [nextDateEq, landingEq] at result
+          have dateEq : nextDate = landed.parts :=
+            congrArg LegacyCalendarLabel.parts result.1
+          simp [dateEq]
 
 /-- A zero year candidate cannot underflow the completed-period count. -/
 @[simp] theorem berlin_wholeYearsForward_same_label
-    (dateTime : LocalDateTime) (firstInstant secondInstant : Instant) :
+    (dateTime : LegacyCalendarLabel) (firstInstant secondInstant : Instant) :
     EuropeBerlinLegacyProfile.wholeYearsForward?
         dateTime firstInstant dateTime secondInstant =
       some 0 := by
@@ -74,8 +69,8 @@ theorem berlin_calendarDayLanding_preserves_date
 /-- Exact-instant ordering makes every completed-period wrapper zero on identical operands, independently of its forward calculator. -/
 @[simp] theorem berlin_signedWholePeriods_self
     (forward :
-      LocalDateTime → Instant → LocalDateTime → Instant → Option Nat)
-    (dateTime : LocalDateTime) (instant : Instant) :
+      LegacyCalendarLabel → Instant → LegacyCalendarLabel → Instant → Option Nat)
+    (dateTime : LegacyCalendarLabel) (instant : Instant) :
     EuropeBerlinLegacyProfile.signedWholePeriods?
         forward dateTime instant dateTime instant =
       some 0 := by
@@ -84,9 +79,9 @@ theorem berlin_calendarDayLanding_preserves_date
 /-- The shared exact-instant sign wrapper is antisymmetric for every forward completed-period calculator. -/
 theorem berlin_signedWholePeriods_swap
     (forward :
-      LocalDateTime → Instant → LocalDateTime → Instant → Option Nat)
-    (first : LocalDateTime) (firstInstant : Instant)
-    (second : LocalDateTime) (secondInstant : Instant) :
+      LegacyCalendarLabel → Instant → LegacyCalendarLabel → Instant → Option Nat)
+    (first : LegacyCalendarLabel) (firstInstant : Instant)
+    (second : LegacyCalendarLabel) (secondInstant : Instant) :
     (EuropeBerlinLegacyProfile.signedWholePeriods?
       forward first firstInstant second secondInstant).map (-·) =
     EuropeBerlinLegacyProfile.signedWholePeriods?
@@ -104,7 +99,7 @@ theorem berlin_signedWholePeriods_swap
 
 /- Month and year laws are direct specializations of the shared completed-period sign wrapper. -/
 @[simp] theorem berlin_differenceResolvedInMonths_self
-    (dateTime : LocalDateTime) (instant : Instant) :
+    (dateTime : LegacyCalendarLabel) (instant : Instant) :
     EuropeBerlinLegacyProfile.differenceResolvedInMonths?
         dateTime instant dateTime instant =
       some 0 := by
@@ -112,8 +107,8 @@ theorem berlin_signedWholePeriods_swap
     EuropeBerlinLegacyProfile.wholeMonthsForward? dateTime instant
 
 theorem berlin_differenceResolvedInMonths_swap
-    (first : LocalDateTime) (firstInstant : Instant)
-    (second : LocalDateTime) (secondInstant : Instant) :
+    (first : LegacyCalendarLabel) (firstInstant : Instant)
+    (second : LegacyCalendarLabel) (secondInstant : Instant) :
     (EuropeBerlinLegacyProfile.differenceResolvedInMonths?
       first firstInstant second secondInstant).map (-·) =
     EuropeBerlinLegacyProfile.differenceResolvedInMonths?
@@ -123,7 +118,7 @@ theorem berlin_differenceResolvedInMonths_swap
     first firstInstant second secondInstant
 
 @[simp] theorem berlin_differenceResolvedInYears_self
-    (dateTime : LocalDateTime) (instant : Instant) :
+    (dateTime : LegacyCalendarLabel) (instant : Instant) :
     EuropeBerlinLegacyProfile.differenceResolvedInYears?
         dateTime instant dateTime instant =
       some 0 := by
@@ -131,8 +126,8 @@ theorem berlin_differenceResolvedInMonths_swap
     EuropeBerlinLegacyProfile.wholeYearsForward? dateTime instant
 
 theorem berlin_differenceResolvedInYears_swap
-    (first : LocalDateTime) (firstInstant : Instant)
-    (second : LocalDateTime) (secondInstant : Instant) :
+    (first : LegacyCalendarLabel) (firstInstant : Instant)
+    (second : LegacyCalendarLabel) (secondInstant : Instant) :
     (EuropeBerlinLegacyProfile.differenceResolvedInYears?
       first firstInstant second secondInstant).map (-·) =
     EuropeBerlinLegacyProfile.differenceResolvedInYears?

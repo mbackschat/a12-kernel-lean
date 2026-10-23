@@ -47,19 +47,17 @@ structure CheckedConstructedDateDifference (model : FlatModel) where
 
 namespace CheckedConstructedDateDifference
 
-/-- Resolve one post-floor constructed-Date label at local midnight under the pinned Berlin profile. -/
+/-- Resolve one constructed-Date label at its hybrid-calendar midnight under the pinned Berlin profile. -/
 private def resolveBerlin? (parts : DateParts) :
-    Option (LocalDateTime × Instant) := do
-  let localLabel ←
-    LocalDateTime.ofYmdHms? parts.year parts.month parts.day 0 0 0
-  let instant ← EuropeBerlinLegacyProfile.resolveLocal? localLabel
-  pure (localLabel, instant)
+    Option (LegacyCalendarLabel × Instant) := do
+  let label := LegacyCalendarLabel.midnight parts
+  pure (label, ← ModelZone.ConcreteProfile.europeBerlin.resolveCalendarLabel? label)
 
 /-- Apply one Berlin difference to two already resolved values. -/
 private def differenceBerlinResolved?
     (unit : DateShiftUnit)
-    (firstLocal : LocalDateTime) (firstInstant : Instant)
-    (secondLocal : LocalDateTime) (secondInstant : Instant) : Option Int :=
+    (firstLocal : LegacyCalendarLabel) (firstInstant : Instant)
+    (secondLocal : LegacyCalendarLabel) (secondInstant : Instant) : Option Int :=
   match unit with
   | .days =>
       EuropeBerlinLegacyProfile.differenceResolvedInDays?
@@ -146,9 +144,9 @@ def parts? : DifferenceOperand → Option DateParts
   | .exact _ parts _ => some parts
   | .unavailable _ | .noValue _ => none
 
-def berlinResolved? : DifferenceOperand → Option (LocalDateTime × Instant)
+def berlinResolved? : DifferenceOperand → Option (LegacyCalendarLabel × Instant)
   | .exact instant _ _ =>
-      (ModelZone.ConcreteProfile.europeBerlin.localDateTime? instant).map
+      (ModelZone.ConcreteProfile.europeBerlin.calendarLabel? instant).map
         (·, instant)
   | .unavailable _ | .noValue _ => none
 

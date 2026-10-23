@@ -182,7 +182,7 @@ inductive SurfaceHavingTemporalExpression where
   | dateConstruction (components : SurfaceConstructedDateComponents (SurfaceHavingDateComponent SurfaceHavingTemporalExpression))
   | dateLiteral (source : AuthoredDateLiteral)
   | timeLiteral (value : TimeOfDay)
-  | dateTimeLiteral (value : LocalDateTime)
+  | dateTimeLiteral (value : LegacyCalendarLabel)
   | today
   | now
   | baseYearBound (bound : BaseYearRangeEndpoint)
@@ -502,7 +502,7 @@ inductive SurfaceHavingTemporalOperand where
   | field (reference : SurfaceHavingStringRef)
   | constant (source : SurfaceDateDifferenceOperand Empty)
   | timeLiteral (value : TimeOfDay)
-  | dateTimeLiteral (value : LocalDateTime)
+  | dateTimeLiteral (value : LegacyCalendarLabel)
   | grouped (source : SurfaceHavingTemporalOperand)
   deriving Repr, DecidableEq
 

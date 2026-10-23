@@ -538,7 +538,7 @@ example : ComputationCondition.evalSimpleComparison
     { read := fun _ => invalid, world := some injectedCalendar } = .holds := by native_decide
 
 private def gapLiteral : FlatTemporalOperand := .localDateTimeValue .europeBerlin
-  ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide))
+  (.ofLocal ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide)))
 private def stampField : FlatTemporalOperand := .fieldValue
   { id := 1, kind := .dateTime, components := TemporalComponents.now }
 private def gapPair (literalFirst : Bool) : FlatComparison :=

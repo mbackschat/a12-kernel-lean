@@ -72,7 +72,7 @@ private def differenceStops (phase : Phase) (unit : TemporalOperationUnit)
   let project (source : SurfaceScalarTemporalExpression) :=
     if unit == .months || unit == .years then .dateFromDateTime source else source
   match elaborateTemporalNumericOperation model ["Form"] (.difference unit (project source)
-      (project (.dateTimeLiteral ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by decide))))) with
+      (project (.dateTimeLiteral (.ofLocal ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by decide)))))) with
   | .error _ => false
   | .ok checked =>
       match checked.evalResult phase { read := fun _ => cell } with

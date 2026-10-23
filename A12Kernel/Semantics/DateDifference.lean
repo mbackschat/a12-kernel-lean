@@ -5,7 +5,7 @@ import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked calendar differences
 
-This capsule computes signed calendar differences through one phase-observed numeric operand boundary. Date-only month/year differences use decoded date parts; day differences preserve both the decoded local Date/DateTime label and its already-resolved exact instant for a selected model-zone profile. Stored/full Dates, admitted date literals and direct or range-selected Base-Year sources share the boundary.
+This capsule computes signed calendar differences through one phase-observed numeric operand boundary. Date-only month/year differences use decoded date parts; day differences preserve both the decoded hybrid-calendar Date/DateTime label and its already-resolved exact instant for a selected model-zone profile. A date constant, `Today` or a Base Year before the 1582 cutover enters a day difference as a Julian value (2026-10-21 letter §1.12, KF588). Stored/full Dates, admitted date literals and direct or range-selected Base-Year sources share the boundary.
 
 The shared decoded-parts mechanism does not itself accept arbitrary authored dates. Its consumers retain their own boundaries: `FullDate` preserves the stored-value floor, while configured Base Year remains floor-free. The observed operand boundary preserves formal-cause precedence and symmetric empty-to-zero provenance while refusing legacy-hybrid values. Checked field/literal/Base-Year lowering, per-operation kind/component gates, concrete profile selection, scale 0, validation polarity, and computation poison are supplied by the shared numeric-expression consumers; constructed `Date(...)` legacy-hybrid execution, wider authored temporal operands, and temporal targets remain outside.
 -/
@@ -179,52 +179,44 @@ def evaluate (unit : DateDifferenceUnit)
 
 end DateDifferenceOperand
 
-/-- One checked Date/DateTime operand for model-zone calendar-day difference. Exact instant identity remains paired with the decoded local label. -/
+/-- One checked Date/DateTime operand for model-zone calendar-day difference. Exact instant identity remains paired with its decoded hybrid-calendar label, so an operand before the 1582 cutover steps on its Julian calendar (2026-10-21 letter §1.12, KF588). -/
 inductive CalendarDayDifferenceOperand where
   | empty
-  | value (localDateTime : LocalDateTime) (instant : Instant)
+  | value (label : LegacyCalendarLabel) (instant : Instant)
   | unavailable (cause : FormalCause)
   | unsupportedCalendar
   deriving Repr, DecidableEq
 
 namespace CalendarDayDifferenceOperand
 
-/-- Project one observed Date or DateTime without re-resolving its exact instant. The current concrete fragment accepts only post-floor stored-Gregorian values. -/
+/-- Project one observed stored-Gregorian Date or DateTime without re-resolving its exact instant. -/
 def ofObservation : CellObservation Value → CalendarDayDifferenceOperand
   | .empty => .empty
   | .value (.temporal (.date date)) =>
       match date.basis with
       | .legacyHybrid => .unsupportedCalendar
-      | .storedGregorian =>
-          match LocalDateTime.ofYmdHms?
-              date.parts.year date.parts.month date.parts.day 0 0 0 with
-          | some localDateTime => .value localDateTime date.instant
-          | none => .unsupportedCalendar
+      | .storedGregorian => .value (LegacyCalendarLabel.midnight date.parts) date.instant
   | .value (.temporal
       (.dateTime instant parts time .storedGregorian)) =>
-      match FullDate.ofYmd? parts.year parts.month parts.day with
-      | some date => .value { date, time } instant
-      | none => .unsupportedCalendar
+      .value { parts, time } instant
   | .value (.temporal (.dateTime _ _ _ .legacyHybrid)) =>
       .unsupportedCalendar
   | .value _ => .unavailable .malformed
   | .unknown cause | .poison cause => .unavailable cause
 
-/-- Resolve an admitted calendar endpoint at midnight in its model-zone profile. -/
+/-- Resolve an admitted calendar endpoint at its hybrid-calendar midnight in its model-zone profile. -/
 def ofParts (profile : ModelZone.ConcreteProfile)
     (parts : DateParts) : CalendarDayDifferenceOperand :=
-  match LocalDateTime.ofYmdHms? parts.year parts.month parts.day 0 0 0 with
+  let label := LegacyCalendarLabel.midnight parts
+  match profile.resolveCalendarLabel? label with
+  | some instant => .value label instant
   | none => .unsupportedCalendar
-  | some localDateTime =>
-      match profile.resolveLocal? localDateTime with
-      | some instant => .value localDateTime instant
-      | none => .unsupportedCalendar
 
 /-- One exact instant at its local wall label in the model zone, as `Now` enters a day difference.
 The instant keeps its millisecond remainder (spec/05 §7). -/
 def ofInstant (profile : ModelZone.ConcreteProfile) (instant : Instant) : CalendarDayDifferenceOperand :=
-  match profile.localDateTime? instant with
-  | some localDateTime => .value localDateTime instant
+  match profile.calendarLabel? instant with
+  | some label => .value label instant
   | none => .unsupportedCalendar
 
 /-- Resolve one direct or range-selected Base-Year endpoint through the common midnight boundary. -/

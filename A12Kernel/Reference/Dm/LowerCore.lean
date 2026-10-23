@@ -174,34 +174,21 @@ def hybridDateConstant? (text : String) : Option DateParts := do
   let parts : DateParts := { year, month, day }
   if DateParts.LegacyHybrid.isReal parts then pure parts else none
 
-/-- The calendar date a hybrid-real `DD.MM.YYYY` literal names, where the proleptic date carrier holds
-it: a Julian leap day the proleptic calendar lacks is a date constant with no value here, which its
-consumers refuse rather than read as text. -/
-def civilDateConstant? (text : String) : Option CivilDate := do
-  let parts ← hybridDateConstant? text
-  CivilDate.ofYmd? parts.year parts.month parts.day
-
 /-- The clock an exact `HH:mm:ss` literal names, a real one only ([`spec/05`](../../../spec/05-dates-and-time.md)
 §1, the literal typing note). -/
 def timeConstant? (text : String) : Option TimeOfDay := do
   let [hour, minute, second] := text.splitOn ":" | none
   TimeOfDay.ofHms? (← twoDigits? hour) (← twoDigits? minute) (← twoDigits? second)
 
-/-- The wall label a date literal joined by `T` to a clock literal names. -/
-def dateTimeConstant? (text : String) : Option LocalDateTime := do
+/-- The hybrid-calendar wall label a date literal joined by `T` to a clock literal names; before the
+cutover it is a Julian label, so `"04.10.1582T23:00:00"` is a date-time instant (2026-10-21 §1.12). -/
+def dateTimeConstant? (text : String) : Option LegacyCalendarLabel := do
   let [date, clock] := text.splitOn "T" | none
-  let parts ← hybridDateConstant? date
-  let time ← timeConstant? clock
-  LocalDateTime.ofYmdHms? parts.year parts.month parts.day time.hour time.minute time.second
+  pure { parts := ← hybridDateConstant? date, time := ← timeConstant? clock }
 
-/-- Whether a literal is a date joined by `T` to a clock, its date judged on the hybrid calendar.
-This is the typing, kept apart from `dateTimeConstant?`, whose carrier holds no label before the
-1583-10-16 floor: the Kernel reads `"04.10.1582T23:00:00"` as a date-time instant (2026-10-21 §1.12),
-so a consumer without its value refuses it rather than reading text. -/
+/-- Whether a literal is a date joined by `T` to a clock, its date judged on the hybrid calendar. -/
 def isDateTimeConstant (text : String) : Bool :=
-  match text.splitOn "T" with
-  | [date, clock] => (hybridDateConstant? date).isSome && (timeConstant? clock).isSome
-  | _ => false
+  (dateTimeConstant? text).isSome
 
 /-- The month and day an omitted-year `DD.MM.` literal names, a real date in a common year only,
 whatever the Base Year ([`spec/05`](../../../spec/05-dates-and-time.md) §1): `"30.04."` names one,

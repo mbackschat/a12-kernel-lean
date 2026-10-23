@@ -79,8 +79,8 @@ example :
       let first ← EuropeBerlinLegacyProfile.resolveLocal? firstLabel
       let second ← EuropeBerlinLegacyProfile.resolveLocal? secondLabel
       EuropeBerlinLegacyProfile.differenceResolvedInDays?
-        firstLabel { epochMillis := first.epochMillis + 500 }
-        secondLabel second) =
+        (.ofLocal firstLabel) { epochMillis := first.epochMillis + 500 }
+        (.ofLocal secondLabel) second) =
       some 0 := by
   native_decide
 

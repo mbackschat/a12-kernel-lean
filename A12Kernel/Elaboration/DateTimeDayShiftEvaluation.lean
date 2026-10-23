@@ -94,9 +94,10 @@ def applyProfileAmount (profile : ModelZone.ConcreteProfile)
         let landing :=
           match profile with
           | .utc => utcLanding? sourceLocal sourceInstant offset
-          | .europeBerlin =>
-              EuropeBerlinLegacyProfile.calendarDayLanding?
-                sourceLocal sourceInstant offset
+          | .europeBerlin => do
+              let (label, landing) ← EuropeBerlinLegacyProfile.calendarDayLanding?
+                (.ofLocal sourceLocal) sourceInstant offset
+              pure (← label.toLocal?, landing)
         match landing with
         | some (shifted, shiftedInstant) =>
             pure (.value shifted shiftedInstant notGiven)

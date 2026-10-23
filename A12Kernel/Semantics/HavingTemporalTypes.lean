@@ -39,9 +39,9 @@ inductive HavingTemporalAtom where
   | rangeBound (origin : HavingOrigin) (source : FlatDateRangeField) (components : TemporalComponents) (bound : DateRangeBound)
   | timeConstruction (components : TimeComponentPrefix (HavingTemporalComponent ResolvedTimeConstructionSource TimeNumericPart (TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation)))
   | dateConstruction (components : ResolvedConstructedDateComponents (HavingTemporalComponent ResolvedConstructedDateSource DateNumericPart (TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation)))
-  | dateLiteral (value : FullDate) (yearPresent : Bool)
+  | dateLiteral (value : DateParts) (yearPresent : Bool)
   | timeLiteral (value : TimeOfDay)
-  | dateTimeLiteral (value : LocalDateTime)
+  | dateTimeLiteral (value : LegacyCalendarLabel)
   | today
   | now
   | baseYearBound (bound : BaseYearRangeEndpoint)

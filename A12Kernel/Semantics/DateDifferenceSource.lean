@@ -5,7 +5,9 @@ import A12Kernel.Semantics.DateDifference
 namespace A12Kernel
 
 /-- A date literal keeps written year presence apart from its model-dependent completion.
-The omitted-year calendar gate uses a common year (spec/05 §1), even in a leap Base Year. -/
+A written year is judged on the legacy hybrid calendar, so `29.02.1500` is real and `14.10.1582` is
+not (2026-10-21 letter §2.15, KF588); the omitted-year gate uses a common year (spec/05 §1), even in
+a leap Base Year. -/
 structure AuthoredDateLiteral where
   year : Option Int
   month : Nat
@@ -15,7 +17,9 @@ structure AuthoredDateLiteral where
 namespace AuthoredDateLiteral
 
 def valid (literal : AuthoredDateLiteral) : Bool :=
-  (CivilDate.ofYmd? (literal.year.getD 2023) literal.month literal.day).isSome
+  match literal.year with
+  | some year => DateParts.LegacyHybrid.isReal { year, month := literal.month, day := literal.day }
+  | none => (CivilDate.ofYmd? 2023 literal.month literal.day).isSome
 
 def components (literal : AuthoredDateLiteral) : TemporalComponents :=
   { TemporalComponents.fullDate with year := literal.year.isSome }
@@ -39,11 +43,11 @@ inductive ResolvedDateDifferenceOperand (Field : Type := FlatTemporalField) (clo
 
 namespace ResolvedDateDifferenceOperand
 
-/-- Read the model-local civil day from this evaluation's clock, as required by spec/05 §7.
+/-- Read the model-local hybrid-calendar day from this evaluation's clock, as required by spec/05 §7.
 No instant is cached in the checked operand. -/
 def todayParts? (profile : ModelZone.ConcreteProfile) (world? : Option World) : Option DateParts := do
   let world ← world?
-  pure (← profile.localDate? world.now).civil.parts
+  pure (← profile.todayLabel? world.now).1
 
 
 def fields : ResolvedDateDifferenceOperand Field clock → List Field

@@ -26,7 +26,7 @@ private def dayOperand (checked : CheckedValueAsDateDayDifference model) :
       | some localDateTime =>
           match checked.profile.resolveLocal? localDateTime with
           | none => .unsupportedCalendar
-          | some instant => .value localDateTime instant
+          | some instant => .value (.ofLocal localDateTime) instant
 
 private def evaluateAvailable
     (checked : CheckedValueAsDateDayDifference model)

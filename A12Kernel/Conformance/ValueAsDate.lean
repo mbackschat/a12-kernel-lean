@@ -28,7 +28,7 @@ private def calendarDayOperand? (profile : ModelZone.ConcreteProfile)
   let localDateTime ←
     LocalDateTime.ofYmdHms? year month day hour minute second
   let instant ← profile.resolveLocal? localDateTime
-  pure (.value localDateTime instant)
+  pure (.value (.ofLocal localDateTime) instant)
 
 private def dayOptionalSource
     (partialMode : TemporalPartialMode := .dayOptional)

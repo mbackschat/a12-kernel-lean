@@ -11,7 +11,7 @@ namespace A12Kernel.EuropeBerlinLegacyProfile
 
 /-- Count consecutive profile landings that do not pass the later instant. Fuel is derived from the civil-date distance; exhaustion or an unresolved landing remains explicit absence rather than collapsing to the legitimate result zero. -/
 private def countResidualLandings :
-    Nat → LocalDateTime → Instant → Instant → Option Int
+    Nat → LegacyCalendarLabel → Instant → Instant → Option Int
   | 0, _, _, _ => none
   | fuel + 1, current, currentInstant, later =>
       match calendarDayLanding? current currentInstant 1 with
@@ -23,8 +23,8 @@ private def countResidualLandings :
             some 0
 
 /-- Unsigned kernel day count over ordered operands: make one `365 × whole-years` calendar jump, then count stateful residual day landings. -/
-private def forwardDifferenceInDays? (earlier : LocalDateTime)
-    (earlierInstant : Instant) (later : LocalDateTime)
+private def forwardDifferenceInDays? (earlier : LegacyCalendarLabel)
+    (earlierInstant : Instant) (later : LegacyCalendarLabel)
     (laterInstant : Instant) : Option Int := do
   let years ← wholeYearsForward? earlier earlierInstant later laterInstant
   let seedDays := years * 365
@@ -32,14 +32,14 @@ private def forwardDifferenceInDays? (earlier : LocalDateTime)
     calendarDayLanding? earlier earlierInstant (seedDays : Int)
   let fuel :=
     Int.toNat
-      (later.date.unixEpochDay - seeded.date.unixEpochDay) + 1
+      ((← DateParts.LegacyHybrid.epochDay? later.parts) - (← DateParts.LegacyHybrid.epochDay? seeded.parts)) + 1
   let residual ←
     countResidualLandings fuel seeded seededInstant laterInstant
   pure (seedDays + residual)
 
 /-- Signed stateful calendar-day count for two already resolved Berlin values. The exact instants are authoritative in overlaps; their decoded local labels drive calendar landings. -/
-def differenceResolvedInDays? (first : LocalDateTime) (firstInstant : Instant)
-    (second : LocalDateTime) (secondInstant : Instant) : Option Int :=
+def differenceResolvedInDays? (first : LegacyCalendarLabel) (firstInstant : Instant)
+    (second : LegacyCalendarLabel) (secondInstant : Instant) : Option Int :=
   if firstInstant.epochMillis < secondInstant.epochMillis then
     forwardDifferenceInDays? first firstInstant second secondInstant
   else if secondInstant.epochMillis < firstInstant.epochMillis then
@@ -51,7 +51,7 @@ def differenceResolvedInDays? (first : LocalDateTime) (firstInstant : Instant)
 def differenceInDays? (first second : LocalDateTime) : Option Int := do
   let firstInstant ← resolveLocal? first
   let secondInstant ← resolveLocal? second
-  differenceResolvedInDays? first firstInstant second secondInstant
+  differenceResolvedInDays? (.ofLocal first) firstInstant (.ofLocal second) secondInstant
 
 end A12Kernel.EuropeBerlinLegacyProfile
 
@@ -65,8 +65,8 @@ namespace ConcreteProfile
 
 /-- Evaluate day difference from exact instants plus their already decoded local labels. UTC needs only instant identity; Berlin preserves the local state required by calendar stepping. -/
 def differenceResolvedInDays? (profile : ConcreteProfile)
-    (first : LocalDateTime) (firstInstant : Instant)
-    (second : LocalDateTime) (secondInstant : Instant) : Option Int :=
+    (first : LegacyCalendarLabel) (firstInstant : Instant)
+    (second : LegacyCalendarLabel) (secondInstant : Instant) : Option Int :=
   match profile with
   | .utc =>
       some ((secondInstant.epochMillis - firstInstant.epochMillis).tdiv 86400000)
@@ -79,7 +79,7 @@ def differenceInDays? (profile : ConcreteProfile)
     (first second : LocalDateTime) : Option Int := do
   let firstInstant ← profile.resolveLocal? first
   let secondInstant ← profile.resolveLocal? second
-  profile.differenceResolvedInDays? first firstInstant second secondInstant
+  profile.differenceResolvedInDays? (.ofLocal first) firstInstant (.ofLocal second) secondInstant
 
 end ConcreteProfile
 

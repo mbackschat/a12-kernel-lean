@@ -66,7 +66,7 @@ namespace ValueAsDateTimeResult
 def calendarDayDifferenceOperand :
     ValueAsDateTimeResult → CalendarDayDifferenceOperand
   | .noValue _ => .empty
-  | .value localDateTime instant _ => .value localDateTime instant
+  | .value localDateTime instant _ => .value (.ofLocal localDateTime) instant
   | .nonRelevant => .unsupportedCalendar
   | .unavailable cause => .unavailable cause
 

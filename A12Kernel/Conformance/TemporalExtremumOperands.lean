@@ -144,8 +144,8 @@ example :
     temporalExpressionResult (.group .now) .now = some (.fired .value) ∧
       temporalExpressionResult (.group .now) (.group .now) = none := by native_decide
 
-private def berlinGap : LocalDateTime :=
-  (LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide)
+private def berlinGap : LegacyCalendarLabel :=
+  .ofLocal ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide))
 
 private def berlinTemporalResult (source : SurfaceScalarTemporalExpression) := do
   let checked ← (elaborateScalarTemporalExpression

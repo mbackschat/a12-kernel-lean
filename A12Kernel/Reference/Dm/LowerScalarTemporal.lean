@@ -238,7 +238,7 @@ private partial def lowerScalarTemporalExpressionAt (model : FlatModel) (rowGrou
       match dateTimeConstant? text, timeConstant? text, authoredDateLiteral? text with
       | some value, _, _ => pure (.dateTimeLiteral value)
       | _, some value, _ => pure (.timeLiteral value)
-      | _, _, some source => match (source.completedDate? model).bind FullDate.ofCivil? with
+      | _, _, some source => match source.completedParts? model with
           | some value => pure (.dateLiteral value source.year.isSome)
           | none => refuse "TemporalExpression" "literal calendar profile"
       | _, _, _ => refuse "TemporalExpression" "literal"

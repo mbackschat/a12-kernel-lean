@@ -26,9 +26,9 @@ inductive SurfaceScalarTemporalExpression where
       (first : SurfaceScalarTemporalExpression) (rest : List SurfaceScalarTemporalExpression)
   | now
   | today
-  | dateLiteral (value : FullDate) (yearPresent : Bool := true)
+  | dateLiteral (value : DateParts) (yearPresent : Bool := true)
   | timeLiteral (value : TimeOfDay)
-  | dateTimeLiteral (value : LocalDateTime)
+  | dateTimeLiteral (value : LegacyCalendarLabel)
   | rangeBound (reference : SurfaceFieldPath) (bound : DateRangeBound)
   | indexedRangeBound (source : SurfaceSemanticIndex) (bound : DateRangeBound)
   | baseYearBound (bound : BaseYearRangeEndpoint)
@@ -142,8 +142,8 @@ inductive ScalarTemporalAtom (model : FlatModel) where
   | now
   | today (profile : ModelZone.ConcreteProfile)
   /-- Authored year presence survives effective Base-Year supplementation (spec/05 §1). -/
-  | dateLiteral (profile : ModelZone.ConcreteProfile) (value : FullDate) (yearPresent : Bool := true)
-  | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : LocalDateTime)
+  | dateLiteral (profile : ModelZone.ConcreteProfile) (value : DateParts) (yearPresent : Bool := true)
+  | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : LegacyCalendarLabel)
   | dateConstruction (components : CheckedConstructedDateComponents model
       (Sum (Sum (CheckedConstructedDateSource model) (CheckedIndexedDateComponent model)) (ScalarTemporalNumericAtom model)))
   | timeConstruction (components : TimeComponentPrefix (Sum (Sum (CheckedTimeComponent model) (CheckedIndexedTimeComponent model)) (ScalarTemporalNumericAtom model)))

@@ -43,7 +43,7 @@ private def readTimeComponent (origin : HavingOrigin) (source : ResolvedTimeCons
         (observeCell phase (← context.read (frame.envAt origin) field.id)))
     | .nowExtractor part =>
         let some world := context.world | throw context.worldUnavailable
-        let some label := profile.localDateTime? world.now | throw context.unsupportedDateCalendar
+        let some label := profile.calendarLabel? world.now | throw context.unsupportedDateCalendar
         pure (.value (part.extract label.time).num)
 
 
@@ -231,10 +231,10 @@ private def readAtom (profile : ModelZone.ConcreteProfile) (baseYear : Option In
           else pure (components.finishValue observation).asScalarTemporalOperand
   | .timeLiteral value => pure (.value (.time value) true)
   | .dateTimeLiteral value => do
-      let some instant := profile.resolveLocal? value | throw context.temporalValueFailure
+      let some instant := profile.resolveCalendarLabel? value | throw context.temporalValueFailure
       pure (.value (.instant instant) true)
   | .dateLiteral value yearPresent => do
-      let some date := profile.resolveCompletedDateParts? value.civil.parts | throw context.temporalValueFailure
+      let some date := profile.resolveCompletedDateParts? value | throw context.temporalValueFailure
       pure (.value (if yearPresent || baseYear.isSome then .date date
         else .yearless date { month := date.parts.month, day := date.parts.day }) true)
   | .baseYearBound bound => do
@@ -247,8 +247,8 @@ private def readAtom (profile : ModelZone.ConcreteProfile) (baseYear : Option In
       pure (.value (.instant world.now) true)
   | .today => do
       let some world := context.world | throw context.worldUnavailable
-      let some label := profile.localDate? world.now | throw context.unsupportedDateCalendar
-      let some date := profile.resolveCompletedDateParts? label.civil.parts | throw context.temporalValueFailure
+      let some label := profile.calendarLabel? world.now | throw context.unsupportedDateCalendar
+      let some date := profile.resolveCompletedDateParts? label.parts | throw context.temporalValueFailure
       pure (.value (.date date) true)
 
 termination_by atom => sizeOf atom

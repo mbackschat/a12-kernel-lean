@@ -53,8 +53,8 @@ def scalarTemporalDifference? (profile : ModelZone.ConcreteProfile) (unit : Temp
       match profile with
       | .utc => pure ((second.epochMillis - first.epochMillis).tdiv 86400000)
       | .europeBerlin =>
-          let firstLabel ← profile.localDateTime? first
-          let secondLabel ← profile.localDateTime? second
+          let firstLabel ← profile.calendarLabel? first
+          let secondLabel ← profile.calendarLabel? second
           profile.differenceResolvedInDays? firstLabel first secondLabel second
   | .months | .years =>
       match profile with
@@ -62,8 +62,8 @@ def scalarTemporalDifference? (profile : ModelZone.ConcreteProfile) (unit : Temp
           let unit : DateDifferenceUnit := if unit == .months then .months else .years
           unit.betweenLegacy? (← profile.calendarLabel? first).parts (← profile.calendarLabel? second).parts
       | .europeBerlin =>
-          let firstLabel ← profile.localDateTime? first
-          let secondLabel ← profile.localDateTime? second
+          let firstLabel ← profile.calendarLabel? first
+          let secondLabel ← profile.calendarLabel? second
           if unit == .months then
             EuropeBerlinLegacyProfile.differenceResolvedInMonths? firstLabel first secondLabel second
           else EuropeBerlinLegacyProfile.differenceResolvedInYears? firstLabel first secondLabel second

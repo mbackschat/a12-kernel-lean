@@ -31,7 +31,7 @@ def rowConstant (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
   | .constant "True" => boolean true
   | .constant "False" => boolean false
   | .string literal =>
-      match authoredDateLiteral? literal, timeConstant? literal, dateTimeConstant? literal with
+      match authoredDateLiteral? literal, timeConstant? literal, (dateTimeConstant? literal).bind (·.toLocal?) with
       | some date, _, _ => do
           let operation ← elaborated "DateComputation"
             (checkDateLiteralComputation model group target.id date)

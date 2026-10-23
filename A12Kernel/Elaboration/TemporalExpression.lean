@@ -78,8 +78,8 @@ private def resolveScalarTemporalExpression (model : FlatModel) (rowGroup : Grou
   | .today => do pure (.atom (.today (← scalarProfile model)), TemporalComponents.fullDate)
   | .dateLiteral value yearPresent => do
       let value ← if yearPresent then pure value else do
-        let source : AuthoredDateLiteral := { year := none, month := value.civil.parts.month, day := value.civil.parts.day }
-        let some value := (source.completedDate? model).bind FullDate.ofCivil? | throw .unsupportedSource
+        let source : AuthoredDateLiteral := { year := none, month := value.month, day := value.day }
+        let some value := source.completedParts? model | throw .unsupportedSource
         pure value
       pure (.atom (.dateLiteral (← scalarProfile model) value yearPresent),
         scalarComponents model { TemporalComponents.fullDate with year := yearPresent })
@@ -399,11 +399,11 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
         context.row context.read context.storedText).mapError (fun _ => .calendarUnavailable)
       pure (projectScalarTemporalObservation model field observation)
   | .dateTimeLiteral profile value =>
-      match profile.resolveLocal? value with
+      match profile.resolveCalendarLabel? value with
       | some instant => pure (.value (.instant instant) true)
       | none => throw .dateTimeLabelUnresolved
   | .dateLiteral profile value yearPresent =>
-      match resolvedScalarDate profile value with
+      match profile.resolveCompletedDateParts? value with
       | some value => pure (.value (if yearPresent || model.hasBaseYear then .date value else
           .yearless value { month := value.parts.month, day := value.parts.day }) true)
       | none => throw .dateTimeLabelUnresolved
@@ -422,9 +422,8 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
   | .now => pure (match context.world with
       | some world => .value (.instant world.now) true
       | none => .unknown .malformed)
-  | .today profile => pure (match context.world.bind (fun world => profile.localDate? world.now)
-      |>.bind (resolvedScalarDate profile) with
-      | some date => .value (.date date) true
+  | .today profile => pure (match context.world.bind (fun world => profile.todayLabel? world.now) with
+      | some (parts, instant) => .value (.date { instant, parts, basis := .storedGregorian }) true
       | none => .unknown .malformed)
   | .valueAsDate source =>
       readScalarValueAsDate phase source (context.read source.source.target.id)

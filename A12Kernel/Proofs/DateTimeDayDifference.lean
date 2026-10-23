@@ -10,7 +10,7 @@ namespace A12Kernel
 
 /-- An already resolved Berlin value is zero calendar days from itself without re-resolving its possibly ambiguous local label. -/
 theorem berlin_differenceResolvedInDays_self
-    (dateTime : LocalDateTime) (instant : Instant) :
+    (dateTime : LegacyCalendarLabel) (instant : Instant) :
     EuropeBerlinLegacyProfile.differenceResolvedInDays?
         dateTime instant dateTime instant =
       some 0 := by
@@ -18,8 +18,8 @@ theorem berlin_differenceResolvedInDays_self
 
 /-- Swapping two already resolved Berlin operands negates the result while preserving their exact overlap identities. -/
 theorem berlin_differenceResolvedInDays_swap
-    (first : LocalDateTime) (firstInstant : Instant)
-    (second : LocalDateTime) (secondInstant : Instant) :
+    (first : LegacyCalendarLabel) (firstInstant : Instant)
+    (second : LegacyCalendarLabel) (secondInstant : Instant) :
     (EuropeBerlinLegacyProfile.differenceResolvedInDays?
       first firstInstant second secondInstant).map (-·) =
     EuropeBerlinLegacyProfile.differenceResolvedInDays?

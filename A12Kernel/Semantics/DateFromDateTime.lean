@@ -16,7 +16,7 @@ carries no instant. An extracted Date is constructed the way every other stored 
 as its date's **midnight in the model zone**, so a comparison cannot distinguish it from a stored Date
 carrying the same text. That is why the midnight is resolved freshly rather than reused from the source:
 the offset at midnight may differ from the offset at the source instant, which is the same separation
-[`ModelZone.resolve?`](ModelZone.lean) already documents for `Today`.
+[`ConcreteProfile.todayLabel?`](ModelZone.lean) already documents for `Today`.
 
 Static admission belongs to the elaboration layer. What is settled there, measured: the result is a Date
 comparable to a Date field, to `Today`, and to another extraction, and admitted as a Date-addition

@@ -519,15 +519,12 @@ example :
     let clock := some { epochMillis := -12219379200000 }
     let today := HavingNumericAtom.clockPart .today .utc (.date .day)
     let now := HavingNumericAtom.clockPart .now .utc (.date .day)
-    (today.readValidation (clockContext clock) clockFrame).toOption.isNone &&
-      (today.readComputation (clockContext clock) clockFrame).toOption.isNone &&
-      calendarRefusal (today.readValidationResolving (clockResolving clock) clockFrame) &&
-      calendarRefusal (today.readComputationResolving (clockResolving clock) clockFrame) &&
-      (now.readValidation (clockContext clock) clockFrame).toOption == some (.value 4 .fixed) &&
-      (now.readComputation (clockContext clock) clockFrame).toOption == some (.value 4) &&
-      ((now.readValidationResolving (clockResolving clock) clockFrame).toOption.bind (·.toOption)) ==
+    [today, now].all fun atom =>
+      (atom.readValidation (clockContext clock) clockFrame).toOption == some (.value 4 .fixed) &&
+      (atom.readComputation (clockContext clock) clockFrame).toOption == some (.value 4) &&
+      ((atom.readValidationResolving (clockResolving clock) clockFrame).toOption.bind (·.toOption)) ==
         some (.value 4 .fixed) &&
-      (now.readComputationResolving (clockResolving clock) clockFrame).toOption == some (.value 4)
+      (atom.readComputationResolving (clockResolving clock) clockFrame).toOption == some (.value 4)
     := by native_decide
 
 example : (clockAtoms.zip [1, 4, 2, 2024, 1, 4, 2, 2024, 12, 34, 56]).all (fun (atom, expected) =>
