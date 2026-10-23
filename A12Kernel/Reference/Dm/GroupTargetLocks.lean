@@ -90,4 +90,44 @@ private def mismatches : List (String × String × String) :=
 
 example : mismatches = [] := by native_decide
 
+/-- The [inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)'s
+model: `/Order` holds `Code`, the group `Meta` holds `Ref`, and `Lines` repeats. -/
+private def pathModel : DmModel :=
+  { flat := { fields := [text 1 O "Code" [], text 2 (O ++ ["Meta"]) "Ref" [], text 3 L "Sku" [10]]
+              repeatableGroups := [{ level := 10, path := L, repeatability := some 5 }] }
+    rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+
+example : pathModel.flat.validate.isOk = true := by native_decide
+
+/-- A refusal's expected class, or the reason a refusal without one must name. -/
+private inductive Expected where
+  | admitted
+  | kernelClass (code : String)
+  | noClass (reason : String)
+
+private def meets (group : GroupPath) (path condition : String) : Expected → Bool
+  | expected =>
+    let rule : DmRule :=
+      { group, name := "PathProbe", errorCode := "P", errorEntityRelPath := path, condition,
+        severity := "ERROR" }
+    match checkValidationRule pathModel .english rule, expected with
+    | .ok _, .admitted => true
+    | .error refusal, .kernelClass code => refusal.kernelClass? == some code
+    | .error refusal, .noClass reason =>
+        refusal.kernelClass?.isNone && (refusal.detail.splitOn reason).length > 1
+    | _, _ => false
+
+/-- `(row, rule group, error entity, condition, Kernel verdict)`: a group the condition does not
+name draws the reference class, the rule's own group fails the build with no class, and below the
+root the root is an ordinary group. The inbound's `../Meta/Ref/..`, `../Code/..`, `../Meta/../Code`
+and `../../Order` take `..` lexically, after a named segment or through the top, which this reader's
+path grammar refuses; [PLAN](../../../docs/PLAN.md#k19-returned-omissions) holds the gap. -/
+private def pathRows : List (String × GroupPath × String × String × Expected) := [
+  ("p1", O, "../Meta", "FieldFilled(Code)", .kernelClass UNREFERENCED),
+  ("p5", O ++ ["Meta"], "../../Meta", "FieldFilled(Ref)", .noClass "declaringGroup"),
+  ("p6", O ++ ["Meta"], "../..", "FieldFilled(Ref)", .kernelClass UNREFERENCED)]
+
+example : (pathRows.filter fun (_, group, path, condition, expected) =>
+    !meets group path condition expected).map (·.1) = [] := by native_decide
+
 end A12Kernel.Dm.GroupTargetLocks

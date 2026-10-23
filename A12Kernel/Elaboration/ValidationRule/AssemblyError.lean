@@ -3,14 +3,18 @@ import A12Kernel.Elaboration.ErrorTargetDeclaration
 
 namespace A12Kernel
 
-/-- Why a rule reporting on a group is refused. The Kernel classes are the field target's: a group
-the condition does not reference, and a non-root iterated level no reference to the group binds
-([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
-`group-level`). `root`, `repeatable` and `unsupported` are Lean's own boundary: a root group target,
-a flat scalar rule and a condition leaf whose reading at the unindexed level is unmeasured. -/
+/-- Why a rule reporting on a group is refused. Only `notReferenced` carries a Kernel class, the
+field target's, measured for a field inside the group, above it and beside it
+([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
+rows `t3` and `t5`, [inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
+`declaringGroup` is the measured build failure of a rule reporting on its own group, which carries no
+class (the same inbound). The level and scope refusals mirror the field target's gates without its
+classes, which no group-target row measures; `unknown`, `repeatable` and `unsupported` are Lean's own
+boundary: an undeclared group, a flat scalar rule and a condition whose reading of the target no row
+measures. -/
 inductive GroupTargetRefusal where
   | unknown
-  | root
+  | declaringGroup
   | repeatable
   | unsupported
   | notReferenced
@@ -89,9 +93,8 @@ def diagnostic? : FlatRuleAssemblyError → Option KernelStaticDiagnostic
   | .groupErrorTarget _ refusal =>
       match refusal with
       | .notReferenced => some .errorFieldNotReferenced
-      | .iterationInvalid _ => some .errorFieldIterationInvalid
-      | .unbound unbound => unbound.diagnostic?
-      | .unknown | .root | .repeatable | .unsupported | .scopeMismatch _ _ => none
+      | .unknown | .declaringGroup | .repeatable | .unsupported | .iterationInvalid _
+      | .scopeMismatch _ _ | .unbound _ => none
   -- Named rather than wildcarded: a new assembly refusal must be classified, not absorbed. A scope
   -- mismatch the walk explains arrives as `unboundOperandLevel`; what remains is unmeasured.
   | .iterationScopeMismatch _ _ _ | .errorField _ | .repeatableErrorField _ | .iterationScope _ =>

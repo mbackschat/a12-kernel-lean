@@ -62,12 +62,12 @@ def ruleErrorScopeCompatible (allowRepeatableOnce : Bool)
   | none => allowRepeatableOnce || errorScope.isEmpty
   | some scope => scope.isPrefixOf errorScope
 
-/-- A complete resolved rule whose condition and explicit error field are certified against the same validated model. The condition projection and reference traversal are parameters so flat and mixed rules share one metadata certificate. -/
+/-- A complete resolved rule whose condition and explicit error entity are certified against the same validated model. The condition projection and reference traversal are parameters so flat and mixed rules share one metadata certificate. -/
 structure CheckedResolvedRule (allowRepeatableOnce : Bool)
     (model : FlatModel)
     (CheckedCondition CoreCondition : Type)
     (coreOf : CheckedCondition → CoreCondition)
-    (referencesField : CoreCondition → RuleErrorEntity → Bool)
+    (referencesEntity : CoreCondition → RuleErrorEntity → Bool)
     (iterationScopeOf : CoreCondition →
       Except ValidationCondition.RuleIterationScopeError
         (Option (List RepeatableLevel))) where
@@ -82,11 +82,11 @@ structure CheckedResolvedRule (allowRepeatableOnce : Bool)
   iterationScope : Option (List RepeatableLevel)
   iterationScopeOwned :
     iterationScopeOf (coreOf condition) = .ok iterationScope
-  errorFieldScopeCompatible :
+  errorEntityScopeCompatible :
     ruleErrorScopeCompatible allowRepeatableOnce
       errorPlacement.repeatableScope iterationScope = true
-  errorFieldReferenced :
-    referencesField (coreOf condition) errorEntity = true
+  errorEntityReferenced :
+    referencesEntity (coreOf condition) errorEntity = true
 
 /-- The rule's reference gate for either entity kind. -/
 def ValidationCondition.referencesErrorEntity (condition : ValidationCondition model) :
@@ -178,13 +178,17 @@ def errorField? (rule : CheckedResolvedValidationRule model) : Option FieldId :=
   | .field field => some field
   | .group _ => none
 
-/-- The levels a row plan iterates: the condition's, less the error entity's unindexed level. -/
+/-- The levels a row plan iterates: the condition's, less the error entity's unindexed level. A
+field target has none, so its scope passes through unchanged, an empty one included. -/
 def iteratedScope (rule : CheckedResolvedValidationRule model) :
     Option (List RepeatableLevel) :=
   rule.iterationScope.bind fun scope =>
-    match scope.filter (!rule.errorPlacement.unindexed.contains ·) with
-    | [] => none
-    | iterated => some iterated
+    match rule.errorPlacement.unindexed with
+    | [] => some scope
+    | unindexed =>
+        match scope.filter (!unindexed.contains ·) with
+        | [] => none
+        | iterated => some iterated
 
 /-- Bind the condition's unindexed levels at their first row in one iterated environment. -/
 def pinUnindexed (rule : CheckedResolvedValidationRule model) (environment : Env) : Env :=
@@ -262,10 +266,10 @@ def evalPartial (rule : CheckedResolvedValidationRule model)
     | some errorField =>
         effective.coversFieldAtBoundLevels model errorField rule.partialErrorBoundLevels []
     | none => true
-  if !filterPresence.admits fun _ => errorRelevant then
-    .ok .skipped
-  else if rule.errorField?.isNone then
+  if rule.errorField?.isNone then
     .error .groupTargetPartial
+  else if !filterPresence.admits fun _ => errorRelevant then
+    .ok .skipped
   else if rule.requiresAddressedValidation then
     .error .addressedContextRequired
   else
@@ -478,6 +482,7 @@ def evalAddressedPartial
     (world : Option World := none)
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError PartialRuleOutcome := do
+  if rule.errorField?.isNone then throw .unsupportedCondition
   if rule.hasHaving then
     pure .skipped
   else
@@ -689,6 +694,7 @@ def evalOrdinaryOncePartialPrepared
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError
       PartialOnceRuleOutcome := do
+  if rule.errorField?.isNone then throw .unsupportedCondition
   if rule.hasHaving then
     pure .skipped
   else
@@ -715,6 +721,7 @@ def evalOrdinaryOncePartial
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError
       PartialOnceRuleOutcome := do
+  if rule.errorField?.isNone then throw .unsupportedCondition
   if rule.hasHaving then
     pure .skipped
   else
@@ -731,6 +738,7 @@ def evalOrdinaryRepeatablePartialPrepared
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError
       PartialRepeatableRuleOutcome := do
+  if rule.errorField?.isNone then throw .unsupportedCondition
   if rule.hasHaving then
     pure .skipped
   else
@@ -783,6 +791,7 @@ def evalOrdinaryRepeatablePartial
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError
       PartialRepeatableRuleOutcome := do
+  if rule.errorField?.isNone then throw .unsupportedCondition
   if rule.hasHaving then
     pure .skipped
   else

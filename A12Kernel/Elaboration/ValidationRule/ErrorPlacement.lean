@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ValidationRule
 
 /-! # The placement of a rule's error entity
 
-A rule reports on a field or on a non-root group. This module resolves that entity against the model
+A rule reports on a field or on a group. This module resolves that entity against the model
 into the scope its pointer carries and the levels it pins without iterating.
 -/
 
@@ -47,8 +47,9 @@ def fieldDeclaration? : RuleErrorPlacement → Option FlatFieldDecl
 
 end RuleErrorPlacement
 
-/-- Resolve a rule's error entity against the model. A root group target is refused here: no retained
-observation reports on one. -/
+/-- Resolve a rule's error entity against the model. The root is placed like any other group: below
+the root the Kernel judges a rule reporting on it as an ordinary group
+([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)). -/
 def FlatModel.ruleErrorPlacement (model : FlatModel) :
     RuleErrorEntity → Except FlatRuleAssemblyError RuleErrorPlacement
   | .field field =>
@@ -56,8 +57,7 @@ def FlatModel.ruleErrorPlacement (model : FlatModel) :
       | .ok declaration => .ok (.field declaration)
       | .error error => .error (.errorField error)
   | .group path =>
-      if path.length ≤ 1 then .error (.groupErrorTarget path .root)
-      else if !model.hasGroupPath path then .error (.groupErrorTarget path .unknown)
+      if !model.hasGroupPath path then .error (.groupErrorTarget path .unknown)
       else .ok (.group path (model.repeatableScopeForGroupPath path)
         ((model.repeatableGroups.find? (·.path == path)).map (·.level)))
 

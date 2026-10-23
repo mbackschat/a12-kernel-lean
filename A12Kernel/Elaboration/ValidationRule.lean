@@ -24,7 +24,7 @@ end FlatRuleAssemblyError
 private def assembleResolvedRule (allowRepeatableOnce : Bool)
     (model : FlatModel)
     (coreOf : CheckedCondition → CoreCondition)
-    (referencesField : CoreCondition → RuleErrorEntity → Bool)
+    (referencesEntity : CoreCondition → RuleErrorEntity → Bool)
     (iterationScopeOf : CoreCondition →
       Except ValidationCondition.RuleIterationScopeError
         (Option (List RepeatableLevel)))
@@ -35,7 +35,7 @@ private def assembleResolvedRule (allowRepeatableOnce : Bool)
     Except FlatRuleAssemblyError
       (CheckedResolvedRule allowRepeatableOnce model
         CheckedCondition CoreCondition
-        coreOf referencesField iterationScopeOf) :=
+        coreOf referencesEntity iterationScopeOf) :=
   match hIteration : iterationScopeOf (coreOf condition) with
   | .error error => .error (.iterationScope error)
   | .ok iterationScope =>
@@ -46,7 +46,7 @@ private def assembleResolvedRule (allowRepeatableOnce : Bool)
           ruleErrorScopeCompatible allowRepeatableOnce
             placement.repeatableScope iterationScope = true then
         if hReferenced :
-            referencesField (coreOf condition) errorEntity = true then
+            referencesEntity (coreOf condition) errorEntity = true then
           .ok {
             condition
             errorEntity
@@ -57,8 +57,8 @@ private def assembleResolvedRule (allowRepeatableOnce : Bool)
             errorPlacementOwned := hPlacement
             iterationScope
             iterationScopeOwned := hIteration
-            errorFieldScopeCompatible := hScope
-            errorFieldReferenced := hReferenced
+            errorEntityScopeCompatible := hScope
+            errorEntityReferenced := hReferenced
           }
         else
           .error (.notReferenced errorEntity)
@@ -86,9 +86,9 @@ def assembleResolvedFlatRule (model : FlatModel)
           (Option (List RepeatableLevel))))
     condition (.field errorField) errorCode severity messagePlan
 
-/-- The condition leaves a rule reporting on a group admits: those whose reading at the group's
-unindexed level the [group-target checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
-measures or that read it only through a star. -/
+/-- The condition leaves a rule reporting on a group admits. The [group-target checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
+measures field and group presence and a starred `Sum`; the other flat and ordered numeric leaves
+reuse its first-row read of the unindexed level unmeasured. -/
 private def ValidationConditionLeaf.supportsGroupTarget : ValidationConditionLeaf model → Bool
   | .flat _ | .repeatableFieldPresence _ _ | .groupPresence _ _ | .orderedNumeric _ _ => true
   | _ => false
@@ -100,10 +100,19 @@ def assembleResolvedValidationRuleFor (model : FlatModel)
     (severity : ValidationSeverity)
     (messagePlan : MessageRenderPlan) :
   Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
-  let assembled := (assembleResolvedRule true model (fun checked => checked.core)
+  let assembledRule := assembleResolvedRule true model (fun checked => checked.core)
     (fun core entity => core.referencesErrorEntity entity)
     ValidationCondition.ordinaryIterationScope
-    condition errorEntity errorCode severity messagePlan).bind fun rule =>
+    condition errorEntity errorCode severity messagePlan
+  -- A rule reporting on its own group fails the Kernel's build by every spelling, ahead of the
+  -- condition's references ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
+  let declared : Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
+    match errorEntity with
+    | .group path =>
+        if path == condition.declaringGroup then .error (.groupErrorTarget path .declaringGroup)
+        else assembledRule
+    | .field _ => assembledRule
+  let assembled := declared.bind fun rule =>
       match errorEntity with
       | .field field =>
           if condition.core.authoredErrorReference? field == some false then
@@ -117,11 +126,14 @@ def assembleResolvedValidationRuleFor (model : FlatModel)
   -- The walk's refusal, measured only where the error field binds the level ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-group-operand-walk)),
   -- and an error field the condition never names ([capture](../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04)
   -- rows `o01`–`o03`) answer ahead of the per-level negative-condition gate; other refusals follow it.
+  -- A group target's refusals without a class answer first too, claiming no order against the gate.
   match assembled with
   | .error error =>
       match error.unboundLevel? model condition.declaringGroup, error with
       | some unbound, _ => .error unbound
-      | none, .errorFieldNotReferenced _ | none, .groupErrorTarget _ .notReferenced => .error error
+      | none, .errorFieldNotReferenced _ | none, .groupErrorTarget _ .notReferenced
+      | none, .groupErrorTarget _ .declaringGroup | none, .groupErrorTarget _ .unknown
+      | none, .groupErrorTarget _ .unsupported => .error error
       | none, _ =>
           match condition.core.iterationLegality with
           | .ok (.invalid level) => .error (.negativeConditionInIteration level)

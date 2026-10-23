@@ -1163,7 +1163,7 @@ run_cmd do
 #print axioms A12Kernel.flatRuleMessage_invalidates_iff_error
 #print axioms A12Kernel.equal_flatRuleSilence_doesNotImply_equalVerdict
 #print axioms A12Kernel.checkedFlatRule_errorField_coherent
-#print axioms A12Kernel.checkedValidationRule_errorField_coherent
+#print axioms A12Kernel.checkedValidationRule_errorEntity_coherent
 #print axioms A12Kernel.checkedValidationRule_iterationScope_owned
 #print axioms A12Kernel.checkedValidationRule_errorPathAt_resolved
 #print axioms A12Kernel.checkedValidationRule_errorPathAt_preserves_bound

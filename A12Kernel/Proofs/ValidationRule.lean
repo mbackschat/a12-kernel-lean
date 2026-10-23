@@ -195,9 +195,9 @@ theorem checkedFlatRule_errorField_coherent
   by
     have noScope : rule.iterationScope = none := by
       simpa using rule.iterationScopeOwned.symm
-    have scope := rule.errorFieldScopeCompatible
+    have scope := rule.errorEntityScopeCompatible
     have owned := rule.errorPlacementOwned
-    have referenced := rule.errorFieldReferenced
+    have referenced := rule.errorEntityReferenced
     rw [noScope] at scope
     generalize rule.errorEntity = entity at owned referenced ⊢
     generalize rule.errorPlacement = placement at owned scope ⊢
@@ -216,14 +216,14 @@ theorem checkedFlatRule_errorField_coherent
 /-- Mixed checked assembly certifies the exact error placement, its derived ordinary iteration
 scope, and a reference to the error entity: for a field, outside every filter body or marked inside
 one; for a group, a presence of it or of a group containing it. -/
-theorem checkedValidationRule_errorField_coherent
+theorem checkedValidationRule_errorEntity_coherent
     (rule : CheckedResolvedValidationRule model) :
     model.ruleErrorPlacement rule.errorEntity = .ok rule.errorPlacement ∧
       ruleErrorScopeCompatible true
         rule.errorPlacement.repeatableScope rule.iterationScope = true ∧
       rule.condition.core.referencesErrorEntity rule.errorEntity = true :=
-  ⟨rule.errorPlacementOwned, rule.errorFieldScopeCompatible,
-    rule.errorFieldReferenced⟩
+  ⟨rule.errorPlacementOwned, rule.errorEntityScopeCompatible,
+    rule.errorEntityReferenced⟩
 
 /-- Error addressing retains the resolved iteration prefix and defaults only its remaining suffix. -/
 theorem checkedValidationRule_errorPathAt_resolved
@@ -262,11 +262,14 @@ theorem checkedValidationRule_once_plan_exact
   simp [CheckedResolvedValidationRule.ordinaryIterationPlan,
     CheckedResolvedValidationRule.iteratedScope, noScope, repeatable]
 
-/-- The rule gates allowed to refuse an unguarded negative iteration before its own class. -/
+/-- The rule gates allowed to refuse an unguarded negative iteration before its own class: the
+measured ones, and a group target's refusals that carry no class. -/
 def FlatRuleAssemblyError.precedesNegativeIteration : FlatRuleAssemblyError → Bool
   | .unboundOperandLevel _ _ | .errorFieldIterationInvalid _ _ | .formOnlyIteration _ _
   | .errorFieldNotReferenced _ | .groupErrorTarget _ (.unbound _)
-  | .groupErrorTarget _ (.iterationInvalid _) | .groupErrorTarget _ .notReferenced => true
+  | .groupErrorTarget _ (.iterationInvalid _) | .groupErrorTarget _ .notReferenced
+  | .groupErrorTarget _ .declaringGroup | .groupErrorTarget _ .unknown
+  | .groupErrorTarget _ .unsupported => true
   | _ => false
 
 theorem flatRuleAssemblyError_unboundLevel_precedes {model : FlatModel} {ruleGroup : GroupPath}
@@ -325,11 +328,12 @@ theorem checkedValidationRule_partial_filtered_skips
     (prepared : PreparedFlatStringContext model compilePattern)
     (locale : String) (raw : RawFlatContext)
     (groups : GroupPresenceContext) (scope : ValidationRelevanceScope)
+    (field : FieldId) (fieldTarget : rule.errorField? = some field)
     (filtered : rule.hasHaving = true) :
     rule.evalPartial prepared locale raw groups scope =
       .ok .skipped := by
   simp [CheckedResolvedValidationRule.evalPartial,
-    FlatRuleFilterPresence.admits, filtered]
+    FlatRuleFilterPresence.admits, fieldTarget, filtered]
 
 /-- After global augmentation and the iteration-bound error-field gate, an admitted scalar partial rule delegates exactly once to the existing exact-cell relevance-aware condition tree and sole message emitter. -/
 theorem checkedValidationRule_partial_evaluated
@@ -359,11 +363,12 @@ theorem checkedValidationRule_partial_repeatable_filtered_skips
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model)
     (scope : ValidationRelevanceScope)
+    (field : FieldId) (fieldTarget : rule.errorField? = some field)
     (filtered : rule.hasHaving = true) :
     rule.evalOrdinaryRepeatablePartial checked scope =
       .ok .skipped := by
   simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartial,
-    filtered] <;> rfl
+    fieldTarget, filtered] <;> rfl
 
 /-- Once the call-local preliminary view is built, the unfiltered convenience boundary delegates to its prepared evaluator without rebuilding relevance inside the rule. -/
 theorem checkedValidationRule_partial_repeatable_prepared
@@ -371,6 +376,7 @@ theorem checkedValidationRule_partial_repeatable_prepared
     (checked : CheckedDocument model)
     (scope : ValidationRelevanceScope)
     (preliminary : CheckedPartialPreliminary model)
+    (field : FieldId) (fieldTarget : rule.errorField? = some field)
     (unfiltered : rule.hasHaving = false)
     (prepared :
       checked.applyPartialGeneratedPreliminaryForScope scope =
@@ -378,7 +384,7 @@ theorem checkedValidationRule_partial_repeatable_prepared
     rule.evalOrdinaryRepeatablePartial checked scope =
       rule.evalOrdinaryRepeatablePartialPrepared preliminary := by
   simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartial,
-    unfiltered, prepared] <;> rfl
+    fieldTarget, unfiltered, prepared] <;> rfl
 
 /-- At the prepared one-row boundary, error-path nonrelevance at the iteration-bound levels is a rule skip rather than semantic UNKNOWN and prevents every addressed read. -/
 theorem checkedValidationRule_partial_repeatable_irrelevant_row_skips
@@ -400,11 +406,12 @@ theorem checkedValidationRule_partial_once_filtered_skips
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model)
     (scope : ValidationRelevanceScope)
+    (field : FieldId) (fieldTarget : rule.errorField? = some field)
     (filtered : rule.hasHaving = true) :
   rule.evalOrdinaryOncePartial checked scope =
       .ok .skipped := by
   simp [CheckedResolvedValidationRule.evalOrdinaryOncePartial,
-    filtered] <;> rfl
+    fieldTarget, filtered] <;> rfl
 
 /-- A once plan binds no error-field repetition level even though its message pointer retains the all-one error environment. -/
 theorem checkedValidationRule_partialErrorBoundLevels_once

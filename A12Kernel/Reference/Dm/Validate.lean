@@ -53,17 +53,16 @@ def errorEntityOf (language : Language) (model : FlatModel) (rule : DmRule) :
   -- step is outside every retained model, so it is refused rather than read at the group.
   if !path.absolute && path.ups == 0 then refuse "ErrorEntity" rule.errorEntityRelPath
   let relative := if path.absolute then path else { path with ups := path.ups - 1 }
-  let some field := relative.toFieldPath? | refuse "ErrorEntity" rule.errorEntityRelPath
-  match model.resolveFieldDeclarationUnchecked rule.group field with
-  | .ok declaration => pure (.field declaration.id)
-  | .error error =>
-      let group? : Option GroupPath := relative.toGroupPath?.bind fun surface =>
-        (SurfaceGroupPath.resolveAgainst surface rule.group).toOption
-      match group? with
-      | some group =>
-          if model.hasGroupPath group then pure (.group group)
-          else elaborated "ErrorEntity" (.error error)
-      | none => elaborated "ErrorEntity" (.error error)
+  let group? : Option GroupPath := relative.toGroupPath?.bind fun surface =>
+    (SurfaceGroupPath.resolveAgainst surface rule.group).toOption.filter model.hasGroupPath
+  -- A path of up-steps alone names a group, the rule's own included.
+  let some field := relative.toFieldPath? | match group? with
+    | some group => pure (.group group)
+    | none => refuse "ErrorEntity" rule.errorEntityRelPath
+  match model.resolveFieldDeclarationUnchecked rule.group field, group? with
+  | .ok declaration, _ => pure (.field declaration.id)
+  | .error _, some group => pure (.group group)
+  | .error error, none => elaborated "ErrorEntity" (.error error)
 
 /-- The field an error-entity path names, for a carrier that reports on fields only. -/
 def errorFieldOf (language : Language) (model : FlatModel) (rule : DmRule) : Lowering FieldId := do
@@ -141,34 +140,32 @@ def checkRule (model : DmModel) (language : Language) (rule : DmRule)
 
 /-- The retained probe's message-address contract uses canonical text for exact pointers and its tool-owned fallback for partially known pointers (`KernelRuntimeProbe.address`, `A12Pointers.canonical`). A group entity renders its own path bare, its own first row included. -/
 def renderPointer (model : FlatModel) (pointer : RulePointer) : String :=
-  let entityPath? : Option (GroupPath × List String) := match pointer.entity with
-    | .field field => (model.fields.find? (·.id == field)).map fun declaration =>
-        (declaration.groupPath, [declaration.name])
-    | .group path => some (path, [])
-  match entityPath? with
-  | none => match pointer.entity with
-      | .field field => s!"#{field}"
-      | .group path => s!"#{"/".intercalate path}"
-  | some (groupPath, leaf) =>
-      let isPartial := pointer.coordinates.any fun coordinate => match coordinate with
-        | .concrete _ => false
-        | .wildcard | .unknown => true
-      let rec walk (prefix_ : GroupPath) (remaining : List String)
-          (coordinates : List MessageRepetitionCoordinate) : List String :=
-        match remaining with
-        | [] => []
-        | name :: rest =>
-            let path := prefix_ ++ [name]
-            if model.repeatableGroups.any (·.path == path) then
-              let label := match coordinates.head? with
-                | some (.concrete index) => if index == 1 && !isPartial then name else s!"{name}[{index}]"
-                | some .wildcard => s!"{name}[0]"
-                | some .unknown => s!"{name}[-5]"
-                | none => s!"{name}[?]"
-              label :: walk path rest coordinates.tail
-            else (if isPartial then s!"{name}[1]" else name) :: walk path rest coordinates
-      (if isPartial then "/" else "") ++
-        "/".intercalate (walk [] groupPath pointer.coordinates ++ leaf)
+  match pointer.entity with
+  | .group path => renderAt path []
+  | .field field => match model.fields.find? (·.id == field) with
+    | none => s!"#{field}"
+    | some declaration => renderAt declaration.groupPath [declaration.name]
+where
+  renderAt (groupPath : GroupPath) (leaf : List String) : String :=
+    let isPartial := pointer.coordinates.any fun coordinate => match coordinate with
+      | .concrete _ => false
+      | .wildcard | .unknown => true
+    let rec walk (prefix_ : GroupPath) (remaining : List String)
+        (coordinates : List MessageRepetitionCoordinate) : List String :=
+      match remaining with
+      | [] => []
+      | name :: rest =>
+          let path := prefix_ ++ [name]
+          if model.repeatableGroups.any (·.path == path) then
+            let label := match coordinates.head? with
+              | some (.concrete index) => if index == 1 && !isPartial then name else s!"{name}[{index}]"
+              | some .wildcard => s!"{name}[0]"
+              | some .unknown => s!"{name}[-5]"
+              | none => s!"{name}[?]"
+            label :: walk path rest coordinates.tail
+          else (if isPartial then s!"{name}[1]" else name) :: walk path rest coordinates
+    (if isPartial then "/" else "") ++
+      "/".intercalate (walk [] groupPath pointer.coordinates ++ leaf)
 
 /-- A field pointer's canonical text, as a message's reference channels carry it. -/
 def renderFieldPointer (model : FlatModel) (pointer : MessagePointer) : String :=
