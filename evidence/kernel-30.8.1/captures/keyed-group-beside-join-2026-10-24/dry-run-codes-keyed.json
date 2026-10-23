@@ -1,0 +1,61 @@
+{
+ "kernel": "30.8.1",
+ "verb": "rule add --dry-run",
+ "producer": {
+  "revision": "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+  "state": "CLEAN"
+ },
+ "dmtool": "0.13.0",
+ "rows": {
+  "k1": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "k2": {
+   "admitted": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ],
+   "instrument": []
+  },
+  "k3": {
+   "admitted": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ],
+   "instrument": []
+  },
+  "k4": {
+   "admitted": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ],
+   "instrument": []
+  },
+  "k5": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "k6": {
+   "admitted": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ],
+   "instrument": []
+  },
+  "k7": {
+   "admitted": true,
+   "codes": [],
+   "instrument": [
+    "RK_UNGUARDED_NUMBER_COMPARISON"
+   ]
+  },
+  "k8": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  }
+ }
+}

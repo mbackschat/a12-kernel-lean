@@ -17,10 +17,12 @@ inductive ParallelReferenceError where
   | repeatableOperand (path : GroupPath)
   deriving Repr, DecidableEq
 
-/-- One authored read: a field pointed at through the joined row, or an ancestor group's expansion,
-already pointed at through the outer environment. -/
+/-- One authored read: a field pointed at through the joined row, a field of a group operand's
+subtree inside a joined side, which keeps only the operand's own repeatable levels, or an ancestor
+group's expansion, already pointed at through the outer environment. -/
 inductive ParallelRead where
   | joined (declaration : FlatFieldDecl)
+  | subtree (declaration : FlatFieldDecl) (depth : Nat)
   | expanded (pointer : MessagePointer)
 
 /-- The reads one leaf authors and the subset whose filling could repair an omission. The subset is
@@ -51,7 +53,7 @@ private def groupReads (pair : CheckedParallelFieldPair model) (outer : Env)
       if scope != joinedScope && !(pair.errorGroup.any (·.isPrefixOf reference.path) &&
           scope == joinedScope ++ pair.pinnedLevel?.toList) then
         throw (.repeatableOperand reference.path)
-      else pure ((model.groupSubtreeFields reference.path).map .joined)
+      else pure ((model.groupSubtreeFields reference.path).map (.subtree · scope.length))
 
 /-- The authored reads of one leaf. A filled-presence operator can never be repaired by filling more,
 and a distinct or filled count asked to be larger contributes no omission-responsible operand
@@ -155,15 +157,20 @@ its references name the visited row
 ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-nested-join-capacity),
 `capacity-five`). -/
 private def fieldPointer (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
-    (outer : Env) (cache : Option MessageIndexContext) (declaration : FlatFieldDecl) :
+    (outer : Env) (cache : Option MessageIndexContext) (declaration : FlatFieldDecl)
+    (depth : Option Nat := none) :
     Except ParallelReferenceError MessagePointer :=
   match [(row.left, pair.groups.leftIndexDeclaration), (row.right, pair.groups.rightIndexDeclaration)].find?
       (·.1.group.path.isPrefixOf declaration.groupPath) with
   | some (side, index) => do
       let joined ← side.messagePointer model outer index.id (cache.map (·, row.key)) |>.mapError .join
-      let deeper := (declaration.repeatableScope.drop joined.coordinates.length).map fun level =>
-        ((side.environment.getD side.inner).uniqueRowAt? level).map MessageRepetitionCoordinate.concrete
-          |>.getD .wildcard
+      let bound := depth.getD declaration.repeatableScope.length
+      let deeper := ((declaration.repeatableScope.drop joined.coordinates.length).zip
+          (List.range declaration.repeatableScope.length |>.drop joined.coordinates.length)).map fun (level, position) =>
+        if position < bound then
+          ((side.environment.getD side.inner).uniqueRowAt? level).map MessageRepetitionCoordinate.concrete
+            |>.getD .wildcard
+        else .wildcard
       pure { field := declaration.id, coordinates := joined.coordinates ++ deeper }
   | none => concreteFieldPointer declaration outer |>.mapError .outer
 
@@ -179,9 +186,15 @@ def messageReferences (pair : CheckedParallelFieldPair model) (document : Checke
   if message.origin == .runtimeFailure then return { referenced := [], fillToFix := [] }
   let reads ← leafReads pair document row outer inputs condition
   let project := fun (reads : List ParallelRead) => do
-    let joined := reads.filterMap fun | .joined declaration => some declaration | .expanded _ => none
-    let pointed ← ((withIndexFields pair joined).eraseDups).mapM (fieldPointer pair row outer cache)
-    pure (pointed ++ reads.filterMap fun | .expanded pointer => some pointer | .joined _ => none)
+    let joined := reads.filterMap fun | .joined declaration | .subtree declaration _ => some declaration | .expanded _ => none
+    let depths := reads.filterMap fun | .subtree declaration depth => some (declaration.id, depth) | _ => none
+    -- Assumption, unmeasured as of 2026-10-24: a field both read directly and reached through a group
+    -- operand keeps the direct read's bound rows.
+    let direct := reads.filterMap fun | .joined declaration => some declaration.id | _ => none
+    let pointed ← ((withIndexFields pair joined).eraseDups).mapM fun declaration =>
+      fieldPointer pair row outer cache declaration
+        (if direct.contains declaration.id then none else depths.lookup declaration.id)
+    pure (pointed ++ reads.filterMap fun | .expanded pointer => some pointer | _ => none)
   let referenced ← project (reads.flatMap (·.referenced))
   let fillToFix ← match message.messageType with
     | .value => pure []

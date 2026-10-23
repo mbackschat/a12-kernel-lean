@@ -1,0 +1,643 @@
+{
+ "header": {
+  "id": "K22u_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Order22c_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Order",
+     "name": "Order",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Order/Email",
+        "name": "Email",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Order/Phone",
+        "name": "Phone",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Order/Tier",
+        "name": "Tier",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Order/Budget",
+        "name": "Budget",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Lines",
+        "name": "Lines",
+        "Group": {
+         "repeatability": 50,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Lines/LineNo",
+           "name": "LineNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Sku",
+           "name": "Sku",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Code",
+           "name": "Code",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Qty",
+           "name": "Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Price",
+           "name": "Price",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Day",
+           "name": "Day",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Month",
+           "name": "Month",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Lines/Parts",
+           "name": "Parts",
+           "Group": {
+            "repeatability": 5,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Parts/PartNo",
+              "name": "PartNo",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Parts/Count",
+              "name": "Count",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Lines/Slots",
+           "name": "Slots",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Slots/SlotNo",
+              "name": "SlotNo",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Slots/Mark",
+              "name": "Mark",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Slots/Num",
+              "name": "Num",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/Order/Lines/Slots/Tagged",
+              "name": "Tagged",
+              "Group": {
+               "repeatability": 1,
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/Order/Lines/Slots/Tagged/Flag",
+                 "name": "Flag",
+                 "Field": {
+                  "fieldType": {
+                   "type": "StringType"
+                  }
+                 }
+                }
+               ]
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "LineNo"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Picks",
+        "name": "Picks",
+        "Group": {
+         "repeatability": 10,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Picks/LineNo",
+           "name": "LineNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Picks/Ref",
+           "name": "Ref",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "LineNo"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Gifts",
+        "name": "Gifts",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Gifts/GiftNo",
+           "name": "GiftNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Gifts/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Gifts/Card",
+           "name": "Card",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Gifts/Card/Text",
+              "name": "Text",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "GiftNo"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Wraps",
+        "name": "Wraps",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Wraps/Style",
+           "name": "Style",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Wraps/Ribbon",
+           "name": "Ribbon",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Wraps/Ribbon/Color",
+              "name": "Color",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Wraps/Tag",
+           "name": "Tag",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Wraps/Tag/Label",
+              "name": "Label",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Wraps/Bows",
+           "name": "Bows",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Wraps/Bows/BowNo",
+              "name": "BowNo",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Order/Wraps/Bows/Shade",
+              "name": "Shade",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ],
+            "indexFieldName": "BowNo"
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/k1",
+        "name": "k1",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Slots",
+         "errorCode": "k1",
+         "errorCondition": "GroupFilled(Lines/Slots) And FieldFilled(Picks/Ref)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/k2",
+        "name": "k2",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Slots/Mark",
+         "errorCode": "k2",
+         "errorCondition": "FieldFilled(Lines/Slots/Mark) And FieldFilled(Picks/Ref)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/k3",
+        "name": "k3",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Slots/Num",
+         "errorCode": "k3",
+         "errorCondition": "[Lines/Slots/Num] < 5 And FieldFilled(Picks/Ref)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/k4",
+        "name": "k4",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Slots/Mark",
+         "errorCode": "k4",
+         "errorCondition": "[Lines/Slots/Mark] == \"m\" And FieldFilled(Picks/Ref)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/k5",
+        "name": "k5",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Slots",
+         "errorCode": "k5",
+         "errorCondition": "GroupFilled(Lines) And FieldFilled(Picks/Ref)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/k6",
+        "name": "k6",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Slots/Num",
+         "errorCode": "k6",
+         "errorCondition": "[Lines/Slots/Num] > 5 And FieldFilled(Picks/Ref)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/k7",
+        "name": "k7",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Slots/Num",
+         "errorCode": "k7",
+         "errorCondition": "[Lines/Slots/Num] < 5 And FieldFilled(Lines/Sku)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Other",
+     "name": "Other",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Other/O",
+        "name": "O",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Reps",
+     "name": "Reps",
+     "Group": {
+      "repeatability": 3,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Reps/RepNo",
+        "name": "RepNo",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Reps/Mark",
+        "name": "Mark",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       }
+      ],
+      "indexFieldName": "RepNo"
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Bins",
+     "name": "Bins",
+     "Group": {
+      "repeatability": 2,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Bins/Item",
+        "name": "Item",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Slots/Num", "group": "/Order", "condition": "[Lines/Slots/Num] < 5 And FieldFilled(Lines/Sku)", "code": "k7", "name": "k7", "messages": [{"locale": "en_US", "text": "x"}]}

@@ -1,0 +1,185 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "K22kk8_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-24T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "slots2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "fault": {
+      "observation": "validateFull",
+      "chain": [
+       {
+        "type": "java.lang.IllegalArgumentException",
+        "message": "a repetition index is a concrete repetition >= 1, 0 (all repetitions) or -5 (unknown), but was -6 in pointer '/Order/Lines/Slots/SlotNo'"
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "fault": {
+      "observation": "validateFull",
+      "chain": [
+       {
+        "type": "java.lang.IllegalArgumentException",
+        "message": "a repetition index is a concrete repetition >= 1, 0 (all repetitions) or -5 (unknown), but was -6 in pointer '/Order/Lines/Slots/SlotNo'"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "mixed",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "fault": {
+      "observation": "validateFull",
+      "chain": [
+       {
+        "type": "java.lang.IllegalArgumentException",
+        "message": "a repetition index is a concrete repetition >= 1, 0 (all repetitions) or -5 (unknown), but was -6 in pointer '/Order/Lines/Slots/SlotNo'"
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "fault": {
+      "observation": "validateFull",
+      "chain": [
+       {
+        "type": "java.lang.IllegalArgumentException",
+        "message": "a repetition index is a concrete repetition >= 1, 0 (all repetitions) or -5 (unknown), but was -6 in pointer '/Order/Lines/Slots/SlotNo'"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "twoLines",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "fault": {
+      "observation": "validateFull",
+      "chain": [
+       {
+        "type": "java.lang.IllegalArgumentException",
+        "message": "a repetition index is a concrete repetition >= 1, 0 (all repetitions) or -5 (unknown), but was -6 in pointer '/Order/Lines/Slots/SlotNo'"
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "fault": {
+      "observation": "validateFull",
+      "chain": [
+       {
+        "type": "java.lang.IllegalArgumentException",
+        "message": "a repetition index is a concrete repetition >= 1, 0 (all repetitions) or -5 (unknown), but was -6 in pointer '/Order/Lines/Slots/SlotNo'"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "noSlots",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "fault": {
+      "observation": "validateFull",
+      "chain": [
+       {
+        "type": "java.lang.IllegalArgumentException",
+        "message": "a repetition index is a concrete repetition >= 1, 0 (all repetitions) or -5 (unknown), but was -6 in pointer '/Order/Lines/Slots/SlotNo'"
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "fault": {
+      "observation": "validateFull",
+      "chain": [
+       {
+        "type": "java.lang.IllegalArgumentException",
+        "message": "a repetition index is a concrete repetition >= 1, 0 (all repetitions) or -5 (unknown), but was -6 in pointer '/Order/Lines/Slots/SlotNo'"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "unmatched",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "fault": {
+      "observation": "validateFull",
+      "chain": [
+       {
+        "type": "java.lang.IllegalArgumentException",
+        "message": "a repetition index is a concrete repetition >= 1, 0 (all repetitions) or -5 (unknown), but was -6 in pointer '/Order/Lines/Slots/Tagged/Flag'"
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "fault": {
+      "observation": "validateFull",
+      "chain": [
+       {
+        "type": "java.lang.IllegalArgumentException",
+        "message": "a repetition index is a concrete repetition >= 1, 0 (all repetitions) or -5 (unknown), but was -6 in pointer '/Order/Lines/Slots/Tagged/Flag'"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "noRef",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  }
+ ]
+}

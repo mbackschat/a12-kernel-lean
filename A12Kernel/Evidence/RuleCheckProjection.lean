@@ -160,7 +160,9 @@ def captures : List (String × String × String) := [
   ("captures/handback-rows-2026-10-23/dry-run-codes.json", "captures/handback-rows-2026-10-23/order-k04-tags_DM.json", "captures/handback-rows-2026-10-23/dry-ops-order-k04-tags.json"),
   ("captures/handback-rows-2026-10-23/dry-run-codes.json", "captures/handback-rows-2026-10-23/order-k04_DM.json", "captures/handback-rows-2026-10-23/dry-ops-order-k04.json"),
   ("captures/consumer-readiness-k21-2026-10-23/dry-run-codes.json", "captures/consumer-readiness-k21-2026-10-23/K21_DM.json", "captures/consumer-readiness-k21-2026-10-23/dry-ops-k21.json"),
-  ("captures/joined-filled-count-2026-10-24/dry-run-codes.json", "captures/handback-rows-2026-10-23/K0607f_DM.json", "captures/joined-filled-count-2026-10-24/dry-ops.json")]
+  ("captures/joined-filled-count-2026-10-24/dry-run-codes.json", "captures/handback-rows-2026-10-23/K0607f_DM.json", "captures/joined-filled-count-2026-10-24/dry-ops.json"),
+  ("captures/keyed-group-beside-join-2026-10-24/dry-run-codes-keyed.json", "captures/keyed-group-beside-join-2026-10-24/K22k_DM.json", "captures/keyed-group-beside-join-2026-10-24/dry-ops.json"),
+  ("captures/keyed-group-beside-join-2026-10-24/dry-run-codes-unkeyed.json", "captures/keyed-group-beside-join-2026-10-24/K22u_DM.json", "captures/keyed-group-beside-join-2026-10-24/dry-ops.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) := [
@@ -168,7 +170,9 @@ def deferred : List (String × String) := [
   ("comparison-entry-gates/observations2.json#violatedcontrol", "host pattern compiler, SG7"),
   ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7"),
   ("comparison-entry-gates/observations.json#regex", "host pattern compiler, SG7"),
-  ("handback-rows-2026-10-23/dry-run-codes.json#okt002", "keyed group target beside a join, SG9")]
+  ("handback-rows-2026-10-23/dry-run-codes.json#okt002", "keyed group target beside a join, SG9"),
+  ("keyed-group-beside-join-2026-10-24/dry-run-codes-keyed.json#k1", "keyed group target beside a join, SG9"),
+  ("keyed-group-beside-join-2026-10-24/dry-run-codes-keyed.json#k8", "keyed group target beside a join, SG9")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

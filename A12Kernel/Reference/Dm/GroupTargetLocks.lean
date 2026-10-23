@@ -451,28 +451,55 @@ private def innerModel : DmModel :=
     rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
 
 open Lean in
-/-- The referenced pointers of the messages `condition` fires reporting on `Lines/Parts`, over one
-line `A` whose part holds `Info` and its pick. -/
-private def referenced (condition : String) : Option (List (List String)) := do
+/-- The referenced pointers of the messages `condition` fires reporting on `entity` (by default
+`Lines/Parts`, over one line `A` whose part holds `Info` and its pick). -/
+private def referenced (condition : String) (dm : DmModel := innerModel) (entity := "Lines/Parts")
+    (document : Json := Json.mkObj [("Order", Json.mkObj [
+      ("Lines", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Parts", Json.arr #[Json.mkObj [
+        ("PartNo", Json.str "x"), ("Info", Json.mkObj [("Text", Json.str "t")])]])]]),
+      ("Picks", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Ref", Json.str "r")]])])]) :
+    Option (List (List String)) := do
   let world : World := { now := { epochMillis := 0 } }
-  let part := Json.mkObj [("PartNo", Json.str "x"), ("Info", Json.mkObj [("Text", Json.str "t")])]
-  let document := Json.mkObj [("Order", Json.mkObj [
-    ("Lines", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Parts", Json.arr #[part])]]),
-    ("Picks", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Ref", Json.str "r")]])])]
-  let input ← (readDocument innerModel document).toOption
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler innerModel.flat).toOption
+  let input ← (readDocument dm document).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let .parallel rule ← (checkValidationRule innerModel .english
-    { group := O, name := "InnerProbe", errorCode := "P", errorEntityRelPath := "../Lines/Parts", condition,
+  let .parallel rule ← (checkValidationRule dm .english
+    { group := O, name := "InnerProbe", errorCode := "P", errorEntityRelPath := "../" ++ entity, condition,
       severity := "ERROR" }).toOption | none
   let rows ← (runParallelRuleReferences checked rule (some world)).toOption
   rows.mapM fun (_, references) =>
-    references.toOption.map fun references => references.referenced.map (renderFieldPointer innerModel.flat)
+    references.toOption.map fun references => references.referenced.map (renderFieldPointer dm.flat)
 
 example :
     referenced "GroupFilled(Lines/Parts/Info) And GroupFilled(Lines/Parts) And FieldFilled(Picks/Ref)" =
       some [["Order/Lines/Parts/Info/Text", "Order/Lines/Parts/PartNo", "Order/Picks/Ref",
         "Order/Lines/LineNo", "Order/Picks/LineNo"]] := by native_decide
+
+/-- Unkeyed `Slots` (2) inside the keyed `Lines` beside the joined `Picks`, the
+[unkeyed capture](../../../evidence/kernel-30.8.1/captures/keyed-group-beside-join-2026-10-24/K22u_DM.json)'s shape. -/
+private def slotsModel : DmModel :=
+  { flat := { fields := [text 10 L "LineNo" [10], text 60 (L ++ ["Slots"]) "SlotNo" [10, 12],
+                text 62 (L ++ ["Slots"]) "Mark" [10, 12],
+                text 30 (O ++ ["Picks"]) "LineNo" [13], text 31 (O ++ ["Picks"]) "Ref" [13]]
+              repeatableGroups := [
+                { level := 10, path := L, repeatability := some 50, indexField := some 10 },
+                { level := 12, path := L ++ ["Slots"], repeatability := some 2 },
+                { level := 13, path := O ++ ["Picks"], repeatability := some 10, indexField := some 30 }] }
+    rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+
+open Lean in
+/- An enclosing joined group's expansion keeps only its own repeatable level bound: the error group's
+   `Slots` inside it is a wildcard, as `Parts` is, even though the rule reports on `Slots`
+   ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join),
+   `unkeyed`). -/
+example :
+    referenced "GroupFilled(Lines) And FieldFilled(Picks/Ref)" slotsModel "Lines/Slots"
+        (Json.mkObj [("Order", Json.mkObj [
+          ("Lines", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Slots", Json.arr #[
+            Json.mkObj [("SlotNo", Json.str "1"), ("Mark", Json.str "m")], Json.mkObj [("SlotNo", Json.str "2")]])]]),
+          ("Picks", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Ref", Json.str "r")]])])]) =
+      some [["Order/Lines/LineNo", "/Order[1]/Lines[1]/Slots[0]/SlotNo", "/Order[1]/Lines[1]/Slots[0]/Mark",
+        "Order/Picks/Ref", "Order/Picks/LineNo"]] := by native_decide
 
 
 /-- The order fixture with the Number `Lines/Qty` the joined filled-count capture reads. -/

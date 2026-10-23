@@ -1,0 +1,74 @@
+[
+ {
+  "id": "k1",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "k1.json"
+  ]
+ },
+ {
+  "id": "k2",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "k2.json"
+  ]
+ },
+ {
+  "id": "k3",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "k3.json"
+  ]
+ },
+ {
+  "id": "k4",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "k4.json"
+  ]
+ },
+ {
+  "id": "k5",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "k5.json"
+  ]
+ },
+ {
+  "id": "k6",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "k6.json"
+  ]
+ },
+ {
+  "id": "k7",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "k7.json"
+  ]
+ },
+ {
+  "id": "k8",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "k8.json"
+  ]
+ }
+]

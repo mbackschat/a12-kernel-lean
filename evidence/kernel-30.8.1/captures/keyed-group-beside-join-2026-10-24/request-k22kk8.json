@@ -1,0 +1,184 @@
+{
+ "model": "K22kk8_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "slots2",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Slots": [
+        {
+         "SlotNo": "1",
+         "Mark": "m",
+         "Num": "1"
+        },
+        {
+         "SlotNo": "2"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "mixed",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Slots": [
+        {
+         "SlotNo": "1"
+        }
+       ]
+      },
+      {
+       "LineNo": "B",
+       "Sku": "s",
+       "Parts": [
+        {
+         "Count": "1"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "twoLines",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Slots": [
+        {
+         "SlotNo": "1",
+         "Mark": "m",
+         "Num": "1"
+        }
+       ]
+      },
+      {
+       "LineNo": "B",
+       "Sku": "s",
+       "Slots": [
+        {
+         "SlotNo": "1",
+         "Mark": "m",
+         "Num": "9"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "noSlots",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "unmatched",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Slots": [
+        {
+         "SlotNo": "1",
+         "Num": "1"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "noRef",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Slots": [
+        {
+         "SlotNo": "1",
+         "Num": "1"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

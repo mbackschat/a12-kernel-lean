@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Slots", "group": "/Order", "condition": "GroupFilled(Lines) And FieldFilled(Picks/Ref)", "code": "k5", "name": "k5", "messages": [{"locale": "en_US", "text": "x"}]}
