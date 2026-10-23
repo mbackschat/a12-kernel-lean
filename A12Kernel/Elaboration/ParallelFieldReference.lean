@@ -38,15 +38,18 @@ private def isDistinctCount : ParallelNumericAtom model → Bool
 
 /-- A group operand's whole subtree. Below a joined group each field keeps the joined row; above both,
 the ordinary expansion through the outer environment wildcards the joined levels. A repeatable
-operand group would bound the depth inside the join, which the presence gate admits unstarred only as
-a rule's error group: its fields take the first row the pair pins (`group-level`, `t8`). -/
+operand group would bound the depth inside the join, which the presence gate admits unstarred only at a
+rule's error group's level, the error group or a fixed group inside it: its fields take the first row
+the pair pins (`group-level`, `t8`). -/
 private def groupReads (pair : CheckedParallelFieldPair model) (outer : Env)
     (reference : ResolvedGroupReference) : Except ParallelReferenceError (List ParallelRead) :=
   match [pair.groups.leftGroup, pair.groups.rightGroup].find? (·.path.isPrefixOf reference.path) with
   | none => (·.map .expanded) <$> (fixedGroupPointers model reference outer).mapError .outer
   | some joined =>
-      if pair.errorGroup != some reference.path && (model.repeatableScopeForGroupPath reference.path).length !=
-          (model.repeatableScopeForGroupPath joined.path).length then
+      let scope := model.repeatableScopeForGroupPath reference.path
+      let joinedScope := model.repeatableScopeForGroupPath joined.path
+      if scope != joinedScope && !(pair.errorGroup.any (·.isPrefixOf reference.path) &&
+          scope == joinedScope ++ pair.pinnedLevel?.toList) then
         throw (.repeatableOperand reference.path)
       else pure ((model.groupSubtreeFields reference.path).map .joined)
 

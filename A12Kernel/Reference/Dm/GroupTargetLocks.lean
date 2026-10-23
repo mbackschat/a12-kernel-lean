@@ -163,12 +163,12 @@ private inductive Expected where
   | kernelClass (code : String)
   | noClass (reason : String)
 
-private def meets (group : GroupPath) (path condition : String) : Expected → Bool
+private def meets (dm : DmModel) (group : GroupPath) (path condition : String) : Expected → Bool
   | expected =>
     let rule : DmRule :=
       { group, name := "PathProbe", errorCode := "P", errorEntityRelPath := path, condition,
         severity := "ERROR" }
-    match checkValidationRule pathModel .english rule, expected with
+    match checkValidationRule dm .english rule, expected with
     | .ok _, .admitted => true
     | .error refusal, .kernelClass code => refusal.kernelClass? == some code
     | .error refusal, .noClass reason =>
@@ -186,6 +186,55 @@ private def pathRows : List (String × GroupPath × String × String × Expected
   ("p6", O ++ ["Meta"], "../..", "FieldFilled(Ref)", .kernelClass UNREFERENCED)]
 
 example : (pathRows.filter fun (_, group, path, condition, expected) =>
-    !meets group path condition expected).map (·.1) = [] := by native_decide
+    !meets pathModel group path condition expected).map (·.1) = [] := by native_decide
+
+/-- A group target beside a join keeps the ordinary carrier's refusals without a class: on its own
+group ahead of every gate, for a root-only reference, and at a read the walk cannot bind, where the
+field-target twin draws the walk's class. -/
+example :
+    meets dm (L ++ ["Parts"]) ".." "GroupFilled(/Order/Lines/Parts) And FieldFilled(/Order/Picks/Ref)"
+      (.noClass "declaringGroup") ∧
+    meets dm O "../Lines/Parts" "GroupFilled(/Order) And FieldFilled(Lines/Sku) And FieldFilled(Picks/Ref)"
+      (.noClass "iterationScope") ∧
+    meets dm O "../Lines/Parts" "GroupFilled(Lines/Parts) And FieldFilled(Picks/Ref) And FieldFilled(Wraps/Bows/Shade)"
+      (.noClass "iterationScope") ∧
+    meets dm O "../Lines/Sku" "FieldFilled(Lines/Sku) And FieldFilled(Picks/Ref) And FieldFilled(Wraps/Bows/Shade)"
+      (.kernelClass "MVK_NO_WILDCARD") := by native_decide
+
+/-- A fixed `Info` inside `Parts` beside the joined `Picks`: a fixed group at the error group's
+level is read at its first row, its fields among the references. -/
+private def innerModel : DmModel :=
+  { flat := { fields := [text 10 L "LineNo" [10], text 20 (L ++ ["Parts"]) "PartNo" [10, 11],
+                text 22 (L ++ ["Parts", "Info"]) "Text" [10, 11],
+                text 30 (O ++ ["Picks"]) "LineNo" [13], text 31 (O ++ ["Picks"]) "Ref" [13]]
+              repeatableGroups := [
+                { level := 10, path := L, repeatability := some 50, indexField := some 10 },
+                { level := 11, path := L ++ ["Parts"], repeatability := some 5 },
+                { level := 13, path := O ++ ["Picks"], repeatability := some 10, indexField := some 30 }] }
+    rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+
+open Lean in
+/-- The referenced pointers of the messages `condition` fires reporting on `Lines/Parts`, over one
+line `A` whose part holds `Info` and its pick. -/
+private def referenced (condition : String) : Option (List (List String)) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let part := Json.mkObj [("PartNo", Json.str "x"), ("Info", Json.mkObj [("Text", Json.str "t")])]
+  let document := Json.mkObj [("Order", Json.mkObj [
+    ("Lines", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Parts", Json.arr #[part])]]),
+    ("Picks", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Ref", Json.str "r")]])])]
+  let input ← (readDocument innerModel document).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler innerModel.flat).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let .parallel rule ← (checkValidationRule innerModel .english
+    { group := O, name := "InnerProbe", errorCode := "P", errorEntityRelPath := "../Lines/Parts", condition,
+      severity := "ERROR" }).toOption | none
+  let rows ← (runParallelRuleReferences checked rule (some world)).toOption
+  rows.mapM fun (_, references) =>
+    references.toOption.map fun references => references.referenced.map (renderFieldPointer innerModel.flat)
+
+example :
+    referenced "GroupFilled(Lines/Parts/Info) And GroupFilled(Lines/Parts) And FieldFilled(Picks/Ref)" =
+      some [["Order/Lines/Parts/Info/Text", "Order/Lines/Parts/PartNo", "Order/Picks/Ref",
+        "Order/Lines/LineNo", "Order/Picks/LineNo"]] := by native_decide
 
 end A12Kernel.Dm.GroupTargetLocks

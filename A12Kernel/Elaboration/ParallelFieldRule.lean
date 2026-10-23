@@ -712,7 +712,11 @@ def checkParallelFieldRule (model : FlatModel)
     else throw .incoherentCondition
   else
     match condition.errorTargetRefusal pair with
-    | some diagnostic => throw (.static diagnostic)
+    -- Of the reference cascade only the reference class is measured for a group target (`t3`, `t5`);
+    -- the ordinary group target refuses the others without a class.
+    | some diagnostic =>
+        if pair.errorGroup.isSome && diagnostic != .errorFieldNotReferenced then throw .incoherentCondition
+        else throw (.static diagnostic)
     | none => throw .incoherentCondition
 
 /-- The custom-condition callbacks of one joined row. Registry lookup runs when a reached leaf calls them, so an unregistered name is observable only on a row whose fold gets that far. -/

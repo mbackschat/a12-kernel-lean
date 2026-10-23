@@ -313,10 +313,12 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
   let errorEntity ← errorEntityOf language model.flat rule
   let errorGroupPath ← errorGroupOf model.flat errorEntity
   -- A rule reporting on a group joins at the group's keyed ancestor, anchored at its index field
-  -- (`group-level`, `t8`); a group below two keyed groups has no measured join.
+  -- (`group-level`, `t8`); a group below two keyed groups has no measured join. A rule reporting on
+  -- its own group fails ahead of every gate, as on the ordinary carrier (`declaringGroup`).
   let (errorField, errorGroup) ← match errorEntity with
     | .field field => pure (field, none)
     | .group path =>
+        if path == rule.group then refuse "ParallelRule" "declaringGroup" else
         match model.flat.repeatableGroups.filter fun group =>
             group.indexField.isSome && group.path.isPrefixOf path && group.path != path with
         | [{ indexField := some index, .. }] => pure (index, some path)
@@ -332,13 +334,19 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
       (model.flat.repeatableScopeForGroupPath path).getLast?).getD []
   -- A walk refusal the reader cannot classify yields to a classed join refusal, which the walk
   -- meets only because the join it needs is missing.
-  let facts ← match checkRawConditionBeforeGlobals model.flat rule.group errorGroupPath
+  let walked : Lowering _ := match checkRawConditionBeforeGlobals model.flat rule.group errorGroupPath
       text.body (text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES") joinedLevels, anchors with
     | .ok facts, _ => pure facts
     | .error refusal, .error join =>
         .error { (if refusal.kernelClass?.isNone && join.kernelClass?.isSome then join else refusal) with
           construct := "ParallelAdmission" }
     | .error refusal, .ok _ => .error { refusal with construct := "ParallelAdmission" }
+  -- No capture measures the walk's or the whole-rule gates' classes for a group target, which the
+  -- ordinary carrier refuses without one at its level and scope gates.
+  let facts ← match errorGroup, walked with
+    | some _, .error _ => refuse "ParallelRule" "group target read"
+    | _, walked => walked
+  if errorGroup.isSome && facts.refusal?.isSome then refuse "ParallelRule" "group target gate"
   -- The whole-rule gates in their order: `RepetitionNotUnique` beside the join before a filter below
   -- either joined group (parallel-child capture, `x1`, `x2`, `q05`, `q10`, `y1`; joined-carrier-limits
   -- `d06`; 2026-10-14). A filter in an unjoined group is admitted (`q11`).
