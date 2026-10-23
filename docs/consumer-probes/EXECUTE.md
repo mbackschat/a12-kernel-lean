@@ -497,3 +497,20 @@ All declarations and authored expressions are statically admitted. Number fields
 - `wrong-accounts`: Every listed wrong account is rejected: authored order, empty as poison and poison as empty, generated checks against fresh values, first or last duplicate match, all-but-first uniqueness, malformed input as empty, and partial runs of non-relevant rules or partnerless uniqueness.
 - `questions-and-guesses`: The packet left built-in message channels unstated: the consumer marked the type, `referenced` and `fillToFix` of the formal finding and `uniqueIndex` insufficient and assumed the own cell, correctly. It also asked whether an operand-poisoned instance emits a target message, and noted that the task omitted the authored error codes, assuming the rule names, correctly. Other items it raised are derivable from the packet.
 - `exclusions`: The [task exclusions](#task-k21-execute) remain. The two unstated outputs became [spec/02 §B.1](../../spec/02-logic-and-formal-errors.md#b1-what-a-formal-error-is) and [spec/09](../../spec/09-computations.md) clauses under [SPEC-2026-10-24-01](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-24-01); no green follows from this run.
+
+<a id="run-k21-execute-02"></a>
+### K21 Execute corrected handover — `k21-execute-02`
+
+- `task`: [K21 Execute](#task-k21-execute)
+- `status`: green
+- `started-at`: 2026-10-23T22:32:17+00:00
+- `finished-at`: 2026-10-23T22:33:18+00:00
+- `duration-seconds`: 61
+- `semantic-basis`: `5f6f13c17dd1e04a23d53a50ba687973fa124c74`
+- `oracle`: HIGH compared the re-answers with the same capture and replay as [run 01](#run-k21-execute-01): the formal finding and both `uniqueIndex` messages carry their own pointer, VALUE and an empty `fillToFix`, and `badSrc`'s poisoned targets report nothing beyond the operand finding. Reconciliation passed.
+- `consumer-access`: The run 01 consumer kept its packet context and read one supplement holding the authored codes and the three new clauses verbatim from the basis, their citations stripped, so the last sentence lost its citation and full stop. No expected answers or feedback; the same packet-only access, reported without deviation. This is a warm correction, not a second cold consumer.
+- `cost`: 61 seconds; zero implementation or test lines; the two runs total 495 seconds of consumer time, preparation and reconciliation additional, tokens not measured.
+- `result`: Every earlier value, clear, poison and message answer stands; the built-in message channels, the authored codes and the silence of operand-poisoned targets are now settled by the handover instead of assumed.
+- `wrong-accounts`: As in run 01, every listed wrong account is rejected.
+- `questions-and-guesses`: The consumer applied the operand-poison clause to the duplicate-key column on inference; the outcome is the one the column-strict selection clause of [spec/09 §5](../../spec/09-computations.md) already gives. Its other remaining items, the generated checks' references and `RSrc`'s `fillToFix`, are derivable from the packet and agree with the oracle; none changes an output.
+- `exclusions`: The [task exclusions](#task-k21-execute) remain. Artifact-only transport; no interpreter, shipment or independent-evaluator qualification, which [U01](../PLAN.md#consumer-development) owns.
