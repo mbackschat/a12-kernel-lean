@@ -23,7 +23,7 @@
 - `result`: `doc-extra` is `doc-full` plus a string `Ghost` in the fixed group `Claim`, an object `Phantom` there and a key `Extra` in the first `Items` row; both strategies report identical messages and callback calls for the two documents.
 - `local`: the [document reader](../../A12Kernel/Reference/Dm/Document.lean) drops those shapes, at the document root too, which is unmeasured, and keeps refusing other undeclared JSON kinds and a declared group of the wrong kind; [capture locks](../../A12Kernel/Reference/Dm/CustomConditionCaptureLocks.lean) read both documents alike.
 - `limit`: an undeclared array, number, boolean or `null`, an undeclared object inside a row, any undeclared member at the document root, and any notification the conversion raises, are unmeasured on this route.
-- `sync`: [SPEC-2026-10-22-02](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-22-02).
+- `sync`: [SPEC-2026-10-22-02](https://github.com/mbackschat/a12-kernel-lean/blob/e48204df08f6dd823c28011f520672cfefe0fd60/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-22-02).
 
 <a id="src-technical-length-k13"></a>
 #### The technical length guard counts authored UTF-16 units before charset, read from source 2026-10-13
