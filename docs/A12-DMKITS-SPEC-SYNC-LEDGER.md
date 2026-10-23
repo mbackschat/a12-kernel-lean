@@ -117,3 +117,13 @@ Six entries are `handed-off`, carried to a12-dmkits by the owner on 2026-10-23, 
 - `basis`: The [K04 checkpoint](sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04) rows `a10`, `a11`, the [binding checkpoint](sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04) rows `s9`, `k08`, and the [runtime checkpoint](sources/model-structure-and-declaration-probes.md#src-group-target-nested-join) rows `C0`–`C2`, `k00`, `k08`, measured locally 2026-10-22 and 2026-10-23, Kernel 30.8.1, replayed by the [guard](../A12Kernel/Reference/Dm/IterationGuardLocks.lean) and [binding](../A12Kernel/Reference/Dm/IterationBindingLocks.lean) locks and `lake exe a12-kernel-replay`.
 - `acceptance`: Reconcile the classes and admission of those rows, and the pointers, references, computed values and clears of the runtime rows. Do not claim the nested rows a rule visits beyond the instantiated ones, nested levels without a reference or unclassified, value leaves over the nested field, clears on an unmatched row, non-Number targets, an error field below the partner's side, or partial validation.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-23-04"></a>
+### SPEC-2026-10-23-04 — a count below one is drawn at the groups and fields beneath it, not at its rules or computations
+
+- `status`: pending
+- `canonical`: [spec/01 §1](../spec/01-data-model.md#1-model--a-typed-tree), the names, groups and texts paragraph.
+- `delta`: The [October 21 letter](sources/inbound-handbacks.md#src-inbound-2026-10-21) §2.17 states `MVK_MAX_VALUES_INVALID` at every element beneath a group whose count is below one; this account draws it at every group and field beneath it, because the Kernel's entity walk (`NoMetaModelChecks.checkEntity`, kernel-core-codegen) visits groups and fields only, so a rule or computation beneath draws none.
+- `basis`: The letter's §2.17 rows, whose hosts hold groups and fields only, and the source read of that walk, 2026-10-23; replayed for groups and fields by the [declaration-walk locks](../A12Kernel/Reference/Dm/DeclarationWalkLocks.lean).
+- `acceptance`: Reconcile the wording to groups and fields. A rule or computation beneath such a group is source-read only and unmeasured; do not claim it as measured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

@@ -35,12 +35,12 @@ private def policy (zone : String) (baseYear : Int) (conditions : List String) :
   if model.refusals.isEmpty then some model else none
 
 /-- Each condition's outcome under the model zone, Base Year and pinned clock. -/
-private def outcomes (zone : String) (baseYear : Int) (now : Int) (conditions : List String) :
-    Option (List String) := do
+private def outcomes (zone : String) (baseYear : Int) (now : Int) (conditions : List String)
+    (inception := "2024-01-01") : Option (List String) := do
   let model ← policy zone baseYear conditions
   let world : World := { now := { epochMillis := now }, modelZoneRules := ModelZone.concreteRules }
   let input ← (readDocument model (Json.mkObj [("Policy", Json.mkObj [("Reference", "x"),
-    ("Inception", "2024-01-01"), ("Day", "29"), ("Month", "2"), ("Year", "1500"), ("Season", "02/02")])])).toOption
+    ("Inception", Json.str inception), ("Day", "29"), ("Month", "2"), ("Year", "1500"), ("Season", "02/02")])])).toOption
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model.flat).toOption
   let document ← ((checkDocument prepared "en_US" input.data).toOption.bind (·.fullValidationDocument.toOption))
   model.rules.mapM fun definition =>
@@ -66,6 +66,11 @@ example : [(-12219336000000, 4, 10), (-12219249600000, 15, 10), (1750672800000, 
       (s!"DayFromDate(Today) == {day}", "fires"), (s!"MonthFromDate(Today) == {month}", "fires"),
       (s!"DayFromDate(Now) == {day}", "fires"),
       ("Today < \"01.03.1500\"", "silent"), ("Today == \"29.02.1500\"", "silent")]) = true := by
+  native_decide
+
+/- The §1.2 control: at 2025-06-23T10:00Z a stored date of that day equals `Today`. -/
+example : outcomes "Europe/Berlin" 2024 1750672800000 ["[Inception] == Today", "[Inception] > Today"]
+    (inception := "2025-06-23") = some ["fires", "silent"] := by
   native_decide
 
 /- §1.12: a constant before the cutover counts no skipped label, so the hybrid count fires and the

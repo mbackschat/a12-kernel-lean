@@ -633,7 +633,8 @@ def lowerComputation (model : FlatModel) (language : Language) (computation : Dm
           | .error parallel => .error (refusal.orGuardBan parallel)
   -- The index stage follows the condition reads, so a classed refusal keeps its class while a
   -- classless one, or an admission, onto an index field draws the index class (spec/09; 2026-10-21
-  -- §2.11). Each carrier's own index refusal is subsumed here.
+  -- §2.11). Each carrier's own index refusal is subsumed here, and `checkComputation` lets the
+  -- generated rule's condition class precede it.
   let indexTarget := (targetOf language model computation).toOption.any (model.isIndexField ·.id)
   let checked ← match lowered with
     | .error refusal =>

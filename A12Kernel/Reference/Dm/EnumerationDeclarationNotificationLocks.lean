@@ -110,6 +110,8 @@ charset admits what a restricted one rejects. -/
 private def restrictedCharsetRows : List (String × Row) := [
   ("bad-distinct-characters", { values := ["AA", "pq"], restricted := true, expected := [invalidCharacter, invalidCharacter] }),
   ("bad-repeated-character", { values := ["AA", "pp"], restricted := true, expected := [invalidCharacter] }),
+  -- The October 21 letter's §2.4: the charset check reads a value untrimmed, unlike the text laws.
+  ("padded-value-untrimmed", { values := ["PLUS ", "BB"], restricted := true, expected := [invalidCharacter] }),
   ("bad-repeated-value", { values := ["AA", "pq", "pq"], restricted := true, expected := [invalidCharacter, invalidCharacter, internalDuplicate, repeated] }),
   ("bad-before-short-category", { values := ["AA", "pq"], categories := [("Band", ["X"])], restricted := true, expected := [invalidCharacter, invalidCharacter, missingCategory] }),
   ("bad-charset-control", { values := ["AA", "BB"], categories := [("Band", ["X", "Y"])], restricted := true, expected := [] }),

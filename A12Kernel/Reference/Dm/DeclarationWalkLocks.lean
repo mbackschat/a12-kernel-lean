@@ -86,11 +86,11 @@ example :
 /- A Java-blank group, field or rule name fails the build, a deleted field or rule only after the
    variant filter, while a no-break space is an ordinary refused name. -/
 example :
-    report "" (host (bin := " ")) = unbuilt ∧ report "" (host (bin := " ")) = unbuilt ∧
+    report "" (host (bin := " ")) = unbuilt ∧ report "" (host (bin := "\u2003")) = unbuilt ∧
     report "" (host (code := "\t")) = unbuilt ∧
     report "" (host (binElements := [field "Slot", rule "\n"])) = unbuilt ∧
     report "" (host (binElements := [field "Slot", rule "\n" true, field " " (deleted := true)])) = [] ∧
-    (report "/Order/Part/" (host (bin := " "))).head? = some "MVK_PATH_INVALID@ " := by
+    (report "/Order/Part/" (host (bin := "\u00A0"))).head? = some "MVK_PATH_INVALID@\u00A0" := by
   native_decide
 
 /-! ## §2.17: a count below one -/
@@ -164,7 +164,35 @@ example :
     report "/Order/" (order (sorts ["Sku", "Note", "Qty", "Sk-u"])
         [field "Sku", field "Note", field "Qty", field "Sk-u"]) =
       ["codeless:sort-list-capacity@Items", "MVK_PATH_INVALID@Items/Sk-u", s!"{F}@Items/Sk-u"] ∧
+    report "/Order/" (order (sorts ["Sku", "Sku", "Sk-u"]) [field "Sku", field "Sk-u"]) =
+      ["MVK_SORT_FIELD_DUPLICATE@Items", s!"{F}@Items", "MVK_PATH_INVALID@Items/Sk-u", s!"{F}@Items/Sk-u"] ∧
     report "" (order (index " Sku")) = unbuilt := by
+  native_decide
+
+/-- An Enumeration field `Kind` whose invalid-value message is `text`. -/
+private def kind (text : String) : Json :=
+  field "Kind" "EnumerationType" [("values", Json.arr #[Json.mkObj [("value", "A")]]),
+    ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", Json.str text)]])]
+
+/- A field's error text is judged inside the entity walk in source, so its control-character class
+   withholds the ordering gates as a refused path does; this carrier is source-read, not measured. -/
+example :
+    report "/Order/" (order (index "Sku") [skipsValidation "Sku", kind "a\tb"]) = ["INVALID_CHARACTERS@Items/Kind"] ∧
+    report "/Order/" (order (index "Sku") [skipsValidation "Sku", kind "ab"]) =
+      ["MVK_INDEX_FIELD_NO_VALUE_VALIDATION@Items/Sku"] := by
+  native_decide
+
+/- §2.11: a group named with the `xml` prefix in any case draws its class at itself and at an
+   underscore group beneath it, which also draws the underscore class; below a root the class falls
+   at every group beneath, as peer [KF558](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf558)'s
+   ancestor law states. -/
+example :
+    ["xmlCode", "XMLCode", "xml"].all (fun part => report "/Order/" (host (part := part) (bin := "_Bin")) ==
+      [s!"MVK_NAME_STARTS_WITH_XML@{part}", s!"NAME_STARTS_WITH_UNDERSCORE_AND_WRONG_PATTERN@{part}/_Bin",
+        s!"MVK_NAME_STARTS_WITH_XML@{part}/_Bin"]) ∧
+    report "/" (host (root := "xmlOrder") (part := "_Part")) =
+      ["MVK_NAME_STARTS_WITH_XML@xmlOrder", "NAME_STARTS_WITH_UNDERSCORE_AND_WRONG_PATTERN@xmlOrder/_Part",
+        "MVK_NAME_STARTS_WITH_XML@xmlOrder/_Part", "MVK_NAME_STARTS_WITH_XML@xmlOrder/_Part/Bin"] := by
   native_decide
 
 /-! ## §2.1, §2.3, §2.4, §2.8, §2.12: field types -/
@@ -188,7 +216,7 @@ example :
     range (some "") (some "") = ["MVK_FORMAT_DATE_RANGE_MISSING"] ∧
     range (some " ") (some "\t") = ["MVK_FORMAT_DATE_RANGE_MISSING"] ∧
     range (some "") none = [P] ∧ range none none = [P] ∧
-    range (some "dd.MM.yyyy") (some ".") = [P, S] ∧ range (some "dd.MM.yyyy") (some " ") = [P, S] ∧
+    range (some "dd.MM.yyyy") (some ".") = [P, S] ∧ range (some "dd.MM.yyyy") (some "\u00A0") = [P, S] ∧
     range (some "dd.MM.yyyy") (some " - ") = [P] ∧ range (some "yyyy-MM-dd") none = [] ∧
     range (some "yyyy-MM-dd") (some "🛒") = ["codeless:supplementary-character"] := by
   native_decide
@@ -197,8 +225,8 @@ example :
    build too, unless the variant filter deletes the field; a no-break space is an invalid format. -/
 example :
     ["DateType", "TimeType", "DateTimeType"].all (fun kind =>
-      ["", " ", "\t", "\n", " "].all (fun format => typed kind [("format", Json.str format)] == unbuilt) &&
-      typed kind [("format", " ")] == ["codeless:date-format-invalid"] &&
+      ["", " ", "\t", "\n", "\u2003"].all (fun format => typed kind [("format", Json.str format)] == unbuilt) &&
+      typed kind [("format", "\u00A0")] == ["codeless:date-format-invalid"] &&
       typed kind [("format", "")] (deleted := true) == []) ∧
     typed "DateFragmentType" [("formatOfFragment", "")] = unbuilt := by
   native_decide
@@ -229,7 +257,7 @@ private def enumeration (values : List (String × Option String)) (categories : 
    as written. -/
 example :
     enumeration [("o\t", none), ("B", none)] = [] ∧ enumeration [("o\n", none), ("B", none)] = [] ∧
-    enumeration [("o\t ", none), ("B", none)] = ["MVK_INTERNAL_VALUE_INVALID"] ∧
+    enumeration [("o\t\u00A0", none), ("B", none)] = ["MVK_INTERNAL_VALUE_INVALID"] ∧
     enumeration [("o\tk🛒", none), ("B", none)] = ["codeless:supplementary-character"] ∧
     enumeration [("A", some "Tier"), ("B", some "Tier ")] = ["MVK_DISPLAY_VALUES_DUPLICATE"] ∧
     enumeration [("A", none), ("B", none)] [["ST|🛒", "X"]] = ["codeless:supplementary-character"] ∧
@@ -282,17 +310,25 @@ example :
     computed "Part" "Label" "[Nope]" = "MVK_INVALID_ENTITY" := by
   native_decide
 
+/- The index stage follows the condition read in source, so a condition class the generated rule
+   draws precedes it even where the computation's own carrier stops at the index field first. -/
+example :
+    computed "Part" "Label" "[Nope]" (keyed := true) = "MVK_INVALID_ENTITY" ∧
+    computed "Part" "Label" "AddDays(Slot, 1)" (keyed := true) = "MVK_NO_DATE" ∧
+    computed "Part" "Label" "AddDays(Slot, 1)" = "MVK_NO_DATE" := by
+  native_decide
+
 /-- The class a rule in `/Order/part/Bin` reporting on `Label` draws for `condition`, `admitted`, or
 its construct when the refusal has no class. -/
-private def ruled (part condition : String) : String :=
-  match readModel (model [group "Order" [group part [group "Bin" [field "Slot", field "Label"]]]]) with
+private def ruled (part condition : String) (label := "Label") (entity := s!"../{label}") : String :=
+  match readModel (model [group "Order" [group part [group "Bin" [field "Slot", field label]]]]) with
   | .error reason => s!"unread {reason}"
   | .ok dm =>
       let checked : DmRule := {
         group := ["Order", part, "Bin"]
         name := "R"
         errorCode := "R"
-        errorEntityRelPath := "../Label"
+        errorEntityRelPath := entity
         condition
         severity := "ERROR" }
       match checkValidationRule dm .english checked with
@@ -305,6 +341,15 @@ example :
     ruled "Co-de" "[Label] == \"x\"" = "admitted" ∧ ruled "Co.de" "FieldFilled(Label)" = "admitted" ∧
     ruled "Co-de" "[Nope] == \"x\"" = "MVK_INVALID_ENTITY" ∧
     ruled "Co-de" "[Nope] == \"x\"" = ruled "Part" "[Nope] == \"x\"" := by
+  native_decide
+
+/- §2.13: a field or group name holding a character the lexer has no terminal for draws no lexer
+   class as the error entity, while the same name as a computed target does. The letter states only
+   the absent class, so these rows assert nothing about the class the unreferenced target draws. -/
+example :
+    ruled "Part" "FieldFilled(Slot)" (label := "La\u00A0bel") ≠ "MVK_LEXER_STANDARD_ERROR" ∧
+    ruled "B\u00A0in" "FieldFilled(Slot)" (entity := "../../../B\u00A0in") ≠ "MVK_LEXER_STANDARD_ERROR" ∧
+    computed "Part" "La\u00A0bel" = "MVK_LEXER_STANDARD_ERROR" := by
   native_decide
 
 end A12Kernel.Dm.DeclarationWalkLocks

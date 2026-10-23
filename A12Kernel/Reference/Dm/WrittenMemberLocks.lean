@@ -85,16 +85,21 @@ example : echoed "STD" = some ["Order/Lines/Echo value STD"] ∧
     echoed " STD" = some ["Order/Lines/Echo value  STD"] := by
   native_decide
 
+/-- The default the index preliminary stages and the number of its findings. -/
+private def staged (sValue : String) : Option (List String × Nat) := do
+  let dm ← order sValue
+  let input ← (readDocument dm (Json.mkObj [("Order", Json.mkObj [
+    ("Lines", Json.arr #[Json.mkObj [("Qty", Json.str "5")]])])])).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
+  let preliminary ← ((← (checkDocument prepared "en_US" input.data).toOption).applyFullIndexPreliminary).toOption
+  pure (preliminary.defaulted.map (·.stored), preliminary.findings.length)
+
 /-- The staged text, the index's preliminary findings and the declaration law's trimmed reading: a
-padded default draws no `mandatoryField`, and an `sValue` whose trim names no value fails the build. -/
+padded or blank default draws no `mandatoryField`, and an `sValue` whose trim names no value fails the
+build. -/
 example :
-    ((order " STD").bind fun dm => do
-      let input ← (readDocument dm (Json.mkObj [("Order", Json.mkObj [
-        ("Lines", Json.arr #[Json.mkObj [("Qty", Json.str "5")]])])])).toOption
-      let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
-      let preliminary ← ((← (checkDocument prepared "en_US" input.data).toOption).applyFullIndexPreliminary).toOption
-      pure (preliminary.defaulted.map (·.stored), preliminary.findings.length)) = some ([" STD"], 0) ∧
-    (order "std").isNone ∧ (order " STD").isNone := by
+    staged " STD" = some ([" STD"], 0) ∧ staged " " = some ([" "], 0) ∧
+    (order "std").isNone ∧ (order "\u00A0STD").isNone := by
   native_decide
 
 /-- A form with a digit String `Code` and a `Day` of `codeBody`, a Number `N`, and a keyed `Tags`
@@ -145,6 +150,24 @@ example :
       (verdict · "FieldValueAsNumber(Code) > 0")) = some "admitted" ∧
     ((form "{\"pattern\":\"[0-9]+\",\"maxLength\":2}" "{\"minLength\":2,\"maxLength\":3}").map
       (verdict · dated)) = some "admitted" := by
+  native_decide
+
+/-- A form with a Number `N`, an Enumeration `Tier` and a keyed `Tiers` whose Enumeration index
+`Level` holds the same values, `BASIC ` and `ST`. -/
+private def tiers : Option DmModel :=
+  let enumeration := "{\"values\":[{\"value\":\"BASIC \"},{\"value\":\"ST\"}]}"
+  built? ("{\"content\":{\"modelInfo\":{},\"modelConfig\":{\"conditionLanguage\":{\"code\":\"en_US\"}},\"modelRoot\":{\"rootGroups\":[{\"type\":\"Group\",\"name\":\"Form\",\"Group\":{\"elements\":["
+    ++ field "N" "NumberType" "{\"maxFractionalDigits\":0}" ++ "," ++ field "Tier" "EnumerationType" enumeration ++ ","
+    ++ "{\"type\":\"Group\",\"name\":\"Tiers\",\"Group\":{\"repeatability\":5,\"indexFieldName\":\"Level\",\"elements\":["
+    ++ field "Level" "EnumerationType" enumeration ++ "," ++ field "Amount" "NumberType" "{\"maxFractionalDigits\":0}"
+    ++ "]}}]}}]}}}")
+
+/-- The October 21 letter's §2.4: a constant compared with an Enumeration and an index key read the
+value as written, while the declaration laws trim it. -/
+example :
+    (tiers.map fun dm => ["[Tier] == \"BASIC\"", "[Tier] == \"BASIC \"", "[Tiers/Amount For \"BASIC\"] > 0",
+      "[Tiers/Amount For \"BASIC \"] > 0"].map (verdict dm)) =
+      some ["MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON", "admitted", "MVK_INDEX_VALUE_INVALID", "admitted"] := by
   native_decide
 
 end A12Kernel.Dm.WrittenMemberLocks

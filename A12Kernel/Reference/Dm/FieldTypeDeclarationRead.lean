@@ -164,6 +164,18 @@ private structure ElementReport where
   refusal : Option String := none
   /-- The report holds only index and sort checks that wait on the entity walk. -/
   orderingGate : Bool := false
+  /-- A field's error text failed a check the entity walk itself runs. -/
+  walkRefused : Bool := false
+
+/-- The classes the Kernel's entity walk draws at a field's error text beside its path and count
+classes: the encoding, line-break, control-character, dollar and parameter checks
+(`NoMetaModelChecks.checkEntity`, source-read; the
+[October 21 letter](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), §2.16,
+measured only a refused path and a count below one). The walk's restricted-alphabet check of
+Enumeration values is drawn by `readModel`, outside this reader, so it withholds no gate here. -/
+private def walkTextLabels : List String :=
+  [KernelStaticDiagnostic.wrongEncoding, .invalidMessageLinebreak, .invalidMessageCharacters,
+    .wrongNumberOfDollars, .invalidMessageParameter].map (·.kernelCode)
 
 /-- The element's one repertoire notification stands for all its texts, so the labels collapse to one. -/
 private def collapseRepertoire (labels : List String) : List String :=
@@ -322,7 +334,8 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
       | .modelNotBuilt => pure [{ path, unbuilt := true }]
       | .notifications raised =>
           let labels := named ++ raised.map (·.label) ++ repertoireIf annotated
-          pure [{ path, labels := collapseRepertoire labels }]
+          let walkRefused := raised.any fun notification => walkTextLabels.contains notification.label
+          pure [{ path, labels := collapseRepertoire labels, walkRefused }]
   | "Rule" | "Computation" =>
       if !(← acceptedByVariant environment.variant body) then return []
       if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
@@ -368,7 +381,7 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
       "fieldRefByShortNameAllowed" }
   let walked := (← roots.mapM (judgeElement environment {} [])).flatten
   -- The index and sort checks run only after an entity walk that refused nothing (2026-10-21 §2.16).
-  let walkRefused := walked.any fun report => report.labels.any fun label =>
+  let walkRefused := walked.any fun report => report.walkRefused || report.labels.any fun label =>
     [ElementNameKind.pathInvalid, .pathsInconsistent, .maxValuesInvalid].any (·.label == label)
   let reports := if walkRefused then walked.filter (!·.orderingGate) else walked
   if reports.any (·.unbuilt) then
