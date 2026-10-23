@@ -480,3 +480,20 @@ All declarations and authored expressions are statically admitted. Number fields
 - `acceptance`: Root reconciles each answer with the [K21 capture](../sources/consumer-readiness-probes.md#src-consumer-readiness-k21) as replayed through Lean. Pointers compare by coordinates; a first repetition rendered bare is noted, not failed. X5 must name the stable world and the relevant-set encoding a host supplies.
 - `wrong-accounts`: authored-order computation (`Out` 51 on `D1`); an empty producer read as poison (`Out` cleared on `D2`) or poison as empty (`Out` 1 on `D3`); generated checks compared with freshly computed values (`MidComp` on `D2`); first or last duplicate match (`Total` 7 or 9 on `D4`); uniqueness on all but the first duplicate; a malformed `Src` read as empty (`RSrc` on `D3`); partial validation evaluating a rule whose error field is not relevant or reporting uniqueness without its relevant partner.
 - `exclusions`: rendered text, `Having`, temporal and parallel carriers, host relevance encodings beyond the four sets, any Rust implementation, public shipment or wider qualification.
+
+<a id="run-k21-execute-01"></a>
+### K21 Execute readback — `k21-execute-01`
+
+- `task`: [K21 Execute](#task-k21-execute)
+- `status`: amber
+- `started-at`: 2026-10-23T22:11:34+00:00
+- `finished-at`: 2026-10-23T22:18:48+00:00
+- `duration-seconds`: 434
+- `semantic-basis`: `69f280ebaa593b5b770fd54cf70fd1cb2a426cb2`
+- `oracle`: HIGH compared every X1–X4 answer with the [K21 capture](../sources/consumer-readiness-probes.md#src-consumer-readiness-k21), whose four requests `lake exe a12-kernel-replay` matches in 511 comparisons and whose formal, uniqueness and partial channels agree through the reader. Every value, clear, poison, formal inventory, message code, type, pointer, `referenced` and `fillToFix` agrees; reconciliation passed.
+- `consumer-access`: Fresh MEDIUM (`sonnet`, `xhigh`) with only a scratch packet of `spec/*.md` and the task through `queries`, read and searched inside the packet; no repository, Lean, evidence, sibling, web, edits, code or dependencies, and no access deviation reported.
+- `cost`: 434 seconds; zero implementation or test lines and no builds; tokens not measured.
+- `result`: Recovered dependency order over authored order, clean clear versus poison, the stripped computed inputs, column-strict duplicate selection, generated checks reading stored values, per-participant uniqueness, the fully relevant `Form` equal to full validation, row-gated partial rules and uniqueness needing its relevant partner.
+- `wrong-accounts`: Every listed wrong account is rejected: authored order, empty as poison and poison as empty, generated checks against fresh values, first or last duplicate match, all-but-first uniqueness, malformed input as empty, and partial runs of non-relevant rules or partnerless uniqueness.
+- `questions-and-guesses`: The packet left built-in message channels unstated: the consumer marked the type, `referenced` and `fillToFix` of the formal finding and `uniqueIndex` insufficient and assumed the own cell, correctly. It also asked whether an operand-poisoned instance emits a target message, and noted that the task omitted the authored error codes, assuming the rule names, correctly. Other items it raised are derivable from the packet.
+- `exclusions`: The [task exclusions](#task-k21-execute) remain. The two unstated outputs became [spec/02 §B.1](../../spec/02-logic-and-formal-errors.md#b1-what-a-formal-error-is) and [spec/09](../../spec/09-computations.md) clauses under [SPEC-2026-10-24-01](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-24-01); no green follows from this run.

@@ -215,6 +215,23 @@ Lean acceptance is the checked name constructor, its reservation laws, and the f
 - `wrong-accounts`: admission read as reachability (`a1`, `a5`); a refused `a2` or `a7` reported as admitted but never firing; malformed `Src` read as empty (`a4` OMISSION on `x`) or as false rather than unknown; `a6` reachable after application or `a3` unreachable after it; a stale stored `Mid` read after application; a raw solver model returned undecoded, or minimality claimed from one model.
 - `exclusions`: SMT execution, rendered text, partial validation, `Having`, temporal and parallel carriers, Number bounds other than the declared scale, any shipment or wider qualification.
 
+<a id="run-k21-analyze-synthesize-01"></a>
+### K21 Analyze and Synthesize readback — `k21-analyze-synthesize-01`
+
+- `task`: [K21 Analyze and Synthesize](#task-k21-analyze-synthesize)
+- `status`: green
+- `started-at`: 2026-10-23T22:20:48+00:00
+- `finished-at`: 2026-10-23T22:27:23+00:00
+- `duration-seconds`: 395
+- `semantic-basis`: `69f280ebaa593b5b770fd54cf70fd1cb2a426cb2`
+- `oracle`: Y1 agrees with the [K21 capture](../sources/consumer-readiness-probes.md#src-consumer-readiness-k21) as [`RuleCheckProjection`](../../A12Kernel/Evidence/RuleCheckProjection.lean) replays it. HIGH ran all nine returned witnesses and a 54-row `Src` sweep of 52 integers from -60 to 1000 plus empty and malformed input, through the Kernel stored and applied, both engines agreeing, and `lake exe a12-kernel-replay` matches all 3402 comparisons: every witness fires the claimed candidate and type, `A1` and `A5` fire on no row, `A6` fires on no applied row, and `A3` fires after application exactly from `Src` 5 up in the sweep. Reconciliation passed; the unbounded no-witness arguments stand as stated reasoning only.
+- `consumer-access`: A separate fresh MEDIUM (`sonnet`, `xhigh`) with only the scratch `spec/*.md` packet and the task through `queries`, plus the Execute fixture it references; no repository, Lean, evidence, sibling, web, solver, edits or code, and no access deviation reported.
+- `cost`: 395 seconds; zero implementation or test lines; HIGH spent two Kernel probe runs and one replay on reconciliation; tokens not measured.
+- `result`: Separated admission from reachability, refused `a2` and `a7` with `MVK_NEG_CONDITION_IN_ITERATION` by the index-and-capacity licence, gave VALUE and OMISSION witnesses for `a3`, `a4` and `a6`, including the unmeasured `a6` OMISSION witness with `Mid` 101 and no `Src`, kept malformed `Src` UNKNOWN and silent, and found `a6` unreachable but `a3` and `a4` reachable after application.
+- `wrong-accounts`: Every listed wrong account is rejected; no witness relies on a raw model, and no minimality is claimed.
+- `questions-and-guesses`: The consumer flagged as inferences the OMISSION typing of a negative presence leaf, the blank-document firing of `a4`, and the admission of `a1` and `a5` absent any contradiction gate, a negative existential over the packet; all three hold. The last is now stated in [spec/02 §B.1](../../spec/02-logic-and-formal-errors.md#b1-what-a-formal-error-is) under [SPEC-2026-10-24-01](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-24-01).
+- `exclusions`: The [task exclusions](#task-k21-analyze-synthesize) remain: no SMT encoding, solver run, Rust code, shipment or wider qualification.
+
 ## Lab record
 
 | Run | Status | Executed at | Semantic basis | Current result |

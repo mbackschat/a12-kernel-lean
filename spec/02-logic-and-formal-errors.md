@@ -140,6 +140,8 @@ A field whose value violates its **data-type configuration** produces a **formal
 - are attributed internally to a sentinel rule path (`formalePruefung`) — so from the *author's* rule's viewpoint the rule simply produces nothing,
 - **block the field from participating in built-in predicates, comparisons, and aggregates** (author rules never create this state — only formal errors do).
 
+**A built-in finding reports only its own cell.** A formal finding, a custom field type's and an over-repetition finding included, and the generated `mandatoryField` and `uniqueIndex` checks of [§4](03-empty-and-required.md) each produce one message at the finding's field pointer whose `referenced` holds exactly that pointer. A formal finding and `uniqueIndex` are VALUE with an empty `fillToFix`; `mandatoryField` is OMISSION, and its `fillToFix` holds the same pointer. Validation messages and computation's formal-operand channel have the same shape ([checkpoint](../docs/sources/consumer-readiness-probes.md#src-consumer-readiness-k21), `builtin-channels`).
+
 [`CustomCondition`](11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch) is the deliberate host-SPI exception to that read boundary. The kernel cannot infer the callback's hidden field dependencies from the rule AST, so a reached callback receives the document plus the complete formal-invalid set and decides for itself whether one of its necessary fields prevents evaluation. The callback contract requires `false` in that case, but the runtime does not pre-suppress the invocation.
 
 **A would-be tautology is not one.** If `F` has a formal error:
@@ -147,6 +149,8 @@ A field whose value violates its **data-type configuration** produces a **formal
 ```
 FieldFilled(F) Or FieldNotFilled(F)     -- does NOT hold: F is unknown, so neither branch is satisfied
 ```
+
+**Nor is a contradiction refused.** Admission does not decide satisfiability: `FieldFilled(Src) And FieldNotFilled(Src)` and `[Src] > 5 And [Src] < 3` on a non-repeatable Number are admitted with no static diagnostic, so whether a rule can ever fire is an analysis question, not an admission one ([checkpoint](../docs/sources/consumer-readiness-probes.md#src-consumer-readiness-k21), `candidates`).
 
 ### B.2 The three cell states — the third one is *not* "empty"
 
