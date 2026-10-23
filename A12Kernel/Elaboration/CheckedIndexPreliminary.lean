@@ -304,6 +304,20 @@ private def placements (preliminary : CheckedIndexPreliminary model) :
 def computationInput (preliminary : CheckedIndexPreliminary model) : CheckedDocument model :=
   preliminary.base.overlayCells [] preliminary.placements
 
+/-- The base document with only the staged index defaults placed, as authored full-validation rules
+read it (spec/10 §5). Generated findings stay out of its cells, because a consumer deriving its own
+preliminary from this view, as an indexed selection does, keys every cell through its observation:
+a duplicate already marked unknown would hide the collision, and its colliding rows would stay
+selectable (spec/07 §4). -/
+def defaultedInput (preliminary : CheckedIndexPreliminary model) : CheckedDocument model :=
+  let placed := preliminary.base.checkedCells.filterMap fun placement =>
+    (preliminary.defaulted.find? (·.address == placement.address)).map fun defaulted =>
+      { placement with cell := defaulted.cell, storedText := some defaulted.stored }
+  let injected := preliminary.defaulted.filterMap fun defaulted =>
+    if preliminary.base.checkedCells.any (·.address == defaulted.address) then none
+    else some { address := defaulted.address, cell := defaulted.cell, storedText := some defaulted.stored }
+  preliminary.base.overlayCells [] (placed ++ injected)
+
 /-- Reuse the sole resolved group-scope owner with the addressed preliminary cell view, including required findings on physically absent index cells. -/
 def groupPresenceInput (preliminary : CheckedIndexPreliminary model)
     (groupPath : GroupPath) (environment : Env)

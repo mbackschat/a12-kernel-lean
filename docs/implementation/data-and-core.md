@@ -60,7 +60,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 <a id="cap-preliminary-index-findings"></a>
 #### Preliminary index findings
 
-- `boundary`: Model-derived required/unique index findings are staged over immutable topology without mutating the document. Ordinary full validation's row, once and scalar plans read the staged view (`computationInput`), as the partial and parallel routes read theirs, while their message cache is built from the original document's preliminary
+- `boundary`: Model-derived required/unique index findings are staged over immutable topology without mutating the document. Ordinary full validation's row, once and scalar plans read the staged index defaults (`defaultedInput`), as the partial and parallel routes read theirs, while each indexed consumer derives the generated findings from that view, so every row of a duplicated key leaves the selection (spec/07 §4), and their message cache is built from the original document's preliminary
 - `owner`: [`CheckedIndexPreliminary.lean`](../../A12Kernel/Elaboration/CheckedIndexPreliminary.lean), read by [ordinary execution](../../A12Kernel/Elaboration/ValidationRule/Execution.lean) and the [scalar plan](../../A12Kernel/Reference/Dm/Validate.lean)
 - `assurance`: E/P closed; source-grounded; C none
 - `remains`: Wider index orchestration: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)

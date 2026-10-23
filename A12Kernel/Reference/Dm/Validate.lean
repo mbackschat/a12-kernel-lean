@@ -227,7 +227,7 @@ def runRuleAt (world : World) (checked : CheckedDocument model)
       match checked.applyFullIndexPreliminary with
       | .error error => .error (repr error).pretty
       | .ok preliminary =>
-          let checked := preliminary.computationInput
+          let checked := preliminary.defaultedInput
           let context : AddressedValidationEvaluationContext model := {
             scalar := {
               fields := checked.flatContext.withWorld world
