@@ -101,13 +101,21 @@ def innerScope (pair : CheckedParallelFieldPair model) : List RepeatableLevel :=
     else pair.groups.rightGroup
   pair.errorDeclaration.repeatableScope.drop (model.repeatableScopeForGroupPath joined.path).length
 
+/-- The error field's full-validation rows, enumerated once for every joined row's `innerRows`;
+none for a field at its joined group's level. -/
+def innerEnvironments (pair : CheckedParallelFieldPair model) (preliminary : CheckedIndexPreliminary model) :
+    Except ParallelPresenceRuleEvaluationError (List Env) :=
+  if pair.innerScope.isEmpty then pure []
+  else preliminary.base.fullValidationRowEnvironments pair.errorDeclaration.repeatableScope |>.mapError .rows
+
 /-- The rows one joined row contributes: the row itself when the error field sits at its joined
 group's level, otherwise one row per full-validation row of the error field's levels inside the error
 side's joined row, with the error side bound there. An unmatched error side has no such row. The
 Kernel iterates a nested level within each joined row for a rule and for a computation precondition
 ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
-`nested-join`); that it visits the full-validation domain there, as frames do, is unmeasured. -/
-def innerRows (pair : CheckedParallelFieldPair model) (preliminary : CheckedIndexPreliminary model)
+`nested-join`); that it visits the full-validation domain there, as frames do, is unmeasured.
+`environments` are the error field's full-validation rows, `innerEnvironments`. -/
+def innerRows (pair : CheckedParallelFieldPair model) (environments : List Env)
     (row : ResolvedParallelIndexRow) :
     Except ParallelPresenceRuleEvaluationError (List ResolvedParallelIndexRow) := do
   if pair.innerScope.isEmpty then return [row]
@@ -115,8 +123,6 @@ def innerRows (pair : CheckedParallelFieldPair model) (preliminary : CheckedInde
   let some environment := side.environment | return []
   let joinedScope := model.repeatableScopeForGroupPath side.group.path
   let joinedPath ← environment.pathForScope joinedScope |>.mapError fun error => .join (.environment error)
-  let environments ← preliminary.base.fullValidationRowEnvironments pair.errorDeclaration.repeatableScope
-    |>.mapError .rows
   pure ((environments.filter fun inner => (inner.pathForScope joinedScope).toOption == some joinedPath).map
     fun inner => if pair.errorField == pair.leftDeclaration.id
       then { row with left := { row.left with environment := some inner } }
@@ -189,10 +195,11 @@ def evalWith (pair : CheckedParallelFieldPair model) (condition : Condition)
     (admitOuter : Env → Bool := fun _ => true)
     (caught : ParallelPresenceRuleEvaluationError → Bool := fun _ => false) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
+  let inner ← pair.innerEnvironments preliminary
   let runJoin := fun first? frameOuter (join : ResolvedParallelIndexJoin) => do
     if !admitOuter frameOuter then pure ([], first?, false)
     else
-      let rows := (← join.rows.mapM (pair.innerRows preliminary)).flatten
+      let rows := (← join.rows.mapM (pair.innerRows inner)).flatten
       pair.evalRows condition (evaluate frameOuter) preliminary frameOuter messageCache caught first? rows
   match pair.groups.outerScopePlan with
   | .common _ =>

@@ -155,6 +155,16 @@ private def pairGroupPaths (model : FlatModel) (left right : FieldId) : List Gro
   [left, right].filterMap fun anchor => (model.lookupUniqueId anchor).toOption.bind fun declaration =>
     (model.indexedAncestorGroups declaration).getLast?.map (·.path)
 
+/-- The groups one joined instance binds a row of: each anchor's joined group and the groups below it
+that contain the anchor, whose rows a nested anchor iterates within its joined row (spec/07 §2). -/
+private def pairInstanceGroupPaths (model : FlatModel) (left right : FieldId) : List GroupPath :=
+  [left, right].flatMap fun anchor => match model.lookupUniqueId anchor with
+    | .ok declaration => match (model.indexedAncestorGroups declaration).getLast? with
+      | some joined => (model.repeatableGroups.filter fun group =>
+          joined.path.isPrefixOf group.path && group.path.isPrefixOf declaration.groupPath).map (·.path)
+      | none => []
+    | .error _ => []
+
 /-- A keyed presence read lowered with one joined side's levels bound, as a parallel rule binds a key
 field on that side's row (joined-carrier capture, rows `k03b` and `k08`, and its limits capture,
 row `p01`, 2026-10-14). The
@@ -193,7 +203,7 @@ private def bindPairLeaf (model : FlatModel) (group : GroupPath) (suppress : Boo
       -- operands are model-free field records, crosses back to the real model. Any other leaf is
       -- lowered against the model itself, where admission accepts it only when the common outer
       -- binding fixes its every iterating read.
-      let view := model.parallelInstanceView (pairGroupPaths model left right)
+      let view := model.parallelInstanceView (pairInstanceGroupPaths model left right)
       let viewed : Option (ValidationCondition view) :=
         (lowerCondition view group suppress expression).toOption.map (·.core)
       match viewed with

@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ValidationRule
 
 /-! # Bounded checked parallel presence rules
 
-This capsule places one existing positive presence conjunction into the checked parallel join with exact-text or dot-decimal Number keys. The join owns key construction and optional physical environments; the shared condition tree owns short-circuiting; the shared rule emitter owns messages. Nonrepeatable path segments around either keyed group and operand are transparent because they add no environment binding. One non-indexed repeatable frame may surround the error side and recalculates the same join inside each actual frame row. Two framed sides, negative leaves, and partial validation remain outside. Error pointers use the shared joined-side projection.
+This capsule places one existing positive presence conjunction into the checked parallel join with exact-text or dot-decimal Number keys. The join owns key construction and optional physical environments; the shared condition tree owns short-circuiting; the shared rule emitter owns messages. Nonrepeatable path segments around either keyed group and operand are transparent because they add no environment binding. One non-indexed repeatable frame may surround the error side and recalculates the same join inside each actual frame row. An error anchor below its joined group is read at each of its rows inside the joined row, which its positive presence guards (spec/07 §2). Two framed sides, negative leaves, and partial validation remain outside. Error pointers use the shared joined-side projection.
 -/
 
 namespace A12Kernel

@@ -582,6 +582,14 @@ def innerGuarded (pair : CheckedParallelFieldPair model) (condition : ParallelFi
   pair.innerScope.all fun level =>
     decide (condition.iterationGuardStatus (ParallelFieldLeaf.guardAt pair level) = .guarded)
 
+/-- Whether the outermost inner level the guard table leaves unguarded draws the negative-iteration
+class, as an unguarded level does in the ordinary table (`iterationLegalityForLevels`). A level
+without a reference or with an unclassified one, which an ordinary rule accepts, is refused without a
+class instead: no capture measures one below a joined side. -/
+def innerUnguarded (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition model) : Bool :=
+  let status := fun level => condition.iterationGuardStatus (ParallelFieldLeaf.guardAt pair level)
+  (pair.innerScope.find? (status · != .guarded)).any (status · == .unguarded)
+
 def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
     (condition : ParallelFieldCondition model) : Bool :=
   condition.allLeaves (ParallelFieldLeaf.admitted pair suppress) &&
@@ -676,7 +684,7 @@ def checkParallelFieldRule (model : FlatModel)
         condition.anyLeaf (ParallelFieldLeaf.uses pair .left) &&
         condition.anyLeaf (ParallelFieldLeaf.uses pair .right) then
       if !condition.guarded pair then throw (.static .parallelIterationInvalid)
-      else if ParallelFieldCondition.framesGuarded pair condition && !condition.innerGuarded pair then
+      else if ParallelFieldCondition.framesGuarded pair condition && condition.innerUnguarded pair then
         throw (.static .negativeConditionInIteration)
       else throw .incoherentCondition
     else throw .incoherentCondition

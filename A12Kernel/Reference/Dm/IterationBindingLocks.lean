@@ -190,13 +190,39 @@ private def mismatches : List (String × String × String) :=
 
 example : mismatches = [] := by native_decide
 
+/-- This reader's account below a joined side where no capture measures the composition: a flat
+comparison over the nested field reads it at the error side's inner row, an unguarded inner level
+draws the negative-iteration class as `a11` does, and an inner level the ordinary table leaves
+unclassified is refused without a class beside its guarded twin. -/
+private def unclassed (errorField condition : String) : Bool :=
+  match checkValidationRule (dm order) .english
+      { group := O, name := "GuardProbe", errorCode := "P", errorEntityRelPath := "../" ++ errorField,
+        condition, severity := "ERROR" } with
+  | .ok _ => false
+  | .error refusal => refusal.kernelClass?.isNone
+
+example :
+    rule order O "Lines/Parts/PartNo" "FieldFilled(Lines/Parts/PartNo) And [Lines/Parts/PartNo] == [Picks/Ref]" =
+      "admitted" ∧
+    rule order O "Lines/Parts/PartNo" "FieldNotFilled(Lines/Parts/PartNo) And [Lines/Sku] == [Picks/Ref]" = NEG ∧
+    unclassed "Lines/Parts/PartNo"
+      "FieldFilled(Lines/Sku) And FieldFilled(Picks/Ref) And FieldValuesNotUnique(Lines/Parts/PartNo, Lines/Sku)" ∧
+    rule order O "Lines/Parts/PartNo"
+      "FieldFilled(Lines/Parts/PartNo) And FieldFilled(Picks/Ref) And FieldValuesNotUnique(Lines/Parts/PartNo, Lines/Sku)" =
+      "admitted" := by native_decide
+
 open Lean in
-/-- The error pointers a rule over `Lines` rows of `(LineNo, Qty)` fires at, beside `Picks` rows of
-`(LineNo, Ref)` and `Wraps` rows, each holding `Bows` rows of `(BowNo, Shade)`. -/
+/-- The error pointers a rule over `Lines` rows of `(LineNo, Qty)` fires at, each holding the `Parts`
+rows of `PartNo` that `parts` gives its `LineNo`, beside `Picks` rows of `(LineNo, Ref)` and `Wraps`
+rows, each holding `Bows` rows of `(BowNo, Shade)`. -/
 private def fired (errorField condition : String) (lines : List (String × String))
-    (picks : List (String × Option String)) (wraps : List (List (String × String))) : Option (List String) := do
+    (picks : List (String × Option String)) (wraps : List (List (String × String)))
+    (parts : String → List String := fun _ => []) : Option (List String) := do
   let world : World := { now := { epochMillis := 0 } }
-  let lineRows := lines.map fun (no, qty) => Json.mkObj [("LineNo", Json.str no), ("Qty", Json.str qty)]
+  let lineRows := lines.map fun (no, qty) => Json.mkObj ([("LineNo", Json.str no), ("Qty", Json.str qty)] ++
+    match parts no with
+    | [] => []
+    | partNos => [("Parts", Json.arr (partNos.map fun partNo => Json.mkObj [("PartNo", Json.str partNo)]).toArray)])
   let pickRows := picks.map fun (no, ref) =>
     Json.mkObj ([("LineNo", Json.str no)] ++ ref.toList.map (("Ref", Json.str ·)))
   let wrapRows := wraps.map fun bows => Json.mkObj [("Style", Json.str "s"), ("Bows", Json.arr (bows.map fun (no, shade) =>
@@ -209,8 +235,8 @@ private def fired (errorField condition : String) (lines : List (String × Strin
   let definition : DmRule :=
     { group := O, name := "GuardProbe", errorCode := "P", errorEntityRelPath := "../" ++ errorField,
       condition, severity := "ERROR" }
-  let checked ← (checkRule (dm order) .english definition).toOption
-  pure ((← (runRule world document checked).toOption).map fun message => (observe order message).pointer)
+  let checked ← (checkValidationRule (dm order) .english definition).toOption
+  pure ((← (runValidationRule world document checked).toOption).map fun message => (observe order message).pointer)
 
 /-- Internal witnesses, `external evidence pending`: the key is read at the rule's `Lines` row, so
 only the line whose `LineNo` selects no filled `Picks` row fires; a read of one fixed line would fire
@@ -222,6 +248,12 @@ example : fired "Lines/Qty" "FieldFilled(Lines/Qty) And FieldNotFilled(Picks/Ref
     fired "Wraps/Style" "FieldFilled(Wraps/Bows/Shade For \"a\") And FieldFilled(Wraps/Style)" []
       [] [[("b", "blue")], [("a", "red"), ("c", "green")]] = some ["Order/Wraps[2]/Style"] ∧
     fired "Wraps/Style" "FieldFilled(Wraps/Bows/Shade For \"c\") And FieldFilled(Wraps/Style)" []
-      [] [[("a", "red")]] = some [] := by native_decide
+      [] [[("a", "red")]] = some [] ∧
+    -- Each part compares with its own line's pick: a read of one part per line, or of another line's
+    -- pick, fires elsewhere; the third line's missing pick reads empty.
+    fired "Lines/Parts/PartNo" "FieldFilled(Lines/Parts/PartNo) And [Lines/Parts/PartNo] == [Picks/Ref]"
+      [("1", "5"), ("2", "6"), ("3", "7")] [("1", some "r"), ("2", some "q")] []
+      (fun | "1" => ["x", "r"] | "2" => ["q"] | _ => ["r"]) =
+      some ["Order/Lines/Parts[2]/PartNo", "Order/Lines[2]/Parts/PartNo"] := by native_decide
 
 end A12Kernel.Dm.IterationBindingLocks
