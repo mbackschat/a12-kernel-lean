@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.DeclarationAdmission
 import A12Kernel.Elaboration.EnumerationDeclarationNotification
 import A12Kernel.Elaboration.FieldMessageCheck
+import A12Kernel.Elaboration.ModelConsistency
 import A12Kernel.Semantics.NumberBound
 import A12Kernel.Semantics.StringPattern
 import A12Kernel.Semantics.TemporalDeclarationFormat
@@ -63,6 +64,8 @@ inductive FieldTypeNotificationKind where
   | sValueInvalid
   | dateFormatInvalid
   | dateRangeFormatInvalid
+  | dateRangeFormatMissing
+  | dateRangeSeparatorInvalid
   deriving Repr, DecidableEq
 
 namespace FieldTypeNotificationKind
@@ -78,7 +81,7 @@ def all : List FieldTypeNotificationKind :=
     optionalDateTypeInvalid, additionalCheckInvalid, unspecifiedTypeNoCodegen, countOfValuesInvalid,
     internalValuesAndDisplayValues, displayValuesDuplicate, internalValueInvalid,
     displayValueInvalid, categoryValueInvalid, lineBreak, sValueInvalid, dateFormatInvalid,
-    dateRangeFormatInvalid]
+    dateRangeFormatInvalid, dateRangeFormatMissing, dateRangeSeparatorInvalid]
 
 /-- The label the capture gives the class: its Kernel code, or `codeless:` and the class name. -/
 def label : FieldTypeNotificationKind → String
@@ -120,6 +123,8 @@ def label : FieldTypeNotificationKind → String
   | sValueInvalid => "MVK_S_VALUE_INVALID"
   | dateFormatInvalid => "codeless:date-format-invalid"
   | dateRangeFormatInvalid => "codeless:date-range-format-invalid"
+  | dateRangeFormatMissing => "MVK_FORMAT_DATE_RANGE_MISSING"
+  | dateRangeSeparatorInvalid => "codeless:date-range-separator-invalid"
 
 end FieldTypeNotificationKind
 
@@ -421,12 +426,18 @@ private def integerCount (declaration : NumberTypeDeclaration) : MemberReading :
       else .unbounded
 
 /-- The declared bounds, ordered as the runtime prints them under the raw fractional counts, an absent
-count read as `0` as the reader does. A bound outside the printable range is no comparison. -/
+count read as `0` as the reader does. A bound outside the printable range is no comparison, and neither
+is one whose printed form fails its own formal check (`ModelConsistency.boundFormalClass?`), so `-0.4` printed `-0` at
+no fractional digit draws only that check's class
+([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), §2.1). -/
 private def boundsMisordered (declaration : NumberTypeDeclaration) : Bool :=
   match declaration.minValue, declaration.maxValue with
   | some lowest, some highest =>
       let minimumDigits := declaration.minFractionalDigits.getD 0
       let maximumDigits := declaration.maxFractionalDigits.getD 0
+      let checked := fun bound =>
+        ((NumberBound.printed? bound minimumDigits maximumDigits).bind ModelConsistency.boundFormalClass?).isNone
+      if !(checked lowest && checked highest) then false else
       match NumberBound.printedValue? lowest minimumDigits maximumDigits,
           NumberBound.printedValue? highest minimumDigits maximumDigits with
       | some printedLowest, some printedHighest => printedHighest < printedLowest
@@ -520,13 +531,25 @@ private def dateFragmentNotifications (declaration : DateFragmentTypeDeclaration
     format := declaration.format.getD ""
     youngerThan1900Check := declaration.youngerThan1900Check }
 
-/-- A DateRange `(format, separator)` pair on the allowlist, an absent separator being `/` and an absent
-format outside it (`tb-range-*`). The year interpretation and the 1900 flag are accepted on every
-admitted pair and add nothing. -/
+/-- A DateRange is judged on the format the Kernel composes, `format ++ separator ++ format`, an absent
+format composing as the text `null` and an absent separator as `/`: a composite that trims to nothing is
+`MVK_FORMAT_DATE_RANGE_MISSING` alone; otherwise a `(format, separator)` pair off the allowlist draws
+the range-format notification (`tb-range-*`), and a separator that trims to anything but `-` or `/` the
+separator notification beside it. A supplementary scalar in either member draws the repertoire
+notification alone ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21),
+§2.8, peer KF581). The year interpretation and the 1900 flag are accepted on every admitted pair and add
+nothing. -/
 private def dateRangeNotifications (declaration : DateRangeTypeDeclaration) :
     List FieldTypeNotification :=
-  raiseIf (!({ format := declaration.format.getD "", separator := declaration.separator.getD "/" } :
-    DateRangeDeclarationPolicy).admitted) .dateRangeFormatInvalid
+  let separator := declaration.separator.getD "/"
+  let format := declaration.format.getD "null"
+  if hasSupplementaryScalar format || hasSupplementaryScalar separator then
+    [.declared .supplementaryCharacter]
+  else if (javaTrim (format ++ separator ++ format)).isEmpty then [.declared .dateRangeFormatMissing]
+  else
+    raiseIf (!({ format := declaration.format.getD "", separator } :
+      DateRangeDeclarationPolicy).admitted) .dateRangeFormatInvalid ++
+    raiseIf (!["", "-", "/"].contains (javaTrim separator)) .dateRangeSeparatorInvalid
 
 /-! ## Enumeration -/
 
@@ -545,10 +568,14 @@ private def labelTexts (value : EnumerationValueDeclaration) (locale : String) :
 private def carriesLabel (locales : List String) (value : EnumerationValueDeclaration) : Bool :=
   value.labels.any fun label => locales.contains label.locale
 
+/-- The text classes read each text after Java's `trim`, and none names a text holding a supplementary
+scalar, which draws the repertoire notification instead ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21),
+§2.3, §2.4): a trailing tab or line break is no defect, `Tier` beside `Tier ` is a duplicate. -/
 private def enumerationNotifications (context : FieldTypeContext)
     (declaration : EnumerationTypeDeclaration) : List FieldTypeNotification :=
   let locales := context.declaredLocales
   let values := declaration.values
+  let coded := fun (texts : List String) => (texts.filter (!hasSupplementaryScalar ·)).map javaTrim
   let tokens := values.map (·.token)
   let countedTexts := values.flatMap fun value =>
     (value.labels.filter fun label => locales.contains label.locale).map (·.text)
@@ -557,7 +584,8 @@ private def enumerationNotifications (context : FieldTypeContext)
     storedTokens := tokens
     displayFacts := values.flatMap fun value => value.labels.map fun label =>
       { stored := value.token, locale := label.locale, display := label.text }
-    categories := declaration.categories }
+    categories := declaration.categories
+    defaultStoredToken := declaration.sValue }
   (blockOwner.notifications context.charset).map .enumerationBlock ++
     (if values.any (carriesLabel locales) && values.any (!carriesLabel locales ·) then
       locales.map fun locale => .declared .countOfValuesInvalid [locale]
@@ -566,15 +594,15 @@ private def enumerationNotifications (context : FieldTypeContext)
       (labelTexts value locale).isEmpty || (labelTexts value locale).any ExecutableDeclaration.blank)
       .internalValuesAndDisplayValues ++
     locales.flatMap (fun locale =>
-      let perValue := values.flatMap fun value => (labelTexts value locale).eraseDups
+      let perValue := values.flatMap fun value => (coded (labelTexts value locale)).eraseDups
       (perValue.eraseDups.filter fun text => 1 < perValue.count text).map
         (.declared .displayValuesDuplicate [locale, ·])) ++
-    (tokens.filter hasSeparator).map (.declared .internalValueInvalid [·]) ++
-    (countedTexts.filter hasSeparator).map (.declared .displayValueInvalid [·]) ++
-    (categoryTokens.filter hasSeparator).map (.declared .categoryValueInvalid [·]) ++
-    raiseIf ((tokens ++ countedTexts ++ categoryTokens).any hasLineBreak) .lineBreak ++
+    ((coded tokens).filter hasSeparator).map (.declared .internalValueInvalid [·]) ++
+    ((coded countedTexts).filter hasSeparator).map (.declared .displayValueInvalid [·]) ++
+    ((coded categoryTokens).filter hasSeparator).map (.declared .categoryValueInvalid [·]) ++
+    raiseIf ((tokens ++ countedTexts ++ categoryTokens).any (hasLineBreak ∘ javaTrim)) .lineBreak ++
     -- Both sides are compared after Java's `trim` (inbound 2026-10-18, `checkConsistency` rows).
-    raiseIf (declaration.sValue.any fun sValue =>
+    raiseIf (declaration.sValue.any fun sValue => !hasSupplementaryScalar sValue &&
       !(javaTrim sValue).isEmpty && !(tokens.map javaTrim).contains (javaTrim sValue)) .sValueInvalid ++
     messageNotifications context .enumerationInvalidValue declaration.messages
 
@@ -591,9 +619,17 @@ def FieldTypeDeclaration.judge (compilePattern : StringPatternCompiler) (context
       else .notifications (stringNotifications compilePattern context declaration).eraseDups
   | .number declaration => .notifications (numberNotifications declaration).eraseDups
   | .custom declaration => .notifications (customNotifications declaration).eraseDups
-  | .date declaration => .notifications (dateNotifications declaration).eraseDups
-  | .temporal declaration => .notifications (temporalNotifications declaration).eraseDups
-  | .dateFragment declaration => .notifications (dateFragmentNotifications declaration).eraseDups
+  -- A Java-blank format fails the Date constructor the three kinds share, and an empty fragment format
+  -- fails the build too; a blank but nonempty fragment format is unmeasured (2026-10-21 §2.12).
+  | .date declaration =>
+      if declaration.format.any ExecutableDeclaration.blank then .modelNotBuilt
+      else .notifications (dateNotifications declaration).eraseDups
+  | .temporal declaration =>
+      if declaration.format.any ExecutableDeclaration.blank then .modelNotBuilt
+      else .notifications (temporalNotifications declaration).eraseDups
+  | .dateFragment declaration =>
+      if declaration.format == some "" then .modelNotBuilt
+      else .notifications (dateFragmentNotifications declaration).eraseDups
   | .dateRange declaration => .notifications (dateRangeNotifications declaration).eraseDups
   | .enumeration declaration =>
       if declaration.values.isEmpty then .modelNotBuilt

@@ -48,7 +48,8 @@ private def labelsOf (kinds : List ElementNameKind) : List String := sorted (kin
 private def field (name : String) (above : PathAbove := {}) : List String :=
   labelsOf ((fieldName "value" name).reported above)
 
-private def nested (name : String) (above : PathAbove := {}) : List String :=
+/-- A nested group's name, by default directly below a root `Order`. -/
+private def nested (name : String) (above : PathAbove := { groups := ["Order"] }) : List String :=
   labelsOf ((groupName false name).reported above)
 
 private def root (name : String) : List String :=
@@ -112,9 +113,9 @@ example : field "Code😀" = ["MVK_PATH_INVALID", "codeless:supplementary-charac
 
 /- Whether a name carries a path class of its own is a separate fact from whether it is reported:
    a field named like its parent's refused group keeps its own shape, its name classes and the codeless
-   notification its ancestor hands down, but not a second path class (pa-g-and-f, pa-desc-content). -/
+   notification its group's path draws, but not a second path class (pa-g-and-f, pa-desc-content). -/
 example :
-    let below : PathAbove := { pathClass := true, codeless := [.groupNameShape] }
+    let below : PathAbove := { pathClass := true, groups := ["Order", "Gr-p"] }
     field "Co-de" below = ["codeless:field-name-shape", "codeless:group-name-shape"] ∧
     field "1B" below = ["MVK_NAME_STARTS_WITH_DIGIT_A12_DV", "codeless:group-name-shape"] ∧
     (fieldName "value" "Co-de").pathClass = true ∧ (fieldName "value" "Code").pathClass = false ∧
@@ -122,8 +123,8 @@ example :
   native_decide
 
 /- A nested group's alphabet is letters, digits, underscore and the German umlauts and `ß`, and it must
-   begin with a letter or an underscore: a refusal is the path class plus the group's codeless shape,
-   which every element below it also draws; more than sixty characters is the shape alone
+   begin with a letter or an underscore: a refusal is the path class plus the codeless shape its path
+   draws, which every path through it also draws; more than sixty characters is the shape alone
    (pa-g-uml, pa-g-lead, pa-g-dot, dg-nested, ps-60, ps-61). -/
 example :
     nested "Teilä" = [] ∧
@@ -133,8 +134,8 @@ example :
     nested "1Grp" = ["MVK_PATH_INVALID", "codeless:group-name-shape"] ∧
     nested (sixtyOne 'G') = ["codeless:group-name-shape"] ∧
     nested (String.ofList (List.replicate 60 'G')) = [] ∧
-    (groupName false "Gr-p").descendantCodeless = [.groupNameShape] ∧
-    (groupName false (sixtyOne 'G')).descendantCodeless = [.groupNameShape] ∧
+    groupPathCodeless ["Order", "Gr-p", "Sub"] = [.groupNameShape] ∧
+    groupPathCodeless ["Order", sixtyOne 'G', "Sub"] = [.groupNameShape] ∧
     (groupName false (sixtyOne 'G')).pathClass = false ∧
     (groupName false "Gr-p").pathClass = true := by
   native_decide
@@ -156,20 +157,40 @@ example :
     nested "Grpxml" = [] ∧ nested "XmLGrp" = ["MVK_NAME_STARTS_WITH_XML"] ∧
     nested "B" { xml := true } = ["MVK_NAME_STARTS_WITH_XML"] ∧
     nested "xmlGé" = ["MVK_PATH_INVALID", "codeless:group-name-shape"] ∧
-    nested "xmlSub" { pathClass := true, codeless := [.groupNameShape] } =
+    nested "xmlSub" { pathClass := true, groups := ["Order", "Gr-p"] } =
       ["codeless:group-name-shape"] ∧
     ((groupName false "xmlA").below {}).xml = true ∧
-    ((groupName false "Gr-p").below {}) = { pathClass := true, codeless := [.groupNameShape] } := by
+    ((groupName false "Gr-p").below { groups := ["Order"] }) =
+      { pathClass := true, groups := ["Order", "Gr-p"] } := by
   native_decide
 
-/- A supplementary scalar in a group name replaces the group's codeless shape, and the one handed
-   below, with the repertoire notification, which a rule below also draws (ux-gname). -/
+/- A supplementary scalar in a group name replaces the group-path notification with the repertoire
+   one; a rule or computation draws its group's path notification as a field does (ux-gname; October 21
+   letter §2.7: `Check` and `Fill` below a refused `Part`). -/
 example :
     nested "Gr😀" = ["MVK_PATH_INVALID", "codeless:supplementary-character"] ∧
-    (groupName false "Gr😀").descendantCodeless = [.supplementaryCharacter] ∧
-    ((groupName false "Gr😀").below {}).codeless = [.supplementaryCharacter] ∧
-    (((groupName false "Gr😀").below {}).forRule = [.supplementaryCharacter]) ∧
-    (((groupName false "Gr-p").below {}).forRule = []) := by
+    (((groupName false "Gr😀").below { groups := ["Order"] }).forRule = [.supplementaryCharacter]) ∧
+    (((groupName false "Gr-p").below { groups := ["Order"] }).forRule = [.groupNameShape]) ∧
+    (((groupName false "Grp").below { groups := ["Order"] }).forRule = []) := by
+  native_decide
+
+/- The group-path law reads the slash-joined path trimmed whole by Java's `trim`: a padded `Code` keeps
+   its own path class but passes its own path and its fields', while a path through it fails; a padded
+   root fails every path below it, since the leading slash stops the trim, but draws no root shape of its
+   own; a no-break space is no trimmed character; and a root draws its own shape or the sixty-character
+   notification, one per value, the shape first (October 21 letter §2.7). -/
+example :
+    nested "Code " = ["MVK_PATH_INVALID"] ∧ nested "Code\t" = ["MVK_PATH_INVALID"] ∧
+    groupPathCodeless ["Order", "Code "] = [] ∧
+    groupPathCodeless ["Order", "Code ", "Bin"] = [.groupNameShape] ∧
+    root " Code" = ["MVK_PATH_INVALID"] ∧ groupPathCodeless [" Code"] = [.groupNameShape] ∧
+    root "\u00A0Code" = ["MVK_PATH_INVALID", "codeless:root-name-shape"] ∧
+    root (String.ofList ('C' :: List.replicate 59 'o') ++ "\u00A0") =
+      ["MVK_PATH_INVALID", "codeless:root-name-shape"] ∧
+    nested (String.ofList ('C' :: List.replicate 59 'o') ++ "\u00A0") =
+      ["MVK_PATH_INVALID", "codeless:group-name-shape"] ∧
+    root "äCode" = [] ∧ groupPathCodeless ["äCode"] = [] ∧
+    nested "äCode" = ["MVK_PATH_INVALID", "codeless:group-name-shape"] ∧ nested "Coäde" = [] := by
   native_decide
 
 /- A root group's alphabet is the same without the leading restriction: a refusal is the path class,
@@ -179,9 +200,9 @@ example :
    rid-1, rid-mixed, rid-twin). -/
 example :
     root "Ro-ot" = ["MVK_PATH_INVALID", "codeless:root-name-shape"] ∧
-    (groupName true "Ro-ot").descendantCodeless = [.groupNameShape] ∧
+    groupPathCodeless ["Ro-ot"] = [.groupNameShape] ∧
     root (sixtyOne 'R') = ["codeless:name-above-sixty"] ∧
-    (groupName true (sixtyOne 'R')).descendantCodeless = [.groupNameShape] ∧
+    groupPathCodeless [sixtyOne 'R'] = [.groupNameShape] ∧
     root "1Root" = ["MVK_NAME_STARTS_WITH_DIGIT"] ∧
     root "xmlRoot" = ["MVK_NAME_STARTS_WITH_XML"] ∧
     root "_Orders" = [] ∧ root "__metaX" = [] ∧ root "äRoot" = [] ∧
@@ -279,7 +300,7 @@ example :
 example :
     nested "Gr/p" = ["MVK_PATHS_INCONSISTENT"] ∧ root "Ro/ot" = ["MVK_PATHS_INCONSISTENT"] ∧
     ((groupName false "Gr/p").below {}).pathClass = true ∧
-    ((groupName false "Gr/p").below {}).codeless = [] ∧
+    groupPathCodeless ((groupName false "Gr/p").below { groups := ["Order"] }).groups = [] ∧
     nested "Sub" ((groupName true "xmlRoot").below {}) = ["MVK_NAME_STARTS_WITH_XML"] := by
   native_decide
 

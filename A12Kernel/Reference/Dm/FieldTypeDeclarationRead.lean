@@ -162,6 +162,8 @@ private structure ElementReport where
   labels : List String := []
   unbuilt : Bool := false
   refusal : Option String := none
+  /-- The report holds only index and sort checks that wait on the entity walk. -/
+  orderingGate : Bool := false
 
 /-- The element's one repertoire notification stands for all its texts, so the labels collapse to one. -/
 private def collapseRepertoire (labels : List String) : List String :=
@@ -260,12 +262,22 @@ private def rowKeyReports (environment : WalkEnvironment) (path : List String) (
   let perName := distinct.filterMap fun (role, nomination, target) =>
     (rowFieldRefusal role target).map fun refusal =>
       match refusal with
-      | .valueValidationOff _ => (path ++ [(nominationPath nomination).field], refusal.label)
-      | _ => (path, refusal.label)
+      | .valueValidationOff _ => (path ++ [(nominationPath nomination).field], refusal)
+      | _ => (path, refusal)
+  let shortName := fun nomination => (nominationPath nomination).field
+  -- The metamodel holds the index and the first three sort entries, and only their kept short names
+  -- draw the member sentence, once per group (2026-10-21 §2.16).
+  let shapes := ((index.toList ++ sorts.take 3).map shortName).filter fieldNameShapeRefused
+  let memberSentence : List String :=
+    if shapes.isEmpty then []
+    else [(if shapes.any hasSupplementaryScalar then ElementNameKind.supplementaryCharacter
+      else .fieldNameShape).label]
   let neutral : RowFieldDeclarations :=
-    { sort := sorts.map fun name => (name, NominatedTarget.field false false) }
-  pure ((perName ++ (rowFieldDeclarationRefusals neutral).map fun refusal => (path, refusal.label)).map
-    fun (at_, label) => { path := at_, labels := [label] })
+    { sort := sorts.map fun name => (name, NominatedTarget.field false false)
+      refusedNames := sorts.filter (fieldNameShapeRefused ∘ shortName) }
+  pure ((perName ++ (rowFieldDeclarationRefusals neutral).map (path, ·)).map
+      (fun (at_, refusal) => { path := at_, labels := [refusal.label], orderingGate := refusal.isOrderingGate }) ++
+    if memberSentence.isEmpty then [] else [{ path, labels := memberSentence }])
 
 /-- Judge each element in document order below the groups above it. A field the variant filter removes
 draws nothing, its name and annotations included. -/
@@ -278,7 +290,7 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
   let annotated ← annotationsRepertoire element
   match kind with
   | "Group" =>
-      if name.isEmpty then return [{ path, unbuilt := true }]
+      if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
       let isRoot := parent.isEmpty
       let judgement := groupName isRoot name
       let repeatability ← intMember? body "repeatability"
@@ -286,17 +298,20 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
         throw s!"group {name} declares a repeatability the Kernel does not read"
       let children ← arrayMembers body "elements"
       let sorts ← arrayMembers body "sortFields"
-      let own := (judgement.reported above ++ groupDeclarationKinds isRoot repeatability sorts.length).map
-        (·.label)
+      let counted := groupCountKinds repeatability (body.getObjVal? "repeatability").isOk
+      let own := ((judgement.reported above ++ groupDeclarationKinds isRoot repeatability sorts.length ++
+          (if above.countInvalid then [ElementNameKind.maxValuesInvalid] else []) ++ counted).eraseDups).map (·.label)
       let rowKeys ← rowKeyReports environment path body
-      let below ← children.mapM (judgeElement environment (judgement.below above) path)
+      let below ← children.mapM (judgeElement environment
+        { judgement.below above with countInvalid := above.countInvalid || !counted.isEmpty } path)
       pure ({ path, labels := collapseRepertoire (own ++ repertoireIf annotated) } :: rowKeys ++
         below.flatten)
   | "Field" =>
-      if name.isEmpty then return [{ path, unbuilt := true }]
       if !(← acceptedByVariant environment.variant body) then return []
+      if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
       let judgement := fieldName environment.valueWord name
-      let named := (judgement.reported above).map (·.label)
+      let named := (judgement.reported above ++
+        if above.countInvalid then [ElementNameKind.maxValuesInvalid] else []).map (·.label)
       let reachable := !(judgement.pathClass || above.pathClass)
       let ownPathReported := judgement.pathClass && !above.pathClass
       if ownPathReported then
@@ -309,8 +324,8 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
           let labels := named ++ raised.map (·.label) ++ repertoireIf annotated
           pure [{ path, labels := collapseRepertoire labels }]
   | "Rule" | "Computation" =>
-      if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
       if !(← acceptedByVariant environment.variant body) then return []
+      if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
       let declaration : ExecutableDeclaration :=
         { group := parent, name, kind := if kind == "Rule" then .rule (ruleCode body) else .computation }
       if let .rule .unreadable := declaration.kind then throw s!"rule {name} has an unreadable errorCode"
@@ -351,7 +366,11 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
     roots
     shortNamesAllowed := ← booleanMember? ((content.getObjVal? "modelConfig").toOption.getD (Json.mkObj []))
       "fieldRefByShortNameAllowed" }
-  let reports := (← roots.mapM (judgeElement environment {} [])).flatten
+  let walked := (← roots.mapM (judgeElement environment {} [])).flatten
+  -- The index and sort checks run only after an entity walk that refused nothing (2026-10-21 §2.16).
+  let walkRefused := walked.any fun report => report.labels.any fun label =>
+    [ElementNameKind.pathInvalid, .pathsInconsistent, .maxValuesInvalid].any (·.label == label)
+  let reports := if walkRefused then walked.filter (!·.orderingGate) else walked
   if reports.any (·.unbuilt) then
     pure [(modelNotBuiltLabel, "")]
   else if let some reason := reports.findSome? (·.refusal) then

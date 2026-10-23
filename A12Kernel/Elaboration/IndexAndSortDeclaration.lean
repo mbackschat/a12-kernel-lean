@@ -51,6 +51,14 @@ def kernelCode? : RowFieldRefusal → Option String
   | .sortFieldDuplicate => some "MVK_SORT_FIELD_DUPLICATE"
   | .sortListCapacity => none
 
+/-- Whether the class is one of the Kernel's index and sort checks, which wait on the entity walk: a
+model whose walk refused anything draws none of them. Measured beside a refused path and a count below
+one; the table-enumeration class shares the index check by source reading only
+([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), §2.16). -/
+def isOrderingGate : RowFieldRefusal → Bool
+  | .nameUnresolved _ | .valueValidationOff _ | .indexFieldTableEnum => true
+  | .sortFieldDuplicate | .sortListCapacity => false
+
 /-- Every class of the family. -/
 def all : List RowFieldRefusal :=
   [.nameUnresolved .indexField, .valueValidationOff .indexField, .indexFieldTableEnum,
@@ -117,6 +125,9 @@ nominations, each sort nomination with the name it is written as. -/
 structure RowFieldDeclarations where
   index : Option NominatedTarget := none
   sort : List (String × NominatedTarget) := []
+  /-- Sort names the duplicate judgement skips: those whose kept short name draws the field-name
+  shape ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), §2.16). -/
+  refusedNames : List String := []
   deriving Repr, DecidableEq
 
 /-- Keep an entry unless its name is already kept, so each name is judged at its first entry. -/
@@ -135,7 +146,7 @@ and [sort-list](../../docs/sources/model-structure-and-declaration-probes.md#src
 `6bdfe70f4`). A repeated name is the written one, measured on identical spellings. -/
 def rowFieldDeclarationRefusals (declarations : RowFieldDeclarations) : List RowFieldRefusal :=
   let distinct := declarations.sort.foldl keepFirstName []
-  let leading := (declarations.sort.take 3).map (·.1)
+  let leading := ((declarations.sort.take 3).map (·.1)).filter (!declarations.refusedNames.contains ·)
   (declarations.index.bind (rowFieldRefusal .indexField)).toList ++
     distinct.filterMap (rowFieldRefusal .sortField ·.2) ++
     (if leading.Nodup then [] else [.sortFieldDuplicate]) ++

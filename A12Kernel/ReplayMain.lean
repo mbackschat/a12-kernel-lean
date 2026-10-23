@@ -104,6 +104,7 @@ import A12Kernel.Reference.Dm.IterationGuardLocks
 import A12Kernel.Reference.Dm.IterationBindingLocks
 import A12Kernel.Reference.Dm.GroupTargetLocks
 import A12Kernel.Reference.Dm.WrittenMemberLocks
+import A12Kernel.Reference.Dm.DeclarationWalkLocks
 import A12Kernel.Reference.Dm.CapturedFilterScopeLocks
 import A12Kernel.Reference.Dm.TypeValidityGuardLocks
 import A12Kernel.Reference.Dm.IndexedTypeValidityLocks

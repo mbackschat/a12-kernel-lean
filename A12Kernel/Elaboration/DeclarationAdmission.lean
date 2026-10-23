@@ -1,4 +1,6 @@
 import A12Kernel.Elaboration.StaticDiagnostic
+import A12Kernel.Semantics.LegalCharset
+import A12Kernel.Semantics.String
 
 /-! # Executable declaration metadata admission
 
@@ -27,6 +29,8 @@ structure ExecutableDeclaration where
   group : List String
   name : String
   kind : ExecutableDeclarationKind
+  /-- The variant filter deletes it, which leaves only the empty-code notification (spec/01 §1.3). -/
+  deleted : Bool := false
   deriving Repr, BEq, DecidableEq
 
 inductive DeclarationNotificationKind where
@@ -35,12 +39,14 @@ inductive DeclarationNotificationKind where
   | nameContent
   | codeContent
   | emptyCode
+  /-- A supplementary scalar in a judged name or code, in place of that slot's classes. -/
+  | supplementaryCharacter
   deriving Repr, BEq, DecidableEq
 
 def DeclarationNotificationKind.diagnostic? : DeclarationNotificationKind → Option KernelStaticDiagnostic
   | .reservedName => some .ruleNameInvalid
   | .missingCode => some .errorCodeMissing
-  | .nameContent | .codeContent | .emptyCode => none
+  | .nameContent | .codeContent | .emptyCode | .supplementaryCharacter => none
 
 structure DeclarationNotification where
   declaration : List String
@@ -83,31 +89,45 @@ def path (declaration : ExecutableDeclaration) : List String := declaration.grou
 /-- Notifications from independent slots coexist. A computation's name is judged by the error-code
 content law as well as the name law: `C-x` draws both classes, `Cä` and `1C` the name class alone
 (capture rows `cpn-dash`, `cpn-umlaut`, `cpn-digit`), while a rule's name meets the name law only.
+Both alphabets judge the text after Java's `trim`, and a slot holding a supplementary scalar draws the
+repertoire notification instead of its own classes, once per declaration. A declaration the variant
+filter deletes draws only the empty-code notification, which survives the filter (spec/01 §1.3).
 The sequence is a stable local projection, not a claim about Kernel notification order or unrelated
 consistency checks. -/
 def notifications (declaration : ExecutableDeclaration) : List DeclarationNotification := Id.run do
   let mut findings := []
   let add := fun kind => ({ declaration := declaration.path, kind } : DeclarationNotification)
-  if !nameAdmitted declaration.name then
-    findings := findings ++ [add .nameContent]
-  else if declaration.name.toLower.startsWith "vk_vk" then
-    findings := findings ++ [add .reservedName]
-  if declaration.kind == .computation && !codeAdmitted declaration.name then
+  let code? := match declaration.kind with
+    | .rule (.text code) => some code
+    | _ => none
+  if declaration.deleted then
+    return if code?.any (·.isEmpty) then [add .emptyCode] else []
+  let name := javaTrim declaration.name
+  let nameSupplementary := hasSupplementaryScalar name
+  if !nameSupplementary then
+    if !nameAdmitted name then
+      findings := findings ++ [add .nameContent]
+    else if name.toLower.startsWith "vk_vk" then
+      findings := findings ++ [add .reservedName]
+  if declaration.kind == .computation && !nameSupplementary && !codeAdmitted name then
     findings := findings ++ [add .codeContent]
-  if let .rule (.text code) := declaration.kind then
+  let mut codeSupplementary := false
+  if let some code := code? then
+    codeSupplementary := hasSupplementaryScalar code
     if blank code then findings := findings ++ [add .missingCode]
-    else if !codeAdmitted code then findings := findings ++ [add .codeContent]
+    else if !codeSupplementary && !codeAdmitted (javaTrim code) then findings := findings ++ [add .codeContent]
     if code.isEmpty then findings := findings ++ [add .emptyCode]
+  if nameSupplementary || codeSupplementary then findings := findings ++ [add .supplementaryCharacter]
   return findings
 
 /-- Read failures and construction failures suppress all declaration verdicts. Check the complete
 batch before projecting any notifications, so a later unreadable declaration cannot leave an
 earlier declaration's apparent verdict behind (peer KF420 and rule-slot competing-defect laws). -/
 def admitAll (declarations : List ExecutableDeclaration) : Except DeclarationAdmissionFailure Unit := do
-  if let some declaration := declarations.find? (fun d => match d.kind with
+  if let some declaration := declarations.find? (fun d => !d.deleted && match d.kind with
       | .rule .unreadable => true | _ => false) then
     throw (.unreadable declaration.path "errorCode")
-  if let some declaration := declarations.find? (fun d => blank d.name) then
+  if let some declaration := declarations.find? (fun d => !d.deleted && blank d.name) then
     throw (.buildFailure declaration.path)
   let findings := declarations.flatMap notifications
   if !findings.isEmpty then throw (.notifications findings)

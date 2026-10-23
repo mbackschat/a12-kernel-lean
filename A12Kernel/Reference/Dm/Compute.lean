@@ -246,7 +246,16 @@ def targetOf (language : Language) (model : FlatModel) (computation : DmComputat
   -- ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
   if (lexicalErrorPath computation.group computation.targetRelPath).any model.hasGroupPath then
     refuse "GroupTarget" computation.targetRelPath
-  let path ← match parseModelPath language computation.targetRelPath with
+  let parsedPath := parseModelPath language computation.targetRelPath
+  -- A computed field whose own name holds a dot or a colon is still the target: its path draws the
+  -- invalid-field-name class later, not the parser's (2026-10-21 §2.11).
+  if let .error error := parsedPath then
+    if error.errorClass != .lexer then
+      if let some named := lexicalErrorPath computation.group computation.targetRelPath then
+        if let some field := model.fields.find? fun field => field.groupPath ++ [field.name] == named &&
+            (field.name.contains '.' || field.name.contains ':') then
+          return field
+  let path ← match parsedPath with
     | .ok path => pure path
     | .error error => refuse "Target" error.errorClass.code
   -- The path is written from the element, one step below its group; a relative path without that
@@ -614,13 +623,18 @@ the joined route reached its guard's target ban. -/
 def lowerComputation (model : FlatModel) (language : Language) (computation : DmComputation) :
     Lowering (FlatFieldDecl × LoweredComputation model) := do
   admitDeclarations [computation.declaration]
-  match lowerComputationWith false model language computation with
-  | .ok checked => .ok checked
-  | .error refusal =>
-      if refusal.construct != "Guard" then .error refusal
-      else match lowerComputationWith true model language computation with
-        | .ok checked => .ok checked
-        | .error parallel => .error (refusal.orGuardBan parallel)
+  let checked ← match lowerComputationWith false model language computation with
+    | .ok checked => .ok checked
+    | .error refusal =>
+        if refusal.construct != "Guard" then .error refusal
+        else match lowerComputationWith true model language computation with
+          | .ok checked => .ok checked
+          | .error parallel => .error (refusal.orGuardBan parallel)
+  -- The computed field's full path is judged last, after every other check passes, so a dotted
+  -- group or field name refuses an otherwise admitted computation (2026-10-21 §2.11).
+  if (checked.1.groupPath ++ [checked.1.name]).any fun name => name.contains '.' || name.contains ':' then
+    refuse "Computation" CalculationRefusal.invalidFieldName.catalogKey
+  pure checked
 
 private def numberOutcome (model : FlatModel) (entry : SourcedNumericTargetOutcome CellAddr) :
     Option ComputedOutcome :=

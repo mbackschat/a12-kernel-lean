@@ -270,6 +270,11 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
             | "TimeType" => "HH:mm:ss"
             | "DateTimeType" => "yyyy-MM-dd'T'HH:mm:ss"
             | _ => "yyyy-MM-dd")
+      -- The Date constructor the three kinds share refuses a Java-blank format, and a fragment an
+      -- empty one; a blank but nonempty fragment format is unmeasured (2026-10-21 §2.12).
+      if (typeName == "DateFragmentType" && format.isEmpty) ||
+          (typeName != "DateFragmentType" && ExecutableDeclaration.blank format) then
+        throw s!"{typeName} format is blank"
       let kind : TemporalKind := match typeName with
         | "TimeType" => .time
         | "DateTimeType" => .dateTime
@@ -440,6 +445,10 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
   match kind with
   | "Group" =>
       let groupPath := path ++ [name]
+      -- A Java-blank element name fails the build (2026-10-21 §2.11).
+      if ExecutableDeclaration.blank name then
+        modify fun state => { state with refusals := state.refusals.push (groupPath, "blank group name") }
+        return
       -- An absent count is a single group; a `null` count or one below one is
       -- `MVK_MAX_VALUES_INVALID`, read on as a single group (2026-10-21 §2.17, §2.19).
       let count? ← StateT.lift (intMember? body "repeatability")
@@ -483,6 +492,9 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         | none => modify fun state => { state with
             filteredFields := state.filteredFields.push (path, name, scope) }
         return
+      if ExecutableDeclaration.blank name then
+        modify fun state => { state with refusals := state.refusals.push (path ++ [name], "blank field name") }
+        return
       modify fun state => { state with fieldsSeen := state.fieldsSeen + 1 }
       let body ← match resolveTypeDefinition state.typeDefinitions body with
         | .ok resolved => pure resolved
@@ -502,8 +514,11 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
             (path ++ [name], s!"EnumerationType notifications {String.intercalate ", " codes}")
           enumerationNotifications := state.enumerationNotifications.push (path ++ [name], notifications) }
   | "Rule" =>
-      if !(← StateT.lift (acceptedByVariant (← get).variant body)) then return
       let code := ruleCode body
+      if !(← StateT.lift (acceptedByVariant (← get).variant body)) then
+        modify fun state => { state with
+          declarations := state.declarations.push { group := path, name, kind := .rule code, deleted := true } }
+        return
       modify fun state => { state with
         declarations := state.declarations.push { group := path, name, kind := .rule code }
         rules := state.rules.push {

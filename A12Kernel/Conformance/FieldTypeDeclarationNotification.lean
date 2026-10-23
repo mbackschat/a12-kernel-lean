@@ -495,18 +495,20 @@ example :
    DateTime and DateFragment alike, and any other format draws one codeless notification per field; a
    Time field is admitted `yyyy-MM-dd` and refused `HH:mm`, and an absent format is the kind's default
    (tb-date-ok, tb-date-badfmt, tb-time-badfmt, tb-time-datefmt, tb-dt-badfmt, tb-frag-ok,
-   tb-frag-badfmt). -/
+   tb-frag-badfmt). An empty format fails the build instead (October 21 letter §2.12). -/
 example :
     ["yyyy-MM-dd", "dd.MM.yyyy", "yyyyMMdd", "yyyy", "yyyy-MM", "yyyyMM", "MM", "MM-dd", "MMdd",
         "ddMM", "HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss", "dd.MM."].all (fun format =>
       labels (date { format := some format }) == [] && labels (temporal (some format)) == [] &&
         labels (fragment (some format)) == []) = true ∧
-    ["yyyy/MM/dd", "HH:mm", "yyyy-MM-dd HH:mm", "dd.MM", "ddMMyyyy", "dd.MM.yyyy'T'HH:mm:ss",
-        ""].all (fun format =>
+    ["yyyy/MM/dd", "HH:mm", "yyyy-MM-dd HH:mm", "dd.MM", "ddMMyyyy", "dd.MM.yyyy'T'HH:mm:ss"].all
+        (fun format =>
       labels (date { format := some format }) == ["codeless:date-format-invalid"] &&
         labels (temporal (some format)) == ["codeless:date-format-invalid"] &&
         labels (fragment (some format)) == ["codeless:date-format-invalid"]) = true ∧
-    labels (date {}) = [] ∧ labels (temporal none) = [] ∧ labels (fragment none) = [] := by
+    labels (date {}) = [] ∧ labels (temporal none) = [] ∧ labels (fragment none) = [] ∧
+    labels (date { format := some "" }) = [modelNotBuiltLabel] ∧
+    labels (temporal (some "")) = [modelNotBuiltLabel] ∧ labels (fragment (some "")) = [modelNotBuiltLabel] := by
   native_decide
 
 /- A refused format binds nothing, as a refused member does: the partial-precision and pre-1900 laws

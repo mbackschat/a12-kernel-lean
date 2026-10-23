@@ -33,17 +33,20 @@ theorem enumerationDeclaration_notifications_nodup (charset : LegalCharset)
   · exact List.nodup_nil
   · exact eraseDups_nodup_of_length_le _ _ (Nat.le_refl _)
 
-/-- A declaration the first-refusal validator admits, under the default charset and without supplementary scalars in its stored tokens or display texts, raises no notification. The collection therefore never rejects what the validator admitted unless the model restricts its characters or the declaration holds a supplementary-plane scalar. -/
+/-- A declaration the first-refusal validator admits, under the default charset and without supplementary scalars in its stored tokens, display texts, category tokens or default, raises no notification. The collection therefore never rejects what the validator admitted unless the model restricts its characters or the declaration holds a supplementary-plane scalar. -/
 theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
     (declaration : EnumerationDeclaration) (valid : declaration.validate = .ok ())
     (noSupplementary : declaration.containsSupplementaryScalar = false) :
     declaration.notifications .defaultBmp = [] := by
-  obtain ⟨nodup, arity⟩ := declaration.validate_ok_shape valid
-  have noDuplicates : declaration.duplicatedStoredTokens = [] := by
-    simp only [EnumerationDeclaration.duplicatedStoredTokens, List.filter_eq_nil_iff,
-      List.mem_eraseDups, decide_eq_true_eq]
+  obtain ⟨trimmedNodup, arity⟩ := declaration.validate_ok_shape valid
+  have unrepeated : ∀ tokens : List String, tokens.Nodup → EnumerationDeclaration.duplicated tokens = [] := by
+    intro tokens nodup
+    simp only [EnumerationDeclaration.duplicated, List.filter_eq_nil_iff, decide_eq_true_eq]
     intro token member
-    simp [nodup.count, member]
+    simp [nodup.count, List.mem_eraseDups.mp member]
+  have noDuplicates : declaration.duplicatedStoredTokens = [] :=
+    unrepeated _ (List.Pairwise.of_map javaTrim (fun _ _ trimmed same => trimmed (same ▸ rfl)) trimmedNodup)
+  have noTrimmedDuplicates : declaration.duplicatedTrimmedTokens = [] := unrepeated _ trimmedNodup
   have emptyBlocks : declaration.invalidCharacterNotifications .defaultBmp = [] ∧
       declaration.supplementaryNotifications = [] ∧
       declaration.shortfallNotifications = [] ∧
@@ -59,8 +62,8 @@ theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
     · simp only [EnumerationDeclaration.surplusNotifications, List.flatMap_eq_nil_iff]
       intro category member
       simp [arity category member]
-    · simp [EnumerationDeclaration.categoryDuplicateNotifications, noDuplicates]
-    · simp [EnumerationDeclaration.internalDuplicateNotifications, noDuplicates]
+    · simp [EnumerationDeclaration.categoryDuplicateNotifications, noTrimmedDuplicates]
+    · simp [EnumerationDeclaration.internalDuplicateNotifications, noTrimmedDuplicates]
     · simp [EnumerationDeclaration.repeatedValueNotifications, noDuplicates]
   obtain ⟨invalid, supplementary, shortfall, surplus, categoryDuplicate, internalDuplicate,
     repeated⟩ := emptyBlocks

@@ -15,11 +15,11 @@ The Kernel checks an ordinary Enumeration declaration by collecting notification
 5. One internal-values duplicate per duplicated stored value.
 6. One codeless repeated-value notification per duplicated stored value.
 
-Blocks 4 and 5 skip a duplicated value holding a supplementary scalar; block 6 does not. Collapsing identical notifications is what makes a repeated unclassified value, a repeated surplus token or a repeated rejected character count once. Rows that mix surplus and shortfall categories in either order, including three-category alternations, place every shortfall before every surplus, which neither a category-by-category nor a reverse-category walk gives. The order of categories inside one half is not observable through class codes and stays a choice.
+Blocks 3 to 5 read values and tokens after Java's `trim`, so `BASIC` beside `BASIC ` is a duplicate and `HI` beside `HI ` one surplus notification, while block 6 compares them as written and the restricted scan of block 1 judges every written unit ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), §2.4). The supplementary carriers of block 2 include category tokens and the default value (§2.3). Blocks 4 and 5 skip a duplicated value holding a supplementary scalar; block 6 does not. Collapsing identical notifications is what makes a repeated unclassified value, a repeated surplus token or a repeated rejected character count once. Rows that mix surplus and shortfall categories in either order, including three-category alternations, place every shortfall before every surplus, which neither a category-by-category nor a reverse-category walk gives. The order of categories inside one half is not observable through class codes and stays a choice.
 
 An empty stored-token list yields no notifications because the Kernel never builds such a model; the validator's refusal stays the answer there.
 
-Not claimed: categories whose names or tokens hold supplementary scalars, empty or duplicate category names, empty tokens, defects of display facts other than the supplementary scalar, extensible-Enumeration hint lists, and table-backed Enumerations.
+Not claimed: categories whose names hold supplementary scalars, empty or duplicate category names, empty tokens, defects of display facts other than the supplementary scalar, extensible-Enumeration hint lists, and table-backed Enumerations.
 -/
 
 namespace A12Kernel
@@ -55,21 +55,27 @@ def kernelCode? : EnumerationDeclarationNotification → Option String
 
 end EnumerationDeclarationNotification
 
-/-- Whether the text holds a scalar outside the Basic Multilingual Plane. -/
-def hasSupplementaryScalar (text : String) : Bool :=
-  text.toList.any fun character => !isBmpScalar character
-
 namespace EnumerationDeclaration
 
-/-- Whether a stored token or a display text holds a supplementary-plane scalar. Category names and tokens are outside the measured scope. -/
+/-- Whether a stored token, a display text, a category token or the default value holds a
+supplementary-plane scalar. Category names are outside the measured scope. -/
 def containsSupplementaryScalar (declaration : EnumerationDeclaration) : Bool :=
   declaration.storedTokens.any hasSupplementaryScalar ||
-    declaration.displayFacts.any (hasSupplementaryScalar ·.display)
+    declaration.displayFacts.any (hasSupplementaryScalar ·.display) ||
+    declaration.categories.any (·.tokens.any hasSupplementaryScalar) ||
+    declaration.defaultStoredToken.any hasSupplementaryScalar
 
-/-- The distinct stored values occurring more than once, in first-occurrence order. -/
+/-- The distinct values occurring more than once, in first-occurrence order. -/
+def duplicated (tokens : List String) : List String :=
+  tokens.eraseDups.filter fun token => 1 < tokens.count token
+
+/-- The distinct stored values occurring more than once as written. -/
 def duplicatedStoredTokens (declaration : EnumerationDeclaration) : List String :=
-  declaration.storedTokens.eraseDups.filter fun token =>
-    1 < declaration.storedTokens.count token
+  duplicated declaration.storedTokens
+
+/-- The distinct stored values occurring more than once after Java's `trim`. -/
+def duplicatedTrimmedTokens (declaration : EnumerationDeclaration) : List String :=
+  duplicated (declaration.storedTokens.map javaTrim)
 
 /-- Block 1. A restricted scan reports every rejected unit of every stored token, duplicates included. -/
 def invalidCharacterNotifications (charset : LegalCharset) (declaration : EnumerationDeclaration) :
@@ -91,26 +97,26 @@ def shortfallNotifications (declaration : EnumerationDeclaration) :
   declaration.categories.flatMap fun category =>
     ((declaration.storedTokens.drop category.tokens.length).filter
       fun value => !hasSupplementaryScalar value).map
-        (.missingCategoryValue category.name)
+        (.missingCategoryValue category.name ∘ javaTrim)
 
 /-- Block 3, surplus half: each category token past the stored-value count has no stored value. -/
 def surplusNotifications (declaration : EnumerationDeclaration) :
     List EnumerationDeclarationNotification :=
   declaration.categories.flatMap fun category =>
     (category.tokens.drop declaration.storedTokens.length).map
-      (.missingInternalValue category.name)
+      (.missingInternalValue category.name ∘ javaTrim)
 
 /-- Block 4, value-major. -/
 def categoryDuplicateNotifications (declaration : EnumerationDeclaration) :
     List EnumerationDeclarationNotification :=
-  (declaration.duplicatedStoredTokens.filter fun value => !hasSupplementaryScalar value).flatMap
+  (declaration.duplicatedTrimmedTokens.filter fun value => !hasSupplementaryScalar value).flatMap
     fun value => declaration.categories.map fun category =>
       .categoryValueDuplicate value category.name
 
 /-- Block 5. -/
 def internalDuplicateNotifications (declaration : EnumerationDeclaration) :
     List EnumerationDeclarationNotification :=
-  (declaration.duplicatedStoredTokens.filter fun value => !hasSupplementaryScalar value).map
+  (declaration.duplicatedTrimmedTokens.filter fun value => !hasSupplementaryScalar value).map
     .internalValuesDuplicate
 
 /-- Block 6. -/

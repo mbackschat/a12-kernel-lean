@@ -70,6 +70,8 @@ theorem rowFieldDeclarationRefusals_sort_only (sort : List (String × NominatedT
       simpa using this
   have whole := keep [] sort (by simpa using distinct)
   have leading : sort.take 3 = sort := List.take_of_length_le short
-  simp [rowFieldDeclarationRefusals, whole, leading, distinct, Nat.sub_eq_zero_of_le short]
+  have unfiltered : ∀ names : List String, names.filter (fun _ => true) = names :=
+    fun names => List.filter_eq_self.mpr (by simp)
+  simp [rowFieldDeclarationRefusals, whole, leading, distinct, unfiltered, Nat.sub_eq_zero_of_le short]
 
 end A12Kernel

@@ -40,6 +40,10 @@ inductive LegalCharset where
 def isBmpScalar (character : Char) : Bool :=
   character.toNat < 0x10000
 
+/-- Whether the text holds a scalar outside the Basic Multilingual Plane. -/
+def hasSupplementaryScalar (text : String) : Bool :=
+  text.toList.any fun character => !isBmpScalar character
+
 def LegalCharRange.contains (range : LegalCharRange) (character : Char) : Bool :=
   range.first.toNat ≤ character.toNat && character.toNat ≤ range.last.toNat
 

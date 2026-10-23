@@ -109,7 +109,9 @@ def EnumerationDeclaration.validate (declaration : EnumerationDeclaration) :
   if declaration.storedTokens.isEmpty then
     .error .emptyStoredDomain
   else
-    match firstDuplicate? declaration.storedTokens with
+    -- Stored values are distinct after Java's `trim`, so `BASIC` beside a padded `BASIC` is refused
+    -- (2026-10-21 §2.4).
+    match firstDuplicate? (declaration.storedTokens.map javaTrim) with
     | some token => .error (.duplicateStoredToken token)
     | none =>
         match invalidDefaultStoredToken? declaration.storedTokens
@@ -162,10 +164,10 @@ private theorem invalidCategory?_eq_none_arity (expectedArity : Nat) :
                   exact invalidCategory?_eq_none_arity expectedArity remaining (index + 1)
                     none_ candidate later
 
-/-- A validated declaration lists each stored token once and gives every category exactly one token per stored token. Declaration-notification laws consume this shape instead of re-deriving it from the ordered refusal chain. -/
+/-- A validated declaration lists each stored token once even after Java's `trim` and gives every category exactly one token per stored token. Declaration-notification laws consume this shape instead of re-deriving it from the ordered refusal chain. -/
 theorem EnumerationDeclaration.validate_ok_shape (declaration : EnumerationDeclaration)
     (valid : declaration.validate = .ok ()) :
-    declaration.storedTokens.Nodup ∧
+    (declaration.storedTokens.map javaTrim).Nodup ∧
       ∀ category ∈ declaration.categories,
         category.tokens.length = declaration.storedTokens.length := by
   unfold EnumerationDeclaration.validate at valid
@@ -173,7 +175,7 @@ theorem EnumerationDeclaration.validate_ok_shape (declaration : EnumerationDecla
   repeat' split at valid
   all_goals first
     | contradiction
-    | exact ⟨firstDuplicate?_eq_none_nodup _ ‹firstDuplicate? declaration.storedTokens = none›,
+    | exact ⟨firstDuplicate?_eq_none_nodup _ ‹firstDuplicate? (declaration.storedTokens.map javaTrim) = none›,
         invalidCategory?_eq_none_arity _ _ _
           ‹invalidCategory? declaration.storedTokens.length declaration.categories 0 = none›⟩
 

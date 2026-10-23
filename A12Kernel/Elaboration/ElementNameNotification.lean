@@ -15,10 +15,16 @@ or `_`, and a root group's admits the same set with any first character of it. A
 the carrier that declares it: the same spelling is refused on one and admitted on another.
 
 **A path class is the first failing element's.** An element whose name draws `MVK_PATH_INVALID` or
-`MVK_PATHS_INCONSISTENT` hands every element below it the group-path codeless notification and stops the
-elements below from drawing a path class of their own, from drawing the `xml` group class, and from
-reporting a field message; their own codeless shape, their `_A12_DV` name classes and their field-type
-classes stay. `PathAbove` carries what a path hands down and `GroupNameJudgement.below` extends it.
+`MVK_PATHS_INCONSISTENT` stops the elements below from drawing a path class of their own, from drawing the
+`xml` group class, and from reporting a field message; their own codeless shape, their `_A12_DV` name
+classes and their field-type classes stay. `PathAbove` carries what a path hands down and
+`GroupNameJudgement.below` extends it.
+
+**The group-path notification is a law over a path, not a name.** Each nested group is judged on its own
+path and every field, rule and computation on its group's: the slash-joined names from the root, trimmed
+whole by Java's `trim` (`groupPathRefused`). So a padded `Part` passes its own path and its fields' while
+`Part/Bin` and everything below it fail, and a refused root's fields fail too
+([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), §2.7).
 
 Rule and computation names, and the lone-surrogate and repertoire texts, have their owners
 ([`DeclarationAdmission`](DeclarationAdmission.lean), [`FieldMessageCheck`](FieldMessageCheck.lean)); this
@@ -30,9 +36,8 @@ own as inside a field name (no row); an `xml` root hands its prefix to the group
 root); a path class on an ancestor withholds the own path class of a descendant whichever kind it is;
 and a name beyond sixty characters is counted in Unicode scalars.
 
-Not claimed: the Kernel's notification order, the declaring carrier of an element kind with no name rule
-here (a rule or computation reaches only the supplementary-scalar notification of a refused ancestor),
-and any name over a limit this module does not state.
+Not claimed: the Kernel's notification order, which elements a name holding a `/` draws the path
+notification at (the letter's rows are unexplained), and any name over a limit this module does not state.
 -/
 
 namespace A12Kernel
@@ -56,6 +61,9 @@ inductive ElementNameKind where
   | rootGroupNameInvalid
   | maxTooBig
   | invalidSortInfo
+  | maxValuesInvalid
+  | countNotPositive
+  | countSigned
   deriving Repr, DecidableEq
 
 namespace ElementNameKind
@@ -63,7 +71,8 @@ namespace ElementNameKind
 def all : List ElementNameKind :=
   [pathInvalid, pathsInconsistent, fieldNameShape, groupNameShape, rootNameShape, nameAboveSixty,
     supplementaryCharacter, fieldDigitInitial, fieldDotColon, fieldXmlPrefix, fieldValueWord,
-    rootDigitInitial, groupXmlPrefix, groupUnderscore, rootGroupNameInvalid, maxTooBig, invalidSortInfo]
+    rootDigitInitial, groupXmlPrefix, groupUnderscore, rootGroupNameInvalid, maxTooBig, invalidSortInfo,
+    maxValuesInvalid, countNotPositive, countSigned]
 
 def label : ElementNameKind → String
   | pathInvalid => "MVK_PATH_INVALID"
@@ -83,6 +92,9 @@ def label : ElementNameKind → String
   | rootGroupNameInvalid => "MVK_ROOT_GROUP_NAME_INVALID"
   | maxTooBig => "MVK_MAX_TOO_BIG"
   | invalidSortInfo => "MVK_INVALID_SORTINFO"
+  | maxValuesInvalid => "MVK_MAX_VALUES_INVALID"
+  | countNotPositive => "codeless:count-not-positive"
+  | countSigned => "codeless:count-signed"
 
 def isPathClass : ElementNameKind → Bool
   | pathInvalid | pathsInconsistent => true
@@ -98,21 +110,22 @@ structure FieldNameJudgement where
   pathClass : Bool
   deriving Repr, DecidableEq
 
-/-- The judgement of a group's name. `descendantCodeless` is the codeless notification the group hands to
-every element below it; `startsWithXml` is the prefix fact a group below inherits. -/
+/-- The judgement of a group's name. `startsWithXml` is the prefix fact a group below inherits. -/
 structure GroupNameJudgement where
+  name : String
+  isRoot : Bool
   kinds : List ElementNameKind
   pathClass : Bool
-  descendantCodeless : List ElementNameKind
   startsWithXml : Bool
   deriving Repr, DecidableEq
 
-/-- What the groups above an element hand down: whether one of them carries a path class, the codeless
-notifications of their names, and whether one begins with `xml`. -/
+/-- What the groups above an element hand down: whether one of them carries a path class, their names
+from the root, whether one begins with `xml`, and whether one declares a count below one. -/
 structure PathAbove where
   pathClass : Bool := false
-  codeless : List ElementNameKind := []
+  groups : List String := []
   xml : Bool := false
+  countInvalid : Bool := false
   deriving Repr, DecidableEq
 
 private def asciiLetter (character : Char) : Bool :=
@@ -138,6 +151,31 @@ private def dotBeforeNonLetter : List Char → Bool
 
 private def beginsWithXml (name : String) : Bool := name.toLower.startsWith "xml"
 
+/-- Whether a field name draws the field's codeless shape: a refused character other than `/`, or a
+dot before a non-letter. -/
+def fieldNameShapeRefused (name : String) : Bool :=
+  name.toList.any (fun c => c != '/' && !fieldNameCharacter c) || dotBeforeNonLetter name.toList
+
+/-- Whether a group path fails the group-path law: its slash-joined names, trimmed whole by Java's
+`trim`, must be a root part of the root alphabet and nested parts each beginning with an ASCII letter or
+`_`, every part nonempty and at most sixty characters. No groups are no path and pass. -/
+def groupPathRefused (groups : List String) : Bool :=
+  !groups.isEmpty &&
+  let part (leading : Char → Bool) (segment : String) : Bool :=
+    segment.length ≤ 60 && match segment.toList with
+      | [] => false
+      | first :: rest => leading first && groupNameCharacter first && rest.all groupNameCharacter
+  match (javaTrim ("/" ++ "/".intercalate groups)).splitOn "/" with
+  | "" :: root :: nested => !part (fun _ => true) root || nested.any (!part (fun c => asciiLetter c || c == '_') ·)
+  | _ => true
+
+/-- The codeless notification a group path draws: the group-path one, or the repertoire one when the
+path holds a supplementary scalar. -/
+def groupPathCodeless (groups : List String) : List ElementNameKind :=
+  if groupPathRefused groups then
+    [if groups.any hasSupplementaryScalar then .supplementaryCharacter else .groupNameShape]
+  else []
+
 /-- A field name's classes. `valueWord` is the condition language's word for a value: a dotted name
 ending in it, in any case, draws the invalid-name class. A `/` beside no other defect is a class of its
 own, and beside any other defect counts as a refused character. A refused character or a dot before a
@@ -146,12 +184,11 @@ when the name holds a supplementary scalar. Only a name with neither carries the
 def fieldName (valueWord name : String) : FieldNameJudgement :=
   let characters := name.toList
   let slash := characters.contains '/'
-  let refusedCharacter := characters.any fun c => c != '/' && !fieldNameCharacter c
-  let dotBad := dotBeforeNonLetter characters
-  if slash && !refusedCharacter && !dotBad then
+  let shapeRefused := fieldNameShapeRefused name
+  if slash && !shapeRefused then
     { kinds := [.pathsInconsistent], pathClass := true }
   else
-    let refused := refusedCharacter || slash || dotBad
+    let refused := shapeRefused || slash
     let digitInitial := characters.head?.any asciiDigit
     let segments := name.splitOn "."
     let named : List ElementNameKind :=
@@ -169,40 +206,38 @@ def fieldName (valueWord name : String) : FieldNameJudgement :=
       pathClass }
 
 /-- The classes a field reports below `above`: its own, without a path class when one stands above, and
-the codeless notification the groups above hand down. -/
+the notification its group's path draws. -/
 def FieldNameJudgement.reported (judgement : FieldNameJudgement) (above : PathAbove) :
     List ElementNameKind :=
   ((if above.pathClass then judgement.kinds.filter fun kind => !kind.isPathClass else judgement.kinds) ++
-    above.codeless).eraseDups
+    groupPathCodeless above.groups).eraseDups
 
 /-- A group name's classes by carrier. A nested group must begin with a letter or `_`; a root group may
-begin with any character of the alphabet, and a leading digit is then a class of its own. A refusal is
-the path class plus the group's shape, a root's own `root` shape, or the repertoire notification for a
-supplementary scalar; more than sixty characters is the shape alone, a root's `above sixty`. A nested
-group reserves a leading `_` for `__meta` and `__attachment_meta*`. Exactly `Id` in any case is a root
-group's reserved name. -/
+begin with any character of the alphabet, and a leading digit is then a class of its own. A refusal of
+the name as written is the path class; a nested group's shape is its path's (`groupPathCodeless`), while
+a root draws its own shape, or the repertoire notification for a supplementary scalar, else its own
+notification above sixty characters, one per value, judged on the trimmed name. A nested group reserves a
+leading `_` for `__meta` and `__attachment_meta*`. Exactly `Id` in any case is a root group's reserved
+name. -/
 def groupName (isRoot : Bool) (name : String) : GroupNameJudgement :=
   let characters := name.toList
   let slash := characters.contains '/'
   let refusedCharacter := characters.any fun c => c != '/' && !groupNameCharacter c
   let leadingRefused := !isRoot && characters.head?.any fun c => !(asciiLetter c || c == '_')
   let refused := refusedCharacter || leadingRefused
-  let long := 60 < name.length
   let reserved := if isRoot && name.toLower == "id" then [ElementNameKind.rootGroupNameInvalid] else []
   if slash && !refused then
-    { kinds := [.pathsInconsistent] ++ reserved, pathClass := true, descendantCodeless := [],
+    { name, isRoot, kinds := [.pathsInconsistent] ++ reserved, pathClass := true
       startsWithXml := beginsWithXml name }
   else
     let refused := refused || slash
-    let handedDown : ElementNameKind :=
-      if refused && hasSupplementaryScalar name then .supplementaryCharacter else .groupNameShape
-    let ownShape : List ElementNameKind :=
-      if refused then
-        [if hasSupplementaryScalar name then .supplementaryCharacter
-          else if isRoot then .rootNameShape else .groupNameShape]
+    let trimmed := javaTrim name
+    let rootOwn : List ElementNameKind :=
+      if !isRoot then []
+      else if trimmed.toList.any (!groupNameCharacter ·) then
+        [if hasSupplementaryScalar trimmed then .supplementaryCharacter else .rootNameShape]
+      else if 60 < trimmed.length then [.nameAboveSixty]
       else []
-    let ownLong : List ElementNameKind :=
-      if long then [if isRoot then .nameAboveSixty else .groupNameShape] else []
     let named : List ElementNameKind :=
       if refused then []
       else if isRoot then
@@ -210,30 +245,44 @@ def groupName (isRoot : Bool) (name : String) : GroupNameJudgement :=
       else if characters.head? == some '_' && name != "__meta" &&
           !name.startsWith "__attachment_meta" then [.groupUnderscore]
       else []
-    { kinds := (if refused then [.pathInvalid] else []) ++ ownShape ++ ownLong ++ named ++ reserved
+    { name, isRoot
+      kinds := (if refused then [.pathInvalid] else []) ++ rootOwn ++ named ++ reserved
       pathClass := refused
-      descendantCodeless := if refused || long then [handedDown] else []
       startsWithXml := beginsWithXml name }
 
 /-- The classes a group reports below `above`: its own, without a path class when one stands above,
 the `xml` group class when the group or an ancestor begins with `xml` and no path class stands on the
-group or above it, and the codeless notification the groups above hand down. -/
+group or above it, and, for a nested group, the notification its own path draws. -/
 def GroupNameJudgement.reported (judgement : GroupNameJudgement) (above : PathAbove) :
     List ElementNameKind :=
   let xml := (judgement.startsWithXml || above.xml) && !judgement.pathClass && !above.pathClass
   ((if above.pathClass then judgement.kinds.filter fun kind => !kind.isPathClass else judgement.kinds) ++
-    (if xml then [ElementNameKind.groupXmlPrefix] else []) ++ above.codeless).eraseDups
+    (if xml then [ElementNameKind.groupXmlPrefix] else []) ++
+    (if judgement.isRoot then [] else groupPathCodeless (above.groups ++ [judgement.name]))).eraseDups
 
 /-- What the group hands to the elements below it. -/
 def GroupNameJudgement.below (judgement : GroupNameJudgement) (above : PathAbove) : PathAbove where
   pathClass := above.pathClass || judgement.pathClass
-  codeless := (above.codeless ++ judgement.descendantCodeless).eraseDups
+  groups := above.groups ++ [judgement.name]
   xml := above.xml || judgement.startsWithXml
+  countInvalid := above.countInvalid
 
-/-- The only notification a group above hands to a rule or computation: the repertoire one
-(`ux-gname`, [spec/01 §1.1](../../spec/01-data-model.md#11-the-two-special-model-level-configurations)). -/
+/-- The notification a rule or computation draws from its group's path, as a field does (spec/01 §1.3). -/
 def PathAbove.forRule (above : PathAbove) : List ElementNameKind :=
-  above.codeless.filter (· == .supplementaryCharacter)
+  groupPathCodeless above.groups
+
+/-- A group's count classes. A count below one, or a present member read as no value such as JSON
+`null`, is `MVK_MAX_VALUES_INVALID` with the codeless sentence of its sign: not positive for zero or no
+value, signed below zero. The class falls once more at every group and field beneath the group,
+whose own sentence it does not repeat ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21),
+§2.17); which sentence present text read as no value draws is unmeasured. -/
+def groupCountKinds (repeatability : Option Int) (present : Bool) : List ElementNameKind :=
+  match repeatability with
+  | some count =>
+      if count < 0 then [.maxValuesInvalid, .countSigned]
+      else if count == 0 then [.maxValuesInvalid, .countNotPositive]
+      else []
+  | none => if present then [.maxValuesInvalid, .countNotPositive] else []
 
 /-- A repeatability beyond its carrier's ceiling and a non-repeatable group with sort fields. A group
 declaring no repeatability, or one, is non-repeatable. A repeatability past a signed 32-bit count is not
@@ -252,6 +301,7 @@ def DeclarationNotificationKind.label? : DeclarationNotificationKind → Option 
   | .nameContent => some "codeless:rule-name-content"
   | .codeContent => some "codeless:code-content"
   | .emptyCode => none
+  | .supplementaryCharacter => some ElementNameKind.supplementaryCharacter.label
 
 /-- The capture label of a row-key declaration's refusal. -/
 def RowFieldRefusal.label (refusal : RowFieldRefusal) : String :=
