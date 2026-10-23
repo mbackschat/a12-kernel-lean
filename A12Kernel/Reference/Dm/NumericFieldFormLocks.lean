@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.Parser
+import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.Validate
 
 namespace A12Kernel.Dm.NumericFieldFormLocks
@@ -60,15 +61,24 @@ private def refused (operation : String) : Option String :=
       | .ok _ => none
       | .error error => some error.detail
 
+/-- The class a rule reporting on `N` draws for `operation > 0`. -/
+private def ruleClass (operation : String) : Option String :=
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let condition := s!"FieldFilled(N) And {operation} > 0"
+  let rule : DmRule := { group := ["Form"], name := "P", errorCode := "P", errorEntityRelPath := "../N", condition, severity := "ERROR" }
+  match checkValidationRule dm .english rule with
+  | .ok _ => none
+  | .error refusal => refusal.kernelClass?
 
-/-- KF393/KF395's source gates are shared by the entire field-form family. -/
+/-- KF393/KF395's source gates are shared by the entire field-form family; a group's class is the
+rule's, after the operand's read. -/
 example : ["RoundDownValue", "RoundUpValue", "RoundAccountingValue", "AbsValue"].all (fun op =>
     refused (op ++ "([N])") == some "MVK_UNEXPECTED_TOKEN" &&
-    refused (op ++ "(/Form)") == some "MVK_NO_GROUPS_ALLOWED" &&
+    ruleClass (op ++ "(/Form)") == some "MVK_NO_GROUPS_ALLOWED" &&
+    ruleClass (op ++ "(Rows*)") == some "MVK_NO_GROUPS_ALLOWED" &&
     refused (op ++ "(Rows*/N)") == some "MVK_NO_WILDCARDS_ALLOWED" &&
     refused (op ++ "(N->Code)") == some "MVK_CATEGORY_NOT_ALLOWED" &&
     refused (op ++ "(Text)") == some "MVK_NO_NUMBER" &&
-    refused (op ++ "(Rows*)") == some "MVK_NO_GROUPS_ALLOWED" &&
     refused (op ++ "(Rows*/N->Code)") == some "MVK_NO_WILDCARDS_ALLOWED" &&
     refused (op ++ "(Text->Code)") == some "MVK_CATEGORY_NOT_ALLOWED") := by native_decide
 

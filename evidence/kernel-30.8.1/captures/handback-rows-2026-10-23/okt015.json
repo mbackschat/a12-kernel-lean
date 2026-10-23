@@ -1,0 +1,16 @@
+{
+ "group": "/Order",
+ "computedField": "/Order/Lines/Parts/Count",
+ "alternatives": [
+  {
+   "operation": "1"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ],
+ "commonPrecondition": "NoFieldFilled(Lines/Parts/PartNo, Picks/Ref) And GroupFilled(Lines/Parts)"
+}

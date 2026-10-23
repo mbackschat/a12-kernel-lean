@@ -1,0 +1,181 @@
+{
+  "header" : {
+    "id" : "customer-items_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "customer-items_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Customer",
+        "name" : "Customer",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Customer/BirthDay",
+            "name" : "BirthDay",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minValue" : 1,
+                  "maxValue" : 31
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Customer/BirthMonth",
+            "name" : "BirthMonth",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minValue" : 1,
+                  "maxValue" : 12
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Customer/BirthYear",
+            "name" : "BirthYear",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minValue" : 1800,
+                  "maxValue" : 2200
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Customer/OrderedOn",
+            "name" : "OrderedOn",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateType",
+                "DateType" : {
+                  "format" : "yyyy-MM-dd"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Customer/Total",
+            "name" : "Total",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 4
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Customer/BillingAddress",
+            "name" : "BillingAddress",
+            "Group" : {
+              "repeatability" : 1,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Customer/BillingAddress/Street",
+                "name" : "Street",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Customer/Items",
+            "name" : "Items",
+            "Group" : {
+              "repeatability" : 20,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Customer/Items/Count",
+                "name" : "Count",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Items/Month",
+                "name" : "Month",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 1,
+                      "maxValue" : 12
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Items/UnitPrice",
+                "name" : "UnitPrice",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Items/UnitWeight",
+                "name" : "UnitWeight",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2
+                    }
+                  }
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Lines/Parts",
+ "group": "/Order",
+ "condition": "GroupFilled(Lines/Parts) And [Lines/Parts/Count] != 1",
+ "code": "ok024",
+ "name": "ok024",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

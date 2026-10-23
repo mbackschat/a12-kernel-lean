@@ -1,0 +1,172 @@
+[
+ {
+  "id": "okb001",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okb001",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "AtLeastOneFieldFilled(Lines/Qty, Picks/Ref For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okb002",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okb002",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldsNotCollectivelyFilled(Lines/Qty, Picks/Ref For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okb003",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okb003",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) Or AtLeastOneGroupFilled(Picks For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okb004",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okb004",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) Or FieldFilled(Picks/Ref For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okb005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okb005",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldNotFilled(Lines/Qty) And MoreThanOneFieldFilled(Lines/Sku, Picks/Ref For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okb006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okb006",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Sku, Picks/Ref For Lines/LineNo, Picks/Ref For Lines/Code)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okb007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okb007",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Sku, Picks/Ref For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okb008",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okb008",
+   "--field",
+   "/Order/Lines/LineNo",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldNotFilled(Picks/Ref For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okb009",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okb009",
+   "--field",
+   "/Order/Lines/LineNo",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Picks/Ref For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okb010",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okb010",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldNotFilled(Lines/Sku) Or FieldNotFilled(Picks/Ref For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

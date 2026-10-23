@@ -1,0 +1,135 @@
+{
+  "header" : {
+    "id" : "customer-marked-items_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "customer-marked-items_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Customer",
+        "name" : "Customer",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Customer/BirthMonth",
+            "name" : "BirthMonth",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minValue" : 1,
+                  "maxValue" : 12
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Customer/BirthYear",
+            "name" : "BirthYear",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0,
+                  "minValue" : 1800,
+                  "maxValue" : 2200
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Customer/Items",
+            "name" : "Items",
+            "Group" : {
+              "repeatability" : 20,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Customer/Items/Count",
+                "name" : "Count",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Items/Day",
+                "name" : "Day",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0,
+                      "minValue" : 1,
+                      "maxValue" : 31
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Items/UnitPrice",
+                "name" : "UnitPrice",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 2
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Items/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Items/ShipOn",
+                "name" : "ShipOn",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "DateType",
+                    "DateType" : {
+                      "format" : "yyyy-MM-dd"
+                    }
+                  }
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

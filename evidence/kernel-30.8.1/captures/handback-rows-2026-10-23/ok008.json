@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Lines/Slots",
+ "group": "/Order",
+ "condition": "GroupNotFilled(Lines/Slots)",
+ "code": "ok008",
+ "name": "ok008",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

@@ -22,7 +22,9 @@ private partial def rawScalarAtomAvailable : Expr → Bool
         | [.mk left none, .mk right none] =>
             rawTemporalSourceAvailable true left && rawTemporalSourceAvailable true right
         | _ => false
-      else (rawScalarOperator? id).isSome || (rawListOperator? id).isSome || rawTemporalSourceAvailable false source
+      -- A standalone `ValueAsDate` completes its partial date, so its own gates run on the raw route
+      -- (KF599's `ValueAsDate($Items/Count, FirstDay)` rows).
+      else (rawScalarOperator? id).isSome || (rawListOperator? id).isSome || rawTemporalSourceAvailable true source
   | _ => false
 
 /-- Route by syntax only: a precision refusal must not suppress the raw path before its

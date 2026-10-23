@@ -1,0 +1,77 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+    "state" : "CLEAN"
+  },
+  "model" : "cc063c28ab7aaa79beaa8108ed6462512ee721c59128fee5721b37891ce2c14b",
+  "observations" : [ {
+    "id" : "okt005",
+    "inputHash" : "135f68b7b1d583c246bd39c4f2140a570abf7756b6cf1a29ef0f5e813782c1a1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_NUMBER_COMPARISON" ]
+  }, {
+    "id" : "okt006",
+    "inputHash" : "e31b87ccf785b16071325324b9dd6d4988407557fdf4fa1fe8b8aeb7d10d41cf",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "okt007",
+    "inputHash" : "16c0cc63e5906c29fb02f2f432127b9267d19fa31b44f78ae7fcda6d6cb86023",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "okt008",
+    "inputHash" : "befae0f3e76251ebd6e310e1d872829151ddfc2e2bfedee46a4c27e472958339",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "okt009",
+    "inputHash" : "443afc3acc71c642d0a6b2eead086e94cb06b19b6b3d975751d6106d558adcbf",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "okt010",
+    "inputHash" : "99d6ab5e9f0aadab99d6e0ad51f71ce6c6385b30e1d464dfd1864fad593f0695",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okt011",
+    "inputHash" : "888dcb9879e6d416f05c68f5150d08f540278386d7d9067303b8341f19f5c72d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "okt012",
+    "inputHash" : "660d91472f6708416d48065421625a14ba97e9096d4c3c20745c8a46361cf1f4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okt013",
+    "inputHash" : "29b713fe59499d78ff4d05d31ea32af78229f9ee172bc1fac2b1afcbdcadd15b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okt014",
+    "inputHash" : "0dd9c96a0e59e8080458a1a5bc003ca01b0a1e3951515470b47bbd286d555fec",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okt015",
+    "inputHash" : "da26f7d356ab622eaeb048429322ee039fe3e35f858470aadf1ddfce67f9ce2f",
+    "ok" : true,
+    "codes" : [ ]
+  } ]
+}

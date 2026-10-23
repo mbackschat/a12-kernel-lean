@@ -49,9 +49,11 @@ resolves to nothing or whose operation gate refuses, otherwise the defect's own 
 that parses. `MVK_INVALID_ENTITY` and `MVK_INVALID_ROOT_GROUP` and a date operation's `MVK_NO_DATE`
 ahead of a token defect are measured (predicate-operand capture, 2026-10-14); another class in that
 position is this account's extension. A lexer defect is reported with no event before it, because the
-lexer reads the whole text first; where the Kernel's lexer stops is unmeasured. -/
-def parseDefectClass? (model : FlatModel) (group : GroupPath) (language : Language) (text : String) :
-    Option String :=
+lexer reads the whole text first; where the Kernel's lexer stops is unmeasured. A completed operation's
+reads bind at `bindingGroup`, the error field's group, as an admitted rule's do: `AddDays(Items/ShipOn, 1)`
+before a bare value slot reports no unbound star (handback row `ssd064`). -/
+def parseDefectClass? (model : FlatModel) (group : GroupPath) (language : Language) (text : String)
+    (bindingGroup : GroupPath := group) : Option String :=
   match lex language text with
   | .error error => some error.errorClass.code
   | .ok lexemes =>
@@ -61,7 +63,7 @@ def parseDefectClass? (model : FlatModel) (group : GroupPath) (language : Langua
           let eventClass : ParseEvent → Option KernelStaticDiagnostic
             | .reference path => referenceResolutionClass? model group path
             | .openPath path => openPathClass? model group path
-            | .closedCall call => operationCallClass? model group call
+            | .closedCall call => operationCallClass? model group call bindingGroup
           match completed.toList.findSome? eventClass with
           | some diagnostic => some diagnostic.kernelCode
           | none => some error.errorClass.code

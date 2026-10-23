@@ -1,0 +1,121 @@
+[
+ {
+  "id": "sg1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg1",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Qty, Picks/Ref) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg2",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Qty, Picks/Ref) < 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg3",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Qty, Picks/Ref) >= 2",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg4",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) And NumberOfFilledFields(Lines/Qty, Picks/Ref) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg5",
+   "--field",
+   "/Order/Lines/Parts/Count",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Parts/Count, Picks/Ref) < 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg6",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "AtLeastOneFieldFilled(Lines/Qty, Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg7",
+   "--field",
+   "/Order/Lines/Parts/Count",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Parts/Count) And NumberOfFilledFields(Lines/Parts/Count, Picks/Ref) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

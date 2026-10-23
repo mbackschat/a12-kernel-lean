@@ -1,0 +1,15 @@
+{
+ "group": "/Order",
+ "computedField": "/Order/Lines/Total",
+ "alternatives": [
+  {
+   "operation": "[Picks/Qty For Lines/LineNo]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Wraps/Ribbon",
+ "group": "/Order",
+ "condition": "FieldFilled(Wraps/Style) And GroupNotFilled(Wraps/Ribbon)",
+ "code": "ok005",
+ "name": "ok005",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

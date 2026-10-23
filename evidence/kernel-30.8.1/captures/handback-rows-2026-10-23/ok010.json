@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Lines/Parts",
+ "group": "/Order",
+ "condition": "FieldFilled(Lines/Sku) And GroupFilled(Lines/Parts)",
+ "code": "ok010",
+ "name": "ok010",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

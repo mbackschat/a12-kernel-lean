@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Lines/Parts",
+ "group": "/Order",
+ "condition": "FieldFilled(Lines/Parts/PartNo)",
+ "code": "ogt003",
+ "name": "ogt003",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

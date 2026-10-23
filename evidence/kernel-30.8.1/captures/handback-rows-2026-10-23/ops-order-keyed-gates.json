@@ -1,0 +1,615 @@
+[
+ {
+  "id": "okg001",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg001",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Sku, Picks/Ref For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg002",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg002",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Sku, Picks/Qty For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg003",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg003",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Qty, Picks/Ref For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg004",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg004",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Qty, Picks/Qty For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg005",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Sku, Picks/Qty For \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg006",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Sku, Picks/Window For \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg007",
+   "--field",
+   "/Order/Lines/ShipOn",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/ShipOn, Picks/ShipOn For \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg008",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg008",
+   "--field",
+   "/Order/Lines/ShipOn",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/ShipOn, Picks/ShipIso For \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg009",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg009",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Sku, Picks/RawNote For \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg010",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg010",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Sku, Picks For \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg011",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg011",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Sku, Picks/Qty For Lines/Qty)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg012",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg012",
+   "--field",
+   "/Order/Total",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Total) And FieldFilled(Picks/Qty For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg013",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg013",
+   "--field",
+   "/Order/Total",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Total) And FieldFilled(Picks/Qty For Lines/Qty)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg014",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg014",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And FieldFilled(Picks/Qty For Lines/Qty)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg015",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg015",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And FieldFilled(Lines/Qty For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg016",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg016",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And FieldFilled(Picks/Qty For Lines/RawRef)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg017",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg017",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And FieldFilled(Notes/Text For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg018",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg018",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And AtLeastOneFieldFilled(Picks*/Qty For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg019",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg019",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Picks/Window For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg020",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg020",
+   "--field",
+   "/Order/Picks/Ref",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Picks/Window)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg021",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg021",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Picks/Qty For Lines/LineNo, Picks/Qty For Lines/LineNo, Picks/Ref For \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg022",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg022",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Picks/Qty For \"a\", Picks/Qty For \"a\", Picks/Ref For \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg023",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg023",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "AtLeastOneFieldFilled(Picks/Qty For Lines/LineNo, Picks/Qty For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg024",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg024",
+   "--field",
+   "/Order/Lines/Boxes/Tag",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Boxes/Tag) And FieldFilled(Picks/Qty For Lines/Qty)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg025",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg025",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And FieldFilled(Picks/Qty For Lines/Qty Having [Lines/Qty] > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg026",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg026",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And FieldFilled(Notes/Text For Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg027",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg027",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And FieldFilled(Lines/Qty For Picks/Qty)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg028",
+  "verb": "computation",
+  "args": [
+   "add",
+   "okg028.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "okg029",
+  "verb": "computation",
+  "args": [
+   "add",
+   "okg029.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "okg030",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg030",
+   "--field",
+   "/Order/Total",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Total) And Length(Picks/RawNote For \"a\") > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg031",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg031",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And Length(Picks/RawNote For Lines/LineNo) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg032",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg032",
+   "--field",
+   "/Order/Total",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Total) And SumOfProducts(Picks/Qty For \"a\", Picks/Price For \"a\") > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg033",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg033",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And SumOfProducts(Picks/Qty For Lines/LineNo, Picks/Price For Lines/LineNo) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg034",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg034",
+   "--field",
+   "/Order/Total",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Total) And SumOfProducts(Picks/Qty For \"a\", Picks*/Price) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg035",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg035",
+   "--field",
+   "/Order/Total",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Total) And SumOfProducts(Picks*/Qty, Picks/Price For \"a\") > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg036",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg036",
+   "--field",
+   "/Order/Total",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Total) And SumOfProducts(Picks*/Qty, Picks*/Price) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okg037",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okg037",
+   "--field",
+   "/Order/Total",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Total) And SumOfProducts(Picks/Qty For \"a\", Lines*/Qty) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

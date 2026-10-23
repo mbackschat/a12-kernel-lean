@@ -154,6 +154,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 22 peer answers](sources/inbound-handbacks.md#src-inbound-2026-10-22): a12-dmkits `09f1352e5d24e9d661f692ddc5b2fdcf65a786e6`; the boolean-member token kind, the relabelled `int` rows, two more Boolean-fold characters, and a scope for `SPEC-2026-10-14-01` that the peer withdrew the same day.
 - [October 22b iteration-guard rows](sources/inbound-handbacks.md#src-inbound-2026-10-22b): a12-dmkits `532cd2b28`; Kernel classes for the ordinary and parallel iteration guards on an order model, and the levels exempt from them.
 - [October 22c selection, computation and binding rows](sources/inbound-handbacks.md#src-inbound-2026-10-22c): a12-dmkits `e9747abbf`; Kernel classes for the guard beside constant and field-keyed selections, five computation preconditions, and the error-field binding under parallel iteration.
+- [October 23 handback](sources/inbound-handbacks.md#src-inbound-2026-10-23): a12-dmkits `e6850d0b9984d7df3f8eae3baa3639f4a7d25084`; the reconciliation of the eight October 22 and 23 entries, the partial-call and nested-capacity extensions for group targets and joined sides, an undeclared member of every JSON kind, and Kernel classes for KF598–KF606.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route

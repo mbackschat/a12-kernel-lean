@@ -1,0 +1,54 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+    "state" : "CLEAN"
+  },
+  "model" : "825274912f45a4d8fc3bb0dbc1c6caafb11857535cb50e0e4c1a3c2581733bc0",
+  "observations" : [ {
+    "id" : "os001",
+    "inputHash" : "5beec0fedaa116821684e9f4a433dc88757ce6cea673fb49c938f3cd74e9f20f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "os002",
+    "inputHash" : "956f537577e46db92a7e48184cedb2cac75d3dc7da2f8a4033b931b9389ea748",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "os003",
+    "inputHash" : "a50bacf4e0d048d45778395acbb93550d52b3a33f4140e879dfbfdf30381a04d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "os004",
+    "inputHash" : "eee025105ca8d8fb2d4f4378bcf3d0ac8d28aa315ea9ca884e57bf90ba087f4a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "os005",
+    "inputHash" : "e1c40061c63dc743e4ca7f04ab98608043d0067d5539b173b82e18af780f84d0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "os006",
+    "inputHash" : "b28d04ba4ab282e63f5b1dc2aeb98180088d5f5bb41aa8f9e496af93bdd60596",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "os007",
+    "inputHash" : "1a68adc4f4396717447bfc6630f5a26a03c8e489156b0ce03b43e3edc2be0373",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  } ]
+}

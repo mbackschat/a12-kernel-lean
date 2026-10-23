@@ -15,11 +15,13 @@ absent field.
 The Kernel's document conversion drops a string or object member of a fixed group and a string key of
 a repeatable row that the model declares nothing for: both strategies report a document carrying them
 exactly as the one without ([undeclared-member checkpoint](../../../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members)),
-so this reader drops them too. It drops the same shapes at the document root and an object in a row,
-which are unmeasured. A field the model reader refused, an undeclared member of another JSON
-kind, which is unmeasured, an out-of-profile numeric scale, or a temporal text no classifier owns is
-reported in `DmDocument.refusals` rather than placed, so a replay row depending on it is refused as
-unrepresented instead of evaluated against a guess.
+so this reader drops them too. An undeclared boolean, `null`, number or array member of a fixed group,
+an object in a nested fixed group or a repeatable row, and a string at the document root drop alike
+([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-23)), so this reader drops
+an undeclared member of every kind, assuming without measurement that a boolean, `null`, number or
+array member of a row and a non-string member at the root drop alike. A field the model reader refused, an out-of-profile numeric scale,
+or a temporal text no classifier owns is reported in `DmDocument.refusals` rather than placed, so a
+replay row depending on it is refused as unrepresented instead of evaluated against a guess.
 -/
 
 namespace A12Kernel.Dm
@@ -260,9 +262,7 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
                 model.flat.fields.any (childPath.isPrefixOf ·.groupPath) ||
                 model.flat.declaresEmptyGroup childPath then
               refuse childPath "group value of the wrong JSON kind"
-            else match value with
-              | .str _ => pure ()
-              | _ => refuse childPath "member the model does not declare"
+            else pure ()
 
 /-- Read one document, given as the object holding its root groups. -/
 def readDocument (model : DmModel) (json : Json) : Except String DmDocument := do

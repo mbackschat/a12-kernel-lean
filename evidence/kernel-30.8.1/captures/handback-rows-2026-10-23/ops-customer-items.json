@@ -1,0 +1,325 @@
+[
+ {
+  "id": "ci001",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci001",
+   "--field",
+   "/Customer/BirthDay",
+   "--group",
+   "/Customer",
+   "--condition",
+   "AllFieldsFilled(BirthDay, BirthMonth, BirthYear) And Invalid(Date(BirthDay, BillingAddress, BirthYear))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci002",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci002",
+   "--field",
+   "/Customer/BirthDay",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthDay) And Invalid(Date(BillingAddress, BirthMonth, BirthYear))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci003",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci003",
+   "--field",
+   "/Customer/BirthDay",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthDay) And Invalid(Date(BirthDay, Items*, BirthYear))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci004",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci004",
+   "--field",
+   "/Customer/BirthDay",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthDay) And Invalid(Date(BirthDay, Items*/Month, BirthYear))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci005",
+   "--field",
+   "/Customer/BirthDay",
+   "--group",
+   "/Customer",
+   "--condition",
+   "AllFieldsFilled(BirthDay, BirthMonth, BirthYear) And Invalid(Date(BirthDay, BirthMonth, BirthYear))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci006",
+   "--field",
+   "/Customer/OrderedOn",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(OrderedOn) And [OrderedOn] == Date(BirthDay, BillingAddress, BirthYear)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci007",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having CurrentRepetition(Items) != CurrentRepetition($Items* ) And [Items/Count] == [$Items/Count])",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci008",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci008",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having CurrentRepetition(Items) != CurrentRepetition($Items*) And [Items/Count] == [$Items/Count])",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci009",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci009",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having CurrentRepetition(Items) != CurrentRepetition($Items) And [Items/Count] == [$Items/Count])",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci010",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci010",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having CurrentRepetition(Items) != CurrentRepetition($Items/Count) And [Items/Count] == [$Items/Count])",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci011",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci011",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having CurrentRepetition(Items) != CurrentRepetition(Items*) And [Items/Count] == [$Items/Count])",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci012",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci012",
+   "--field",
+   "/Customer/Total",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Total) And AtLeastOneFieldFilled(Items*/Count Having CurrentRepetition($Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci013",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci013",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And CurrentRepetition(Items*) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci014",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci014",
+   "--field",
+   "/Customer/Total",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Total) And [Total] != SumOfProducts(Items*) /Count, Items*/UnitWeight)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci015",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci015",
+   "--field",
+   "/Customer/Total",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Total) And [Total] != SumOfProducts(Items*, Items*/UnitWeight)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci016",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci016",
+   "--field",
+   "/Customer/Total",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Total) And [Total] != SumOfProducts(Items*)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci017",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci017",
+   "--field",
+   "/Customer/Total",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Total) And [Total] != SumOfProducts(BillingAddress, Items*)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci018",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci018",
+   "--field",
+   "/Customer/Total",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Total) And [Total] != SumOfProducts(/Customer)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ci019",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ci019",
+   "--field",
+   "/Customer/Total",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Total) And [Total] != SumOfProducts(Items*/UnitPrice, Items*/UnitWeight)",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

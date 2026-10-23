@@ -1,0 +1,115 @@
+{
+  "header" : {
+    "id" : "shop-nested-keys_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "shop-nested-keys_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Customer",
+        "name" : "Customer",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Customer/Items",
+            "name" : "Items",
+            "Group" : {
+              "repeatability" : 20,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Customer/Items/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Items/Count",
+                "name" : "Count",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "Code"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Customer/Notes",
+            "name" : "Notes",
+            "Group" : {
+              "repeatability" : 20,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Customer/Notes/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Group",
+                "id" : "/Customer/Notes/Pages",
+                "name" : "Pages",
+                "Group" : {
+                  "repeatability" : 5,
+                  "elements" : [ {
+                    "type" : "Field",
+                    "id" : "/Customer/Notes/Pages/PageNo",
+                    "name" : "PageNo",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  }, {
+                    "type" : "Field",
+                    "id" : "/Customer/Notes/Pages/Text",
+                    "name" : "Text",
+                    "Field" : {
+                      "fieldType" : {
+                        "type" : "StringType"
+                      }
+                    }
+                  } ],
+                  "indexFieldName" : "PageNo"
+                }
+              } ],
+              "indexFieldName" : "Code"
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

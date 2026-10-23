@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Lines/Parts",
+ "group": "/Order",
+ "condition": "GroupFilled(Lines/Parts) And CurrentRepetition(Lines) > 1",
+ "code": "ok028",
+ "name": "ok028",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

@@ -1,0 +1,135 @@
+{
+ "model": "K0607f_DM.json",
+ "clock": "2026-10-23T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "both",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Qty": "1"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "qtyOnly",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Qty": "1"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "refOnly",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "neither",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "unmatched",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Qty": "1"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "wraps",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      }
+     ],
+     "Wraps": [
+      {},
+      {
+       "Bows": [
+        {
+         "BowNo": "x"
+        },
+        {
+         "BowNo": "y"
+        },
+        {
+         "BowNo": "z"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

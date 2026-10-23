@@ -1,0 +1,206 @@
+[
+ {
+  "id": "sh1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sh1",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Abs(Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sh2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sh2",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Abs($Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sh3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sh3",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Min(Items/Count, [Items/Count]) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sh4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sh4",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Min($Items/Count, [Items/Count]) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sh5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sh5",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Max([Items/Count], Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sh6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sh6",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Max([Items/Count], $Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sh7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sh7",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundDown(Items/Count, 0) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sh8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sh8",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundDown($Items/Count, 0) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sh9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sh9",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundAccounting(Items/Count, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sh10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sh10",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundAccounting($Items/Count, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sd1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sd1",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundUp([Items/Count], Items/Count) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sd2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sd2",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundUp([Items/Count], [Items/Count]) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

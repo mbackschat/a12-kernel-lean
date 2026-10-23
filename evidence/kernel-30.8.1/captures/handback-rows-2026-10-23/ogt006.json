@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Lines/Parts",
+ "group": "/Order/Lines",
+ "condition": "GroupFilled(RuleGroup)",
+ "code": "ogt006",
+ "name": "ogt006",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

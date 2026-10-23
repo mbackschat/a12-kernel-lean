@@ -104,9 +104,10 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
     (view : CheckedPartialPreliminary model) (messageCache : Option MessageIndexContext := none)
     (registry : CustomValidationRegistry model := {}) (world : Option World := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
-  -- No retained observation covers partial validation of an error field below the join, or of a
-  -- rule reporting on a group, which the ordinary carrier refuses too.
-  if !rule.pair.innerScope.isEmpty || rule.pair.errorGroup.isSome then throw .unsupportedCondition
+  -- A partial call reports no rule on a group, as the ordinary carrier skips one (KF603). No retained
+  -- observation pins partial validation of an error field below the join.
+  if rule.pair.errorGroup.isSome then return []
+  if !rule.pair.innerScope.isEmpty then throw .unsupportedCondition
   let common := match rule.pair.groups.outerScopePlan with
     | .common shared | .framed _ shared _ => shared
   let environments ← if common.isEmpty then pure [[]]

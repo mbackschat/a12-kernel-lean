@@ -206,6 +206,51 @@ example :
       [("1", ["", "x"]), ("2", ["y"]), ("3", ["z"])] [("1", "r"), ("2", "q")] =
       some ["Order/Lines[2]/Parts"] := by native_decide
 
+open Lean in
+/-- The pointers a rule reporting on `entity` fires at under a partial call with only `/Order[1]`
+relevant, over line `A` with parts `[{}, {Count}]`, line `B` with a part holding `Count` and their
+picks, or `none` when the rule or document is refused. -/
+private def firedPartially (entity condition : String) : Option (List String) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let count := fun (value : String) => Json.mkObj [("Count", Json.str value)]
+  let document := Json.mkObj [("Order", Json.mkObj [
+    ("Lines", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Parts", Json.arr #[Json.mkObj [], count "5"])],
+      Json.mkObj [("LineNo", Json.str "B"), ("Parts", Json.arr #[count "6"])]]),
+    ("Picks", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Ref", Json.str "r")],
+      Json.mkObj [("LineNo", Json.str "B"), ("Ref", Json.str "r")]])])]
+  let input ← (readDocument dm document).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let relevant : List RelevantEntityPattern := [{ path := O, indices := [.concrete 1] }]
+  let messages ← match ← (checkValidationRule dm .english
+      { group := O, name := "PartialProbe", errorCode := "P", errorEntityRelPath := "../" ++ entity, condition,
+        severity := "ERROR" }).toOption with
+    | .parallel rule => (runPartialParallelRule checked rule relevant (world := some world)).toOption
+    | .ordinary rule => match rule.ordinaryIterationPlan with
+      | .rows _ => (rule.evalOrdinaryRepeatablePartial checked (.partialSet relevant) (some world)).toOption.map fun
+          | .skipped => []
+          | .evaluated rows => rows.filterMap fun
+              | (_, .evaluated outcome) => outcome.message?
+              | (_, .skipped) => none
+      | .once _ => (rule.evalOrdinaryOncePartial checked (.partialSet relevant) (some world)).toOption.map fun
+          | .skipped => []
+          | .evaluated _ outcome => outcome.message?.toList
+      | .scalar => (rule.evalAddressedPartial checked (.partialSet relevant) (some world)).toOption.map fun
+          | .skipped => []
+          | .evaluated outcome => outcome.message?.toList
+  pure (messages.map fun message => (observe model message).pointer)
+
+/-- A partial call reports no rule whose error entity is a group, ordinary or beside a join, while
+each rule's field twin reports in the same call
+([KF603](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf603), peer-reported; the
+[inbound record](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-23)). -/
+example :
+    firedPartially "Lines/Parts" "GroupFilled(Lines/Parts)" = some [] ∧
+    ((firedPartially "Lines/Parts/Count" "FieldFilled(Lines/Parts/Count)").getD []).length > 0 ∧
+    firedPartially "Lines/Parts" "GroupFilled(Lines/Parts) And FieldFilled(Picks/Ref)" = some [] ∧
+    ((firedPartially "Lines/LineNo" "FieldFilled(Lines/LineNo) And FieldFilled(Picks/Ref)").getD []).length > 0 := by
+  native_decide
+
 /-- `(row, rule group, error entity, condition, Kernel verdict)` of the blank-root batch's static rows:
 a condition able to fire on empty over a nested keyed level, a repeatable root or an unkeyed one
 draws the negative-iteration class or its own, while a second root's read beside a positive guard is
@@ -226,16 +271,16 @@ example : (rootRows.filter fun (_, group, entity, condition, expected) =>
 
 open Lean in
 /-- The pointers a rule in `/Order` reporting on `entity` fires at over `document`. -/
-private def firedOn (entity condition : String) (document : Json) : Option (List String) := do
+private def firedOn (entity condition : String) (document : Json) (dm : DmModel := dm) : Option (List String) := do
   let world : World := { now := { epochMillis := 0 } }
   let input ← (readDocument dm document).toOption
   if !input.refusals.isEmpty then none
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
   let rule ← (checkValidationRule dm .english
     { group := O, name := "BlankProbe", errorCode := "P", errorEntityRelPath := "../" ++ entity, condition,
       severity := "ERROR" }).toOption
-  pure ((← (runValidationRule world checked rule).toOption).map fun message => (observe model message).pointer)
+  pure ((← (runValidationRule world checked rule).toOption).map fun message => (observe dm.flat message).pointer)
 
 open Lean in
 /- The blank-root batch's runtime rows: a rule evaluated without admitted content, by a negative, a
@@ -260,6 +305,69 @@ example :
       (firedOn "Gifts/Note" "[/Other/O] > 5 Or FieldFilled(Gifts/Note)" · == both) ∧
     firedOn "Gifts/Note" "[/Other/O] > 5 Or FieldFilled(Gifts/Note)" (Json.mkObj [("Other", Json.mkObj [("O", "1")])]) =
       some [] := by
+  native_decide
+
+open Lean in
+/- The nested-capacity batch's rows: beside the `Lines`–`Picks` join, the error field's `Parts` rows
+follow the ordinary capacity rule with the joined level counted once, so five declared parts are all
+visited and six only where some line's parts or slots occupy them, and an unmatched line visits them
+too ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-nested-join-capacity)). -/
+example :
+    let six : DmModel := { dm with flat := { model with repeatableGroups := model.repeatableGroups.map fun group =>
+      if group.path == L ++ ["Parts"] then { group with repeatability := some 6 } else group } }
+    let order := fun (lines picks : List Json) => Json.mkObj [("Order", Json.mkObj
+      [("Lines", Json.arr lines.toArray), ("Picks", Json.arr picks.toArray)])]
+    let pick := fun (key : String) => Json.mkObj [("LineNo", Json.str key), ("Ref", Json.str "r")]
+    let line := fun (key : String) (members : List (String × Json)) => Json.mkObj ((("LineNo", Json.str key)) :: members)
+    let rows := fun (n : Nat) => Json.arr ((List.replicate n (Json.mkObj [])).toArray)
+    let parts := fun (owner : String) (n : Nat) => (List.range n).map fun i =>
+      owner ++ "/Parts" ++ (if i == 0 then "" else s!"[{i + 1}]") ++ "/Count"
+    let unmatched := fun (n : Nat) => (List.range n).map fun i => s!"/Order[1]/Lines[-5]/Parts[{i + 1}]/Count"
+    let oneEach := order [line "A" [("Parts", Json.arr #[Json.mkObj [("Count", Json.str "1")]])], line "B" []]
+      [pick "A", pick "B", pick "D"]
+    let condition := "[Lines/Parts/Count] < 5 And FieldFilled(Picks/Ref)"
+    firedOn "Lines/Parts/Count" condition oneEach =
+      some (parts "Order/Lines" 5 ++ parts "Order/Lines[2]" 5 ++ unmatched 5) ∧
+    firedOn "Lines/Parts/Count" condition oneEach six =
+      some (parts "Order/Lines" 1 ++ parts "Order/Lines[2]" 1 ++ unmatched 1) ∧
+    firedOn "Lines/Parts/Count" condition (order [line "A" [("Parts", rows 2)], line "B" []]
+      [pick "A", pick "B", pick "D"]) six =
+      some (parts "Order/Lines" 2 ++ parts "Order/Lines[2]" 2 ++ unmatched 2) ∧
+    firedOn "Lines/Parts/Count" condition (order [line "A" [("Slots", Json.arr #[Json.mkObj [("SlotNo", Json.str "s1")],
+      Json.mkObj [("SlotNo", Json.str "s2")]])]] [pick "A"]) six = some (parts "Order/Lines" 2) ∧
+    firedOn "Lines/Parts/Count" condition (order [line "A" [], line "B" []]
+      [Json.mkObj [("LineNo", Json.str "A")], pick "B"]) = some (parts "Order/Lines[2]" 5) := by
+  native_decide
+
+open Lean in
+/-- Each message the unmatched `Picks` row fires names its own visited part in its references and
+fill-to-fix, as `/Order[1]/Lines[-5]/Parts[2]/Count` beside `Order/Picks[2]/Ref`, not the wildcard
+row: the channels the Kernel gives the `D` pick of `oneEach`
+([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-nested-join-capacity),
+`capacity-five`), with this document's pick at row 2. -/
+example :
+    (do
+      let world : World := { now := { epochMillis := 0 } }
+      let pick := fun (key : String) => Json.mkObj [("LineNo", Json.str key), ("Ref", Json.str "r")]
+      let document := Json.mkObj [("Order", Json.mkObj [("Lines", Json.arr #[Json.mkObj [("LineNo", Json.str "A")]]),
+        ("Picks", Json.arr #[pick "A", pick "D"])])]
+      let input ← (readDocument dm document).toOption
+      let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
+      let checked ← (checkDocument prepared "en_US" input.data).toOption
+      let .parallel rule ← (checkValidationRule dm .english
+        { group := O, name := "UnmatchedProbe", errorCode := "P", errorEntityRelPath := "../Lines/Parts/Count",
+          condition := "[Lines/Parts/Count] < 5 And FieldFilled(Picks/Ref)", severity := "ERROR" }).toOption | none
+      let rows ← (runParallelRuleReferences checked rule (some world)).toOption
+      rows.filterMapM fun (message, references) => do
+        let pointer := renderPointer dm.flat message.errorAddress
+        if !pointer.startsWith "/Order[1]/Lines[-5]" then return none
+        let references ← references.toOption
+        let render := fun (channel : List MessagePointer) => (channel.map (renderFieldPointer dm.flat)).mergeSort
+        pure (some (pointer, render references.referenced, render references.fillToFix))) =
+      some ((List.range 5).map fun i =>
+        let part := s!"/Order[1]/Lines[-5]/Parts[{i + 1}]/Count"
+        (part, ["/Order[1]/Lines[-5]/LineNo", part, "Order/Picks[2]/LineNo", "Order/Picks[2]/Ref"].mergeSort,
+          ["/Order[1]/Lines[-5]/LineNo", part].mergeSort)) := by
   native_decide
 
 /-- The [inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)'s

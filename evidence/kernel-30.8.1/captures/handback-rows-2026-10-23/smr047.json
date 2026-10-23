@@ -1,0 +1,15 @@
+{
+ "group": "/Customer",
+ "computedField": "/Customer/Total",
+ "alternatives": [
+  {
+   "operation": "Sum(Items*/Count Having [$Items/Count] > 0)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

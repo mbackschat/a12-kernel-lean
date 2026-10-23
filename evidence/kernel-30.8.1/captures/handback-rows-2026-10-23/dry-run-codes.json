@@ -1,0 +1,179 @@
+{
+ "kernel": "30.8.1",
+ "verb": "rule add --dry-run",
+ "producer": {
+  "revision": "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+  "state": "CLEAN"
+ },
+ "dmtool": "0.13.0",
+ "rows": {
+  "ogt001": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ogt002": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ogt003": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ],
+   "instrument": []
+  },
+  "ogt004": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ],
+   "instrument": []
+  },
+  "ogt005": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ],
+   "instrument": []
+  },
+  "ogt006": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "okt001": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NO_INDEX"
+   ],
+   "instrument": []
+  },
+  "okt002": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "okt003": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ],
+   "instrument": []
+  },
+  "okt004": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ],
+   "instrument": []
+  },
+  "ok001": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ],
+   "instrument": []
+  },
+  "ok002": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ok003": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ],
+   "instrument": []
+  },
+  "ok004": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ok005": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ok006": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ],
+   "instrument": []
+  },
+  "ok007": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ok008": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ],
+   "instrument": []
+  },
+  "ok009": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ok010": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ok011": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ],
+   "instrument": []
+  },
+  "ok012": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ],
+   "instrument": []
+  },
+  "ok024": {
+   "admitted": true,
+   "codes": [],
+   "instrument": [
+    "RK_UNGUARDED_NUMBER_COMPARISON"
+   ]
+  },
+  "ok025": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ok026": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ok027": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ok028": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "ok029": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ],
+   "instrument": []
+  }
+ }
+}

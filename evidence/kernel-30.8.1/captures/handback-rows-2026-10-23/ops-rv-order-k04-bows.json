@@ -1,0 +1,19 @@
+[
+ {
+  "id": "se4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "se4",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) And NoGroupFilled(Picks For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

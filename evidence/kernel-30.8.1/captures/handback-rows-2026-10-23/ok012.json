@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Lines/Parts",
+ "group": "/Order",
+ "condition": "GroupFilled(Lines) And FieldNotFilled(Lines/Parts/PartNo)",
+ "code": "ok012",
+ "name": "ok012",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

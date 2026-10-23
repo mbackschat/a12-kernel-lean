@@ -1,0 +1,15 @@
+{
+ "group": "/Customer",
+ "computedField": "/Customer/Items/UnitPrice",
+ "alternatives": [
+  {
+   "operation": "RoundUpValue($Itemz/Count, 2)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

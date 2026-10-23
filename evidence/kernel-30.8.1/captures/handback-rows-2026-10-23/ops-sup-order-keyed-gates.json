@@ -1,0 +1,53 @@
+[
+ {
+  "id": "sf1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sf1",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And [Picks/Qty For Lines/RawRef] > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sf2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sf2",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And GroupFilled(Picks For Lines/RawRef)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sf3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sf3",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And FieldNotFilled(Picks/Qty For Lines/RawRef)",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

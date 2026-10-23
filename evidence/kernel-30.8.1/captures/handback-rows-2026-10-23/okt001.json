@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Lines",
+ "group": "/Order",
+ "condition": "GroupFilled(Lines) And FieldFilled(Picks/Ref)",
+ "code": "okt001",
+ "name": "okt001",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

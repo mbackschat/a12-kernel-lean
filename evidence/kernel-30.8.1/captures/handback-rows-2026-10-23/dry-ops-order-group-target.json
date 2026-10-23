@@ -1,0 +1,56 @@
+[
+ {
+  "id": "ogt001",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ogt001.json"
+  ]
+ },
+ {
+  "id": "ogt002",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ogt002.json"
+  ]
+ },
+ {
+  "id": "ogt003",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ogt003.json"
+  ]
+ },
+ {
+  "id": "ogt004",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ogt004.json"
+  ]
+ },
+ {
+  "id": "ogt005",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ogt005.json"
+  ]
+ },
+ {
+  "id": "ogt006",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ogt006.json"
+  ]
+ }
+]

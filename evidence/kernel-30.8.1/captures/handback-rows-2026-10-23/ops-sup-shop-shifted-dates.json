@@ -1,0 +1,70 @@
+[
+ {
+  "id": "sa1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sa1",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Max([Items/Count], Items/Count) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sa2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sa2",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Max(AddDays(Items/ShipOn, 1), [Items/ShipDe]) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sa3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sa3",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Max(Items/Count, [Items/Count]) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sa4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sa4",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Max([Items/Count], [Items/Count]) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

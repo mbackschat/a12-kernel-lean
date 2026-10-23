@@ -76,17 +76,27 @@ example :
         (·.data.cells.length)) == some 0].all id := by
   native_decide
 
-/- An object member the model declares no field below is dropped, as the Kernel's conversion drops
-one in a fixed group ([checkpoint](../../../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members));
-the root's `Nope` locks this reader's unmeasured drop there, and an undeclared array stays refused. -/
+/- A member the model declares nothing for is dropped whatever its JSON kind, as the Kernel's
+conversion drops an object, string, boolean, `null`, number or array member of a fixed group
+([checkpoint](../../../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members);
+[inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-23)); the root's object `Nope`
+locks this reader's drop there, where only a string is measured. The declared `Flag` holding an
+array and the declared root group holding a string are the refusing twins: the drop reaches only
+undeclared names. -/
 example :
     let dm : DmModel := { flat := model flag, rules := [], computations := [], conditionLanguage := "en_US",
                           refusals := [] }
-    [((readDocument dm (Json.mkObj [("Order", Json.mkObj [("Typo", Json.mkObj [])])])).toOption.map
+    [((readDocument dm (Json.mkObj [("Order", Json.mkObj [("Flag", Json.arr #[])])])).toOption.map
+        (·.refusals.length)) == some 1,
+     (match readDocument dm (Json.mkObj [("Order", Json.str "x")]) with
+      | .ok read => !read.refusals.isEmpty
+      | .error _ => true),
+     ((readDocument dm (Json.mkObj [("Order", Json.mkObj [("Typo", Json.mkObj [])])])).toOption.map
         (fun read => (read.refusals.length, read.data.groupOccurrences.length))) == some (0, 1),
      ((readDocument dm (Json.mkObj [("Nope", Json.mkObj [])])).toOption.map (·.refusals.length)) == some 0,
-     ((readDocument dm (Json.mkObj [("Order", Json.mkObj [("Typo", Json.arr #[])])])).toOption.map
-        (·.refusals.length)) == some 1,
+     [Json.arr #[], Json.bool true, Json.null, (5 : Json)].all fun value =>
+       ((readDocument dm (Json.mkObj [("Order", Json.mkObj [("Typo", value)])])).toOption.map
+         (fun read => (read.refusals.length, read.data.cells.length))) == some (0, 0),
      ((readDocument dm (Json.mkObj [("Order", Json.mkObj [])])).toOption.map (·.refusals.length)) ==
         some 0].all id := by
   native_decide

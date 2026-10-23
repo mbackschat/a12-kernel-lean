@@ -1,0 +1,605 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "K0607c6_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-23T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "oneEach",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "c1",
+              "field" : "/Order[1]/Lines[-5]/Parts[1]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count",
+                "Order/Picks[3]/LineNo",
+                "Order/Picks[3]/Ref"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines[2]/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "c1",
+              "field" : "/Order[1]/Lines[-5]/Parts[1]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count",
+                "Order/Picks[3]/LineNo",
+                "Order/Picks[3]/Ref"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines[2]/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "twoParts",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "c1",
+              "field" : "/Order[1]/Lines[-5]/Parts[1]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count",
+                "Order/Picks[3]/LineNo",
+                "Order/Picks[3]/Ref"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "/Order[1]/Lines[-5]/Parts[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[2]/Count",
+                "Order/Picks[3]/LineNo",
+                "Order/Picks[3]/Ref"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[2]/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines[2]/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines[2]/Parts[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts[2]/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts[2]/Count"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "c1",
+              "field" : "/Order[1]/Lines[-5]/Parts[1]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count",
+                "Order/Picks[3]/LineNo",
+                "Order/Picks[3]/Ref"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "/Order[1]/Lines[-5]/Parts[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[2]/Count",
+                "Order/Picks[3]/LineNo",
+                "Order/Picks[3]/Ref"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[2]/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines[2]/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines[2]/Parts[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts[2]/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts[2]/Count"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "noParts",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "c1",
+              "field" : "/Order[1]/Lines[-5]/Parts[1]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count",
+                "Order/Picks[3]/LineNo",
+                "Order/Picks[3]/Ref"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines[2]/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "c1",
+              "field" : "/Order[1]/Lines[-5]/Parts[1]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count",
+                "Order/Picks[3]/LineNo",
+                "Order/Picks[3]/Ref"
+              ],
+              "fillToFix" : [
+                "/Order[1]/Lines[-5]/LineNo",
+                "/Order[1]/Lines[-5]/Parts[1]/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines[2]/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "twoSlots",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count"
+              ]
+            },
+            {
+              "code" : "c1",
+              "field" : "Order/Lines/Parts[2]/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "noRef",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "c1",
+              "field" : "Order/Lines[2]/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "c1",
+              "field" : "Order/Lines[2]/Parts/Count",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

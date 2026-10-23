@@ -150,7 +150,10 @@ private def withIndexFields (pair : CheckedParallelFieldPair model)
 repeatable level inside the joined row is wildcarded unless the row binds it, as an error field's
 level below the join is bound
 ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
-`nested-join`). -/
+`nested-join`). An unmatched side has no environment but still binds the nested rows it visits, so
+its references name the visited row
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-nested-join-capacity),
+`capacity-five`). -/
 private def fieldPointer (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
     (outer : Env) (cache : Option MessageIndexContext) (declaration : FlatFieldDecl) :
     Except ParallelReferenceError MessagePointer :=
@@ -159,7 +162,7 @@ private def fieldPointer (pair : CheckedParallelFieldPair model) (row : Resolved
   | some (side, index) => do
       let joined ← side.messagePointer model outer index.id (cache.map (·, row.key)) |>.mapError .join
       let deeper := (declaration.repeatableScope.drop joined.coordinates.length).map fun level =>
-        (side.environment.bind (·.uniqueRowAt? level)).map MessageRepetitionCoordinate.concrete
+        ((side.environment.getD side.inner).uniqueRowAt? level).map MessageRepetitionCoordinate.concrete
           |>.getD .wildcard
       pure { field := declaration.id, coordinates := joined.coordinates ++ deeper }
   | none => concreteFieldPointer declaration outer |>.mapError .outer

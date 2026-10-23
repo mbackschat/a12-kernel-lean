@@ -1,0 +1,155 @@
+[
+ {
+  "id": "sv1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sv1",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Abs(Items/Count) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sv2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sv2",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Min(Items/Count, [Items/Count]) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sv3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sv3",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Min([Items/Count], Items/Count) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sv4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sv4",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundDown(Items/Count, 0) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sv5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sv5",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundAccounting(Items/Count, 2) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sv6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sv6",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Abs([Items/Count]) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sv7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sv7",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundDown([Items/Count], 0) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sv8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sv8",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Max([Items/Count], 2 + Items/Count) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sv9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sv9",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Max([Items/Count], Abs(Items/Count)) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

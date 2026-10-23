@@ -1,0 +1,1804 @@
+[
+ {
+  "id": "cmi001",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi001",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RoundUpValue($Items, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi002",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi002",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundUpValue($Items, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi003",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi003",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RoundUpValue($Items*/UnitPrice, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi004",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi004",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundUpValue($Items*/UnitPrice, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi005",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RoundUpValue($Items/UnitPrice, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi006",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundUpValue($Items/UnitPrice, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi007",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RoundUp($Items/Code, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi008",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi008",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundUp($Items/Code, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi009",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi009",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RangeAsString($Items, 1, 3) == \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi010",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi010",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RangeAsString($Items, 1, 3) == \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi011",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi011",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RangeAsString($Items/Code, 1, 3) == \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi012",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi012",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RangeAsString($Items/Code, 1, 3) == \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi013",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi013",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having DayFromDate($Items/Count) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi014",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi014",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And DayFromDate($Items/Count) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi015",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi015",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having DayFromDate($Items/ShipOn) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi016",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi016",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And DayFromDate($Items/ShipOn) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi017",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi017",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having ValueAsDate($Items/Count, FirstDay) > \"01.01.2020\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi018",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi018",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And ValueAsDate($Items/Count, FirstDay) > \"01.01.2020\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi019",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi019",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having ValueAsDate($Items, FirstDay) > \"01.01.2020\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi020",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi020",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And ValueAsDate($Items, FirstDay) > \"01.01.2020\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi021",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi021",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having FieldValueIncludedInValueList($Items, \"a\"))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi022",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi022",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And FieldValueIncludedInValueList($Items, \"a\"))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi023",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi023",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having FieldValueIncludedInValueList($Items/Code, \"a\"))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi024",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi024",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And FieldValueIncludedInValueList($Items/Code, \"a\"))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi025",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi025",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Valid(Date($Items/Count, BirthMonth, BirthYear)))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi026",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi026",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Valid(Date($Items/Count, BirthMonth, BirthYear)))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi027",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi027",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Valid(Date($Items, BirthMonth, BirthYear)))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi028",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi028",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Valid(Date($Items, BirthMonth, BirthYear)))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi029",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi029",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Valid(Date($Items/Day, BirthMonth, BirthYear)))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi030",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi030",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Valid(Date($Items/Day, BirthMonth, BirthYear)))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi031",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi031",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Sum($Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi032",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi032",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Sum($Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi033",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi033",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Sum($Items*/Count, Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi034",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi034",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Sum($Items*/Count, Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi035",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi035",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Sum(Items*/Count, Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi036",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi036",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Sum(Items*/Count, Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi037",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi037",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Sum($Items*/Code, Items*/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi038",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi038",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Sum($Items*/Code, Items*/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi039",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi039",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Sum(Items*/Code, Items*/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi040",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi040",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Sum(Items*/Code, Items*/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi041",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi041",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Sum(Items*/Code, Items*/Code) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi042",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi042",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Sum($Items/Code, Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi043",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi043",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Sum($Items/Code, Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi044",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi044",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Sum(Items/Code, Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi045",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi045",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Sum(Items/Code, Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi046",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi046",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Sum(Items/Code, Items/Code) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi047",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi047",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having FieldFilled($Items))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi048",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi048",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And FieldFilled($Items))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi049",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi049",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having FieldFilled($Items/Count))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi050",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi050",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And FieldFilled($Items/Count))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi051",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi051",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Length($Items/ShipOn) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi052",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi052",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Length($Items/ShipOn) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi053",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi053",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Length($Items/Code) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi054",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi054",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Length($Items/Code) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi055",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi055",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having Sum($Items/Count, $Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi056",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi056",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Sum($Items/Count, $Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi057",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi057",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having AtLeastOneFieldFilled($Items/Code, $Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi058",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi058",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldFilled($Items/Code, $Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi059",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi059",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having AtLeastOneFieldFilled($Items*/Code, $Items*/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi060",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi060",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldFilled($Items*/Code, $Items*/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi061",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi061",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having AtLeastOneFieldFilled($Items, Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi062",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi062",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldFilled($Items, Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi063",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi063",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having AtLeastOneFieldFilled($Items, $Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi064",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi064",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldFilled($Items, $Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi065",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi065",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having AtLeastOneFieldFilled($Customer))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi066",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi066",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldFilled($Customer))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi067",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi067",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having NumberOfValueInFields(\"a\" In $Items/Code, $Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi068",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi068",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And NumberOfValueInFields(\"a\" In $Items/Code, $Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi069",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi069",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having NumberOfValueInFields(\"a\" In Items/Code, Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi070",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi070",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And NumberOfValueInFields(\"a\" In Items/Code, Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi071",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi071",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having NumberOfValueInFields(\"a\" In $Items/Code, Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi072",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi072",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And NumberOfValueInFields(\"a\" In $Items/Code, Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi073",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi073",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having FieldValuesNotUnique($Items/Code, Items/ShipOn))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi074",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi074",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And FieldValuesNotUnique($Items/Code, Items/ShipOn))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi075",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi075",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having FieldValuesNotUnique($Items*/Code, Items*/ShipOn))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi076",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi076",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And FieldValuesNotUnique($Items*/Code, Items*/ShipOn))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi077",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi077",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having FieldValuesNotUnique($Items/Code, $Items/ShipOn))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi078",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi078",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And FieldValuesNotUnique($Items/Code, $Items/ShipOn))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi079",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi079",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having SumOfProducts($Items/UnitPrice, Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi080",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi080",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And SumOfProducts($Items/UnitPrice, Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi081",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi081",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having SumOfProducts($Items*/UnitPrice, Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi082",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi082",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And SumOfProducts($Items*/UnitPrice, Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi083",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi083",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having SumOfProducts($Items*/UnitPrice, $Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi084",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi084",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And SumOfProducts($Items*/UnitPrice, $Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi085",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi085",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having SumOfProducts($Items*, Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi086",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi086",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And SumOfProducts($Items*, Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi087",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi087",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having SumOfProducts($Items*) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi088",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi088",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And SumOfProducts($Items*) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi089",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi089",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RepetitionNotUnique(Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi090",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi090",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RepetitionNotUnique(Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi091",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi091",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RepetitionNotUnique($Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi092",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi092",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RepetitionNotUnique($Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi093",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi093",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RangeAsString(Items, 1, 3) == \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi094",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi094",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RangeAsString(Items, 1, 3) == \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi095",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi095",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having ValueAsDate(Items, FirstDay) > \"01.01.2020\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi096",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi096",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And ValueAsDate(Items, FirstDay) > \"01.01.2020\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi097",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi097",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RangeAsString(Items, 1, 3) == \"a\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi098",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi098",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RangeAsString(Items*, 1, 3) == \"a\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi099",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi099",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And ValueAsDate(Items, FirstDay) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi100",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi100",
+   "--field",
+   "/Customer/BirthYear",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthYear) And RangeAsString(Items, 1, 3) == \"a\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi101",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi101",
+   "--field",
+   "/Customer/BirthYear",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthYear) And ValueAsDate(Items, FirstDay) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi102",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi102",
+   "--field",
+   "/Customer/BirthYear",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthYear) And RoundUpValue(Items, 2) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi103",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi103",
+   "--field",
+   "/Customer/BirthYear",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthYear) And AtLeastOneFieldFilled(Items*/Count Having RangeAsString($Items, 1, 3) == \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi104",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi104",
+   "--field",
+   "/Customer/BirthYear",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthYear) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundUpValue($Items, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi105",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi105",
+   "--field",
+   "/Customer/BirthYear",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthYear) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Valid(Date($Items, BirthMonth, BirthYear)))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "cmi106",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "cmi106",
+   "--field",
+   "/Customer/BirthYear",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthYear) And AtLeastOneFieldFilled(Items*/Count Having RangeAsString(Items, 1, 3) == \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

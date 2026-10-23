@@ -1,0 +1,206 @@
+[
+ {
+  "id": "sb1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sb1",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundUp(Items/Code, 2) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sb2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sb2",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundUp(Items/Count, 2) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sb3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sb3",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundUp([Items/Code], 2) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sb4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sb4",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundUp(Items/Code, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sb5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sb5",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundUp([$Items/Code], 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sb6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sb6",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundUp($Items/Count, 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sc1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sc1",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And ValueAsDate(Items/Count, FirstDay) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sc2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sc2",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And ValueAsDate(Items/Code, FirstDay) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sc3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sc3",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And ValueAsDate(Items/Day, FirstDay) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sc4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sc4",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And ValueAsDate(Items/Count, FirstDay) > \"01.01.2020\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sc5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sc5",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And ValueAsDate($Items/Day, FirstDay) > \"01.01.2020\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sc6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sc6",
+   "--field",
+   "/Customer/BirthYear",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthYear) And ValueAsDate(Items/Day, FirstDay) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

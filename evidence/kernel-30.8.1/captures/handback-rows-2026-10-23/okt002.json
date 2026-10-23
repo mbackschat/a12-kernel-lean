@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Lines/Slots",
+ "group": "/Order",
+ "condition": "GroupFilled(Lines/Slots) And FieldFilled(Picks/Ref)",
+ "code": "okt002",
+ "name": "okt002",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

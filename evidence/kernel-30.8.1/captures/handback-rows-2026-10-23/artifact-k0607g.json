@@ -1,0 +1,315 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "K0607g_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-23T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "slots2",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Sku",
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g4",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g5",
+              "field" : "Order/Lines/Slots/Mark",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Sku",
+                "Order/Lines/Slots/Mark"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Sku",
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g4",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g5",
+              "field" : "Order/Lines/Slots/Mark",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Sku",
+                "Order/Lines/Slots/Mark"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "mixed",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Sku",
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g3",
+              "field" : "Order/Lines[2]/Parts",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Lines[2]/Parts/PartNo",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g4",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Sku",
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g3",
+              "field" : "Order/Lines[2]/Parts",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Lines[2]/Parts/PartNo",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g4",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "parts",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Sku",
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g3",
+              "field" : "Order/Lines/Parts",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Lines/Parts/PartNo",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g4",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Sku",
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g3",
+              "field" : "Order/Lines/Parts",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Lines/Parts/PartNo",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g4",
+              "field" : "Order/Lines/Slots",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Order/Lines/Slots/Mark",
+                "Order/Lines/Slots/SlotNo",
+                "Order/Lines/Slots/Tagged/Flag"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

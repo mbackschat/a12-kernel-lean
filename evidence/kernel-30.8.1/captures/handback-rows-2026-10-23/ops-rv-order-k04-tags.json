@@ -1,0 +1,104 @@
+[
+ {
+  "id": "sg8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg8",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Qty, Picks/Ref) >= 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg9",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Qty, Picks/Ref) != 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg10",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Qty, Picks/Ref) <= 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg11",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Qty, Picks/Ref) == 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg12",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Qty, Lines/Sku) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "sg13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "sg13",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Qty, Picks/Ref) > 2",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

@@ -1,0 +1,414 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+    "state" : "CLEAN"
+  },
+  "model" : "979bd374b1a64b67ba03c66b527787d82239054836770b899cdfcb2d796e1397",
+  "observations" : [ {
+    "id" : "ssd001",
+    "inputHash" : "88ba2581415141a300b551b59b41d56b7439a2ef4d59c8ed45e60d3495792cd4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "ssd002",
+    "inputHash" : "cf985c45bbd4a8931b0c9ab68fd3d4862e444384e6b1a94dffd42d11dbd1e89a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd003",
+    "inputHash" : "0d25952c8e9bf0e01acf6e95ba7b0cc07a58d75a9b03a63ecf4dce003511d9e7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd004",
+    "inputHash" : "176aca20214869b1c8176a4ced30bf58462ecc4e68bd723df2516c8ad860f63c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd005",
+    "inputHash" : "68f36e5d5d9a6d30764b54093d7bc4ecf480af17a768bedb5700f1dbc20d64b3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd006",
+    "inputHash" : "5f8cb60824410b712bcd744d8e2b48a00df225b886b7416ddf948b189bfa7efe",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd007",
+    "inputHash" : "e7d1978f149bea95741c8df0a7876f966b35fa4c0dcd6ccc15f5e046e3e7f323",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "ssd008",
+    "inputHash" : "40bdeedb8b9265db6b55af891f3724131da35480077bcfde65d13159613d4a89",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd009",
+    "inputHash" : "414ae76b612027ceb92257735a238610416adaf0996259439098e0aedb3bd8fa",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd010",
+    "inputHash" : "2900880322c7b3fd8b4e96355773d7bbae81c4654a236d4e9f246f8107d0f976",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd011",
+    "inputHash" : "b4054f193c0852785047590939be1700b9bb93d6fe36ac81106fdb296bfcd9f3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd012",
+    "inputHash" : "fd643e6d66819b9d37701e6ce4914ca6125dea745cb719668bd287affb18d365",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd013",
+    "inputHash" : "acd8848e5347027d688272b1258df04e19b9e30d664ccd31168de45d2d235f43",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "ssd014",
+    "inputHash" : "fcde00898c4fb776f22564ab4ff0dd15724aede3fda86d4e1a87fa984567923b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd015",
+    "inputHash" : "d6de35da34576155926e7b00424094836bf2a44df67020f0dfaa1db77545a219",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd016",
+    "inputHash" : "da4d4d9a80fce5e2e3eb4f120e97ad77d5545713f5f074b2f8a2f2935da3b928",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd017",
+    "inputHash" : "fd4f30699203c58368a736c079ecf19f0d3121f3e9a21e98d40fa56385ec86ed",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd018",
+    "inputHash" : "6cb99e0a894cfc624dbd5eed307976a3bfd4b9cf89681af4f3f69433eda20269",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd019",
+    "inputHash" : "bed7863f369e8b9f421c3474cec32fbb690f2173a629a5c0d935f38e95c57f03",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "ssd020",
+    "inputHash" : "570d0ef99752eaeabd3f5928d1f9995612032e1208d27307dd0a722e8ab91a9f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd021",
+    "inputHash" : "371da84f578ceae74bc33a1fc07fd1e9453e1de8bc4cc9ae8c9f2007e336ae9b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd022",
+    "inputHash" : "fec6555b709c202d17cb81d1996626dde4907c3fdfaabe381886c125a8d2c27f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd023",
+    "inputHash" : "dbc19bd92963ba3128e1050e3863cda5d367aa0d73267fa73f346fffe59b0ed1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd024",
+    "inputHash" : "eb105527a0403da851c9fc63fc1a14d815a2a52b878fd45e3345a92a011d7df2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd025",
+    "inputHash" : "4606b652a87890e2668b975bb235019b3d9a7dea5f486d7254ad6b0177eea670",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "ssd026",
+    "inputHash" : "4e8075162f1277d79293bb6be872a5ad169a9b867440d6890bf3a36a46034975",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd027",
+    "inputHash" : "3e50a0da7347b3d26ca5843344788433e3d24e2bb44201d686dc34be401b0b22",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd028",
+    "inputHash" : "67f66ba05793847d4f72c972967ad760538417fc712eab946539f831c4cd13fd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd029",
+    "inputHash" : "0fa818df118057615553559d09267020a4481a7fae221519037f0734f0a3d046",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd030",
+    "inputHash" : "09f74e4a74a4d81086468dcabedad2421bcebead07424da2d28442bda36ea576",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd031",
+    "inputHash" : "6f78ee98b7c8ba8f72c94cd6c0d46b0d3a48574b029c29de659e46e2cc2a7000",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "ssd032",
+    "inputHash" : "e42276b649bc60665470a6715adfc3df3db75930d5f9d8fad2a4a8d2a91747ae",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd033",
+    "inputHash" : "dbbb9808cfb22e896d1b6ac5707882208588970eecd54b59a5b4f69fe5ee8e21",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd034",
+    "inputHash" : "306d6d4cfa277571ddefac8200ba7be64357951accb90b94ca0fb420a142787b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd035",
+    "inputHash" : "487156eaa37e00452da34d3d27057822d07ea2ae89652b91db9199678053d5e3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd036",
+    "inputHash" : "da5c187e128f3d3ef712504cac8b502c7ed52801dd5db70fe7f7d5d15d42cf37",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd037",
+    "inputHash" : "b0fe475e2f4012419984ae5c18f794c63ca981a6966d00869b007d9122dd93d5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "ssd038",
+    "inputHash" : "1bb26ae7a6b892dbfe99764e71faa9f4bcaab391141689738226d27729b05eb1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd039",
+    "inputHash" : "7ca1adcc98ebcd415019375601a2f1db0d5f149b80308c2a2b6f6d768bee96ca",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd040",
+    "inputHash" : "eb8246627911d23e21e479e1150662e025e88fd99b20ab6c8797392fd1b3e6ad",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd041",
+    "inputHash" : "adedc345a937bfc7fc6c2864d7f089dbfd03bfdd53d01cb449e958bfc894d05b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd042",
+    "inputHash" : "2ed597334ee3163bcfc7bd4757efafb1c3ade2e454c64ebb001cb16320f18610",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "ssd043",
+    "inputHash" : "5b3456d1154382f98d3260ac6aaa0a08e7a683eb32a2ce9e90544f1ab5a75271",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd044",
+    "inputHash" : "11fddf7760be2645ab978a0d310583735ed684309d59d7895f9a81c3c05be679",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd045",
+    "inputHash" : "caa268cb4b31be166065f47fcb9f94e661f0e6dae5185bd3103592ac631b45b3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd046",
+    "inputHash" : "55f05b1f7274906227d0830e3c624d3c96922443f4b57d3da11114539c14326d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd047",
+    "inputHash" : "2397053ab4708fb7aabc4f15044783e0df9d5ed78c8963e478cb0c4a97173c75",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "ssd048",
+    "inputHash" : "7ecf35ca2c253c8b831ebd308b2e11cac11a44f37aea4b901964cf52c9bd32bd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd049",
+    "inputHash" : "c4502b3d7932920935587ff27ff62f71007c97bebb37664debdb8de60564f28f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd050",
+    "inputHash" : "ab565ea139e3b1ac7a03ee63a08fbd5b86bddd196e14d941f8a7fe181cd729ac",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd051",
+    "inputHash" : "1a94382789f5f26bb263246b4b517c25bcef69295e63005e91fb2578aca2306f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd052",
+    "inputHash" : "ff7e60ca89e7cd1669c2e20b6c0aa9cfdb6d110814280b377860b521dba734f4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "ssd053",
+    "inputHash" : "4db619ce75d7626b1c220bae444dd4ad0f17a0bfea46e8883ca4ebf66904d218",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd054",
+    "inputHash" : "4137fa14d0e54bc27b1465eded08752b4325fd84ae62f5a32fe5585c563cb4fa",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd055",
+    "inputHash" : "b89ac0ba11ff0992d8ad30e32563479390eff400d3b404c0000eb9dc37093bd9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd056",
+    "inputHash" : "5552004de3079778938d42ea0e77a5ff38b6eadd2d90fe1c97b228be788541d3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd057",
+    "inputHash" : "ed524fa70bd709d95cb9d4f375be1e82d64b615fa17100383227cd9a33e0ec2c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ssd058",
+    "inputHash" : "261e0efa7add63a9453590e52da08ef6ee7afcdab33e35bdc25af9861b96adf3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "ssd059",
+    "inputHash" : "fdcb762abd01a9323be621e0f78653de84848a376a50ccc81cedca09698cdd8f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "ssd060",
+    "inputHash" : "9417ec3bf980436f34d4cb8a27fa6ea67ccc06a33aaf17d6224b18bee9d6ddb5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "ssd061",
+    "inputHash" : "0020d7be5dca7a28185452f25062042b0ba22274a0b9136237d4521925162595",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "ssd062",
+    "inputHash" : "f3337e01c185e266ff8af9ff9a94fbebd5cc14a16d30aad6a62b73f722dadbf2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_STRING_OR_NUMBER_FOR_ADD" ]
+  }, {
+    "id" : "ssd063",
+    "inputHash" : "a2f5a7a53799a02f696d13c1e60103521dee51c3a9667af77879ba0e6296cdc0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER_FOR_CALC" ]
+  }, {
+    "id" : "ssd064",
+    "inputHash" : "7b0470bde5e4fc62122180c6e6497d078b96bb54eff5ac1df9bdf6d5b212ca81",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "ssd065",
+    "inputHash" : "153127acde87a639a450a40743e1e27a1f290352e8830fda34f163049c39ff04",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "ssd066",
+    "inputHash" : "6d8c97e055fc66c0654c3896a6d95bab2e61898c1965e79d5446b9bfcbaf2c9c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_TOLERANCE_OP" ]
+  }, {
+    "id" : "ssd067",
+    "inputHash" : "4b5464dfadf2e94e58d9757c48ca653d7f476a4dd3f44f036bf079de832057cb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  } ]
+}

@@ -1,0 +1,444 @@
+[
+ {
+  "id": "ctr001",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr001",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And [Note] == \"x\"",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr002",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr002",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And Length(Note) > 5",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr003",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr003",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And FieldValuesNotUnique(Attachments*/Blob)",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr004",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr004",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And NumberOfValueInFields(\"x\" In Note, Other) > 0",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr005",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And NumberOfDifferentValues(Note, Other) > 0",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr006",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And Valid(Note, \"IBAN\")",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr007",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And AtLeastOneFieldValueIncludedInValueList(Note In \"a\")",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr008",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr008",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And AtLeastOneFieldValueIncludedInValueList(Other In Note)",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr009",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr009",
+   "--field",
+   "/Claim/Attachments/Blob",
+   "--group",
+   "/Claim",
+   "--condition",
+   "RepetitionNotUnique(Attachments/Blob)",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr010",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr010",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And RangeAsString(Note, 1, 2) == \"a\"",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr011",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr011",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And FieldValueIncludedInValueList(Note, \"a\")",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr012",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr012",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And FieldFilled(Note)",
+   "--message",
+   "en_US=Check $Note.value$."
+  ]
+ },
+ {
+  "id": "ctr013",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr013",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And FieldFilled(Note)",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr014",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr014",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And [NoteDef] == \"x\"",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr015",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr015",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And Length(NoteDef) > 5",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr016",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr016",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And FieldValuesNotUnique(Attachments*/BlobDef)",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr017",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr017",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And NumberOfValueInFields(\"x\" In NoteDef, Other) > 0",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr018",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr018",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And NumberOfDifferentValues(NoteDef, Other) > 0",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr019",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr019",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And Valid(NoteDef, \"IBAN\")",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr020",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr020",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And AtLeastOneFieldValueIncludedInValueList(NoteDef In \"a\")",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr021",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr021",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And AtLeastOneFieldValueIncludedInValueList(Other In NoteDef)",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr022",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr022",
+   "--field",
+   "/Claim/Attachments/BlobDef",
+   "--group",
+   "/Claim",
+   "--condition",
+   "RepetitionNotUnique(Attachments/BlobDef)",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr023",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr023",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And RangeAsString(NoteDef, 1, 2) == \"a\"",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr024",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr024",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And FieldValueIncludedInValueList(NoteDef, \"a\")",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ },
+ {
+  "id": "ctr025",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr025",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And FieldFilled(NoteDef)",
+   "--message",
+   "en_US=Check $NoteDef.value$."
+  ]
+ },
+ {
+  "id": "ctr026",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ctr026",
+   "--field",
+   "/Claim/Other",
+   "--group",
+   "/Claim",
+   "--condition",
+   "FieldFilled(Other) And FieldFilled(NoteDef)",
+   "--message",
+   "en_US=Check the claim."
+  ]
+ }
+]

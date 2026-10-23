@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Gifts",
+ "group": "/Order",
+ "condition": "GroupFilled(Gifts) And FieldFilled(Wraps/Style)",
+ "code": "okt003",
+ "name": "okt003",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

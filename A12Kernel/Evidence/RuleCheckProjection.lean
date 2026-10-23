@@ -131,14 +131,44 @@ def captures : List (String × String × String) := [
   ("captures/entity-list-group-gates-2026-10-14/obs.json", "captures/entity-list-group-gates-2026-10-14/R9_DM.json", "captures/entity-list-group-gates-2026-10-14/ops.json"),
   ("captures/filter-suppression-and-row-carriers-2026-10-14/obs.json", "captures/filter-suppression-and-row-carriers-2026-10-14/R11_DM.json", "captures/filter-suppression-and-row-carriers-2026-10-14/ops.json"),
   ("captures/filter-suppression-and-row-carriers-2026-10-14/obs-b.json", "captures/filter-suppression-and-row-carriers-2026-10-14/R11BS_DM.json", "captures/filter-suppression-and-row-carriers-2026-10-14/ops-b.json"),
-  ("captures/filter-waiver-carriers-2026-10-14/obs.json", "captures/filter-waiver-carriers-2026-10-14/R11D_DM.json", "captures/filter-waiver-carriers-2026-10-14/ops.json")]
+  ("captures/filter-waiver-carriers-2026-10-14/obs.json", "captures/filter-waiver-carriers-2026-10-14/R11D_DM.json", "captures/filter-waiver-carriers-2026-10-14/ops.json"),
+  ("captures/handback-rows-2026-10-23/obs-claim-typed-raw.json", "captures/handback-rows-2026-10-23/claim-typed-raw_DM.json", "captures/handback-rows-2026-10-23/ops-claim-typed-raw.json"),
+  ("captures/handback-rows-2026-10-23/obs-customer-items.json", "captures/handback-rows-2026-10-23/customer-items_DM.json", "captures/handback-rows-2026-10-23/ops-customer-items.json"),
+  ("captures/handback-rows-2026-10-23/obs-customer-marked-items.json", "captures/handback-rows-2026-10-23/customer-marked-items_DM.json", "captures/handback-rows-2026-10-23/ops-customer-marked-items.json"),
+  ("captures/handback-rows-2026-10-23/obs-order-group-target.json", "captures/handback-rows-2026-10-23/order-group-target_DM.json", "captures/handback-rows-2026-10-23/ops-order-group-target.json"),
+  ("captures/handback-rows-2026-10-23/obs-order-k04-bows.json", "captures/handback-rows-2026-10-23/order-k04-bows_DM.json", "captures/handback-rows-2026-10-23/ops-order-k04-bows.json"),
+  ("captures/handback-rows-2026-10-23/obs-order-k04-tags.json", "captures/handback-rows-2026-10-23/order-k04-tags_DM.json", "captures/handback-rows-2026-10-23/ops-order-k04-tags.json"),
+  ("captures/handback-rows-2026-10-23/obs-order-k04.json", "captures/handback-rows-2026-10-23/order-k04_DM.json", "captures/handback-rows-2026-10-23/ops-order-k04.json"),
+  ("captures/handback-rows-2026-10-23/obs-order-keyed-gates.json", "captures/handback-rows-2026-10-23/order-keyed-gates_DM.json", "captures/handback-rows-2026-10-23/ops-order-keyed-gates.json"),
+  ("captures/handback-rows-2026-10-23/obs-order-slots.json", "captures/handback-rows-2026-10-23/order-slots_DM.json", "captures/handback-rows-2026-10-23/ops-order-slots.json"),
+  ("captures/handback-rows-2026-10-23/obs-shop-marked-residue.json", "captures/handback-rows-2026-10-23/shop-marked-residue_DM.json", "captures/handback-rows-2026-10-23/ops-shop-marked-residue.json"),
+  ("captures/handback-rows-2026-10-23/obs-shop-nested-keys.json", "captures/handback-rows-2026-10-23/shop-nested-keys_DM.json", "captures/handback-rows-2026-10-23/ops-shop-nested-keys.json"),
+  ("captures/handback-rows-2026-10-23/obs-shop-shifted-dates.json", "captures/handback-rows-2026-10-23/shop-shifted-dates_DM.json", "captures/handback-rows-2026-10-23/ops-shop-shifted-dates.json"),
+  ("captures/handback-rows-2026-10-23/obs-shop-typed-keys.json", "captures/handback-rows-2026-10-23/shop-typed-keys_DM.json", "captures/handback-rows-2026-10-23/ops-shop-typed-keys.json"),
+  ("captures/handback-rows-2026-10-23/obs-sup-customer-marked-items.json", "captures/handback-rows-2026-10-23/customer-marked-items_DM.json", "captures/handback-rows-2026-10-23/ops-sup-customer-marked-items.json"),
+  ("captures/handback-rows-2026-10-23/obs-binding.json", "captures/handback-rows-2026-10-23/customer-marked-items_DM.json", "captures/handback-rows-2026-10-23/ops-binding.json"),
+  ("captures/handback-rows-2026-10-23/obs-rv-customer-marked-items.json", "captures/handback-rows-2026-10-23/customer-marked-items_DM.json", "captures/handback-rows-2026-10-23/ops-rv-customer-marked-items.json"),
+  ("captures/handback-rows-2026-10-23/obs-rv-order-k04-tags.json", "captures/handback-rows-2026-10-23/order-k04-tags_DM.json", "captures/handback-rows-2026-10-23/ops-rv-order-k04-tags.json"),
+  ("captures/handback-rows-2026-10-23/obs-rv-order-k04-bows.json", "captures/handback-rows-2026-10-23/order-k04-bows_DM.json", "captures/handback-rows-2026-10-23/ops-rv-order-k04-bows.json"),
+  ("captures/handback-rows-2026-10-23/obs-sup-order-k04-bows.json", "captures/handback-rows-2026-10-23/order-k04-bows_DM.json", "captures/handback-rows-2026-10-23/ops-sup-order-k04-bows.json"),
+  ("captures/handback-rows-2026-10-23/obs-sup-order-k04-tags.json", "captures/handback-rows-2026-10-23/order-k04-tags_DM.json", "captures/handback-rows-2026-10-23/ops-sup-order-k04-tags.json"),
+  ("captures/handback-rows-2026-10-23/obs-sup-order-keyed-gates.json", "captures/handback-rows-2026-10-23/order-keyed-gates_DM.json", "captures/handback-rows-2026-10-23/ops-sup-order-keyed-gates.json"),
+  ("captures/handback-rows-2026-10-23/obs-sup-shop-shifted-dates.json", "captures/handback-rows-2026-10-23/shop-shifted-dates_DM.json", "captures/handback-rows-2026-10-23/ops-sup-shop-shifted-dates.json"),
+  ("captures/handback-rows-2026-10-23/obs-sup2-shop-shifted-dates.json", "captures/handback-rows-2026-10-23/shop-shifted-dates_DM.json", "captures/handback-rows-2026-10-23/ops-sup2-shop-shifted-dates.json"),
+  ("captures/handback-rows-2026-10-23/dry-run-codes.json", "captures/handback-rows-2026-10-23/order-group-target_DM.json", "captures/handback-rows-2026-10-23/dry-ops-order-group-target.json"),
+  ("captures/handback-rows-2026-10-23/dry-run-codes.json", "captures/handback-rows-2026-10-23/order-k04-tags_DM.json", "captures/handback-rows-2026-10-23/dry-ops-order-k04-tags.json"),
+  ("captures/handback-rows-2026-10-23/dry-run-codes.json", "captures/handback-rows-2026-10-23/order-k04_DM.json", "captures/handback-rows-2026-10-23/dry-ops-order-k04.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) := [
   ("comparison-entry-gates/observations.json#groupregex", "host pattern compiler, SG7"),
   ("comparison-entry-gates/observations2.json#violatedcontrol", "host pattern compiler, SG7"),
   ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7"),
-  ("comparison-entry-gates/observations.json#regex", "host pattern compiler, SG7")]
+  ("comparison-entry-gates/observations.json#regex", "host pattern compiler, SG7"),
+  ("handback-rows-2026-10-23/dry-run-codes.json#okt002", "keyed group target beside a join, SG9"),
+  ("handback-rows-2026-10-23/obs-rv-order-k04-tags.json#sg10", "joined filled count outside the quantifier forms, SG9"),
+  ("handback-rows-2026-10-23/obs-rv-order-k04-tags.json#sg11", "joined filled count outside the quantifier forms, SG9"),
+  ("handback-rows-2026-10-23/obs-rv-order-k04-tags.json#sg13", "joined filled count outside the quantifier forms, SG9")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with
@@ -159,21 +189,28 @@ private def argsOf (args : List String) (flag : String) : List String :=
 
 private def segments (path : String) : List String := (path.splitOn "/").filter (· != "")
 
-/-- The rule a `rule check` request authors: `--group` defaults to the field's group, and the error
-field is addressed relative to it. -/
-private def requestedRule (args : List String) : DmRule :=
-  let field := segments ((argsOf args "--field").headD "")
-  let group := match (argsOf args "--group").head? with
+/-- A rule at `group` reporting on the entity at absolute `field`, whose group defaults to the entity's
+own group, addressed relative to it. -/
+private def ruleAt (field : List String) (group? : Option String) (errorCode condition : String) : DmRule :=
+  let group := match group? with
     | some path => segments path
     | none => field.dropLast
   -- The path climbs from the rule to the deepest group the declaring group shares with the field, then
   -- descends, so a field below the declaring group keeps its intermediate groups.
   let shared := ((group.zip field.dropLast).takeWhile fun (a, b) => a == b).length
   let ups := group.length - shared + 1
-  { group, name := "Probe", severity := "ERROR"
-    errorEntityRelPath := String.intercalate "/" (List.replicate ups ".." ++ field.drop shared)
-    errorCode := (argsOf args "--code").headD ""
-    condition := (argsOf args "--condition").headD "" }
+  { group, name := "Probe", severity := "ERROR", errorCode, condition
+    errorEntityRelPath := String.intercalate "/" (List.replicate ups ".." ++ field.drop shared) }
+
+/-- The rule a `rule check` request authors. -/
+private def requestedRule (args : List String) : DmRule :=
+  ruleAt (segments ((argsOf args "--field").headD "")) (argsOf args "--group").head?
+    ((argsOf args "--code").headD "") ((argsOf args "--condition").headD "")
+
+/-- The rule a `rule add --dry-run` spec authors; its `field` may name a group. -/
+private def specRule (spec : Json) : DmRule :=
+  ruleAt (segments ((spec.getObjValAs? String "field").toOption.getD "")) (spec.getObjValAs? String "group").toOption
+    ((spec.getObjValAs? String "code").toOption.getD "") ((spec.getObjValAs? String "condition").toOption.getD "")
 
 /-- The written texts, and for each declared locale the request leaves out the instrument's own
 parameter-free placeholder, which it supplies rather than leave the locale without a text. -/
@@ -312,13 +349,23 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
       | throw (IO.userError s!"{modelPath}: unreadable model")
     let locales := (((modelJson.getObjValD "header").getObjValAs? (Array Json) "locales").toOption.getD #[]).toList.filterMap
       fun locale => (locale.getObjValAs? String "code").toOption
-    let batch := ((← readJson (root / observations)).getObjValAs? (Array Json) "observations").toOption.getD #[]
+    -- A dry-run batch retains only each row's verdict and Kernel codes, keyed by row id, since the
+    -- instrument's envelope renders the Kernel's messages.
+    let retained ← readJson (root / observations)
+    let batch := match retained.getObjValAs? (Array Json) "observations", retained.getObjVal? "rows" with
+      | .ok rows, _ => rows
+      | .error _, .ok (.obj rows) => rows.foldl (init := #[]) fun batch (id : String) (row : Json) => batch.push (Json.mkObj
+          [("id", Json.str id), ("valid", row.getObjValD "admitted"), ("codes", row.getObjValD "codes")])
+      | .error _, _ => #[]
     for request in ((← readJson (root / requests)).getArr?).toOption.getD #[] do
       let args := ((request.getObjValAs? (Array String) "args").toOption.getD #[]).toList
       -- A batch may interleave other verbs. A rule check is its rule's static verdict, a computation
       -- preview its computation's.
       let declaration ← match (request.getObjValAs? String "verb").toOption, args with
         | some "rule", "check" :: _ => pure (some (Sum.inl (requestedRule args), messageEntries locales args))
+        | some "rule", "add" :: "--dry-run" :: file :: _ => do
+            let spec ← readJson ((root / requests).parent.getD root / file)
+            pure (some (Sum.inl (specRule spec), specEntries locales spec))
         | some "computation", "add" :: file :: _ => do
             let spec ← readJson ((root / requests).parent.getD root / file)
             pure (some (Sum.inr (requestedComputation spec), specEntries locales spec))

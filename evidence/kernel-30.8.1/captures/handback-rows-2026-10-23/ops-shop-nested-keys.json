@@ -1,0 +1,104 @@
+[
+ {
+  "id": "snk001",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "snk001",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RangeAsString($Notes/Pages, 1, 3) == \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "snk002",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "snk002",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RangeAsString(Notes/Pages, 1, 3) == \"a\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "snk003",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "snk003",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And GroupFilled(Notes/Pages)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "snk004",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "snk004",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Notes/Pages)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "snk005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "snk005",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundUpValue(Notes/Pages, 2) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "snk006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "snk006",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And FieldFilled(Notes/Pages/Text)",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

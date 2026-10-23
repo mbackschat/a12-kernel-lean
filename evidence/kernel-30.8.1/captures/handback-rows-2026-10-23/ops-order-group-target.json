@@ -1,0 +1,53 @@
+[
+ {
+  "id": "ogt007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ogt007",
+   "--field",
+   "/Order/Notes",
+   "--group",
+   "/Order/Lines",
+   "--condition",
+   "GroupFilled(/Order)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ogt008",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ogt008",
+   "--field",
+   "/Order/Lines",
+   "--group",
+   "/Order/Lines",
+   "--condition",
+   "FieldFilled(Sku)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ogt009",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ogt009",
+   "--field",
+   "/Order/Lines",
+   "--group",
+   "/Order/Lines",
+   "--condition",
+   "FieldFilled(Sku)",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

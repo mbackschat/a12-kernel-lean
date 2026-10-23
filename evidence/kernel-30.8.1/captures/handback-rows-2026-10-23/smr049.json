@@ -1,0 +1,15 @@
+{
+ "group": "/Customer",
+ "computedField": "/Customer/Items/UnitPrice",
+ "alternatives": [
+  {
+   "operation": "Sum(Items*/UnitPrice Having [$Items/UnitPrice] > 0)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

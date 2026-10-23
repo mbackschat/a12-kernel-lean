@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Notes",
+ "group": "/Order",
+ "condition": "GroupFilled(Notes/Remarks)",
+ "code": "ogt005",
+ "name": "ogt005",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

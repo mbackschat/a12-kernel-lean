@@ -493,9 +493,14 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup writtenGroup :
     SurfaceGroupListOperand →
       Except ValidationConditionAssemblyError
         (ResolvedGroupListOperand model)
-  | .indexed source => (.indexed ·) <$> (elaborateSemanticIndexSource model rowGroup source).mapError .semanticIndex
+  -- A selection's group and a row-field key bind at the written group's rows, as a keyed presence
+  -- read binds them ([KF601](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf601); handback rows
+  -- `okb003`, `se1`–`se3`).
+  | .indexed source => (.indexed ·) <$> (elaborateSemanticIndexSource model rowGroup source
+      (some (model.repeatableScopeForGroupPath writtenGroup))).mapError .semanticIndex
   | .keyed source => do
-      let checked ← (elaborateKeyedEntityExtent model rowGroup source).mapError .keyedGroup
+      let checked ← (elaborateKeyedEntityExtent model rowGroup source
+        (some (model.repeatableScopeForGroupPath writtenGroup))).mapError .keyedGroup
       if !checked.isGroup then throw .incoherentCore
       pure (.keyed checked)
   | .field reference => do

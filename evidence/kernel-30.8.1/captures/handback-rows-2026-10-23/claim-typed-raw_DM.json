@@ -1,0 +1,127 @@
+{
+  "header" : {
+    "id" : "claim-typed-raw_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "claim-typed-raw_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Claim",
+        "name" : "Claim",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Claim/Note",
+            "name" : "Note",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType",
+                "StringType" : {
+                  "lineBreaksPermitted" : true,
+                  "noValueValidation" : true
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Claim/NoteDef",
+            "name" : "NoteDef",
+            "Field" : {
+              "fieldType" : {
+                "type" : "TypeDefType",
+                "TypeDefType" : {
+                  "typeDefinitionId" : "FreeText"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Claim/Other",
+            "name" : "Other",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Claim/Attachments",
+            "name" : "Attachments",
+            "Group" : {
+              "repeatability" : 5,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Claim/Attachments/Blob",
+                "name" : "Blob",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType",
+                    "StringType" : {
+                      "lineBreaksPermitted" : true,
+                      "noValueValidation" : true
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Claim/Attachments/BlobDef",
+                "name" : "BlobDef",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TypeDefType",
+                    "TypeDefType" : {
+                      "typeDefinitionId" : "FreeText"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Claim/Attachments/Name",
+                "name" : "Name",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ]
+            }
+          } ]
+        }
+      } ]
+    },
+    "typeDefinitions" : [ {
+      "id" : "FreeText",
+      "name" : "FreeText",
+      "fieldType" : {
+        "type" : "StringType",
+        "StringType" : {
+          "lineBreaksPermitted" : true,
+          "noValueValidation" : true
+        }
+      }
+    } ]
+  }
+}

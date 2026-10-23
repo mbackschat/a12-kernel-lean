@@ -1,0 +1,206 @@
+[
+ {
+  "id": "stk001",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk001",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RangeAsString($Notes, 1, 3) == \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk002",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk002",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RangeAsString(Notes, 1, 3) == \"a\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk003",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk003",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RangeAsString(Memos, 1, 3) == \"a\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk004",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk004",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RangeAsString(Tickets, 1, 3) == \"a\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk005",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And FieldFilled(Notes/Text)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk006",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And FieldFilled(Tickets/Text)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk007",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And FieldFilled(Tickets/Text For Items/Code)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk008",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk008",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And FieldFilled(Notes/Text For Items/Code)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk009",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk009",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And FieldFilled(Memos/Text For Items/Code)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk010",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk010",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And FieldFilled(Tickets/Text For Items/Count)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk011",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk011",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And FieldFilled(Memos/Text For Items/RawRef)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "stk012",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "stk012",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Memos*/Text For Items/RawRef)",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

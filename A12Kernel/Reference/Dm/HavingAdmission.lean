@@ -588,6 +588,12 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
       if id == "DateRange" then
         let (reads, state) ← admitFieldList model group bindingGroup inFilter insideSemanticIndexKey admission arguments
         return (← rawDateRangeConstructorType (reads.map fun read => (read.reference, read.entity)), state)
+      -- Its operand's read, then group, star, category and partial-Date kind, in a body or not
+      -- ([KF599](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf599)).
+      if id == "ValueAsDate" then
+        let (type, _, state) ← admitTemporalOperand model group bindingGroup inFilter insideSemanticIndexKey admission
+          true (.call id arguments none none)
+        return (type, state)
       if let some constructor := rawTemporalConstructor? id then
         if constructor == .dateTime then
           let [.mk date none, .mk time none] := arguments | refuse "Having" "DateTime arguments"
@@ -708,11 +714,12 @@ end
 
 /-- The class a completed operation call's own production raises when the parse fails after it, as the
 Kernel checks each production as it completes (spec/12 §12.3): `none` for a condition call, a call that
-passes, or a refusal with no Kernel class. The call is read at `group` outside any filter. -/
-def operationCallClass? (model : FlatModel) (group : GroupPath) (call : Expr) :
+passes, or a refusal with no Kernel class. The call is read at `group`, bound at `bindingGroup`, outside
+any filter. -/
+def operationCallClass? (model : FlatModel) (group : GroupPath) (call : Expr) (bindingGroup : GroupPath := group) :
     Option KernelStaticDiagnostic :=
   if call.isConditionCall then none else
-  match (admitNumericAtom model group group false false {} call).run' {} with
+  match (admitNumericAtom model group bindingGroup false false {} call).run' {} with
   | .ok _ => none
   | .error refusal => KernelStaticDiagnostic.all.find? (·.kernelCode == refusal.detail)
 

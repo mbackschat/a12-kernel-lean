@@ -1,0 +1,53 @@
+[
+ {
+  "id": "se1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "se1",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) And AtLeastOneGroupFilled(Picks For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "se2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "se2",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) Or NoGroupFilled(Picks For Lines/LineNo)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "se3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "se3",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) And AtLeastOneGroupFilled(Picks For Lines/LineNo, Picks For \"a\")",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

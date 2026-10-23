@@ -1,0 +1,156 @@
+{
+ "model": "K0607c5_DM.json",
+ "clock": "2026-10-23T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "oneEach",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Parts": [
+        {
+         "Count": "1"
+        }
+       ]
+      },
+      {
+       "LineNo": "B"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "twoParts",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Parts": [
+        {},
+        {}
+       ]
+      },
+      {
+       "LineNo": "B"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "noParts",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A"
+      },
+      {
+       "LineNo": "B"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "twoSlots",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Slots": [
+        {
+         "SlotNo": "s1"
+        },
+        {
+         "SlotNo": "s2"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "noRef",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A"
+      },
+      {
+       "LineNo": "B"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

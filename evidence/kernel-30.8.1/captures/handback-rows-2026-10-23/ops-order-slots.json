@@ -1,0 +1,121 @@
+[
+ {
+  "id": "os001",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "os001",
+   "--field",
+   "/Order/Note",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Note) And Length(/Order/Note) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "os002",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "os002",
+   "--field",
+   "/Order/Note",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Note) And Length([/Order/Note]) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "os003",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "os003",
+   "--field",
+   "/Order/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Qty) And Length([/Order/Qty]) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "os004",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "os004",
+   "--field",
+   "/Order/Note",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Note) And Length([Note]) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "os005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "os005",
+   "--field",
+   "/Order/OrderedOn",
+   "--group",
+   "/Order",
+   "--condition",
+   "AllFieldsFilled(OrderedOn, ShippedOn) And DifferenceInDays(OrderedOn, ShippedOn) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "os006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "os006",
+   "--field",
+   "/Order/OrderedOn",
+   "--group",
+   "/Order",
+   "--condition",
+   "AllFieldsFilled(OrderedOn, ShippedOn) And DifferenceInDays([/Order/OrderedOn], ShippedOn) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "os007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "os007",
+   "--field",
+   "/Order/OrderedOn",
+   "--group",
+   "/Order",
+   "--condition",
+   "AllFieldsFilled(OrderedOn, ShippedOn) And DifferenceInDays(OrderedOn, [/Order/ShippedOn]) > 1",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

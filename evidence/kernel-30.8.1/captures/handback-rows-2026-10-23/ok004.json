@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Gifts/Card",
+ "group": "/Order",
+ "condition": "GroupNotFilled(Gifts/Card) And FieldFilled(Gifts/Note)",
+ "code": "ok004",
+ "name": "ok004",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

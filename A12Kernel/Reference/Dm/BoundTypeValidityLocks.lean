@@ -201,8 +201,8 @@ private def scalarEntryBoundary (source : String) (operation : String) (rows : B
   let full := checked.evalFull prepared "en_US" raw GroupPresenceContext.unavailable true
   let part := checked.evalPartial prepared "en_US" raw GroupPresenceContext.unavailable .full
   pure (checked.requiresAddressedValidation == rows &&
-    (match full with | .error .addressedContextRequired => rows | .ok _ => !rows | .error .groupTargetPartial => false) &&
-    (match part with | .error .addressedContextRequired => rows | .ok _ => !rows | .error .groupTargetPartial => false))
+    (match full with | .error .addressedContextRequired => rows | .ok _ => !rows) &&
+    (match part with | .error .addressedContextRequired => rows | .ok _ => !rows))
 
 example : ["Valid", "Invalid"].all (fun operation =>
     scalarEntryBoundary "Text" operation false == some true &&

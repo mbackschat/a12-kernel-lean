@@ -1,0 +1,72 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+    "state" : "CLEAN"
+  },
+  "model" : "42b879524b06aed2454428cdf5c800c9ff345baf0230ccab1b29bb1e996da268",
+  "observations" : [ {
+    "id" : "okb001",
+    "inputHash" : "a03230063ca2fb14735c23de884332c11b54320e253709294a764d5b08911245",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okb002",
+    "inputHash" : "3387260495988d020d02da98ff5244dde7ce30a5afc985d73b4c40a9d54bdfa5",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okb003",
+    "inputHash" : "4d73c335111dadecd483e6e544e36ac0a9d0e2d24770bfd9a4e9e8c8cfa030b5",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okb004",
+    "inputHash" : "5ce4f0933b23ea6fec6dee9c02bb2d610aafdfb6a53e335fe4b366cbbfca89dc",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okb005",
+    "inputHash" : "403c7b1be0b436b0a9ce97a10c24e924ceb32a09f8908a53dea0cf53d7683253",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "okb006",
+    "inputHash" : "0e4fadf2063d5c77d5fc68861203ec455211d354b2bd3b521571a7a1c77330c0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okb007",
+    "inputHash" : "7ffefcf7c09b6e9ea3b9e6e926074f5f6746bbba1babe775355b4aa6bfc7a6c0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okb008",
+    "inputHash" : "2f33eb770b528a070ccab58301e8b8f485f625adf10f0c767b79af7eb4e3fe10",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  }, {
+    "id" : "okb009",
+    "inputHash" : "66affa5ae1e0a0370cc7dbdfe63c30c05d0f806e2e45183a73abe7cbcddfc30a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "okb010",
+    "inputHash" : "8c7e8220a497b318be30b63010e0db2723902dd9a020c03d6a1f173d492dad3e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  } ]
+}

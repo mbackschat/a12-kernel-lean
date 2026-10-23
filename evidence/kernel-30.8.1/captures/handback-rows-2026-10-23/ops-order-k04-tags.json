@@ -1,0 +1,181 @@
+[
+ {
+  "id": "okt005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okt005",
+   "--field",
+   "/Order/Lines/Parts/Count",
+   "--group",
+   "/Order",
+   "--condition",
+   "[Lines/Parts/Count] < 5 And FieldFilled(Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okt006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okt006",
+   "--field",
+   "/Order/Lines/Parts/Count",
+   "--group",
+   "/Order",
+   "--condition",
+   "NumberOfFilledFields(Lines/Parts/Count, Picks/Ref) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okt007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okt007",
+   "--field",
+   "/Order/Lines/Parts/Count",
+   "--group",
+   "/Order",
+   "--condition",
+   "AtLeastOneFieldFilled(Lines/Parts/Count, Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okt008",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okt008",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Parts/Count) And FieldFilled(Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okt009",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okt009",
+   "--field",
+   "/Order/Picks/Ref",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Parts/Count) And FieldFilled(Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okt010",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okt010",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Sku) And NumberOfFilledGroups(Lines/Parts*) > 0 And FieldFilled(Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okt011",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okt011",
+   "--field",
+   "/Order/Picks/Ref",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Picks/Ref) And GroupFilled(Lines/Parts)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okt012",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okt012",
+   "--field",
+   "/Order/Gifts/Note",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Gifts/Note) And GroupFilled(Gifts/Card) And FieldFilled(Tags/Label)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okt013",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okt013",
+   "--field",
+   "/Order/Gifts/Note",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Gifts/Note) And GroupNotFilled(Gifts/Card) And FieldFilled(Tags/Label)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okt014",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "okt014",
+   "--field",
+   "/Order/Lines/Parts/Count",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Parts/Count) And NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "okt015",
+  "verb": "computation",
+  "args": [
+   "add",
+   "okt015.json",
+   "--dry-run"
+  ]
+ }
+]

@@ -63,6 +63,10 @@ private partial def skipComments : P Unit := do
 private def shiftOperators : List String :=
   ["AddDays", "AddMonths", "AddYears", "AddHours", "AddMinutes", "AddSeconds"]
 
+/-- The numeric operators whose first argument is a value; `Min` and `Max` take values throughout. -/
+private def valueOperators : List String :=
+  ["Abs", "Min", "Max", "RoundUp", "RoundDown", "RoundAccounting"]
+
 /-- Keywords that never open an operand. -/
 private def separatorKeywords : List String :=
   ["And", "Or", "In", "To", "Having", "For", "@From", "@SuppressWarning", "PatternMatched",
@@ -319,7 +323,12 @@ private partial def argument (id : String) (index : Nat) : P Argument := do
   -- A date shift's amount is a value, so a bare name there is a token defect like any bare value
   -- (spec/12 §12.3). `AddDays` is measured (static-legality sweep row `R40`); the other shifts share
   -- its production, an assumption no row measures.
-  if index == 1 && shiftOperators.contains id then
+  -- The numeric operators' value slots follow the same rule, bare outside a filter body and bare or
+  -- marked inside one (handback rows of 2026-10-23, `sv1`–`sv9`, `sa1`–`sa4`, `sb1`–`sb6`,
+  -- `sh1`–`sh10`). A bare name and a bracketed read in a rounding operator's digits slot draw the
+  -- token class too (`sd1`, `sd2`).
+  if index == 1 && shiftOperators.contains id ||
+      valueOperators.contains id && (index == 0 || id == "Min" || id == "Max") then
     match ← peek with
     | some (.name _ _) | some (.symbol "/") | some (.symbol "..") | some (.symbol "$") =>
         failHere .incompleteInput

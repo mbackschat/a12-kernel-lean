@@ -1,0 +1,38 @@
+[
+ {
+  "id": "okt001",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "okt001.json"
+  ]
+ },
+ {
+  "id": "okt002",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "okt002.json"
+  ]
+ },
+ {
+  "id": "okt003",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "okt003.json"
+  ]
+ },
+ {
+  "id": "okt004",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "okt004.json"
+  ]
+ }
+]

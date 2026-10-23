@@ -1,0 +1,917 @@
+[
+ {
+  "id": "smr001",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr001",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RepetitionNotUnique($Items/Code, $Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr002",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr002",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RepetitionNotUnique($Items/Code, $Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr003",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr003",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RepetitionNotUnique($Items, Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr004",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr004",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having RepetitionNotUnique($Items, Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr005",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And NoFieldValueIncludedInValueList($Items/Code, $Items/Code In \"a\"))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr006",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And NoFieldValueIncludedInValueList(Items/Code, Items/Code In \"a\"))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr007",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldValueIncludedInValueList($Items/Code, Items/Code In \"a\"))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr008",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr008",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And DateRangesOverlap($Items/Window, $Items/Window))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr009",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr009",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And DateRangesOverlap(Items/Window, Items/Window))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr010",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr010",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneDateRangeOverlaps($Items/Window IN $Items/Window))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr011",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr011",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And MaxValue($Items*/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr012",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr012",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And MaxValue($Items*/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr013",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr013",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And NumberOfDifferentValues($Items*/Code) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr014",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr014",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And MinValue($Items/Code, Items/Count) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr015",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr015",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Length($Items/RawCode) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr016",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr016",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Length(Items/RawCode) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr017",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr017",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And SumOfProducts($Items/UnitPrice, Items/UnitPrice) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr018",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr018",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And NumberOfDifferentValues($Items/Tier -> Band, Items/Tier -> Band) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr019",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr019",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And NumberOfDifferentValues(Items/Tier -> Band, Items/Tier -> Band) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr020",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr020",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundUpValue([$Items], 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr021",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr021",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And RoundUpValue([$Items/UnitPrice], 2) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr022",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr022",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And DayFromDate($Items) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr023",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr023",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And DayFromDate($Items*/ShipOn) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr024",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr024",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And DayFromDate(Items*/ShipOn) > 1)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr025",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr025",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AddDays($Items/ShipOn, 1) > [Items/ShipOn])",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr026",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr026",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AddDays(Items/ShipOn, 1) > [Items/ShipOn])",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr027",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr027",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AddDays($Items, 1) > \"2020-01-01\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr028",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr028",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AddDays($Items*/ShipOn, 1) > \"2020-01-01\")",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr029",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr029",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Valid(Date($Items*/Day, BirthMonth, BirthYear)))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr030",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr030",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Valid(Date(Items*/Day, BirthMonth, BirthYear)))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr031",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr031",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And ValueNotConsistent($Items To \"a\"))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr032",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr032",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And ValueNotConsistent($Items/Tier To \"a\"))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr033",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr033",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldFilled($/Customer))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr034",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr034",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And Sum(Items/Code, $Items/Code) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr035",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr035",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldFilled(Items, $Items/Code))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr036",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr036",
+   "--field",
+   "/Customer/BirthYear",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthYear) And RangeAsString(Parcels For \"x\", 1, 3) == \"a\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr037",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr037",
+   "--field",
+   "/Customer/BirthYear",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(BirthYear) And ValueAsDate(Parcels For \"x\", FirstDay) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr038",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr038",
+   "--field",
+   "/Customer/Parcels/Weight",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Parcels/Weight) And RangeAsString(Returns, 1, 3) == \"a\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr039",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr039",
+   "--field",
+   "/Customer/Parcels/Weight",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Parcels/Weight) And ValueAsDate(Returns, FirstDay) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr040",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr040.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr041",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr041.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr042",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr042.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr043",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr043.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr044",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr044.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr045",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr045.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr046",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr046.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr047",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr047.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr048",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr048.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr049",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr049.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr050",
+  "verb": "computation",
+  "args": [
+   "add",
+   "smr050.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "smr051",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr051",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldFilled(Parcels*/Weight Having [$Items/Count] > 0))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr052",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr052",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldFilled(Parcels*/Weight Having [Parcels/Weight] > 0))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr053",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr053",
+   "--field",
+   "/Customer/Parcels/Weight",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Returns/Reason) And AtLeastOneFieldFilled(Items*/Count Having [$Parcels/Weight] > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr054",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr054",
+   "--field",
+   "/Customer/Parcels/Weight",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Returns/Reason) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr055",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr055",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And NumberOfFilledGroups($Returns, $Returns) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr056",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr056",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And NumberOfFilledGroups(Returns, Returns) > 0)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr057",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr057",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AtLeastOneFieldFilled(Returns/Reason, Returns/Reason))",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr058",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr058",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And NumberOfFilledGroups(Returns, Returns) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "smr059",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "smr059",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AllGroupsFilled(Returns*, Parcels))",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

@@ -1,0 +1,13 @@
+{
+ "field": "/Order/Lines/Parts",
+ "group": "/Order",
+ "condition": "GroupFilled(Lines/Parts) And FieldValueIncludedInValueList(Lines/Parts/PartNo, \"a\", \"b\")",
+ "code": "ok026",
+ "name": "ok026",
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "x"
+  }
+ ]
+}

@@ -1,0 +1,274 @@
+[
+ {
+  "id": "ok013",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok013",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) Or GroupNotFilled(Picks)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok014",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok014",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) Or FieldNotFilled(Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok015",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok015",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "Sum(Lines*/Qty) > 0 And GroupFilled(Picks)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok016",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok016",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) And GroupFilled(Picks) And NumberOfFilledFields(Lines/Parts*/Count Having [Lines/Parts/Count] > 1) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok017",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok017",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) And FieldFilled(Picks/Ref) And NumberOfFilledFields(Lines/Parts*/Count Having [Lines/Parts/Count] > 1) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok018",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok018",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) And GroupFilled(Picks) And Sum(Lines/Parts*/Count Having [$Lines/Qty] > 1) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok019",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok019",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) And FieldFilled(Picks/Ref) And Sum(Lines/Parts*/Count Having [$Lines/Qty] > 1) > 0",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok020",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok020",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) And GroupFilled(Picks)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok021",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok021",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Qty) And FieldFilled(Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok022",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok022",
+   "--field",
+   "/Order/Lines/Slots/Mark",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Slots/Mark) And GroupFilled(Picks)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok023",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok023",
+   "--field",
+   "/Order/Lines/Slots/Mark",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Slots/Mark) And FieldFilled(Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok030",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok030",
+   "--field",
+   "/Order/Lines/Sku",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldValuesNotUnique(Lines/Sku, Picks/Ref For Tier)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok031",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok031",
+   "--field",
+   "/Order/Lines/Qty",
+   "--group",
+   "/Order",
+   "--condition",
+   "MoreThanOneFieldFilled(Lines/Qty, Picks/Ref For Tier) And FieldNotFilled(Lines/Qty)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok032",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok032",
+   "--field",
+   "/Order/Lines/Code",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Picks/Ref For Lines/Code)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok033",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok033",
+   "--field",
+   "/Order/Lines/Code",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldNotFilled(Picks/Ref For Lines/Code)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ok034",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ok034",
+   "--field",
+   "/Order/Lines/Parts/Count",
+   "--group",
+   "/Order",
+   "--condition",
+   "FieldFilled(Lines/Parts/Count) Or FieldFilled(Picks/Ref)",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

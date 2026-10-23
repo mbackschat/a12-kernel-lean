@@ -300,8 +300,13 @@ def lowerNumericFieldAtom (model : FlatModel) (group : GroupPath)
   if reference.filter.isSome then refuse "NumericFieldForm" "filtered reference"
   let unstarred : Path := { reference.path with segments := reference.path.segments.map fun (segment : Segment) => { segment with star := false } }
   let some field := unstarred.toFieldPath? | refuse "NumericFieldForm" "correlated source"
+  -- A group operand's class waits for its read, which may raise a reference class first: an unbound
+  -- repeatable group draws `MVK_NO_WILDCARD`, two keyed groups on its chain the multiple-index class
+  -- ([KF599](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf599),
+  -- [KF602](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf602)). The ordered admission walk owns
+  -- that order, so this refusal carries no class of its own.
   if (model.groupNamedBy? group field).isSome then
-    refuse "NumericFieldForm" KernelStaticDiagnostic.noGroupsAllowed.kernelCode
+    refuse "NumericFieldForm" "group operand"
   if reference.path.segments.any (·.star) then
     refuse "NumericFieldForm" KernelStaticDiagnostic.noWildcardsAllowed.kernelCode
   let declaration ← elaborated "NumericFieldForm" (model.resolveFieldDeclarationUnchecked group field)

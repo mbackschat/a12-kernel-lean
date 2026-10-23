@@ -139,32 +139,44 @@ def pinned (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexR
       if pair.errorField == pair.leftDeclaration.id then { row with left := pin row.left }
       else { row with right := pin row.right }
 
-/-- The error field's full-validation rows, enumerated once for every joined row's `innerRows`;
-none for a field at its joined group's level. -/
+/-- The error field's full-validation rows, which `innerRows` filters for a model declaring no
+capacity; none for a field at its joined group's level. -/
 def innerEnvironments (pair : CheckedParallelFieldPair model) (preliminary : CheckedIndexPreliminary model) :
     Except ParallelPresenceRuleEvaluationError (List Env) :=
   if pair.innerScope.isEmpty then pure []
   else preliminary.base.fullValidationRowEnvironments pair.errorDeclaration.repeatableScope |>.mapError .rows
 
 /-- The rows one joined row contributes: the row itself when the error field sits at its joined
-group's level, otherwise one row per full-validation row of the error field's levels inside the error
-side's joined row, with the error side bound there. An unmatched error side has no such row. The
-Kernel iterates a nested level within each joined row for a rule and for a computation precondition
+group's level, otherwise one row per nested row the rule visits inside it, matched or unmatched alike,
+with the error side bound there (`joinedInnerCoordinates`). The Kernel iterates a nested level within
+each joined row for a rule and for a computation precondition
 ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
-`nested-join`); that it visits the full-validation domain there, as frames do, is unmeasured.
-`environments` are the error field's full-validation rows, `innerEnvironments`. -/
-def innerRows (pair : CheckedParallelFieldPair model) (environments : List Env)
-    (row : ResolvedParallelIndexRow) :
+`nested-join`). A model declaring no capacity keeps the full-validation rows `environments` inside a
+matched joined row. -/
+def innerRows (pair : CheckedParallelFieldPair model) (preliminary : CheckedIndexPreliminary model)
+    (environments : List Env) (outer : Env) (row : ResolvedParallelIndexRow) :
     Except ParallelPresenceRuleEvaluationError (List ResolvedParallelIndexRow) := do
   if pair.innerScope.isEmpty then return [pair.pinned row]
   let side := pair.errorSide row
-  let some environment := side.environment | return []
   let joinedScope := model.repeatableScopeForGroupPath side.group.path
-  let joinedPath ← environment.pathForScope joinedScope |>.mapError fun error => .join (.environment error)
-  pure ((environments.filter fun inner => (inner.pathForScope joinedScope).toOption == some joinedPath).map
-    fun inner => if pair.errorField == pair.leftDeclaration.id
-      then { row with left := { row.left with environment := some inner } }
-      else { row with right := { row.right with environment := some inner } })
+  let bind := fun (side : ResolvedParallelIndexSide) =>
+    if pair.errorField == pair.leftDeclaration.id then { row with left := side } else { row with right := side }
+  let joinedDepth := side.group.path.length - 1
+  let stem := model.groupCoordinates side.group.path (side.environment.getD outer)
+  match preliminary.base.joinedInnerCoordinates pair.errorDeclaration.groupPath joinedDepth stem with
+  | some suffixes =>
+      pure (suffixes.map fun suffix =>
+        let inner := pair.innerScope.map fun level =>
+          let depth := (model.repeatableGroupAtLevel? level).map (·.path.length - 1) |>.getD 0
+          (level, suffix[depth - joinedDepth - 1]?.getD 1)
+        match side.environment with
+        | some environment => bind { side with environment := some (environment ++ inner) }
+        | none => bind { side with inner })
+  | none =>
+      let some environment := side.environment | return []
+      let joinedPath ← environment.pathForScope joinedScope |>.mapError fun error => .join (.environment error)
+      pure ((environments.filter fun inner => (inner.pathForScope joinedScope).toOption == some joinedPath).map
+        fun inner => bind { side with environment := some inner })
 
 /-- The error pointer a custom-condition callback receives at one joined row: the error field's levels bound from the error side's environment, from the outer environment where that side is unmatched, and UNKNOWN wherever no unique row is bound (spec/11 §14). A duplicate-key side gets no cache-resolved coordinate here; the fired message keeps that projection in `evalRow`. -/
 def customErrorPointer (pair : CheckedParallelFieldPair model)
@@ -243,7 +255,7 @@ def evalWith (pair : CheckedParallelFieldPair model) (condition : Condition)
   let runJoin := fun first? frameOuter (join : ResolvedParallelIndexJoin) => do
     if !admitOuter frameOuter then pure ([], first?, false)
     else
-      let rows := (← join.rows.mapM (pair.innerRows inner)).flatten
+      let rows := (← join.rows.mapM (pair.innerRows preliminary inner frameOuter)).flatten
       pair.evalRows condition (evaluate frameOuter) preliminary frameOuter messageCache caught first? rows
   match pair.groups.outerScopePlan with
   | .common _ =>

@@ -1,0 +1,1141 @@
+[
+ {
+  "id": "ssd001",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd001",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd002",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd002",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) == \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd003",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd003",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd004",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd004",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) == \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd005",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd005",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd006",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd006",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) == 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd007",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd007",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipDe, 1) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd008",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd008",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipDe, 1) == \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd009",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd009",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipDe, 1) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd010",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd010",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipDe, 1) == \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd011",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd011",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipDe, 1) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd012",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd012",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipDe, 1) == 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd013",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd013",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipOn, 1) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd014",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd014",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipOn, 1) == \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd015",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd015",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipOn, 1) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd016",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd016",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipOn, 1) == \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd017",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd017",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipOn, 1) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd018",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd018",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipOn, 1) == 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd019",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd019",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipDe, 1) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd020",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd020",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipDe, 1) == \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd021",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd021",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipDe, 1) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd022",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd022",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipDe, 1) == \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd023",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd023",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipDe, 1) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd024",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd024",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMonths(Items/ShipDe, 1) == 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd025",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd025",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipOn, 1) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd026",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd026",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipOn, 1) == \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd027",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd027",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipOn, 1) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd028",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd028",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipOn, 1) == \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd029",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd029",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipOn, 1) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd030",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd030",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipOn, 1) == 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd031",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd031",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipDe, 1) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd032",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd032",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipDe, 1) == \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd033",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd033",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipDe, 1) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd034",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd034",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipDe, 1) == \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd035",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd035",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipDe, 1) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd036",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd036",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddYears(Items/ShipDe, 1) == 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd037",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd037",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/Stamp, 1) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd038",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd038",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/Stamp, 1) > \"01.01.2020T10:00:00\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd039",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd039",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/Stamp, 1) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd040",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd040",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/Stamp, 1) == \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd041",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd041",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/Stamp, 1) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd042",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd042",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddHours(Items/Stamp, 1) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd043",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd043",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddHours(Items/Stamp, 1) > \"01.01.2020T10:00:00\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd044",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd044",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddHours(Items/Stamp, 1) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd045",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd045",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddHours(Items/Stamp, 1) == \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd046",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd046",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddHours(Items/Stamp, 1) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd047",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd047",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMinutes(Items/Stamp, 1) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd048",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd048",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMinutes(Items/Stamp, 1) > \"01.01.2020T10:00:00\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd049",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd049",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMinutes(Items/Stamp, 1) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd050",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd050",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMinutes(Items/Stamp, 1) == \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd051",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd051",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddMinutes(Items/Stamp, 1) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd052",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd052",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddSeconds(Items/Stamp, 1) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd053",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd053",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddSeconds(Items/Stamp, 1) > \"01.01.2020T10:00:00\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd054",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd054",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddSeconds(Items/Stamp, 1) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd055",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd055",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddSeconds(Items/Stamp, 1) == \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd056",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd056",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddSeconds(Items/Stamp, 1) > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd057",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd057",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) > [Items/ShipDe]",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd058",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd058",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Abs(AddDays(Items/ShipOn, 1)) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd059",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd059",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundUp(AddDays(Items/ShipOn, 1), 0) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd060",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd060",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Abs([Items/ShipOn]) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd061",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd061",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And RoundUp([Items/ShipOn], 0) > \"2020-01-01\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd062",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd062",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) + 1 > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd063",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd063",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) * 2 > 5",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd064",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd064",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And Max(AddDays(Items/ShipOn, 1), Items/ShipDe) > \"01.01.2020\"",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd065",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd065",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) == [Items/Count]",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd066",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd066",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AddDays(Items/ShipOn, 1) DiffersWithToleranceRange1 [Items/Count]",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "ssd067",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ssd067",
+   "--field",
+   "/Customer/Items/Count",
+   "--group",
+   "/Customer",
+   "--condition",
+   "FieldFilled(Items/Count) And AtLeastOneFieldFilled(Items*/Count Having [Items/Count] > 0 And AddDays($Items/ShipOn, 1) > \"2020-01-01\")",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

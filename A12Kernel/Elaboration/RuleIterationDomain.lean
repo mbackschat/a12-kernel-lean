@@ -81,6 +81,26 @@ def fullValidationRowEnvironments (checked : CheckedDocument model)
       let physical ← checked.actualRowEnvironments scope
       pure (physical.filter environments.contains ++ environments.filter (!physical.contains ·))
 
+/-- The nested coordinates a parallel rule visits below its joined group at depth `joinedDepth`, inside
+the joined row whose group coordinates are `stem`, for an error field in `errorGroup`. They follow the
+ordinary capacity rule with the joined level counted once, and occupancy is document-wide with the
+joined coordinate merged, so a nested row of another joined row, or of another group at the same
+coordinate, counts; an unmatched joined side visits the same rows
+([KF603](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf603);
+[checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-nested-join-capacity)).
+Each result is the coordinate suffix below the joined depth. `none` when a level declares no capacity. -/
+def joinedInnerCoordinates (checked : CheckedDocument model) (errorGroup : GroupPath)
+    (joinedDepth : Nat) (stem : List Nat) : Option (List (List Nat)) := do
+  let bounds ← (List.range errorGroup.length).mapM fun depth =>
+    match model.repeatableGroups.find? (·.path == errorGroup.take (depth + 1)) with
+    | none => some 1
+    | some group => group.repeatability
+  let merged := fun (path : List Nat) => path.set joinedDepth 1
+  let occupied := checked.validationOccupiedCoordinates.map merged
+  let suffixes := RuleIterationDomain.descend (RuleIterationDomain.optimized (bounds.set joinedDepth 1))
+    occupied ((merged stem).take (joinedDepth + 1)) (bounds.drop (joinedDepth + 1))
+  pure (suffixes.map (·.drop (joinedDepth + 1)))
+
 /-- Ordinary physical reads retain every check. Only a missing physical row which the
 full-validation domain actually supplies can be read as an absent declared slot. The domain is the
 ungated one: a slot under a blank root is reached only by an ungated rule, since the dispatcher keeps

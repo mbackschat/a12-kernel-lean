@@ -1,0 +1,198 @@
+{
+  "header" : {
+    "id" : "shop-typed-keys_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "shop-typed-keys_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Customer",
+        "name" : "Customer",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Group",
+            "id" : "/Customer/Items",
+            "name" : "Items",
+            "Group" : {
+              "repeatability" : 20,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Customer/Items/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TypeDefType",
+                    "TypeDefType" : {
+                      "typeDefinitionId" : "LineCode"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Items/RawRef",
+                "name" : "RawRef",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TypeDefType",
+                    "TypeDefType" : {
+                      "typeDefinitionId" : "RawLabel"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Items/Count",
+                "name" : "Count",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "Code"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Customer/Notes",
+            "name" : "Notes",
+            "Group" : {
+              "repeatability" : 20,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Customer/Notes/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TypeDefType",
+                    "TypeDefType" : {
+                      "typeDefinitionId" : "LineCode"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Notes/Text",
+                "name" : "Text",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Code"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Customer/Memos",
+            "name" : "Memos",
+            "Group" : {
+              "repeatability" : 20,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Customer/Memos/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Memos/Text",
+                "name" : "Text",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Code"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Customer/Tickets",
+            "name" : "Tickets",
+            "Group" : {
+              "repeatability" : 20,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Customer/Tickets/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "TypeDefType",
+                    "TypeDefType" : {
+                      "typeDefinitionId" : "TicketNo"
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Customer/Tickets/Text",
+                "name" : "Text",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "Code"
+            }
+          } ]
+        }
+      } ]
+    },
+    "typeDefinitions" : [ {
+      "id" : "LineCode",
+      "name" : "LineCode",
+      "fieldType" : {
+        "type" : "StringType"
+      }
+    }, {
+      "id" : "TicketNo",
+      "name" : "TicketNo",
+      "fieldType" : {
+        "type" : "NumberType",
+        "NumberType" : {
+          "maxFractionalDigits" : 0
+        }
+      }
+    }, {
+      "id" : "RawLabel",
+      "name" : "RawLabel",
+      "fieldType" : {
+        "type" : "StringType",
+        "StringType" : {
+          "lineBreaksPermitted" : true,
+          "noValueValidation" : true
+        }
+      }
+    } ]
+  }
+}

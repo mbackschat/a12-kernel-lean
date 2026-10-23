@@ -19,8 +19,6 @@ namespace A12Kernel
 /-- A checked mixed rule cannot be evaluated from a scalar context when its condition retains an addressed source. This is missing execution context, not a semantic validation result. -/
 inductive ValidationEvaluationError where
   | addressedContextRequired
-  /-- Partial validation of a rule reporting on a group: no retained observation covers it. -/
-  | groupTargetPartial
   deriving Repr, DecidableEq
 
 /-- Structural failures from checked ordinary repeatable rule execution remain outside semantic UNKNOWN. -/
@@ -266,8 +264,11 @@ def evalPartial (rule : CheckedResolvedValidationRule model)
     | some errorField =>
         effective.coversFieldAtBoundLevels model errorField rule.partialErrorBoundLevels []
     | none => true
+  -- A partial call reports no rule on a group
+  -- ([KF603](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf603)); KF603 does not measure a rule
+  -- reporting on the root, which is skipped alike as an assumption.
   if rule.errorField?.isNone then
-    .error .groupTargetPartial
+    .ok .skipped
   else if !filterPresence.admits fun _ => errorRelevant then
     .ok .skipped
   else if rule.requiresAddressedValidation then
@@ -489,7 +490,7 @@ def evalAddressedPartial
     (world : Option World := none)
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError PartialRuleOutcome := do
-  if rule.errorField?.isNone then throw .unsupportedCondition
+  if rule.errorField?.isNone then return .skipped
   if rule.hasHaving then
     pure .skipped
   else
@@ -706,7 +707,7 @@ def evalOrdinaryOncePartialPrepared
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError
       PartialOnceRuleOutcome := do
-  if rule.errorField?.isNone then throw .unsupportedCondition
+  if rule.errorField?.isNone then return .skipped
   if rule.hasHaving then
     pure .skipped
   else
@@ -733,7 +734,7 @@ def evalOrdinaryOncePartial
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError
       PartialOnceRuleOutcome := do
-  if rule.errorField?.isNone then throw .unsupportedCondition
+  if rule.errorField?.isNone then return .skipped
   if rule.hasHaving then
     pure .skipped
   else
@@ -750,7 +751,7 @@ def evalOrdinaryRepeatablePartialPrepared
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError
       PartialRepeatableRuleOutcome := do
-  if rule.errorField?.isNone then throw .unsupportedCondition
+  if rule.errorField?.isNone then return .skipped
   if rule.hasHaving then
     pure .skipped
   else
@@ -803,7 +804,7 @@ def evalOrdinaryRepeatablePartial
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError
       PartialRepeatableRuleOutcome := do
-  if rule.errorField?.isNone then throw .unsupportedCondition
+  if rule.errorField?.isNone then return .skipped
   if rule.hasHaving then
     pure .skipped
   else

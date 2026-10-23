@@ -1,0 +1,164 @@
+[
+ {
+  "id": "ok001",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok001.json"
+  ]
+ },
+ {
+  "id": "ok002",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok002.json"
+  ]
+ },
+ {
+  "id": "ok003",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok003.json"
+  ]
+ },
+ {
+  "id": "ok004",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok004.json"
+  ]
+ },
+ {
+  "id": "ok005",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok005.json"
+  ]
+ },
+ {
+  "id": "ok006",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok006.json"
+  ]
+ },
+ {
+  "id": "ok007",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok007.json"
+  ]
+ },
+ {
+  "id": "ok008",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok008.json"
+  ]
+ },
+ {
+  "id": "ok009",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok009.json"
+  ]
+ },
+ {
+  "id": "ok010",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok010.json"
+  ]
+ },
+ {
+  "id": "ok011",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok011.json"
+  ]
+ },
+ {
+  "id": "ok012",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok012.json"
+  ]
+ },
+ {
+  "id": "ok024",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok024.json"
+  ]
+ },
+ {
+  "id": "ok025",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok025.json"
+  ]
+ },
+ {
+  "id": "ok026",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok026.json"
+  ]
+ },
+ {
+  "id": "ok027",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok027.json"
+  ]
+ },
+ {
+  "id": "ok028",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok028.json"
+  ]
+ },
+ {
+  "id": "ok029",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "ok029.json"
+  ]
+ }
+]

@@ -54,6 +54,9 @@ structure ResolvedParallelIndexSide where
   unavailableKey : Option FormalCause
   /-- Duplicate value selection is unavailable, but its message address requires the separate cache insertion order (spec/08 §4.3). -/
   duplicatePointer : Bool := false
+  /-- An unmatched side's bindings of the nested levels a rule visits below its group, which its
+  message pointer names concretely beside the unknown joined coordinate (KF603). -/
+  inner : Env := []
   deriving Repr, DecidableEq
 
 structure ResolvedParallelIndexRow where
@@ -548,7 +551,7 @@ def messagePointer (side : ResolvedParallelIndexSide) (model : FlatModel)
         pure (path.map MessageRepetitionCoordinate.concrete)
     | none, none => declaration.repeatableScope.mapM fun level =>
         if level == side.group.level then pure .unknown
-        else (outer.bindingAt level).map MessageRepetitionCoordinate.concrete |>.mapError .environment
+        else ((outer ++ side.inner).bindingAt level).map MessageRepetitionCoordinate.concrete |>.mapError .environment
   pure { field, coordinates }
 
 /-- An unmatched clean side is semantically empty; an unmatched invalid column is validation-unknown. No sentinel coordinate enters the physical address domain. -/
@@ -569,7 +572,9 @@ def readValidation (side : ResolvedParallelIndexSide)
   | some environment =>
       let path ← environment.pathForScope declaration.repeatableScope
         |>.mapError .environment
-      let cell ← preliminary.readAuthoredValidation { field, path }
+      -- A nested row the rule visits inside a matched joined row need not exist; its declared slot
+      -- reads empty, as a frame's does (KF603).
+      let cell ← preliminary.base.filterReadWith preliminary.readAuthoredValidation { field, path }
         |>.mapError .document
       pure (observeCell .validation cell)
 

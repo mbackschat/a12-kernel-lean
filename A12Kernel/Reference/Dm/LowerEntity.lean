@@ -27,7 +27,8 @@ def elaboratedEnumerationFirstFilled [Repr ε] [StaticClassified ε] (calculatio
 def namesField (model : FlatModel) (group : GroupPath) (path : SurfaceFieldPath) : Bool :=
   (model.resolveFieldDeclarationUnchecked group path).toOption.isSome
 
-private def lowerIndexKey (index : FlatFieldDecl) (key : IndexKey) : Lowering SurfaceSemanticIndexKey := do
+private def lowerIndexKey (model : FlatModel) (group : GroupPath) (index : FlatFieldDecl) (key : IndexKey) :
+    Lowering SurfaceSemanticIndexKey := do
   let key ← match key with
     | .literal authored => do
         let spelling := normalizeLinebreaks authored
@@ -43,6 +44,13 @@ private def lowerIndexKey (index : FlatFieldDecl) (key : IndexKey) : Lowering Su
         pure (SurfaceSemanticIndexKey.literal token (some spelling))
     | .reference { path := authored, index := none, category := none, filter := none } => do
         let some field := authored.toFieldPath? | refuse "SemanticIndex" "key path"
+        -- A key with no value validation is refused; the ordered walk's admission cascade owns its
+        -- class and its place among the key's other gates. Measured in field presence and absence,
+        -- group presence, a bracketed read and a field-fill list ([KF605](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf605);
+        -- handback rows `okg016`, `stk011`, `stk012`, `sf1`–`sf3`); other carriers, and its order against
+        -- another key defect, are assumed alike, unmeasured.
+        if (model.resolveFieldDeclarationUnchecked group field).toOption.any (·.isRawString) then
+          refuse "SemanticIndex" "key without value validation"
         pure (.field field)
     | .reference _ => refuse "SemanticIndex" "key modifiers"
   pure key
@@ -55,7 +63,7 @@ def lowerIndexedSource (model : FlatModel) (group : GroupPath)
     | refuse "SemanticIndex" "missing index"
   let some indexId := selectedGroup.indexField | refuse "SemanticIndex" "missing index"
   let index ← elaborated "SemanticIndex" (model.lookupUniqueId indexId)
-  pure { target, key := ← lowerIndexKey index key }
+  pure { target, key := ← lowerIndexKey model group index key }
 
 private def lowerKeyedExtent (model : FlatModel) (group : GroupPath)
     (path : Path) (key : IndexKey) : Lowering SurfaceKeyedEntityExtent := do
@@ -80,7 +88,7 @@ private def lowerKeyedExtent (model : FlatModel) (group : GroupPath)
   let some selectedGroup := model.semanticIndexGroupForPath? targetGroup | refuse "SemanticIndex" "missing index"
   let some indexId := selectedGroup.indexField | refuse "SemanticIndex" "missing index"
   let index ← elaborated "SemanticIndex" (model.lookupUniqueId indexId)
-  pure { target, key := ← lowerIndexKey index key }
+  pure { target, key := ← lowerIndexKey model group index key }
 
 /-- One entity-list operand. -/
 def lowerEntityOperand (model : FlatModel) (group : GroupPath) (argument : Argument)

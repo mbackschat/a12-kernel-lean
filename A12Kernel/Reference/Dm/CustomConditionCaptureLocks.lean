@@ -278,6 +278,16 @@ example :
     classifies items "Name" "FieldFilled(Name) And CustomCondition K11" = some false := by
   native_decide
 
+/-- A negative beside a callback in an `Or` classifies on either side, so a holding rule reaches the
+callback once more in that pass: the Kernel called `EnablingOr` once where its truth pass stopped at
+the negative and twice where that pass reached a holding callback, and `LeftOr` twice wherever the
+rule held
+([KF604](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf604)). -/
+example :
+    classifies claim "Note" "FieldNotFilled(Note) Or CustomCondition EnablingOr" = some true ∧
+    classifies claim "Note" "CustomCondition LeftOr Or FieldNotFilled(Note)" = some true := by
+  native_decide
+
 /-- The undeclared members of `doc-extra`, a string and an object beside the declared fields and a
 string inside a row, are dropped: the document reads exactly as `doc-full`. -/
 example :
