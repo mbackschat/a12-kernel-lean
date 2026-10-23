@@ -1,3 +1,4 @@
+import A12Kernel.Reference.Dm.ComputationCheck
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.Validate
@@ -177,16 +178,31 @@ private def meets (dm : DmModel) (group : GroupPath) (path condition : String) :
 
 /-- `(row, rule group, error entity, condition, Kernel verdict)`: a group the condition does not
 name draws the reference class, the rule's own group fails the build with no class, and below the
-root the root is an ordinary group. The inbound's `../Meta/Ref/..`, `../Code/..`, `../Meta/../Code`
-and `../../Order` take `..` lexically, after a named segment or through the top, which this reader's
-path grammar refuses; [PLAN](../../../docs/PLAN.md#k19-returned-omissions) holds the gap. -/
+root the root is an ordinary group. The path is read lexically, so `..` after a name drops it and
+`../../Order` climbs through the top back to `/Order`, the rule's own group. -/
 private def pathRows : List (String × GroupPath × String × String × Expected) := [
   ("p1", O, "../Meta", "FieldFilled(Code)", .kernelClass UNREFERENCED),
+  ("p2", O, "../Meta/Ref/..", "FieldFilled(Code)", .kernelClass UNREFERENCED),
+  ("p3", O, "../Code/..", "FieldFilled(Code)", .noClass "declaringGroup"),
+  ("p4", O, "../Meta/../Code", "FieldFilled(Code)", .admitted),
+  ("p7", O, "../../Order", "FieldFilled(Code)", .noClass "declaringGroup"),
   ("p5", O ++ ["Meta"], "../../Meta", "FieldFilled(Ref)", .noClass "declaringGroup"),
   ("p6", O ++ ["Meta"], "../..", "FieldFilled(Ref)", .kernelClass UNREFERENCED)]
 
 example : (pathRows.filter fun (_, group, path, condition, expected) =>
     !meets pathModel group path condition expected).map (·.1) = [] := by native_decide
+
+/-- The inbound's computations in `/Order`: into `../Code` admitted, into a group refused without a
+class. -/
+private def computes (target : String) : Option Bool :=
+  match checkComputation pathModel .english
+      { group := O, name := "C", targetRelPath := target, commonPrecondition := none,
+        alternatives := [{ precondition := none, operation := "\"x\"" }], errorCodesToSuppress := [] } with
+  | .ok _ => some true
+  | .error refusal => if refusal.kernelClass?.isNone then some false else none
+
+example : computes "../Code" = some true ∧ computes ".." = some false ∧ computes "../Meta" = some false := by
+  native_decide
 
 /-- A group target beside a join keeps the ordinary carrier's refusals without a class: on its own
 group ahead of every gate, for a root-only reference, and at a read the walk cannot bind, where the

@@ -55,12 +55,15 @@ def validationRules (model : DmModel) (language : Language) : List DmRule :=
         errorCode := computation.name, condition := "(", severity := "ERROR" }
 
 /-- The model path of a rule's error field as an unindexed message pointer spells it. The path is
-written relative to the rule element, one level below its declaring group. -/
+written relative to the rule element, one level below its declaring group, and read lexically as the
+reader reads it. -/
 def errorFieldPath (rule : DmRule) : String :=
   let segments := rule.errorEntityRelPath.splitOn "/"
-  let path := if segments.head? == some "" then segments.drop 1 else
-    let ups := (segments.takeWhile (· == "..")).length
-    rule.group.take (rule.group.length + 1 - ups) ++ segments.drop ups
+  let path := match lexicalErrorPath rule.group rule.errorEntityRelPath with
+    | some path => path
+    | none => if segments.head? == some "" then segments.drop 1 else
+      let ups := (segments.takeWhile (· == "..")).length
+      rule.group.take (rule.group.length + 1 - ups) ++ segments.drop ups
   "/".intercalate path
 
 /-- A message pointer without its row coordinates or partial-pointer prefix. -/
@@ -72,6 +75,7 @@ private def errorAt (group : GroupPath) (errorEntityRelPath : String) : DmRule :
 
 example : errorFieldPath (errorAt ["Form", "Rows"] "../../Total") = "Form/Total" ∧
     errorFieldPath (errorAt ["Form"] "../Rows/X") = "Form/Rows/X" ∧
+    errorFieldPath (errorAt ["Form"] "../Rows/../X") = "Form/X" ∧
     unindexedPointer "/Form[1]/Rows[0]/X" = "Form/Rows/X" := by native_decide
 
 /-- One message's reference channels as the probe reports them: its pointer and type, and the

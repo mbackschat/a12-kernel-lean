@@ -242,6 +242,10 @@ private def parsed (language : Language) (text : String) : Lowering Text :=
 /-- The declaration a computation targets. Its path is relative to the computation element. -/
 def targetOf (language : Language) (model : FlatModel) (computation : DmComputation) :
     Lowering FlatFieldDecl := do
+  -- A target naming a group, its own included, fails the Kernel's build with no class
+  -- ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
+  if (lexicalErrorPath computation.group computation.targetRelPath).any model.hasGroupPath then
+    refuse "GroupTarget" computation.targetRelPath
   let path ← match parseModelPath language computation.targetRelPath with
     | .ok path => pure path
     | .error error => refuse "Target" error.errorClass.code

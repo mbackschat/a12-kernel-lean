@@ -20,7 +20,8 @@ def checkComputation (model : DmModel) (language : Language) (computation : DmCo
   match lowerComputation model.flat language computation with
   | .ok checked => .ok checked
   | .error refusal =>
-      if refusal.kernelClass?.isSome then .error refusal
+      -- A group target has no generated rule to speak for it: its build fails without a class.
+      if refusal.kernelClass?.isSome || refusal.construct == "GroupTarget" then .error refusal
       else match computation.generatedRule? language with
         | none => .error refusal
         | some rule => match checkValidationRule model language rule with

@@ -41,12 +41,28 @@ def severity? : String → Option ValidationSeverity
   | "INFO" => some .info
   | _ => none
 
+/-- An error-target path read lexically from the rule element, one segment below `group`: each `..`
+drops the last segment and each name appends one, so `..` may follow a name and `../../Order` from
+`/Order` names `/Order` ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
+`none` for a path not starting with `..`, an empty segment, or one that climbs to or above the
+document, which keep the ordinary path reading. -/
+def lexicalErrorPath (group : GroupPath) (text : String) : Option GroupPath := do
+  let segments := text.splitOn "/"
+  if segments.head? != some ".." then none
+  let path ← segments.foldlM (init := group ++ [""]) fun path segment =>
+    if segment == ".." then (if path.isEmpty then none else some path.dropLast)
+    else if segment.isEmpty then none else some (path ++ [segment])
+  if path.isEmpty then none else pure path
+
 /-- The entity an error-entity path names: a field, or else a declared group. The path is relative
-to the rule element, so its first `..` climbs from the rule to the group declaring it. A path naming
-neither keeps the field resolution's refusal. -/
+to the rule element, so its first `..` climbs from the rule to the group declaring it, and it is
+read lexically (`lexicalErrorPath`). A path naming neither keeps the field resolution's refusal. -/
 def errorEntityOf (language : Language) (model : FlatModel) (rule : DmRule) :
     Lowering RuleErrorEntity := do
-  let path ← match parseModelPath language rule.errorEntityRelPath with
+  let text := match lexicalErrorPath rule.group rule.errorEntityRelPath with
+    | some path => "/" ++ "/".intercalate path
+    | none => rule.errorEntityRelPath
+  let path ← match parseModelPath language text with
     | .ok path => pure path
     | .error error => refuse "ErrorEntity" (repr error).pretty
   -- The path is written from the element, one step below its group; a relative path without that
