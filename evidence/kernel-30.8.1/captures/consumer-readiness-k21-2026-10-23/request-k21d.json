@@ -1,0 +1,109 @@
+{
+ "model": "K21R_DM.json",
+ "clock": "2026-10-23T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "srcEmptyApplied",
+   "documentInline": {
+    "Form": {
+     "Out": 1,
+     "Total": 1,
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "srcBadApplied",
+   "documentInline": {
+    "Form": {
+     "Src": "x",
+     "Total": 1,
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "src2Applied",
+   "documentInline": {
+    "Form": {
+     "Mid": 4,
+     "Out": 5,
+     "Src": 2,
+     "Total": 1,
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "src5Applied",
+   "documentInline": {
+    "Form": {
+     "Mid": 10,
+     "Out": 11,
+     "Src": 5,
+     "Total": 1,
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "src7Applied",
+   "documentInline": {
+    "Form": {
+     "Mid": 14,
+     "Out": 15,
+     "Src": 7,
+     "Total": 1,
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "storedMidApplied",
+   "documentInline": {
+    "Form": {
+     "Mid": 2,
+     "Out": 3,
+     "Src": 1,
+     "Total": 1,
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": 1
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

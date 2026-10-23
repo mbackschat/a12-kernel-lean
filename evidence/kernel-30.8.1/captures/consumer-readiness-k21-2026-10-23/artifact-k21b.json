@@ -1,0 +1,389 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "K21_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-23T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "freshApplied",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "emptySrcApplied",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSrc",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [
+                "Form/Src"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSrc",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [
+                "Form/Src"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "badSrcApplied",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Src",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Src"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Src",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Src"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "dupApplied",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [ ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

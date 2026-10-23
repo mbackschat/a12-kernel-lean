@@ -1,0 +1,98 @@
+{
+ "model": "K21_DM.json",
+ "clock": "2026-10-23T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "freshApplied",
+   "documentInline": {
+    "Form": {
+     "Mid": 8,
+     "Out": 9,
+     "Src": 4,
+     "Total": 1,
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": 1
+      },
+      {
+       "Code": "b",
+       "Qty": 9
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "emptySrcApplied",
+   "documentInline": {
+    "Form": {
+     "Mid": null,
+     "Out": 1,
+     "Total": 1,
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": 1
+      },
+      {
+       "Code": "b",
+       "Qty": 9
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "badSrcApplied",
+   "documentInline": {
+    "Form": {
+     "Mid": null,
+     "Out": null,
+     "Src": "x",
+     "Total": 1,
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": 1
+      },
+      {
+       "Code": "b",
+       "Qty": 9
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dupApplied",
+   "documentInline": {
+    "Form": {
+     "Mid": 8,
+     "Out": 9,
+     "Src": 4,
+     "Total": null,
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": 7
+      },
+      {
+       "Code": "a",
+       "Qty": 9
+      },
+      {
+       "Code": "b",
+       "Qty": 1
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

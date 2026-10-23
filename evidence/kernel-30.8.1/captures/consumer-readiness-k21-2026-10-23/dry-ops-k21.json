@@ -1,0 +1,65 @@
+[
+ {
+  "id": "a1",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "a1.json"
+  ]
+ },
+ {
+  "id": "a2",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "a2.json"
+  ]
+ },
+ {
+  "id": "a3",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "a3.json"
+  ]
+ },
+ {
+  "id": "a4",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "a4.json"
+  ]
+ },
+ {
+  "id": "a5",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "a5.json"
+  ]
+ },
+ {
+  "id": "a6",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "a6.json"
+  ]
+ },
+ {
+  "id": "a7",
+  "verb": "rule",
+  "args": [
+   "add",
+   "--dry-run",
+   "a7.json"
+  ]
+ }
+]

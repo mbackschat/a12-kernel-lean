@@ -1,0 +1,1135 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "K21R_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-23T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "srcEmpty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "A4",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [
+                "Form/Src"
+              ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            },
+            {
+              "code" : "RSrc",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [
+                "Form/Src"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Out",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Out" : 1,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "A4",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [
+                "Form/Src"
+              ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            },
+            {
+              "code" : "RSrc",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [
+                "Form/Src"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Out",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Out" : 1,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "srcBad",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Src",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Src"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Src" : "x",
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Src",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Src"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Src" : "x",
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "src2",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "A4",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "4"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "5"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 4,
+                "Out" : 5,
+                "Src" : 2,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "A4",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "4"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "4"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "5"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 4,
+                "Out" : 5,
+                "Src" : 2,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "src5",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "10"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "11"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 10,
+                "Out" : 11,
+                "Src" : 5,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "10"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "11"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "10"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "11"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 10,
+                "Out" : 11,
+                "Src" : 5,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "src7",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "14"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "14"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "15"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 14,
+                "Out" : 15,
+                "Src" : 7,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "14"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "15"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "14"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "15"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 14,
+                "Out" : 15,
+                "Src" : 7,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "storedMid",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "A3",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "A4",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "A6",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MidComp",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 2,
+                "Out" : 3,
+                "Src" : 1,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "A3",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "A4",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "A6",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "MidComp",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "2"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "3"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "2"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "3"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 2,
+                "Out" : 3,
+                "Src" : 1,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

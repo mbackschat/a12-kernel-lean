@@ -1,0 +1,1 @@
+{"field": "/Form/Items/Qty", "group": "/Form", "condition": "NoFieldFilled(Items/Qty, Items/Code)", "code": "a2", "name": "a2", "messages": [{"locale": "en_US", "text": "x"}]}

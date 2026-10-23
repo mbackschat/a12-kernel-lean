@@ -1,0 +1,1 @@
+{"field": "/Form/Out", "group": "/Form", "condition": "[Out] > 10", "code": "a3", "name": "a3", "messages": [{"locale": "en_US", "text": "x"}]}

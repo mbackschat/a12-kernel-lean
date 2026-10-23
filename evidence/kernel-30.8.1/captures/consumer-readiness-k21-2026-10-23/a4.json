@@ -1,0 +1,1 @@
+{"field": "/Form/Src", "group": "/Form", "condition": "[Src] < 3 Or FieldNotFilled(Src)", "code": "a4", "name": "a4", "messages": [{"locale": "en_US", "text": "x"}]}

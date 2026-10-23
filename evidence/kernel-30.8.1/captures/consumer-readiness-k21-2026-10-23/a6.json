@@ -1,0 +1,1 @@
+{"field": "/Form/Mid", "group": "/Form", "condition": "[Mid] > 100 And [Src] < 10", "code": "a6", "name": "a6", "messages": [{"locale": "en_US", "text": "x"}]}

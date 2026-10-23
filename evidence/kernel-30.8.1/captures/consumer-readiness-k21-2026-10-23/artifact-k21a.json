@@ -1,0 +1,2463 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "09f1352e5d24e9d661f692ddc5b2fdcf65a786e6",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "K21_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-23T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "fresh",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "MidComp",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "MidComp",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 8,
+                "Out" : 9,
+                "Src" : 4,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 9
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "MidComp",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "MidComp",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 8,
+                "Out" : 9,
+                "Src" : 4,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 9
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "emptySrc",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSrc",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [
+                "Form/Src"
+              ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSrc",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [
+                "Form/Src"
+              ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Out",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : null,
+                "Out" : 1,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 9
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSrc",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [
+                "Form/Src"
+              ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSrc",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [
+                "Form/Src"
+              ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Out",
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : null,
+                "Out" : 1,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 9
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "badSrc",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Src",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Src"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : null,
+                "Out" : null,
+                "Src" : "x",
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 9
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "zahlHatUngueltigeZeichen",
+                "field" : "Form/Src",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Src"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Form/Src",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : null,
+                "Out" : null,
+                "Src" : "x",
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 9
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "dup",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Total",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "9"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 8,
+                "Out" : 9,
+                "Src" : 4,
+                "Total" : null,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 7
+                  },
+                  {
+                    "Code" : "a",
+                    "Qty" : 9
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Total",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "9"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 8,
+                "Out" : 9,
+                "Src" : 4,
+                "Total" : null,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 7
+                  },
+                  {
+                    "Code" : "a",
+                    "Qty" : 9
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "freshRow2",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "MidComp",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 8,
+                "Out" : 9,
+                "Src" : 4,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 9
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "MidComp",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 8,
+                "Out" : 9,
+                "Src" : 4,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 9
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "freshSrc",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "MidComp",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [ ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 8,
+                "Out" : 9,
+                "Src" : 4,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 9
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "MidComp",
+              "field" : "Form/Mid",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Src"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Mid",
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "ROut",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Out"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RSel",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TotComp",
+              "field" : "Form/Total",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Code",
+                "Form/Items/Qty",
+                "Form/Total"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Mid",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [ ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Total",
+                "value" : "1"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 8,
+                "Out" : 9,
+                "Src" : 4,
+                "Total" : 1,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 1
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 9
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name" : "dupRow1",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Total",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Qty"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "9"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 8,
+                "Out" : 9,
+                "Src" : 4,
+                "Total" : null,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 7
+                  },
+                  {
+                    "Code" : "a",
+                    "Qty" : 9
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "RQty",
+              "field" : "Form/Items[2]/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items[2]/Qty"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items/Code"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "uniqueIndex",
+              "field" : "Form/Items[2]/Code",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted]",
+              "referenced" : [
+                "Form/Items[2]/Code"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Total",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items/Code"
+                ],
+                "fillToFix" : [ ]
+              },
+              {
+                "code" : "uniqueIndex",
+                "field" : "Form/Items[2]/Code",
+                "severity" : "ERROR",
+                "type" : "VALUE_ERROR",
+                "message" : "[redacted]",
+                "referenced" : [
+                  "Form/Items[2]/Code"
+                ],
+                "fillToFix" : [ ]
+              }
+            ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "RQty",
+              "field" : "Form/Items/Qty",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Items/Qty"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computeResults" : {
+            "withoutErrors" : [
+              {
+                "field" : "Form/Mid",
+                "value" : "8"
+              },
+              {
+                "field" : "Form/Out",
+                "value" : "9"
+              }
+            ],
+            "errored" : [ ],
+            "applied" : {
+              "Form" : {
+                "Mid" : 8,
+                "Out" : 9,
+                "Src" : 4,
+                "Total" : null,
+                "Items" : [
+                  {
+                    "Code" : "a",
+                    "Qty" : 7
+                  },
+                  {
+                    "Code" : "a",
+                    "Qty" : 9
+                  },
+                  {
+                    "Code" : "b",
+                    "Qty" : 1
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+ "model": "K21_DM.json",
+ "clock": "2026-10-23T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart",
+  "compute",
+  "computeResults"
+ ],
+ "rows": [
+  {
+   "name": "fresh",
+   "documentInline": {
+    "Form": {
+     "Mid": "50",
+     "Out": "99",
+     "Total": "0",
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": "1"
+      },
+      {
+       "Code": "b",
+       "Qty": "9"
+      }
+     ],
+     "Src": "4"
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "emptySrc",
+   "documentInline": {
+    "Form": {
+     "Mid": "50",
+     "Out": "99",
+     "Total": "0",
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": "1"
+      },
+      {
+       "Code": "b",
+       "Qty": "9"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "badSrc",
+   "documentInline": {
+    "Form": {
+     "Mid": "50",
+     "Out": "99",
+     "Total": "0",
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": "1"
+      },
+      {
+       "Code": "b",
+       "Qty": "9"
+      }
+     ],
+     "Src": "x"
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "dup",
+   "documentInline": {
+    "Form": {
+     "Src": "4",
+     "Mid": "8",
+     "Out": "9",
+     "Total": "0",
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": "7"
+      },
+      {
+       "Code": "a",
+       "Qty": "9"
+      },
+      {
+       "Code": "b",
+       "Qty": "1"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "freshRow2",
+   "documentInline": {
+    "Form": {
+     "Mid": "50",
+     "Out": "99",
+     "Total": "0",
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": "1"
+      },
+      {
+       "Code": "b",
+       "Qty": "9"
+      }
+     ],
+     "Src": "4"
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Items",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "freshSrc",
+   "documentInline": {
+    "Form": {
+     "Mid": "50",
+     "Out": "99",
+     "Total": "0",
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": "1"
+      },
+      {
+       "Code": "b",
+       "Qty": "9"
+      }
+     ],
+     "Src": "4"
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Src"
+    }
+   ]
+  },
+  {
+   "name": "dupRow1",
+   "documentInline": {
+    "Form": {
+     "Src": "4",
+     "Mid": "8",
+     "Out": "9",
+     "Total": "0",
+     "Items": [
+      {
+       "Code": "a",
+       "Qty": "7"
+      },
+      {
+       "Code": "a",
+       "Qty": "9"
+      },
+      {
+       "Code": "b",
+       "Qty": "1"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Items",
+     "reps": [
+      1,
+      1
+     ]
+    }
+   ]
+  }
+ ]
+}

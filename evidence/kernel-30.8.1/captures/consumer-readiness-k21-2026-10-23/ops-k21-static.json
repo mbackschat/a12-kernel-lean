@@ -1,0 +1,121 @@
+[
+ {
+  "id": "a1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a1",
+   "--field",
+   "/Form/Src",
+   "--group",
+   "/Form",
+   "--condition",
+   "FieldFilled(Src) And FieldNotFilled(Src)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "a2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a2",
+   "--field",
+   "/Form/Items/Qty",
+   "--group",
+   "/Form",
+   "--condition",
+   "NoFieldFilled(Items/Qty, Items/Code)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "a3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a3",
+   "--field",
+   "/Form/Out",
+   "--group",
+   "/Form",
+   "--condition",
+   "[Out] > 10",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "a4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a4",
+   "--field",
+   "/Form/Src",
+   "--group",
+   "/Form",
+   "--condition",
+   "[Src] < 3 Or FieldNotFilled(Src)",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "a5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a5",
+   "--field",
+   "/Form/Src",
+   "--group",
+   "/Form",
+   "--condition",
+   "[Src] > 5 And [Src] < 3",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "a6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a6",
+   "--field",
+   "/Form/Mid",
+   "--group",
+   "/Form",
+   "--condition",
+   "[Mid] > 100 And [Src] < 10",
+   "--message",
+   "en_US=x"
+  ]
+ },
+ {
+  "id": "a7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "a7",
+   "--field",
+   "/Form/Items/Qty",
+   "--group",
+   "/Form",
+   "--condition",
+   "FieldNotFilled(Items/Qty)",
+   "--message",
+   "en_US=x"
+  ]
+ }
+]

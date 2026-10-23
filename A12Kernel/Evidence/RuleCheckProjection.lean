@@ -150,6 +150,7 @@ def captures : List (String × String × String) := [
   ("captures/handback-rows-2026-10-23/obs-rv-customer-marked-items.json", "captures/handback-rows-2026-10-23/customer-marked-items_DM.json", "captures/handback-rows-2026-10-23/ops-rv-customer-marked-items.json"),
   ("captures/handback-rows-2026-10-23/obs-rv-order-k04-tags.json", "captures/handback-rows-2026-10-23/order-k04-tags_DM.json", "captures/handback-rows-2026-10-23/ops-rv-order-k04-tags.json"),
   ("captures/handback-rows-2026-10-23/obs-rv-order-k04-bows.json", "captures/handback-rows-2026-10-23/order-k04-bows_DM.json", "captures/handback-rows-2026-10-23/ops-rv-order-k04-bows.json"),
+  ("captures/consumer-readiness-k21-2026-10-23/obs-k21-static.json", "captures/consumer-readiness-k21-2026-10-23/K21_DM.json", "captures/consumer-readiness-k21-2026-10-23/ops-k21-static.json"),
   ("captures/handback-rows-2026-10-23/obs-sup-order-k04-bows.json", "captures/handback-rows-2026-10-23/order-k04-bows_DM.json", "captures/handback-rows-2026-10-23/ops-sup-order-k04-bows.json"),
   ("captures/handback-rows-2026-10-23/obs-sup-order-k04-tags.json", "captures/handback-rows-2026-10-23/order-k04-tags_DM.json", "captures/handback-rows-2026-10-23/ops-sup-order-k04-tags.json"),
   ("captures/handback-rows-2026-10-23/obs-sup-order-keyed-gates.json", "captures/handback-rows-2026-10-23/order-keyed-gates_DM.json", "captures/handback-rows-2026-10-23/ops-sup-order-keyed-gates.json"),
@@ -157,7 +158,8 @@ def captures : List (String × String × String) := [
   ("captures/handback-rows-2026-10-23/obs-sup2-shop-shifted-dates.json", "captures/handback-rows-2026-10-23/shop-shifted-dates_DM.json", "captures/handback-rows-2026-10-23/ops-sup2-shop-shifted-dates.json"),
   ("captures/handback-rows-2026-10-23/dry-run-codes.json", "captures/handback-rows-2026-10-23/order-group-target_DM.json", "captures/handback-rows-2026-10-23/dry-ops-order-group-target.json"),
   ("captures/handback-rows-2026-10-23/dry-run-codes.json", "captures/handback-rows-2026-10-23/order-k04-tags_DM.json", "captures/handback-rows-2026-10-23/dry-ops-order-k04-tags.json"),
-  ("captures/handback-rows-2026-10-23/dry-run-codes.json", "captures/handback-rows-2026-10-23/order-k04_DM.json", "captures/handback-rows-2026-10-23/dry-ops-order-k04.json")]
+  ("captures/handback-rows-2026-10-23/dry-run-codes.json", "captures/handback-rows-2026-10-23/order-k04_DM.json", "captures/handback-rows-2026-10-23/dry-ops-order-k04.json"),
+  ("captures/consumer-readiness-k21-2026-10-23/dry-run-codes.json", "captures/consumer-readiness-k21-2026-10-23/K21_DM.json", "captures/consumer-readiness-k21-2026-10-23/dry-ops-k21.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) := [
