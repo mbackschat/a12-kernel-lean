@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Slots/Mark", "group": "/Order", "condition": "NumberOfFilledFields(Lines/Slots/Mark, Lines/Slots/SlotNo) < 1", "code": "d10", "name": "d10", "messages": [{"locale": "en_US", "text": "probe"}]}

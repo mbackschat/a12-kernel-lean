@@ -622,7 +622,7 @@ def fullRowsAndRepetitionResults
     | some scope => pure scope
     | none => throw .missingIterationScope
   let environments ←
-    checked.fullValidationRowEnvironments scope
+    checked.fullValidationRowEnvironments scope rule.condition.core.canFireOnEmpty
       |>.mapError toOrdinaryRowEnvironmentError
   let environments := environments.map rule.pinUnindexed
   pure (environments, ← rule.repetitionNotUniqueResults checked .full environments true)

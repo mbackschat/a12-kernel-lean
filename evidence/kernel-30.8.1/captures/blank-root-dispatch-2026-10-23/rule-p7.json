@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Parts", "group": "/Order", "condition": "GroupFilled(Lines/Parts) And FieldFilled(Picks/Ref) And RepetitionNotUnique(Lines/Sku)", "code": "p7", "name": "p7", "messages": [{"locale": "en_US", "text": "probe"}]}

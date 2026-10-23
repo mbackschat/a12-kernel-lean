@@ -42,9 +42,16 @@ then projects the shared coordinate domain back onto named repeatable levels.
 Physical encounter order followed by implicit coordinates preserves the native API's
 existing deterministic order; the captures establish membership, not message order.
 Staged native models without capacities retain their earlier physical-domain account;
-the DM boundary always supplies capacities. Partial validation owns its separate view. -/
+the DM boundary always supplies capacities. Partial validation owns its separate view.
+
+An `ungated` rule, one evaluated without admitted content, runs under a nonrepeatable root that holds
+none, as the Kernel's global rule bucket does
+([KF507](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf507)): a negative, a small-side count or a
+second root's read over a keyed level fires at its declared rows on a blank root
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06)).
+A repeatable root keeps its dispatcher: every such row rule measured over one is refused statically. -/
 def fullValidationRowEnvironments (checked : CheckedDocument model)
-    (scope : List RepeatableLevel) :
+    (scope : List RepeatableLevel) (ungated : Bool := false) :
     Except ActualRowEnvironmentError (List Env) := do
   let deepest ← match scope.reverse with
     | [] => throw .missingScope
@@ -61,9 +68,10 @@ def fullValidationRowEnvironments (checked : CheckedDocument model)
   match bounds? with
   | none => checked.validationRowEnvironments scope
   | some bounds =>
+      let blankRoot := ungated && (model.repeatableScopeForGroupPath (group.path.take 1)).isEmpty
       let coordinates := RuleIterationDomain.coordinates bounds
         checked.validationOccupiedCoordinates
-        (checked.validationDispatchedRoots (group.path.take 1))
+        (checked.validationDispatchedRoots (group.path.take 1) ++ if blankRoot then [1] else [])
       let environments ← coordinates.mapM fun path => scope.mapM fun level => do
         let declaration ← match model.repeatableGroupAtLevel? level with
           | none => throw (.unknownLevel level)
@@ -73,14 +81,16 @@ def fullValidationRowEnvironments (checked : CheckedDocument model)
       pure (physical.filter environments.contains ++ environments.filter (!physical.contains ·))
 
 /-- Ordinary physical reads retain every check. Only a missing physical row which the
-full-validation domain actually supplies can be read as an absent declared slot. -/
+full-validation domain actually supplies can be read as an absent declared slot. The domain is the
+ungated one: a slot under a blank root is reached only by an ungated rule, since the dispatcher keeps
+every other rule off that root. -/
 def fullValidationRead (checked : CheckedDocument model) (address : CellAddr) :
     Except CheckedDocumentError CheckedCell :=
   match checked.read address with
   | .error (.missingRow row) =>
       let admitted := do
         let declaration ← (model.lookupUniqueId address.field).toOption
-        let rows ← (checked.fullValidationRowEnvironments declaration.repeatableScope).toOption
+        let rows ← (checked.fullValidationRowEnvironments declaration.repeatableScope true).toOption
         pure (rows.contains (declaration.repeatableScope.zip address.path))
       if admitted == some true then checked.readDeclared address else .error (.missingRow row)
   | result => result

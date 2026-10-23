@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Parts/Count", "group": "/Order", "condition": "FieldFilled(Lines/Parts/Count) And AtLeastOneFieldFilled(Lines/Sku, Picks/Ref)", "code": "q5f", "name": "q5f", "messages": [{"locale": "en_US", "text": "probe"}]}

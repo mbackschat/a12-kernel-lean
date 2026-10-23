@@ -1,0 +1,87 @@
+{
+ "model": "K0607s_DM.json",
+ "clock": "2026-10-23T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "blank",
+   "documentInline": {}
+  },
+  {
+   "name": "joined",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Parts": [
+        {
+         "Count": "1"
+        }
+       ],
+       "Box": {
+        "Lid": {
+         "Seal": "x"
+        }
+       }
+      },
+      {
+       "LineNo": "B",
+       "Parts": [
+        {
+         "Count": "2"
+        }
+       ],
+       "Box": {
+        "Lid": {
+         "Seal": "y"
+        }
+       }
+      },
+      {
+       "LineNo": "C",
+       "Sku": "t",
+       "Parts": [
+        {
+         "Count": "3"
+        },
+        {
+         "PartNo": "p"
+        }
+       ]
+      },
+      {
+       "LineNo": "E",
+       "Parts": [
+        {
+         "Count": "4"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "B"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "s"
+      },
+      {
+       "LineNo": "E",
+       "Ref": "u"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

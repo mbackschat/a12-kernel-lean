@@ -1,0 +1,1 @@
+{"field": "/Order/Gifts/Note", "group": "/Order", "condition": "NumberOfFilledFields(Gifts/Note, Gifts/GiftNo) < 1", "code": "d2", "name": "d2", "messages": [{"locale": "en_US", "text": "probe"}]}

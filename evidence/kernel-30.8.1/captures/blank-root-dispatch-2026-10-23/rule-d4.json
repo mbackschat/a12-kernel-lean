@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Slots/Mark", "group": "/Order", "condition": "FieldNotFilled(Lines/Slots/Mark)", "code": "d4", "name": "d4", "messages": [{"locale": "en_US", "text": "probe"}]}

@@ -29,8 +29,10 @@ private def L : GroupPath := ["Order", "Lines"]
 private def W : GroupPath := ["Order", "Wraps"]
 
 /-- The rows' part of the capture's [order model](../../../evidence/kernel-30.8.1/captures/group-target-nested-join-2026-10-23/Order23u_DM.json):
-`Lines` (50, keyed) holds `Parts` (5); `Picks` (10, keyed by `LineNo`), `Gifts` (2, keyed) with a
-fixed `Card`, and `Wraps` (2, unkeyed) with fixed `Ribbon` and `Tag` and keyed `Bows` (3). -/
+`Lines` (50, keyed) holds `Parts` (5) and keyed `Slots` (2) with a fixed `Tagged`; `Picks` (10, keyed
+by `LineNo`), `Gifts` (2, keyed) with a fixed `Card`, and `Wraps` (2, unkeyed) with fixed `Ribbon` and
+`Tag` and keyed `Bows` (3); and the second root `Other` of the
+[blank-root capture](../../../evidence/kernel-30.8.1/captures/blank-root-dispatch-2026-10-23/K0607_DM.json). -/
 private def model : FlatModel :=
   { fields := [text 1 O "Email" [],
       text 10 L "LineNo" [10], text 11 L "Sku" [10],
@@ -39,10 +41,13 @@ private def model : FlatModel :=
       text 40 (O ++ ["Gifts"]) "GiftNo" [14], text 41 (O ++ ["Gifts"]) "Note" [14],
       text 42 (O ++ ["Gifts", "Card"]) "Text" [14],
       text 50 W "Style" [15], text 51 (W ++ ["Ribbon"]) "Color" [15], text 52 (W ++ ["Tag"]) "Label" [15],
-      text 53 (W ++ ["Bows"]) "BowNo" [15, 16], text 54 (W ++ ["Bows"]) "Shade" [15, 16]]
+      text 53 (W ++ ["Bows"]) "BowNo" [15, 16], text 54 (W ++ ["Bows"]) "Shade" [15, 16],
+      text 60 (L ++ ["Slots"]) "SlotNo" [10, 12], text 61 (L ++ ["Slots", "Tagged"]) "Flag" [10, 12],
+      number 70 ["Other"] "O" []]
     repeatableGroups := [
       { level := 10, path := L, repeatability := some 50, indexField := some 10 },
       { level := 11, path := L ++ ["Parts"], repeatability := some 5 },
+      { level := 12, path := L ++ ["Slots"], repeatability := some 2, indexField := some 60 },
       { level := 13, path := O ++ ["Picks"], repeatability := some 10, indexField := some 30 },
       { level := 14, path := O ++ ["Gifts"], repeatability := some 2, indexField := some 40 },
       { level := 15, path := W, repeatability := some 2 },
@@ -93,6 +98,32 @@ private def mismatches : List (String × String × String) :=
 
 example : mismatches = [] := by native_decide
 
+/-- `(row, error entity, condition, Kernel class)` of the
+[blank-root batch](../../../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06):
+beside the joined `Picks` a group target draws its field twin's class. -/
+private def twinRows : List (String × String × String × String) := [
+  ("p1", "Lines/Slots/Tagged", "GroupFilled(Lines/Slots/Tagged) And FieldFilled(Picks/Ref)", "MVK_MULTIPLE_INDEX_FIELDS"),
+  ("p2", "Lines/Slots/Tagged/Flag", "FieldFilled(Lines/Slots/Tagged/Flag) And FieldFilled(Picks/Ref)", "MVK_MULTIPLE_INDEX_FIELDS"),
+  ("p3", "Wraps/Ribbon", "GroupFilled(Wraps/Ribbon) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_NO_INDEX"),
+  ("p4", "Wraps/Ribbon/Color", "FieldFilled(Wraps/Ribbon/Color) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_NO_INDEX"),
+  ("p5", "Lines/Parts", "GroupFilled(Lines/Parts) And FieldFilled(Picks/Ref) And FieldFilled(Wraps/Style)", "MVK_NO_WILDCARD"),
+  ("p6", "Lines/Parts/Count", "FieldFilled(Lines/Parts/Count) And FieldFilled(Picks/Ref) And FieldFilled(Wraps/Style)", "MVK_NO_WILDCARD"),
+  ("p7", "Lines/Parts", "GroupFilled(Lines/Parts) And FieldFilled(Picks/Ref) And RepetitionNotUnique(Lines/Sku)",
+    "MVK_PARALLEL_ITERATION_NOT_ALLOWED"),
+  ("p8", "Lines/Parts/Count", "FieldFilled(Lines/Parts/Count) And FieldFilled(Picks/Ref) And RepetitionNotUnique(Lines/Sku)",
+    "MVK_PARALLEL_ITERATION_NOT_ALLOWED"),
+  ("p9", "Lines/Parts/Count", "FieldFilled(Lines/Sku) And FieldFilled(Picks/Ref)", UNREFERENCED),
+  ("p10", "Lines/Parts/Count", "[Lines/Parts/Count] > 1 And FieldFilled(Picks/Ref)", "admitted"),
+  -- The group's own level is unindexed, so a keyed group without a keyed ancestor has none.
+  ("q1", "Wraps/Bows", "GroupFilled(Wraps/Bows) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_NO_INDEX"),
+  ("q1f", "Wraps/Bows/Shade", "FieldFilled(Wraps/Bows/Shade) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_INVALID_INDEX"),
+  ("q2", "Wraps", "GroupFilled(Wraps) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_NO_INDEX"),
+  ("q2f", "Wraps/Style", "FieldFilled(Wraps/Style) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_NO_INDEX"),
+  ("q3", "Lines", "GroupFilled(Lines) And FieldFilled(Picks/Ref)", "MVK_ERROR_FIELD_NO_INDEX")]
+
+example : (twinRows.filter fun (_, entity, condition, expected) => verdict entity condition != expected).map (·.1) = [] := by
+  native_decide
+
 /-- Whether this reader refuses a rule without a Kernel class. -/
 private def unclassed (errorEntity condition : String) : Bool :=
   match checkValidationRule dm .english
@@ -104,8 +135,8 @@ private def unclassed (errorEntity condition : String) : Bool :=
 /-- This reader's account of a group target beside a join where no capture measures the composition:
 the ordinary carrier's gates, so a field inside the group does not reference it (`t3`) and a negative
 presence of the group leaves its own level unguarded (`g03`), while a field inside it is read at its
-first row (`t2`). A leaf the ordinary group target refuses and the joined group itself are refused
-without a class. -/
+first row (`t2`). A field-fill list across the join is admitted (`q5`), and a leaf the measured
+compositions do not reach, such as a custom condition, is refused without a class. -/
 example :
     verdict "Lines/Parts" "FieldFilled(Lines/Parts/Count) And FieldFilled(Picks/Ref)" = UNREFERENCED ∧
     verdict "Lines/Parts" "GroupNotFilled(Lines/Parts) And FieldFilled(Picks/Ref)" =
@@ -113,8 +144,9 @@ example :
     verdict "Lines/Parts" "GroupFilled(Lines/Parts) And FieldNotFilled(Lines/Parts/PartNo) And FieldFilled(Picks/Ref)" =
       "admitted" ∧
     verdict "Lines/Parts" "GroupFilled(Lines) And FieldFilled(Picks/Ref)" = "admitted" ∧
-    unclassed "Lines/Parts" "GroupFilled(Lines/Parts) And AtLeastOneFieldFilled(Lines/Sku, Picks/Ref)" ∧
-    unclassed "Lines" "GroupFilled(Lines) And FieldFilled(Picks/Ref)" := by native_decide
+    verdict "Lines/Parts" "GroupFilled(Lines/Parts) And AtLeastOneFieldFilled(Lines/Sku, Picks/Ref)" = "admitted" ∧
+    unclassed "Lines/Parts" "GroupFilled(Lines/Parts) And CustomCondition X And FieldFilled(Picks/Ref)" := by
+  native_decide
 
 open Lean in
 /-- The pointers a rule reporting on `Lines/Parts` fires at over `Lines` rows of `(LineNo, parts)`,
@@ -148,6 +180,39 @@ example :
     fired "GroupFilled(Lines/Parts) And FieldFilled(Lines/Parts/PartNo) And FieldFilled(Picks/Ref)"
       [("1", ["", "x"]), ("2", ["y"]), ("3", ["z"])] [("1", "r"), ("2", "q")] =
       some ["Order/Lines[2]/Parts"] := by native_decide
+
+open Lean in
+/-- The pointers a rule in `/Order` reporting on `entity` fires at over `document`. -/
+private def firedOn (entity condition : String) (document : Json) : Option (List String) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let input ← (readDocument dm document).toOption
+  if !input.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let rule ← (checkValidationRule dm .english
+    { group := O, name := "BlankProbe", errorCode := "P", errorEntityRelPath := "../" ++ entity, condition,
+      severity := "ERROR" }).toOption
+  pure ((← (runValidationRule world checked rule).toOption).map fun message => (observe model message).pointer)
+
+open Lean in
+/- The blank-root batch's runtime rows: a rule evaluated without admitted content, by a negative, a
+   small-side count, an `Or` beside a negative or a second root's read, fires at both declared rows
+   of the keyed `Gifts` on a blank and an empty root, and on one holding only `Other`, while a
+   condition gated on `Email` waits for it and the second-root read waits for `O` below five. -/
+example :
+    let both := some ["Order/Gifts/Note", "Order/Gifts[2]/Note"]
+    let blank := [Json.mkObj [], Json.mkObj [("Order", Json.mkObj [])],
+      Json.mkObj [("Other", Json.mkObj [("O", "1")])]]
+    blank.all (fun document =>
+      ["FieldNotFilled(Gifts/Note)", "NumberOfFilledFields(Gifts/Note, Gifts/GiftNo) < 1",
+        "FieldNotFilled(Gifts/Note) Or FieldFilled(Gifts/GiftNo)", "[/Other/O] < 5 And FieldNotFilled(Gifts/Note)"].all
+        (firedOn "Gifts/Note" · document == both) &&
+      firedOn "Gifts/Note" "[Email] == \"e\" And FieldNotFilled(Gifts/Note)" document == some []) ∧
+    firedOn "Gifts/Note" "[/Other/O] < 5 And FieldNotFilled(Gifts/Note)" (Json.mkObj [("Other", Json.mkObj [("O", "9")])]) =
+      some [] ∧
+    firedOn "Gifts/Note" "[Email] == \"e\" And FieldNotFilled(Gifts/Note)" (Json.mkObj [("Order", Json.mkObj [("Email", "e")])]) =
+      both := by
+  native_decide
 
 /-- The [inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)'s
 model: `/Order` holds `Code`, the group `Meta` holds `Ref`, and `Lines` repeats. -/
@@ -204,16 +269,16 @@ private def computes (target : String) : Option Bool :=
 example : computes "../Code" = some true ∧ computes ".." = some false ∧ computes "../Meta" = some false := by
   native_decide
 
-/-- A group target beside a join keeps the ordinary carrier's refusals without a class: on its own
-group ahead of every gate, for a root-only reference, and at a read the walk cannot bind, where the
-field-target twin draws the walk's class. -/
+/-- A group target beside a join keeps the ordinary carrier's refusals without a class on its own
+group ahead of every gate and for a root-only reference, while a read the walk cannot bind draws the
+walk's class, as its field-target twin does (`p5`, `p6`). -/
 example :
     meets dm (L ++ ["Parts"]) ".." "GroupFilled(/Order/Lines/Parts) And FieldFilled(/Order/Picks/Ref)"
       (.noClass "declaringGroup") ∧
     meets dm O "../Lines/Parts" "GroupFilled(/Order) And FieldFilled(Lines/Sku) And FieldFilled(Picks/Ref)"
       (.noClass "iterationScope") ∧
     meets dm O "../Lines/Parts" "GroupFilled(Lines/Parts) And FieldFilled(Picks/Ref) And FieldFilled(Wraps/Bows/Shade)"
-      (.noClass "iterationScope") ∧
+      (.kernelClass "MVK_NO_WILDCARD") ∧
     meets dm O "../Lines/Sku" "FieldFilled(Lines/Sku) And FieldFilled(Picks/Ref) And FieldFilled(Wraps/Bows/Shade)"
       (.kernelClass "MVK_NO_WILDCARD") := by native_decide
 

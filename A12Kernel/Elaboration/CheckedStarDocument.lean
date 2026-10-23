@@ -398,11 +398,12 @@ def validationAddressedCell (checked : CheckedDocument model)
   checked.validationAddressedCellWithRows checked.validationRowEnvironments environment field
 
 /-- Full validation admits exactly the shared rule domain's implicit coordinates while
-preserving physical checked cells and structural failures outside that domain. -/
+preserving physical checked cells and structural failures outside that domain. The domain is the
+ungated one, as `fullValidationRead`'s is: only an ungated rule reaches a slot under a blank root. -/
 def fullValidationAddressedCell (checked : CheckedDocument model)
     (environment : Env) (field : FieldId) :
     Except CheckedAddressingError CheckedAddressedCell :=
-  checked.validationAddressedCellWithRows checked.fullValidationRowEnvironments environment field
+  checked.validationAddressedCellWithRows (checked.fullValidationRowEnvironments · true) environment field
 
 end CheckedDocument
 

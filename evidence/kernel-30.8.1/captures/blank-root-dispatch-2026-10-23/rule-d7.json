@@ -1,0 +1,1 @@
+{"field": "/Bins/Item", "group": "/Bins", "condition": "FieldNotFilled(Item)", "code": "d7", "name": "d7", "messages": [{"locale": "en_US", "text": "probe"}]}

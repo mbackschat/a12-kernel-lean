@@ -127,3 +127,13 @@ Six entries are `handed-off`, carried to a12-dmkits by the owner on 2026-10-23, 
 - `basis`: The letter's §2.17 rows, whose hosts hold groups and fields only, and the source read of that walk, 2026-10-23; replayed for groups and fields by the [declaration-walk locks](../A12Kernel/Reference/Dm/DeclarationWalkLocks.lean).
 - `acceptance`: Reconcile the wording to groups and fields. A rule or computation beneath such a group is source-read only and unmeasured; do not claim it as measured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-10-23-05"></a>
+### SPEC-2026-10-23-05 — an ungated rule runs under a blank root, and a group target beside a join draws its field twin's class
+
+- `status`: pending
+- `canonical`: [spec/07 §1](../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands) and [§2](../spec/07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key).
+- `delta`: Beyond [SPEC-2026-10-23-02](#spec-2026-10-23-02) and [-03](#spec-2026-10-23-03): a rule evaluated without admitted content, by a negative, a small-side count, an `Or` beside a negative or a second root's read, runs under a blank nonrepeatable root at every declared row of a keyed level, while a condition gated on a value waits for it. Beside a join a group target, judged by its strict ancestors since its own level is unindexed, draws `MVK_ERROR_FIELD_NO_INDEX` below no keyed group, a keyed one included, and `MVK_MULTIPLE_INDEX_FIELDS` below two, and its field twin's `MVK_NO_WILDCARD` and `MVK_PARALLEL_ITERATION_NOT_ALLOWED`; a field-fill list across the join and a group holding no field of its own are admitted. Below a joined side, a condition not reading the nested level draws `MVK_ERROR_FIELD_NOT_REFERENCED`, and a comparison over the nested field is admitted.
+- `basis`: The [blank-root checkpoint](sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06), rows `d1`–`d13`, `p1`–`p11` and `q1`–`q5f`, measured locally 2026-10-23, Kernel 30.8.1, at the measurement pin `09f1352e5`, replayed by the [group-target locks](../A12Kernel/Reference/Dm/GroupTargetLocks.lean) and `lake exe a12-kernel-replay`.
+- `acceptance`: Reconcile the classes, admissions and firings of those rows. Every fire-on-empty row condition measured over a repeatable root, a nested keyed level or an unkeyed level is refused, so the dispatch of a repeatable root is not observed; do not claim it.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

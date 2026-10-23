@@ -289,12 +289,14 @@ def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
   | _ => leaf.fields.any (fun field => group.path.isPrefixOf (pair.declaration field).groupPath) ||
       leaf.atomLeaves.any (pair.ordinaryBinding? · == some (.side side))
 
-/-- The leaves a rule reporting on a group admits, as the ordinary carrier's group target does
-(`supportsGroupTarget`): presence and value leaves. The [checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
-measures group and field presence beside a join (`t8`); the value leaves reuse it unmeasured. -/
+/-- The leaves a rule reporting on a group admits beside a join: presence, value and field-fill
+leaves. The [nested-join checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
+measures group and field presence (`t8`) and the
+[blank-root checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06)
+a field-fill list across the join (`q5`); the value leaves reuse them unmeasured. -/
 def supportsGroupTarget : ParallelFieldLeaf model → Bool
-  | .groupPresence .. | .presence .. | .numeric .. | .comparison _ | .flat .. => true
-  | .fill .. | .customCondition _ | .valuesNotUnique _ | .ordinary _ => false
+  | .groupPresence .. | .presence .. | .numeric .. | .comparison _ | .flat .. | .fill .. => true
+  | .customCondition _ | .valuesNotUnique _ | .ordinary _ => false
 
 /-- Every payload is model-owned and addressable from the join or frame; comparisons reuse the shared authoring and scale gates. -/
 def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)

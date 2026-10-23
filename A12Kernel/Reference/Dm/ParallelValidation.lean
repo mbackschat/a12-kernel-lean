@@ -313,8 +313,12 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
   let errorEntity ← errorEntityOf language model.flat rule
   let errorGroupPath ← errorGroupOf model.flat errorEntity
   -- A rule reporting on a group joins at the group's keyed ancestor, anchored at its index field
-  -- (`group-level`, `t8`); a group below two keyed groups has no measured join. A rule reporting on
-  -- its own group fails ahead of every gate, as on the ordinary carrier (`declaringGroup`).
+  -- (`group-level`, `t8`). The group's own level is unindexed, so only its strict ancestors count:
+  -- below none keyed it draws the missing-index class, a keyed group's own twin field drawing the
+  -- invalid-index one, and below two keyed groups the two-groups class
+  -- ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06)
+  -- `p1`, `p3`, `q1`–`q3`). A rule reporting on its own group fails ahead of every gate, as on the
+  -- ordinary carrier (`declaringGroup`).
   let (errorField, errorGroup) ← match errorEntity with
     | .field field => pure (field, none)
     | .group path =>
@@ -322,7 +326,18 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
         match model.flat.repeatableGroups.filter fun group =>
             group.indexField.isSome && group.path.isPrefixOf path && group.path != path with
         | [{ indexField := some index, .. }] => pure (index, some path)
-        | _ => refuse "ParallelRule" "one indexed error ancestor required"
+        | keyed =>
+            -- Only a condition reaching a keyed group off the target's branch attempts a join; the
+            -- ordinary carrier's account of any other group target stands.
+            let reaches := (pairReferences parsedCondition).any fun field =>
+              match model.flat.lookupUniqueId field with
+              | .ok declaration => !(model.flat.indexedAncestorGroups declaration).isEmpty &&
+                  !path.isPrefixOf declaration.groupPath &&
+                  !keyed.any (·.path.isPrefixOf declaration.groupPath)
+              | .error _ => false
+            if !reaches then refuse "ParallelRule" "one indexed error ancestor required"
+            else if keyed.isEmpty then refuse "ParallelErrorTarget" KernelStaticDiagnostic.errorFieldNoIndex.kernelCode
+            else refuse "ParallelErrorTarget" KernelStaticDiagnostic.multipleIndexFields.kernelCode
   -- Authored reads precede pair construction: an unbound ordinary frame reports its missing
   -- wildcard, even when the error target has no indexed ancestor (ParallelValidationDispatchDiffTest,
   -- anUnrelatedFixedErrorBranchRefusesTheFramedOperandBeforeRuntime, 2026-10-12).
@@ -341,12 +356,9 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
         .error { (if refusal.kernelClass?.isNone && join.kernelClass?.isSome then join else refusal) with
           construct := "ParallelAdmission" }
     | .error refusal, .ok _ => .error { refusal with construct := "ParallelAdmission" }
-  -- No capture measures the walk's or the whole-rule gates' classes for a group target, which the
-  -- ordinary carrier refuses without one at its level and scope gates.
-  let facts ← match errorGroup, walked with
-    | some _, .error _ => refuse "ParallelRule" "group target read"
-    | _, walked => walked
-  if errorGroup.isSome && facts.refusal?.isSome then refuse "ParallelRule" "group target gate"
+  -- A group target draws the walk's and the whole-rule gates' classes as its field twin does
+  -- ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06) `p5`–`p8`).
+  let facts ← walked
   -- The whole-rule gates in their order: `RepetitionNotUnique` beside the join before a filter below
   -- either joined group (parallel-child capture, `x1`, `x2`, `q05`, `q10`, `y1`; joined-carrier-limits
   -- `d06`; 2026-10-14). A filter in an unjoined group is admitted (`q11`).

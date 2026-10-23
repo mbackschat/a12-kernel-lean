@@ -1,0 +1,194 @@
+{
+ "kernel": "30.8.1",
+ "verb": "rule add --dry-run",
+ "model": "K0607_DM.json",
+ "rows": {
+  "d1": {
+   "admitted": true,
+   "codes": []
+  },
+  "d2": {
+   "admitted": true,
+   "codes": []
+  },
+  "d3": {
+   "admitted": true,
+   "codes": [
+    "RK_UNGUARDED_NUMBER_COMPARISON"
+   ]
+  },
+  "d4": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "d5": {
+   "admitted": true,
+   "codes": []
+  },
+  "d6": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "d7": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "d8": {
+   "admitted": true,
+   "codes": []
+  },
+  "p1": {
+   "admitted": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ]
+  },
+  "p2": {
+   "admitted": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ]
+  },
+  "p3": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NO_INDEX"
+   ]
+  },
+  "p4": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NO_INDEX"
+   ]
+  },
+  "p5": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  "p6": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  "p7": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_NOT_ALLOWED"
+   ]
+  },
+  "p8": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_NOT_ALLOWED"
+   ]
+  },
+  "p9": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ]
+  },
+  "p10": {
+   "admitted": true,
+   "codes": []
+  },
+  "p11": {
+   "admitted": true,
+   "codes": []
+  },
+  "d9": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "d10": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ]
+  },
+  "d11": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARAMSIZE_INVALIDN"
+   ]
+  },
+  "d12": {
+   "admitted": true,
+   "codes": [
+    "RK_UNGUARDED_NUMBER_COMPARISON"
+   ]
+  },
+  "d13": {
+   "admitted": true,
+   "codes": [
+    "RK_UNGUARDED_NUMBER_COMPARISON"
+   ]
+  },
+  "q1": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NO_INDEX"
+   ],
+   "model": "K0607s_DM.json without its rules"
+  },
+  "q1f": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_INVALID_INDEX"
+   ],
+   "model": "K0607s_DM.json without its rules"
+  },
+  "q2": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NO_INDEX"
+   ],
+   "model": "K0607s_DM.json without its rules"
+  },
+  "q2f": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NO_INDEX"
+   ],
+   "model": "K0607s_DM.json without its rules"
+  },
+  "q3": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NO_INDEX"
+   ],
+   "model": "K0607s_DM.json without its rules"
+  },
+  "q4": {
+   "admitted": true,
+   "codes": [],
+   "model": "K0607s_DM.json without its rules"
+  },
+  "q4f": {
+   "admitted": true,
+   "codes": [],
+   "model": "K0607s_DM.json without its rules"
+  },
+  "q5": {
+   "admitted": true,
+   "codes": [],
+   "model": "K0607s_DM.json without its rules"
+  },
+  "q5f": {
+   "admitted": true,
+   "codes": [],
+   "model": "K0607s_DM.json without its rules"
+  }
+ }
+}

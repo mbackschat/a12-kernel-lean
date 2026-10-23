@@ -1,0 +1,1 @@
+{"field": "/Order/Lines/Parts/Count", "group": "/Order", "condition": "[Lines/Parts/Count] > 1 And FieldFilled(Picks/Ref)", "code": "p10", "name": "p10", "messages": [{"locale": "en_US", "text": "probe"}]}

@@ -1,0 +1,109 @@
+{
+ "model": "K0607r_DM.json",
+ "clock": "2026-10-23T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "blank",
+   "documentInline": {}
+  },
+  {
+   "name": "order-empty",
+   "documentInline": {
+    "Order": {}
+   }
+  },
+  {
+   "name": "other-low",
+   "documentInline": {
+    "Other": {
+     "O": "1"
+    }
+   }
+  },
+  {
+   "name": "other-high",
+   "documentInline": {
+    "Other": {
+     "O": "9"
+    }
+   }
+  },
+  {
+   "name": "email",
+   "documentInline": {
+    "Order": {
+     "Email": "e"
+    }
+   }
+  },
+  {
+   "name": "gift-a",
+   "documentInline": {
+    "Order": {
+     "Gifts": [
+      {
+       "GiftNo": "a"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "joined",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Parts": [
+        {
+         "Count": "2"
+        },
+        {
+         "Count": "1"
+        }
+       ]
+      },
+      {
+       "LineNo": "B",
+       "Parts": [
+        {
+         "Count": "3"
+        }
+       ]
+      },
+      {
+       "LineNo": "C",
+       "Parts": [
+        {
+         "Count": "5",
+         "PartNo": "p"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "B"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "s"
+      }
+     ]
+    },
+    "Other": {
+     "O": "1"
+    }
+   }
+  }
+ ]
+}

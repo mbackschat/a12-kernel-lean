@@ -1,0 +1,1 @@
+{"field": "/Bins/Item", "group": "/Bins", "condition": "NumberOfFilledFields(Item) < 1", "code": "d11", "name": "d11", "messages": [{"locale": "en_US", "text": "probe"}]}
