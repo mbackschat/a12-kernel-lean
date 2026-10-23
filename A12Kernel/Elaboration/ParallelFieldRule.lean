@@ -445,6 +445,9 @@ private def groupState (pair : CheckedParallelFieldPair model) (row : ResolvedPa
     | none => row.left.environment.orElse fun _ => row.right.environment
   match environment with
   | some environment =>
+      -- A keyed error group's own level holds the Kernel's placeholder, which no row's content fills.
+      if pair.errorGroup == some reference.path && pair.placeholderLevel?.isSome then
+        return { content := false, erroneous := false, relevance := .fullyRelevant }
       let released := if pair.errorGroup == some reference.path then pair.pinnedLevel?.toList else []
       let input ← preliminary.groupPresenceInput reference.path environment .fullyRelevant false released
         |>.mapError .group

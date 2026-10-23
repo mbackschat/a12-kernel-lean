@@ -15,6 +15,12 @@ inductive ParallelReferenceError where
   | join (error : CheckedIndexColumnError)
   | outer (error : ReferenceProjectionError)
   | repeatableOperand (path : GroupPath)
+  /-- A keyed error group's subtree beside the join: the Kernel's references there carry its
+  parallel-iteration placeholder, coordinate `-6`, which no message pointer here represents and the
+  instrument refuses to publish
+  ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join),
+  `runtime-keyed`). -/
+  | parallelPlaceholder (path : GroupPath)
   deriving Repr, DecidableEq
 
 /-- One authored read: a field pointed at through the joined row, a field of a group operand's
@@ -48,6 +54,8 @@ private def groupReads (pair : CheckedParallelFieldPair model) (outer : Env)
   match [pair.groups.leftGroup, pair.groups.rightGroup].find? (·.path.isPrefixOf reference.path) with
   | none => (·.map .expanded) <$> (fixedGroupPointers model reference outer).mapError .outer
   | some joined =>
+      if pair.errorGroup == some reference.path && pair.placeholderLevel?.isSome then
+        throw (.parallelPlaceholder reference.path) else
       let scope := model.repeatableScopeForGroupPath reference.path
       let joinedScope := model.repeatableScopeForGroupPath joined.path
       if scope != joinedScope && !(pair.errorGroup.any (·.isPrefixOf reference.path) &&

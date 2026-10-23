@@ -169,10 +169,7 @@ def deferred : List (String × String) := [
   ("comparison-entry-gates/observations.json#groupregex", "host pattern compiler, SG7"),
   ("comparison-entry-gates/observations2.json#violatedcontrol", "host pattern compiler, SG7"),
   ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7"),
-  ("comparison-entry-gates/observations.json#regex", "host pattern compiler, SG7"),
-  ("handback-rows-2026-10-23/dry-run-codes.json#okt002", "keyed group target beside a join, SG9"),
-  ("keyed-group-beside-join-2026-10-24/dry-run-codes-keyed.json#k1", "keyed group target beside a join, SG9"),
-  ("keyed-group-beside-join-2026-10-24/dry-run-codes-keyed.json#k8", "keyed group target beside a join, SG9")]
+  ("comparison-entry-gates/observations.json#regex", "host pattern compiler, SG7")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

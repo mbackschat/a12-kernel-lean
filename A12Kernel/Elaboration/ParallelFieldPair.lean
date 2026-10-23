@@ -121,13 +121,27 @@ def innerScope (pair : CheckedParallelFieldPair model) : List RepeatableLevel :=
     else pair.groups.rightGroup
   pair.errorDeclaration.repeatableScope.drop (model.repeatableScopeForGroupPath joined.path).length
 
-/-- An error group's own repeatable level, which the rule does not iterate: its reads take the
+/-- An error group's own repeatable level and whether the group is keyed. -/
+private def ownLevel? (pair : CheckedParallelFieldPair model) : Option (RepeatableLevel × Bool) :=
+  pair.errorGroup.bind fun path =>
+    let scope := model.repeatableScopeForGroupPath path
+    if scope.length > pair.errorDeclaration.repeatableScope.length then
+      scope.getLast?.map (·, (model.repeatableGroups.find? (·.path == path)).any (·.indexField.isSome))
+    else none
+
+/-- An unkeyed error group's own repeatable level, which the rule does not iterate: its reads take the
 group's first row, as the ordinary carrier pins it (`pinUnindexed`), and only its own presence reads
 every row. -/
 def pinnedLevel? (pair : CheckedParallelFieldPair model) : Option RepeatableLevel :=
-  pair.errorGroup.bind fun path =>
-    let scope := model.repeatableScopeForGroupPath path
-    if scope.length > pair.errorDeclaration.repeatableScope.length then scope.getLast? else none
+  pair.ownLevel?.bind fun (level, keyed) => if keyed then none else some level
+
+/-- A keyed error group's own level. Beside the join the Kernel leaves it at its parallel-iteration
+placeholder rather than binding a row, so the group's own presence holds of no row and its message
+names UNKNOWN there
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join),
+`runtime-keyed`). -/
+def placeholderLevel? (pair : CheckedParallelFieldPair model) : Option RepeatableLevel :=
+  pair.ownLevel?.bind fun (level, keyed) => if keyed then some level else none
 
 /-- `row` with the error side's environment binding the error group's own level at its first row. -/
 def pinned (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow) : ResolvedParallelIndexRow :=
@@ -188,12 +202,14 @@ def customErrorPointer (pair : CheckedParallelFieldPair model)
       (environment.uniqueRowAt? level).map MessageRepetitionCoordinate.concrete |>.getD .unknown }
 
 /-- The error entity's coordinates at one joined row: the anchor's, and an error group's own level at
-its first row (`group-level`, `t8`). -/
+its first row (`group-level`, `t8`). A keyed error group's message names the joined level's first row
+whichever row joined, and UNKNOWN at its own level (`runtime-keyed`, `mixed`). -/
 private def errorCoordinates (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
     (outer : Env) (messageCache : Option MessageIndexContext) :
     Except ParallelPresenceRuleEvaluationError (List MessageRepetitionCoordinate) := do
   let pointer ← (pair.errorSide row).messagePointer model outer pair.errorField
     (messageCache.map fun cache => (cache, row.key)) |>.mapError .join
+  if pair.placeholderLevel?.isSome then return pointer.coordinates.dropLast ++ [.concrete 1, .unknown]
   pure (pointer.coordinates ++ pair.pinnedLevel?.toList.map fun _ => .concrete 1)
 
 private def evalRow (pair : CheckedParallelFieldPair model) (condition : Condition)

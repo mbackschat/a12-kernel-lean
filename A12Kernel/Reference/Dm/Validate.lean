@@ -165,7 +165,7 @@ def checkRule (model : DmModel) (language : Language) (rule : DmRule)
             .error boundRefusal
           else .error refusal
 
-/-- The retained probe's message-address contract uses canonical text for exact pointers and its tool-owned fallback for partially known pointers (`KernelRuntimeProbe.address`, `A12Pointers.canonical`). A group entity renders its own path bare, its own first row included. -/
+/-- The retained probe's message-address contract uses canonical text for exact pointers and its tool-owned fallback for partially known pointers (`KernelRuntimeProbe.address`, `A12Pointers.canonical`). A group entity renders its own path bare, its own first row included; a partially known one writes no coordinate for its own level, as the fallback writes none for a pointer's last segment (`formatPointer`). -/
 def renderPointer (model : FlatModel) (pointer : RulePointer) : String :=
   match pointer.entity with
   | .group path => renderAt path []
@@ -183,7 +183,8 @@ where
       | [] => []
       | name :: rest =>
           let path := prefix_ ++ [name]
-          if model.repeatableGroups.any (·.path == path) then
+          if isPartial && leaf.isEmpty && rest.isEmpty then [name]
+          else if model.repeatableGroups.any (·.path == path) then
             let label := match coordinates.head? with
               | some (.concrete index) => if index == 1 && !isPartial then name else s!"{name}[{index}]"
               | some .wildcard => s!"{name}[0]"

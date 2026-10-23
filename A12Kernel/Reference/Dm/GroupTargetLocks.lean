@@ -530,4 +530,40 @@ example :
         pointers.contains "/Order[1]/Lines[-5]/Qty") = some true := by
   native_decide
 
+open Lean in
+/- A keyed error group beside the join holds the Kernel's parallel-iteration placeholder
+   ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join),
+   `runtime-keyed`): its presence is silent on a filled slot, an enclosing group's presence names
+   `Lines[1]` for line `B` (`mixed`) with UNKNOWN at the group's own level, and its references
+   refuse as the placeholder. The absence twin firing on a line without slots is this account's
+   reading of an instrument fault, external evidence pending. -/
+example :
+    let order := fun (lines picks : List Json) => Json.mkObj [("Order", Json.mkObj [
+      ("Lines", Json.arr lines.toArray), ("Picks", Json.arr picks.toArray)])]
+    let line := fun (key : String) (slots : List Json) => Json.mkObj [("LineNo", Json.str key), ("Sku", Json.str "s"),
+      ("Slots", Json.arr slots.toArray)]
+    let slot := Json.mkObj [("SlotNo", Json.str "1"), ("Mark", Json.str "m")]
+    let pick := fun (key : String) (ref : Bool) => Json.mkObj ([("LineNo", Json.str key)] ++
+      (if ref then [("Ref", Json.str "r")] else []))
+    let placeholder := fun (condition : String) (document : Json) => Id.run do
+      let world : World := { now := { epochMillis := 0 } }
+      let some input := (readDocument dm document).toOption | return false
+      let some prepared := (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption | return false
+      let some checked := (checkDocument prepared "en_US" input.data).toOption | return false
+      let some (.parallel rule) := (checkValidationRule dm .english
+        { group := O, name := "KeyedProbe", errorCode := "P", errorEntityRelPath := "../Lines/Slots", condition,
+          severity := "ERROR" }).toOption | return false
+      let some rows := (runParallelRuleReferences checked rule (some world)).toOption | return false
+      return !rows.isEmpty && rows.all fun (_, references) => match references with
+        | .error error => error == .parallelPlaceholder (L ++ ["Slots"])
+        | .ok _ => false
+    firedOn "Lines/Slots" "GroupFilled(Lines/Slots) And FieldFilled(Picks/Ref)"
+        (order [line "A" [slot]] [pick "A" true]) = some [] ∧
+    firedOn "Lines/Slots" "GroupFilled(Lines) And FieldFilled(Picks/Ref)"
+        (order [line "A" [slot], line "B" []] [pick "B" true, pick "A" false]) = some ["/Order[1]/Lines[1]/Slots"] ∧
+    firedOn "Lines/Slots" "GroupNotFilled(Lines/Slots) And FieldFilled(Picks/Ref)"
+        (order [line "A" []] [pick "A" true]) = some ["/Order[1]/Lines[1]/Slots"] ∧
+    placeholder "GroupNotFilled(Lines/Slots) And FieldFilled(Picks/Ref)" (order [line "A" []] [pick "A" true]) := by
+  native_decide
+
 end A12Kernel.Dm.GroupTargetLocks

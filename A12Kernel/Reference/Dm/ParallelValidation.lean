@@ -286,7 +286,8 @@ private def bindPairCondition (model : FlatModel) (group : GroupPath) (suppress 
 
 /-- Resolve topology without inserting the anchors into the condition's authored references. -/
 private def pairAnchors (model : FlatModel) (group : GroupPath) (errorField : FieldId)
-    (condition : ConditionTree PairSyntaxLeaf) : Lowering (FieldId × FieldId) := do
+    (errorGroupTarget : Option GroupPath) (condition : ConditionTree PairSyntaxLeaf) :
+    Lowering (FieldId × FieldId) := do
   let errorDeclaration ← elaborated "ParallelRule" (model.lookupUniqueId errorField)
   let errorGroups := model.indexedAncestorGroups errorDeclaration
   let some errorGroup := errorGroups.getLast? | refuse "ParallelRule" "one indexed error ancestor required"
@@ -294,8 +295,10 @@ private def pairAnchors (model : FlatModel) (group : GroupPath) (errorField : Fi
   let declarations ← fields.mapM fun field => elaborated "ParallelRule" (model.lookupUniqueId field)
   let far := declarations.filter fun field =>
     !errorGroup.path.isPrefixOf field.groupPath && !(model.indexedAncestorGroups field).isEmpty
+  -- A keyed group target inside the error side is read beside the join, never joined to it
+  -- ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join), `admission`).
   let candidates := model.repeatableGroups.filter fun candidate =>
-    candidate.path != errorGroup.path && candidate.indexField.isSome &&
+    candidate.path != errorGroup.path && some candidate.path != errorGroupTarget && candidate.indexField.isSome &&
       (far.any (candidate.path.isPrefixOf ·.groupPath) ||
         (pairGroupReferences group condition).any (candidate.path.isPrefixOf ·))
   -- A join whose error field sits two index groups deep is refused with its own class
@@ -352,7 +355,8 @@ def checkParallelRule (model : DmModel) (language : Language) (rule : DmRule) :
   -- anUnrelatedFixedErrorBranchRefusesTheFramedOperandBeforeRuntime, 2026-10-12).
   -- The walk needs the joined levels before the pair is built; a condition with no pair is refused
   -- by `pairAnchors` below, after its authored reads.
-  let anchors := ancestry.bind fun (errorField, _) => pairAnchors model.flat rule.group errorField parsedCondition
+  let anchors := ancestry.bind fun (errorField, target) =>
+    pairAnchors model.flat rule.group errorField target parsedCondition
   let joinedLevels := (anchors.toOption.map
     fun (left, right) => (pairGroupPaths model.flat left right).filterMap fun path =>
       (model.flat.repeatableScopeForGroupPath path).getLast?).getD []
