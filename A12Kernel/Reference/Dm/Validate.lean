@@ -41,9 +41,11 @@ def severity? : String → Option ValidationSeverity
   | "INFO" => some .info
   | _ => none
 
-/-- The field an error-entity path names. The path is relative to the rule element, so its first
-`..` climbs from the rule to the group declaring it. -/
-def errorFieldOf (language : Language) (model : FlatModel) (rule : DmRule) : Lowering FieldId := do
+/-- The entity an error-entity path names: a field, or else a declared group. The path is relative
+to the rule element, so its first `..` climbs from the rule to the group declaring it. A path naming
+neither keeps the field resolution's refusal. -/
+def errorEntityOf (language : Language) (model : FlatModel) (rule : DmRule) :
+    Lowering RuleErrorEntity := do
   let path ← match parseModelPath language rule.errorEntityRelPath with
     | .ok path => pure path
     | .error error => refuse "ErrorEntity" (repr error).pretty
@@ -52,8 +54,29 @@ def errorFieldOf (language : Language) (model : FlatModel) (rule : DmRule) : Low
   if !path.absolute && path.ups == 0 then refuse "ErrorEntity" rule.errorEntityRelPath
   let relative := if path.absolute then path else { path with ups := path.ups - 1 }
   let some field := relative.toFieldPath? | refuse "ErrorEntity" rule.errorEntityRelPath
-  let declaration ← elaborated "ErrorEntity" (model.resolveFieldDeclarationUnchecked rule.group field)
-  pure declaration.id
+  match model.resolveFieldDeclarationUnchecked rule.group field with
+  | .ok declaration => pure (.field declaration.id)
+  | .error error =>
+      let group? : Option GroupPath := relative.toGroupPath?.bind fun surface =>
+        (SurfaceGroupPath.resolveAgainst surface rule.group).toOption
+      match group? with
+      | some group =>
+          if model.hasGroupPath group then pure (.group group)
+          else elaborated "ErrorEntity" (.error error)
+      | none => elaborated "ErrorEntity" (.error error)
+
+/-- The field an error-entity path names, for a carrier that reports on fields only. -/
+def errorFieldOf (language : Language) (model : FlatModel) (rule : DmRule) : Lowering FieldId := do
+  match ← errorEntityOf language model rule with
+  | .field field => pure field
+  | .group _ => refuse "ErrorEntity" "group target outside the ordinary rule carrier"
+
+/-- The group an error entity's static reads are judged from: a field's group, or the group itself. -/
+def errorGroupOf (model : FlatModel) : RuleErrorEntity → Lowering GroupPath
+  | .field field => do
+      let declaration ← elaborated "ErrorEntity" (model.lookupUniqueId field)
+      pure declaration.groupPath
+  | .group path => pure path
 
 /-- Apply the shared syntax and warning-suppression gates before choosing an execution carrier. -/
 def parseValidationText (language : Language) (condition : String) : Lowering Text := do
@@ -80,17 +103,15 @@ private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language :
   let suppress := text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
   -- Static reads use the error field's scope (spec/07 §3); that scope must not create runtime
   -- iteration for a fixed expression reporting below a star (ConstructedDateValidityLocks).
-  let admissionGroup ← if useErrorBinding || text.body.needsOrderedAdmission then do
-      let errorField ← errorFieldOf language model.flat rule
-      let declaration ← elaborated "ErrorEntity" (model.flat.lookupUniqueId errorField)
-      pure declaration.groupPath
+  let admissionGroup ← if useErrorBinding || text.body.needsOrderedAdmission then
+      errorGroupOf model.flat (← errorEntityOf language model.flat rule)
     else pure rule.group
   let bindingGroup := if useErrorBinding || text.body.hasHaving then admissionGroup else rule.group
   checkOrderedAdmission model.flat rule.group admissionGroup text.body suppress
   let condition ← lowerCondition model.flat rule.group suppress text.body world bindingGroup
-  let errorField ← errorFieldOf language model.flat rule
+  let errorEntity ← errorEntityOf language model.flat rule
   let some severity := severity? rule.severity | refuse "Severity" rule.severity
-  match assembleResolvedValidationRule model.flat condition errorField rule.errorCode severity
+  match assembleResolvedValidationRuleFor model.flat condition errorEntity rule.errorCode severity
       { parts := [] } with
   | .ok checked => pure checked
   | .error error => refuse "RuleAssembly" error.refusalDetail
@@ -118,11 +139,17 @@ def checkRule (model : DmModel) (language : Language) (rule : DmRule)
             .error boundRefusal
           else .error refusal
 
-/-- The retained probe's message-address contract uses canonical text for exact pointers and its tool-owned fallback for partially known pointers (`KernelRuntimeProbe.address`, `A12Pointers.canonical`). -/
-def renderPointer (model : FlatModel) (pointer : MessagePointer) : String :=
-  match model.fields.find? (·.id == pointer.field) with
-  | none => s!"#{pointer.field}"
-  | some declaration =>
+/-- The retained probe's message-address contract uses canonical text for exact pointers and its tool-owned fallback for partially known pointers (`KernelRuntimeProbe.address`, `A12Pointers.canonical`). A group entity renders its own path bare, its own first row included. -/
+def renderPointer (model : FlatModel) (pointer : RulePointer) : String :=
+  let entityPath? : Option (GroupPath × List String) := match pointer.entity with
+    | .field field => (model.fields.find? (·.id == field)).map fun declaration =>
+        (declaration.groupPath, [declaration.name])
+    | .group path => some (path, [])
+  match entityPath? with
+  | none => match pointer.entity with
+      | .field field => s!"#{field}"
+      | .group path => s!"#{"/".intercalate path}"
+  | some (groupPath, leaf) =>
       let isPartial := pointer.coordinates.any fun coordinate => match coordinate with
         | .concrete _ => false
         | .wildcard | .unknown => true
@@ -141,7 +168,11 @@ def renderPointer (model : FlatModel) (pointer : MessagePointer) : String :=
               label :: walk path rest coordinates.tail
             else (if isPartial then s!"{name}[1]" else name) :: walk path rest coordinates
       (if isPartial then "/" else "") ++
-        "/".intercalate (walk [] declaration.groupPath pointer.coordinates ++ [declaration.name])
+        "/".intercalate (walk [] groupPath pointer.coordinates ++ leaf)
+
+/-- A field pointer's canonical text, as a message's reference channels carry it. -/
+def renderFieldPointer (model : FlatModel) (pointer : MessagePointer) : String :=
+  renderPointer model pointer
 
 def observe (model : FlatModel) (message : FlatRuleMessage) : ObservedMessage :=
   { code := message.errorCode, pointer := renderPointer model message.errorAddress

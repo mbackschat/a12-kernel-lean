@@ -548,7 +548,7 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
       | .checked document | .partialView document _ => do
           let input ←
             (document.groupPresenceInput reference.path context.outer
-              .fullyRelevant false).mapError .group
+              .fullyRelevant false (context.groupPresenceReleased reference.path)).mapError .group
           pure (operator.eval input.derive)
   | .keyedGroupPresence operator source => do
       let document ← match context.input with

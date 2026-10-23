@@ -1,0 +1,1 @@
+[{"id": "v1", "verb": "rule", "args": ["add", "rule-v1.json"]}, {"id": "v2", "verb": "rule", "args": ["add", "rule-v2.json"]}, {"id": "v3", "verb": "rule", "args": ["add", "rule-v3.json"]}, {"id": "v4", "verb": "rule", "args": ["add", "rule-v4.json"]}, {"id": "v5", "verb": "rule", "args": ["add", "rule-v5.json"]}]

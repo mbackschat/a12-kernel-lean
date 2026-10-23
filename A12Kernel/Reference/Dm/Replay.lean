@@ -91,8 +91,8 @@ private def sortedSet (pointers : List String) : List String :=
 private def observedReferences (model : FlatModel) (message : FlatRuleMessage)
     (references : ValidationMessageReferences) : ObservedReferences :=
   { message := observe model message
-    referenced := sortedSet (references.referenced.map (renderPointer model))
-    fillToFix := sortedSet (references.fillToFix.map (renderPointer model)) }
+    referenced := sortedSet (references.referenced.map (renderFieldPointer model))
+    fillToFix := sortedSet (references.fillToFix.map (renderFieldPointer model)) }
 
 /-- Compare the projected channels with the Kernel's as sets, message by message. -/
 private def compareReferences (lean kernel : List ObservedReferences) : RuleStatus :=
@@ -127,7 +127,7 @@ def renderFirings (prepared : PreparedFlatStringContext model compilePattern) (l
       (elaborateValidationMessageTemplate model language.messageKeywordProfile (.rule rule)) with
   | some (.ok template) =>
       let references := document.applyFullIndexPreliminary.toOption.bind (·.messageReferenceInputs.toOption)
-      let failureAddress? : Option MessagePointer := do
+      let failureAddress? : Option RulePointer := do
         let (environments, _) ← (rule.fullRowsAndRepetitionResults document).toOption
         let path ← (rule.errorPathAt (← environments.head?)).toOption
         (rule.core.emitAt path (.fired .value)).message?.map (·.errorAddress)

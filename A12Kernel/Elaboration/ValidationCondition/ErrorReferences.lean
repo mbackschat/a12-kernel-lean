@@ -466,4 +466,29 @@ def messageUnstarredReference? (condition : ValidationCondition model) (field : 
     Option Bool :=
   errorReferenceFor? condition field { kind := .unstarred (model.fieldRepeatableScope field) }
 
+/-- The group presence leaves that reference a group error target: the group itself or a group
+containing it. A field inside the group does not reference it, and neither does any other read
+([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+`group-level` rows `t3`–`t6`). -/
+private def groupTargetReferences : ValidationCondition model → GroupPath → List ResolvedGroupReference
+  | .leaf (.groupPresence _ reference), target =>
+      if reference.path.isPrefixOf target then [reference] else []
+  | .leaf _, _ => []
+  | .and left right, target | .or left right, target =>
+      groupTargetReferences left target ++ groupTargetReferences right target
+
+/-- Whether the condition references the group error target `target`. -/
+def referencesGroupTarget (condition : ValidationCondition model) (target : GroupPath) : Bool :=
+  !(groupTargetReferences condition target).isEmpty
+
+/-- Whether only the root group references `target`, a case no retained observation covers. -/
+def rootOnlyGroupTargetReference (condition : ValidationCondition model) (target : GroupPath) : Bool :=
+  (groupTargetReferences condition target).all (·.isRoot)
+
+/-- Whether some reference to the group error target binds `level`. -/
+def groupTargetReferenceAt (condition : ValidationCondition model) (target : GroupPath)
+    (level : RepeatableLevel) : Bool :=
+  (groupTargetReferences condition target).any fun reference =>
+    (model.repeatableScopeForGroupPath reference.path).contains level
+
 end A12Kernel.ValidationCondition

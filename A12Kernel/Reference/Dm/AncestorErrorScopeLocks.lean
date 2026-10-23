@@ -76,7 +76,7 @@ private def populated := [parent "present" [], parent "" [
 private def plan (definition : DmRule) :
     Option (Option (List RepeatableLevel) × List RepeatableLevel × OrdinaryRuleIterationPlan) :=
   (checkRule dm .english definition).toOption.map fun checked =>
-    (checked.iterationScope, checked.errorDeclaration.repeatableScope, checked.ordinaryIterationPlan)
+    (checked.iterationScope, checked.errorPlacement.repeatableScope, checked.ordinaryIterationPlan)
 
 example : plan (rule "GroupFilled(Rows)") = some (some [10], [10, 20], .rows [10]) ∧
     plan { (rule "GroupFilled(Rows)") with errorEntityRelPath := "../Rows/Marker" } =
@@ -166,14 +166,14 @@ private def parentDeclaration : FlatFieldDecl := model.fields[1]'(by decide)
 private def rootDeclaration : FlatFieldDecl := model.fields[0]'(by decide)
 
 example :
-    !(ruleErrorScopeCompatible true childDeclaration (some [10, 30])) ∧
-    !(ruleErrorScopeCompatible true childDeclaration (some [20])) ∧
-    !(ruleErrorScopeCompatible true parentDeclaration (some [10, 20])) ∧
-    !(ruleErrorScopeCompatible true rootDeclaration (some [10])) ∧
-    ruleErrorScopeCompatible true childDeclaration (some [10]) ∧
-    ruleErrorScopeCompatible true childDeclaration (some [10, 20]) ∧
-    ruleErrorScopeCompatible true childDeclaration none ∧
-    !(ruleErrorScopeCompatible false childDeclaration none) := by native_decide
+    !(ruleErrorScopeCompatible true childDeclaration.repeatableScope (some [10, 30])) ∧
+    !(ruleErrorScopeCompatible true childDeclaration.repeatableScope (some [20])) ∧
+    !(ruleErrorScopeCompatible true parentDeclaration.repeatableScope (some [10, 20])) ∧
+    !(ruleErrorScopeCompatible true rootDeclaration.repeatableScope (some [10])) ∧
+    ruleErrorScopeCompatible true childDeclaration.repeatableScope (some [10]) ∧
+    ruleErrorScopeCompatible true childDeclaration.repeatableScope (some [10, 20]) ∧
+    ruleErrorScopeCompatible true childDeclaration.repeatableScope none ∧
+    !(ruleErrorScopeCompatible false childDeclaration.repeatableScope none) := by native_decide
 
 example :
     (checkRule dm .english (rule "FieldFilled(RootFlag) And FieldFilled(Rows/Sub/Text)")).isOk ∧

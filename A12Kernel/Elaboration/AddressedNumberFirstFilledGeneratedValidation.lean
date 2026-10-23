@@ -94,7 +94,7 @@ private def evaluateGeneratedAt
     Except OrdinaryRepeatableRuleEvaluationError
       (Env × FlatRuleOutcome) := do
   let errorPath ←
-    (environment.pathForScope rule.errorDeclaration.repeatableScope)
+    (environment.pathForScope rule.errorPlacement.repeatableScope)
       |>.mapError fun cause => .addressing (.environment cause)
   let context : AddressedValidationEvaluationContext model := {
     scalar := {

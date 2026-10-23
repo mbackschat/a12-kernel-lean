@@ -239,7 +239,7 @@ private def iterationScopeOf (operand : SurfaceGroupCountOperand) :
 private def admitsErrorField (field : FlatFieldDecl) (operand : SurfaceGroupCountOperand) :
     Option Bool := do
   let scope ← iterationScopeOf operand
-  pure (ruleErrorScopeCompatible true field scope)
+  pure (ruleErrorScopeCompatible true field.repeatableScope scope)
 
 /- `Batches/Boxes*/Seal` reads its batch per row, so the rule iterates `Batches` exactly as every
    other star with an unstarred level above it makes it, while starring the batch too leaves the rule

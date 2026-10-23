@@ -72,7 +72,7 @@ private def snapshot? (data : DocumentData) :
   let checked ← (checkDocument prepared "en_US" data).toOption
   let result ← (rule.evalOrdinaryOnceFull checked).toOption
   pure (rule.ordinaryIterationPlan, result.1, result.2.verdict,
-    result.2.message?.map (·.errorAddress))
+    result.2.message?.bind (·.errorAddress.field?))
 
 private def rootRelevant : ValidationRelevanceScope :=
   .partialSet [{ path := ["Order"], indices := [.concrete 1] }]

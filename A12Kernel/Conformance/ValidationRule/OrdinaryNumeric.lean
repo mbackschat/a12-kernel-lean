@@ -25,7 +25,7 @@ private def evalOrdinaryNumeric? (stored : String) (raw : Option RawCell) :
   ordinaryRepeatableNumericRule?.bind fun rule =>
     (evalOrdinaryRule? rule (ordinaryNumericData stored raw)).bind fun outcomes =>
       (outcomes.map (fun entry =>
-        (entry.2.verdict, entry.2.message?.map (·.errorAddress)))).head?
+        (entry.2.verdict, entry.2.message?.bind (·.errorAddress.field?)))).head?
 
 /- Addressed ordinary Number evaluation preserves the established nested arithmetic and direct-comparison empty polarity at the selected row: present zero is a value firing, absence is an omission firing, and malformed input stays semantic UNKNOWN. -/
 example :
@@ -66,7 +66,7 @@ example :
         }]
       }).map fun outcomes => outcomes.map fun entry =>
         (entry.1, entry.2.verdict,
-          entry.2.message?.map (·.errorAddress))) =
+          entry.2.message?.bind (·.errorAddress.field?))) =
       some [(
         [(10, 2), (20, 1)],
         .fired .value,
@@ -108,7 +108,7 @@ example :
         (rule.condition.core.ordinaryRepeatableFields.map (·.id),
           outcomes.map fun entry =>
             (entry.1, entry.2.verdict,
-              entry.2.message?.map (·.errorAddress)))) ==
+              entry.2.message?.bind (·.errorAddress.field?)))) ==
       some (
         [outerAmount.id, innerAmount.id],
         [(

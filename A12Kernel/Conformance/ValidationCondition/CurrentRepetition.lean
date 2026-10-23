@@ -246,7 +246,7 @@ private def repeatableRuleSnapshot?
   let outcomes ← (rule.evalOrdinaryRepeatableFull checked).toOption
   pure (rule.ordinaryIterationPlan, outcomes.map fun outcome =>
     (outcome.1, outcome.2.verdict,
-      outcome.2.message?.map (·.errorAddress)))
+      outcome.2.message?.bind (·.errorAddress.field?)))
 
 private def repeatableAddressedResult?
     (environment : Env) (guardCell : RawCell := .parsed (.num 5)) :

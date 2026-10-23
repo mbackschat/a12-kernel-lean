@@ -35,8 +35,23 @@ structure AddressedValidationEvaluationContext (model : FlatModel) where
   scalar : ValidationEvaluationContext
   outer : Env
   input : AddressedValidationInput model
+  /-- Levels `outer` pins to their first row without iterating them: a repeating group error
+  target's own level. A field read there takes the pinned row, while the presence of the group
+  whose own level it is reads every row
+  ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+  `group-target` and `group-level`). -/
+  unindexed : List RepeatableLevel := []
 
 namespace AddressedValidationEvaluationContext
+
+/-- The level a group's presence releases: the group's own level when it is unindexed, so the
+presence reads every row of the group. -/
+def groupPresenceReleased (context : AddressedValidationEvaluationContext model) (path : GroupPath) :
+    List RepeatableLevel :=
+  match context.unindexed with
+  | [] => []
+  | unindexed =>
+      ((model.repeatableGroups.find? (·.path == path)).map (·.level)).toList.filter unindexed.contains
 
 /-- Read one addressed cell without collapsing a checked-document field, environment, or placement failure into semantic malformed input. -/
 def readCell (context : AddressedValidationEvaluationContext model)

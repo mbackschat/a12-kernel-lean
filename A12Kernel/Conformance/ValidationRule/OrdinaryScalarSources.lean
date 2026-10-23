@@ -39,7 +39,7 @@ private def repeatableStringLengthSnapshot? :
     rule.requiresAddressedValidation,
     (outcomes.take 1).map fun entry =>
       (entry.1, entry.2.verdict,
-        entry.2.message?.map (·.errorAddress)))
+        entry.2.message?.bind (·.errorAddress.field?)))
 
 private def repeatableStringLengthStructuralFailure? :
     Option CheckedAddressingError := do
@@ -101,7 +101,7 @@ private def repeatableFieldValueAsNumberSnapshot?
     rule.requiresAddressedValidation,
     (outcomes.take 1).map fun entry =>
       (entry.1, entry.2.verdict,
-        entry.2.message?.map (·.errorAddress)))
+        entry.2.message?.bind (·.errorAddress.field?)))
 
 private def repeatableFieldValueAsNumberStructuralFailure? :
     Option CheckedAddressingError := do
@@ -198,7 +198,7 @@ private def repeatableStringRangeSnapshot?
     rule.requiresAddressedValidation,
     (outcomes.take 1).map fun entry =>
       (entry.1, entry.2.verdict,
-        entry.2.message?.map (·.errorAddress)))
+        entry.2.message?.bind (·.errorAddress.field?)))
 
 private def repeatableStringRangeStructuralFailure? :
     Option CheckedAddressingError := do
@@ -287,7 +287,7 @@ private def repeatableTemporalPartSnapshot?
     rule.requiresAddressedValidation,
     (outcomes.take 1).map fun entry =>
       (entry.1, entry.2.verdict,
-        entry.2.message?.map (·.errorAddress)))
+        entry.2.message?.bind (·.errorAddress.field?)))
 
 private def repeatableTemporalPartStructuralFailure? :
     Option CheckedAddressingError := do

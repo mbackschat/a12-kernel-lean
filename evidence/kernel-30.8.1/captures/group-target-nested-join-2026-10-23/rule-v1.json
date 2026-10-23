@@ -1,0 +1,1 @@
+{"field": "/Order/Gifts/Card/Text", "group": "/Order", "condition": "FieldNotFilled(Gifts/Card/Text)", "code": "v1", "name": "v1", "messages": [{"locale": "en_US", "text": "probe"}]}

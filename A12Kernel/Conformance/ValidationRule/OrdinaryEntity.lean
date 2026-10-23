@@ -36,7 +36,7 @@ private def outerInnerTokenValueCountSnapshot? :
     rule.requiresAddressedValidation,
     outcomes.map fun entry =>
       (entry.1, entry.2.verdict,
-        entry.2.message?.map (·.errorAddress)))
+        entry.2.message?.bind (·.errorAddress.field?)))
 
 private def tokenValueCountStructuralFailure? :
     Option CheckedAddressingError := do
@@ -96,7 +96,7 @@ private def plainStarProductVerdict? (withRightValues : Bool) :
   let rule ← guardedPlainStarProductRule?
   let outcomes ← evalOrdinaryRule? rule (plainStarProductData withRightValues)
   let outcome ← outcomes.head?
-  pure (outcome.2.verdict, outcome.2.message?.map (·.errorAddress))
+  pure (outcome.2.verdict, outcome.2.message?.bind (·.errorAddress.field?))
 
 private def plainStarProductStructuralFailure? :
     Option CheckedAddressingError := do
@@ -142,7 +142,7 @@ example :
         cells := base.cells ++ [innerAmount.id, innerPrice.id].map fun field =>
           { address := { field, path := [1, 3] }, stored := "6", raw := .parsed (.num 6) } }
       let outcome ← outcomes.head?
-      pure (outcome.2.verdict, outcome.2.message?.map (·.errorAddress))) =
+      pure (outcome.2.verdict, outcome.2.message?.bind (·.errorAddress.field?))) =
       some (.notFired, none) := by
   native_decide
 
@@ -193,7 +193,7 @@ private def boundStarGroupListSnapshot?
   let outcomes ← evalOrdinaryRule? rule boundStarGroupListData
   pure (outcomes.map fun entry =>
     (entry.1, entry.2.verdict,
-      entry.2.message?.map (·.errorAddress)))
+      entry.2.message?.bind (·.errorAddress.field?)))
 
 private def boundStarGroupListStructuralFailure? :
     Option CheckedAddressingError := do

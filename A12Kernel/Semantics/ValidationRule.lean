@@ -1,9 +1,10 @@
 import A12Kernel.Semantics.PartialValidation
 import A12Kernel.Semantics.MessagePointer
+import A12Kernel.Semantics.GroupReference
 
 /-! # One flat validation-rule emission boundary
 
-This capsule attaches whole-rule metadata to the existing flat condition verdict. Its low-level input assumes an already-lowered condition, resolved error-field ID, nonrepeatable context, and parser-independent structured message plan. The plan's provider/default selection and one-pass rendering occur only after the condition fires. Authored-template parsing and legality, field lookup, provider invocation, locale and display conversion, repeatable addressing, partial validation, rule collections, and orchestration remain outside.
+This capsule attaches whole-rule metadata to the existing flat condition verdict. Its low-level input assumes an already-lowered condition, resolved error entity, nonrepeatable context, and parser-independent structured message plan. The plan's provider/default selection and one-pass rendering occur only after the condition fires. Authored-template parsing and legality, field lookup, provider invocation, locale and display conversion, repeatable addressing, partial validation, rule collections, and orchestration remain outside.
 -/
 
 namespace A12Kernel
@@ -128,10 +129,44 @@ def render (plan : MessageRenderPlan) : ResolvedMessageText :=
 
 end MessageRenderPlan
 
+/-- The entity a rule reports on. A rule may name a group as well as a field; its message then
+points at the group itself, at its first row when the group repeats
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)). -/
+inductive RuleErrorEntity where
+  | field (id : FieldId)
+  | group (path : GroupPath)
+  deriving Repr, DecidableEq
+
+/-- A fired rule message's address: its error entity with the repetition coordinates of every
+repeatable level the entity's path carries, its own level included for a repeating group. -/
+structure RulePointer where
+  entity : RuleErrorEntity
+  coordinates : List MessageRepetitionCoordinate
+  deriving Repr, DecidableEq
+
+/-- A field pointer is the field-entity rule pointer, so every formal-message channel's field
+address is also a rule address. -/
+instance : Coe MessagePointer RulePointer where
+  coe pointer := { entity := .field pointer.field, coordinates := pointer.coordinates }
+
+namespace RulePointer
+
+/-- The field pointer of a field entity; a group entity has none. -/
+def field? (pointer : RulePointer) : Option MessagePointer :=
+  match pointer.entity with
+  | .field field => some { field, coordinates := pointer.coordinates }
+  | .group _ => none
+
+/-- Recover an exact document address for a field entity whose coordinates are all concrete. -/
+def toCellAddr? (pointer : RulePointer) : Option CellAddr :=
+  pointer.field?.bind MessagePointer.toCellAddr?
+
+end RulePointer
+
 /-- One already-resolved rule instance, parametric only in its condition representation. Message display inputs remain structured until a fired verdict reaches the renderer. -/
 structure ResolvedRule (Condition : Type) where
   condition : Condition
-  errorField : FieldId
+  errorEntity : RuleErrorEntity
   errorCode : String
   severity : ValidationSeverity
   messagePlan : MessageRenderPlan
@@ -148,7 +183,7 @@ inductive RuleMessageOrigin where
 
 /-- Emission retains the failure handler identity needed to derive reference sets from the checked rule. -/
 structure FlatRuleMessage where
-  errorAddress : MessagePointer
+  errorAddress : RulePointer
   errorCode : String
   severity : ValidationSeverity
   messageType : Polarity
@@ -202,7 +237,7 @@ def emitAtCoordinates (rule : ResolvedRule Condition)
   | .notFired => .notFired
   | .fired messageType =>
       .fired {
-        errorAddress := { field := rule.errorField, coordinates }
+        errorAddress := { entity := rule.errorEntity, coordinates }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType

@@ -136,7 +136,7 @@ private def referenced (name : String) (document : Json) : Option (List (String 
   let .parallel plan ← (checkValidationRule dm .english source world).toOption | none
   let fired ← (runParallelRuleReferences checked plan (some world)).toOption
   let sorted := fun (pointers : List MessagePointer) =>
-    (pointers.map (renderPointer dm.flat)).eraseDups.mergeSort (compare · · != .gt)
+    (pointers.map (renderFieldPointer dm.flat)).eraseDups.mergeSort (compare · · != .gt)
   fired.mapM fun (message, references) => do
     let references ← references.toOption
     pure (renderPointer dm.flat message.errorAddress, sorted references.referenced, sorted references.fillToFix)

@@ -7,7 +7,8 @@ import A12Kernel.Reference.Dm.Document
 Each row is one rule of the
 [iteration-guard capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04),
 checked through the DM reader on a model with the capture's shape; the expected class is the
-Kernel's `rule check` verdict for the same condition and error field. The rows separate a level
+Kernel's `rule check` verdict for the same condition and error field, or its `model check` verdict
+for a rule reporting on a group. The rows separate a level
 the guard skips (twice-repeating and keyed) from a judged one, and each comparison rule the Kernel
 applies to a leaf it otherwise allows: a count below a positive constant, an operation equal to
 zero, and an operation mixing row and fixed reads against any constant. The constant rows on `Sum`
@@ -131,7 +132,16 @@ private def rows : List (String × GroupPath × String × String × String) := [
   ("o02", O, "Lines/Sku", "FieldFilled(Lines/Qty)", "MVK_ERROR_FIELD_NOT_REFERENCED"),
   ("o03", O, "Lines/Sku", "NumberOfFilledFields(Lines/Qty, Lines/Price) < 1", "MVK_ERROR_FIELD_NOT_REFERENCED"),
   ("o04", O, "Email", "FieldNotFilled(Email) And FieldNotFilled(Lines/Qty)", "MVK_NO_WILDCARD"),
-  ("a12", O, "Lines/Sku", "NoFieldFilled(Lines/Sku, Picks/Ref)", "MVK_PARALLEL_ITERATION_INVALID")]
+  ("a12", O, "Lines/Sku", "NoFieldFilled(Lines/Sku, Picks/Ref)", "MVK_PARALLEL_ITERATION_INVALID"),
+  -- A group target's own presence is judged at its level: unguarded or beside a `Lines` positive the
+  -- negative refuses, except at the exempt `Gifts`; `a07` and `a08` repeat `g01` and `g02` through an
+  -- instrument that refuses a group target before the Kernel runs.
+  ("g01", O, "Lines/Parts", "GroupNotFilled(Lines/Parts)", NEG),
+  ("g02", O, "Lines/Parts", "GroupFilled(Lines/Parts)", "admitted"),
+  ("g03", O, "Lines/Parts", "FieldFilled(Lines/Sku) And GroupNotFilled(Lines/Parts)", NEG),
+  ("g04", O, "Gifts/Card", "GroupNotFilled(Gifts/Card)", "admitted"),
+  ("g05", O, "Wraps/Ribbon", "GroupNotFilled(Wraps/Ribbon)", NEG),
+  ("g06", O, "Wraps/Ribbon", "GroupFilled(Wraps/Ribbon)", "admitted")]
 
 /-- The peer's Kernel rows ([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-22b),
 `CheckerIterationGuardAgreementTest`) on the same model shape: the constant beside a direct

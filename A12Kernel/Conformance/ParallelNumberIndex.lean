@@ -72,7 +72,7 @@ private def run (data : DocumentData := source) (rightMinimum : Nat := 2)
 private def firedAt (field : Nat) (coordinates : List MessageRepetitionCoordinate)
     (polarity : Polarity := .value) : FlatRuleOutcome :=
   .fired {
-    errorAddress := { field, coordinates }, errorCode := "MATCH", severity := .error
+    errorAddress := { entity := .field field, coordinates }, errorCode := "MATCH", severity := .error
     messageType := polarity, text := { text := "" }
   }
 

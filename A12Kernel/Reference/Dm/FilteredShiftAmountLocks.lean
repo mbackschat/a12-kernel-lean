@@ -76,7 +76,7 @@ example :
 private def sets? (condition : String) : Option (List String × List String) := do
   let rule ← rule? condition
   let render (pointers : List MessagePointer) :=
-    (pointers.map (renderPointer model)).mergeSort (compare · · != .gt)
+    (pointers.map (renderFieldPointer model)).mergeSort (compare · · != .gt)
   pure (render (← (rule.condition.core.referencePointers []).toOption),
     render (← (rule.condition.core.omissionPointers []).toOption))
 

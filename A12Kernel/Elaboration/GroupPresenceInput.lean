@@ -42,24 +42,24 @@ def rowWithinGroup (model : FlatModel) (groupPath : GroupPath)
       groupPath.isPrefixOf group.path && addressPrefix.isPrefixOf row.path
 
 private def resolveGroupPresenceScope (model : FlatModel)
-    (groupPath : GroupPath) (environment : Env) :
+    (groupPath : GroupPath) (environment : Env) (released : List RepeatableLevel) :
     Except CheckedGroupPresenceError (List Nat) :=
-  (environment.pathForScope (model.repeatableScopeForGroupPath groupPath))
+  (environment.pathForScope ((model.repeatableScopeForGroupPath groupPath).filter (!released.contains ·)))
     |>.mapError CheckedGroupPresenceError.ofEnvBinding
 
 end CheckedDocument
 
-/-- Derive one resolved validation-group slice using call-selected rows and a later checked-cell placement view over the same immutable document. The supplied slice must retain base addresses and may add model-owned absent-cell findings. -/
+/-- Derive one resolved validation-group slice using call-selected rows and a later checked-cell placement view over the same immutable document. The supplied slice must retain base addresses and may add model-owned absent-cell findings. A `released` level is left unbound, so the slice holds every row at that level; only the group's own level is released. -/
 def FlatModel.groupPresenceInputFromSlice (model : FlatModel)
     (rows : List RowAddr) (cells : List CheckedCellPlacement)
     (groupPath : GroupPath) (environment : Env)
     (relevance : GroupRelevance) (structuralError : Bool)
-    (silentErrorAddresses : List CellAddr := []) :
+    (silentErrorAddresses : List CellAddr := []) (released : List RepeatableLevel := []) :
     Except CheckedGroupPresenceError ResolvedGroupPresenceInput :=
   if !model.hasGroupPath groupPath then
     .error (.unknownGroup groupPath)
   else
-    match CheckedDocument.resolveGroupPresenceScope model groupPath environment with
+    match CheckedDocument.resolveGroupPresenceScope model groupPath environment released with
     | .error error => .error error
     | .ok addressPrefix =>
         let descendantCells := cells.filterMap fun placement =>

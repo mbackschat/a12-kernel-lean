@@ -99,7 +99,7 @@ private def fired (document : Json) (capacity : Nat := 50) : Option (List String
     let fired ← (runParallelRuleReferences checked plan (some world)).toOption
     fired.mapM fun (message, references) => do
       let references ← references.toOption
-      let sorted := (references.referenced.map (renderPointer dm.flat)).eraseDups.mergeSort (compare · · != .gt)
+      let sorted := (references.referenced.map (renderFieldPointer dm.flat)).eraseDups.mergeSort (compare · · != .gt)
       pure s!"{source.errorCode} {renderPointer dm.flat message.errorAddress} {reprStr message.messageType} {sorted}"
   pure messages.flatten
 

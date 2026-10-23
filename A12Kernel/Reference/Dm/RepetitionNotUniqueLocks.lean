@@ -176,7 +176,7 @@ private def references (condition : String) (data : DocumentData) :
   let inputs := { base with repetitionAt := some fun environment => results.find? (·.row == environment) }
   let fired ← (runRuleAt world document rule).toOption
   let sorted (pointers : List MessagePointer) :=
-    (pointers.map (renderPointer model)).eraseDups.mergeSort (compare · · != .gt)
+    (pointers.map (renderFieldPointer model)).eraseDups.mergeSort (compare · · != .gt)
   fired.mapM fun (environment, message) => do
     let found ← (rule.condition.core.messageReferences message environment (some inputs)).toOption
     pure (environment.map (·.2), sorted found.referenced, sorted found.fillToFix)

@@ -62,13 +62,13 @@ example :
   native_decide
 
 private def rule : ResolvedRule Unit := {
-  condition := (), errorField := 7, errorCode := "JOIN", severity := .warning,
+  condition := (), errorEntity := .field 7, errorCode := "JOIN", severity := .warning,
   messagePlan := { parts := [.text "unmatched"] }
 }
 
 example : (rule.emitAtCoordinates [.concrete 2, .unknown] (.fired .omission)).message? =
     some {
-      errorAddress := { field := 7, coordinates := [.concrete 2, .unknown] }
+      errorAddress := { entity := .field 7, coordinates := [.concrete 2, .unknown] }
       errorCode := "JOIN", severity := .warning, messageType := .omission,
       text := { text := "unmatched" } } := by native_decide
 

@@ -297,7 +297,7 @@ private def selectedReferences : Option (List String × Bool × Bool × Bool × 
   let endpoint ← endpointExpr "Rows/Start For KeyStart"
   let surface ← (lowerDateRangeEndpoint model ["Form"] endpoint).toOption
   let source ← (elaborateDateRangeEndpointSource model ["Form"] [] surface).toOption
-  pure ((pointers.map (renderPointer model)).eraseDups.mergeSort (fun a b => decide (a ≤ b)),
+  pure ((pointers.map (renderFieldPointer model)).eraseDups.mergeSort (fun a b => decide (a ≤ b)),
     source.referencesField 3, source.referencesErrorField 3,
     source.referencesErrorField 4, source.referencesErrorField 1)
 

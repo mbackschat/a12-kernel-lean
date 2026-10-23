@@ -51,7 +51,7 @@ def WellFormed (rule : CheckedParallelPresenceRule model) : Prop :=
 def core (rule : CheckedParallelPresenceRule model) :
     ResolvedValidationRule model := {
   condition := rule.condition.core
-  errorField := rule.errorField
+  errorEntity := .field rule.errorField
   errorCode := rule.errorCode
   severity := rule.severity
   messagePlan := rule.messagePlan

@@ -12,7 +12,7 @@ open A12Kernel.Conformance.ValidationRule.OrdinarySupport
 
 example :
     (ordinaryIterationRule?.map fun rule =>
-      (rule.iterationScope, rule.errorDeclaration.repeatableScope)) =
+      (rule.iterationScope, rule.errorPlacement.repeatableScope)) =
       some (some [10, 20], [10, 20]) := by
   native_decide
 

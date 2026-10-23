@@ -63,8 +63,8 @@ private def execute (condition : String) (relevant : List RelevantEntityPattern)
   let messages ← if full then runValidationRule world checked (.parallel plan) messageCache
     else runPartialParallelRule checked plan relevant messageCache
   if let some field := expectedErrorField then
-    if messages.any (·.errorAddress.field != field) then
-      throw ("unexpected error fields: " ++ reprStr (messages.map (·.errorAddress.field)))
+    if messages.any (·.errorAddress.entity != .field field) then
+      throw ("unexpected error fields: " ++ reprStr (messages.map (·.errorAddress.entity)))
   pure (messages.map fun message => ((if fixedRoot then [.concrete 1] else []) ++ message.errorAddress.coordinates, message.messageType))
 
 private def positive := "FieldFilled(/Et/Rows/Note) Or FieldFilled(/Et/Side/Val)"

@@ -308,7 +308,8 @@ theorem validationCondition_groupPresence_evalAddressed_checked
   cases h : document.groupPresenceInput reference.path outer .fullyRelevant false <;>
     simp [ValidationCondition.groupPresence, ValidationCondition.evalAddressed,
       ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
-      ValidationConditionLeaf.evalAddressed, h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
+      ValidationConditionLeaf.evalAddressed, AddressedValidationEvaluationContext.groupPresenceReleased,
+      h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
 
 
 /-- A structural group-slice failure remains in the addressed error channel and cannot become semantic UNKNOWN. -/

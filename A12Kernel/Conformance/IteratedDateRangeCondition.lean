@@ -138,7 +138,7 @@ private def rowOutcomes? (op : EqualityOp) (data : DocumentData) :
   let document ← (checkDocument prepared "en_US" data).toOption
   let outcomes ← (rule.evalOrdinaryRepeatableFull document).toOption
   pure (outcomes.map fun entry =>
-    (entry.1, entry.2.verdict, entry.2.message?.map (·.errorAddress)))
+    (entry.1, entry.2.verdict, entry.2.message?.bind (·.errorAddress.field?)))
 
 private def rowVerdicts? (op : EqualityOp) (data : DocumentData) :
     Option (List (Env × Verdict)) :=

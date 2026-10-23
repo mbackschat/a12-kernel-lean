@@ -1,0 +1,59 @@
+{
+ "model": "Order23v_DM.json",
+ "clock": "2026-10-23T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "empty",
+   "documentInline": {
+    "Order": {}
+   }
+  },
+  {
+   "name": "lonely",
+   "documentInline": {
+    "Order": {
+     "Email": "e"
+    }
+   }
+  },
+  {
+   "name": "ribbon2",
+   "documentInline": {
+    "Order": {
+     "Wraps": [
+      {
+       "Style": "x"
+      },
+      {
+       "Style": "y",
+       "Ribbon": {
+        "Color": "c"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "style2",
+   "documentInline": {
+    "Order": {
+     "Wraps": [
+      {
+       "Ribbon": {
+        "Color": "c"
+       }
+      },
+      {
+       "Style": "y"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -75,7 +75,7 @@ namespace CheckedParallelFieldPair
 
 def core (pair : CheckedParallelFieldPair model) (condition : Condition) : ResolvedRule Condition := {
   condition
-  errorField := pair.errorField
+  errorEntity := .field pair.errorField
   errorCode := pair.errorCode
   severity := pair.severity
   messagePlan := pair.messagePlan

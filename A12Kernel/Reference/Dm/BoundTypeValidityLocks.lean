@@ -201,8 +201,8 @@ private def scalarEntryBoundary (source : String) (operation : String) (rows : B
   let full := checked.evalFull prepared "en_US" raw GroupPresenceContext.unavailable true
   let part := checked.evalPartial prepared "en_US" raw GroupPresenceContext.unavailable .full
   pure (checked.requiresAddressedValidation == rows &&
-    (match full with | .error .addressedContextRequired => rows | .ok _ => !rows) &&
-    (match part with | .error .addressedContextRequired => rows | .ok _ => !rows))
+    (match full with | .error .addressedContextRequired => rows | .ok _ => !rows | .error .groupTargetPartial => false) &&
+    (match part with | .error .addressedContextRequired => rows | .ok _ => !rows | .error .groupTargetPartial => false))
 
 example : ["Valid", "Invalid"].all (fun operation =>
     scalarEntryBoundary "Text" operation false == some true &&
@@ -216,8 +216,8 @@ private def emittedReferences (condition : String) (registered : Bool) :
   let messages ← (runRule (world registered) document checked).toOption
   messages.mapM fun message => do
     let references ← (checked.condition.core.messageReferences message []).toOption
-    pure ((references.referenced.map (renderPointer model)).mergeSort,
-      (references.fillToFix.map (renderPointer model)).mergeSort)
+    pure ((references.referenced.map (renderFieldPointer model)).mergeSort,
+      (references.fillToFix.map (renderFieldPointer model)).mergeSort)
 
 example : emittedReferences "Invalid(Text,\"Code\") And FieldFilled(Out)" false = some [([], [])] ∧
     emittedReferences "Invalid(Text,\"Code\") And FieldFilled(Out)" true = some [(["Form/Out", "Form/Text"], [])] ∧

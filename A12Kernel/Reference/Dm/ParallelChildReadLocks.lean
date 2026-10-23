@@ -111,7 +111,7 @@ private def admission : Option (List String) := do
 private def world : World := { now := { epochMillis := 1791972000000 }, modelZoneRules := ModelZone.concreteRules }
 
 private def sorted (dm : DmModel) (pointers : List MessagePointer) : List String :=
-  (pointers.map (renderPointer dm.flat)).eraseDups.mergeSort (compare · · != .gt)
+  (pointers.map (renderFieldPointer dm.flat)).eraseDups.mergeSort (compare · · != .gt)
 
 /-- Each rule's firings, as `code pointer type referenced fillToFix`. -/
 private def fired (document : Json) : Option (List String) := do

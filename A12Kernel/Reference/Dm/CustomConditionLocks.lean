@@ -154,7 +154,7 @@ private def repeatedRule (isPartial : Bool) : Option (List MessagePointer) := do
     | .evaluated rows => pure (rows.filterMap fun (_, result) =>
         match result with | .skipped => none | .evaluated outcome => some outcome)
   else pure ((← (rule.evalOrdinaryRepeatableFull document (registry := registry)).toOption).map (·.2))
-  pure (outcomes.filterMap (fun outcome => outcome.message?.map (·.errorAddress)))
+  pure (outcomes.filterMap (fun outcome => outcome.message?.bind (·.errorAddress.field?)))
 
 example : repeatedRule false = some [{ field := 3, coordinates := [.concrete 2] }] ∧
     repeatedRule true = some [{ field := 3, coordinates := [.concrete 2] }] := by native_decide

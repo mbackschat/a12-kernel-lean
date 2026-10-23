@@ -235,12 +235,12 @@ example : admittedAtoms "[L/M] != Sum(R/N, L/N)" = true ∧
     admittedAtoms "NumberOfDifferentValues(R/N, L/N) > 3" = true ∧
     admittedAtoms "NumberOfDifferentValues(R/N, L/N) < 3" = false := by native_decide
 
-example : renderPointer model { field := 2, coordinates := [.unknown] } = "/Form[1]/L[-5]/N" ∧
-    renderPointer model { field := 2, coordinates := [.wildcard] } = "/Form[1]/L[0]/N" ∧
-    renderPointer model { field := 2, coordinates := [.concrete 2] } = "Form/L[2]/N" ∧
-    renderPointer commonOuterModel { field := 2, coordinates := [.unknown, .concrete 2] } =
+example : renderFieldPointer model { field := 2, coordinates := [.unknown] } = "/Form[1]/L[-5]/N" ∧
+    renderFieldPointer model { field := 2, coordinates := [.wildcard] } = "/Form[1]/L[0]/N" ∧
+    renderFieldPointer model { field := 2, coordinates := [.concrete 2] } = "Form/L[2]/N" ∧
+    renderFieldPointer commonOuterModel { field := 2, coordinates := [.unknown, .concrete 2] } =
       "/Form[-5]/L[2]/N" ∧
-    renderPointer commonOuterModel { field := 2, coordinates := [.concrete 2, .unknown] } =
+    renderFieldPointer commonOuterModel { field := 2, coordinates := [.concrete 2, .unknown] } =
       "/Form[2]/L[-5]/N" := by native_decide
 
 -- Message references: the structural inventory of the condition plus, per joined side that
@@ -257,7 +257,7 @@ private def referencesOf (definition : DmRule) (candidate : FlatModel) (document
   let .parallel rule ← (checkValidationRule (dm candidate) .english definition).toOption | none
   let fired ← (runParallelRuleReferences checked rule).toOption
   let sorted := fun (pointers : List MessagePointer) =>
-    (pointers.map (renderPointer candidate)).eraseDups.mergeSort (compare · · != .gt)
+    (pointers.map (renderFieldPointer candidate)).eraseDups.mergeSort (compare · · != .gt)
   pure (fired.map fun (message, references) =>
     ((observe candidate message).pointer,
       match references with

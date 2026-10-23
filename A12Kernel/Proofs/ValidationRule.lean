@@ -78,10 +78,7 @@ theorem resolvedRule_emitAt_fired_exact (rule : ResolvedRule Condition)
     (errorPath : List Nat) (messageType : Polarity) :
     rule.emitAt errorPath (.fired messageType) =
       .fired {
-        errorAddress := MessagePointer.ofCellAddr {
-          field := rule.errorField
-          path := errorPath
-        }
+        errorAddress := { entity := rule.errorEntity, coordinates := errorPath.map .concrete }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
@@ -126,25 +123,22 @@ theorem flatRule_fired_message_exact (rule : ResolvedFlatRule)
     (fires : rule.condition.evalFull context hasContent = .fired messageType) :
     rule.evalFull context hasContent =
       .fired {
-        errorAddress := MessagePointer.ofCellAddr {
-          field := rule.errorField
-          path := []
-        }
+        errorAddress := { entity := rule.errorEntity, coordinates := [] }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
         text := rule.messagePlan.render
   } := by
   simp [ResolvedRule.evalFull, ResolvedRule.evalWith,
-    ResolvedRule.evalWithAt, ResolvedRule.emitAt, ResolvedRule.emitAtCoordinates, MessagePointer.ofCellAddr, fires]
+    ResolvedRule.evalWithAt, ResolvedRule.emitAt, ResolvedRule.emitAtCoordinates, fires]
 
 /-- Error address, code, severity, and already-resolved text cannot change firing or polarity. -/
 theorem flatRule_metadata_doesNotChangeVerdict (rule : ResolvedFlatRule)
-    (errorField : FieldId) (errorCode : String)
+    (errorEntity : RuleErrorEntity) (errorCode : String)
     (severity : ValidationSeverity)
     (messagePlan : MessageRenderPlan)
     (context : FlatContext) (hasContent : Bool) :
-    (({ rule with errorField, errorCode, severity, messagePlan }).evalFull
+    (({ rule with errorEntity, errorCode, severity, messagePlan }).evalFull
         context hasContent).verdict =
       (rule.evalFull context hasContent).verdict := by
   rw [flatRule_eval_verdict, flatRule_eval_verdict]
@@ -190,30 +184,45 @@ theorem equal_flatRuleSilence_doesNotImply_equalVerdict :
       FlatRuleOutcome.notFired.verdict ≠ FlatRuleOutcome.unknown.verdict := by
   decide
 
-/-- Flat checked assembly carries one unique, nonrepeatable, referenced error declaration from the same model as the condition. -/
+/-- Flat checked assembly carries one unique, nonrepeatable, referenced error field from the same model as the condition: a flat condition references no group, so a flat rule never reports on one. -/
 theorem checkedFlatRule_errorField_coherent
     (rule : CheckedResolvedFlatRule model) :
-    model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
-      rule.errorDeclaration.repeatableScope.isEmpty = true ∧
-      rule.condition.core.referencesField rule.errorField = true :=
+    ∃ field declaration, rule.errorEntity = .field field ∧
+      rule.errorPlacement = .field declaration ∧
+      model.lookupUniqueId field = .ok declaration ∧
+      declaration.repeatableScope.isEmpty = true ∧
+      rule.condition.core.referencesField field = true :=
   by
     have noScope : rule.iterationScope = none := by
       simpa using rule.iterationScopeOwned.symm
-    exact ⟨rule.errorFieldLookup,
-      by
-        simpa [ruleErrorScopeCompatible, noScope] using
-          rule.errorFieldScopeCompatible,
-      rule.errorFieldReferenced⟩
+    have scope := rule.errorFieldScopeCompatible
+    have owned := rule.errorPlacementOwned
+    have referenced := rule.errorFieldReferenced
+    rw [noScope] at scope
+    generalize rule.errorEntity = entity at owned referenced ⊢
+    generalize rule.errorPlacement = placement at owned scope ⊢
+    cases entity with
+    | group path => simp [FlatCondition.referencesErrorEntity] at referenced
+    | field field =>
+        simp only [FlatModel.ruleErrorPlacement] at owned
+        split at owned
+        · rename_i declaration lookup
+          cases owned
+          exact ⟨field, declaration, rfl, rfl, lookup,
+            by simpa [ruleErrorScopeCompatible, RuleErrorPlacement.repeatableScope] using scope,
+            by simpa [FlatCondition.referencesErrorEntity] using referenced⟩
+        · cases owned
 
-/-- Mixed checked assembly certifies the exact error declaration, its derived ordinary iteration
-scope, and a reference to the error field outside every filter body or marked inside one. -/
+/-- Mixed checked assembly certifies the exact error placement, its derived ordinary iteration
+scope, and a reference to the error entity: for a field, outside every filter body or marked inside
+one; for a group, a presence of it or of a group containing it. -/
 theorem checkedValidationRule_errorField_coherent
     (rule : CheckedResolvedValidationRule model) :
-    model.lookupUniqueId rule.errorField = .ok rule.errorDeclaration ∧
+    model.ruleErrorPlacement rule.errorEntity = .ok rule.errorPlacement ∧
       ruleErrorScopeCompatible true
-        rule.errorDeclaration rule.iterationScope = true ∧
-      rule.condition.core.referencesErrorField rule.errorField = true :=
-  ⟨rule.errorFieldLookup, rule.errorFieldScopeCompatible,
+        rule.errorPlacement.repeatableScope rule.iterationScope = true ∧
+      rule.condition.core.referencesErrorEntity rule.errorEntity = true :=
+  ⟨rule.errorPlacementOwned, rule.errorFieldScopeCompatible,
     rule.errorFieldReferenced⟩
 
 /-- Error addressing retains the resolved iteration prefix and defaults only its remaining suffix. -/
@@ -221,7 +230,7 @@ theorem checkedValidationRule_errorPathAt_resolved
     (rule : CheckedResolvedValidationRule model) (environment : Env) (bound : List Nat)
     (resolved : environment.pathForScope (rule.iterationScope.getD []) = .ok bound) :
     rule.errorPathAt environment = .ok
-      (bound ++ List.replicate (rule.errorDeclaration.repeatableScope.length - bound.length) 1) := by
+      (bound ++ List.replicate (rule.errorPlacement.repeatableScope.length - bound.length) 1) := by
   simp only [CheckedResolvedValidationRule.errorPathAt, resolved]
   rfl
 
@@ -232,7 +241,7 @@ theorem checkedValidationRule_errorPathAt_preserves_bound
     (rule.errorPathAt environment).map (List.take bound.length) = .ok bound := by
   rw [checkedValidationRule_errorPathAt_resolved rule environment bound resolved]
   change .ok ((bound ++ List.replicate
-    (rule.errorDeclaration.repeatableScope.length - bound.length) 1).take bound.length) = Except.ok bound
+    (rule.errorPlacement.repeatableScope.length - bound.length) 1).take bound.length) = Except.ok bound
   simp
 
 /-- Checked assembly cannot substitute a caller-selected ordinary iteration scope for the one derived from the complete checked condition tree. -/
@@ -247,50 +256,49 @@ theorem checkedValidationRule_once_plan_exact
     (rule : CheckedResolvedValidationRule model)
     (noScope : rule.iterationScope = none)
     (repeatable :
-      rule.errorDeclaration.repeatableScope.isEmpty = false) :
+      rule.errorPlacement.repeatableScope.isEmpty = false) :
     rule.ordinaryIterationPlan =
-      .once rule.errorDeclaration.repeatableScope := by
+      .once rule.errorPlacement.repeatableScope := by
   simp [CheckedResolvedValidationRule.ordinaryIterationPlan,
-    noScope, repeatable]
+    CheckedResolvedValidationRule.iteratedScope, noScope, repeatable]
 
-/-- An unguarded repeatable condition is refused, possibly first by the error field's scope,
+/-- The rule gates allowed to refuse an unguarded negative iteration before its own class. -/
+def FlatRuleAssemblyError.precedesNegativeIteration : FlatRuleAssemblyError → Bool
+  | .unboundOperandLevel _ _ | .errorFieldIterationInvalid _ _ | .formOnlyIteration _ _
+  | .errorFieldNotReferenced _ | .groupErrorTarget _ (.unbound _)
+  | .groupErrorTarget _ (.iterationInvalid _) | .groupErrorTarget _ .notReferenced => true
+  | _ => false
+
+theorem flatRuleAssemblyError_unboundLevel_precedes {model : FlatModel} {ruleGroup : GroupPath}
+    {error unbound : FlatRuleAssemblyError}
+    (found : error.unboundLevel? model ruleGroup = some unbound) :
+    unbound.precedesNegativeIteration = true := by
+  unfold FlatRuleAssemblyError.unboundLevel? at found
+  split at found <;> (try split at found) <;> (try simp only [Option.map_eq_some_iff] at found) <;>
+    first
+    | (obtain ⟨_, _, rfl⟩ := found; rfl)
+    | cases found
+
+/-- An unguarded repeatable condition is refused, possibly first by the error entity's scope,
 reference-binding or reference gate (spec/07 §1). -/
 theorem assembleResolvedValidationRule_rejects_negativeIteration
     (model : FlatModel) (condition : CheckedValidationCondition model)
-    (errorField : FieldId) (errorCode : String)
+    (errorEntity : RuleErrorEntity) (errorCode : String)
     (severity : ValidationSeverity) (messagePlan : MessageRenderPlan)
     (level : RepeatableLevel)
     (invalid :
       condition.core.iterationLegality = .ok (.invalid level)) :
-    ∃ error, assembleResolvedValidationRule model condition errorField errorCode
+    ∃ error, assembleResolvedValidationRuleFor model condition errorEntity errorCode
         severity messagePlan = .error error ∧
-      (error = .negativeConditionInIteration level ∨
-        (∃ field unbound, error = .unboundOperandLevel field unbound) ∨
-        (∃ field level, error = .errorFieldIterationInvalid field level) ∨
-        (∃ field level, error = .formOnlyIteration field level) ∨
-        ∃ field, error = .errorFieldNotReferenced field) := by
-  unfold assembleResolvedValidationRule
-  simp only [invalid]
-  split
-  · split
-    · exact ⟨_, rfl, Or.inr (Or.inl ⟨_, _, rfl⟩)⟩
-    · exact ⟨_, rfl, Or.inr (Or.inr (Or.inr (Or.inr ⟨_, rfl⟩)))⟩
-    · exact ⟨_, rfl, Or.inl rfl⟩
-  · split
-    · exact ⟨_, rfl, Or.inr (Or.inl ⟨_, _, rfl⟩)⟩
-    · split
-      · split
-        · exact ⟨_, rfl, Or.inr (Or.inr (Or.inr (Or.inl ⟨_, _, rfl⟩)))⟩
-        · unfold assembleResolvedValidationRule.finish
-          simp only [invalid]
-          split
-          · exact ⟨_, rfl, Or.inr (Or.inr (Or.inl ⟨_, _, rfl⟩))⟩
-          · exact ⟨_, rfl, Or.inl rfl⟩
-      · unfold assembleResolvedValidationRule.finish
-        simp only [invalid]
-        split
-        · exact ⟨_, rfl, Or.inr (Or.inr (Or.inl ⟨_, _, rfl⟩))⟩
-        · exact ⟨_, rfl, Or.inl rfl⟩
+      (error = .negativeConditionInIteration level ∨ error.precedesNegativeIteration = true) := by
+  cases errorEntity <;>
+    unfold assembleResolvedValidationRuleFor assembleResolvedValidationRuleFor.finish <;>
+    simp only [invalid] <;>
+    repeat' split
+  all_goals first
+    | exact ⟨_, rfl, Or.inl rfl⟩
+    | exact ⟨_, rfl, Or.inr rfl⟩
+    | exact ⟨_, rfl, Or.inr (flatRuleAssemblyError_unboundLevel_precedes ‹_›)⟩
 
 /-- The already-derived negative-iteration assembly error projects to the exact measured Kernel diagnostic class. -/
 theorem flatRuleAssemblyError_negativeIteration_diagnostic
@@ -330,9 +338,10 @@ theorem checkedValidationRule_partial_evaluated
     (locale : String) (raw : RawFlatContext)
     (groups : GroupPresenceContext) (scope : ValidationRelevanceScope)
     (unfiltered : rule.hasHaving = false)
+    (field : FieldId) (fieldTarget : rule.errorField? = some field)
     (errorRelevant :
       (scope.withGlobals model).coversFieldAtBoundLevels model
-        rule.errorField rule.partialErrorBoundLevels [] = true)
+        field rule.partialErrorBoundLevels [] = true)
     (scalar : rule.requiresAddressedValidation = false) :
     rule.evalPartial prepared locale raw groups scope =
       .ok (.evaluated (rule.core.emitEvaluationResult
@@ -343,7 +352,7 @@ theorem checkedValidationRule_partial_evaluated
         } fun field =>
           (scope.withGlobals model).coversField model field []))) := by
   simp [CheckedResolvedValidationRule.evalPartial,
-    FlatRuleFilterPresence.admits, unfiltered, errorRelevant, scalar]
+    FlatRuleFilterPresence.admits, unfiltered, fieldTarget, errorRelevant, scalar]
 
 /-- A filtered repeatable rule skips before support checks, iteration-scope demand, or document-row construction. -/
 theorem checkedValidationRule_partial_repeatable_filtered_skips
@@ -377,13 +386,14 @@ theorem checkedValidationRule_partial_repeatable_irrelevant_row_skips
     (preliminary : CheckedPartialPreliminary model)
     (environment : Env)
     (supported : rule.supportsOrdinaryRepeatablePartial = true)
+    (field : FieldId) (fieldTarget : rule.errorField? = some field)
     (irrelevant :
-      preliminary.relevance.coversFieldAtBoundLevels model rule.errorField
+      preliminary.relevance.coversFieldAtBoundLevels model field
         rule.partialErrorBoundLevels environment = false) :
     rule.evalOrdinaryRepeatablePartialAtPrepared preliminary environment =
       .ok (environment, .skipped) := by
   simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartialAtPrepared,
-    supported, irrelevant] <;> rfl
+    supported, fieldTarget, irrelevant] <;> rfl
 
 /-- A filtered once rule skips before support, plan construction, relevance, or document reads. -/
 theorem checkedValidationRule_partial_once_filtered_skips
@@ -412,15 +422,16 @@ theorem checkedValidationRule_partial_once_irrelevant_skips
     (unfiltered : rule.hasHaving = false)
     (supported : rule.supportsOrdinaryRepeatablePartial = true)
     (once : rule.ordinaryIterationPlan = .once errorScope)
+    (field : FieldId) (fieldTarget : rule.errorField? = some field)
     (irrelevant :
-      preliminary.relevance.coversFieldAtBoundLevels model rule.errorField []
+      preliminary.relevance.coversFieldAtBoundLevels model field []
           (errorScope.map fun level => (level, 1)) = false) :
     rule.evalOrdinaryOncePartialPrepared preliminary =
       .ok .skipped := by
   simp [CheckedResolvedValidationRule.evalOrdinaryOncePartialPrepared,
     CheckedResolvedValidationRule.onceEnvironment,
     CheckedResolvedValidationRule.partialErrorBoundLevels,
-    unfiltered, supported, once, irrelevant] <;> rfl
+    unfiltered, supported, once, fieldTarget, irrelevant] <;> rfl
 
 /-- Checked assembly preserves its explicit error field and metadata through message emission. -/
 theorem checkedFlatRule_fired_message_exact
@@ -434,10 +445,7 @@ theorem checkedFlatRule_fired_message_exact
         .fired messageType) :
     rule.evalFull prepared locale raw hasContent =
       .fired {
-        errorAddress := MessagePointer.ofCellAddr {
-          field := rule.errorField
-          path := []
-        }
+        errorAddress := { entity := rule.errorEntity, coordinates := [] }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType
@@ -464,10 +472,7 @@ theorem checkedValidationRule_fired_message_exact
         .fired messageType) :
     rule.evalFull prepared locale raw groups hasContent =
       .ok (.fired {
-        errorAddress := MessagePointer.ofCellAddr {
-          field := rule.errorField
-          path := []
-        }
+        errorAddress := { entity := rule.errorEntity, coordinates := [] }
         errorCode := rule.errorCode
         severity := rule.severity
         messageType

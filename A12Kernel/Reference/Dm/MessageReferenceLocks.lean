@@ -83,8 +83,8 @@ private def sets? (condition : String) : Option (List String × List String) := 
   let rule ← omissionRule? condition
   let all ← (rule.condition.core.referencePointers []).toOption
   let omission ← (rule.condition.core.omissionPointers []).toOption
-  pure ((all.map (renderPointer omissionModel)).mergeSort,
-    (omission.map (renderPointer omissionModel)).mergeSort)
+  pure ((all.map (renderFieldPointer omissionModel)).mergeSort,
+    (omission.map (renderFieldPointer omissionModel)).mergeSort)
 
 private def cases : List (String × List String × List String) := [
   ("DateRangesOverlap(Lines*/Span Having [Lines/Picked] > 0)",
@@ -151,8 +151,8 @@ private def capturedMessage? : Option (List (String × String × List String × 
         let references ← (rule.condition.core.messageReferences message environment).toOption
         let observed := observe omissionModel message
         pure [(observed.pointer, observed.messageType,
-          (references.referenced.map (renderPointer omissionModel)).mergeSort,
-          (references.fillToFix.map (renderPointer omissionModel)).mergeSort)]
+          (references.referenced.map (renderFieldPointer omissionModel)).mergeSort,
+          (references.fillToFix.map (renderFieldPointer omissionModel)).mergeSort)]
   pure outputs.flatten
 
 example : capturedMessage? = some [("Form/Lines[2]/Qty", "OMISSION_ERROR",
@@ -184,7 +184,7 @@ example : (do
       name := "CountZero", group := ["Form"], errorCode := "CountZero", errorEntityRelPath := "../Anchor",
       severity := "ERROR", condition := "FieldFilled(Anchor) And NumberOfFilledGroups(Parent, Other) == 0" }).toOption
     let pointers ← (rule.condition.core.referencePointers []).toOption
-    pure ((pointers.map (renderPointer subtreeModel)).mergeSort (compare · · != .gt))) =
+    pure ((pointers.map (renderFieldPointer subtreeModel)).mergeSort (compare · · != .gt))) =
     some ["/Form[1]/Parent[1]/Children[0]/M", "/Form[1]/Parent[1]/Children[0]/N",
       "/Form[1]/Parent[1]/Children[0]/Parts[0]/K", "Form/Anchor", "Form/Other/N"] := by
   native_decide
@@ -210,7 +210,7 @@ example : (do
       severity := "ERROR"
       condition := "FieldFilled(MaxFiltered) And [MaxFiltered] != MaxValue(Rows*/A Having [Rows/Keep] > 0)" }).toOption
     let pointers ← (rule.condition.core.referencePointers []).toOption
-    pure ((pointers.map (renderPointer temporalRowsModel)).mergeSort (compare · · != .gt))) =
+    pure ((pointers.map (renderFieldPointer temporalRowsModel)).mergeSort (compare · · != .gt))) =
     some ["/G[1]/Rows[0]/A", "/G[1]/Rows[0]/Keep", "G/MaxFiltered"] := by
   native_decide
 
@@ -220,7 +220,7 @@ private def filteredReferences (condition : String) : Option (List String) := do
     name := "Filtered", group := ["G"], errorCode := "Filtered", errorEntityRelPath := "../MaxFiltered",
     severity := "ERROR", condition := "FieldFilled(MaxFiltered) And " ++ condition }).toOption
   let pointers ← (rule.condition.core.referencePointers []).toOption
-  pure ((pointers.map (renderPointer temporalRowsModel)).mergeSort (compare · · != .gt))
+  pure ((pointers.map (renderFieldPointer temporalRowsModel)).mergeSort (compare · · != .gt))
 
 /-- Temporal uniqueness, an ordered temporal distinct count and an ordered token distinct count
 project a filtered star the same way. Kernel oracle: rows `UQD`, `DVDLT` and `DVTLT` of the
@@ -240,7 +240,7 @@ private def filteredOmission (condition : String) : Option (List String) := do
     name := "Filtered", group := ["G"], errorCode := "Filtered", errorEntityRelPath := "../MaxFiltered",
     severity := "ERROR", condition := "FieldFilled(MaxFiltered) And " ++ condition }).toOption
   let pointers ← (rule.condition.core.omissionPointers []).toOption
-  pure ((pointers.map (renderPointer temporalRowsModel)).mergeSort (compare · · != .gt))
+  pure ((pointers.map (renderFieldPointer temporalRowsModel)).mergeSort (compare · · != .gt))
 
 /-- An upward temporal or token distinct count keeps only its filter reads as fill-to-fix, on either
 comparison side, while a downward count keeps its column too. Kernel oracle: rows `a01`, `a03`,

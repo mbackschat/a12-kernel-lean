@@ -61,7 +61,7 @@ def core : ValidationMessageCondition model → MessageAuthoringCore model
 
 def errorDeclaration? : ValidationMessageCondition model → Option FlatFieldDecl
   | .flat _ => none
-  | .rule checkedRule => some checkedRule.errorDeclaration
+  | .rule checkedRule => checkedRule.errorPlacement.fieldDeclaration?
   | .parallel parallelRule _ =>
       let pair := parallelRule.pair
       some (if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration

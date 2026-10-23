@@ -3,6 +3,22 @@ import A12Kernel.Elaboration.ErrorTargetDeclaration
 
 namespace A12Kernel
 
+/-- Why a rule reporting on a group is refused. The Kernel classes are the field target's: a group
+the condition does not reference, and a non-root iterated level no reference to the group binds
+([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+`group-level`). `root`, `repeatable` and `unsupported` are Lean's own boundary: a root group target,
+a flat scalar rule and a condition leaf whose reading at the unindexed level is unmeasured. -/
+inductive GroupTargetRefusal where
+  | unknown
+  | root
+  | repeatable
+  | unsupported
+  | notReferenced
+  | iterationInvalid (level : RepeatableLevel)
+  | scopeMismatch (expected actual : List RepeatableLevel)
+  | unbound (unbound : UnboundOperandLevel)
+  deriving Repr, DecidableEq
+
 inductive FlatRuleAssemblyError where
   | errorField (error : ResolveError)
   | repeatableErrorField (field : FieldId)
@@ -16,6 +32,7 @@ inductive FlatRuleAssemblyError where
   /-- The condition reads a repeatable level the error field does not bind; `unbound` is the
       outermost such level with the facts its class depends on. -/
   | unboundOperandLevel (field : FieldId) (unbound : UnboundOperandLevel)
+  | groupErrorTarget (path : GroupPath) (refusal : GroupTargetRefusal)
   deriving Repr, DecidableEq
 
 namespace FlatRuleAssemblyError
@@ -37,21 +54,28 @@ namespace FlatRuleAssemblyError
     An error field in a sibling repeatable scope inside the rule group is not a prefix and does not
     count. -/
 def unboundLevel? (model : FlatModel) (ruleGroup : GroupPath) :
-    FlatRuleAssemblyError → Option (FieldId × UnboundOperandLevel)
+    FlatRuleAssemblyError → Option FlatRuleAssemblyError
   | .iterationScopeMismatch field derived errorScope =>
       match model.lookupUniqueId field with
       | .ok declaration =>
-          let refused? := match WrittenFieldPlacement.of ruleGroup declaration.groupPath with
-            | .outside => derived.head?
-            | .contained =>
-                if errorScope.isPrefixOf derived && errorScope != derived then
-                  (derived.drop errorScope.length).head?
-                else none
-          refused?.map fun level =>
-            (field, model.unboundOperandLevel ruleGroup declaration.groupPath level)
+          (refusedLevel? declaration.groupPath derived errorScope).map fun level =>
+            .unboundOperandLevel field (model.unboundOperandLevel ruleGroup declaration.groupPath level)
       | .error _ => none
+  | .groupErrorTarget path (.scopeMismatch derived errorScope) =>
+      (refusedLevel? path derived errorScope).map fun level =>
+        .groupErrorTarget path (.unbound (model.unboundOperandLevel ruleGroup path level))
   | .errorField _ | .repeatableErrorField _ | .iterationScope _ | .errorFieldNotReferenced _
-  | .formOnlyIteration _ _ | .negativeConditionInIteration _ | .unboundOperandLevel _ _ | .errorFieldIterationInvalid _ _ => none
+  | .formOnlyIteration _ _ | .negativeConditionInIteration _ | .unboundOperandLevel _ _ | .errorFieldIterationInvalid _ _
+  | .groupErrorTarget _ _ => none
+where
+  refusedLevel? (errorGroup : GroupPath) (derived errorScope : List RepeatableLevel) :
+      Option RepeatableLevel :=
+    match WrittenFieldPlacement.of ruleGroup errorGroup with
+    | .outside => derived.head?
+    | .contained =>
+        if errorScope.isPrefixOf derived && errorScope != derived then
+          (derived.drop errorScope.length).head?
+        else none
 
 /-- Project the measured whole-rule gates. The error field's presence in its own condition is a Kernel-checked rule property, and it is measured as its own class: an operand list that names a sibling key rather than the error field draws it, while naming the error field among the keys is admitted. An unguarded negative group-presence condition in a repeatable scope has its own measured class, while a direct positive group guard admits the same negative leaf. An unbound operand level takes the walk's class. Every other assembly refusal returns `none`. -/
 def diagnostic? : FlatRuleAssemblyError → Option KernelStaticDiagnostic
@@ -62,6 +86,12 @@ def diagnostic? : FlatRuleAssemblyError → Option KernelStaticDiagnostic
   | .errorFieldIterationInvalid _ _ => some .errorFieldIterationInvalid
   | .formOnlyIteration _ level => formOnlyIterationRefusal false { firstInnerLevel := some level }
   | .unboundOperandLevel _ unbound => unbound.diagnostic?
+  | .groupErrorTarget _ refusal =>
+      match refusal with
+      | .notReferenced => some .errorFieldNotReferenced
+      | .iterationInvalid _ => some .errorFieldIterationInvalid
+      | .unbound unbound => unbound.diagnostic?
+      | .unknown | .root | .repeatable | .unsupported | .scopeMismatch _ _ => none
   -- Named rather than wildcarded: a new assembly refusal must be classified, not absorbed. A scope
   -- mismatch the walk explains arrives as `unboundOperandLevel`; what remains is unmeasured.
   | .iterationScopeMismatch _ _ _ | .errorField _ | .repeatableErrorField _ | .iterationScope _ =>
