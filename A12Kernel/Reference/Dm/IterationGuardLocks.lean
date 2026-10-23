@@ -133,6 +133,10 @@ private def rows : List (String × GroupPath × String × String × String) := [
   ("o03", O, "Lines/Sku", "NumberOfFilledFields(Lines/Qty, Lines/Price) < 1", "MVK_ERROR_FIELD_NOT_REFERENCED"),
   ("o04", O, "Email", "FieldNotFilled(Email) And FieldNotFilled(Lines/Qty)", "MVK_NO_WILDCARD"),
   ("a12", O, "Lines/Sku", "NoFieldFilled(Lines/Sku, Picks/Ref)", "MVK_PARALLEL_ITERATION_INVALID"),
+  -- An error field below a joined side: the pair is judged as the direct pair, and the nested level
+  -- by the ordinary guard table, which `AtLeastOneFieldFilled` meets only at the join.
+  ("a10", O, "Lines/Parts/PartNo", "NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)", "MVK_PARALLEL_ITERATION_INVALID"),
+  ("a11", O, "Lines/Parts/PartNo", "AtLeastOneFieldFilled(Lines/Parts/PartNo, Picks/Ref)", NEG),
   -- A group target's own presence is judged at its level: unguarded or beside a `Lines` positive the
   -- negative refuses, except at the exempt `Gifts`; `a07` and `a08` repeat `g01` and `g02` through an
   -- instrument that refuses a group target before the Kernel runs.

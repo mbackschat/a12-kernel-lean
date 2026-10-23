@@ -30,12 +30,16 @@ def WellFormed (rule : CheckedParallelPresenceRule model) : Prop :=
       rule.leftDeclaration.groupPath = true ∧
     rule.groups.rightGroup.path.isPrefixOf
       rule.rightDeclaration.groupPath = true ∧
-    (rule.leftDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath rule.groups.leftGroup.path) =
-        true ∧
-    (rule.rightDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath rule.groups.rightGroup.path) =
-        true ∧
+    (model.repeatableScopeForGroupPath rule.groups.leftGroup.path).isPrefixOf
+      rule.leftDeclaration.repeatableScope = true ∧
+    (model.repeatableScopeForGroupPath rule.groups.rightGroup.path).isPrefixOf
+      rule.rightDeclaration.repeatableScope = true ∧
+    (if rule.errorField == rule.leftDeclaration.id then
+      rule.rightDeclaration.repeatableScope ==
+        model.repeatableScopeForGroupPath rule.groups.rightGroup.path
+    else
+      rule.leftDeclaration.repeatableScope ==
+        model.repeatableScopeForGroupPath rule.groups.leftGroup.path) = true ∧
     rule.condition.rowGroup = rule.groups.commonParent ∧
     rule.condition.core =
       .and

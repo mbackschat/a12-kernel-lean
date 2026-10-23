@@ -240,8 +240,11 @@ def joinTargetKeyFor
     preliminary.resolveIndexColumn
       join.groups.leftGroup targetEnvironment
       |>.mapError (ExecutionError.indexColumn .target)
+  -- A target below its joined group joins the key of the joined row holding it.
+  let joinedScope := model.repeatableScopeForGroupPath join.groups.leftGroup.path
+  let targetJoined := (targetEnvironment.pathForScope joinedScope).toOption
   match targetColumn.entries.find? fun entry =>
-      entry.environment == targetEnvironment with
+      targetJoined.isSome && (entry.environment.pathForScope joinedScope).toOption == targetJoined with
   | some entry => pure entry.key
   | none => throw (.missingTargetIndex address)
 

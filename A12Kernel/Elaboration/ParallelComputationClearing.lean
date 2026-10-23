@@ -97,8 +97,8 @@ structure CheckedParallelTargetJoin (model : FlatModel) where
   sourceGroup :
     groups.rightGroup.path.isPrefixOf sourceDeclaration.groupPath = true
   targetScope :
-    (targetDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath groups.leftGroup.path) = true
+    (model.repeatableScopeForGroupPath groups.leftGroup.path).isPrefixOf
+      targetDeclaration.repeatableScope = true
   targetScopeUnique : targetDeclaration.repeatableScope.Nodup
   sourceScope :
     (sourceDeclaration.repeatableScope ==
@@ -220,8 +220,8 @@ structure CheckedParallelNumericTargetRoute (model : FlatModel) where
   sourceGroup :
     groups.rightGroup.path.isPrefixOf sourceDeclaration.groupPath = true
   targetScope :
-    (targetDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath groups.leftGroup.path) = true
+    (model.repeatableScopeForGroupPath groups.leftGroup.path).isPrefixOf
+      targetDeclaration.repeatableScope = true
   targetScopeUnique : targetDeclaration.repeatableScope.Nodup
   sourceScope :
     (sourceDeclaration.repeatableScope ==
@@ -242,8 +242,8 @@ def WellFormed (route : CheckedParallelNumericTargetRoute model) : Prop :=
       route.targetDeclaration.groupPath = true ∧
     route.groups.rightGroup.path.isPrefixOf
       route.sourceDeclaration.groupPath = true ∧
-    (route.targetDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath route.groups.leftGroup.path) = true ∧
+    (model.repeatableScopeForGroupPath route.groups.leftGroup.path).isPrefixOf
+      route.targetDeclaration.repeatableScope = true ∧
     route.targetDeclaration.repeatableScope.Nodup ∧
     (route.sourceDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath route.groups.rightGroup.path) = true
@@ -336,8 +336,8 @@ structure CheckedParallelNumericClearingPlan (model : FlatModel) where
   operandGroup :
     groups.rightGroup.path.isPrefixOf operandDeclaration.groupPath = true
   targetScope :
-    (targetDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath groups.leftGroup.path) = true
+    (model.repeatableScopeForGroupPath groups.leftGroup.path).isPrefixOf
+      targetDeclaration.repeatableScope = true
   targetScopeUnique : targetDeclaration.repeatableScope.Nodup
   operandScope :
     (operandDeclaration.repeatableScope ==
@@ -359,8 +359,8 @@ def WellFormed (plan : CheckedParallelNumericClearingPlan model) : Prop :=
       plan.targetDeclaration.groupPath = true ∧
     plan.groups.rightGroup.path.isPrefixOf
       plan.operandDeclaration.groupPath = true ∧
-    (plan.targetDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath plan.groups.leftGroup.path) = true ∧
+    (model.repeatableScopeForGroupPath plan.groups.leftGroup.path).isPrefixOf
+      plan.targetDeclaration.repeatableScope = true ∧
     plan.targetDeclaration.repeatableScope.Nodup ∧
     (plan.operandDeclaration.repeatableScope ==
       model.repeatableScopeForGroupPath plan.groups.rightGroup.path) = true
@@ -441,7 +441,7 @@ private def indexedGroupForParallelComputation (model : FlatModel)
       .error (.multipleIndexedAncestors declaration.id
         (groups.map (·.path)))
 
-/-- Check one observed field's key join to a repeatable target of any kind. The target is never an index field; each side's single indexed group must form a checked parallel pair, and each declaration's scope must be exactly its group's. -/
+/-- Check one observed field's key join to a repeatable target of any kind. The target is never an index field; each side's single indexed group must form a checked parallel pair. The source's scope must be exactly its group's; the target's may continue below its joined group, each of its rows then joining its joined row's key ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join), `computations`). -/
 def checkParallelTargetJoin (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (sourceReference : SurfaceFieldPath) :
@@ -473,9 +473,8 @@ def checkParallelTargetJoin (model : FlatModel)
                 groups.rightGroup.path.isPrefixOf
                   sourceDeclaration.groupPath = true then
               if hTargetScope :
-                  (targetDeclaration.repeatableScope ==
-                    model.repeatableScopeForGroupPath
-                      groups.leftGroup.path) = true then
+                  (model.repeatableScopeForGroupPath groups.leftGroup.path).isPrefixOf
+                    targetDeclaration.repeatableScope = true then
                 if hTargetScopeUnique :
                     targetDeclaration.repeatableScope.Nodup then
                   if hSourceScope :

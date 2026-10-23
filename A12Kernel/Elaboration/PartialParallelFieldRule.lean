@@ -104,6 +104,8 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
     (view : CheckedPartialPreliminary model) (messageCache : Option MessageIndexContext := none)
     (registry : CustomValidationRegistry model := {}) (world : Option World := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
+  -- No retained observation covers partial validation of an error field below the join.
+  if !rule.pair.innerScope.isEmpty then throw .unsupportedCondition
   let common := match rule.pair.groups.outerScopePlan with
     | .common shared | .framed _ shared _ => shared
   let environments ← if common.isEmpty then pure [[]]

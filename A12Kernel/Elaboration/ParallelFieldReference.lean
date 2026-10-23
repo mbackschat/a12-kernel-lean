@@ -143,7 +143,10 @@ private def withIndexFields (pair : CheckedParallelFieldPair model)
     side pair.groups.rightGroup pair.groups.rightIndexDeclaration
 
 /-- A joined side's field takes that side's row coordinates, which its index field carries, and a
-repeatable level inside the joined row is wildcarded. -/
+repeatable level inside the joined row is wildcarded unless the row binds it, as an error field's
+level below the join is bound
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+`nested-join`). -/
 private def fieldPointer (pair : CheckedParallelFieldPair model) (row : ResolvedParallelIndexRow)
     (outer : Env) (cache : Option MessageIndexContext) (declaration : FlatFieldDecl) :
     Except ParallelReferenceError MessagePointer :=
@@ -151,8 +154,10 @@ private def fieldPointer (pair : CheckedParallelFieldPair model) (row : Resolved
       (·.1.group.path.isPrefixOf declaration.groupPath) with
   | some (side, index) => do
       let joined ← side.messagePointer model outer index.id (cache.map (·, row.key)) |>.mapError .join
-      let deeper := declaration.repeatableScope.length - joined.coordinates.length
-      pure { field := declaration.id, coordinates := joined.coordinates ++ List.replicate deeper .wildcard }
+      let deeper := (declaration.repeatableScope.drop joined.coordinates.length).map fun level =>
+        (side.environment.bind (·.uniqueRowAt? level)).map MessageRepetitionCoordinate.concrete
+          |>.getD .wildcard
+      pure { field := declaration.id, coordinates := joined.coordinates ++ deeper }
   | none => concreteFieldPointer declaration outer |>.mapError .outer
 
 /-- The reference channels of one message fired at a resolved row. `cache` is the message-cache

@@ -12,7 +12,7 @@ theorem checkedParallelPresenceRule_wellFormed
   ⟨checkedParallelIndexGroups_wellFormed rule.groups,
     rule.condition.modelWellFormed, rule.condition.wellFormed,
     rule.leftOperandGroup, rule.rightOperandGroup,
-    rule.leftOperandScope, rule.rightOperandScope,
+    rule.leftOperandScope, rule.rightOperandScope, rule.partnerOperandScope,
     rule.rowGroupOwned, rule.conditionShape, rule.errorFieldIsOperand,
     rule.errorFieldOnFramedSide⟩
 
@@ -49,7 +49,7 @@ remains the only possible reason to lift the gate (spec/03 A.4). -/
     simp [notLeft] at operand
     exact operand.symm
 
-/-- The executable parallel certificate retains both joined sides, typed leaves and a structurally valid guard. -/
+/-- The executable parallel certificate retains both joined sides, typed leaves and a structurally valid guard, at the join, its frames and the error field's levels below the join. -/
 theorem checkedParallelFieldRule_wellFormed (rule : CheckedParallelFieldRule model) :
     rule.pair.groups.WellFormed ∧ model.validate.isOk = true ∧
     rule.condition.errorTargetRefusal rule.pair = none ∧
@@ -57,7 +57,8 @@ theorem checkedParallelFieldRule_wellFormed (rule : CheckedParallelFieldRule mod
     rule.condition.anyLeaf (ParallelFieldLeaf.uses rule.pair .left) = true ∧
     rule.condition.anyLeaf (ParallelFieldLeaf.uses rule.pair .right) = true ∧
     rule.condition.guarded rule.pair = true ∧
-    ParallelFieldCondition.framesGuarded rule.pair rule.condition = true := by
+    ParallelFieldCondition.framesGuarded rule.pair rule.condition = true ∧
+    ParallelFieldCondition.innerGuarded rule.pair rule.condition = true := by
   refine ⟨checkedParallelIndexGroups_wellFormed rule.pair.groups,
     rule.pair.groups.modelWellFormed, rule.errorTargetAllowed, ?_⟩
   simpa only [ParallelFieldCondition.admitted, Bool.and_eq_true, and_assoc] using rule.admitted

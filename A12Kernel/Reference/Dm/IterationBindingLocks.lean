@@ -84,6 +84,13 @@ private def computation (common : Option String) (alternatives : List (Option St
 
 private def guarded (precondition : String) : String := computation (some precondition) [(none, "1")]
 
+/-- The capture's `k08`: `1` into the part's `Count`, below the joined `Lines`. -/
+private def nestedGuarded (precondition : String) : String :=
+  classOf (checkComputation (dm order) .english
+    { group := O, name := "CountProbe", targetRelPath := "../Lines/Parts/Count",
+      commonPrecondition := some precondition, alternatives := [{ precondition := none, operation := "1" }],
+      errorCodesToSuppress := [] })
+
 private def NEG := "MVK_NEG_CONDITION_IN_ITERATION"
 private def BIND := "MVK_ERROR_FIELD_AND_ITERATION_INVALID"
 private def STAR := "MVK_NO_WILDCARD"
@@ -103,6 +110,10 @@ private def rows : List (String × String × String) := [
   ("s6", rule order O "Wraps/Style" "FieldFilled(Wraps/Bows/Shade For \"a\") And FieldNotFilled(Wraps/Style)", "admitted"),
   ("s7", rule order O "Wraps/Style" "FieldFilled(Wraps/Style) And FieldNotFilled(Wraps/Bows/Shade For \"a\")", "admitted"),
   ("s8", rule order O "Lines/Qty" "FieldFilled(Lines/Qty) And FieldNotFilled(Picks/Ref For Lines/LineNo)", "admitted"),
+  -- The guarded pair over a field below a joined side, its authored line break included.
+  ("s9", rule order O "Lines/Parts/Count"
+    "FieldFilled(Lines/Parts/Count) And (NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)\n) And [Lines/Parts/Count] != 1",
+    "admitted"),
   ("d5", rule order O "Lines/Sku" "NoFieldFilled(Lines/Sku, Picks/Ref For Lines/LineNo)", NEG),
   ("d6", rule order O "Lines/Qty" "FieldNotFilled(Lines/Qty) And FieldFilled(Picks/Ref For Lines/LineNo)", "admitted"),
   -- A negative selection alone fails the level it references, a positive guards it.
@@ -169,6 +180,7 @@ private def rows : List (String × String × String) := [
     "admitted"),
   ("k06", guarded "CurrentRepetition(Lines) > 1", "admitted"),
   ("k07", guarded "FieldNotFilled(Picks/Ref)", "admitted"),
+  ("k08", nestedGuarded "NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)", "admitted"),
   ("k09", guarded "NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)", STAR),
   ("k10", guarded "FieldNotFilled(Lines/Parts/PartNo)", STAR)]
 

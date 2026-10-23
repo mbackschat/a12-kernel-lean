@@ -146,6 +146,16 @@ def CheckedParallelFieldPair.ordinaryAdmitted (pair : CheckedParallelFieldPair m
     | _ => true
   measured && placed && (pair.ordinaryBinding? leaf).isSome
 
+/-- Whether a scope read inside a joined group is one the joined row binds: from the group's own
+level down to its anchor's, so the error side's levels below the join and none of the partner's. -/
+def CheckedParallelFieldPair.sideBinds (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
+    (scope : List RepeatableLevel) : Bool :=
+  let (group, anchor) := match side with
+    | .left => (pair.groups.leftGroup, pair.leftDeclaration)
+    | .right => (pair.groups.rightGroup, pair.rightDeclaration)
+  (model.repeatableScopeForGroupPath group.path).isPrefixOf scope &&
+    scope.isPrefixOf anchor.repeatableScope
+
 def CheckedParallelFieldPair.admitsOperand (pair : CheckedParallelFieldPair model)
     (operand : ParallelFieldOperand) : Bool :=
   let declaration := pair.declaration operand
@@ -154,9 +164,9 @@ def CheckedParallelFieldPair.admitsOperand (pair : CheckedParallelFieldPair mode
     | .framed _ common frame => common ++ frame
   (model.lookupUniqueId declaration.id).toOption == some declaration &&
     ((pair.groups.leftGroup.path.isPrefixOf declaration.groupPath &&
-        declaration.repeatableScope == pair.leftDeclaration.repeatableScope) ||
+        pair.sideBinds .left declaration.repeatableScope) ||
      (pair.groups.rightGroup.path.isPrefixOf declaration.groupPath &&
-        declaration.repeatableScope == pair.rightDeclaration.repeatableScope) ||
+        pair.sideBinds .right declaration.repeatableScope) ||
      declaration.repeatableScope.isPrefixOf scope)
 
 namespace ParallelNumericAtomOf
@@ -289,10 +299,8 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
   | .groupPresence _ reference =>
       let scope := model.repeatableScopeForGroupPath reference.path
       model.hasGroupPath reference.path && reference.boundRepeatableScope == scope &&
-        ((pair.groups.leftGroup.path.isPrefixOf reference.path &&
-            scope == pair.leftDeclaration.repeatableScope) ||
-         (pair.groups.rightGroup.path.isPrefixOf reference.path &&
-            scope == pair.rightDeclaration.repeatableScope) ||
+        ((pair.groups.leftGroup.path.isPrefixOf reference.path && pair.sideBinds .left scope) ||
+         (pair.groups.rightGroup.path.isPrefixOf reference.path && pair.sideBinds .right scope) ||
          reference.path.isPrefixOf pair.groups.commonParent)
   | .presence _ _ => true
   | .fill _ lhs rhs => (pair.declaration lhs).id != (pair.declaration rhs).id
@@ -566,11 +574,20 @@ def framesGuarded (pair : CheckedParallelFieldPair model) (condition : ParallelF
       common.contains level || decide
         (condition.iterationGuardStatus (ParallelFieldLeaf.guardAt pair level) = .guarded)
 
+/-- The error field's levels below its joined group are ordinary levels inside each joined row, each
+judged by the guard table as a frame level is: `AtLeastOneFieldFilled` over a nested field and the
+partner's draws the negative-iteration class
+([capture](../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04) row `a11`). -/
+def innerGuarded (pair : CheckedParallelFieldPair model) (condition : ParallelFieldCondition model) : Bool :=
+  pair.innerScope.all fun level =>
+    decide (condition.iterationGuardStatus (ParallelFieldLeaf.guardAt pair level) = .guarded)
+
 def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
     (condition : ParallelFieldCondition model) : Bool :=
   condition.allLeaves (ParallelFieldLeaf.admitted pair suppress) &&
     condition.anyLeaf (ParallelFieldLeaf.uses pair .left) &&
-    condition.anyLeaf (ParallelFieldLeaf.uses pair .right) && condition.guarded pair && framesGuarded pair condition
+    condition.anyLeaf (ParallelFieldLeaf.uses pair .right) && condition.guarded pair &&
+    framesGuarded pair condition && innerGuarded pair condition
 
 /-- Authored references alone satisfy the error-target gate; topology anchor declarations are not implicit condition references. -/
 def references (pair : CheckedParallelFieldPair model) : ParallelFieldCondition model → List ConditionReference
@@ -657,8 +674,11 @@ def checkParallelFieldRule (model : FlatModel)
     -- leaf; `IterationNotValidVisitor`). Other incoherence keeps no class.
     else if condition.allLeaves (ParallelFieldLeaf.admitted pair suppressExactScaleWarning) &&
         condition.anyLeaf (ParallelFieldLeaf.uses pair .left) &&
-        condition.anyLeaf (ParallelFieldLeaf.uses pair .right) && !condition.guarded pair then
-      throw (.static .parallelIterationInvalid)
+        condition.anyLeaf (ParallelFieldLeaf.uses pair .right) then
+      if !condition.guarded pair then throw (.static .parallelIterationInvalid)
+      else if ParallelFieldCondition.framesGuarded pair condition && !condition.innerGuarded pair then
+        throw (.static .negativeConditionInIteration)
+      else throw .incoherentCondition
     else throw .incoherentCondition
   else
     match condition.errorTargetRefusal pair with

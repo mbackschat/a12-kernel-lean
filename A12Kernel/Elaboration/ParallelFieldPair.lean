@@ -44,7 +44,7 @@ structure ParallelRuleRowOutcome where
   outcome : FlatRuleOutcome
   deriving Repr, DecidableEq
 
-/-- Two anchor declarations share a checked join and an error side with complete outer coordinates. Group-only conditions may use an index declaration as a topology anchor; authored reference membership remains the condition’s responsibility. -/
+/-- Two anchor declarations share a checked join and an error side with complete outer coordinates. Group-only conditions may use an index declaration as a topology anchor; authored reference membership remains the condition’s responsibility. Each anchor's scope extends its joined group's, and only the error anchor's may be longer: its levels below the joined group are iterated within each joined row. -/
 structure CheckedParallelFieldPair (model : FlatModel) where
   private mk ::
   groups : CheckedParallelIndexGroups model
@@ -59,11 +59,16 @@ structure CheckedParallelFieldPair (model : FlatModel) where
   rightOperandGroup :
     groups.rightGroup.path.isPrefixOf rightDeclaration.groupPath = true
   leftOperandScope :
-    (leftDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath groups.leftGroup.path) = true
+    (model.repeatableScopeForGroupPath groups.leftGroup.path).isPrefixOf
+      leftDeclaration.repeatableScope = true
   rightOperandScope :
-    (rightDeclaration.repeatableScope ==
-      model.repeatableScopeForGroupPath groups.rightGroup.path) = true
+    (model.repeatableScopeForGroupPath groups.rightGroup.path).isPrefixOf
+      rightDeclaration.repeatableScope = true
+  partnerOperandScope :
+    (if errorField == leftDeclaration.id then
+      rightDeclaration.repeatableScope == model.repeatableScopeForGroupPath groups.rightGroup.path
+    else
+      leftDeclaration.repeatableScope == model.repeatableScopeForGroupPath groups.leftGroup.path) = true
   errorFieldIsOperand :
     (errorField == leftDeclaration.id ||
       errorField == rightDeclaration.id) = true
@@ -86,11 +91,41 @@ def errorSide (pair : CheckedParallelFieldPair model)
     (row : ResolvedParallelIndexRow) : ResolvedParallelIndexSide :=
   if pair.errorField == pair.leftDeclaration.id then row.left else row.right
 
+/-- The error field's declaration, the anchor on the error side. -/
+def errorDeclaration (pair : CheckedParallelFieldPair model) : FlatFieldDecl :=
+  if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration else pair.rightDeclaration
+
+/-- The error field's repeatable levels below its joined group. -/
+def innerScope (pair : CheckedParallelFieldPair model) : List RepeatableLevel :=
+  let joined := if pair.errorField == pair.leftDeclaration.id then pair.groups.leftGroup
+    else pair.groups.rightGroup
+  pair.errorDeclaration.repeatableScope.drop (model.repeatableScopeForGroupPath joined.path).length
+
+/-- The rows one joined row contributes: the row itself when the error field sits at its joined
+group's level, otherwise one row per full-validation row of the error field's levels inside the error
+side's joined row, with the error side bound there. An unmatched error side has no such row. The
+Kernel iterates a nested level within each joined row for a rule and for a computation precondition
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+`nested-join`); that it visits the full-validation domain there, as frames do, is unmeasured. -/
+def innerRows (pair : CheckedParallelFieldPair model) (preliminary : CheckedIndexPreliminary model)
+    (row : ResolvedParallelIndexRow) :
+    Except ParallelPresenceRuleEvaluationError (List ResolvedParallelIndexRow) := do
+  if pair.innerScope.isEmpty then return [row]
+  let side := pair.errorSide row
+  let some environment := side.environment | return []
+  let joinedScope := model.repeatableScopeForGroupPath side.group.path
+  let joinedPath ← environment.pathForScope joinedScope |>.mapError fun error => .join (.environment error)
+  let environments ← preliminary.base.fullValidationRowEnvironments pair.errorDeclaration.repeatableScope
+    |>.mapError .rows
+  pure ((environments.filter fun inner => (inner.pathForScope joinedScope).toOption == some joinedPath).map
+    fun inner => if pair.errorField == pair.leftDeclaration.id
+      then { row with left := { row.left with environment := some inner } }
+      else { row with right := { row.right with environment := some inner } })
+
 /-- The error pointer a custom-condition callback receives at one joined row: the error field's levels bound from the error side's environment, from the outer environment where that side is unmatched, and UNKNOWN wherever no unique row is bound (spec/11 §14). A duplicate-key side gets no cache-resolved coordinate here; the fired message keeps that projection in `evalRow`. -/
 def customErrorPointer (pair : CheckedParallelFieldPair model)
     (row : ResolvedParallelIndexRow) (outer : Env) : MessagePointer :=
-  let declaration := if pair.errorField == pair.leftDeclaration.id then pair.leftDeclaration
-    else pair.rightDeclaration
+  let declaration := pair.errorDeclaration
   let environment := (pair.errorSide row).environment.getD outer
   { field := pair.errorField
     coordinates := declaration.repeatableScope.map fun level =>
@@ -154,9 +189,11 @@ def evalWith (pair : CheckedParallelFieldPair model) (condition : Condition)
     (admitOuter : Env → Bool := fun _ => true)
     (caught : ParallelPresenceRuleEvaluationError → Bool := fun _ => false) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
-  let runJoin := fun first? frameOuter (join : ResolvedParallelIndexJoin) =>
+  let runJoin := fun first? frameOuter (join : ResolvedParallelIndexJoin) => do
     if !admitOuter frameOuter then pure ([], first?, false)
-    else pair.evalRows condition (evaluate frameOuter) preliminary frameOuter messageCache caught first? join.rows
+    else
+      let rows := (← join.rows.mapM (pair.innerRows preliminary)).flatten
+      pair.evalRows condition (evaluate frameOuter) preliminary frameOuter messageCache caught first? rows
   match pair.groups.outerScopePlan with
   | .common _ =>
       let join ← preliminary.resolveCheckedParallelIndexJoin pair.groups outer includeAddress |>.mapError .join
@@ -194,7 +231,7 @@ private def indexedOperandGroup (model : FlatModel)
       .error (.multipleIndexedOperandGroups declaration.id
         (groups.map (·.path)))
 
-/-- Check the narrow parallel rule plan without passing caller-selected groups or iteration rows. Each operand declaration determines its sole keyed repeatable ancestor, and its complete repeatable scope must end at that group. -/
+/-- Check the narrow parallel rule plan without passing caller-selected groups or iteration rows. Each operand declaration determines its sole keyed repeatable ancestor; the partner's complete repeatable scope must end at that group, and the error anchor's may continue below it. -/
 def checkParallelFieldPair (model : FlatModel)
     (leftField rightField errorField : FieldId)
     (errorCode : String) (severity : ValidationSeverity)
@@ -216,39 +253,47 @@ def checkParallelFieldPair (model : FlatModel)
         groups.rightGroup.path.isPrefixOf
           rightDeclaration.groupPath = true then
       if hLeftScope :
-          (leftDeclaration.repeatableScope ==
-            model.repeatableScopeForGroupPath groups.leftGroup.path) =
-              true then
+          (model.repeatableScopeForGroupPath groups.leftGroup.path).isPrefixOf
+            leftDeclaration.repeatableScope = true then
         if hRightScope :
-            (rightDeclaration.repeatableScope ==
-              model.repeatableScopeForGroupPath groups.rightGroup.path) =
-                true then
-          if hError :
-              (errorField == leftDeclaration.id ||
-                errorField == rightDeclaration.id) = true then
-            if hFrameError :
-                groups.outerScopePlan.admitsErrorOnLeft
-                  (errorField == leftDeclaration.id) = true then
-              pure {
-                groups
-                leftDeclaration
-                rightDeclaration
-                errorField
-                errorCode
-                severity
-                messagePlan
-                leftOperandGroup := hLeftGroup
-                rightOperandGroup := hRightGroup
-                leftOperandScope := hLeftScope
-                rightOperandScope := hRightScope
-                errorFieldIsOperand := hError
-                errorFieldOnFramedSide := hFrameError
-              }
+            (model.repeatableScopeForGroupPath groups.rightGroup.path).isPrefixOf
+              rightDeclaration.repeatableScope = true then
+          if hPartner :
+            (if errorField == leftDeclaration.id then
+              rightDeclaration.repeatableScope == model.repeatableScopeForGroupPath groups.rightGroup.path
             else
-              throw (.errorFieldNotOnFramedSide errorField)
+              leftDeclaration.repeatableScope == model.repeatableScopeForGroupPath groups.leftGroup.path) = true then
+            if hError :
+                (errorField == leftDeclaration.id ||
+                  errorField == rightDeclaration.id) = true then
+              if hFrameError :
+                  groups.outerScopePlan.admitsErrorOnLeft
+                    (errorField == leftDeclaration.id) = true then
+                pure {
+                  groups
+                  leftDeclaration
+                  rightDeclaration
+                  errorField
+                  errorCode
+                  severity
+                  messagePlan
+                  leftOperandGroup := hLeftGroup
+                  rightOperandGroup := hRightGroup
+                  leftOperandScope := hLeftScope
+                  rightOperandScope := hRightScope
+                  partnerOperandScope := hPartner
+                  errorFieldIsOperand := hError
+                  errorFieldOnFramedSide := hFrameError
+                }
+              else
+                throw (.errorFieldNotOnFramedSide errorField)
+            else
+              throw (.errorFieldNotOperand errorField
+                leftDeclaration.id rightDeclaration.id)
           else
-            throw (.errorFieldNotOperand errorField
-              leftDeclaration.id rightDeclaration.id)
+            throw (.incoherentOperandGroup
+              (if errorField == leftDeclaration.id then rightDeclaration.id else leftDeclaration.id)
+              (if errorField == leftDeclaration.id then groups.rightGroup.path else groups.leftGroup.path))
         else
           throw (.incoherentOperandGroup
             rightDeclaration.id groups.rightGroup.path)
