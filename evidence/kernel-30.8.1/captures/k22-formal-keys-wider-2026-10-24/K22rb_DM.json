@@ -1,0 +1,98 @@
+{
+ "header": {
+  "id": "K22rb_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K22rb_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false,
+   "baseYear": "2025"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/MD",
+        "name": "MD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/MDc",
+        "name": "MDc",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MMdd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DMc",
+        "name": "DMc",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "ddMM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DMd",
+        "name": "DMd",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM."
+          }
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,727 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "K22r_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-24T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "DT-0",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-3",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-4",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-5",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-6",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-7",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-8",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DT"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DD-0",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DD-1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DD-2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TD-0",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/TD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/TD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/TD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/TD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TD-1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/TD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/TD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/TD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/TD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TD-2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/TD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/TD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/TD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/TD"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "YC-0",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFalsch",
+       "field": "Form/YC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/YC"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFalsch",
+       "field": "Form/YC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/YC"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "YC-1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "N0-0",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "N0-1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "N0-2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "N2-0",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "N2-1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "unknown",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  }
+ ]
+}

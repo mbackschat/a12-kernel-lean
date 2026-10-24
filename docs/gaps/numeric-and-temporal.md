@@ -56,7 +56,6 @@ The [Number capability owners](../implementation/numeric.md) define current exec
 
 - `state`: profile residual; D03/D16.
 - `baseline`: [Temporal coherence](../implementation/temporal.md#cap-document-temporal-coherence), [stored classification](../implementation/temporal.md#cap-full-date-stored-classifier) and [first-filled profiles](../implementation/strings-and-enumerations.md#cap-first-filled-value) own the format-keyed account. The former kind-conjunct and absent-list-site claims are not open obligations.
-- `evidence-needed`: malformed-component versus out-of-profile date precedence.
 - `calibration`: cross-kind stored parsing outside the retained kind/format matrix; formats and zones outside the bounded classifiers are [SG6](#gap-sg6)'s host boundary.
 - `reopen-when`: a consumer needs a stored-input profile or kind/format pairing outside the checked boundary.
 - `route-state`: discovery-required
@@ -64,9 +63,8 @@ The [Number capability owners](../implementation/numeric.md) define current exec
 <a id="gap-sg27"></a>
 ### SG27 — Number presentation information and the remaining formal key families
 
-- `state`: residual; the presentation-information host profile is D12, and the key selection of the remaining families is an evaluator output K22 owns.
+- `state`: residual; the presentation-information host profile is D12.
 - `baseline`: [Stored Number formal read](../implementation/numeric.md#cap-stored-number-formal-read), [formal cascade](../implementation/numeric.md#cap-number-formal-cascade) and [message keys](../implementation/numeric.md#cap-runtime-formal-message-keys) own quoted conversion, kept leading-zero text, every cascade arm and the Number key selection, calibrated by the [K16 capture](../sources/domain-ingestion-probes.md#src-number-ingress-k16).
 - `host-boundary`: caller-supplied presentation information — a grouping separator checked and removed before the cascade, a non-dot decimal separator and optional decimal places — and the display-to-internal conversion service. The measured document route supplies no optional decimal places; a grouping-separator route is unmeasured. The reader refuses a decimal scale above 100,000 in magnitude rather than reproducing the host fault.
-- `evidence-needed`: the addressing key family, the unsigned variant of any Number key, which the K16 rows, all on signed declarations, did not exercise, and the date keys of single-digit, component-omitting and clock formats beyond the [K22 key run](../sources/domain-ingestion-probes.md#src-date-message-keys-k22).
 - `reopen-when`: a named ingress or rendering consumer needs presentation information or another key family. Do not reopen the completed C11 lexical-length matrix.
 - `route-state`: discovery-required

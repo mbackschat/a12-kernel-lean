@@ -25,7 +25,9 @@ def captures : List (String × String) := [
   ("captures/number-ingress-2026-10-13/request-e.json", "captures/number-ingress-2026-10-13/artifact-e.json"),
   ("captures/number-ingress-2026-10-13/request-f.json", "captures/number-ingress-2026-10-13/artifact-f.json"),
   ("captures/number-ingress-2026-10-13/request-g.json", "captures/number-ingress-2026-10-13/artifact-g.json"),
-  ("captures/number-declaration-bounds-2026-10-13/request.json", "captures/number-declaration-bounds-2026-10-13/artifact.json")]
+  ("captures/number-declaration-bounds-2026-10-13/request.json", "captures/number-declaration-bounds-2026-10-13/artifact.json"),
+  ("captures/k22-formal-keys-wider-2026-10-24/request-k22q.json", "captures/k22-formal-keys-wider-2026-10-24/artifact-k22q.json"),
+  ("captures/k22-formal-keys-wider-2026-10-24/request-k22r.json", "captures/k22-formal-keys-wider-2026-10-24/artifact-k22r.json")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

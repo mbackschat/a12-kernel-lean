@@ -1,0 +1,918 @@
+{
+ "basis": "each key identified at measurement by the rendered text of the first engine's message; where several keys render one sentence, 'key' is the one the code and declaration select and 'sameText' lists the others; a null key is a row without a message",
+ "rows": [
+  {
+   "request": "k22q",
+   "row": "Y-0",
+   "field": "Form/Y",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "Y-1",
+   "field": "Form/Y",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "Y-2",
+   "field": "Form/Y",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "Y-3",
+   "field": "Form/Y",
+   "code": "datumFalsch",
+   "key": "DATUM"
+  },
+  {
+   "request": "k22q",
+   "row": "Y-4",
+   "field": "Form/Y",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "YM-0",
+   "field": "Form/YM",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "YM-1",
+   "field": "Form/YM",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "YM-2",
+   "field": "Form/YM",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "YM-3",
+   "field": "Form/YM",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "YM-4",
+   "field": "Form/YM",
+   "code": "datumFalsch",
+   "key": "DATUM"
+  },
+  {
+   "request": "k22q",
+   "row": "YMc-0",
+   "field": "Form/YMc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "YMc-1",
+   "field": "Form/YMc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "YMc-2",
+   "field": "Form/YMc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "Mo-0",
+   "field": "Form/Mo",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "Mo-1",
+   "field": "Form/Mo",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "Mo-2",
+   "field": "Form/Mo",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "Mo-3",
+   "field": "Form/Mo",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "MD-0",
+   "field": "Form/MD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "MD-1",
+   "field": "Form/MD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "MD-2",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "MD-3",
+   "field": "Form/MD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "MD-4",
+   "field": "Form/MD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "MD-5",
+   "field": "Form/MD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "MD-6",
+   "field": "Form/MD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "MDc-0",
+   "field": "Form/MDc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "MDc-1",
+   "field": "Form/MDc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "MDc-2",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "MDc-3",
+   "field": "Form/MDc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DMc-0",
+   "field": "Form/DMc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DMc-1",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "DMc-2",
+   "field": "Form/DMc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DMc-3",
+   "field": "Form/DMc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DMd-0",
+   "field": "Form/DMd",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DMd-1",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "DMd-2",
+   "field": "Form/DMd",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DMd-3",
+   "field": "Form/DMd",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DMd-4",
+   "field": "Form/DMd",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "DMd-5",
+   "field": "Form/DMd",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "T-0",
+   "field": "Form/T",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "T-1",
+   "field": "Form/T",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "T-2",
+   "field": "Form/T",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "T-3",
+   "field": "Form/T",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "T-4",
+   "field": "Form/T",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "T-5",
+   "field": "Form/T",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "DT-0",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DT-1",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DT-2",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DT-3",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "DT-4",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FEBRUAR_29_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "DT-5",
+   "field": "Form/DT",
+   "code": "datumFalsch",
+   "key": "DATUM"
+  },
+  {
+   "request": "k22q",
+   "row": "DH-0",
+   "field": "Form/DH",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "DH-1",
+   "field": "Form/DH",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "D2-0",
+   "field": "Form/D2",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_ADDITIONAL_CHECK"
+  },
+  {
+   "request": "k22q",
+   "row": "D2-1",
+   "field": "Form/D2",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_ADDITIONAL_CHECK"
+  },
+  {
+   "request": "k22q",
+   "row": "D2-2",
+   "field": "Form/D2",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "D2-3",
+   "field": "Form/D2",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "D2-4",
+   "field": "Form/D2",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_ADDITIONAL_CHECK"
+  },
+  {
+   "request": "k22q",
+   "row": "D1-0",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "D1-1",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "request": "k22q",
+   "row": "D1-2",
+   "field": "Form/D1",
+   "code": "datumFalsch",
+   "key": "DATUM"
+  },
+  {
+   "request": "k22q",
+   "row": "D1-3",
+   "field": "Form/D1",
+   "code": "datumFalsch",
+   "key": "DATUM"
+  },
+  {
+   "request": "k22q",
+   "row": "D1-4",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22q",
+   "row": "U0-0",
+   "field": "Form/U0",
+   "code": "zahlMitVorzeichen",
+   "key": "ZAHL_ENTHAELT_VORZEICHEN"
+  },
+  {
+   "request": "k22q",
+   "row": "U0-1",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "U0-2",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "U0-3",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "U0-4",
+   "field": "Form/U0",
+   "code": "zahlHatUngueltigeZeichen",
+   "key": "ZAHL_MIT_UNGUELTIGEN_ZEICHEN_ONK",
+   "sameText": [
+    "ZAHL_HAT_DEZIMALTRENNER"
+   ]
+  },
+  {
+   "request": "k22q",
+   "row": "U0-5",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "U2-0",
+   "field": "Form/U2",
+   "code": "zahlMitVorzeichen",
+   "key": "ZAHL_ENTHAELT_VORZEICHEN"
+  },
+  {
+   "request": "k22q",
+   "row": "U2-1",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "U2-2",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "U2-3",
+   "field": "Form/U2",
+   "code": "zahlHatUngueltigeZeichen",
+   "key": "ZAHL_MIT_UNGUELTIGEN_ZEICHEN_FNKOVZ"
+  },
+  {
+   "request": "k22q",
+   "row": "UV-0",
+   "field": "Form/UV",
+   "code": "zahlMitVorzeichen",
+   "key": "ZAHL_ENTHAELT_VORZEICHEN"
+  },
+  {
+   "request": "k22q",
+   "row": "UV-1",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "UV-2",
+   "field": "Form/UV",
+   "code": "zahlFalscheAnzahlNachkommastellen",
+   "key": "ZAHL_MIT_UNGUELTIGEN_ZEICHEN_VNK"
+  },
+  {
+   "request": "k22q",
+   "row": "UC-0",
+   "field": "Form/UC",
+   "code": "zahlMitVorzeichen",
+   "key": "GBMC_ENTHAELT_VORZEICHEN",
+   "sameText": [
+    "GBOC_ENTHAELT_VORZEICHEN"
+   ]
+  },
+  {
+   "request": "k22q",
+   "row": "UC-1",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "UC-2",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "UC-3",
+   "field": "Form/UC",
+   "code": "zahlHatUngueltigeZeichen",
+   "key": "GBMC_MIT_UNGUELTIGEN_ZEICHEN_OVZ"
+  },
+  {
+   "request": "k22q",
+   "row": "UC-4",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "UO-0",
+   "field": "Form/UO",
+   "code": "zahlMitVorzeichen",
+   "key": "GBOC_ENTHAELT_VORZEICHEN",
+   "sameText": [
+    "GBMC_ENTHAELT_VORZEICHEN"
+   ]
+  },
+  {
+   "request": "k22q",
+   "row": "UO-1",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "UO-2",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "UO-3",
+   "field": "Form/UO",
+   "code": "zahlHatUngueltigeZeichen",
+   "key": "GBOC_MIT_UNGUELTIGEN_ZEICHEN_OVZ",
+   "sameText": [
+    "GBOC_MIT_UNGUELTIGEN_ZEICHEN_MVZ"
+   ]
+  },
+  {
+   "request": "k22q",
+   "row": "UO-4",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22q",
+   "row": "UI-0",
+   "field": "Form/UI",
+   "code": "zahlZuvieleVorkommastellen",
+   "key": "ZAHL_ZUVIELE_VORKOMMASTELLEN_OVZONK",
+   "sameText": [
+    "ZAHL_ZU_LANG",
+    "GBOC_ZU_LANG",
+    "GBMC_ZU_LANG"
+   ]
+  },
+  {
+   "request": "k22q",
+   "row": "UI-1",
+   "field": "Form/UI",
+   "code": "zahlMitVorzeichen",
+   "key": "ZAHL_ENTHAELT_VORZEICHEN"
+  },
+  {
+   "request": "k22q",
+   "row": "lines3",
+   "field": "Form/Lines[3]/X",
+   "code": "zuGrosseKontextnummer",
+   "key": "FEHLER_KONTEXTNUMMER_ZU_GROSS_FM_TEXT"
+  },
+  {
+   "request": "k22q",
+   "row": "lines3",
+   "field": "Form/Lines[3]",
+   "code": "zuGrosseZeile",
+   "key": "FEHLER_ZEILENNUMMER_ZU_GROSS_FM_TEXT"
+  },
+  {
+   "request": "k22q",
+   "row": "sub3",
+   "field": "Form/Lines/Sub[3]/Y",
+   "code": "zuGrosseKontextnummer",
+   "key": "FEHLER_KONTEXTNUMMER_ZU_GROSS_FM_TEXT"
+  },
+  {
+   "request": "k22q",
+   "row": "sub3",
+   "field": "Form/Lines/Sub[3]",
+   "code": "zuGrosseZeile",
+   "key": "FEHLER_ZEILENNUMMER_ZU_GROSS_FM_TEXT"
+  },
+  {
+   "request": "k22q",
+   "row": "lines3sub",
+   "field": "Form/Lines[3]/Sub",
+   "code": "zuGrosseKontextnummer",
+   "key": "FEHLER_KONTEXTNUMMER_ZU_GROSS_FM_TEXT"
+  },
+  {
+   "request": "k22q",
+   "row": "lines3sub",
+   "field": "Form/Lines[3]/Sub/Y",
+   "code": "zuGrosseKontextnummer",
+   "key": "FEHLER_KONTEXTNUMMER_ZU_GROSS_FM_TEXT"
+  },
+  {
+   "request": "k22q",
+   "row": "lines3sub",
+   "field": "Form/Lines[3]/X",
+   "code": "zuGrosseKontextnummer",
+   "key": "FEHLER_KONTEXTNUMMER_ZU_GROSS_FM_TEXT"
+  },
+  {
+   "request": "k22q",
+   "row": "lines3sub",
+   "field": "Form/Lines[3]",
+   "code": "zuGrosseZeile",
+   "key": "FEHLER_ZEILENNUMMER_ZU_GROSS_FM_TEXT"
+  },
+  {
+   "request": "k22r",
+   "row": "DT-0",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "DT-1",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "DT-2",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "DT-3",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FEBRUAR_29_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "DT-4",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "DT-5",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22r",
+   "row": "DT-6",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "DT-7",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "DT-8",
+   "field": "Form/DT",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22r",
+   "row": "DD-0",
+   "field": "Form/DD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "DD-1",
+   "field": "Form/DD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "DD-2",
+   "field": "Form/DD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22r",
+   "row": "TD-0",
+   "field": "Form/TD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "TD-1",
+   "field": "Form/TD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22r",
+   "row": "TD-2",
+   "field": "Form/TD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "request": "k22r",
+   "row": "YC-0",
+   "field": "Form/YC",
+   "code": "datumFalsch",
+   "key": "DATUM_ADDITIONAL_CHECK"
+  },
+  {
+   "request": "k22r",
+   "row": "YC-1",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22r",
+   "row": "N0-0",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22r",
+   "row": "N0-1",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22r",
+   "row": "N0-2",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22r",
+   "row": "N2-0",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22r",
+   "row": "N2-1",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22r",
+   "row": "unknown",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22rb",
+   "row": "MD-0",
+   "field": "Form/MD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FEBRUAR_29_FEHLER"
+  },
+  {
+   "request": "k22rb",
+   "row": "MD-1",
+   "field": "Form/MD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22rb",
+   "row": "MD-2",
+   "field": "Form/MD",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "request": "k22rb",
+   "row": "MD-3",
+   "field": null,
+   "code": null,
+   "key": null
+  },
+  {
+   "request": "k22rb",
+   "row": "MDc-0",
+   "field": "Form/MDc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FEBRUAR_29_FEHLER"
+  },
+  {
+   "request": "k22rb",
+   "row": "MDc-1",
+   "field": "Form/MDc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "request": "k22rb",
+   "row": "DMc-0",
+   "field": "Form/DMc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FEBRUAR_29_FEHLER"
+  },
+  {
+   "request": "k22rb",
+   "row": "DMc-1",
+   "field": "Form/DMc",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "request": "k22rb",
+   "row": "DMd-0",
+   "field": "Form/DMd",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FEBRUAR_29_FEHLER"
+  },
+  {
+   "request": "k22rb",
+   "row": "DMd-1",
+   "field": "Form/DMd",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  }
+ ]
+}

@@ -1,0 +1,194 @@
+{
+ "model": "K22r_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "DT-0",
+   "documentInline": {
+    "Form": {
+     "DT": "2026-01-01T10:60:00"
+    }
+   }
+  },
+  {
+   "name": "DT-1",
+   "documentInline": {
+    "Form": {
+     "DT": "2026-01-01T10:00:60"
+    }
+   }
+  },
+  {
+   "name": "DT-2",
+   "documentInline": {
+    "Form": {
+     "DT": "2026-01-01T24:00:00"
+    }
+   }
+  },
+  {
+   "name": "DT-3",
+   "documentInline": {
+    "Form": {
+     "DT": "2025-02-29T25:00:00"
+    }
+   }
+  },
+  {
+   "name": "DT-4",
+   "documentInline": {
+    "Form": {
+     "DT": "2026-13-01T25:00:00"
+    }
+   }
+  },
+  {
+   "name": "DT-5",
+   "documentInline": {
+    "Form": {
+     "DT": "0000-01-01T10:00:00"
+    }
+   }
+  },
+  {
+   "name": "DT-6",
+   "documentInline": {
+    "Form": {
+     "DT": "1500-01-01T25:00:00"
+    }
+   }
+  },
+  {
+   "name": "DT-7",
+   "documentInline": {
+    "Form": {
+     "DT": "2026-02-30T25:00:00"
+    }
+   }
+  },
+  {
+   "name": "DT-8",
+   "documentInline": {
+    "Form": {
+     "DT": "2026-00-01T25:00:00"
+    }
+   }
+  },
+  {
+   "name": "DD-0",
+   "documentInline": {
+    "Form": {
+     "DD": "2026-02-30T10:00:00"
+    }
+   }
+  },
+  {
+   "name": "DD-1",
+   "documentInline": {
+    "Form": {
+     "DD": "2026-01-01T25:00:00"
+    }
+   }
+  },
+  {
+   "name": "DD-2",
+   "documentInline": {
+    "Form": {
+     "DD": "2026-01-01"
+    }
+   }
+  },
+  {
+   "name": "TD-0",
+   "documentInline": {
+    "Form": {
+     "TD": "2026-13-01"
+    }
+   }
+  },
+  {
+   "name": "TD-1",
+   "documentInline": {
+    "Form": {
+     "TD": "2026-02-30"
+    }
+   }
+  },
+  {
+   "name": "TD-2",
+   "documentInline": {
+    "Form": {
+     "TD": "10:00:00"
+    }
+   }
+  },
+  {
+   "name": "YC-0",
+   "documentInline": {
+    "Form": {
+     "YC": "1850"
+    }
+   }
+  },
+  {
+   "name": "YC-1",
+   "documentInline": {
+    "Form": {
+     "YC": "2026"
+    }
+   }
+  },
+  {
+   "name": "N0-0",
+   "documentInline": {
+    "Form": {
+     "N0": "+5"
+    }
+   }
+  },
+  {
+   "name": "N0-1",
+   "documentInline": {
+    "Form": {
+     "N0": "-5"
+    }
+   }
+  },
+  {
+   "name": "N0-2",
+   "documentInline": {
+    "Form": {
+     "N0": "5.0"
+    }
+   }
+  },
+  {
+   "name": "N2-0",
+   "documentInline": {
+    "Form": {
+     "N2": "+5.00"
+    }
+   }
+  },
+  {
+   "name": "N2-1",
+   "documentInline": {
+    "Form": {
+     "N2": "5.0"
+    }
+   }
+  },
+  {
+   "name": "unknown",
+   "documentInline": {
+    "Form": {
+     "Zzz": "1"
+    }
+   }
+  }
+ ]
+}

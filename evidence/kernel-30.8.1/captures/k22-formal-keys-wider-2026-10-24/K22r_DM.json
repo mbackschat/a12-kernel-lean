@@ -1,0 +1,125 @@
+{
+ "header": {
+  "id": "K22r_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K22r_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/DT",
+        "name": "DT",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DD",
+        "name": "DD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TD",
+        "name": "TD",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/YC",
+        "name": "YC",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy",
+           "youngerThan1900Check": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/N0",
+        "name": "N0",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/N2",
+        "name": "N2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "minFractionalDigits": 2,
+           "maxFractionalDigits": 2
+          }
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
