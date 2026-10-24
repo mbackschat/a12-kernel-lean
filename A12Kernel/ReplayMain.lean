@@ -420,8 +420,8 @@ private def replayComputations (line : String → String → String → String �
 /-- The request's declared custom conditions as the host's one factory: `returns` answers a constant,
 `whenFilled` whether the named cell holds a stored text, and any other name is unregistered
 (a12-dmkits `DeclarativeCustomConditions` at the measurement pin). Only a nonrepeatable field path
-is read; the retained rows reach `whenFilled` on a filled cell only, so an empty stored text is
-this reader's choice, not a measurement. -/
+is read. A placed empty or blank text counts as filled, since the callback's data view hands it over
+where only an absent cell reads as none (k22-static-s6-2026-10-24, `when-filled`). -/
 private def declaredConditions (model : FlatModel) (request : Json) :
     Except String (CustomValidationRegistry model) := do
   let .ok declared := request.getObjVal? "customConditions" | pure {}
@@ -437,7 +437,7 @@ private def declaredConditions (model : FlatModel) (request : Json) :
         match model.fields.find? fun declaration => declaration.repeatableScope.isEmpty &&
             declaration.groupPath ++ [declaration.name] == pointer.splitOn "/" with
         | some field => pure (name, fun (input : CustomValidationInvocation model) =>
-            !((input.data.storedTextAt { field := field.id, path := [] }).getD "").isEmpty)
+            (input.data.storedTextAt { field := field.id, path := [] }).isSome)
         | none => throw s!"whenFilled {pointer} names no nonrepeatable field"
     | _, _ => throw s!"{name} must declare exactly one of returns and whenFilled"
   pure { configured := some fun name => (answers.find? (·.1 == name)).map (·.2) }

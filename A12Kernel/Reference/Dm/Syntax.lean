@@ -148,6 +148,8 @@ structure SyntaxError where
   errorClass : SyntaxErrorClass
   /-- The character offset the error is raised at. -/
   offset : Nat
+  /-- Whether the parser failed because the text had ended, rather than at a real token. -/
+  atEnd : Bool := false
   deriving Repr, BEq
 
 inductive Token
@@ -193,15 +195,17 @@ private partial def takeWhile (p : Char → Bool) (chars : Array Char) (index : 
 private def slice (chars : Array Char) (start stop : Nat) : String :=
   String.ofList (chars.extract start stop).toList
 
-/-- Split a text into lexemes, or the offset of the first character the lexer cannot take. -/
-partial def lex (language : Language) (text : String) (recognizeKeywords : Bool := true) : Except SyntaxError (Array Lexeme) :=
+/-- Split a text into the lexemes before the first character the lexer cannot take, and the error at
+that character when there is one. -/
+partial def lexPrefix (language : Language) (text : String) (recognizeKeywords : Bool := true) :
+    Array Lexeme × Option SyntaxError :=
   let chars := text.toList.toArray
-  let rec go (index : Nat) (out : Array Lexeme) : Except SyntaxError (Array Lexeme) :=
+  let rec go (index : Nat) (out : Array Lexeme) : Array Lexeme × Option SyntaxError :=
     let index := skipWhitespace chars index
     if h : index < chars.size then
       let c := chars[index]
       let emit (token : Token) (next : Nat) := go next (out.push { token, offset := index })
-      let fail : Except SyntaxError (Array Lexeme) := .error { errorClass := .lexer, offset := index }
+      let fail : Array Lexeme × Option SyntaxError := (out, some { errorClass := .lexer, offset := index })
       let charAt (offset : Nat) : Option Char := chars[offset]?
       if c == ';' && charAt (index + 1) == some ';' then
         emit .comment (takeWhile (fun c => c != '\r' && c != '\n') chars index)
@@ -241,8 +245,14 @@ partial def lex (language : Language) (text : String) (recognizeKeywords : Bool 
         match symbols.find? fun symbol => slice chars index (index + symbol.length) == symbol with
         | some symbol => emit (.symbol symbol) (index + symbol.length)
         | none => fail
-    else .ok out
+    else (out, none)
   go 0 #[]
+
+/-- Split a text into lexemes, or the offset of the first character the lexer cannot take. -/
+def lex (language : Language) (text : String) (recognizeKeywords : Bool := true) : Except SyntaxError (Array Lexeme) :=
+  match lexPrefix language text recognizeKeywords with
+  | (lexemes, none) => .ok lexemes
+  | (_, some error) => .error error
 
 /-- One path segment, its repetition star kept per segment (spec §10). -/
 structure Segment where

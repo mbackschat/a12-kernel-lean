@@ -17,21 +17,29 @@ namespace A12Kernel.Dm
 
 /-- What the parse completed that the Kernel checks as soon as it completes (spec/12 §12.3): a reference
 whose path closed, the steps of a path still open, each step a segment the parse read up to its `/`,
-a call whose closing parenthesis the parse read, and a whole reference read, its category, key and
-filter included. A read inside a key or a filter body is not recorded, since it binds in a scope the
-event does not carry. -/
+a call whose closing parenthesis the parse read, a whole reference read, its category, key and
+filter included, and a bracketed field-value read whose `]` the parse read. A read inside a key or a
+filter body is not recorded, since it binds in a scope the event does not carry. -/
 inductive ParseEvent where
   | reference (path : Path)
   | openPath (path : Path)
   | closedCall (call : Expr)
   | read (reference : Reference)
+  | valueRead (reference : Reference)
+  deriving Repr, BEq
+
+/-- A completed event and the index of the token after its production, which the Kernel's on-demand
+lexer must have read before the event's own gates run (spec/12 §12.3, token demand). -/
+structure RecordedEvent where
+  event : ParseEvent
+  lookahead : Nat
   deriving Repr, BEq
 
 /-- The cursor over the lexemes, and beneath the failure the events completed so far, which survive a
 syntax error. -/
-private abbrev P := StateT Nat (ReaderT (Array Lexeme) (ExceptT SyntaxError (StateM (Array ParseEvent))))
+private abbrev P := StateT Nat (ReaderT (Array Lexeme) (ExceptT SyntaxError (StateM (Array RecordedEvent))))
 
-private def run (grammar : P α) (lexemes : Array Lexeme) : Except SyntaxError α × Array ParseEvent :=
+private def run (grammar : P α) (lexemes : Array Lexeme) : Except SyntaxError α × Array RecordedEvent :=
   Id.run (((grammar.run' 0).run lexemes).run.run #[])
 
 private def peek : P (Option Token) := do
@@ -48,7 +56,12 @@ private def failHere (atEnd : SyntaxErrorClass) : P α := do
   let lexemes ← read
   match lexemes[← get]? with
   | some lexeme => throw { errorClass := .unexpectedToken, offset := lexeme.offset }
-  | none => throw { errorClass := atEnd, offset := lexemes.back?.map (·.offset) |>.getD 0 }
+  | none => throw { errorClass := atEnd, offset := lexemes.back?.map (·.offset) |>.getD 0, atEnd := true }
+
+/-- Record a completed event, its lookahead the token at the cursor. -/
+private def record (event : ParseEvent) : P Unit := do
+  let lookahead ← get
+  modifyThe (Array RecordedEvent) (·.push { event, lookahead })
 
 private def expectSymbol (symbol : String) : P Unit := do
   if (← peek) == some (.symbol symbol) then advance else failHere .expectedTokenNotFound
@@ -133,15 +146,14 @@ private partial def segments (header : Path) : P (List Segment) := do
   let first ← segment
   if (← peek) == some (.symbol ".") && (← peekAt 1) == some (.symbol "*") then
     let offset := (← read)[← get]!.offset
-    modifyThe (Array ParseEvent)
-      (·.push (.openPath { header with segments := header.segments ++ [{ first with star := true }] }))
+    record (.openPath { header with segments := header.segments ++ [{ first with star := true }] })
     throw { errorClass := .pointInA12Model, offset }
   -- A `.` alone leaves the step open, the walk still reading for its `*`, so the reference never
   -- completes and `Items*/NoSuch.` draws the token class (spec/12 §12.3).
   if (← peek) == some (.symbol ".") then failHere .unexpectedToken
   if ← acceptSymbol "/" then
     let header := { header with segments := header.segments ++ [first] }
-    modifyThe (Array ParseEvent) (·.push (.openPath header))
+    record (.openPath header)
     return first :: (← segments header)
   else return [first]
 
@@ -162,23 +174,25 @@ private partial def ups : P (Nat × Option String) := do
 
 /-- A path; once it closes, its steps are no longer open. -/
 private def path : P Path := do
-  let opened := (← getThe (Array ParseEvent)).size
+  let opened := (← getThe (Array RecordedEvent)).size
   let correlated ← acceptSymbol "$"
   let absolute ← acceptSymbol "/"
   let (ups, turningPoint) ← if absolute then pure (0, none) else ups
   let header : Path := { correlated, absolute, ups, turningPoint, segments := [] }
   let segments ← if ups == 0 then segments header
     else if ← acceptSymbol "/" then segments header else pure []
-  modifyThe (Array ParseEvent) (·.shrink opened)
+  modifyThe (Array RecordedEvent) (·.shrink opened)
   return { header with segments }
 
 /-- Run `grammar`, dropping the reads it records whether or not it fails. -/
 private def withoutReads (grammar : P α) : P α := do
-  let opened := (← getThe (Array ParseEvent)).size
-  let drop := fun (events : Array ParseEvent) => events.extract 0 opened ++
-    (events.extract opened events.size).filter fun | .read _ => false | _ => true
-  tryCatch (do let result ← grammar; modifyThe (Array ParseEvent) drop; pure result)
-    fun error => do modifyThe (Array ParseEvent) drop; throw error
+  let opened := (← getThe (Array RecordedEvent)).size
+  let drop := fun (events : Array RecordedEvent) => events.extract 0 opened ++
+    (events.extract opened events.size).filter fun
+      | { event := .read _, .. } | { event := .valueRead _, .. } => false
+      | _ => true
+  tryCatch (do let result ← grammar; modifyThe (Array RecordedEvent) drop; pure result)
+    fun error => do modifyThe (Array RecordedEvent) drop; throw error
 
 mutual
 private partial def indexSuffix : P (Option IndexKey) := do
@@ -191,14 +205,14 @@ private partial def indexSuffix : P (Option IndexKey) := do
         if digits.isEmpty || !digits.toList.all Char.isDigit then failHere .expectedTokenNotFound
         advance
         let target : Path := { segments := [{ name := digits, star := false }] }
-        modifyThe (Array ParseEvent) (·.push (.reference target))
+        record (.reference target)
         pure (some (.reference { path := target }))
     | _ => pure (some (.reference (← reference)))
   else pure none
 
 private partial def reference : P Reference := do
   let target ← path
-  modifyThe (Array ParseEvent) (·.push (.reference target))
+  record (.reference target)
   let category ← if ← acceptSymbol "->" then
       match ← peek with
       | some (.name name _) => advance; pure (some name)
@@ -207,7 +221,7 @@ private partial def reference : P Reference := do
   let index ← withoutReads indexSuffix
   let filter ← if ← acceptKeyword "Having" then pure (some (← withoutReads (condition false))) else pure none
   let read : Reference := { path := target, index, category, filter }
-  modifyThe (Array ParseEvent) (·.push (.read read))
+  record (.read read)
   return read
 
 /-- A condition: branches joined by one connective (spec §12.3). `comments` admits a comment at each
@@ -274,6 +288,14 @@ private partial def atom : P Expr := do
       advance
       let reference ← reference
       expectSymbol "]"
+      -- The bracketed read completes at its `]` and replaces the whole-reference read, so its gates
+      -- wait for the token after it (`[Items*/Count] %` is a lexer defect, `[Items*/Count] > %` the
+      -- read's class; spec/12 §12.3).
+      modifyThe (Array RecordedEvent) fun events =>
+        match events.back? with
+        | some { event := .read _, .. } => events.pop
+        | _ => events
+      record (.valueRead reference)
       return .value reference
   | some (.symbol "{") =>
       advance
@@ -323,7 +345,7 @@ private partial def atom : P Expr := do
 
 private partial def call (id : String) : P Expr := do
   let closed ← callBody id
-  modifyThe (Array ParseEvent) (·.push (.closedCall closed))
+  record (.closedCall closed)
   return closed
 
 private partial def callBody (id : String) : P Expr := do
@@ -405,7 +427,7 @@ private def preamble : P (List String) := do
 
 /-- Read one condition or operation text from its lexemes, with the events completed before the text
 ended or failed, in completion order. -/
-def parseLexemesRecording (lexemes : Array Lexeme) : Except SyntaxError Text × Array ParseEvent :=
+def parseLexemesRecording (lexemes : Array Lexeme) : Except SyntaxError Text × Array RecordedEvent :=
   let grammar : P Text := do
     let suppressed ← preamble
     let body ← condition true

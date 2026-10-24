@@ -21,7 +21,6 @@
 - `state`: residual; D01 topology, D04 host cache, D06 diagnostics, D18 transport and D22 output coordinates.
 - `baseline`: [Semantic index](../implementation/repetition-and-paths.md#cap-semantic-index), [admission cascade](../implementation/cross-clause.md#cap-semantic-index-admission), [first-filled](../implementation/strings-and-enumerations.md#cap-first-filled-value) and [non-Number alternatives](../implementation/repeatable-computations.md#cap-non-number-alternatives) own current main forms.
 - `calibration`: source-slot combinations beyond the [K22 S2 checkpoint](../sources/group-count-topology.md#src-k22-static-s2)'s keyed readers, key-before-operand order and keyed lower-star `Having` (`tf`). Enumeration alternative tables exist; their presence does not calibrate every competing defect.
-- `evidence-needed`: temporal non-ASCII digit profiles. The current literal-fit source/evidence boundary belongs to the [semantic-index owner](../implementation/repetition-and-paths.md#cap-semantic-index); internal separators are not additional Kernel captures.
 - `calibration`: indexed RuleGroup runtime compositions beyond static/readback evidence, three or more bound ancestors, and additional carrier-specific partial/profile calibration.
 - `consumer-gated`: public structural-reference transport (D18). Structural and parallel consumers share the [cache boundary](#gap-sg29-cache-order); keyed condition support alone does not establish output correspondence.
 - `evidence-needed`: wider partial message profiles.

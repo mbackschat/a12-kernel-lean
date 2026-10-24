@@ -165,4 +165,17 @@ example :
       some "MVK_NO_DATE" := by
   native_decide
 
+/- The lexer runs on demand: a defect in the token after a completed read answers first, comments
+counting as tokens and whitespace not, while one a token later yields to the read's class and a parse
+failure at an earlier real token keeps its own (spec/12 §12.3, token demand; k22-static-s6-2026-10-24,
+`z10`). -/
+example :
+    spec12Class "FieldFilled(Reference) And [Items*/Count] %" = some "MVK_LEXER_STANDARD_ERROR" ∧
+    spec12Class "FieldFilled(Reference) And [Items*/Count]   %" = some "MVK_LEXER_STANDARD_ERROR" ∧
+    spec12Class "FieldFilled(Reference) And [Items*/Count] > %" = some "MVK_NO_WILDCARDS_ALLOWED" ∧
+    spec12Class "FieldFilled(Reference) And [Items*/Count] ;; note\n%" = some "MVK_NO_WILDCARDS_ALLOWED" ∧
+    spec12Class "FieldFilled(Reference) And Code == \u0665" = some "MVK_UNEXPECTED_TOKEN" ∧
+    spec12Class "FieldFilled(Reference) And [Reference] > \u0663" = some "MVK_LEXER_STANDARD_ERROR" := by
+  native_decide
+
 end A12Kernel.Dm.ParseDefectClassLocks

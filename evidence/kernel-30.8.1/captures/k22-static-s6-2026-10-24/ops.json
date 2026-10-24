@@ -1,0 +1,189 @@
+[
+ {
+  "id": "z1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For \"٢٠٢٠-٠١-٠١\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "z2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For \"２０２０-０１-０１\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "z3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For \"٥\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "z4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For \"５\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "z5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For \"٢٠٢٠-٠١-٠١/٢٠٢٠-٠٢-٠١\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "z6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For \"2020-0١-01\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "z7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For \"١٥\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "z8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For \"2020-01-01\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "z9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Due == \"٠١.٠١.٢٠٢٠\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "z10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Amount == ٥",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "z11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "z11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Amount == \"٥\"",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

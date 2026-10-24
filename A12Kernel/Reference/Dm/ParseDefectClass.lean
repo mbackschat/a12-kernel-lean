@@ -39,6 +39,21 @@ def referenceReadClass? (model : FlatModel) (group bindingGroup : GroupPath) (re
   | .ok _ => none
   | .error refusal => KernelStaticDiagnostic.all.find? (·.kernelCode == refusal.detail)
 
+/-- The class the field-value read `[…]` raises as its bracket closes: the whole reference's read,
+then the group, star and value gates in the order spec/08 states. A category read keeps only the
+reference's classes, its own gates being lowering's. -/
+def valueReadClass? (model : FlatModel) (group bindingGroup : GroupPath) (reference : Reference) :
+    Option KernelStaticDiagnostic :=
+  (referenceReadClass? model group bindingGroup reference).orElse fun _ =>
+    if reference.category.isSome then none else
+    let unstarred : Path := { reference.path with segments := reference.path.segments.map ({ · with star := false }) }
+    unstarred.toFieldPath?.bind fun field =>
+      if (model.groupNamedBy? group field).isSome then some .noGroupsAllowed
+      else if reference.path.segments.any (·.star) then some .noWildcardsAllowed
+      else match model.resolveFieldDeclarationUnchecked group field with
+        | .ok declaration => declaration.fieldValueReadRefusal?.bind (·.diagnostic?)
+        | .error _ => none
+
 /-- The class of the first step of a path left open that names nothing. Only a walked path checks its
 steps: one that is `$`-marked, opens with an up-run, or has read a starred step (spec/12 §12.3); a step
 is judged by its name alone, its star aside. -/
@@ -59,25 +74,32 @@ resolves to nothing or whose operation gate refuses, otherwise the defect's own 
 that parses. `MVK_INVALID_ENTITY` and `MVK_INVALID_ROOT_GROUP` and a date operation's `MVK_NO_DATE`
 ahead of a token defect are measured (predicate-operand capture, 2026-10-14), and so is a whole
 reference's `MVK_NO_WILDCARD` (parser-index rows); another class in that position is this account's
-extension. A lexer defect is reported with no event before it, because the
-lexer reads the whole text first; where the Kernel's lexer stops is unmeasured. A completed operation's
-reads bind at `bindingGroup`, the error field's group, as an admitted rule's do: `AddDays(Items/ShipOn, 1)`
-before a bare value slot reports no unbound star (handback row `ssd064`). -/
+extension. A completed operation's reads bind at `bindingGroup`, the error field's group, as an admitted
+rule's do: `AddDays(Items/ShipOn, 1)` before a bare value slot reports no unbound star (handback row
+`ssd064`).
+
+The Kernel lexes on demand, so a character its lexer cannot take answers only once the parser asks for
+that token: a parse failure at an earlier real token keeps its own class, and an event counts only if
+the token after its production was lexed ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-token-demand);
+k22-static-s6-2026-10-24, `z10`). -/
 def parseDefectClass? (model : FlatModel) (group : GroupPath) (language : Language) (text : String)
     (bindingGroup : GroupPath := group) : Option String :=
-  match lex language text with
-  | .error error => some error.errorClass.code
-  | .ok lexemes =>
-      match parseLexemesRecording lexemes with
-      | (.ok _, _) => none
-      | (.error error, completed) =>
-          let eventClass : ParseEvent → Option KernelStaticDiagnostic
-            | .reference path => referenceResolutionClass? model group path
-            | .read reference => referenceReadClass? model group bindingGroup reference
-            | .openPath path => openPathClass? model group path
-            | .closedCall call => operationCallClass? model group call bindingGroup
-          match completed.toList.findSome? eventClass with
-          | some diagnostic => some diagnostic.kernelCode
-          | none => some error.errorClass.code
+  let (lexemes, lexError?) := lexPrefix language text
+  let (result, recorded) := parseLexemesRecording lexemes
+  let eventClass : ParseEvent → Option KernelStaticDiagnostic
+    | .reference path => referenceResolutionClass? model group path
+    | .read reference => referenceReadClass? model group bindingGroup reference
+    | .valueRead reference => valueReadClass? model group bindingGroup reference
+    | .openPath path => openPathClass? model group path
+    | .closedCall call => operationCallClass? model group call bindingGroup
+  let counted := recorded.toList.filter fun entry => lexError?.isNone || entry.lookahead < lexemes.size
+  let firstEvent := (counted.findSome? (eventClass ·.event)).map (·.kernelCode)
+  match result, lexError? with
+  | .ok _, none => none
+  | .error error, none => firstEvent.orElse fun _ => some error.errorClass.code
+  | .error error, some lexError =>
+      if error.atEnd then firstEvent.orElse fun _ => some lexError.errorClass.code
+      else firstEvent.orElse fun _ => some error.errorClass.code
+  | .ok _, some lexError => firstEvent.orElse fun _ => some lexError.errorClass.code
 
 end A12Kernel.Dm
