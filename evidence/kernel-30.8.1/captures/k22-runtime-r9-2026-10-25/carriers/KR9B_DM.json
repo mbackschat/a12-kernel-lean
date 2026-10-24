@@ -1,0 +1,277 @@
+{
+ "header": {
+  "id": "KR9B_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "KR9B_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Group",
+           "name": "Items",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "name": "D",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              },
+              "id": "/Form/Rows/Items/D"
+             }
+            ]
+           },
+           "id": "/Form/Rows/Items"
+          },
+          {
+           "type": "Field",
+           "name": "Id",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           },
+           "id": "/Form/Rows/Id"
+          },
+          {
+           "type": "Field",
+           "name": "D",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           },
+           "id": "/Form/Rows/D"
+          },
+          {
+           "type": "Field",
+           "name": "T",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           },
+           "id": "/Form/Rows/T"
+          },
+          {
+           "type": "Field",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": true,
+              "maxLength": 2
+             }
+            }
+           },
+           "id": "/Form/Rows/N"
+          },
+          {
+           "type": "Field",
+           "name": "S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {
+              "errorMessage": [
+               {
+                "locale": "en_US",
+                "text": "probe"
+               }
+              ],
+              "maxLength": 2,
+              "pattern": "[0-9]+"
+             }
+            }
+           },
+           "id": "/Form/Rows/S"
+          },
+          {
+           "type": "Field",
+           "name": "B",
+           "id": "/Form/Rows/B",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Id"
+        },
+        "id": "/Form/Rows"
+       },
+       {
+        "type": "Field",
+        "name": "Ref",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        },
+        "id": "/Form/Ref"
+       },
+       {
+        "type": "Field",
+        "name": "Key",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        },
+        "id": "/Form/Key"
+       },
+       {
+        "type": "Field",
+        "name": "Bad",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {
+           "errorMessage": [
+            {
+             "locale": "en_US",
+             "text": "probe"
+            }
+           ],
+           "maxLength": 2,
+           "pattern": "[0-9]+"
+          }
+         }
+        },
+        "id": "/Form/Bad"
+       },
+       {
+        "type": "Field",
+        "name": "Amount",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/Amount"
+       },
+       {
+        "type": "Field",
+        "name": "Low",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        },
+        "id": "/Form/Low"
+       },
+       {
+        "type": "Rule",
+        "name": "GC5",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "GC5",
+         "errorCondition": "FieldFilled(Ref) And (AddDays(Low, NumberOfFilledFields(Rows*/N)) != \"01.01.1900\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/GC5"
+       },
+       {
+        "type": "Rule",
+        "name": "GT6",
+        "id": "/Form/GT6",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "GT6",
+         "errorCondition": "FieldFilled(Ref) And (AddDays(Low, NumberOfDifferentValues(Rows*/D)) != \"01.01.1900\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "name": "GB7",
+        "id": "/Form/GB7",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "GB7",
+         "errorCondition": "FieldFilled(Ref) And (AddDays(Low, NumberOfValueInFields(True In Rows*/B)) != \"01.01.1900\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       }
+      ]
+     },
+     "id": "/Form"
+    }
+   ]
+  }
+ }
+}

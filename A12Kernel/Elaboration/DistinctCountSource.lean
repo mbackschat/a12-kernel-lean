@@ -31,7 +31,7 @@ def elaborateDistinctCountSource (model : FlatModel) (declaringGroup : GroupPath
       | .ok checked => pure (.token checked)
       | .error _ =>
           match (elaborateTemporalDistinctCountSource model declaringGroup source
-              (fixedTargetGroup? := fixedTargetGroup?)
+              (fixedTargetGroup? := fixedTargetGroup?) (bindingGroup? := bindingGroup?)
               (writtenGroup := bindingGroup?.getD declaringGroup)).toOption.bind
               fun temporal => (checkTemporalDistinctCountRun temporal).toOption with
           | some run => pure (.temporal run)

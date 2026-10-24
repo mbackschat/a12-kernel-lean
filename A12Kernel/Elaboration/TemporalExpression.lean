@@ -384,19 +384,22 @@ def elaborateScalarTemporalComparison (model : FlatModel) (rowGroup : GroupPath)
   pure { left, right, operator, comparisonZone?, modelWellFormed := left.modelWellFormed }
 
 
-/-- Whether a partial call evaluates an aggregate or filled-field-count shift amount such as
+/-- Whether a partial call evaluates an aggregate, count or group-count shift amount such as
 `Sum(Rows*/N)`: each walked extent member passes the all-rows aggregate gate, and each direct slot is
 relevant at the bound row. Wildcard relevance of the column or its group passes; one concrete row, or
 concrete group rows beside the wildcard, does not, alike for `Sum`, `MaxValue`, `MinValue`,
 `NumberOfDifferentValues` and `NumberOfFilledFields` (k22-runtime-r7-2026-10-24, `rC`, `KS3`,
-`KX5`–`KX8`). `none` for any other amount: no other expanded amount is measured under partial
-validation, so each keeps its structural refusal. -/
+`KX5`–`KX8`), and for Number, String and Boolean value counts, String and Date distinct counts and
+`NumberOfFilledGroups` (k22-runtime-r9-2026-10-25). A group count's members are every field the group
+declares, so only the group's own wildcard covers it, not one member column's. `none` for any other
+amount: no other expanded amount is measured under partial validation, so each keeps its structural
+refusal. -/
 private def partialAggregateAmountCovered (context : ScalarComputationContext)
     (partialRead : TemporalPartialReadContext model)
     (atom : HavingNumericAtomOf (ScalarTemporalExpression model)) :
     Except ScalarTemporalEvaluationFault (Option Bool) := do
   match atom with
-  | .aggregate _ _ | .collectionCount (.filledFields _ _) => pure ()
+  | .aggregate _ _ | .collectionCount _ | .groupCount _ => pure ()
   | _ => return none
   let scope := partialRead.effectiveScope
   let memberCovered (bound : Nat) (field : FieldId) : Bool :=

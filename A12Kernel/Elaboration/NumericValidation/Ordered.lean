@@ -128,7 +128,7 @@ def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .firstFilled source => source.directResolvedFields?.isNone || source.bindingScopes.any (!·.isEmpty)
   | .valueCount _ source => source.directResolvedFields?.isNone || source.bindingScopes.any (!·.isEmpty)
   | .tokenValueCount source => source.source.directFields?.isNone || source.source.bindingScopes.any (!·.isEmpty)
-  | .booleanValueCount source => source.directFields?.isNone
+  | .booleanValueCount source => source.directFields?.isNone || source.bindingScopes.any (!·.isEmpty)
   | .aggregate _ _ | .sumOfProducts _ => true
   | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
   | .temporalDistinctCount _ => true
@@ -168,7 +168,7 @@ def admitted (atom : OrderedNumericValidationAtom model)
           match source.directFields? with
           | some fields => fields.all fun field => field.groupPath == rowGroup
           | none => false
-      | .sameGroupAddressed => source.directFields?.isNone
+      | .sameGroupAddressed => true
       | .modelWideNonrepeatable => source.directFields?.isSome
       | .modelWideCheckedComputation => true
   -- A direct list of fixed fields keeps its scalar owner. One naming a row field is admitted here and

@@ -1,0 +1,571 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "KR10S_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-25T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "rows123-1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "L01",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/N2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L02",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/D2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L03",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L04",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L05",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L06",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/T1",
+        "Form/Rows/T2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L07",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/B1",
+        "Form/Rows/B2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L08",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L09",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/D2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "L01",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/N2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L02",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/D2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L03",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L04",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L05",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L06",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/T1",
+        "Form/Rows/T2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L07",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/B1",
+        "Form/Rows/B2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L08",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L09",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/D2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "rows123-2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "L05",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L10",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/D2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L11",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/N2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L12",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/N2"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "L05",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L10",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/D2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L11",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/N2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "L12",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/N2"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "rows123-3",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "L04",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ],
+       "fillToFix": [
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ]
+      },
+      {
+       "code": "L08",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ],
+       "fillToFix": [
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ]
+      },
+      {
+       "code": "L09",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/D2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": [
+        "Form/Rows/D1",
+        "Form/Rows/D2"
+       ]
+      },
+      {
+       "code": "L10",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/D2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": [
+        "Form/Rows/D1",
+        "Form/Rows/D2"
+       ]
+      },
+      {
+       "code": "L11",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/N2"
+       ],
+       "fillToFix": [
+        "Form/Rows/N1",
+        "Form/Rows/N2"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "L04",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ],
+       "fillToFix": [
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ]
+      },
+      {
+       "code": "L08",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ],
+       "fillToFix": [
+        "Form/Rows/S1",
+        "Form/Rows/S2"
+       ]
+      },
+      {
+       "code": "L09",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/D2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": [
+        "Form/Rows/D1",
+        "Form/Rows/D2"
+       ]
+      },
+      {
+       "code": "L10",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/D1",
+        "Form/Rows/D2",
+        "Form/Rows/E"
+       ],
+       "fillToFix": [
+        "Form/Rows/D1",
+        "Form/Rows/D2"
+       ]
+      },
+      {
+       "code": "L11",
+       "field": "Form/Rows/E",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/E",
+        "Form/Rows/N1",
+        "Form/Rows/N2"
+       ],
+       "fillToFix": [
+        "Form/Rows/N1",
+        "Form/Rows/N2"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

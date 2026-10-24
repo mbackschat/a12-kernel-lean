@@ -5,7 +5,7 @@
 <a id="gap-sg4"></a>
 ### SG4 — computation scheduling and state transition
 
-- `state`: residual; the `evidence-needed` and `diagnostics` bullets below are K22 work. Former C exclusions D14/D20/D24 do not close them.
+- `state`: residual; the calibration and boundary bullets below, which no K task selects. Former C exclusions D14/D20/D24 do not close them.
 - `baseline`: [Checked guards](../implementation/computations.md#cap-computation-conditions), [whole-model plans](../implementation/computations.md#cap-scalar-execution-plans), [mixed plans](../implementation/computations.md#cap-mixed-computation-plan) and [non-Number alternatives](../implementation/repeatable-computations.md#cap-non-number-alternatives) own execution and reader coverage.
 - `calibration`: aggregate/temporal parallel guard and cross-declaration topology correspondence beyond [C14's matrix](../sources/computation-scheduling-probes.md#src-parallel-numeric-operations); the implemented source-grounded compositions have internal separators, not new captures.
 - `calibration`: additional computed-star-source compositions, Now-sourced mixed shifts, and additional carrier-specific producer chains beyond the checked mixed key/payload/guard/dependent composition.

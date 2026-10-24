@@ -373,11 +373,16 @@ def firstPartialTemporalOperand? :
     ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-temporal-group-operand-follows-its-own-operator)). -/
 def elaborateTemporalDistinctCountSource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceFieldEntitySource)
-    (writtenGroup : GroupPath := declaringGroup) (fixedTargetGroup? : Option GroupPath := none) :
+    (writtenGroup : GroupPath := declaringGroup) (fixedTargetGroup? : Option GroupPath := none)
+    (bindingGroup? : Option GroupPath := none) :
     Except TemporalDistinctCountElabError
       (CheckedTemporalDistinctCountSource model) := do
-  let shape ← elaborateFieldEntityShape model declaringGroup authored (writtenGroup := writtenGroup)
-    (fixedTargetGroup? := fixedTargetGroup?)
+  -- A direct list in a rule bound to a repeatable row reads that row, as the String carrier's does
+  -- (k22-runtime-r10-2026-10-25, `L06`, `L10`).
+  let shape ← elaborateFieldEntityShapeIn model declaringGroup
+      (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored (writtenGroup := writtenGroup)
+      (fixedTargetGroup? := fixedTargetGroup?)
+      (groupReadScope := if bindingGroup?.isSome && fixedTargetGroup?.isNone then .ruleBound else .scalar)
     |>.mapError fun error => .slot (.shape error)
   match firstKindGateRefusal? shape.operands with
   | some refusal => throw (.slot refusal)
