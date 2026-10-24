@@ -1,0 +1,901 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "KR8_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-24T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "badClock",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/Clock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Clock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "gD",
+       "field": "Form/T2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/T1",
+        "Form/T2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "gG",
+       "field": "Form/T1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gL",
+       "field": "Form/T3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gR",
+       "field": "Form/T4",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/T1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T4",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T5",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T6",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T7",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T1",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T1"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T3",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T3"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T7",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T7"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/Clock",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/Clock"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/Clock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Clock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "gD",
+       "field": "Form/T2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/T1",
+        "Form/T2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "gG",
+       "field": "Form/T1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gL",
+       "field": "Form/T3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gR",
+       "field": "Form/T4",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/T1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T4",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T5",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T6",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T7",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T1",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T1"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T3",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T3"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T7",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T7"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/Clock",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/Clock"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "goodClock",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "gD",
+       "field": "Form/T2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/T1",
+        "Form/T2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "gG",
+       "field": "Form/T1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gL",
+       "field": "Form/T3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gR",
+       "field": "Form/T4",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/T1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T4",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T5",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T6",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T7",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T1",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T1"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T3",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T3"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T4",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T4"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T5",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T5"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T6",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T6"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T7",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T7"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "gD",
+       "field": "Form/T2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/T1",
+        "Form/T2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "gG",
+       "field": "Form/T1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gL",
+       "field": "Form/T3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gR",
+       "field": "Form/T4",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/T1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T4",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T5",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T6",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T7",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T1",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T1"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T3",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T3"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T4",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T4"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T5",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T5"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T6",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T6"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T7",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T7"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "badClockZeroA",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/Clock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Clock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "gD",
+       "field": "Form/T2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/T1",
+        "Form/T2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "gG",
+       "field": "Form/T1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gL",
+       "field": "Form/T3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gR",
+       "field": "Form/T4",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/T1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T4",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T5",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T6",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T7",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T1",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T1"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T3",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T3"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T7",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T7"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/Clock",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/Clock"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/Clock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Clock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "gD",
+       "field": "Form/T2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/T1",
+        "Form/T2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "gG",
+       "field": "Form/T1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gL",
+       "field": "Form/T3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "gR",
+       "field": "Form/T4",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/T1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T4",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T5",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T6",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/T7",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T1",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T1"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T3",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T3"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "berechnungsWertFehler",
+        "field": "Form/T7",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/T7"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/Clock",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/Clock"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

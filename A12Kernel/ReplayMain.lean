@@ -209,9 +209,10 @@ sharing a refused computation's target or reading one, directly or through other
 therefore not attributable to it, agreeing or not), `tier2` (Lean cannot represent the
 rule, the computation, the model or the document), `fault` (Lean admitted the rule or plan but
 failed running it), or `absent` (no comparable Kernel observation: none retained, an unreadable
-artifact or model file, or engines that disagree). A request with no artifact replays its computations
-against a retained outcome table beside it, when one names the row; such a row's rules are `absent`,
-since the table keeps no complete message list. A row whose document or model cannot be read
+artifact or model file, or engines that disagree). A request with no artifact reads its full and
+partial messages from a retained `code-field-type` table beside it, when one exists, and replays its
+computations against a retained outcome table beside it, when one names the row; a row only an
+outcome table names has `absent` rules, since that table keeps no complete message list. A row whose document or model cannot be read
 prints one line with the rule column `-`. The Kernel's first engine is the reference.
 
 A rule or computation reading `Today` or `Now` is refused when the request pins no clock, since the
@@ -281,6 +282,28 @@ private def tableOutcomes (requestPath : System.FilePath) :
       if let some text := text? then outcomes := outcomes ++ [(row, { pointer, outcome := text })]
   pure (rows, outcomes)
 
+/-- The full and partial messages a capture retained as a table rather than an artifact, as artifact
+rows: every `.tsv` beside the request headed `# row observation code-field-type`, whose `validateFull`
+and `validatePart` lines list each message's code, field and type. Such a row is marked `tabled`,
+since the table keeps no reference channels. -/
+private def tableMessageRows (requestPath : System.FilePath) : IO (Array Json) := do
+  let mut rows : Array (String × Array Json × Array Json) := #[]
+  for entry in ← (requestPath.parent.getD ".").readDir do
+    if entry.path.extension != some "tsv" then continue
+    let lines := ((← IO.FS.readFile entry.path).splitOn "\n").filter (· != "")
+    if lines.head? != some "# row\tobservation\tcode-field-type" then continue
+    for line in lines.drop 1 do
+      let [row, observation, list] := line.splitOn "\t" | continue
+      let messages := ((Json.parse list).toOption.bind (·.getArr?.toOption)).getD #[]
+      let (full, part) := (rows.find? (·.1 == row)).map (·.2) |>.getD (#[], #[])
+      let updated := match observation with
+        | "validateFull" => (full ++ messages, part)
+        | "validatePart" => (full, part ++ messages)
+        | _ => (full, part)
+      rows := (rows.filter (·.1 != row)).push (row, updated)
+  pure (rows.map fun (row, full, part) => Json.mkObj [("name", Json.str row), ("tabled", true),
+    ("engines", Json.arr #[Json.mkObj [("messages", Json.arr full), ("partialMessages", Json.arr part)]])])
+
 /-- The first engine's messages on one channel, `messages` for full validation or `partialMessages`
 for the row's partial call. -/
 private def kernelMessages (row : Json) (channel : String := "messages") :
@@ -339,9 +362,10 @@ private def kernelOperandMessages (row : Json) : Option (List ComputedMessage) :
   let engines ← (row.getObjValAs? (Array Json) "engines").toOption
   let computations ← (engines[0]?.getD Json.null).getObjVal? "computations" |>.toOption
   let messages ← (computations.getObjValAs? (Array Json) "formalErrorsInOperands").toOption
-  pure ((messages.toList.filterMap fun message => do
-    pure { pointer := ← (message.getObjValAs? String "field").toOption
-           code := ← (message.getObjValAs? String "code").toOption : ComputedMessage }).mergeSort
+  -- A message missing either key stays in the oracle as `?`, so it diverges rather than vanishing.
+  pure ((messages.toList.map fun message =>
+    ({ pointer := (message.getObjValAs? String "field").toOption.getD "?"
+       code := (message.getObjValAs? String "code").toOption.getD "?" } : ComputedMessage)).mergeSort
     (compare · · != .gt))
 
 /-- A pointer without its row indices, the target path it addresses. -/
@@ -526,7 +550,9 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
       try pure (some (← readJson artifactFile)) catch error => do
         line "-" "-" "-" "absent" s!"Artifact\tunreadable: {error}"; return
     else pure none
-  let artifactRows := (artifact.bind fun json => (json.getObjValAs? (Array Json) "rows").toOption).getD #[]
+  let artifactRows ← match artifact with
+    | some json => pure ((json.getObjValAs? (Array Json) "rows").toOption.getD #[])
+    | none => tableMessageRows requestPath
   let (tabledRows, tabled) ← if artifact.isNone then tableOutcomes requestPath else pure ([], [])
   let prepared ← match prepareFlatStringContext world builtinStringPatternCompiler model.flat with
     | .ok prepared => pure prepared
@@ -572,8 +598,10 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
                 line name ruleName verdict.rule.errorCode "tier2" "Clock\tthe request pins no clock"
               else
                 line name ruleName verdict.rule.errorCode verdict.status.tier verdict.status.detail
-                -- The reference channels report under the code `references`, an arm of their own.
-                if let some status := verdict.references then
+                -- The reference channels report under the code `references`, an arm of their own;
+                -- a tabled row retains none.
+                if let some status := verdict.references.filter fun _ =>
+                    (observedRow.bind (·.getObjValAs? Bool "tabled" |>.toOption)) != some true then
                   line name ruleName "references" status.tier status.detail
             -- The partial channel reports under the code `partial`, as the reference channels do.
             if (row.getObjVal? "relevant").toOption.isSome then

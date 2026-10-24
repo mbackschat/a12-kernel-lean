@@ -1,0 +1,308 @@
+{
+ "header": {
+  "id": "KR8_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "KR8_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "name": "Clock",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        },
+        "id": "/Form/Clock"
+       },
+       {
+        "type": "Field",
+        "name": "S",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        },
+        "id": "/Form/S"
+       },
+       {
+        "type": "Field",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/A"
+       },
+       {
+        "type": "Field",
+        "name": "T1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/T1"
+       },
+       {
+        "type": "Field",
+        "name": "T2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/T2"
+       },
+       {
+        "type": "Field",
+        "name": "T3",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/T3"
+       },
+       {
+        "type": "Field",
+        "name": "T4",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/T4"
+       },
+       {
+        "type": "Field",
+        "name": "T5",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/T5"
+       },
+       {
+        "type": "Field",
+        "name": "T6",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/T6"
+       },
+       {
+        "type": "Field",
+        "name": "T7",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/T7"
+       },
+       {
+        "type": "Computation",
+        "name": "gG",
+        "Computation": {
+         "computedFieldRelPath": "../T1",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")) > 0"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        },
+        "id": "/Form/gG"
+       },
+       {
+        "type": "Computation",
+        "name": "gD",
+        "Computation": {
+         "computedFieldRelPath": "../T2",
+         "computationAlternatives": [
+          {
+           "operation": "[T1] + 1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        },
+        "id": "/Form/gD"
+       },
+       {
+        "type": "Computation",
+        "name": "gL",
+        "Computation": {
+         "computedFieldRelPath": "../T3",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\")) > HoursFromTime(/Form/Clock)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        },
+        "id": "/Form/gL"
+       },
+       {
+        "type": "Computation",
+        "name": "gR",
+        "Computation": {
+         "computedFieldRelPath": "../T4",
+         "computationAlternatives": [
+          {
+           "operation": "1",
+           "precondition": "HoursFromTime(/Form/Clock) > HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        },
+        "id": "/Form/gR"
+       },
+       {
+        "type": "Computation",
+        "name": "dL",
+        "Computation": {
+         "computedFieldRelPath": "../T5",
+         "computationAlternatives": [
+          {
+           "operation": "RoundAccounting([A]/0, 0) + HoursFromTime(/Form/Clock)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        },
+        "id": "/Form/dL"
+       },
+       {
+        "type": "Computation",
+        "name": "dR",
+        "Computation": {
+         "computedFieldRelPath": "../T6",
+         "computationAlternatives": [
+          {
+           "operation": "HoursFromTime(/Form/Clock) + RoundAccounting([A]/0, 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        },
+        "id": "/Form/dR"
+       },
+       {
+        "type": "Computation",
+        "name": "dA",
+        "Computation": {
+         "computedFieldRelPath": "../T7",
+         "computationAlternatives": [
+          {
+           "operation": "RoundAccounting([A]/0, 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        },
+        "id": "/Form/dA"
+       }
+      ]
+     },
+     "id": "/Form"
+    }
+   ]
+  }
+ }
+}

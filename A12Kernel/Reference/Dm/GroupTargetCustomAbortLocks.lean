@@ -3,9 +3,9 @@ import A12Kernel.Reference.Dm.Document
 
 /-! # A reached custom condition on a group target, through the reader
 
-A rule reporting on a group hands its custom condition no field, so the call fails before the name is
-looked up and the whole-rule handler reports one VALUE message at the group's first address, whatever
-the name answers or whether it is registered. A field target is called as usual. Kernel oracle: the
+A rule reporting on a group fails at a reached custom condition without invoking a callback, and the
+whole-rule handler reports one VALUE message at the group's first address, whatever the name answers
+or whether it is registered. A field target is called as usual. Kernel oracle: the
 [group-target abort capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-k22-group-target-custom-abort)
 (`c1`, `c3`–`c5`, `c7`, `c9`), which the population replay compares on every row.
 -/

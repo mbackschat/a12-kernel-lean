@@ -1,0 +1,62 @@
+{
+ "model": "KR8_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "badClock",
+   "documentInline": {
+    "Form": {
+     "Clock": "bad",
+     "S": "x",
+     "A": "1",
+     "T1": "9",
+     "T2": "9",
+     "T3": "9",
+     "T4": "9",
+     "T5": "9",
+     "T6": "9",
+     "T7": "9"
+    }
+   }
+  },
+  {
+   "name": "goodClock",
+   "documentInline": {
+    "Form": {
+     "Clock": "10:00:00",
+     "S": "x",
+     "A": "1",
+     "T1": "9",
+     "T2": "9",
+     "T3": "9",
+     "T4": "9",
+     "T5": "9",
+     "T6": "9",
+     "T7": "9"
+    }
+   }
+  },
+  {
+   "name": "badClockZeroA",
+   "documentInline": {
+    "Form": {
+     "Clock": "bad",
+     "S": "x",
+     "A": "",
+     "T1": "9",
+     "T2": "9",
+     "T3": "9",
+     "T4": "9",
+     "T5": "9",
+     "T6": "9",
+     "T7": "9"
+    }
+   }
+  }
+ ]
+}

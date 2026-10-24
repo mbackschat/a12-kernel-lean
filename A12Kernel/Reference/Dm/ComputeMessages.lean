@@ -86,29 +86,28 @@ value-less target error. -/
 private def targetReport : MixedComputationOutcome → CellAddr × Bool × Bool
   | .number entry => (entry.targetField, entry.outcome.hasComputedInstance, entry.outcome.emitsValuelessTargetError)
   | .string target outcome =>
-      let produced := match outcome with | .accepted _ | .errored _ _ => true | _ => false
-      ({ field := target, path := [] }, produced, outcome == .invalidNoValue)
+      ({ field := target, path := [] }, outcome.hasComputedInstance, outcome == .invalidNoValue)
   | .document address outcome =>
       (address, outcome.storedText?.isSome || (documentAttempt? outcome).isSome,
         (outcome.formalValueMessage? (MessagePointer.ofCellAddr address)).isSome)
 
-/-- The residual formal-error channel of one checked call, sorted, since order is not compared. -/
+/-- The residual formal-error channel of one checked call, sorted, since order is not compared. A plan
+whose input selection does not bind has no channel, though its run already required that binding. -/
 def computationMessages (model : FlatModel) (patterns : PreparedFlatStringPatterns model compilePattern)
     (checked : CheckedDocument model) (plan : CheckedMixedComputationPlan model compilePattern)
-    (result : MixedComputationCheckedResult) : List ComputedMessage :=
+    (result : MixedComputationCheckedResult) : Option (List ComputedMessage) := do
+  let inputPlan ← plan.formalInputPlan.toOption
   let pointer (address : CellAddr) := renderPointer model (MessagePointer.ofCellAddr address)
   let targets := result.outcomes.map targetReport
-  let structural := match plan.formalInputPlan with
-    | .ok inputPlan => (inputPlan.structuralFindings checked).filterMap fun finding =>
-        (structuralPointer model finding.node).map fun at_ =>
-          { pointer := renderPointer model at_, code := overRepetitionCode finding.code }
-    | .error _ => []
+  let structural := (inputPlan.structuralFindings checked).filterMap fun finding =>
+    (structuralPointer model finding.node).map fun at_ =>
+      { pointer := renderPointer model at_, code := overRepetitionCode finding.code }
   let valueless := targets.filterMap fun (address, _, valueless) =>
     if valueless then some { pointer := pointer address, code := berechnungsWertFehler } else none
   let instances := targets.filterMap fun (address, produced, _) => if produced then some (pointer address) else none
   let messages := result.formalErrorsInOperands.filterMap (findingMessage model patterns checked) ++
     structural ++ valueless
-  (messages.filter (!instances.contains ·.pointer)).mergeSort (compare · · != .gt)
+  pure ((messages.filter (!instances.contains ·.pointer)).mergeSort (compare · · != .gt))
 
 /-- Run the complete model and return its outcomes beside its formal-error channel. -/
 def runModelComputationsWithMessages (model : DmModel) (language : Language) (world : World)
@@ -117,6 +116,8 @@ def runModelComputationsWithMessages (model : DmModel) (language : Language) (wo
   let lowered ← lowerModelComputations model language
   if lowered.isEmpty then return ([], [])
   let (plan, result) ← runCheckedComputations world prepared checked lowered
-  pure (projectOutcomes checked result, computationMessages model.flat prepared.patterns checked plan result)
+  let some messages := computationMessages model.flat prepared.patterns checked plan result
+    | throw { construct := "ComputationRun", detail := "the plan's formal-input selection does not bind" }
+  pure (projectOutcomes checked result, messages)
 
 end A12Kernel.Dm

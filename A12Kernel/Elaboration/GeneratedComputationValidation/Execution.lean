@@ -69,7 +69,10 @@ inductive GeneratedNumericComputationRunResultError where
 namespace AdmittedGeneratedNumericOperationTable
 
 /-- A selected operation cannot fall through after its result is observed. Scalar and addressed
-entry points share this projection while supplying their exact source reader to selection. -/
+entry points share this projection while supplying their exact source reader to selection. A reached
+value failure, in the guard or in the selected operation, surfaces as `.operation` with its cause, so a
+consumer tells it from a structural fault by `NumericComputationFault.isReachedValueFailure` or the
+guard's value-failure cause. -/
 def evaluateSelection
     (_admission : AdmittedGeneratedNumericOperationTable model computation)
     (selection : Except CheckedComputationConditionError

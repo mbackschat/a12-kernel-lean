@@ -517,9 +517,11 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
       | .ok rows, _ => rows
       | .error _, .ok (.obj rows) => rows.foldl (init := #[]) fun batch (id : String) (row : Json) => batch.push (Json.mkObj
           [("id", Json.str id), ("valid", row.getObjValD "admitted"), ("codes", row.getObjValD "codes")])
-      -- A structured `apply` packet retains one row per case.
-      | .error _, _ => (retained.getArr?.toOption.getD #[]).map fun (row : Json) => Json.mkObj
-          [("id", row.getObjValD "case"), ("valid", row.getObjValD "admitted"), ("codes", row.getObjValD "codes")]
+      -- A self-contained list keeps each row's own `id` and `valid`; a structured `apply` packet
+      -- retains one row per case.
+      | .error _, _ => (retained.getArr?.toOption.getD #[]).map fun (row : Json) =>
+          if (row.getObjVal? "id").isOk then row else Json.mkObj
+            [("id", row.getObjValD "case"), ("valid", row.getObjValD "admitted"), ("codes", row.getObjValD "codes")]
     let requestRows := match (← readJson (root / requests)) with
       | .arr rows => rows
       | json => (json.getObjValAs? (Array Json) "observations").toOption.getD #[]
@@ -559,9 +561,10 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
         | _, _ => pure none
       let some (declaration, entries) := declaration | continue
       let id := ((request.getObjValAs? String "id").toOption <|> (request.getObjValAs? String "case").toOption).getD ""
-      let some observation := batch.find? (fun row => (row.getObjValAs? String "id").toOption == some id)
-        | continue
       let key := s!"{(observations.drop "captures/".length)}#{id}"
+      -- A declared row without its observation is a pairing defect, never a silent pass.
+      let some observation := batch.find? (fun row => (row.getObjValAs? String "id").toOption == some id)
+        | failures := failures.push s!"{key}: no retained observation"
       let outcome := match declaration with
         | .inl rule => compare dm locales rule entries observation false
         | .inr computation => compareComputation dm locales computation entries observation
