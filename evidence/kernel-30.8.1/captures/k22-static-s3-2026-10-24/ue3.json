@@ -1,0 +1,16 @@
+{
+ "computedField": "/Shop/Due",
+ "alternatives": [
+  {
+   "precondition": "FieldFilled(Title)",
+   "operation": "AddDays(Due, "
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

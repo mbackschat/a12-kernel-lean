@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Items/IQty",
+ "alternatives": [
+  {
+   "operation": "[Amount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop/Items"
+}

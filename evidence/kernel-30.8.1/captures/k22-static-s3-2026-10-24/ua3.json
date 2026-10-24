@@ -1,0 +1,16 @@
+{
+ "computedField": "/Shop/Rows/RQty",
+ "alternatives": [
+  {
+   "precondition": "[RQty] > 0",
+   "operation": "[RCost]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop/Rows"
+}

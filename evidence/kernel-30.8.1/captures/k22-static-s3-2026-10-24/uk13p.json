@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Rows/Sub/SubN",
+ "alternatives": [
+  {
+   "operation": "CurrentRepetition(/Shop/Rows) + CurrentRepetition(/Shop/Rows/Sub)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop/Rows/Sub"
+}

@@ -1,0 +1,16 @@
+{
+ "computedField": "/Shop/Due",
+ "alternatives": [
+  {
+   "precondition": "[Amount] > \"x\"",
+   "operation": "[Title]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

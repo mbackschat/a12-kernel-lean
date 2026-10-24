@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Rows/RQty",
+ "alternatives": [
+  {
+   "operation": "CurrentRepetition(Rows)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop/Rows"
+}

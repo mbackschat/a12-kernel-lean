@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Rows/RQty",
+ "alternatives": [
+  {
+   "operation": "Sum(Rows*/RQty)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop/Rows"
+}

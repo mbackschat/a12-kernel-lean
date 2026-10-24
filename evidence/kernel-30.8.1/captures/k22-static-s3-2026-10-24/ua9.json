@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Rows/RStamp",
+ "alternatives": [
+  {
+   "operation": "AddHours(RStamp, 1)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop/Rows"
+}

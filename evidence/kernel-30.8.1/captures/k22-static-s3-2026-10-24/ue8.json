@@ -1,0 +1,20 @@
+{
+ "computedField": "/Shop/Kind",
+ "alternatives": [
+  {
+   "precondition": "[NoSuchA] > 0",
+   "operation": "[Amount]"
+  },
+  {
+   "precondition": "[NoSuchB] > 0",
+   "operation": "[Title]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

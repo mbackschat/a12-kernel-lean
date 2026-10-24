@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Rows/Sub/SubN",
+ "alternatives": [
+  {
+   "operation": "[SubN] + 1"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop/Rows/Sub"
+}

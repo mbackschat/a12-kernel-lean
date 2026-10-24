@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Rows/RLabel",
+ "alternatives": [
+  {
+   "operation": "[RLabel] + \"x\""
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop/Rows"
+}

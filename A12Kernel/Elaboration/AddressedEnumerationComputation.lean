@@ -26,6 +26,10 @@ def targetDiagnostic? :
   | .ordinary cause => cause.targetDiagnostic?
   | _ => none
 
+def calculationRefusal? : AddressedEnumerationComputationElabError → Option CalculationRefusal
+  | .ordinary cause => cause.calculationRefusal?
+  | _ => none
+
 end AddressedEnumerationComputationElabError
 
 /-- One repeatable stored-Enumeration target tied to its validated model. -/
@@ -199,8 +203,16 @@ private def checkAddressedEnumerationSource
               pure (.field declaringGroup reference declaration operand source checked
                 projection hResolved hKind hEnumeration hChecked hProjection hScope)
         | actual, _ =>
-            throw (.ordinary (.source
-              (.textFieldOperandKindMismatch declaration.path actual.surfaceKind)))
+            -- The generated comparison admitting a plain String leaves the calculation's own
+            -- refusal, as on a fixed target (row `ud5` of the
+            -- [row-target batch](../../evidence/kernel-30.8.1/captures/k22-static-s3-2026-10-24/)).
+            match target.declaration.copyComparisonRefusal? declaration,
+                declaration.toTextFieldComparison? with
+            | none, some (_, .plainString) =>
+                throw (.ordinary (.stringSource declaration.path target.declaration.path))
+            | _, _ =>
+                throw (.ordinary (.source
+                  (.textFieldOperandKindMismatch declaration.path actual.surfaceKind)))
       else
         throw (.scopeMismatch target.declaration.path declaration.path)
 
@@ -238,9 +250,15 @@ def checkAddressedEnumerationComputation
     match source with
     | .literal token =>
         throw (.ordinary (.literalOutsideTarget target.declaration.path token))
-    | .field _ _ declaration _ _ _ _ _ _ _ _ _ _ =>
-        throw (.ordinary
-          (.sourceIncompatible declaration.path target.declaration.path))
+    -- A stored read whose display the generated comparison admits misses on the domain, the
+    -- calculation's own refusal (rows `ud6` and `ud7`); a display miss and a category read into a
+    -- repeatable target are unmeasured.
+    | .field _ _ declaration operand _ _ _ _ _ _ _ _ _ =>
+        match operand.projectionRef, target.declaration.copyComparisonRefusal? declaration with
+        | .stored, none => throw (.ordinary
+            (.sourceOutsideTargetDomain declaration.path target.declaration.path))
+        | _, _ => throw (.ordinary
+            (.sourceIncompatible declaration.path target.declaration.path))
 
 inductive AddressedEnumerationComputationFault where
   | targetRows (cause : ActualRowEnvironmentError)

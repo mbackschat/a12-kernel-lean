@@ -1,0 +1,16 @@
+{
+ "computedField": "/Shop/Total",
+ "alternatives": [
+  {
+   "precondition": "FieldFilled(Box/BoxNum)",
+   "operation": "[Box/BoxNum]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

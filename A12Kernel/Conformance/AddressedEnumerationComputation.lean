@@ -49,10 +49,14 @@ private def displayed := enumerationField 8 "Displayed" ["Form", "Rows"] [10]
   displayedEnumeration
 private def deepSource := enumerationField 9 "DeepSource"
   ["Form", "Rows", "Details"] [10, 20]
+private def label : FlatFieldDecl := {
+  id := 11, name := "Label", groupPath := ["Form", "Rows"], repeatableScope := [10]
+  policy := { kind := .string }
+}
 
 private def model : FlatModel := {
   fields := [target, source, projected, incompatible, rootSource, rootTarget, other,
-    displayed, deepSource]
+    displayed, deepSource, label]
   repeatableGroups := [{
     level := 10, path := ["Form", "Rows"], repeatability := some 4
   }, {
@@ -197,7 +201,7 @@ example :
         some (.ordinary (.literalOutsideTarget target.path "C")) ∧
       errorOf target.id ["Form", "Rows"]
         (.field (.direct (bare "Incompatible"))) =
-          some (.ordinary (.sourceIncompatible incompatible.path target.path)) ∧
+          some (.ordinary (.sourceOutsideTargetDomain incompatible.path target.path)) ∧
       errorOf target.id ["Form", "Rows"]
         (.field (.direct (bare "Displayed"))) =
           some (.ordinary (.sourceIncompatible displayed.path target.path)) ∧
@@ -215,6 +219,19 @@ example :
         some .errorReferenceToCalculatedField ∧
       targetDiagnosticOf (.field (.category (bare "Target") "Choice")) =
         some .errorSemanticIndexOrCategoryForErrorField := by
+  native_decide
+
+/- A plain String and a display-compatible token outside the target's domain are the calculation's own
+refusal on a repeatable target, as on a fixed one; a display miss keeps no class. -/
+example :
+    errorOf target.id ["Form", "Rows"] (.field (.direct (bare "Label"))) =
+        some (.ordinary (.stringSource label.path target.path)) ∧
+      ((errorOf target.id ["Form", "Rows"] (.field (.direct (bare "Label")))).bind
+        (·.calculationRefusal?)) = some .invalidEnumCalculation ∧
+      ((errorOf target.id ["Form", "Rows"] (.field (.direct (bare "Incompatible")))).bind
+        (·.calculationRefusal?)) = some .invalidEnumCalculation ∧
+      ((errorOf target.id ["Form", "Rows"] (.field (.direct (bare "Displayed")))).bind
+        (·.calculationRefusal?)) = none := by
   native_decide
 
 /- Two physical rows retain exact target addresses and their row-local stored tokens. -/

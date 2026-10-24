@@ -10,6 +10,7 @@ import A12Kernel.Elaboration.NumericComputation.Table
 import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.AddressedEnumerationFirstFilledComputation
 import A12Kernel.Elaboration.StringExpression
+import A12Kernel.Elaboration.ScalarCopyComputation
 
 /-! # The Kernel class of a reader refusal
 
@@ -71,16 +72,29 @@ instance : StaticClassified EnumerationComputationElabError := ⟨fun
   | .source (.resolve error) => error.diagnostic?
   | _ => none⟩
 
+/-! A row target its own operation reads draws the calculated-field class on every row carrier, as
+it does on a fixed target: a direct String, Enumeration, Date Range and stored-pair first-filled
+self-read are rows `ua5`, `ua6`, `ua11`, `ua12` and `uf13`–`uf15` of the
+[row-target batch](../../../evidence/kernel-30.8.1/captures/k22-static-s3-2026-10-24/). A category
+self-read into a repeatable target is not among them and keeps no class. -/
+
 instance : StaticClassified AddressedEnumerationComputationElabError := ⟨fun
   | .ordinary (.source (.resolve error)) => error.diagnostic?
+  | .ordinary (.targetSelfReferenceAtDirectField _) => some .errorReferenceToCalculatedField
   | _ => none⟩
 
 instance : StaticClassified AddressedEnumerationFirstFilledComputationElabError := ⟨fun
   | .source cause => cause.targetDiagnostic?
+  | .targetSelfReferenceAtPlainRead _ => some .errorReferenceToCalculatedField
   | _ => none⟩
 
 instance : StaticClassified RowStringExpressionElabError := ⟨fun
   | .expression (.resolve error) => error.diagnostic?
+  | .selfReference => some .errorReferenceToCalculatedField
+  | _ => none⟩
+
+instance : StaticClassified ScalarCopyElabError := ⟨fun
+  | .targetReference => some .errorReferenceToCalculatedField
   | _ => none⟩
 
 instance : StaticClassified ValidationConditionAssemblyError := ⟨fun

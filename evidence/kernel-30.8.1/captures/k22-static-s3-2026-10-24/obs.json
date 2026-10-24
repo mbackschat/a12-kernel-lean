@@ -1,0 +1,1330 @@
+{
+ "schemaVersion": 2,
+ "dmtool": "0.13.0",
+ "kernelBuilt": "30.8.1",
+ "kernelRuntime": "30.8.1",
+ "source": {
+  "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "state": "CLEAN"
+ },
+ "model": "764618fe03228f61ebcd811e91a28a3376138c9d14cace83532ef35dfc9b62d7",
+ "observations": [
+  {
+   "id": "ua1",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua2",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "ua3",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua4",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ua5",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua6",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua7",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua8",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua9",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua10",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua11",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua12",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua13",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD",
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua14",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "ua15",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua16",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua17",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua18",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "ua19",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua20",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ua21",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "ub1",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub2",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub3",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub4",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub5",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub6",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ub7",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ub8",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub9",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub10",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub11",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub12",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub13",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uc1",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ]
+  },
+  {
+   "id": "uc2",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ]
+  },
+  {
+   "id": "uc3",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uc4",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "uc5",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  {
+   "id": "uc6",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARDS_ALLOWED"
+   ]
+  },
+  {
+   "id": "uc7",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "uc8",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "uc9",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "uc10",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "uc11",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "uc12",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_NO_STRING_OR_NUMBER_FOR_ADD"
+   ]
+  },
+  {
+   "id": "uc13",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uc14",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ]
+  },
+  {
+   "id": "ud1",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ]
+  },
+  {
+   "id": "ud2",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_DATE"
+   ]
+  },
+  {
+   "id": "ud3",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_DATE"
+   ]
+  },
+  {
+   "id": "ud4",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_DATE"
+   ]
+  },
+  {
+   "id": "ud5",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ]
+  },
+  {
+   "id": "ud6",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ]
+  },
+  {
+   "id": "ud7",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ]
+  },
+  {
+   "id": "ud8",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ]
+  },
+  {
+   "id": "ud9",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_YESNO"
+   ]
+  },
+  {
+   "id": "ud10",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_DATE"
+   ]
+  },
+  {
+   "id": "ud11",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_DATE"
+   ]
+  },
+  {
+   "id": "ud12",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_DATE"
+   ]
+  },
+  {
+   "id": "ud13",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "ud14",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "ud15",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_YESNO"
+   ]
+  },
+  {
+   "id": "ud16",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_DATE_TYPE"
+   ]
+  },
+  {
+   "id": "ud17",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_DATE_TYPE"
+   ]
+  },
+  {
+   "id": "ud18",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "ud19",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON"
+   ]
+  },
+  {
+   "id": "ud20",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "ud21",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_DATE_TYPE"
+   ]
+  },
+  {
+   "id": "ud22",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "ue1",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ue2",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "ue3",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INCOMPLETE_INPUT"
+   ]
+  },
+  {
+   "id": "ue4",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ue5",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ]
+  },
+  {
+   "id": "ue6",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ue7",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ue8",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ue9",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_DATE"
+   ]
+  },
+  {
+   "id": "ue10",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ue11",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_DATE"
+   ]
+  },
+  {
+   "id": "ue12",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_TYPE_FOR_COMPARISON"
+   ]
+  },
+  {
+   "id": "ue13",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_TYPE_FOR_COMPARISON"
+   ]
+  },
+  {
+   "id": "ue14",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_YESNO"
+   ]
+  },
+  {
+   "id": "uf1",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uf2",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uf3",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uf4",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uf5",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "uf6",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "uf7",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "uf8",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "uf9",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uf10",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "uf11",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "uf12",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "uf13",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "uf14",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "uf15",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ug1",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ug2",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_TOO_MANY_PARENT_GROUPS"
+   ]
+  },
+  {
+   "id": "ug3",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ug4",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  {
+   "id": "ug5",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ug6",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ug7",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ROOT_GROUP"
+   ]
+  },
+  {
+   "id": "ug8",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  {
+   "id": "ug9",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_TYPE_FOR_COMPARISON"
+   ]
+  },
+  {
+   "id": "ug10",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_TYPE_FOR_COMPARISON"
+   ]
+  },
+  {
+   "id": "ug11",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ug12",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uh1",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh2",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh3",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh4",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh5",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh6",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh7",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh8",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh9",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh10",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh11",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uh12",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "ui1",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "ui2",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ui3",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ui4",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED"
+   ]
+  },
+  {
+   "id": "ui5",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED"
+   ]
+  },
+  {
+   "id": "ui6",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_STRING_ENUM_AND_NON_STRING_ENUM"
+   ]
+  },
+  {
+   "id": "ui7",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "ui8",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED"
+   ]
+  },
+  {
+   "id": "ui9",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ui10",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_ONLY_STRING_ENUM_NUMBER_CMP_DATE_ALLOWED"
+   ]
+  },
+  {
+   "id": "ui11",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ui12",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "uj1",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uj2",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_TYPE_FOR_COMPARISON"
+   ]
+  },
+  {
+   "id": "uj3",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_TYPE_FOR_COMPARISON"
+   ]
+  },
+  {
+   "id": "uj4",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uj5",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uj6",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uj7",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uj8",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "uj9",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "uj10",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "uj11",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "uj12",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uj13",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uj14",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uk1",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARDS_ALLOWED"
+   ]
+  },
+  {
+   "id": "uk2",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  {
+   "id": "uk3",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uk4",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uk5",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uk6",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uk7",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uk8",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uk9",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uk10",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uk11",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uk12",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  {
+   "id": "uk13",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "uk14",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "ua4p",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "ub6p",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "ub7p",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uk3p",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uk4p",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARDS_ALLOWED"
+   ]
+  },
+  {
+   "id": "uk5p",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uk6p",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARDS_ALLOWED"
+   ]
+  },
+  {
+   "id": "uk7p",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_FIELDS_ALLOWED"
+   ]
+  },
+  {
+   "id": "uk8p",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "uk10p",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "uk11p",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARDS_ALLOWED"
+   ]
+  },
+  {
+   "id": "uk13p",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "uk14p",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_NO_FIELDS_ALLOWED"
+   ]
+  }
+ ]
+}

@@ -15,6 +15,8 @@ inductive AddressedEnumerationFirstFilledComputationElabError where
   | source (cause : EnumerationFirstFilledComputationElabError)
   | sourceIncompatible (sourcePath targetPath : List String)
   | targetSelfReference (field : FieldId)
+  /-- A self-read inside a pair of stored direct reads, the composition measured on this carrier. -/
+  | targetSelfReferenceAtPlainRead (field : FieldId)
   | incoherentCore
   deriving Repr, DecidableEq
 
@@ -51,7 +53,8 @@ def checkAddressedEnumerationFirstFilledComputation
       target.declaration.repeatableScope authored declaringGroup target.declaration.groupPath arity
     |>.mapError .source
   if hReference : source.referencesWith target.field (·.forbidsTarget target.field) = true then
-    throw (.targetSelfReference target.field)
+    throw (if source.isStoredDirectPair then .targetSelfReferenceAtPlainRead target.field
+      else .targetSelfReference target.field)
   else if hAllowed : source.allowedFor target.projection = true then
     pure {
       target

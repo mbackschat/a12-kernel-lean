@@ -212,6 +212,14 @@ def allowedFor (source : CheckedEnumerationFirstFilledSource model scope)
     (target : CheckedEnumerationProjection) : Bool :=
   source.operands.all (fun operand => operand.allowedFor target)
 
+/-- Whether the source is two stored direct reads, the list in which a repeatable target's self-read
+was measured whatever the other entry's domain (rows `uf13`–`uf15` of the
+[row-target batch](../../evidence/kernel-30.8.1/captures/k22-static-s3-2026-10-24/)); unlike the
+fixed target's denominator below, an incompatible partner is inside it. -/
+def isStoredDirectPair
+    (source : CheckedEnumerationFirstFilledSource model scope) : Bool :=
+  source.operands.length == 2 && source.operands.all (·.isStoredDirect)
+
 /-- Fold the reading mode over the operands that actually name the computed
 field, then keep only the externally measured denominator around it.
 

@@ -1,0 +1,16 @@
+{
+ "computedField": "/Shop/Flag",
+ "alternatives": [
+  {
+   "precondition": "FieldFilled(Title)",
+   "operation": "[Amount]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

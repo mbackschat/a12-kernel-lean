@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Rows/RDay",
+ "alternatives": [
+  {
+   "operation": "AddDays(RDay, 1)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop/Rows"
+}

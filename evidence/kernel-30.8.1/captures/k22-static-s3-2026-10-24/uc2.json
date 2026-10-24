@@ -1,0 +1,18 @@
+{
+ "computedField": "/Shop/Total",
+ "alternatives": [
+  {
+   "operation": "[Title]"
+  },
+  {
+   "operation": "[Memo]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Frag",
+ "alternatives": [
+  {
+   "operation": "[Due]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

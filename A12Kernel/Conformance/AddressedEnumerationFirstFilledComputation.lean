@@ -251,6 +251,15 @@ example : operation?.isSome = true ∧ filteredOperation?.isSome = true ∧
       some (.targetSelfReference target.id) := by
   native_decide
 
+/- A self-read in a pair of stored direct reads takes the plain mode whatever its partner's domain, and a
+self-read through a star keeps none. -/
+example :
+    errorOf target.id ["Form", "Rows"] (directFirstFilled "Target" "DirectA") =
+        some (.targetSelfReferenceAtPlainRead target.id) ∧
+      errorOf target.id ["Form", "Rows"] (directFirstFilled "DirectA" "Target") =
+        some (.targetSelfReferenceAtPlainRead target.id) := by
+  native_decide
+
 /- Direct operands at the target's own repeatable scope are admitted and read independently in each target row. -/
 example : directOperation?.isSome = true ∧ (do
     let operation ← directOperation?

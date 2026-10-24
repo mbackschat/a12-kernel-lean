@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Part",
+ "alternatives": [
+  {
+   "operation": "[Day]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

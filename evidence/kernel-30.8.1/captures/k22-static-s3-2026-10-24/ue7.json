@@ -1,0 +1,17 @@
+{
+ "computedField": "/Shop/Due",
+ "alternatives": [
+  {
+   "precondition": "[NoSuch2] > 0",
+   "operation": "[Title]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop",
+ "commonPrecondition": "[NoSuch] > 0"
+}
