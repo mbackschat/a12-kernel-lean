@@ -771,3 +771,14 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `peer-residuals`: The peer reports Enumeration block 2 under its own code after block 5, omits block 7, declines a doubly declared index name for the display-label class, and keeps the [IF376](../../../a12-rulekit/docs/INTERPRETER-FINDINGS.md#if376) first-admitted pointer policy. These are compatibility choices of the peer, not contrary Kernel evidence.
 - `hypotheses`: The letter's mechanism accounts (high-unit refusal, metamodel judging of out-of-range members, the unmatched-key throw, index-scan order) are unmeasured and were not adopted.
 - `sync`: Inbound corrections to clauses this project owns; no outbound ledger entry is created.
+
+<a id="src-inbound-2026-10-24a"></a>
+## Reviewed October 24a handback of the ten open entries
+
+- `source`: Peer-session letter of 2026-10-24, `a12-kernel-lean-spec-corrections-2026-10-24a.md`, SHA-256 `0a475a44422e350669775082c6a59b2fa3f85f3f60370c3c3d1393b23c49b442`, delivered by the a12-dmkits session. It answers the ledger as of `b5035bba` plus the then uncommitted `SPEC-2026-10-24-07`, which landed at `69faa20b`, and replaces nothing.
+- `revision`: a12-dmkits `2539feea3b679bebb1c1dd9c2b346bc436311a0d`, committed on the peer's local `main` and unpushed, read with `git` only; it carries the fixes the letter names, `CheckerRepeatabilityCascadeAgreementTest` with the `AmountSet` rule and `NoteFromAmount` computation it injects, and `RuleGroupErrorEntityTest`.
+- `review`: A HIGH reconciliation on 2026-10-24 of every disposition against the entries' acceptance conditions and `spec/`. The letter's rows re-run our own requests and captures through `checkConsistency` and the probe; none contradicts an entry, and every entry is `accepted` in the [ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue).
+- `adopted`: Under a group whose count is below one, a rule and a computation declared there draw no `MVK_MAX_VALUES_INVALID` (13 rows, the peer's measurement), which [spec/01](../../spec/01-data-model.md#1-model--a-typed-tree) now states beside the groups and fields.
+- `instrument`: `td29`'s retained `RK_REDUNDANT_OPERAND` and `ogt008`/`ogt009`'s `RK_ERROR_FIELD_OUTSIDE_GROUP` are the instrument's own findings; A12 admits `td29` and cannot build the injected `ogt` model. No local claim names either as a Kernel class.
+- `limits`: The 45 message keys of `SPEC-2026-10-24-06` were reconciled by the same rendered-text method as ours, not by an independent observation of the selected key. The peer interpreter declines `g1`, `k1`, `k5` and `k8` (IG180); `k8`'s error pointer at `Lines[1]` beside references at `Lines[2]` and `Lines[-5]` stays unexplained on both sides.
+- `sync`: Inbound facts about clauses this project owns; no outbound ledger entry is created for them.

@@ -96,10 +96,17 @@ example :
 /-! ## §2.17: a count below one -/
 
 /-- §2.17's host: `/Policy` holds `Coverages` (`Amount` and `Riders` holding `Code`) and `Holder`. -/
-private def policy (root coverages riders : Option Json) : Json :=
+private def policy (root coverages riders : Option Json) (beside : List Json := []) : Json :=
   let count := fun (value : Option Json) => value.toList.map (("repeatability", ·))
-  model [group "Policy" [group "Coverages" [field "Amount", group "Riders" [field "Code"] (count riders)]
+  model [group "Policy" [group "Coverages" ([field "Amount", group "Riders" [field "Code"] (count riders)] ++ beside)
     (count coverages), field "Holder"] (count root)]
+
+/-- A rule and a computation declared in `Coverages`, the elements the October 24a handback injected. -/
+private def coverageRules : List Json :=
+  [Json.mkObj [("type", "Rule"), ("name", "AmountSet"), ("Rule", Json.mkObj [("errorEntityRelPath", "../Amount"),
+      ("errorCode", "AMOUNT_SET"), ("errorCondition", "FieldFilled(Amount)"), ("severity", "ERROR")])],
+   Json.mkObj [("type", "Computation"), ("name", "NoteFromAmount"), ("Computation", Json.mkObj [
+      ("computedFieldRelPath", "../Holder"), ("computationAlternatives", Json.arr #[Json.mkObj [("operation", "[Amount]")]])])]]
 
 private def M : String := "MVK_MAX_VALUES_INVALID"
 
@@ -119,6 +126,13 @@ example :
     (report "/Policy" (policy (some (toJson (-1 : Int))) (some (toJson (4 : Int))) (some (toJson (3 : Int))))).contains
       s!"{M}@/Holder" ∧
     report "" (policy none (some (toJson (4 : Int))) (some (toJson (3 : Int)))) = [] := by
+  native_decide
+
+/- A rule and a computation beneath the refused group draw nothing: the walk visits groups and fields
+   only ([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-24a), 13 rows). -/
+example :
+    report "/Policy/" (policy none (some (toJson (0 : Int))) (some (toJson (3 : Int))) coverageRules) =
+      report "/Policy/" (policy none (some (toJson (0 : Int))) (some (toJson (3 : Int)))) := by
   native_decide
 
 /-! ## §2.16: ordering members -/

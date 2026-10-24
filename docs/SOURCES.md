@@ -157,6 +157,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 22c selection, computation and binding rows](sources/inbound-handbacks.md#src-inbound-2026-10-22c): a12-dmkits `e9747abbf`; Kernel classes for the guard beside constant and field-keyed selections, five computation preconditions, and the error-field binding under parallel iteration.
 - [October 24 instrument handback](sources/inbound-handbacks.md#src-inbound-2026-10-24): a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`; the probe publishes the Kernel's `-6` coordinate, and its address form omits a group target's own coordinate.
 - [October 23 handback](sources/inbound-handbacks.md#src-inbound-2026-10-23): a12-dmkits `e6850d0b9984d7df3f8eae3baa3639f4a7d25084`; the reconciliation of the eight October 22 and 23 entries, the partial-call and nested-capacity extensions for group targets and joined sides, an undeclared member of every JSON kind, and Kernel classes for KF598–KF606.
+- [October 24a handback](sources/inbound-handbacks.md#src-inbound-2026-10-24a): a12-dmkits `2539feea3b679bebb1c1dd9c2b346bc436311a0d`; the reconciliation of the ten entries `SPEC-2026-10-23-04` to `-06` and `SPEC-2026-10-24-01` to `-07`, and the measured absence of the count-below-one class at rules and computations.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route
