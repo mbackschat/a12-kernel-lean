@@ -1,0 +1,352 @@
+[
+ {
+  "id": "y1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(Foo(Stamp), Due) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(Due, Foo(Stamp)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(Day(Stamp), Due) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Foo(Stamp)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(AddDays(Foo(Stamp), 1), Due) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Foo(Stamp))",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Foo(Stamp)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Foo(Stamp)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Abs(Foo(Stamp)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Foo(Stamp)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DayFromDate(Foo(Stamp)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Foo(Clock)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(Foo, Due) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Round(Foo(Stamp), 2) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Foo(Stamp), Title) == \"x\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Foo(Stamp)] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Foo(Stamp)) == Due",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(Due(Stamp), Day) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Abs(Amount(Stamp)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "yc1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "yc1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "yc2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "yc2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "yc3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "yc3.json",
+   "--dry-run"
+  ]
+ }
+]

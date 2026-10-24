@@ -77,6 +77,8 @@ def captures : List (String × String × String) := [
   ("captures/k22-static-s4-2026-10-24/obs.json", "captures/k22-static-s4-2026-10-24/K22u_DM.json", "captures/k22-static-s4-2026-10-24/ops.json"),
   ("captures/k22-static-s4-2026-10-24/custom-first-filled/obs.json", "captures/k22-static-s4-2026-10-24/custom-first-filled/K22v_DM.json", "captures/k22-static-s4-2026-10-24/custom-first-filled/ops.json"),
   ("captures/k22-static-s4-2026-10-24/raw-members/obs.json", "captures/k22-static-s4-2026-10-24/custom-first-filled/K22v_DM.json", "captures/k22-static-s4-2026-10-24/raw-members/ops.json"),
+  ("captures/k22-static-s5-2026-10-24/obs.json", "captures/k22-static-s4-2026-10-24/K22u_DM.json", "captures/k22-static-s5-2026-10-24/ops.json"),
+  ("captures/k22-static-s5-2026-10-24/slots/obs.json", "captures/k22-static-s4-2026-10-24/K22u_DM.json", "captures/k22-static-s5-2026-10-24/slots/ops.json"),
   ("captures/field-value-read-remaining-sites/observations-grid.json", "captures/field-value-read-remaining-sites/Grid25h_DM.json", "captures/field-value-read-remaining-sites/ops-grid.json"),
   ("captures/field-value-read-predictions/observations-grid2.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid2.json"),
   ("captures/field-value-read-predictions/observations-grid3.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid3.json"),

@@ -1,0 +1,267 @@
+[
+ {
+  "id": "w1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(AddDays(Due, 1), Day) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(Due, AddMonths(Day, Amount)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(DateFromDate(Stamp), Due) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInMonths(AddYears(Due, 1), Due) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInYears(Due, Today) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInHours(AddHours(Stamp, 1), Stamp2) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInMinutes(Clock, AddMinutes(Clock2, 5)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(Rows*/RDay, Due) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Max(Rows*/RDay)) > 2000",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Max(Due, Day)) > 2000",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(Max(Rows*/RDay), Due) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DifferenceInDays(Due, Min(Due, Day)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DayFromDate(AddDays(Max(Rows*/RDay), 1)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "w14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "w14",
+   "--field",
+   "/Shop/Rows/RQty",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RQty) And DifferenceInDays(RDay, Due) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "wc1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "wc1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "wc2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "wc2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "wc3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "wc3.json",
+   "--dry-run"
+  ]
+ }
+]

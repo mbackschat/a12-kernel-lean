@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Total",
+ "alternatives": [
+  {
+   "operation": "YearFromDate(Max(Rows*/RDay))"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

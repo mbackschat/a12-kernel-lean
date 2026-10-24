@@ -140,14 +140,18 @@ example :
     firstClass "RoundUpValue(Reference, 2) > FieldFilled(Score)" = some "MVK_NO_NUMBER" := by
   native_decide
 
--- A name that is no keyword before `(` fails at the name, unresolved: `Year` is no operator, so
--- `Reference` and `Due` alike draw the token class (rows `d01`–`d05` of the first predicate-operand
--- file), where a resolution-first account would report the unknown `Year` as an entity.
+-- A name that is no keyword before `(` is refused unresolved in a value slot, where no bare name may
+-- stand: `Abs`'s operand draws the token class whatever the name (rows `d01`–`d05` of the first
+-- predicate-operand file). In a path slot it is read as a path and resolved first, so the undeclared
+-- `Year` draws the entity class and the declared `Due` the token class (k22-static-s5-2026-10-24,
+-- `slots` rows `y6`, `y18`).
 example :
     firstClass "Abs(Year(Reference) > 1) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
     firstClass "Abs(Year(Due) > 1) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
     firstClass "Abs(Year(Reference)) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
-    firstClass "Abs(Year(Reference) + FieldFilled(Score)) > 0" = some "MVK_UNEXPECTED_TOKEN" := by
+    firstClass "Abs(Year(Reference) + FieldFilled(Score)) > 0" = some "MVK_UNEXPECTED_TOKEN" ∧
+    firstClass "FieldFilled(Year(Reference))" = some "MVK_INVALID_ENTITY" ∧
+    firstClass "DifferenceInDays(Due(Reference), Due) > 0" = some "MVK_UNEXPECTED_TOKEN" := by
   native_decide
 
 example :

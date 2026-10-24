@@ -315,10 +315,9 @@ private partial def atom : P Expr := do
       -- or an arithmetic term, is a token defect at the name: nothing after it is read, and the name
       -- is never resolved (spec/12 §12.3; `NoSuchField > 0` draws the token class).
       if !(← startsArgument) then failHere .incompleteInput
-      -- A name that is no keyword before `(` is a token defect too, raised before the name is resolved
-      -- (predicate-operand capture rows `d01`–`d05`, 2026-10-14).
-      if let some (.name _ _) := ← peek then
-        if (← peekAt 1) == some (.symbol "(") then failHere .incompleteInput
+      -- A name that is no keyword before `(` is read as a path, so it is resolved before the `(` is
+      -- refused: an undeclared one draws the entity class and a declared one the token class, in every
+      -- path slot (k22-static-s5-2026-10-24, `slots` rows `y1`–`y19`).
       return .entity (← reference)
   | _ => failHere .incompleteInput
 

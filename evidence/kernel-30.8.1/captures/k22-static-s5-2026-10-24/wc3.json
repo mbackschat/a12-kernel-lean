@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Total",
+ "alternatives": [
+  {
+   "operation": "DifferenceInMonths(Due, AddMonths(Day, Amount))"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

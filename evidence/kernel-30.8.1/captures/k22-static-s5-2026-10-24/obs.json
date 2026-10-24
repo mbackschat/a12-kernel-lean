@@ -1,0 +1,137 @@
+{
+ "schemaVersion": 2,
+ "dmtool": "0.13.0",
+ "kernelBuilt": "30.8.1",
+ "kernelRuntime": "30.8.1",
+ "source": {
+  "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "state": "CLEAN"
+ },
+ "model": "11c3a0e0d51c22812ee6e5a2b906911f4c47ab98e37c9992c27b96f8df4e2828",
+ "observations": [
+  {
+   "id": "w1",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "w2",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "w3",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "w4",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "w5",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "w6",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "w7",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_TIME"
+   ]
+  },
+  {
+   "id": "w8",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARDS_ALLOWED"
+   ]
+  },
+  {
+   "id": "w9",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "w10",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "w11",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "w12",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "w13",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "w14",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "wc1",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "wc2",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "wc3",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  }
+ ]
+}
