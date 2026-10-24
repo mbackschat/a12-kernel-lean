@@ -1,0 +1,1179 @@
+{
+ "model": "K22x_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "d1",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz"
+      },
+      {
+       "Department": "D",
+       "Base": "7",
+       "Label": "LA"
+      }
+     ],
+     "Supply": [
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "B",
+       "Headcount": "2"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "E",
+       "Headcount": "1",
+       "Note": "q"
+      }
+     ]
+    },
+    "Cx": {
+     "A": "1",
+     "B": "2",
+     "SA": "sa",
+     "SB": "sb",
+     "DA": "2026-01-01",
+     "DB": "2026-02-02",
+     "EA": "a",
+     "EB": "b",
+     "TN": "999",
+     "TS": "seed",
+     "TD": "2000-01-01",
+     "TE": "c",
+     "Sel": "1",
+     "Rows": [
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "1"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "2"
+      },
+      {
+       "RB": "2",
+       "RSB": "sb",
+       "RDB": "2026-02-02",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "3"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Staffing"
+    },
+    {
+     "path": "/Cx"
+    }
+   ]
+  },
+  {
+   "name": "d2",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01"
+      }
+     ],
+     "Supply": [
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "A",
+       "Headcount": "1"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "F"
+      }
+     ]
+    },
+    "Cx": {
+     "A": "1",
+     "B": "2",
+     "SA": "sa",
+     "SB": "sb",
+     "DA": "2026-01-01",
+     "DB": "2026-02-02",
+     "EA": "a",
+     "EB": "b",
+     "TN": "999",
+     "TS": "seed",
+     "TD": "2000-01-01",
+     "TE": "c",
+     "Sel": "2",
+     "Rows": [
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "1"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "2"
+      },
+      {
+       "RB": "2",
+       "RSB": "sb",
+       "RDB": "2026-02-02",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "3"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Staffing"
+    },
+    {
+     "path": "/Cx"
+    }
+   ]
+  },
+  {
+   "name": "d3",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz"
+      },
+      {
+       "Department": "D",
+       "Base": "7",
+       "Label": "LA"
+      }
+     ],
+     "Supply": [
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "B",
+       "Headcount": "2"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "E",
+       "Headcount": "1",
+       "Note": "q"
+      }
+     ]
+    },
+    "Cx": {
+     "B": "2",
+     "SB": "sb",
+     "DB": "2026-02-02",
+     "EB": "b",
+     "TN": "999",
+     "TS": "seed",
+     "TD": "2000-01-01",
+     "TE": "c",
+     "Sel": "3",
+     "Rows": [
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "1"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "2"
+      },
+      {
+       "RB": "2",
+       "RSB": "sb",
+       "RDB": "2026-02-02",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "3"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Staffing"
+    },
+    {
+     "path": "/Cx"
+    }
+   ]
+  },
+  {
+   "name": "d4",
+   "documentInline": {
+    "Cx": {
+     "A": "1",
+     "B": "2",
+     "SA": "sa",
+     "SB": "sb",
+     "DA": "2026-01-01",
+     "DB": "2026-02-02",
+     "EA": "a",
+     "EB": "b",
+     "TN": "999",
+     "TS": "seed",
+     "TD": "2000-01-01",
+     "TE": "c",
+     "Rows": [
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "1"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "2"
+      },
+      {
+       "RB": "2",
+       "RSB": "sb",
+       "RDB": "2026-02-02",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "3"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Staffing"
+    },
+    {
+     "path": "/Cx"
+    }
+   ]
+  },
+  {
+   "name": "d1-sup1",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz"
+      },
+      {
+       "Department": "D",
+       "Base": "7",
+       "Label": "LA"
+      }
+     ],
+     "Supply": [
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "B",
+       "Headcount": "2"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "E",
+       "Headcount": "1",
+       "Note": "q"
+      }
+     ]
+    },
+    "Cx": {
+     "A": "1",
+     "B": "2",
+     "SA": "sa",
+     "SB": "sb",
+     "DA": "2026-01-01",
+     "DB": "2026-02-02",
+     "EA": "a",
+     "EB": "b",
+     "TN": "999",
+     "TS": "seed",
+     "TD": "2000-01-01",
+     "TE": "c",
+     "Sel": "1",
+     "Rows": [
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "1"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "2"
+      },
+      {
+       "RB": "2",
+       "RSB": "sb",
+       "RDB": "2026-02-02",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "3"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Staffing/Supply",
+     "reps": [
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "d1-dem2",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz"
+      },
+      {
+       "Department": "D",
+       "Base": "7",
+       "Label": "LA"
+      }
+     ],
+     "Supply": [
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "B",
+       "Headcount": "2"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "E",
+       "Headcount": "1",
+       "Note": "q"
+      }
+     ]
+    },
+    "Cx": {
+     "A": "1",
+     "B": "2",
+     "SA": "sa",
+     "SB": "sb",
+     "DA": "2026-01-01",
+     "DB": "2026-02-02",
+     "EA": "a",
+     "EB": "b",
+     "TN": "999",
+     "TS": "seed",
+     "TD": "2000-01-01",
+     "TE": "c",
+     "Sel": "1",
+     "Rows": [
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "1"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "2"
+      },
+      {
+       "RB": "2",
+       "RSB": "sb",
+       "RDB": "2026-02-02",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "3"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Staffing/Demand",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "d1-hc",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz"
+      },
+      {
+       "Department": "D",
+       "Base": "7",
+       "Label": "LA"
+      }
+     ],
+     "Supply": [
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "B",
+       "Headcount": "2"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "E",
+       "Headcount": "1",
+       "Note": "q"
+      }
+     ]
+    },
+    "Cx": {
+     "A": "1",
+     "B": "2",
+     "SA": "sa",
+     "SB": "sb",
+     "DA": "2026-01-01",
+     "DB": "2026-02-02",
+     "EA": "a",
+     "EB": "b",
+     "TN": "999",
+     "TS": "seed",
+     "TD": "2000-01-01",
+     "TE": "c",
+     "Sel": "1",
+     "Rows": [
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "1"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "2"
+      },
+      {
+       "RB": "2",
+       "RSB": "sb",
+       "RDB": "2026-02-02",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "3"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Staffing/Supply/Headcount"
+    }
+   ]
+  },
+  {
+   "name": "d1-sup3dem",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz"
+      },
+      {
+       "Department": "D",
+       "Base": "7",
+       "Label": "LA"
+      }
+     ],
+     "Supply": [
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "B",
+       "Headcount": "2"
+      },
+      {
+       "Out01": "999",
+       "OutS1": "seed",
+       "Out02": "999",
+       "Department": "E",
+       "Headcount": "1",
+       "Note": "q"
+      }
+     ]
+    },
+    "Cx": {
+     "A": "1",
+     "B": "2",
+     "SA": "sa",
+     "SB": "sb",
+     "DA": "2026-01-01",
+     "DB": "2026-02-02",
+     "EA": "a",
+     "EB": "b",
+     "TN": "999",
+     "TS": "seed",
+     "TD": "2000-01-01",
+     "TE": "c",
+     "Sel": "1",
+     "Rows": [
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "1"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "2"
+      },
+      {
+       "RB": "2",
+       "RSB": "sb",
+       "RDB": "2026-02-02",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c",
+       "RSel": "3"
+      },
+      {
+       "RA": "1",
+       "RB": "2",
+       "RSA": "sa",
+       "RSB": "sb",
+       "RDA": "2026-01-01",
+       "RDB": "2026-02-02",
+       "REA": "a",
+       "REB": "b",
+       "RN": "999",
+       "RS": "seed",
+       "RD": "2000-01-01",
+       "RE": "c",
+       "RS2": "seed",
+       "RD2": "2000-01-01",
+       "RE2": "c"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Staffing/Supply",
+     "reps": [
+      1,
+      3
+     ]
+    },
+    {
+     "path": "/Staffing/Demand"
+    }
+   ]
+  }
+ ]
+}

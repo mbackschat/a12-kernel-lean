@@ -55,7 +55,8 @@ def appendSameTarget (left right : CheckedParallelNumericStep model)
   .mixed { leftTable with members := leftTable.members ++ rightMembers }
 
 /-- Retain an ordinary table's checked operations and guards when another declaration supplies
-its target's joined coverage. No source expression is reconstructed or re-elaborated. -/
+its target's joined coverage, as members that end the scan without a value. No source expression
+is reconstructed or re-elaborated. -/
 def withBoundTable (joined : CheckedParallelNumericStep model)
     (bound : CheckedNumericComputationTable model)
     (sameTarget : bound.targetField = joined.targetField) (before : Bool) : CheckedParallelNumericStep model :=

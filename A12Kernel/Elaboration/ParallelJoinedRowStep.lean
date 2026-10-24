@@ -21,9 +21,21 @@ carrier's disposition, measured for String, Date and Enumeration targets on dupl
 keys and on a row beyond capacity
 ([joined-computation checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-joined-computations)).
 An Enumeration copy reads the partner's stored token as the fixed Enumeration carrier reads a field.
+
+Separate declarations into one joined target form one first-selected table in declaration order. A
+declaration that reads no partner field joins it as a `bound` operation: the scan stops there with
+nothing stored, whatever that declaration's guards, and its reads stay in the dependency inventory
+([cross-declaration checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-cross-declaration)).
+Two joined declarations over the same joined groups concatenate their alternatives.
 -/
 
 namespace A12Kernel
+
+/-- The reads of a separate declaration a joined table never evaluates, retained for scheduling. -/
+structure ComputationReadFootprint where
+  references : FieldId → Bool
+  requiresProducer : (FieldId → ResolvedGroupReference → Bool) → FieldId → Bool
+  protectionConditions : List (Option ComputationProtectionView)
 
 /-- A String, temporal or Enumeration operation certified against an instance view. Both evaluate over one
 supplied read context, which is what lets a joined instance place each read. -/
@@ -31,6 +43,7 @@ inductive ParallelJoinedRowOperation (view : FlatModel) where
   | string (operation : CheckedRowStringExpression view)
   | temporal (operation : CheckedTemporalExpressionComputation view)
   | enumeration (operation : CheckedEnumerationComputationOperation view)
+  | bound (target : FieldId) (family : DocumentTargetFamily) (reads : ComputationReadFootprint)
 
 namespace ParallelJoinedRowOperation
 
@@ -38,11 +51,13 @@ def target : ParallelJoinedRowOperation view → FieldId
   | .string operation => operation.targetField
   | .temporal operation => operation.target
   | .enumeration operation => operation.target.field
+  | .bound target _ _ => target
 
 def family : ParallelJoinedRowOperation view → DocumentTargetFamily
   | .string _ => .string
   | .temporal operation => operation.family
   | .enumeration _ => .enumeration
+  | .bound _ family _ => family
 
 /-- Field identities are the model's, since the instance view keeps every field. -/
 def referencesWith (field : FieldId) (filterReads : CorrelatedHaving → Bool) :
@@ -50,6 +65,12 @@ def referencesWith (field : FieldId) (filterReads : CorrelatedHaving → Bool) :
   | .string operation => operation.expression.referencesField field
   | .temporal operation => operation.expression.referencesWith field filterReads
   | .enumeration operation => operation.source.referencesField field
+  | .bound _ _ reads => reads.references field
+
+def requiresProducer (target field : FieldId) (producerProtected : FieldId → ResolvedGroupReference → Bool) :
+    ParallelJoinedRowOperation view → Bool
+  | .bound _ _ reads => reads.requiresProducer producerProtected field
+  | operation => operation.referencesWith field (·.requiresProducer target field (producerProtected field))
 
 def evaluateIn (matchers : StringTargetMatchers) (context : ScalarComputationContext) :
     ParallelJoinedRowOperation view → Except RowComputationTableFault (DocumentTargetOutcome × CheckedCell)
@@ -61,6 +82,7 @@ def evaluateIn (matchers : StringTargetMatchers) (context : ScalarComputationCon
   | .enumeration operation =>
       let outcome := (operation.source.evaluate { read := context.read }).asExactStringTargetOutcome
       pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
+  | .bound _ family _ => pure (family.noValue, DocumentComputationReadBack.empty)
 
 end ParallelJoinedRowOperation
 
@@ -126,12 +148,13 @@ def requiresProducer (step : CheckedParallelJoinedRowStep model)
     (producerProtected : FieldId → ResolvedGroupReference → Bool) (field : FieldId) : Bool :=
   step.alternatives.any (fun alternative =>
     alternative.precondition.any (·.requiresProducer step.targetField field (producerProtected field)) ||
-      alternative.operation.referencesWith field
-        (·.requiresProducer step.targetField field (producerProtected field))) ||
+      alternative.operation.requiresProducer step.targetField field producerProtected) ||
     step.referencesIndexField field
 
 def protectionConditions (step : CheckedParallelJoinedRowStep model) : List (Option ComputationProtectionView) :=
-  step.alternatives.map (·.precondition.map (·.protectionView))
+  step.alternatives.flatMap fun alternative => match alternative.operation with
+    | .bound _ _ reads => reads.protectionConditions
+    | _ => [alternative.precondition.map (·.protectionView)]
 
 /-- The reads of one joined instance: a field of a joined partner group at the row `partners` binds
 for it, read empty when it binds none, and every other field at the target row. -/
@@ -187,6 +210,46 @@ def execute (step : CheckedParallelJoinedRowStep model) (world : World) (matcher
     | .ok (.selected operation) => do
         let (outcome, cell) ← (operation.evaluateIn matchers context).mapError .operation
         pure (target.address, outcome, cell)
+
+/-- Recheck every invariant of a recombined table; `none` when one fails. -/
+private def recertify? (joined : List GroupPath) (primary : CheckedParallelTargetJoin model)
+    (additional : List (CheckedParallelTargetJoin model)) (family : DocumentTargetFamily)
+    (alternatives : List (ParallelJoinedRowAlternative model joined)) : Option (CheckedParallelJoinedRowStep model) :=
+  if sameTarget : alternatives.all (·.operation.target == primary.targetField) = true then
+  if sameFamily : alternatives.all (·.operation.family == family) = true then
+  if targetsCoherent : additional.all (·.targetDeclaration == primary.targetDeclaration) = true then
+  if excludesTarget : alternatives.all (fun alternative =>
+      !alternative.operation.referencesWith primary.targetField (·.forbidsTarget primary.targetField) &&
+        !alternative.precondition.any (·.forbidsTarget primary.targetField)) = true then
+  if guardsAdmitted : alternatives.all (fun alternative =>
+      parallelNumericDirectGuardAdmitted (primary :: additional) alternative.precondition) = true then
+  if scopesAvailable : (primary :: additional).all (·.scopeAvailable) = true then
+    some { joined, primary, additional, family, alternatives, sameTarget, sameFamily,
+           targetsCoherent, excludesTarget, guardsAdmitted, scopesAvailable }
+  else none else none else none else none else none else none
+
+/-- Place a separate declaration that reads no partner field before or after the table's
+alternatives; reaching it ends the scan with nothing stored. -/
+def withBound (step : CheckedParallelJoinedRowStep model) (reads : ComputationReadFootprint)
+    (before : Bool) : Option (CheckedParallelJoinedRowStep model) :=
+  let alternative : ParallelJoinedRowAlternative model step.joined :=
+    { precondition := none, operation := .bound step.targetField step.family reads }
+  recertify? step.joined step.primary step.additional step.family
+    (if before then alternative :: step.alternatives else step.alternatives ++ [alternative])
+
+/-- Concatenate a later joined declaration over the same joined groups; its key joins to groups
+the earlier one does not join are added after the earlier ones. -/
+def appendSameTarget? (left right : CheckedParallelJoinedRowStep model) :
+    Option (CheckedParallelJoinedRowStep model) :=
+  if same : right.joined = left.joined then
+    let joins := right.joins.foldl (fun joins join =>
+      if joins.any (·.groups.rightGroup.path == join.groups.rightGroup.path) then joins else joins ++ [join])
+      left.joins
+    match joins with
+    | primary :: additional =>
+        recertify? left.joined primary additional left.family (left.alternatives ++ same ▸ right.alternatives)
+    | [] => none
+  else none
 
 end CheckedParallelJoinedRowStep
 

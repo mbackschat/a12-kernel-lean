@@ -84,6 +84,12 @@ def requiresProducer (producerProtected : FieldId → ResolvedGroupReference →
   | .rows step => step.requiresProducer producerProtected
   | .joinedRows step => step.requiresProducer producerProtected
 
+/-- What a joined table keeps of a separate declaration that reads no partner field. -/
+def readFootprint (step : MixedComputationStep model compilePattern) : ComputationReadFootprint :=
+  { references := step.referencesField
+    requiresProducer := fun producerProtected => MixedComputationStep.requiresProducer producerProtected step
+    protectionConditions := step.protectionConditions }
+
 end MixedComputationStep
 
 def mixedComputationProducerProtection (steps : List (MixedComputationStep model compilePattern)) : FieldId → ResolvedGroupReference → Bool :=
@@ -191,6 +197,18 @@ private def insertMixedComputationStep (incoming : MixedComputationStep model co
             match current.appendSameTarget? incoming with
             | some combined => pure (.rows combined :: rest)
             | none => throw (.duplicateTarget current.target)
+        | .joinedRows incoming, .joinedRows current =>
+            match current.appendSameTarget? incoming with
+            | some combined => pure (.joinedRows combined :: rest)
+            | none => throw (.duplicateTarget current.targetField)
+        | _, .joinedRows joined =>
+            match joined.withBound incoming.readFootprint false with
+            | some combined => pure (.joinedRows combined :: rest)
+            | none => throw (.duplicateTarget joined.targetField)
+        | .joinedRows joined, _ =>
+            match joined.withBound current.readFootprint true with
+            | some combined => pure (.joinedRows combined :: rest)
+            | none => throw (.duplicateTarget joined.targetField)
         | _, _ =>
             match (do
               let left ← current.rowTable?

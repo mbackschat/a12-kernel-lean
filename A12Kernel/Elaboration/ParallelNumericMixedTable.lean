@@ -4,7 +4,13 @@ import A12Kernel.Elaboration.NumericComputation.Table
 namespace A12Kernel
 
 /-- A combined declaration table retains each operation's checked addressing contract; an
-ordinary starred source must not become a key-joined source merely by sharing a target (spec/09 §5). -/
+ordinary starred source must not become a key-joined source merely by sharing a target (spec/09 §5).
+
+A `bound` member is a separate declaration that reads no partner field. Under the target's key
+join the Kernel stores nothing once the scan reaches it, whatever its guard: an unguarded constant,
+a starred `Sum`, a target-row read and a guard false at the row all clear there and leave later
+members unreached (k22-cross-declaration-2026-10-24, `Out11`, `Out12`–`Out15`). Its checked
+alternative is kept for dependencies and index participation only. -/
 inductive CheckedParallelNumericMember (model : FlatModel) (target : FieldId) where
   | joined (alternative : CheckedParallelNumericAlternative model target)
   | bound (policy : NumericTargetPolicy)
@@ -20,7 +26,7 @@ def protectionView : CheckedParallelNumericMember model target → Option Comput
   | .joined alternative => alternative.precondition.map (·.protectionView)
   | .bound _ alternative => alternative.precondition.map (·.protectionView)
 
-/-- A joined member's guard reads the joined cells; a bound member's reads the target row. -/
+/-- A joined member's guard reads the joined cells; a bound member is selected unread. -/
 def evalGuard (member : CheckedParallelNumericMember model target)
     (context : ParallelNumericGuardContext) :
     Except CheckedComputationConditionError ComputationConditionResult :=
@@ -28,9 +34,7 @@ def evalGuard (member : CheckedParallelNumericMember model target)
   | .joined alternative => match alternative.precondition with
       | some guard => guard.eval context
       | none => pure .holds
-  | .bound _ alternative => match alternative.precondition with
-      | some guard => guard.evalCheckedIn context.ordinary
-      | none => pure .holds
+  | .bound _ _ => pure .holds
 
 def joinedOperation? : CheckedParallelNumericMember model target → Option (CheckedIsolatedParallelNumericDirectRun model)
   | .joined alternative => some alternative.operation
@@ -59,15 +63,13 @@ def evaluateSelected (member : CheckedParallelNumericMember model target)
     Except CheckedIsolatedParallelNumericDirectRun.ExecutionError NumericTargetOutcome := do
   match member with
   | .joined alternative => alternative.operation.evaluateSelected context
-  | .bound _ alternative =>
-      match ← alternative.operation.evaluateIn context.ordinary |>.mapError .numeric with
-      | .supported outcome => pure outcome
-      | .unsupported fault => throw (.unsupportedTarget fault)
+  | .bound _ _ => pure .noValue
 
 end CheckedParallelNumericMember
 
-/-- All declarations for a target share index participation and one first-selection decision,
-while each selected operation keeps its ordinary or joined evaluator (spec/09 §§3.1, 5). -/
+/-- All declarations for a target share index participation and one first-selection decision;
+a selected joined operation keeps its joined evaluator and a bound member stores nothing
+(spec/09 §§3.1, 5). -/
 structure CheckedMixedParallelNumericTable (model : FlatModel) where
   targetField : FieldId
   primary : CheckedParallelNumericTargetRoute model

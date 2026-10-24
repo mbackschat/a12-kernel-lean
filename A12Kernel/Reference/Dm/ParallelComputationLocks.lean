@@ -191,59 +191,50 @@ example : run [downstream, constantTotal "FieldNotFilled(/Form/Demand/Key)", tot
     [demandRow "A" "100"] [row "A" "2"] = some [
     ("Form/Demand/Amount", "value 7"), ("Form/Supply/Total", "value 9"), ("Form/Out", "value 10")] := by native_decide
 
+/-! A separate declaration that reads no partner field ends the joined table's scan wherever it is
+reached, whatever its guard, and stores nothing; a malformed read inside it poisons nothing
+downstream (k22-cross-declaration-2026-10-24, `Out11`–`Out16`). Its reads keep their index
+participation and formal input findings. -/
+
 private def scalarFallback : DmComputation :=
   definition "Supply" "Total" [{ operation := "7", precondition := none }]
-
-example : run [total (some "FieldNotFilled(Amount)"), scalarFallback]
-    [demandRow "A" "10"] [row "A" "2"] =
-    some [("Form/Supply/Total", "value 7")] := by native_decide
-
-example : run [scalarFallback, total (some "FieldFilled(Amount)")]
-    [demandRow "A" "10"] [row "A" "2"] =
-    some [("Form/Supply/Total", "value 7")] := by native_decide
 
 private def starredFallback : DmComputation :=
   definition "Supply" "Total" [{ operation := "Sum(/Form/Demand*/Amount)", precondition := none }]
 
-example : run [starredFallback, total (some "FieldFilled(Amount)")]
-    [demandRow "A" "10", demandRow "B" "20"] [row "B" "2", row "A" "1"] =
-    some [("Form/Supply/Total", "value 30"), ("Form/Supply[2]/Total", "value 30")] := by native_decide
+private def boundLocal (guard : Option String := none) : DmComputation :=
+  definition "Supply" "Total" [{ operation := "[Amount] + 1", precondition := guard }]
 
-example : run [total (some "FieldNotFilled(Amount)"), starredFallback]
-    [demandRow "A" "10", demandRow "B" "20"] [row "B" "2", row "A" "1"] =
-    some [("Form/Supply/Total", "value 30"), ("Form/Supply[2]/Total", "value 30")] := by native_decide
+-- Before and after an unselected joined declaration, a constant, a starred sum, a target-row read
+-- and a guard false at the row all clear; an invalid index clears as well.
+example : [
+    ([total (some "FieldNotFilled(Amount)"), scalarFallback], [demandRow "A" "10"], [row "A" "2"]),
+    ([scalarFallback, total (some "FieldFilled(Amount)")], [demandRow "A" "10"], [row "A" "2"]),
+    ([scalarFallback, total (some "FieldFilled(Amount)")], [demandRow "A" "10", demandRow "A" "20"], [row "A" "2"]),
+    ([boundLocal, total (some "FieldFilled(Amount)"), scalarFallback], [demandRow "A" "10"], [row "A" "2"]),
+    ([boundLocal (some "FieldNotFilled(Amount)"), total (some "FieldFilled(Amount)"), scalarFallback],
+      [demandRow "A" "10"], [row "A" "2"]),
+    ([constantTotal "FieldNotFilled(/Form/Demand/Key)", boundLocal (some "GroupFilled(/Form/Supply)")],
+      [demandRow "A" "10"], [row "A" "2"])].all (fun (declarations, demand, supply) =>
+      run declarations demand supply == some [("Form/Supply/Total", "cleared")]) = true := by native_decide
 
-example : run [scalarFallback, total (some "FieldFilled(Amount)")]
-    [demandRow "A" "10", demandRow "A" "20"] [row "A" "2"] =
-    some [("Form/Supply/Total", "cleared")] := by native_decide
+example : [[starredFallback, total (some "FieldFilled(Amount)")], [total (some "FieldNotFilled(Amount)"), starredFallback],
+    [constantTotal "FieldNotFilled(/Form/Demand/Key)", boundLocal]].all (fun declarations =>
+      run declarations [demandRow "A" "10", demandRow "B" "20"] [row "B" "2", row "A" "1"] ==
+        some [("Form/Supply/Total", "cleared"), ("Form/Supply[2]/Total", "cleared")]) = true := by native_decide
 
 example : run [downstream, starredFallback, total (some "FieldFilled(Amount)")]
     [demandRow "A" "bad"] [row "A" "2"] =
-    some [("Form/Supply/Total", "cleared"), ("Form/Out", "cleared")] := by native_decide
-
-private def boundLocal (guard : Option String := none) : DmComputation :=
-  definition "Supply" "Total" [{ operation := "[Amount] + 1", precondition := guard }]
+    some [("Form/Supply/Total", "cleared"), ("Form/Out", "value 1")] := by native_decide
 
 example : run [downstream, constantTotal "FieldNotFilled(/Form/Demand/Key)", boundLocal,
     definition "Supply" "Amount" [{ operation := "7", precondition := none }]]
     [demandRow "A" "10"] [row "A" "2"] = some [
-    ("Form/Supply/Amount", "value 7"), ("Form/Supply/Total", "value 8"), ("Form/Out", "value 9")] := by native_decide
+    ("Form/Supply/Amount", "value 7"), ("Form/Supply/Total", "cleared"), ("Form/Out", "value 1")] := by native_decide
 
-example : run [constantTotal "FieldNotFilled(/Form/Demand/Key)", boundLocal]
-    [demandRow "A" "10", demandRow "B" "20"] [row "B" "2", row "A" "1"] =
-    some [("Form/Supply/Total", "value 3"), ("Form/Supply[2]/Total", "value 2")] := by native_decide
-
-example : [
-    ([boundLocal, total (some "FieldFilled(Amount)"), scalarFallback], "value 3"),
-    ([boundLocal (some "FieldNotFilled(Amount)"), total (some "FieldFilled(Amount)"), scalarFallback], "value 12"),
-    ([boundLocal (some "FieldNotFilled(Amount)"), total (some "FieldNotFilled(Amount)"), scalarFallback], "value 7")].all
-    (fun (declarations, expected) => run declarations [demandRow "A" "10"] [row "A" "2"] ==
-      some [("Form/Supply/Total", expected)]) = true := by native_decide
-
+-- Alone, the same declaration is an ordinary row computation.
 example : (lowerComputation model .english (boundLocal (some "GroupFilled(/Form/Supply)"))).isOk = true ∧
     run [boundLocal (some "GroupFilled(/Form/Supply)")]
-      [demandRow "A" "10"] [row "A" "2"] = some [("Form/Supply/Total", "value 3")] ∧
-    run [constantTotal "FieldNotFilled(/Form/Demand/Key)", boundLocal (some "GroupFilled(/Form/Supply)")]
       [demandRow "A" "10"] [row "A" "2"] = some [("Form/Supply/Total", "value 3")] := by native_decide
 
 example : [
@@ -252,7 +243,7 @@ example : [
     [scalarFallback, constantTotal "FieldNotFilled(/Form/Demand/Key)", starredFallback]].all
     (fun declarations => (summary declarations [demandRow "A" "bad"] [row "A" "2"]).map
       (fun result => (result.outcomes, result.findings)) == some (
-        [("Form/Supply/Total", "value 7")],
+        [("Form/Supply/Total", "cleared")],
         [{ address := { field := 2, path := [1] }, cause := .malformed }])) = true := by native_decide
 
 end A12Kernel.Dm.ParallelComputationLocks
