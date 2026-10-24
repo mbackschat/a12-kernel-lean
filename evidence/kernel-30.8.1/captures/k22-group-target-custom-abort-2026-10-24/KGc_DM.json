@@ -1,0 +1,279 @@
+{
+ "header": {
+  "id": "KGc_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "KGc_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Policy",
+     "name": "Policy",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Policy/Holder",
+        "name": "Holder",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Policy/Contact",
+        "name": "Contact",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Policy/Contact/Phone",
+           "name": "Phone",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Policy/Claims",
+        "name": "Claims",
+        "Group": {
+         "repeatability": 4,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Policy/Claims/ClaimNo",
+           "name": "ClaimNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Policy/Claims/Status",
+           "name": "Status",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Policy/Claims/Items",
+           "name": "Items",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Policy/Claims/Items/ItemNo",
+              "name": "ItemNo",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Policy/Claims/c9",
+           "name": "c9",
+           "Rule": {
+            "errorEntityRelPath": "../Items",
+            "errorCode": "c9",
+            "errorCondition": "GroupFilled(Items) And FieldFilled(Status) And CustomCondition Approved",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Policy/Claims/c10",
+           "name": "c10",
+           "Rule": {
+            "errorEntityRelPath": "../Items/ItemNo",
+            "errorCode": "c10",
+            "errorCondition": "FieldFilled(Items/ItemNo) And CustomCondition Approved",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "ClaimNo"
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/c1",
+        "name": "c1",
+        "Rule": {
+         "errorEntityRelPath": "../Contact",
+         "errorCode": "c1",
+         "errorCondition": "GroupFilled(Contact) And CustomCondition Approved",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/c2",
+        "name": "c2",
+        "Rule": {
+         "errorEntityRelPath": "../Claims/Items",
+         "errorCode": "c2",
+         "errorCondition": "GroupFilled(Claims/Items) And CustomCondition Approved",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/c3",
+        "name": "c3",
+        "Rule": {
+         "errorEntityRelPath": "../Contact",
+         "errorCode": "c3",
+         "errorCondition": "CustomCondition Approved And GroupFilled(Contact)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/c4",
+        "name": "c4",
+        "Rule": {
+         "errorEntityRelPath": "../Contact",
+         "errorCode": "c4",
+         "errorCondition": "GroupFilled(Contact) And CustomCondition Nope",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/c5",
+        "name": "c5",
+        "Rule": {
+         "errorEntityRelPath": "../Contact",
+         "errorCode": "c5",
+         "errorCondition": "GroupFilled(Contact) And CustomCondition Ghost",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/c6",
+        "name": "c6",
+        "Rule": {
+         "errorEntityRelPath": "../Contact",
+         "errorCode": "c6",
+         "errorCondition": "GroupFilled(Contact) Or CustomCondition Approved",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/c7",
+        "name": "c7",
+        "Rule": {
+         "errorEntityRelPath": "../Holder",
+         "errorCode": "c7",
+         "errorCondition": "FieldFilled(Holder) And CustomCondition Approved",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

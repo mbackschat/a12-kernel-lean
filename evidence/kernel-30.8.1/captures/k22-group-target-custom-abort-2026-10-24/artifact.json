@@ -1,0 +1,731 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "KGc_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-24T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "d1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "c1",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c10",
+       "field": "Policy/Claims/Items/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims/Items/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c10",
+       "field": "Policy/Claims/Items[2]/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims/Items[2]/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c10",
+       "field": "Policy/Claims[2]/Items/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims[2]/Items/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c2",
+       "field": "Policy/Claims/Items",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c3",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c4",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c5",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c6",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c7",
+       "field": "Policy/Holder",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Holder"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c9",
+       "field": "Policy/Claims/Items",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims/Items/ItemNo",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims/Items[2]/ItemNo",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims[2]/Items/ItemNo",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Holder",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "c1",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c10",
+       "field": "Policy/Claims/Items/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims/Items/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c10",
+       "field": "Policy/Claims/Items[2]/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims/Items[2]/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c10",
+       "field": "Policy/Claims[2]/Items/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims[2]/Items/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c2",
+       "field": "Policy/Claims/Items",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c3",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c4",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c5",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c6",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c7",
+       "field": "Policy/Holder",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Holder"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c9",
+       "field": "Policy/Claims/Items",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims/Items/ItemNo",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims/Items[2]/ItemNo",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims[2]/Items/ItemNo",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Holder",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "d2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "c10",
+       "field": "Policy/Claims/Items/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims/Items/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c10",
+       "field": "Policy/Claims[2]/Items/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims[2]/Items/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c2",
+       "field": "Policy/Claims/Items",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c3",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c6",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c7",
+       "field": "Policy/Holder",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Holder"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c9",
+       "field": "Policy/Claims/Items",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims/Items/ItemNo",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims[2]/Items/ItemNo",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Holder",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "c10",
+       "field": "Policy/Claims/Items/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims/Items/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c10",
+       "field": "Policy/Claims[2]/Items/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims[2]/Items/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c2",
+       "field": "Policy/Claims/Items",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c3",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c6",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c7",
+       "field": "Policy/Holder",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Holder"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c9",
+       "field": "Policy/Claims/Items",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims/Items/ItemNo",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims[2]/Items/ItemNo",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Holder",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "d3",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "c10",
+       "field": "Policy/Claims/Items/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims/Items/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c2",
+       "field": "Policy/Claims/Items",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c3",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c6",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims/Items/ItemNo",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "c10",
+       "field": "Policy/Claims/Items/ItemNo",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Claims/Items/ItemNo"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c2",
+       "field": "Policy/Claims/Items",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c3",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c6",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Claims/Items/ItemNo",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "d4",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "c3",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c6",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c7",
+       "field": "Policy/Holder",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Holder"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Holder",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "c3",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c6",
+       "field": "Policy/Contact",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "c7",
+       "field": "Policy/Holder",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Policy/Holder"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "Approved",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Policy/Holder",
+       "result": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

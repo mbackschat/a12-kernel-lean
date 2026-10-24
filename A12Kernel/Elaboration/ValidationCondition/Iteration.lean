@@ -642,7 +642,8 @@ def evalWithTemporalResult (condition : ValidationCondition model)
   | .error (.inr fault@(.componentNumberInvalid))
   | .error (.inr fault@(.addressing .typeValidityValueFailure))
   | .error (.inr fault@(.addressing (.stringExpression .emptyPattern)))
-  | .error (.inr fault@(.addressing (.customCondition (.missingRegistration _)))) => onTemporalValueFailure fault
+  | .error (.inr fault@(.addressing (.customCondition (.missingRegistration _))))
+  | .error (.inr fault@(.addressing (.customCondition .groupErrorEntity))) => onTemporalValueFailure fault
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported)
   | .error (.inr (.addressing _)) => onTemporalUnavailable
 
@@ -708,19 +709,20 @@ private def addressedTemporalContext (context : AddressedValidationEvaluationCon
   | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired [])
 
 /-- The failures a rule's whole-rule handler catches: the value failures, and a reached custom condition
-no factory registers. The Kernel reports that rule under its own code as a value error with empty
+no factory registers or any reached on a group target. The Kernel reports that rule under its own code as a value error with empty
 reference channels and raises nothing (peer KF52; rules `C09`, `C10` and `M01`–`M03` of the
 [custom-condition capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-custom-condition-calls)).
 The verdict-only APIs keep the missing registration structural. -/
 def ruleRuntimeFailure? : CheckedAddressingError → Option ScalarTemporalEvaluationFault
   | .customCondition (.missingRegistration name) => some (.addressing (.customCondition (.missingRegistration name)))
+  | .customCondition .groupErrorEntity => some (.addressing (.customCondition .groupErrorEntity))
   | error => addressedValueFailure? error
 
 /-- Whether the whole-rule handler catches a reported addressing fault, as `ruleRuntimeFailure?`
 reports it, rather than leaving it structural. -/
 def caughtByRule : CheckedAddressingError → Bool
   | .typeValidityValueFailure | .stringExpression .emptyPattern
-  | .customCondition (.missingRegistration _) => true
+  | .customCondition (.missingRegistration _) | .customCondition .groupErrorEntity => true
   | _ => false
 
 /-- Evaluate one row-selected checked tree while retaining structural addressing failure outside the verdict algebra. Truth testing and conditional classification retain their separate failure boundaries. -/

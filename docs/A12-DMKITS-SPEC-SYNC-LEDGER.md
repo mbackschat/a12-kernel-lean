@@ -104,7 +104,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `canonical`: [spec/07](../spec/07-repetition-and-iteration.md), the group error-entity bullet; [spec/09](../spec/09-computations.md), the alternatives bullet.
 - `delta`: Adds that beside a join a group target admits `FieldValuesNotUnique` over the pair, a starred partner group or two error-side fields, `NumberOfDifferentValues` over the pair and a custom condition, the uniqueness leaves firing at the line's first part where their field forms fire; that two joined declarations into one target over different partner groups concatenate; and that the ended scan holds for Date and Enumeration joined targets.
 - `basis`: The [joined group-target checkpoint](sources/model-structure-and-declaration-probes.md#src-k22-joined-group-target-leaves), nine rules over four documents and ten computations over one, measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, replayed by `lake exe a12-kernel-replay`.
-- `acceptance`: Reconcile the `k22g` firings except `g4` and `g5`, and the `k22z` outcomes. The runtime of a custom condition on a joined group target is unsettled; do not claim it.
+- `acceptance`: Reconcile the `k22g` firings and the `k22z` outcomes. `g4` and `g5` follow the group-target abort the peer's KF615 at `3be383e24` already states ([inbound](sources/inbound-handbacks.md#src-inbound-2026-10-24b)), so they need no separate reconciliation.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-24-09"></a>

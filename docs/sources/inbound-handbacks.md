@@ -782,3 +782,14 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `instrument`: `td29`'s retained `RK_REDUNDANT_OPERAND` and `ogt008`/`ogt009`'s `RK_ERROR_FIELD_OUTSIDE_GROUP` are the instrument's own findings; A12 admits `td29` and cannot build the injected `ogt` model. No local claim names either as a Kernel class.
 - `limits`: The 45 message keys of `SPEC-2026-10-24-06` were reconciled by the same rendered-text method as ours, not by an independent observation of the selected key. The peer interpreter declines `g1`, `k1`, `k5` and `k8` (IG180); `k8`'s error pointer at `Lines[1]` beside references at `Lines[2]` and `Lines[-5]` stays unexplained on both sides.
 - `sync`: Inbound facts about clauses this project owns; no outbound ledger entry is created for them.
+
+<a id="src-inbound-2026-10-24b"></a>
+## Reviewed October 24b instrument handback
+
+- `source`: Peer-session letter of 2026-10-24, `a12-kernel-lean-spec-corrections-2026-10-24b.md`, SHA-256 `2027e0dbac4bc1522a30d04c4c4297a967f16f49bda7b62279c822d13ca989b9`, delivered by the a12-dmkits session. It answers this project's instrument note `A12-DMTOOL-FEEDBACK-2026-10-24-02` and disposes of no ledger entry.
+- `revision`: a12-dmkits instrument `d2dd5453b`, adding the probe's `evaluationRaises` channel, and interpreter correction `3be383e24`, which records [KF615](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf615); both resolve, read with `git` only. The [measurement checkout](cross-layer-routes.md#src-measurement-checkout-route) stays at `08b0d6499`, since no local replay consumes the new channel.
+- `review`: A HIGH reconciliation on 2026-10-24. KF615's outcome was re-measured on a local model of its shapes, adding a false and an unregistered name, the leaf first and an `Or` ([checkpoint](model-structure-and-declaration-probes.md#src-k22-group-target-custom-abort)); every row agrees with the letter, and the retained `k22g` artifact's `g4` and `g5` show the same outcome.
+- `adopted`: A reached custom condition on a group-target rule fails the rule before its name is looked up ([spec/11](../../spec/11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch)). The letter's `Kernel` origin for `g4` and `g5` is the peer's measurement at `d2dd5453b`, not repeated here.
+- `source-reading`: The letter's account of why the name is empty, read from the Kernel's code generator and one observed stack, is the peer's hypothesis; this project adopts only the measured outcome.
+- `instrument-limit`: `evaluationRaises` entries are not keyed to messages, and an artifact holding a raise-born message changes bytes when rerun at `d2dd5453b`; the retained `artifact-k22g.json` was produced at `08b0d6499` and is not rerun.
+- `sync`: Inbound facts about clauses this project owns. The answer settles the `g4`/`g5` exclusion of the pending `SPEC-2026-10-24-10`, whose acceptance now points here; no new outbound entry is created.

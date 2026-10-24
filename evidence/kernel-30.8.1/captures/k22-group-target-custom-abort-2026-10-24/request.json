@@ -1,0 +1,104 @@
+{
+ "model": "KGc_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "customConditions": {
+  "Approved": {
+   "returns": true
+  },
+  "Nope": {
+   "returns": false
+  }
+ },
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "d1",
+   "documentInline": {
+    "Policy": {
+     "Holder": "h",
+     "Contact": {
+      "Phone": "p"
+     },
+     "Claims": [
+      {
+       "ClaimNo": "1",
+       "Status": "s",
+       "Items": [
+        {
+         "ItemNo": "i1"
+        },
+        {
+         "ItemNo": "i2"
+        }
+       ]
+      },
+      {
+       "ClaimNo": "2",
+       "Status": "t",
+       "Items": [
+        {
+         "ItemNo": "j"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d2",
+   "documentInline": {
+    "Policy": {
+     "Holder": "h",
+     "Claims": [
+      {
+       "ClaimNo": "1",
+       "Items": [
+        {
+         "ItemNo": "i"
+        }
+       ]
+      },
+      {
+       "ClaimNo": "2",
+       "Status": "s",
+       "Items": [
+        {
+         "ItemNo": "j"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d3",
+   "documentInline": {
+    "Policy": {
+     "Claims": [
+      {
+       "ClaimNo": "1",
+       "Items": [
+        {
+         "ItemNo": "i"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d4",
+   "documentInline": {
+    "Policy": {
+     "Holder": "h"
+    }
+   }
+  }
+ ]
+}

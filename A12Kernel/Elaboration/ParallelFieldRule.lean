@@ -308,12 +308,11 @@ measures group and field presence (`t8`), the
 a field-fill list across the join (`q5`) and the
 [joined group-target checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-joined-group-target-leaves)
 uniqueness over the pair, over a starred group and over the error side's own fields (`g1`, `g3`,
-`g6`), each firing as its field twin does; the value leaves reuse them unmeasured. The Kernel admits a
-custom condition here too, but its runtime call is unsettled there, so it stays refused. -/
+`g6`), each firing as its field twin does; the value leaves reuse them unmeasured. A custom condition
+is admitted and fails when reached, as on an ordinary group target (`g4`, `g5`). -/
 def supportsGroupTarget : ParallelFieldLeaf model → Bool
   | .groupPresence .. | .presence .. | .numeric .. | .comparison _ | .flat .. | .fill ..
-  | .valuesNotUnique _ | .ordinary _ => true
-  | .customCondition _ => false
+  | .valuesNotUnique _ | .ordinary _ | .customCondition _ => true
 
 /-- Every payload is model-owned and addressable from the join or frame; comparisons reuse the shared authoring and scale gates. -/
 def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
@@ -747,6 +746,7 @@ def CheckedParallelFieldPair.customConditions (pair : CheckedParallelFieldPair m
     (registry : CustomValidationRegistry model) (document : CheckedDocument model)
     (relevance : CustomConditionRelevance ValidationRelevanceScope) (generatedFormalFailures : List CellAddr)
     (row : ResolvedParallelIndexRow) (outer : Env) : String → Except CustomConditionLookupError Bool :=
+  if pair.errorGroup.isSome then fun _ => .error .groupErrorEntity else
   fun name => registry.evaluate name
     (CustomValidationInvocation.ofDocument document relevance (pair.customErrorPointer row outer)
       generatedFormalFailures)
@@ -777,9 +777,9 @@ def ParallelFieldCondition.evalReached (condition : ParallelFieldCondition model
     condition.evalObservedM (condition.anyLeaf ParallelFieldLeaf.requiresClassificationPass) evalLeaf
   else condition.evalVerdictExcept evalLeaf
 
-/-- The failure the rule's whole-rule handler catches: a reached custom condition no factory registers (spec/11 §14). -/
+/-- The failure the rule's whole-rule handler catches: a reached custom condition no factory registers, or any reached on a group target (spec/11 §14). -/
 def ParallelPresenceRuleEvaluationError.caughtByRule : ParallelPresenceRuleEvaluationError → Bool
-  | .customCondition (.missingRegistration _) => true
+  | .customCondition (.missingRegistration _) | .customCondition .groupErrorEntity => true
   | _ => false
 
 /-- Run each outer row in order, ending after the first whose traversal a caught failure stopped.

@@ -169,8 +169,8 @@ end ResolvedValidationRule
 
 namespace CheckedResolvedValidationRule
 
-/-- The error field of a rule reporting on a field. Partial validation and custom-condition
-callbacks are defined for field targets only. -/
+/-- The error field of a rule reporting on a field. Partial validation is defined for field targets
+only, and a group target's custom condition fails when reached (`withCustomConditions`). -/
 def errorField? (rule : CheckedResolvedValidationRule model) : Option FieldId :=
   match rule.errorEntity with
   | .field field => some field
@@ -289,9 +289,10 @@ def withCustomConditions (rule : CheckedResolvedValidationRule model)
     (relevance : CustomConditionRelevance ValidationRelevanceScope)
     (registry : CustomValidationRegistry model)
     (generatedFormalFailures : List CellAddr := []) : AddressedValidationEvaluationContext model :=
-  let invoke := match context.input, rule.errorField? with
-    | .legacy _ _, _ | _, none => fun _ => .error .unavailableInvocation
-    | .checked document, some errorField | .partialView document _, some errorField =>
+  let invoke := match rule.errorEntity, context.input with
+    | .group _, _ => fun _ => .error .groupErrorEntity
+    | .field _, .legacy _ _ => fun _ => .error .unavailableInvocation
+    | .field errorField, .checked document | .field errorField, .partialView document _ =>
       let errorPointer : MessagePointer := {
         field := errorField
         coordinates := rule.errorPlacement.repeatableScope.map fun level =>

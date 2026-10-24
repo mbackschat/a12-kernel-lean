@@ -55,6 +55,10 @@ exceptions remain explicit host failures outside the pure successful-factory acc
 inductive CustomConditionLookupError where
   | unavailableInvocation
   | missingRegistration (name : String)
+  /-- A rule reporting on a group: the Kernel converts the rule's error field before it looks the name
+  up, and a group target has no field name there, so every reached call fails ahead of the lookup,
+  whatever the name or its registered answer (peer KF615; [checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-group-target-custom-abort)). -/
+  | groupErrorEntity
   deriving Repr, DecidableEq
 
 namespace CustomConditionRegistry

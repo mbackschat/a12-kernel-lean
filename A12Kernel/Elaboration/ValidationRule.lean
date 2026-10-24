@@ -88,9 +88,11 @@ def assembleResolvedFlatRule (model : FlatModel)
 
 /-- The condition leaves a rule reporting on a group admits. The [group-target checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
 measures field and group presence and a starred `Sum`; the other flat and ordered numeric leaves
-reuse its first-row read of the unindexed level unmeasured. -/
+reuse its first-row read of the unindexed level unmeasured. A custom condition is admitted and fails
+when reached ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-group-target-custom-abort)). -/
 private def ValidationConditionLeaf.supportsGroupTarget : ValidationConditionLeaf model → Bool
-  | .flat _ | .repeatableFieldPresence _ _ | .groupPresence _ _ | .orderedNumeric _ _ => true
+  | .flat _ | .repeatableFieldPresence _ _ | .groupPresence _ _ | .orderedNumeric _ _
+  | .customCondition _ => true
   | _ => false
 
 /-- Assemble the existing message/error-entity boundary around a checked mixed condition. -/

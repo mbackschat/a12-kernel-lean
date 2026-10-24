@@ -149,19 +149,12 @@ private def twinRows : List (String × String × String × String) := [
 example : (twinRows.filter fun (_, entity, condition, expected) => verdict entity condition != expected).map (·.1) = [] := by
   native_decide
 
-/-- Whether this reader refuses a rule without a Kernel class. -/
-private def unclassed (errorEntity condition : String) : Bool :=
-  match checkValidationRule dm .english
-      { group := O, name := "GroupProbe", errorCode := "P", errorEntityRelPath := "../" ++ errorEntity,
-        condition, severity := "ERROR" } with
-  | .ok _ => false
-  | .error refusal => refusal.kernelClass?.isNone
-
 /-- This reader's account of a group target beside a join where no capture measures the composition:
 the ordinary carrier's gates, so a field inside the group does not reference it (`t3`) and a negative
 presence of the group leaves its own level unguarded (`g03`), while a field inside it is read at its
-first row (`t2`). A field-fill list across the join is admitted (`q5`), and a leaf the measured
-compositions do not reach, such as a custom condition, is refused without a class. -/
+first row (`t2`). A field-fill list across the join is admitted (`q5`), and so is a custom condition,
+as `model check` admits `g4` of the
+[joined group-target checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-k22-joined-group-target-leaves). -/
 example :
     verdict "Lines/Parts" "FieldFilled(Lines/Parts/Count) And FieldFilled(Picks/Ref)" = UNREFERENCED ∧
     verdict "Lines/Parts" "GroupNotFilled(Lines/Parts) And FieldFilled(Picks/Ref)" =
@@ -170,7 +163,7 @@ example :
       "admitted" ∧
     verdict "Lines/Parts" "GroupFilled(Lines) And FieldFilled(Picks/Ref)" = "admitted" ∧
     verdict "Lines/Parts" "GroupFilled(Lines/Parts) And AtLeastOneFieldFilled(Lines/Sku, Picks/Ref)" = "admitted" ∧
-    unclassed "Lines/Parts" "GroupFilled(Lines/Parts) And CustomCondition X And FieldFilled(Picks/Ref)" := by
+    verdict "Lines/Parts" "GroupFilled(Lines/Parts) And CustomCondition X And FieldFilled(Picks/Ref)" = "admitted" := by
   native_decide
 
 open Lean in

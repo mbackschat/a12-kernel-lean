@@ -25,7 +25,6 @@
 - `calibration`: indexed RuleGroup runtime compositions beyond static/readback evidence, three or more bound ancestors, and additional carrier-specific partial/profile calibration.
 - `consumer-gated`: public structural-reference transport (D18). Structural and parallel consumers share the [cache boundary](#gap-sg29-cache-order); keyed condition support alone does not establish output correspondence.
 - `evidence-needed`: wider partial message profiles.
-- `blocked`: a custom condition beside a joined group target, admitted by the Kernel and refused by Lean: its callback records no call and the rule reports once at the first address, the shape of a failed call, and the artifact does not say whether the Kernel's call path or the probe's recorder fails ([checkpoint](../sources/model-structure-and-declaration-probes.md#src-k22-joined-group-target-leaves), `group-custom`). Blocked on: the failed call's exception class, which needs an instrument capability.
 - `consumer`: Execute needs selected cells and distinct absent/duplicate outcomes; Explain needs exact refusal and explicit insufficient context. Keys in different parents must stay independent.
 - `reopen-when`: a selected consumer needs one residual composition or current evidence falsifies a represented main form. No automatic post-checklist index programme.
 - `route-state`: discovery-required
