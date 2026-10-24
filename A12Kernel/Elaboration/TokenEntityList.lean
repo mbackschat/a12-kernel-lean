@@ -45,8 +45,10 @@ structure CheckedTokenField (model : FlatModel) where
   projectionRef : EnumerationProjectionRef
   operand : FlatTextFieldOperand
   profile : DirectComparableField
+  /-- Whether the consumer admits a raw String member (`toTokenFieldComparison?`). -/
+  admitRaw : Bool := false
   operandOwned :
-    declaration.toTokenFieldComparison? projectionRef = some (operand, profile)
+    declaration.toTokenFieldComparison? projectionRef admitRaw = some (operand, profile)
   admitted : model.ownsField operand.field = true
 
 /-- One starred String or stored/category Enumeration declaration with its exact optional checked filter. -/
@@ -55,8 +57,9 @@ structure CheckedTokenStarSource (model : FlatModel) where
   projectionRef : EnumerationProjectionRef
   operand : FlatTextFieldOperand
   profile : DirectComparableField
+  admitRaw : Bool := false
   operandOwned :
-    source.declaration.toTokenFieldComparison? projectionRef =
+    source.declaration.toTokenFieldComparison? projectionRef admitRaw =
       some (operand, profile)
   declaringGroup : GroupPath
   bindingGroup : GroupPath := declaringGroup
@@ -244,15 +247,15 @@ def diagnostic? : TokenEntityElabError → Option KernelStaticDiagnostic
 end TokenEntityElabError
 
 private def checkedTokenOperand? (declaration : FlatFieldDecl)
-    (projectionRef : EnumerationProjectionRef) :
+    (projectionRef : EnumerationProjectionRef) (admitRaw : Bool) :
     Option (FlatTextFieldOperand × DirectComparableField) :=
-  declaration.toTokenFieldComparison? projectionRef
+  declaration.toTokenFieldComparison? projectionRef admitRaw
 
 def certifyDirectTokenOperand (model : FlatModel)
     (declaration : FlatFieldDecl)
-    (projectionRef : EnumerationProjectionRef := .stored) :
+    (projectionRef : EnumerationProjectionRef := .stored) (admitRaw : Bool := false) :
     Except TokenEntityElabError (CheckedTokenField model) :=
-  match hOperand : checkedTokenOperand? declaration projectionRef with
+  match hOperand : checkedTokenOperand? declaration projectionRef admitRaw with
   | none =>
       match declaration.policy.kind, projectionRef with
       | .enumeration, .category name =>
@@ -275,6 +278,7 @@ def certifyDirectTokenOperand (model : FlatModel)
           projectionRef
           operand
           profile
+          admitRaw
           operandOwned := hOperand
           admitted := hAdmitted }
       else
@@ -284,10 +288,10 @@ def certifyStarTokenOperand (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model)
     (having : Option SurfaceCorrelatedHaving)
     (projectionRef : EnumerationProjectionRef := .stored)
-    (bindingGroup : GroupPath := declaringGroup) :
+    (bindingGroup : GroupPath := declaringGroup) (admitRaw : Bool := false) :
     Except TokenEntityElabError
       (CheckedTokenStarSource model) :=
-  match hOperand : checkedTokenOperand? source.declaration projectionRef with
+  match hOperand : checkedTokenOperand? source.declaration projectionRef admitRaw with
   | none =>
       match source.declaration.policy.kind, projectionRef with
       | .enumeration, .category name =>
@@ -312,13 +316,14 @@ def certifyStarTokenOperand (declaringGroup : GroupPath)
         projectionRef
         operand
         profile
+        admitRaw
         operandOwned := hOperand
         declaringGroup
         bindingGroup
         filter }
 
 private def certifyTokenEntityOperand (model : FlatModel)
-    (declaringGroup bindingGroup : GroupPath) : ResolvedFieldEntityOperand model →
+    (declaringGroup bindingGroup : GroupPath) (admitRaw : Bool) : ResolvedFieldEntityOperand model →
       Except TokenEntityElabError (CheckedTokenEntityOperand model)
   -- The authored read form is kept: a category read certifies through its projection, which reading
   -- the field stored would silently replace.
@@ -330,17 +335,17 @@ private def certifyTokenEntityOperand (model : FlatModel)
       let projectionRef : EnumerationProjectionRef := match form with
         | .stored => .stored
         | .projected category => .category category
-      do pure (.field (← certifyDirectTokenOperand model declaration projectionRef))
+      do pure (.field (← certifyDirectTokenOperand model declaration projectionRef admitRaw))
   | .star source form =>
       let projectionRef := match form with
         | .stored => EnumerationProjectionRef.stored
         | .projected category => .category category
-      do pure (.star (← certifyStarTokenOperand declaringGroup source none projectionRef (bindingGroup := bindingGroup)))
+      do pure (.star (← certifyStarTokenOperand declaringGroup source none projectionRef (bindingGroup := bindingGroup) admitRaw))
   | .starHaving source having form =>
       let projectionRef := match form with
         | .stored => EnumerationProjectionRef.stored
         | .projected category => .category category
-      do pure (.star (← certifyStarTokenOperand declaringGroup source (some having) projectionRef (bindingGroup := bindingGroup)))
+      do pure (.star (← certifyStarTokenOperand declaringGroup source (some having) projectionRef (bindingGroup := bindingGroup) admitRaw))
   | .group reference =>
       do pure (.group (← certifyTokenEntityGroup model (.fixed reference)
         |>.mapError .group))
@@ -352,13 +357,13 @@ private def certifyTokenEntityOperand (model : FlatModel)
         |>.mapError .group))
 
 private def certifyTokenEntityOperands (model : FlatModel)
-    (declaringGroup bindingGroup : GroupPath) : List (ResolvedFieldEntityOperand model) →
+    (declaringGroup bindingGroup : GroupPath) (admitRaw : Bool) : List (ResolvedFieldEntityOperand model) →
       Except TokenEntityElabError
         (List (CheckedTokenEntityOperand model))
   | [] => pure []
   | operand :: remaining => do
-      pure ((← certifyTokenEntityOperand model declaringGroup bindingGroup operand) ::
-        (← certifyTokenEntityOperands model declaringGroup bindingGroup remaining))
+      pure ((← certifyTokenEntityOperand model declaringGroup bindingGroup admitRaw operand) ::
+        (← certifyTokenEntityOperands model declaringGroup bindingGroup admitRaw remaining))
 
 /-- Finish one checked token entity list after its consumer has resolved and certified every slot. Exact direct-reference identity retains category selection, while wildcard occurrences remain independent. -/
 def assembleTokenEntitySource
@@ -386,10 +391,10 @@ def assembleTokenEntitySource
     resolving it again. A consumer may run its own whole-list gate before entering this boundary. -/
 def certifyTokenEntityShape (model : FlatModel)
     (declaringGroup : GroupPath) (shape : CheckedFieldEntityShape model)
-    (bindingGroup : GroupPath := declaringGroup) :
+    (bindingGroup : GroupPath := declaringGroup) (admitRaw : Bool := false) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) := do
-  let first ← certifyTokenEntityOperand model declaringGroup bindingGroup shape.first
-  let rest ← certifyTokenEntityOperands model declaringGroup bindingGroup shape.rest
+  let first ← certifyTokenEntityOperand model declaringGroup bindingGroup admitRaw shape.first
+  let rest ← certifyTokenEntityOperands model declaringGroup bindingGroup admitRaw shape.rest
   -- The shape's own rule carries through rather than being re-decided here: the arity gate has
   -- already fired (or not) upstream, so re-applying `manyRequired` would refuse a list the
   -- carrier's rule admitted.
@@ -399,14 +404,14 @@ def certifyTokenEntityShape (model : FlatModel)
 def elaborateTokenEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceTokenEntitySource)
     (arity : EntityListArity := .manyRequired) (writtenGroup : GroupPath := declaringGroup)
-    (fixedTargetGroup? : Option GroupPath := none) (bindingGroup? : Option GroupPath := none) :
+    (fixedTargetGroup? bindingGroup? : Option GroupPath := none) (admitRaw : Bool := false) :
     Except TokenEntityElabError (CheckedTokenEntitySource model) := do
   let shape ← elaborateFieldEntityShapeIn model declaringGroup
       (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD []) authored arity fixedTargetGroup?
       (writtenGroup := writtenGroup)
       (groupReadScope := if bindingGroup?.isSome && fixedTargetGroup?.isNone then .ruleBound else .scalar)
     |>.mapError .shape
-  certifyTokenEntityShape model declaringGroup shape ((bindingGroup?.or fixedTargetGroup?).getD writtenGroup)
+  certifyTokenEntityShape model declaringGroup shape ((bindingGroup?.or fixedTargetGroup?).getD writtenGroup) admitRaw
 
 /-- A path-resolved projection-bearing token slot. Keeping this intermediate private preserves duplicate-before-certification diagnostics without exposing a second checked representation. -/
 private inductive ResolvedProjectedTokenEntityOperand

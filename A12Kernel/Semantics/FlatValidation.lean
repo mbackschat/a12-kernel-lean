@@ -39,7 +39,15 @@ structure FlatConfirmField where
 
 structure FlatStringField where
   id : FieldId
+  /-- A raw String admitted as a list member, whose filled value the Kernel reads as the token `X`
+  rather than its text, in a computation's and a rule's first-filled scan alike, an empty one staying
+  empty (k22-static-s4-2026-10-24, `raw-members/artifact*.json`). -/
+  rawPlaceholder : Bool := false
   deriving Repr, DecidableEq
+
+/-- The token a String member contributes for its present text. -/
+def FlatStringField.token (field : FlatStringField) (value : String) : String :=
+  if field.rawPlaceholder then "X" else value
 
 structure FlatEnumerationField where
   id : FieldId
@@ -580,9 +588,14 @@ def SimpleComparisonOperand.asTokenValueListCell
   | .value token _ => .present token
   | .unknown cause => .unknown cause
 
+/-- A present String member's cell with its raw placeholder applied; every other cell is unchanged. -/
+def FlatTextFieldOperand.placeholderToken : FlatTextFieldOperand → ValueListCell .token → ValueListCell .token
+  | .string field, .present value => .present (field.token value)
+  | _, cell => cell
+
 def FlatTextFieldOperand.valueListCell (operand : FlatTextFieldOperand)
     (context : FlatContext) : ValueListCell .token :=
-  (operand.resolve context).asTokenValueListCell
+  operand.placeholderToken (operand.resolve context).asTokenValueListCell
 
 /-- Project a phase-resolved String or Enumeration observation without rechecking its stored
 value; index selection and ordinary rows retain the same declaration-owned token identity. -/
@@ -590,11 +603,11 @@ def FlatTextFieldOperand.observedValueListCell
     (operand : FlatTextFieldOperand) (observation : CellObservation) :
     ValueListCell .token :=
   match operand with
-  | .string _ =>
+  | .string field =>
       match observation with
       | .empty => .empty
       | .value (.str value) =>
-          if value.isEmpty then .empty else .present value
+          if value.isEmpty then .empty else .present (field.token value)
       | .value _ => .unknown .malformed
       | .unknown cause | .poison cause => .unknown cause
   | FlatTextFieldOperand.enumeration enumOperand =>

@@ -57,7 +57,7 @@ theorem stringValueListCell_readsNormalized (context : FlatContext)
       formalCheck { kind := .string } (.parsed (.str text)))
     (nonempty : (normalizeEvaluatedString text).isEmpty = false) :
     (FlatTextFieldOperand.string field).valueListCell context =
-      .present (normalizeEvaluatedString text) := by
+      .present (field.token (normalizeEvaluatedString text)) := by
   rw [FlatTextFieldOperand.valueListCell, FlatTextFieldOperand.resolve,
     directStringOperand_readsNormalized context field text read nonempty]
   rfl
@@ -71,7 +71,7 @@ theorem stringValueListCell_empty (context : FlatContext)
   simp [FlatTextFieldOperand.valueListCell, FlatTextFieldOperand.resolve,
     FlatContext.resolveDirectStringComparisonOperand,
     FlatContext.resolveStringComparisonOperandAt, empty,
-    SimpleComparisonOperand.asTokenValueListCell]
+    SimpleComparisonOperand.asTokenValueListCell, FlatTextFieldOperand.placeholderToken]
 
 /-- String `Length` counts the cached normalized text supplied by the checked read for its resolved field. -/
 theorem stringLengthOperand_readsNormalized (context : FlatContext)

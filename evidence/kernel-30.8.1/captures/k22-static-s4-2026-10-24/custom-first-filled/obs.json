@@ -1,0 +1,197 @@
+{
+ "schemaVersion": 2,
+ "dmtool": "0.13.0",
+ "kernelBuilt": "30.8.1",
+ "kernelRuntime": "30.8.1",
+ "source": {
+  "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "state": "CLEAN"
+ },
+ "model": "485949977fc8f0745e6496b81980c3294824d74b93e569c242d406ee96ddd184",
+ "observations": [
+  {
+   "id": "c1",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c2",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c3",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c4",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c5",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c6",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c7",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c8",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "c9",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "c10",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "c11",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_VARYING_TYPES_NOT_ALLOWED"
+   ]
+  },
+  {
+   "id": "c12",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c13",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c14",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "c15",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c16",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c17",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c18",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c19",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c20",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ]
+  },
+  {
+   "id": "c21",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c22",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c23",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_DUPLICATE_PARAM1"
+   ]
+  },
+  {
+   "id": "c24",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c25",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c26",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "c27",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+   ]
+  },
+  {
+   "id": "c28",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  }
+ ]
+}

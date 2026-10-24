@@ -401,7 +401,8 @@ theorem admitsStringValueField_admitsField (model : FlatModel)
       cases kindEq : declaration.policy.kind <;>
         cases modeEq : declaration.stringValueMode
       all_goals try simp_all [FlatFieldDecl.toStringValueField?,
-        FlatFieldDecl.toPresenceField, FlatField.matchesDecl, FlatField.id]
+        FlatFieldDecl.toPresenceField, FlatFieldDecl.isRawString, FlatField.matchesDecl, FlatField.id]
+      all_goals (obtain ⟨_, rfl⟩ := admitted; rfl)
 
 /-- Every field read by an admitted comparison independently passes the shared typed-field admission check. -/
 theorem admitsComparison_fields_admitted (model : FlatModel)

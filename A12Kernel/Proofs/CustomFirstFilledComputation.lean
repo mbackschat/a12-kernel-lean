@@ -23,12 +23,19 @@ theorem customFirstFilledCellAt_registeredRejection
     } = .unknown (.registeredCustomValidation rejection) := by
   rfl
 
-/-- The checked operation retains one Custom declaration on the target and every source declaration and excludes forbidden target references; positive conditional group membership remains in the complete inventory (spec/09 §5). -/
+/-- The checked operation retains its target's Custom declaration, admits only string-like source declarations and excludes forbidden target references; positive conditional group membership remains in the complete inventory (spec/09 §5). -/
 theorem checkedCustomFirstFilled_carriers (operation : CheckedCustomFirstFilledComputation model) :
     operation.target.customType = some operation.customType ∧
-      operation.site.source.declarations.all (·.customType == some operation.customType) = true ∧
+      operation.site.source.declarations.all (·.isCustomFirstFilledSource) = true ∧
       operation.referencesWith operation.targetField (·.forbidsTarget operation.targetField) = false :=
-  ⟨operation.targetCustom, operation.sourceCustom, operation.excludesTarget⟩
+  ⟨operation.targetCustom, operation.sourceStringLike, operation.excludesTarget⟩
+
+/-- A selected Enumeration source contributes its stored token to the scan. -/
+theorem customFirstFilledCellAt_enumeration (token : String) :
+    customFirstFilledCellAt {
+      rawPresent := true, parsed := some (.enum token), findings := []
+    } = .present token := by
+  rfl
 
 /-- The immutable addressed executor is definitionally the caller-read route specialized to the document's checked read. -/
 theorem checkedCustomFirstFilled_executeWithRead_base

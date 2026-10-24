@@ -105,7 +105,8 @@ def elaborateFirstFilledTokenSource (model : FlatModel)
   match firstFilledMeasuredKindError? model shape.operands with
   | some error => throw error
   | none =>
-      certifyTokenEntityShape model declaringGroup shape (bindingGroup?.getD declaringGroup) |>.mapError .source
+      certifyTokenEntityShape model declaringGroup shape (bindingGroup?.getD declaringGroup) (admitRaw := true)
+        |>.mapError .source
 
 namespace FirstFilledTokenElabError
 

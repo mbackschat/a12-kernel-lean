@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Memo",
+ "alternatives": [
+  {
+   "operation": "[Raw]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

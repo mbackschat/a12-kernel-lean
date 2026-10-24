@@ -250,14 +250,15 @@ def checkAddressedEnumerationComputation
     match source with
     | .literal token =>
         throw (.ordinary (.literalOutsideTarget target.declaration.path token))
-    -- A stored read whose display the generated comparison admits misses on the domain, the
-    -- calculation's own refusal (rows `ud6` and `ud7`); a display miss and a category read into a
-    -- repeatable target are unmeasured.
+    -- A stored read whose display the generated comparison admits, and a category read, which has
+    -- no display arm, miss on the domain, the calculation's own refusal (rows `ud6` and `ud7` of
+    -- k22-static-s3-2026-10-24, `va4` and `va13` of k22-static-s4-2026-10-24); a display miss is
+    -- unmeasured.
     | .field _ _ declaration operand _ _ _ _ _ _ _ _ _ =>
         match operand.projectionRef, target.declaration.copyComparisonRefusal? declaration with
-        | .stored, none => throw (.ordinary
+        | .stored, none | .category _, _ => throw (.ordinary
             (.sourceOutsideTargetDomain declaration.path target.declaration.path))
-        | _, _ => throw (.ordinary
+        | .stored, some _ => throw (.ordinary
             (.sourceIncompatible declaration.path target.declaration.path))
 
 inductive AddressedEnumerationComputationFault where

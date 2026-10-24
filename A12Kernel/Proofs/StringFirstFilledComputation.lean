@@ -5,12 +5,13 @@ import A12Kernel.Proofs.StringComputationRunApplication
 
 namespace A12Kernel
 
-/-- A checked nonempty ordinary String value is the token the scan consumes. -/
+/-- A checked nonempty String value is the token the scan consumes, a raw member's placeholder
+applied. -/
 theorem stringFirstFilledCell_value (field : FlatStringField) (value : String)
     (nonempty : value.isEmpty = false) :
     (FlatTextFieldOperand.string field).checkedValueListCellAt .computation {
       rawPresent := true, parsed := some (.str value), findings := []
-    } = .present value := by
+    } = .present (field.token value) := by
   have observed : observeCell .computation ({
       rawPresent := true, parsed := some (Value.str value), findings := [] } : CheckedCell) =
         .value (Value.str value) := rfl

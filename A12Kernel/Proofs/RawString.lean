@@ -12,10 +12,11 @@ theorem rawString_toStringValueField_none (declaration : FlatFieldDecl)
     cases modeEq : declaration.stringValueMode <;>
     simp_all [FlatFieldDecl.isRawString, FlatFieldDecl.toStringValueField?]
 
-/-- Raw mode does not change the field identity used by presence predicates. -/
+/-- A raw String's presence field is its String field marked with the raw placeholder, the token a
+first-filled member reads; presence predicates read only its id. -/
 theorem rawString_toPresenceField (declaration : FlatFieldDecl)
     (raw : declaration.isRawString = true) :
-    declaration.toPresenceField = .string { id := declaration.id } := by
+    declaration.toPresenceField = .string { id := declaration.id, rawPlaceholder := true } := by
   cases kindEq : declaration.policy.kind <;>
     simp_all [FlatFieldDecl.isRawString, FlatFieldDecl.toPresenceField]
 

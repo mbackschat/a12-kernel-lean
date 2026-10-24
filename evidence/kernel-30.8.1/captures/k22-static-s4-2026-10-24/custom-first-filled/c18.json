@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Title",
+ "alternatives": [
+  {
+   "operation": "FirstFilledValue(Cust, Memo)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

@@ -24,12 +24,19 @@ starred token slots and their runtime stay with the token entity list that impor
 
 namespace A12Kernel
 
-/-- Resolve the exact stored/category token projection selected by a token-family consumer. String supports only the stored/default selection. -/
+/-- Resolve the exact stored/category token projection selected by a token-family consumer. String supports only the stored/default selection.
+
+`admitRaw` lets a raw String join as a plain String, which only `FirstFilledValue` lists do: the
+Kernel admits a raw member there on rules and computations and refuses it in comparisons, distinct
+counts and uniqueness lists (k22-static-s4-2026-10-24, `raw-members`). -/
 def FlatFieldDecl.toTokenFieldComparison? (declaration : FlatFieldDecl)
-    (projectionRef : EnumerationProjectionRef) :
+    (projectionRef : EnumerationProjectionRef) (admitRaw : Bool := false) :
     Option (FlatTextFieldOperand × DirectComparableField) :=
   match projectionRef with
-  | .stored => declaration.toTextFieldComparison?
+  | .stored =>
+      if admitRaw && declaration.isRawString then
+        some (.string { id := declaration.id, rawPlaceholder := true }, .plainString)
+      else declaration.toTextFieldComparison?
   | .category _ =>
       declaration.toEnumerationTextFieldComparison? projectionRef
 

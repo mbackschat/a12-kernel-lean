@@ -1,0 +1,1983 @@
+[
+ {
+  "id": "va1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va9",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va12",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va12.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va13",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va13.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va14",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va14.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va15",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va15.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va16",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va16.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va17",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va17.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va18",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va18.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va19",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va19.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va20",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va20.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va21",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va21.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "va22",
+  "verb": "computation",
+  "args": [
+   "add",
+   "va22.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb9",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb12",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb12.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb13",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb13.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb14",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb14.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb15",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb15.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb16",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb16.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb17",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb17.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb18",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb18.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb19",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb19.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb20",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb20.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb21",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb21.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vb22",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vb22.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vd1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Title] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Price] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Kind] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Level] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Flag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Due] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Day] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Stamp] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Clock] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Span] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Frag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For Cust] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Title] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Price] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Kind] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Level] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Flag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Due] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Day] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd22",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Stamp] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd23",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Clock] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd24",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Span] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd25",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Frag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd26",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd26",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For Cust] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd27",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd27",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Title] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd28",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd28",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd29",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd29",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Price] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd30",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd30",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Kind] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd31",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd31",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Level] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd32",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd32",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Flag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd33",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd33",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Due] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd34",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd34",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Day] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd35",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd35",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Stamp] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd36",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd36",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Clock] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd37",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd37",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Span] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd38",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd38",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Frag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd39",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd39",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For Cust] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd40",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd40",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Title] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd41",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd41",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd42",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd42",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Price] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd43",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd43",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Kind] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd44",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd44",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Level] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd45",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd45",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Flag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd46",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd46",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Due] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd47",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd47",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Day] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd48",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd48",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Stamp] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd49",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd49",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Clock] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd50",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd50",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Span] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd51",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd51",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Frag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd52",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd52",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For Cust] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd53",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd53",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Title] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd54",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd54",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd55",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd55",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Price] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd56",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd56",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Kind] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd57",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd57",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Level] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd58",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd58",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Flag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd59",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd59",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Due] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd60",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd60",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Day] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd61",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd61",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Stamp] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd62",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd62",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Clock] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd63",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd63",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Span] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd64",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd64",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Frag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd65",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd65",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For Cust] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd66",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd66",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Title] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd67",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd67",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd68",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd68",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Price] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd69",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd69",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Kind] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd70",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd70",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Level] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd71",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd71",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Flag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd72",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd72",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Due] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd73",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd73",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Day] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd74",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd74",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Stamp] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd75",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd75",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Clock] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd76",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd76",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Span] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd77",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd77",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Frag] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vd78",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "vd78",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For Cust] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For \"5\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For \"x\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NItems/NV For \"5.5\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For \"2020-01-01\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [DItems/DV For \"01.01.2020\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For \"A\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [EItems/EV For \"C\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For \"2020-01-01/2020-02-01\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [GItems/GV For \"2020-01-01\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [CItems/CV For \"x\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ve11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ve11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For \"x\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "vf1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vf1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vf2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vf2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vf3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vf3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vf4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vf4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vf5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vf5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vf6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vf6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vf7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vf7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "vf8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "vf8.json",
+   "--dry-run"
+  ]
+ }
+]

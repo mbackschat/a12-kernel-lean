@@ -1,0 +1,145 @@
+{
+ "schemaVersion": 2,
+ "dmtool": "0.13.0",
+ "kernelBuilt": "30.8.1",
+ "kernelRuntime": "30.8.1",
+ "source": {
+  "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "state": "CLEAN"
+ },
+ "model": "485949977fc8f0745e6496b81980c3294824d74b93e569c242d406ee96ddd184",
+ "observations": [
+  {
+   "id": "rw1",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "rw2",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "rw3",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "rw4",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "rw5",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "rw6",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_RAW_TYPE"
+   ]
+  },
+  {
+   "id": "rw7",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_LENGTH_OF_RAW_TYPE"
+   ]
+  },
+  {
+   "id": "rw8",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "rw9",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_RAW_TYPE"
+   ]
+  },
+  {
+   "id": "rw10",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_RAW_TYPE"
+   ]
+  },
+  {
+   "id": "rw11",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "rw12",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "rw13",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "rk1",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "rk2",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "rk3",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ]
+  },
+  {
+   "id": "rk4",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "rk5",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_RAW_TYPE"
+   ]
+  },
+  {
+   "id": "rk6",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "rk7",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  }
+ ]
+}

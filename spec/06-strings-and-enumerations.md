@@ -38,7 +38,8 @@ For a nonempty ordinary STRING input, the declaration-owned formal check applies
 
 The String-only `noValueValidation` option declares a **raw type**. Its value remains in the document but is never interned for evaluation. Model validation closes every value window:
 
-- comparisons, value lists, computation operands, coercions, and any other value operation are rejected with `MVK_INVALID_RAW_TYPE`;
+- comparisons, value lists, computation operands, coercions, and any other value operation are rejected with `MVK_INVALID_RAW_TYPE`, distinct counts and `FieldValuesNotUnique` lists included;
+- the exception is a member of a `FirstFilledValue` list, in a rule or a computation and in any position: it is admitted, and a filled raw value is read there as the token `X` whatever its text, a single space included, while an empty one is skipped, on both Kernel strategies ([checkpoint](../docs/sources/group-count-topology.md#src-k22-static-s4)); a raw member of a field-fill count or presence list is admitted too and counts as filled;
 - message interpolation of the value is rejected;
 - `Length` is authorable only as the whole rule condition `Length(f) > c`, or the mirrored `c < Length(f)`, using strict GT/LT and a constant written without a decimal point whose exact integer value lies in `-2147483648..2147483647`;
 - the same strict whole-rule shape with a decimal-point spelling, a fractional value, or an integer outside that interval is rejected with `MVK_INTERNAL_ERROR`;

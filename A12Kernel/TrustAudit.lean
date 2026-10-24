@@ -2718,6 +2718,7 @@ run_cmd do
 #print axioms A12Kernel.booleanFirstFilledRun_applyToChecked_delegates
 #print axioms A12Kernel.customFirstFilledCellAt_value
 #print axioms A12Kernel.customFirstFilledCellAt_registeredRejection
+#print axioms A12Kernel.customFirstFilledCellAt_enumeration
 #print axioms A12Kernel.checkedCustomFirstFilled_carriers
 #print axioms A12Kernel.checkedCustomFirstFilled_executeWithRead_base
 #print axioms A12Kernel.checkedCustomFirstFilled_executeResult_projects

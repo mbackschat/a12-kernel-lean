@@ -110,7 +110,7 @@ private def elabError? (checked :
   | .error cause => some cause
   | .ok _ => none
 
-/- The checked boundary separates target placement, Custom declaration identity checked before placement, source shape and scope, and self-reference; a fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. Placement is containment: the ancestor `["Projects"]` is admitted with an operand spelled for that base, while `["Projects", "Choices"]` — which shares the target's enclosing prefix without containing it — is refused, so an account keyed on a common ancestor still admits what only containment rejects. -/
+/- The checked boundary separates target placement, Custom declaration identity checked before placement, source shape and scope, and self-reference, while an ordinary String, another Custom type and another policy of the same name feed the scan alike; a fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. Placement is containment: the ancestor `["Projects"]` is admitted with an operand spelled for that base, while `["Projects", "Choices"]` — which shares the target's enclosing prefix without containing it — is refused, so an account keyed on a common ancestor still admits what only containment rejects. -/
 example :
     operation?.isSome = true ∧
     elabError? (checkCustomFirstFilledComputation model
@@ -132,16 +132,11 @@ example :
         (.star (siblingStar source.name))) =
         some (.targetNotCustom ordinarySource.path) ∧
     elabError? (checkCustomFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (.star (siblingStar ordinarySource.name))) =
-        some (.sourceCustomTypeMismatch ordinarySource.path customType none) ∧
+      ["Projects", "Tasks"] target.id (.star (siblingStar ordinarySource.name))) = none ∧
     elabError? (checkCustomFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (.star (siblingStar otherSource.name))) =
-        some (.sourceCustomTypeMismatch otherSource.path customType
-          (some otherType)) ∧
+      ["Projects", "Tasks"] target.id (.star (siblingStar otherSource.name))) = none ∧
     elabError? (checkCustomFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (.star (siblingStar policySource.name))) =
-        some (.sourceCustomTypeMismatch policySource.path customType
-          (some sameNameOtherPolicy)) ∧
+      ["Projects", "Tasks"] target.id (.star (siblingStar policySource.name))) = none ∧
     elabError? (checkCustomFirstFilledComputation model
       ["Projects", "Tasks"] target.id (.star nestedSiblingStar)) =
         some (.site (.starPlacement (.sourceShape nestedSource.path))) ∧

@@ -162,6 +162,7 @@ theorem flatEnumerationValueList_no_empty
     ResolvedValueListQuantifierSide.hasUnknown,
     FlatTokenValueSide.resolve, flatTokenValueListSide,
     FlatTextFieldOperand.valueListCell, FlatTextFieldOperand.resolve,
+    FlatTextFieldOperand.placeholderToken,
     FlatEnumerationOperand.resolve, SimpleComparisonOperand.asTokenValueListCell,
     ResolvedEnumerationProjection.resolveOperand, literalTokenValueListSide,
     ResolvedValueListSide.hasUnknown,
@@ -177,6 +178,7 @@ theorem flatEnumerationValueMembership_empty
       context true = .notFired := by
   apply flatTokenValueMembership_empty
   simp [FlatTextFieldOperand.valueListCell, FlatTextFieldOperand.resolve,
+    FlatTextFieldOperand.placeholderToken,
     FlatEnumerationOperand.resolve, SimpleComparisonOperand.asTokenValueListCell,
     ResolvedEnumerationProjection.resolveOperand, empty]
 

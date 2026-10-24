@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Cust",
+ "alternatives": [
+  {
+   "operation": "[CustO]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

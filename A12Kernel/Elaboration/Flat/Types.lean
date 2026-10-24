@@ -342,7 +342,7 @@ def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
   | .number info => .number { id := declaration.id, info }
   | .boolean => .boolean { id := declaration.id }
   | .confirm => .confirm { id := declaration.id }
-  | .string => .string { id := declaration.id }
+  | .string => .string { id := declaration.id, rawPlaceholder := declaration.isRawString }
   | .enumeration => .enumeration { id := declaration.id }
   | .temporal kind components =>
       .temporal { id := declaration.id, kind, components }

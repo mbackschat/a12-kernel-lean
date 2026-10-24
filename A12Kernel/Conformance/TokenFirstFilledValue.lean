@@ -404,14 +404,14 @@ example :
       [.star (starPath "Guard")]) = none := by
   native_decide
 
-/- A raw String shares the String surface kind but has no readable stored-token value, so neither
-   the direct pair nor the equivalent fixed-group carrier borrows the ordinary String diagnostic. -/
+/- A raw String joins a direct first-filled list as a String member, in either position, as the Kernel
+   admits it (k22-static-s4-2026-10-24, `raw-members` rows `rw1` and `rw2`), while a fixed group
+   expanding to one is still refused. -/
 example :
     checkedErrorOf (source (.field (directPath "Raw"))
-      [.field (directPath "Amount")]) =
-        some (.source (.rawStringValue rawString.path)) ∧
-    diagnosticOf (source (.field (directPath "Raw"))
-      [.field (directPath "Amount")]) = none ∧
+      [.field (directPath directString.name)]) = none ∧
+    checkedErrorOf (source (.field (directPath directString.name))
+      [.field (directPath "Raw")]) = none ∧
     checkedErrorOf (fixedGroup ["Form", "RawMixed"]) =
         some (.source (.group (.expansionNotToken ["Form", "RawMixed"]))) ∧
     diagnosticOf (fixedGroup ["Form", "RawMixed"]) = none := by

@@ -22,7 +22,9 @@ private def fixedStep : Option (CheckedDocumentComputationStep model) →
 private def firstFilledStep (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (arguments : List Argument) (suppress : Bool) : Lowering (CheckedDocumentComputationStep model) := do
   let bindingGroup? := if arguments.any Argument.hasHaving then some target.groupPath else none
-  let check {ε α : Type} [Repr ε] (result : Except ε α) : Lowering α :=
+  -- The carrier's class instance must reach `elaborated`; without it the low-priority classless
+  -- instance answers for every carrier (row `c14` of k22-static-s4-2026-10-24).
+  let check {ε α : Type} [Repr ε] [StaticClassified ε] (result : Except ε α) : Lowering α :=
     elaborated "FirstFilledValue" result
   if target.policy.kind == .enumeration then
     let operation ← elaboratedEnumerationFirstFilled (·.calculationRefusal?)

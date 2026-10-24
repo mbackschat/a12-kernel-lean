@@ -88,9 +88,14 @@ def StringFirstFilledComputationElabError.diagnostic? :
   | .unsupportedSourceCarrier _ | .declaringGroupInvalid _ => none
 
 /-- First-filled text results retain stored or category tokens across String/Enumeration sources;
-the ordinary String target applies its own policy (spec/06 §B.1, spec/09 §1). -/
+the ordinary String target applies its own policy (spec/06 §B.1, spec/09 §1). A Custom source of any
+type joins them, admitted beside an ordinary String (rows `c18` and `c19` of the
+[fourth batch](../../evidence/kernel-30.8.1/captures/k22-static-s4-2026-10-24/custom-first-filled/)),
+and so does a raw String, whose text the scan reads unvalidated (`rk1`, `rk2` and `rk6` of its
+`raw-members` rows). -/
 def FlatFieldDecl.isStringFirstFilledSource (declaration : FlatFieldDecl) : Bool :=
-  declaration.isOrdinaryStringComputationCarrier || declaration.policy.kind == .enumeration
+  declaration.isOrdinaryStringComputationCarrier || declaration.policy.kind == .enumeration ||
+    (declaration.customType.isSome && declaration.stringValueMode == .evaluated) || declaration.isRawString
 
 /-- One ordinary String target and a checked text entity list bound by that target's rows. -/
 structure CheckedStringFirstFilledComputation (model : FlatModel) where
@@ -122,7 +127,7 @@ def checkStringFirstFilledComputation
       discard <| (checkAddressedRepeatableTarget model declaringGroup targetField).mapError .placement
     if hTarget : target.isOrdinaryStringComputationCarrier = true then
       let source ← (elaborateTokenEntitySource model declaringGroup authored
-          (fixedTargetGroup? := some target.groupPath)).mapError .source
+          (fixedTargetGroup? := some target.groupPath) (admitRaw := true)).mapError .source
       if hSource : source.operands.all
           (·.declarations.all (·.isStringFirstFilledSource)) = true then
         if hExcludes : source.referencesField targetField (fun having _ => having.forbidsTarget targetField) = false then

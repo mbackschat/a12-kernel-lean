@@ -146,7 +146,7 @@ example : (do
         some (.presentValue ⟨"AAA", by decide⟩, ["AAA"], []) := by
   native_decide
 
-/- The checked boundary retains an ordinary evaluated-String target and an ordinary String source. A fixed target's placement is unrestricted: declaring at `["Review", "Rows"]` puts it *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted, a star aggregate deriving no iteration. An unrepresentable declaring group is still refused. The repeatable target inside the declaring group is admitted, its star over its own group reading the whole list at every row as the Kernel does ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-repeatable-computation-row-extent) `rerun`). Nested stars reuse that same checked source boundary. -/
+/- The checked boundary retains an ordinary evaluated-String target and an ordinary, Custom or raw String source. A fixed target's placement is unrestricted: declaring at `["Review", "Rows"]` puts it *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted, a star aggregate deriving no iteration. An unrepresentable declaring group is still refused. The repeatable target inside the declaring group is admitted, its star over its own group reading the whole list at every row as the Kernel does ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-repeatable-computation-row-extent) `rerun`). Nested stars reuse that same checked source boundary. -/
 example :
     (checked? target.id (star source.name)).isSome = true ∧
       (checkedAt? ["Review", "Rows"] target.id (star source.name)).isSome = true ∧
@@ -155,8 +155,8 @@ example :
       (checked? repeatedTarget.id (star source.name)).isSome = true ∧
       (checked? customTarget.id (star source.name)).isNone = true ∧
       (checked? rawTarget.id (star source.name)).isNone = true ∧
-      (checked? target.id (star rawSource.name)).isNone = true ∧
-      (checked? target.id (star customSource.name)).isNone = true ∧
+      (checked? target.id (star rawSource.name)).isSome = true ∧
+      (checked? target.id (star customSource.name)).isSome = true ∧
       (checked? target.id nestedStar).isSome = true := by
   native_decide
 
@@ -325,7 +325,7 @@ private def listChecked? (targetField : FieldId) (entries : List SurfaceFieldEnt
 /- A list is the shared entity list: a lone field is too few, a star beside a field is read in authored
 order, measured for String prefix/fallback operands beside nested stars
 ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-nested-string-first-filled)), a
-Custom member retains its distinct carrier refusal, and a list naming the target is the target-read
+Custom member is read as a String one, and a list naming the target is the target-read
 class, as the Kernel reports for a String `FirstFilledValue` listing its target. -/
 example :
     ((listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry minimumTarget.name]).isOk &&
@@ -333,9 +333,7 @@ example :
       | .error error => error.diagnostic? == some .paramSizeInvalidN
       | .ok _ => false) &&
     (listChecked? patternTarget.id [.star (star source.name), plainEntry unrelated.name]).isOk &&
-    (match listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry customTarget.name] with
-      | .error (.unsupportedSourceCarrier _) => true
-      | _ => false) &&
+    (listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry customTarget.name]).isOk &&
     (match listChecked? patternTarget.id [plainEntry unrelated.name, plainEntry patternTarget.name] with
       | .error error => error.diagnostic? == some .errorReferenceToCalculatedField &&
           (match error with | .targetSelfReference _ => true | _ => false)

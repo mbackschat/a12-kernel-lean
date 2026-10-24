@@ -145,13 +145,13 @@ example :
       some (.poison (.registeredCustomValidation rejection)) := by
   native_decide
 
-/- The checked boundary admits only the same Custom type on a fixed target and direct single-level starred source. Placement is not part of that boundary. Declaring at `["Review", "Rows"]` puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused, and so is the repeatable target, whose direct star reopens its own row rather than a sibling. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
+/- The checked boundary admits a string-like direct single-level starred source on a fixed target, an ordinary String and another Custom type alike. Placement is not part of that boundary. Declaring at `["Review", "Rows"]` puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused, and so is the repeatable target, whose direct star reopens its own row rather than a sibling. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
 example :
     (checked? target.id (star "Code")).isSome = true ∧
       (checkedAt? ["Review", "Rows"] target.id (star "Code")).isSome = true ∧
       (checkedAt? [] target.id (star "Code")).isNone = true ∧
-      (checked? target.id (star "Ordinary")).isNone = true ∧
-      (checked? target.id (star "OtherCode")).isNone = true ∧
+      (checked? target.id (star "Ordinary")).isSome = true ∧
+      (checked? target.id (star "OtherCode")).isSome = true ∧
       (checked? repeatedTarget.id (star "Code")).isNone = true ∧
       (checked? target.id nestedStar).isNone = true := by
   native_decide

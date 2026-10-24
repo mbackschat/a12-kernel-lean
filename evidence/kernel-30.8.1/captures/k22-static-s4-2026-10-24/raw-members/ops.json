@@ -1,0 +1,286 @@
+[
+ {
+  "id": "rw1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Raw, Memo) == \"x\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Memo, Raw) == \"x\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Raw, Raw2) == \"x\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Raw, Memo) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldFilled(Raw, Memo)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Raw] == \"x\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Raw) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Raw, Memo) == [Memo]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Raw, Memo) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Raw, Memo)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Raw, Kind) == \"A\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Cust, Raw) == \"x\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rw13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "rw13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Memo] == FirstFilledValue(Raw, Memo)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "rk1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "rk1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rk2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "rk2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rk3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "rk3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rk4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "rk4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rk5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "rk5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rk6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "rk6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "rk7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "rk7.json",
+   "--dry-run"
+  ]
+ }
+]

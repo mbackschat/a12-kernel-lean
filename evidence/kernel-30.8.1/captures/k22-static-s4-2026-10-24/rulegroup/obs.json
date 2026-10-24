@@ -1,0 +1,91 @@
+{
+ "schemaVersion": 2,
+ "dmtool": "0.13.0",
+ "kernelBuilt": "30.8.1",
+ "kernelRuntime": "30.8.1",
+ "source": {
+  "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "state": "CLEAN"
+ },
+ "verb": "model check",
+ "observations": [
+  {
+   "id": "rg1",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "rg2",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "rg3",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "rg4",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "rg5",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "rg6",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "rg7",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "rg8",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "rg9",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  },
+  {
+   "id": "rg10",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_GROUP_IS_EMPTY"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,178 @@
+{
+ "header": {
+  "id": "RawRt_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "RawRt_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Raw",
+        "name": "Raw",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {
+           "lineBreaksPermitted": true,
+           "noValueValidation": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Title",
+        "name": "Title",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Memo",
+        "name": "Memo",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Memo2",
+        "name": "Memo2",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/C1",
+        "name": "C1",
+        "Computation": {
+         "computedFieldRelPath": "../Memo",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Raw, Title)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/C2",
+        "name": "C2",
+        "Computation": {
+         "computedFieldRelPath": "../Memo2",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Title, Raw)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/R1",
+        "name": "R1",
+        "Rule": {
+         "errorEntityRelPath": "../Title",
+         "errorCode": "R1",
+         "errorCondition": "FieldFilled(Title) And FirstFilledValue(Raw, Title) == \"r\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/R2",
+        "name": "R2",
+        "Rule": {
+         "errorEntityRelPath": "../Title",
+         "errorCode": "R2",
+         "errorCondition": "FieldFilled(Title) And FirstFilledValue(Raw, Title) == \"t\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/R3",
+        "name": "R3",
+        "Rule": {
+         "errorEntityRelPath": "../Title",
+         "errorCode": "R3",
+         "errorCondition": "FieldFilled(Title) And NumberOfFilledFields(Raw, Title) == 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

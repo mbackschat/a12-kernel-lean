@@ -11,6 +11,7 @@ import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.AddressedEnumerationFirstFilledComputation
 import A12Kernel.Elaboration.StringExpression
 import A12Kernel.Elaboration.ScalarCopyComputation
+import A12Kernel.Elaboration.CustomFirstFilledComputation
 
 /-! # The Kernel class of a reader refusal
 
@@ -91,6 +92,19 @@ instance : StaticClassified AddressedEnumerationFirstFilledComputationElabError 
 instance : StaticClassified RowStringExpressionElabError := ⟨fun
   | .expression (.resolve error) => error.diagnostic?
   | .selfReference => some .errorReferenceToCalculatedField
+  | _ => none⟩
+
+/-- A String or Custom target its operation reads, whose class the generated comparison does not
+supply for a Custom target (row `vb10` of the
+[fourth batch](../../../evidence/kernel-30.8.1/captures/k22-static-s4-2026-10-24/)). -/
+instance : StaticClassified StringComputationElabError := ⟨fun
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
+  | _ => none⟩
+
+/-- A Custom first-filled list naming its own fixed or repeatable target (rows `c14` and `c27` of the
+[Custom first-filled batch](../../../evidence/kernel-30.8.1/captures/k22-static-s4-2026-10-24/custom-first-filled/)). -/
+instance : StaticClassified CustomFirstFilledComputationElabError := ⟨fun
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | _ => none⟩
 
 instance : StaticClassified ScalarCopyElabError := ⟨fun
