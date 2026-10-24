@@ -301,14 +301,19 @@ def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
   | _ => leaf.fields.any (fun field => group.path.isPrefixOf (pair.declaration field).groupPath) ||
       leaf.atomLeaves.any (pair.ordinaryBinding? · == some (.side side))
 
-/-- The leaves a rule reporting on a group admits beside a join: presence, value and field-fill
-leaves. The [nested-join checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
-measures group and field presence (`t8`) and the
+/-- The leaves a rule reporting on a group admits beside a join: every leaf but a custom condition.
+The [nested-join checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
+measures group and field presence (`t8`), the
 [blank-root checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06)
-a field-fill list across the join (`q5`); the value leaves reuse them unmeasured. -/
+a field-fill list across the join (`q5`) and the
+[joined group-target checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-joined-group-target-leaves)
+uniqueness over the pair, over a starred group and over the error side's own fields (`g1`, `g3`,
+`g6`), each firing as its field twin does; the value leaves reuse them unmeasured. The Kernel admits a
+custom condition here too, but its runtime call is unsettled there, so it stays refused. -/
 def supportsGroupTarget : ParallelFieldLeaf model → Bool
-  | .groupPresence .. | .presence .. | .numeric .. | .comparison _ | .flat .. | .fill .. => true
-  | .customCondition _ | .valuesNotUnique _ | .ordinary _ => false
+  | .groupPresence .. | .presence .. | .numeric .. | .comparison _ | .flat .. | .fill ..
+  | .valuesNotUnique _ | .ordinary _ => true
+  | .customCondition _ => false
 
 /-- Every payload is model-owned and addressable from the join or frame; comparisons reuse the shared authoring and scale gates. -/
 def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)

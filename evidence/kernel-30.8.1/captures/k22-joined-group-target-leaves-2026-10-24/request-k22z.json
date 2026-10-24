@@ -1,0 +1,81 @@
+{
+ "model": "K22z_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "z1",
+   "documentInline": {
+    "Staffing": {
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01",
+       "Kind": "a"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz",
+       "Stamp": "2026-11-02",
+       "Kind": "b"
+      }
+     ],
+     "Extra": [
+      {
+       "Department": "A",
+       "Tag": "ta",
+       "Amt": "7"
+      },
+      {
+       "Department": "B",
+       "Tag": "tb",
+       "Amt": "8"
+      }
+     ],
+     "Supply": [
+      {
+       "OutD1": "2000-01-01",
+       "OutE": "c",
+       "OutE2": "c",
+       "OutS2": "seed",
+       "Out03": "999",
+       "Department": "A",
+       "Headcount": "1",
+       "Due": "2027-01-01",
+       "KindS": "b"
+      },
+      {
+       "OutD1": "2000-01-01",
+       "OutE": "c",
+       "OutE2": "c",
+       "OutS2": "seed",
+       "Out03": "999",
+       "Department": "B",
+       "Headcount": "2",
+       "Due": "2027-02-02",
+       "KindS": "a"
+      },
+      {
+       "OutD1": "2000-01-01",
+       "OutE": "c",
+       "OutE2": "c",
+       "OutS2": "seed",
+       "Out03": "999",
+       "Department": "E",
+       "Headcount": "1",
+       "Due": "2027-03-03",
+       "KindS": "b"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,579 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "K22g_DM.json",
+    "locale": "en_US",
+    "clock": "2026-10-24T10:00:00Z"
+  },
+  "rows": [
+    {
+      "name": "g-dup",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "f1",
+              "field": "Order/Lines/Parts[2]/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count",
+                "Order/Lines/Sku",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "f3",
+              "field": "Order/Lines/Parts[2]/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "/Order[1]/Picks[0]/Ref",
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "f3",
+              "field": "Order/Lines[2]/Parts/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "/Order[1]/Picks[0]/Ref",
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "f4",
+              "field": "Order/Lines/Parts[2]/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "f4",
+              "field": "Order/Lines[2]/Parts/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "g1",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Lines/Parts/PartNo",
+                "Order/Lines/Sku",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "g2",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Lines/Parts/PartNo",
+                "Order/Lines/Sku",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "g3",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "/Order[1]/Picks[0]/Ref",
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Lines/Parts/PartNo",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "g3",
+              "field": "Order/Lines[2]/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "/Order[1]/Picks[0]/Ref",
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Lines[2]/Parts/PartNo",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "g4",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "g5",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "g6",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines/Code",
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Lines/Parts/PartNo",
+                "Order/Lines/Sku",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "customConditionCalls": [
+            {
+              "observation": "validateFull",
+              "name": "X",
+              "relevant": null,
+              "formallyIncorrect": [],
+              "errorEntity": "Order/Lines/Parts[2]/Count",
+              "result": true
+            },
+            {
+              "observation": "validateFull",
+              "name": "X",
+              "relevant": null,
+              "formallyIncorrect": [],
+              "errorEntity": "Order/Lines[2]/Parts/Count",
+              "result": true
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "f1",
+              "field": "Order/Lines/Parts[2]/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count",
+                "Order/Lines/Sku",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "f3",
+              "field": "Order/Lines/Parts[2]/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "/Order[1]/Picks[0]/Ref",
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "f3",
+              "field": "Order/Lines[2]/Parts/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "/Order[1]/Picks[0]/Ref",
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "f4",
+              "field": "Order/Lines/Parts[2]/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts[2]/Count",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "f4",
+              "field": "Order/Lines[2]/Parts/Count",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "g1",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Lines/Parts/PartNo",
+                "Order/Lines/Sku",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "g2",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Lines/Parts/PartNo",
+                "Order/Lines/Sku",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "g3",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "/Order[1]/Picks[0]/Ref",
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Lines/Parts/PartNo",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "g3",
+              "field": "Order/Lines[2]/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "/Order[1]/Picks[0]/Ref",
+                "Order/Lines[2]/LineNo",
+                "Order/Lines[2]/Parts/Count",
+                "Order/Lines[2]/Parts/PartNo",
+                "Order/Picks[2]/LineNo",
+                "Order/Picks[2]/Ref"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "g4",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "g5",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "g6",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "probe",
+              "referenced": [
+                "Order/Lines/Code",
+                "Order/Lines/LineNo",
+                "Order/Lines/Parts/Count",
+                "Order/Lines/Parts/PartNo",
+                "Order/Lines/Sku",
+                "Order/Picks/LineNo",
+                "Order/Picks/Ref"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "customConditionCalls": [
+            {
+              "observation": "validateFull",
+              "name": "X",
+              "relevant": null,
+              "formallyIncorrect": [],
+              "errorEntity": "Order/Lines/Parts[2]/Count",
+              "result": true
+            },
+            {
+              "observation": "validateFull",
+              "name": "X",
+              "relevant": null,
+              "formallyIncorrect": [],
+              "errorEntity": "Order/Lines[2]/Parts/Count",
+              "result": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "g-clean",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "g4",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "g5",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "customConditionCalls": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "g4",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "g5",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "customConditionCalls": []
+        }
+      ]
+    },
+    {
+      "name": "g-shift",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "g4",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "g5",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "customConditionCalls": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "g4",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "g5",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "customConditionCalls": []
+        }
+      ]
+    },
+    {
+      "name": "g-three",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "g4",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "g5",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "customConditionCalls": []
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "g4",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            },
+            {
+              "code": "g5",
+              "field": "Order/Lines/Parts",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [],
+              "fillToFix": []
+            }
+          ],
+          "customConditionCalls": []
+        }
+      ]
+    }
+  ]
+}

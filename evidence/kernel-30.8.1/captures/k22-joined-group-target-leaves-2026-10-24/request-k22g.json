@@ -1,0 +1,206 @@
+{
+ "model": "K22g_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "customConditions": {
+  "X": {
+   "returns": true
+  }
+ },
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "g-dup",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "1",
+       "Sku": "s",
+       "Parts": [
+        {
+         "PartNo": "p1"
+        },
+        {
+         "PartNo": "p2",
+         "Count": "2"
+        }
+       ],
+       "Code": "s"
+      },
+      {
+       "LineNo": "2",
+       "Sku": "a",
+       "Parts": [
+        {
+         "Count": "1"
+        }
+       ],
+       "Code": "b"
+      },
+      {
+       "LineNo": "3",
+       "Sku": "x",
+       "Parts": [
+        {
+         "PartNo": "p"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "1",
+       "Ref": "s"
+      },
+      {
+       "LineNo": "2",
+       "Ref": "c"
+      },
+      {
+       "LineNo": "4",
+       "Ref": "s"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "g-clean",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "1",
+       "Sku": "s",
+       "Parts": [
+        {
+         "PartNo": "p1"
+        }
+       ],
+       "Code": "t"
+      },
+      {
+       "LineNo": "2",
+       "Sku": "a",
+       "Parts": [
+        {
+         "PartNo": "q"
+        }
+       ],
+       "Code": "b"
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "1",
+       "Ref": "u"
+      },
+      {
+       "LineNo": "2",
+       "Ref": "c"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "g-shift",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "1",
+       "Sku": "s",
+       "Parts": [
+        {
+         "PartNo": "p1"
+        }
+       ]
+      },
+      {
+       "LineNo": "2",
+       "Sku": "a",
+       "Parts": [
+        {
+         "PartNo": "q"
+        }
+       ]
+      },
+      {
+       "LineNo": "3",
+       "Sku": "x",
+       "Parts": [
+        {
+         "PartNo": "r"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "2",
+       "Ref": "c"
+      },
+      {
+       "LineNo": "3",
+       "Ref": "d"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "g-three",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "LineNo": "1",
+       "Sku": "s",
+       "Parts": [
+        {
+         "PartNo": "p1"
+        }
+       ]
+      },
+      {
+       "LineNo": "2",
+       "Sku": "a",
+       "Parts": [
+        {
+         "PartNo": "q"
+        }
+       ]
+      },
+      {
+       "LineNo": "3",
+       "Sku": "x",
+       "Parts": [
+        {
+         "PartNo": "r"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "1",
+       "Ref": "b"
+      },
+      {
+       "LineNo": "2",
+       "Ref": "c"
+      },
+      {
+       "LineNo": "3",
+       "Ref": "d"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}
