@@ -1,0 +1,22 @@
+[
+ {
+  "id": "s14",
+  "verb": "rule",
+  "args": ["check", "--code", "s14", "--field", "/A/W", "--condition", "FieldFilled(W) And [Dup2] > 1", "--message", "en_US=m"]
+ },
+ {
+  "id": "s15",
+  "verb": "rule",
+  "args": ["check", "--code", "s15", "--field", "/A/W", "--condition", "FieldFilled(W) And [/B/Dup2] > 1", "--message", "en_US=m"]
+ },
+ {
+  "id": "s16",
+  "verb": "rule",
+  "args": ["check", "--code", "s16", "--field", "/A/W", "--condition", "FieldFilled(W) And [/C/CN] > 1", "--message", "en_US=m"]
+ },
+ {
+  "id": "s17",
+  "verb": "rule",
+  "args": ["check", "--code", "s17", "--field", "/A/W", "--condition", "FieldFilled(W) And Sum(/C*/CN) > 1", "--message", "en_US=m"]
+ }
+]

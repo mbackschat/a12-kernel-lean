@@ -1,0 +1,760 @@
+{
+ "header": {
+  "id": "XR2_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "XR2_DM"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/A",
+     "name": "A",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/A/W",
+        "name": "W",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/A/AN",
+        "name": "AN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/A/Dup",
+        "name": "Dup",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/A/C1",
+        "name": "C1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/A/C2",
+        "name": "C2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/A/C3",
+        "name": "C3",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/A/C4",
+        "name": "C4",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/A/AG",
+        "name": "AG",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/A/AG/AGN",
+           "name": "AGN",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/A/AG/AGC",
+           "name": "AGC",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/A/AG/CAGC",
+           "name": "CAGC",
+           "Computation": {
+            "computedFieldRelPath": "../AGC",
+            "computationAlternatives": [
+             {
+              "operation": "[AGN] + [/B/BN]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/A/AG/g01",
+           "name": "g01",
+           "Rule": {
+            "errorEntityRelPath": "../AGN",
+            "errorCode": "g01",
+            "errorCondition": "[AGN] > [/B/BN]",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/A/AG/g02",
+           "name": "g02",
+           "Rule": {
+            "errorEntityRelPath": "../AGN",
+            "errorCode": "g02",
+            "errorCondition": "GroupFilled(/B/BF) And [AGN] > 0",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/A/AG/g03",
+           "name": "g03",
+           "Rule": {
+            "errorEntityRelPath": "../AGN",
+            "errorCode": "g03",
+            "errorCondition": "NumberOfFilledGroups(/B/BG*) > 1 And [AGN] > 0",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/A/CC1",
+        "name": "CC1",
+        "Computation": {
+         "computedFieldRelPath": "../C1",
+         "computationAlternatives": [
+          {
+           "operation": "[/B/BN] + 1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/A/CC2",
+        "name": "CC2",
+        "Computation": {
+         "computedFieldRelPath": "../C2",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(/B/BG*/BGN)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/A/CC3",
+        "name": "CC3",
+        "Computation": {
+         "computedFieldRelPath": "../C3",
+         "computationAlternatives": [
+          {
+           "operation": "[/B/BS]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/A/CC4",
+        "name": "CC4",
+        "Computation": {
+         "computedFieldRelPath": "../C4",
+         "computationAlternatives": [
+          {
+           "operation": "DayFromDate(/B/BD) + [/A/AN]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r01",
+        "name": "r01",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r01",
+         "errorCondition": "FieldFilled(W) And [/A/AN] > [/B/BN]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r02",
+        "name": "r02",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r02",
+         "errorCondition": "FieldFilled(W) And Length(/B/BS) > 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r03",
+        "name": "r03",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r03",
+         "errorCondition": "FieldFilled(W) And DayFromDate(/B/BD) == 15",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r04",
+        "name": "r04",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r04",
+         "errorCondition": "FieldFilled(W) And GroupFilled(/B/BF)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r05",
+        "name": "r05",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r05",
+         "errorCondition": "FieldFilled(W) And NumberOfFilledFields(/B/BN, /B/BS) == 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r06",
+        "name": "r06",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r06",
+         "errorCondition": "FieldFilled(W) And Sum(/B/BG*/BGN) > 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r07",
+        "name": "r07",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r07",
+         "errorCondition": "FieldFilled(W) And ([/B/BN] > 5 Or Length(/B/BS) > 5)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r10",
+        "name": "r10",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r10",
+         "errorCondition": "FieldFilled(W) And [Dup] > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r12",
+        "name": "r12",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r12",
+         "errorCondition": "FieldFilled(W) And FieldValuesNotUnique(/B/BG*/BGS)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r13",
+        "name": "r13",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r13",
+         "errorCondition": "FieldFilled(W) And NumberOfFilledGroups(/B/BG*) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r14",
+        "name": "r14",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r14",
+         "errorCondition": "FieldFilled(W) And [BN] > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/A/C5",
+        "name": "C5",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/A/CC5",
+        "name": "CC5",
+        "Computation": {
+         "computedFieldRelPath": "../C5",
+         "computationAlternatives": [
+          {
+           "operation": "[BN] + 1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r19",
+        "name": "r19",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r19",
+         "errorCondition": "FieldFilled(W) And [BN] > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m $BN$"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r17",
+        "name": "r17",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r17",
+         "errorCondition": "FieldFilled(W) And Sum(/C*/CN) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/A/r18",
+        "name": "r18",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "r18",
+         "errorCondition": "FieldFilled(W) And [/B/Dup2] > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/B",
+     "name": "B",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/B/Dup2",
+        "name": "Dup2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/B/BN",
+        "name": "BN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/B/BS",
+        "name": "BS",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/B/BD",
+        "name": "BD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/B/Dup",
+        "name": "Dup",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/B/BF",
+        "name": "BF",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/B/BF/BFN",
+           "name": "BFN",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/B/BG",
+        "name": "BG",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/B/BG/BGN",
+           "name": "BGN",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/B/BG/BGS",
+           "name": "BGS",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/B/b01",
+        "name": "b01",
+        "Rule": {
+         "errorEntityRelPath": "../BN",
+         "errorCode": "b01",
+         "errorCondition": "[/A/AN] == [/B/BN]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/C",
+     "name": "C",
+     "Group": {
+      "repeatability": 2,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/C/CN",
+        "name": "CN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/C/Dup2",
+        "name": "Dup2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

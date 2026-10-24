@@ -1,0 +1,32 @@
+[
+ {
+  "id": "s18",
+  "verb": "rule",
+  "args": ["check", "--code", "s18", "--field", "/A/W", "--condition", "FieldFilled(W) And [BGN] > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "s19",
+  "verb": "rule",
+  "args": ["check", "--code", "s19", "--field", "/A/W", "--condition", "FieldFilled(W) And Sum(BGN*) > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "s20",
+  "verb": "rule",
+  "args": ["check", "--code", "s20", "--field", "/A/W", "--condition", "FieldFilled(W) And [BN] > 1", "--message", "en_US=m $BN$"]
+ },
+ {
+  "id": "s21",
+  "verb": "rule",
+  "args": ["check", "--code", "s21", "--field", "/A/W", "--condition", "FieldFilled(W) And [BN] > 1", "--message", "en_US=m $Dup2$"]
+ },
+ {
+  "id": "s22",
+  "verb": "computation",
+  "args": ["add", "s22.json", "--dry-run"]
+ },
+ {
+  "id": "s23",
+  "verb": "computation",
+  "args": ["add", "s23.json", "--dry-run"]
+ }
+]

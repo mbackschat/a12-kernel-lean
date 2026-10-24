@@ -1,0 +1,86 @@
+{
+ "kernel": "30.8.1",
+ "verb": "rule check",
+ "producer": {
+  "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "state": "CLEAN"
+ },
+ "dmtool": "0.13.0",
+ "rows": {
+  "s01": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ],
+   "instrument": []
+  },
+  "s02": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s03": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ],
+   "instrument": []
+  },
+  "s04": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s05": {
+   "admitted": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ],
+   "instrument": []
+  },
+  "s06": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s07": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s08": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s09": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s10": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s11": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s12": {
+   "admitted": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ],
+   "instrument": []
+  },
+  "s13": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ],
+   "instrument": []
+  }
+ }
+}

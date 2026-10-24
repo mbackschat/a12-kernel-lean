@@ -1,0 +1,35 @@
+{
+ "kernel": "30.8.1",
+ "verb": "rule check",
+ "producer": {
+  "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "state": "CLEAN"
+ },
+ "dmtool": "0.13.0",
+ "rows": {
+  "s14": {
+   "admitted": false,
+   "codes": [
+    "MVK_FIELDNAME_NOT_UNIQUE"
+   ],
+   "instrument": []
+  },
+  "s15": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s16": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ],
+   "instrument": []
+  },
+  "s17": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  }
+ }
+}

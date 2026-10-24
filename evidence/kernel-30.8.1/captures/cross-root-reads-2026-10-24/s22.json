@@ -1,0 +1,5 @@
+{
+ "computedField": "/A/C5",
+ "alternatives": [{"operation": "[BN] + 1"}],
+ "messages": [{"locale": "en_US", "text": "m"}]
+}

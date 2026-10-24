@@ -1,0 +1,2821 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "XR_DM.json",
+  "locale": "en_US",
+  "clock": "2024-03-30T23:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "both",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CAGC",
+       "field": "A/AG/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG/AGC",
+        "A/AG/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CAGC",
+       "field": "A/AG[2]/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGC",
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC1",
+       "field": "A/C1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C1",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC2",
+       "field": "A/C2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ]
+      },
+      {
+       "code": "CC3",
+       "field": "A/C3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C3",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC4",
+       "field": "A/C4",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "g01",
+       "field": "A/AG[2]/AGN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r01",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/W",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r02",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r03",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r04",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BF/BFN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r05",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r06",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/W"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN"
+       ]
+      },
+      {
+       "code": "r10",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/Dup",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r12",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGS",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r13",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "/B[1]/BG[0]/BGS",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r14",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/AG/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "4"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "4"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "cleared": false,
+        "errored": false,
+        "value": "abc"
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "20"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/AG/AGC",
+        "value": "4"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "value": "12"
+       },
+       {
+        "field": "A/C1",
+        "value": "4"
+       },
+       {
+        "field": "A/C2",
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "value": "abc"
+       },
+       {
+        "field": "A/C4",
+        "value": "20"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "AN": 5,
+        "C1": 4,
+        "C2": 12,
+        "C3": "abc",
+        "C4": 20,
+        "Dup": 2,
+        "W": "w",
+        "AG": [
+         {
+          "AGC": 4,
+          "AGN": 1
+         },
+         {
+          "AGC": 12,
+          "AGN": 9
+         }
+        ]
+       },
+       "B": {
+        "BD": "2024-06-15",
+        "BN": 3,
+        "BS": "abc",
+        "Dup": 0,
+        "BF": {
+         "BFN": 1
+        },
+        "BG": [
+         {
+          "BGN": 4,
+          "BGS": "a"
+         },
+         {
+          "BGN": 8,
+          "BGS": "a"
+         }
+        ]
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CAGC",
+       "field": "A/AG/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG/AGC",
+        "A/AG/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CAGC",
+       "field": "A/AG[2]/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGC",
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC1",
+       "field": "A/C1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C1",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC2",
+       "field": "A/C2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ]
+      },
+      {
+       "code": "CC3",
+       "field": "A/C3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C3",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC4",
+       "field": "A/C4",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "g01",
+       "field": "A/AG[2]/AGN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r01",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/W",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r02",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r03",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r04",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BF/BFN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r05",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r06",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/W"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN"
+       ]
+      },
+      {
+       "code": "r10",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/Dup",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r12",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGS",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r13",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "/B[1]/BG[0]/BGS",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r14",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/AG/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "4"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "4"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "cleared": false,
+        "errored": false,
+        "value": "abc"
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "20"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/AG/AGC",
+        "value": "4"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "value": "12"
+       },
+       {
+        "field": "A/C1",
+        "value": "4"
+       },
+       {
+        "field": "A/C2",
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "value": "abc"
+       },
+       {
+        "field": "A/C4",
+        "value": "20"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "AN": 5,
+        "C1": 4,
+        "C2": 12,
+        "C3": "abc",
+        "C4": 20,
+        "Dup": 2,
+        "W": "w",
+        "AG": [
+         {
+          "AGC": 4,
+          "AGN": 1
+         },
+         {
+          "AGC": 12,
+          "AGN": 9
+         }
+        ]
+       },
+       "B": {
+        "BD": "2024-06-15",
+        "BN": 3,
+        "BS": "abc",
+        "Dup": 0,
+        "BF": {
+         "BFN": 1
+        },
+        "BG": [
+         {
+          "BGN": 4,
+          "BGS": "a"
+         },
+         {
+          "BGN": 8,
+          "BGS": "a"
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "aEmpty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "4"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "cleared": false,
+        "errored": false,
+        "value": "abc"
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "15"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/C1",
+        "value": "4"
+       },
+       {
+        "field": "A/C2",
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "value": "abc"
+       },
+       {
+        "field": "A/C4",
+        "value": "15"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "C1": 4,
+        "C2": 12,
+        "C3": "abc",
+        "C4": 15
+       },
+       "B": {
+        "BD": "2024-06-15",
+        "BN": 3,
+        "BS": "abc",
+        "Dup": 0,
+        "BF": {
+         "BFN": 1
+        },
+        "BG": [
+         {
+          "BGN": 4,
+          "BGS": "a"
+         },
+         {
+          "BGN": 8,
+          "BGS": "a"
+         }
+        ]
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "4"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "cleared": false,
+        "errored": false,
+        "value": "abc"
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "15"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/C1",
+        "value": "4"
+       },
+       {
+        "field": "A/C2",
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "value": "abc"
+       },
+       {
+        "field": "A/C4",
+        "value": "15"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "C1": 4,
+        "C2": 12,
+        "C3": "abc",
+        "C4": 15
+       },
+       "B": {
+        "BD": "2024-06-15",
+        "BN": 3,
+        "BS": "abc",
+        "Dup": 0,
+        "BF": {
+         "BFN": 1
+        },
+        "BG": [
+         {
+          "BGN": 4,
+          "BGS": "a"
+         },
+         {
+          "BGN": 8,
+          "BGS": "a"
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "bEmpty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CAGC",
+       "field": "A/AG/AGC",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG/AGC",
+        "A/AG/AGN",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/AG/AGC",
+        "A/AG/AGN",
+        "B/BN"
+       ]
+      },
+      {
+       "code": "CC1",
+       "field": "A/C1",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C1",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/C1",
+        "B/BN"
+       ]
+      },
+      {
+       "code": "CC2",
+       "field": "A/C2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ]
+      },
+      {
+       "code": "CC4",
+       "field": "A/C4",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ],
+       "fillToFix": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ]
+      },
+      {
+       "code": "g01",
+       "field": "A/AG/AGN",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG/AGN",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/AG/AGN",
+        "B/BN"
+       ]
+      },
+      {
+       "code": "g01",
+       "field": "A/AG[2]/AGN",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/AG[2]/AGN",
+        "B/BN"
+       ]
+      },
+      {
+       "code": "r01",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/W",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/AN",
+        "B/BN"
+       ]
+      },
+      {
+       "code": "r10",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/Dup",
+        "A/W"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/AG/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "A/C3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/AG/AGC",
+        "value": "1"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "value": "9"
+       },
+       {
+        "field": "A/C1",
+        "value": "1"
+       },
+       {
+        "field": "A/C2",
+        "value": "0"
+       },
+       {
+        "field": "A/C4",
+        "value": "5"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "AN": 5,
+        "C1": 1,
+        "C2": 0,
+        "C3": null,
+        "C4": 5,
+        "Dup": 2,
+        "W": "w",
+        "AG": [
+         {
+          "AGC": 1,
+          "AGN": 1
+         },
+         {
+          "AGC": 9,
+          "AGN": 9
+         }
+        ]
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CAGC",
+       "field": "A/AG/AGC",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG/AGC",
+        "A/AG/AGN",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/AG/AGC",
+        "A/AG/AGN",
+        "B/BN"
+       ]
+      },
+      {
+       "code": "CC1",
+       "field": "A/C1",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C1",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/C1",
+        "B/BN"
+       ]
+      },
+      {
+       "code": "CC2",
+       "field": "A/C2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ]
+      },
+      {
+       "code": "CC4",
+       "field": "A/C4",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ],
+       "fillToFix": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ]
+      },
+      {
+       "code": "g01",
+       "field": "A/AG/AGN",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG/AGN",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/AG/AGN",
+        "B/BN"
+       ]
+      },
+      {
+       "code": "g01",
+       "field": "A/AG[2]/AGN",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/AG[2]/AGN",
+        "B/BN"
+       ]
+      },
+      {
+       "code": "r01",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/W",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/AN",
+        "B/BN"
+       ]
+      },
+      {
+       "code": "r10",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/Dup",
+        "A/W"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/AG/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "A/C3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/AG/AGC",
+        "value": "1"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "value": "9"
+       },
+       {
+        "field": "A/C1",
+        "value": "1"
+       },
+       {
+        "field": "A/C2",
+        "value": "0"
+       },
+       {
+        "field": "A/C4",
+        "value": "5"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "AN": 5,
+        "C1": 1,
+        "C2": 0,
+        "C3": null,
+        "C4": 5,
+        "Dup": 2,
+        "W": "w",
+        "AG": [
+         {
+          "AGC": 1,
+          "AGN": 1
+         },
+         {
+          "AGC": 9,
+          "AGN": 9
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "bMalformed",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CC3",
+       "field": "A/C3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C3",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "B/BD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "B/BD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r02",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r07",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r10",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/Dup",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r13",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "/B[1]/BG[0]/BGS",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "B/BG/BGN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "B/BG/BGN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "B/BN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "B/BN"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/AG/AGC",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/C1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/C2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/C3",
+        "cleared": false,
+        "errored": false,
+        "value": "abcdef"
+       },
+       {
+        "field": "A/C4",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "B/BD",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "B/BD"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "B/BG/BGN",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "B/BG/BGN"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "B/BN",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "B/BN"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/C3",
+        "value": "abcdef"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "AN": 5,
+        "C1": null,
+        "C2": null,
+        "C3": "abcdef",
+        "C4": null,
+        "Dup": 2,
+        "W": "w",
+        "AG": [
+         {
+          "AGC": null,
+          "AGN": 1
+         },
+         {
+          "AGC": null,
+          "AGN": 9
+         }
+        ]
+       },
+       "B": {
+        "BD": "2024-13-01",
+        "BN": "x1",
+        "BS": "abcdef",
+        "BG": [
+         {
+          "BGN": "zz",
+          "BGS": "a"
+         },
+         {
+          "BGN": 8,
+          "BGS": "b"
+         }
+        ]
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CC3",
+       "field": "A/C3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C3",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "B/BD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "B/BD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r02",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r07",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r10",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/Dup",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r13",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "/B[1]/BG[0]/BGS",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "B/BG/BGN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "B/BG/BGN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "B/BN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "B/BN"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/AG/AGC",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/C1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/C2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/C3",
+        "cleared": false,
+        "errored": false,
+        "value": "abcdef"
+       },
+       {
+        "field": "A/C4",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "B/BD",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "B/BD"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "B/BG/BGN",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "B/BG/BGN"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "B/BN",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "B/BN"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/C3",
+        "value": "abcdef"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "AN": 5,
+        "C1": null,
+        "C2": null,
+        "C3": "abcdef",
+        "C4": null,
+        "Dup": 2,
+        "W": "w",
+        "AG": [
+         {
+          "AGC": null,
+          "AGN": 1
+         },
+         {
+          "AGC": null,
+          "AGN": 9
+         }
+        ]
+       },
+       "B": {
+        "BD": "2024-13-01",
+        "BN": "x1",
+        "BS": "abcdef",
+        "BG": [
+         {
+          "BGN": "zz",
+          "BGS": "a"
+         },
+         {
+          "BGN": 8,
+          "BGS": "b"
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "none",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "b01",
+       "field": "B/BN",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/AN",
+        "B/BN"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/C1",
+        "value": "1"
+       },
+       {
+        "field": "A/C2",
+        "value": "0"
+       },
+       {
+        "field": "A/C4",
+        "value": "0"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "C1": 1,
+        "C2": 0,
+        "C4": 0
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "b01",
+       "field": "B/BN",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "B/BN"
+       ],
+       "fillToFix": [
+        "A/AN",
+        "B/BN"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/C1",
+        "value": "1"
+       },
+       {
+        "field": "A/C2",
+        "value": "0"
+       },
+       {
+        "field": "A/C4",
+        "value": "0"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "C1": 1,
+        "C2": 0,
+        "C4": 0
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "bOnlyBN",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CAGC",
+       "field": "A/AG/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG/AGC",
+        "A/AG/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CAGC",
+       "field": "A/AG[2]/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGC",
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC1",
+       "field": "A/C1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C1",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC2",
+       "field": "A/C2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ]
+      },
+      {
+       "code": "CC4",
+       "field": "A/C4",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ],
+       "fillToFix": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ]
+      },
+      {
+       "code": "g01",
+       "field": "A/AG[2]/AGN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r07",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r10",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/Dup",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r14",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/AG/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "8"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "16"
+       },
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "8"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "A/C3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/AG/AGC",
+        "value": "8"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "value": "16"
+       },
+       {
+        "field": "A/C1",
+        "value": "8"
+       },
+       {
+        "field": "A/C2",
+        "value": "0"
+       },
+       {
+        "field": "A/C4",
+        "value": "5"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "AN": 5,
+        "C1": 8,
+        "C2": 0,
+        "C3": null,
+        "C4": 5,
+        "Dup": 2,
+        "W": "w",
+        "AG": [
+         {
+          "AGC": 8,
+          "AGN": 1
+         },
+         {
+          "AGC": 16,
+          "AGN": 9
+         }
+        ]
+       },
+       "B": {
+        "BN": 7
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CAGC",
+       "field": "A/AG/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG/AGC",
+        "A/AG/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CAGC",
+       "field": "A/AG[2]/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGC",
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC1",
+       "field": "A/C1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C1",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC2",
+       "field": "A/C2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ]
+      },
+      {
+       "code": "CC4",
+       "field": "A/C4",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ],
+       "fillToFix": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ]
+      },
+      {
+       "code": "g01",
+       "field": "A/AG[2]/AGN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r07",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r10",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/Dup",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r14",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/AG/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "8"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "16"
+       },
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "8"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "A/C3",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/AG/AGC",
+        "value": "8"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "value": "16"
+       },
+       {
+        "field": "A/C1",
+        "value": "8"
+       },
+       {
+        "field": "A/C2",
+        "value": "0"
+       },
+       {
+        "field": "A/C4",
+        "value": "5"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "AN": 5,
+        "C1": 8,
+        "C2": 0,
+        "C3": null,
+        "C4": 5,
+        "Dup": 2,
+        "W": "w",
+        "AG": [
+         {
+          "AGC": 8,
+          "AGN": 1
+         },
+         {
+          "AGC": 16,
+          "AGN": 9
+         }
+        ]
+       },
+       "B": {
+        "BN": 7
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "bRowGap",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CAGC",
+       "field": "A/AG/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG/AGC",
+        "A/AG/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CAGC",
+       "field": "A/AG[2]/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGC",
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC1",
+       "field": "A/C1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C1",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC2",
+       "field": "A/C2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ]
+      },
+      {
+       "code": "CC3",
+       "field": "A/C3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C3",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC4",
+       "field": "A/C4",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ],
+       "fillToFix": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ]
+      },
+      {
+       "code": "g01",
+       "field": "A/AG[2]/AGN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r01",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/W",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r05",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r06",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/W"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN"
+       ]
+      },
+      {
+       "code": "r10",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/Dup",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r13",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "/B[1]/BG[0]/BGS",
+        "A/W"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/AG/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "cleared": false,
+        "errored": false,
+        "value": "ab"
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/AG/AGC",
+        "value": "2"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "value": "10"
+       },
+       {
+        "field": "A/C1",
+        "value": "2"
+       },
+       {
+        "field": "A/C2",
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "value": "ab"
+       },
+       {
+        "field": "A/C4",
+        "value": "5"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "AN": 5,
+        "C1": 2,
+        "C2": 12,
+        "C3": "ab",
+        "C4": 5,
+        "Dup": 2,
+        "W": "w",
+        "AG": [
+         {
+          "AGC": 2,
+          "AGN": 1
+         },
+         {
+          "AGC": 10,
+          "AGN": 9
+         }
+        ]
+       },
+       "B": {
+        "BN": 1,
+        "BS": "ab",
+        "BG": [
+         {},
+         {
+          "BGN": 12,
+          "BGS": "c"
+         }
+        ]
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CAGC",
+       "field": "A/AG/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG/AGC",
+        "A/AG/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CAGC",
+       "field": "A/AG[2]/AGC",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGC",
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC1",
+       "field": "A/C1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C1",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC2",
+       "field": "A/C2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN",
+        "A/C2"
+       ]
+      },
+      {
+       "code": "CC3",
+       "field": "A/C3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/C3",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CC4",
+       "field": "A/C4",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ],
+       "fillToFix": [
+        "A/AN",
+        "A/C4",
+        "B/BD"
+       ]
+      },
+      {
+       "code": "g01",
+       "field": "A/AG[2]/AGN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AG[2]/AGN",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r01",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/AN",
+        "A/W",
+        "B/BN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r05",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/W",
+        "B/BN",
+        "B/BS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r06",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "A/W"
+       ],
+       "fillToFix": [
+        "/B[1]/BG[0]/BGN"
+       ]
+      },
+      {
+       "code": "r10",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "A/Dup",
+        "A/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r13",
+       "field": "A/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "/B[1]/BG[0]/BGN",
+        "/B[1]/BG[0]/BGS",
+        "A/W"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "A/AG/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "A/C1",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "A/C2",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "cleared": false,
+        "errored": false,
+        "value": "ab"
+       },
+       {
+        "field": "A/C4",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "A/AG/AGC",
+        "value": "2"
+       },
+       {
+        "field": "A/AG[2]/AGC",
+        "value": "10"
+       },
+       {
+        "field": "A/C1",
+        "value": "2"
+       },
+       {
+        "field": "A/C2",
+        "value": "12"
+       },
+       {
+        "field": "A/C3",
+        "value": "ab"
+       },
+       {
+        "field": "A/C4",
+        "value": "5"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "A": {
+        "AN": 5,
+        "C1": 2,
+        "C2": 12,
+        "C3": "ab",
+        "C4": 5,
+        "Dup": 2,
+        "W": "w",
+        "AG": [
+         {
+          "AGC": 2,
+          "AGN": 1
+         },
+         {
+          "AGC": 10,
+          "AGN": 9
+         }
+        ]
+       },
+       "B": {
+        "BN": 1,
+        "BS": "ab",
+        "BG": [
+         {},
+         {
+          "BGN": 12,
+          "BGS": "c"
+         }
+        ]
+       }
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

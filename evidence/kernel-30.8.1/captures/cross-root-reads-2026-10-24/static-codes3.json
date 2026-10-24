@@ -1,0 +1,49 @@
+{
+ "kernel": "30.8.1",
+ "verb": "rule check, computation add --dry-run",
+ "producer": {
+  "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "state": "CLEAN"
+ },
+ "dmtool": "0.13.0",
+ "rows": {
+  "s18": {
+   "admitted": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ],
+   "instrument": []
+  },
+  "s19": {
+   "admitted": false,
+   "codes": [
+    "MVK_INVALID_WILDCARD"
+   ],
+   "instrument": []
+  },
+  "s20": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s21": {
+   "admitted": false,
+   "codes": [
+    "ERROR_TEXT_FIELDNAME_NOT_UNIQUE"
+   ],
+   "instrument": []
+  },
+  "s22": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "s23": {
+   "admitted": false,
+   "codes": [
+    "MVK_FIELDNAME_NOT_UNIQUE"
+   ],
+   "instrument": []
+  }
+ }
+}

@@ -508,6 +508,17 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `limit`: the mechanism that ends the scan is not separated from its outcome. The [joined group-target checkpoint](#src-k22-joined-group-target-leaves) measures Date and Enumeration targets and joined declarations over different partner groups; a partial call over a joined computation's generated rule and a custom-condition leaf beside a join are unmeasured here.
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/k22-cross-declaration-2026-10-24/) with both models, requests and redacted artifacts and `MANIFEST.sha256`.
 
+<a id="src-k22-cross-root-reads"></a>
+#### A rule or computation reads another root through every measured operand kind, its own root's name first and a unique short name in any root, measured 2026-10-24
+
+- `producer`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`, measurement checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1`, UTC, short names enabled. `XR` has roots `A` and `B`, `B` holding a fixed group `BF` and a repeatable `BG`; `XR2` adds a root `C` of repetition 2 and a `Dup2` field in `B` and `C`. Both models are confirmed with no diagnostic; both strategies agree on every runtime row.
+- `runtime`: rules on `A` read `B` by Number comparison, `Length`, `DayFromDate`, `GroupFilled` of the fixed group, `NumberOfFilledFields`, a starred `Sum`, `FieldValuesNotUnique`, `NumberOfFilledGroups` and an `Or`; rules on `A`'s repeatable rows read `B`'s field, fixed group and starred count; a rule on `B` reads `A`; `A` computations copy, sum, extract and add `B` values, also per row. Seven `XR` and five `XR2` documents vary both roots filled, either empty, both empty, `B` malformed, `B` partial and a `B` row gap.
+- `names`: `[Dup]`, declared in `A` and `B`, binds `A`'s own field; `[BN]`, declared only in `B`, binds it from `A` in a condition and a computation operand and is admitted as a `$BN$` message parameter. `[Dup2]`, declared in `B` and `C` but not `A`, draws `MVK_FIELDNAME_NOT_UNIQUE` in a condition and an operand and `ERROR_TEXT_FIELDNAME_NOT_UNIQUE` as a parameter.
+- `refusals`: `GroupFilled` of another root's repeatable group, from the root or a row binding, an unstarred field read in it, `[BGN]` by short name and `[/C/CN]` in the repeatable root draw `MVK_NO_WILDCARD`; `Sum(BG*/BGN)` from `A` draws `MVK_INVALID_ENTITY`, `Sum(BGN*)` `MVK_INVALID_WILDCARD`, and a condition on `A/W` reading only `B` `MVK_ERROR_FIELD_NOT_REFERENCED`. Each has an admitted twin.
+- `local`: `lake exe a12-kernel-replay` matches all 287 `XR` and 270 `XR2` comparisons and the rule-check projection agrees on all 23 static rows, with no code change.
+- `limit`: two and three roots, one nesting level, one condition language, full validation.
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/cross-root-reads-2026-10-24/) with both models, requests, redacted artifacts, three batch op files with their verdict and code projections, and `MANIFEST.sha256`.
+
 <a id="src-k22-joined-group-target-leaves"></a>
 #### Beside a join, a group target admits uniqueness, count and custom-condition leaves and its uniqueness leaves fire as their field forms do; Date and Enumeration joined targets end the scan at a separate declaration, and joined declarations over different partner groups concatenate, measured 2026-10-24
 

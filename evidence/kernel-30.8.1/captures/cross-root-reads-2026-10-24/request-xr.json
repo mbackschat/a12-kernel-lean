@@ -1,0 +1,208 @@
+{
+ "model": "XR_DM.json",
+ "clock": "2024-03-30T23:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute",
+  "computeResults"
+ ],
+ "rows": [
+  {
+   "name": "both",
+   "documentInline": {
+    "A": {
+     "W": "w",
+     "AN": "5",
+     "Dup": "2",
+     "C1": "9",
+     "C2": "9",
+     "C3": "old",
+     "C4": "9",
+     "AG": [
+      {
+       "AGN": "1",
+       "AGC": "9"
+      },
+      {
+       "AGN": "9",
+       "AGC": "9"
+      }
+     ]
+    },
+    "B": {
+     "BF": {
+      "BFN": "1"
+     },
+     "BN": "3",
+     "BS": "abc",
+     "BD": "2024-06-15",
+     "Dup": "0",
+     "BG": [
+      {
+       "BGN": "4",
+       "BGS": "a"
+      },
+      {
+       "BGN": "8",
+       "BGS": "a"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "aEmpty",
+   "documentInline": {
+    "B": {
+     "BF": {
+      "BFN": "1"
+     },
+     "BN": "3",
+     "BS": "abc",
+     "BD": "2024-06-15",
+     "Dup": "0",
+     "BG": [
+      {
+       "BGN": "4",
+       "BGS": "a"
+      },
+      {
+       "BGN": "8",
+       "BGS": "a"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "bEmpty",
+   "documentInline": {
+    "A": {
+     "W": "w",
+     "AN": "5",
+     "Dup": "2",
+     "C1": "9",
+     "C2": "9",
+     "C3": "old",
+     "C4": "9",
+     "AG": [
+      {
+       "AGN": "1",
+       "AGC": "9"
+      },
+      {
+       "AGN": "9",
+       "AGC": "9"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "bMalformed",
+   "documentInline": {
+    "A": {
+     "W": "w",
+     "AN": "5",
+     "Dup": "2",
+     "C1": "9",
+     "C2": "9",
+     "C3": "old",
+     "C4": "9",
+     "AG": [
+      {
+       "AGN": "1",
+       "AGC": "9"
+      },
+      {
+       "AGN": "9",
+       "AGC": "9"
+      }
+     ]
+    },
+    "B": {
+     "BN": "x1",
+     "BS": "abcdef",
+     "BD": "2024-13-01",
+     "BG": [
+      {
+       "BGN": "zz",
+       "BGS": "a"
+      },
+      {
+       "BGN": "8",
+       "BGS": "b"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "none",
+   "documentInline": {}
+  },
+  {
+   "name": "bOnlyBN",
+   "documentInline": {
+    "A": {
+     "W": "w",
+     "AN": "5",
+     "Dup": "2",
+     "C1": "9",
+     "C2": "9",
+     "C3": "old",
+     "C4": "9",
+     "AG": [
+      {
+       "AGN": "1",
+       "AGC": "9"
+      },
+      {
+       "AGN": "9",
+       "AGC": "9"
+      }
+     ]
+    },
+    "B": {
+     "BN": "7"
+    }
+   }
+  },
+  {
+   "name": "bRowGap",
+   "documentInline": {
+    "A": {
+     "W": "w",
+     "AN": "5",
+     "Dup": "2",
+     "C1": "9",
+     "C2": "9",
+     "C3": "old",
+     "C4": "9",
+     "AG": [
+      {
+       "AGN": "1",
+       "AGC": "9"
+      },
+      {
+       "AGN": "9",
+       "AGC": "9"
+      }
+     ]
+    },
+    "B": {
+     "BN": "1",
+     "BS": "ab",
+     "BG": [
+      {},
+      {
+       "BGN": "12",
+       "BGS": "c"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

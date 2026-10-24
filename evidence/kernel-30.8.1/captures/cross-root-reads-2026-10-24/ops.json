@@ -1,0 +1,67 @@
+[
+ {
+  "id": "s01",
+  "verb": "rule",
+  "args": ["check", "--code", "s01", "--field", "/A/W", "--condition", "FieldFilled(W) And GroupFilled(/B/BG)", "--message", "en_US=m"]
+ },
+ {
+  "id": "s02",
+  "verb": "rule",
+  "args": ["check", "--code", "s02", "--field", "/A/W", "--condition", "FieldFilled(W) And GroupFilled(/B/BF)", "--message", "en_US=m"]
+ },
+ {
+  "id": "s03",
+  "verb": "rule",
+  "args": ["check", "--code", "s03", "--field", "/A/W", "--condition", "FieldFilled(W) And [/B/BG/BGN] > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "s04",
+  "verb": "rule",
+  "args": ["check", "--code", "s04", "--field", "/A/W", "--condition", "FieldFilled(W) And Sum(/B/BG*/BGN) > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "s05",
+  "verb": "rule",
+  "args": ["check", "--code", "s05", "--field", "/A/W", "--condition", "FieldNotFilled(/B/BN)", "--message", "en_US=m"]
+ },
+ {
+  "id": "s06",
+  "verb": "rule",
+  "args": ["check", "--code", "s06", "--field", "/A/W", "--condition", "FieldNotFilled(/B/BN) And FieldNotFilled(W)", "--message", "en_US=m"]
+ },
+ {
+  "id": "s07",
+  "verb": "rule",
+  "args": ["check", "--code", "s07", "--field", "/A/W", "--condition", "FieldFilled(W) And [Dup] > 1", "--message", "en_US=m"]
+ },
+ {
+  "id": "s08",
+  "verb": "rule",
+  "args": ["check", "--code", "s08", "--field", "/B/BN", "--condition", "FieldFilled(BN) And [Dup] > 1", "--message", "en_US=m"]
+ },
+ {
+  "id": "s09",
+  "verb": "rule",
+  "args": ["check", "--code", "s09", "--field", "/A/AG/AGN", "--group", "/A/AG", "--condition", "GroupFilled(/B/BF) And [AGN] > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "s10",
+  "verb": "rule",
+  "args": ["check", "--code", "s10", "--field", "/A/AG/AGN", "--group", "/A/AG", "--condition", "NumberOfFilledGroups(/B/BG*) > 1 And [AGN] > 0", "--message", "en_US=m"]
+ },
+ {
+  "id": "s11",
+  "verb": "rule",
+  "args": ["check", "--code", "s11", "--field", "/A/W", "--condition", "FieldFilled(W) And [BN] > 1", "--message", "en_US=m"]
+ },
+ {
+  "id": "s12",
+  "verb": "rule",
+  "args": ["check", "--code", "s12", "--field", "/A/W", "--condition", "FieldFilled(W) And Sum(BG*/BGN) > 1", "--message", "en_US=m"]
+ },
+ {
+  "id": "s13",
+  "verb": "rule",
+  "args": ["check", "--code", "s13", "--field", "/A/AG/AGN", "--group", "/A/AG", "--condition", "GroupFilled(/B/BG) And [AGN] > 0", "--message", "en_US=m"]
+ }
+]
