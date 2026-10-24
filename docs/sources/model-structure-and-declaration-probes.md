@@ -541,6 +541,17 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `limit`: a custom condition on a joined group target runs on no settled account. The exception class a failed call raises would separate the Kernel's call path from the recorder; the artifact carries no such field.
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/k22-joined-group-target-leaves-2026-10-24/) with both models, requests, redacted artifacts and `MANIFEST.sha256`.
 
+<a id="src-k22-nested-join-partial"></a>
+#### A partial call reaches a parallel rule reporting below its joined group only when the error field's compressed selector leaves the joined level wild, and leaf relevance then limits its firings, measured 2026-10-24
+
+- `producer`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`, measurement checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1`. `K22n` is the [nested-join runtime model](#src-group-target-nested-join) keeping only rules `C0`, `C1`, `C2` and `E5`; one `:adapter:kernelProbe` run over one document and eleven partial scopes, both strategies agreeing.
+- `document`: line `A` holds two counted parts and a `Picks` row without `Ref`, `B` one counted part and a `Ref`, `C` two counted parts and no `Picks` row, and a `Picks` row `D` holding `Ref` has no line; `C1` reports on `Lines/Parts/Count` with `FieldFilled(Lines/Parts/Count) And NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)`.
+- `dispatch`: `whole`, `wild` (every `Count` with the payload and key fields) and `lines` (both joined groups) fire `C1` at parts one and two of `A` and `C`, as full validation does. `twoParts` (`Lines[1]/Parts[1]` and `Lines[3]/Parts[2]` with the payload and keys) fires exactly those two parts. `part11`, `part12`, `part31`, `sameLine` (both parts of line one) and `line3` (`Lines[3]` with all of `Picks`) fire nothing; `C2`, `C1` with a comparison of `Count` added, fires exactly as `C1` in every scope. `C0`, joined the same way but reporting on the joined level's own `Lines/Sku`, fires at line three under `line3`, and the ordinary rule `E5` on `Lines/Parts/Count` fires on every relevant part, including under `payload`, `noRef` and each single-part scope.
+- `keys`: `payload` (every `Count` with `PartNo` and `Ref` but no index field) and `noRef` (every `Count` and `PartNo` with both index fields but not `Ref`) fire nothing.
+- `local`: [partial dispatch](../../A12Kernel/Elaboration/PartialParallelFieldRule.lean) treats the error field's levels below its joined group as ordinary bounds, and the [nested partial locks](../../A12Kernel/Reference/Dm/ParallelNestedPartialLocks.lean) hold all eleven `C1` scopes; `lake exe a12-kernel-replay` matches the full-validation rows.
+- `limit`: one nesting level and one joined pair; whether a concrete part coordinate also bounds dispatch or only leaf relevance limits it is not separated, since every scope selecting one line concretely suppresses the rule.
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/nested-join-partial-2026-10-24/) with the model, request, redacted artifact and `MANIFEST.sha256`.
+
 <a id="src-parallel-child-reads"></a>
 #### A parallel rule's read below a joined group binds that side's joined row and anchors the join, a key-only row's child slots read empty even beyond capacity, and a filtered star below either joined group draws the filtered-entity class after `RepetitionNotUnique`, measured 2026-10-14
 

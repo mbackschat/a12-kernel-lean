@@ -4,24 +4,23 @@ namespace A12Kernel
 
 namespace CheckedParallelFieldPair
 
-/-- Partial dispatch compresses the error field's selectors before ordinary iteration bounds are checked. Concrete joined-row selectors conflict with a parallel bound; differing selectors compress to a wildcard. This is a dispatch envelope, not the leaf relevance set (Kernel partial-parallel gate capture, 2026-10-10). -/
+/-- Partial dispatch compresses the error field's selectors before ordinary iteration bounds are checked. Concrete joined-row selectors conflict with a parallel bound beside an ordinary outer level or a nested level below the joined group; differing selectors compress to a wildcard. This is a dispatch envelope, not the leaf relevance set (Kernel partial-parallel gate capture, 2026-10-10; [nested-join partial capture](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-nested-join-partial), 2026-10-24). -/
 def admitsPartialOuter (pair : CheckedParallelFieldPair model)
     (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
   match scope with
   | .full => true
   | .partialSet entities =>
-      let declaration := if pair.errorField == pair.leftDeclaration.id then
-        pair.leftDeclaration else pair.rightDeclaration
+      let declaration := pair.errorDeclaration
+      let joined := if pair.errorField == pair.leftDeclaration.id then
+        pair.groups.leftGroup.level else pair.groups.rightGroup.level
       match ValidationRelevanceScope.compressedSelector? entities declaration.path with
       | none => false
       | some compressed =>
-          let bounds := declaration.repeatableScope.dropLast
-          let ordinary := bounds.any fun level => model.repeatableGroups.any fun group =>
-            group.level == level && group.repeatability != some 1
+          let bounds := declaration.repeatableScope.takeWhile (· != joined)
+          let ordinary := !pair.innerScope.isEmpty || bounds.any fun level =>
+            model.repeatableGroups.any fun group => group.level == level && group.repeatability != some 1
           if !ordinary then true else
-            compressed.matchesBoundSubtree model bounds outer &&
-              compressed.wildcardsLevels model [if pair.errorField == pair.leftDeclaration.id then
-                pair.groups.leftGroup.level else pair.groups.rightGroup.level]
+            compressed.matchesBoundSubtree model bounds outer && compressed.wildcardsLevels model [joined]
 
 end CheckedParallelFieldPair
 
@@ -59,10 +58,12 @@ private def readParallelField (view : CheckedPartialPreliminary model)
   | some environment =>
       let path ← environment.pathForScope declaration.repeatableScope |>.mapError (fun e => .join (.environment e))
       let address : CellAddr := { field := declaration.id, path }
-      if !view.isAddressRelevant address then pure none else
-        match ← view.readAuthoredValidation address |>.mapError .preliminary with
-        | .silentlyUnavailable => pure none
-        | .checked cell => pure (some (observeCell .validation cell))
+      if !view.isAddressRelevant address || view.silentlyUnavailable.contains address then pure none else
+        -- A nested row the rule visits inside a matched joined row need not exist; its declared slot
+        -- reads empty, as in full validation (KF603).
+        let cell ← view.index.base.filterReadWith view.index.readAuthoredValidation address
+          |>.mapError (fun error => .preliminary (.document error))
+        pure (some (observeCell .validation (view.annotateRequiredCell address cell)))
   | none =>
       if !view.missingParallelAvailable side outer ||
           !view.coversUnmatchedParallel side.group declaration.path outer then pure none
@@ -104,10 +105,8 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
     (view : CheckedPartialPreliminary model) (messageCache : Option MessageIndexContext := none)
     (registry : CustomValidationRegistry model := {}) (world : Option World := none) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
-  -- A partial call reports no rule on a group, as the ordinary carrier skips one (KF603). No retained
-  -- observation pins partial validation of an error field below the join.
+  -- A partial call reports no rule on a group, as the ordinary carrier skips one (KF603).
   if rule.pair.errorGroup.isSome then return []
-  if !rule.pair.innerScope.isEmpty then throw .unsupportedCondition
   let common := match rule.pair.groups.outerScopePlan with
     | .common shared | .framed _ shared _ => shared
   let environments ← if common.isEmpty then pure [[]]
