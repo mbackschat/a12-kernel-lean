@@ -377,7 +377,7 @@ fi
 if ! command -v python3 >/dev/null 2>&1; then
   echo "documentation hygiene guard: the relative-link check needs python3, so it did NOT run" >&2
   failed=true
-elif ! git ls-files -z -- '*.md' '*.lean' | python3 scripts/check-doc-links.py; then
+elif ! python3 scripts/check-doc-links.py; then
   failed=true
 fi
 

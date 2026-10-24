@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 """Fail a relative link in tracked Markdown or Lean prose whose file or anchor does not exist.
 
-Reads NUL-separated repository paths on stdin, as `git ls-files -z` prints them, from the
-repository root. check-doc-hygiene.sh owns why this runs; this file owns only how.
+Checks every tracked `*.md` and `*.lean` file and takes no input. Reading the list from stdin let a
+run without a pipe block forever on an open stdin, and an empty stdin pass having checked nothing
+(both observed 2026-10-24), so the file set is computed here and an empty one fails.
+check-doc-hygiene.sh owns why this runs; this file owns only how.
 """
 import os
 import re
+import subprocess
 import sys
 import unicodedata
 import urllib.parse
 
-ROOT = os.getcwd()
+ROOT = subprocess.run(["git", "rev-parse", "--show-toplevel"], capture_output=True, text=True,
+                      stdin=subprocess.DEVNULL).stdout.strip() or os.getcwd()
 PARENT = os.path.dirname(ROOT)
 # A target outside the repository must land in one of these, since climbing one level too far is
 # the defect itself; it is checked when that sibling is present and skipped where CI has none.
@@ -78,11 +82,22 @@ def check(path, number, target):
     return None
 
 
+def tracked_prose():
+    listing = subprocess.run(["git", "ls-files", "-z", "--", "*.md", "*.lean"],
+                             cwd=ROOT, capture_output=True, text=True, stdin=subprocess.DEVNULL)
+    if listing.returncode != 0:
+        sys.exit(f"relative-link check: git ls-files failed: {listing.stderr.strip()}")
+    return [path for path in listing.stdout.split("\0") if path]
+
+
 def main():
+    os.chdir(ROOT)
+    paths = tracked_prose()
+    if not paths:
+        print("relative-link check: no tracked Markdown or Lean file to check", file=sys.stderr)
+        return 1
     broken = False
-    for path in sys.stdin.read().split("\0"):
-        if not path:
-            continue
+    for path in paths:
         text = blank_code(open(path, encoding="utf-8").read())
         for number, line in enumerate(text.split("\n"), 1):
             for target in LINK.findall(line):
