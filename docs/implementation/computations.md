@@ -70,7 +70,7 @@ The scalar, fixed, and nonrepeatable half. Exact-address repeatable families liv
 - `owner`: [`LiteralComparisonDiagnostic.lean`](../../A12Kernel/Elaboration/LiteralComparisonDiagnostic.lean), [laws](../../A12Kernel/Proofs/LiteralComparisonDiagnostic.lean) and [cases](../../A12Kernel/Conformance/FieldCopyComparison.lean)
 - `spec-and-source`: [§1 ground rules](../../spec/09-computations.md#1-the-ground-rules) and the [source](../sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)
 - `assurance`: E locks every carrier against all 126 field-to-field grid rows, each answering a row's measured verdict or claiming no class, with its classless rows pinned by a domain predicate and named exceptions; the category read's calculation class is locked on the Enumeration carrier. P proves the arm symmetric and total on refusals. L is the 127-row grid, retained. C/X/Q none.
-- `remains`: a copy inside a wider expression, the addressed repeatable carriers, a category read into a target of another kind, a partially known target's read class, and an unlabelled Enumeration into a String, which the Kernel admits and no carrier here can represent: [SG15](../gaps/targets-and-derivation.md#gap-sg15)
+- `remains`: a copy inside a wider expression, the addressed repeatable carriers, a category read into a target of another kind, and a partially known target's read class: [SG15](../gaps/targets-and-derivation.md#gap-sg15)
 
 <a id="cap-rule-condition-class-projection"></a>
 #### A flat rule condition's refusal classes

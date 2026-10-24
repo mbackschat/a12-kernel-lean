@@ -748,9 +748,9 @@ private def refusalClass (operation : String) : Option String :=
   | .error refusal => some refusal.detail
   | .ok _ => none
 
--- The directly assigned keyed star is refused (e5, e6) while its scalar keyed twin is admitted. The
--- reader's cause is no Kernel class yet, where the Kernel draws `MVK_NO_WILDCARDS_ALLOWED`: SG29's
--- diagnostics residual.
+-- The directly assigned keyed star is refused (e5, e6) while its scalar keyed twin is admitted.
+-- Lowering keeps its internal cause; the Kernel's `MVK_NO_WILDCARDS_ALLOWED` comes from the
+-- computation's generated rule, which the rule-check projection compares on `obs-d.json`.
 example : refusalClass "[Rows/Children*/Value For Key]" = some "target path" ∧
     refusalClass "[Rows/Body/A For Key]" = none := by native_decide
 
