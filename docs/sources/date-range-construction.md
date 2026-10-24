@@ -345,7 +345,7 @@
 - `flag-partition`: the additional-check month sources stay month-formatted even in dotted-first models. Ordered input gives end-Day 31 and `03/10`; wrapping input is invalid and clears targets. This separates shared-key partitioning from field-local formatting and from one global format.
 - `empty`: all numeric endpoint computations yield 0 and whole-range targets clear. Their validation computation checks retain `OMISSION_ERROR` for the numeric targets; no formal source error appears.
 - `malformed`: raw `bad` yields `datumBereichTrennerFehlt` through the effective runtime separator, including compact-month declarations whose declared separator is empty; all four dependent targets clear.
-- `limit`: direct nonrepeatable sources, UTC, effective first profiles `dd.MM`/dash and `MM`/slash, Base Year absent/2024, optional empty fields, and pre-1900-check partitioning without pre-1900 values. Other first profiles, calendar-invalid inputs, partial validation and required empties need their own calibration.
+- `limit`: direct nonrepeatable sources, UTC, effective first profiles `dd.MM`/dash and `MM`/slash, Base Year absent/2024, optional empty fields, and pre-1900-check partitioning without pre-1900 values. The [first-profile checkpoint](#src-date-range-interpretation-first-profiles) measures the other six first profiles; calendar-invalid inputs, partial validation and required empties need their own calibration.
 - `consumer`: Execute must retain declared input decoding separately from model-wide runtime policy. Sorting declarations or preserving a later field's supplied year is observably unsafe.
 - `integrity-dot-default`: model `bcea284d91eea36a20c7b3b22ba4cafb7f4a5e04d8c0d1073f8e5149292e1336`, request `9de5a4998fdcee260b1b67979b37907ecdc1496461a047d11260eb4437e1a4ae`, artifact `bfc352e83034e6ff5ba5872796a207fd7081a0e6fc2889978091043e271e815c`.
 - `integrity-dot-2024`: model `5aaa17ffee4f1765627c23b500caa87fdc7ce360eeafebebc0edff45e8b12f80`, request `703275f9492632db85c40824c7f38ccf49c13bf691c1549a508451ba9fb9b152`, artifact `c700cb4881db0db57c8d42f91673e07a9c973439bfeae4b2da1f905a10cb2f05`.
@@ -355,6 +355,18 @@
 - `target-cross`: ordered dotted-FROM input writes `03/10` into the shared month-only TO target and its dependent year is 2000. Wrapping input writes an errored `11/02` attempt, and the dependent year clears. Empty source clears the range target and yields dependent year 0; malformed source clears both.
 - `target-direction`: the opposite copy, from a TO source into a FROM target, writes `01.03-31.10` for ordered input. The TO source itself is invalid for the wrapping document, so it poisons both that target and its dependent year. Source invalidity and target rejection remain distinct.
 - `integrity-cross`: model `dd9920868def61f10f6dce06bf6c7a3ff6ac8e0d7c495b5fb3b4ff12b670e06f`, request `30e82bd7222a3e43564b2ff4c4ec2e9bdec7bf5d6057f1a960e829fae7ad2220`, artifact `e8013964b4136b9c3366f536b03fc3049a602b39ae1fa0259bba380006f4218c`.
+
+<a id="src-date-range-interpretation-first-profiles"></a>
+#### Every first interpreted profile supplies the shared runtime definition of its direction, measured 2026-10-24
+
+- `producer`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`, measurement checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1`, UTC, no Base Year. `model check` confirms all six models with no diagnostic.
+- `matrix`: six models, one per first profile not covered by the [shared-runtime matrix](#src-date-range-shared-runtime): `dd.MM.yyyy`/dash, `yyyy-MM-dd`/slash, `yyyy`, `yyyy-MM`, `MM-dd` and `MM` with the empty separator. Each declares that profile under `FROM` and `TO` first, then `dd.MM`/dash, `MM`/slash and `yyyy-MM-dd`/slash under both, with start-Year, end-Year, start-Month and end-Day computations per source over ordered, wrapping, empty and malformed documents. Both strategies agree on every row.
+- `year-bearing-first`: under a `dd.MM.yyyy` or `yyyy-MM-dd` first, later ISO sources keep their years 2023/2024, `dd.MM` sources take years 2000/2000 ordered and 2000/2001 or 1999/2000 when wrapping, and month-only `03/10` ends on day 1 while `11/02` is `datumBereichNichtGueltig`. A `yyyy` first renders every source as January, end-Day 31, with `dd.MM` wraps still placed by direction. A `yyyy-MM` first ends ordered month-only sources on day 31, rejects their wraps, and ends a wrapping `dd.MM` source on February 29, 2000 under `TO` and February 28, 2001 under `FROM`.
+- `yearless-first`: an `MM-dd` first drops the ISO years to 2000 and places every wrapping source by direction, month-only ends included. A compact `MM` first rejects every wrapping source of either direction as `datumBereichNichtGueltig`.
+- `empty-malformed`: empty sources store 0 in every numeric read. Raw `bad` clears every read and reports `datumBereichTrennerFehlt`, except under the compact `MM` first, whose empty separator yields `datumBereichFormatFalsch`.
+- `local`: `lake exe a12-kernel-replay` matches all 2304 comparisons with no code change.
+- `limit`: direct nonrepeatable sources, UTC, no Base Year and no additional-check flag; the shared-runtime matrix keeps the configured and flagged partitions.
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/date-range-interpretation-first-profiles-2026-10-24/) with six models, requests, redacted artifacts and `MANIFEST.sha256`.
 
 <a id="src-selected-range-compositions"></a>
 #### Selected DateRange fragments and recursive BaseYear differences, measured 2026-10-13

@@ -1,0 +1,1186 @@
+{
+ "header": {
+  "id": "IOY_y",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "IOY_y"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/FF_y",
+        "name": "FF_y",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy",
+           "rangeSeparator": "/",
+           "interpretationOfYear": "FROM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/FT_y",
+        "name": "FT_y",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy",
+           "rangeSeparator": "/",
+           "interpretationOfYear": "TO"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/LF_dm",
+        "name": "LF_dm",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "dd.MM",
+           "rangeSeparator": "-",
+           "interpretationOfYear": "FROM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/LT_dm",
+        "name": "LT_dm",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "dd.MM",
+           "rangeSeparator": "-",
+           "interpretationOfYear": "TO"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/LF_m",
+        "name": "LF_m",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "MM",
+           "rangeSeparator": "/",
+           "interpretationOfYear": "FROM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/LT_m",
+        "name": "LT_m",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "MM",
+           "rangeSeparator": "/",
+           "interpretationOfYear": "TO"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/LF_iso",
+        "name": "LF_iso",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/",
+           "interpretationOfYear": "FROM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/LT_iso",
+        "name": "LT_iso",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/",
+           "interpretationOfYear": "TO"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SY_FF_y",
+        "name": "SY_FF_y",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSY_FF_y",
+        "name": "CSY_FF_y",
+        "Computation": {
+         "computedFieldRelPath": "../SY_FF_y",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(StartOfDateRange(FF_y))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/EY_FF_y",
+        "name": "EY_FF_y",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CEY_FF_y",
+        "name": "CEY_FF_y",
+        "Computation": {
+         "computedFieldRelPath": "../EY_FF_y",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(EndOfDateRange(FF_y))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ED_FF_y",
+        "name": "ED_FF_y",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CED_FF_y",
+        "name": "CED_FF_y",
+        "Computation": {
+         "computedFieldRelPath": "../ED_FF_y",
+         "computationAlternatives": [
+          {
+           "operation": "DayFromDate(EndOfDateRange(FF_y))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SM_FF_y",
+        "name": "SM_FF_y",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSM_FF_y",
+        "name": "CSM_FF_y",
+        "Computation": {
+         "computedFieldRelPath": "../SM_FF_y",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(StartOfDateRange(FF_y))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SY_FT_y",
+        "name": "SY_FT_y",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSY_FT_y",
+        "name": "CSY_FT_y",
+        "Computation": {
+         "computedFieldRelPath": "../SY_FT_y",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(StartOfDateRange(FT_y))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/EY_FT_y",
+        "name": "EY_FT_y",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CEY_FT_y",
+        "name": "CEY_FT_y",
+        "Computation": {
+         "computedFieldRelPath": "../EY_FT_y",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(EndOfDateRange(FT_y))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ED_FT_y",
+        "name": "ED_FT_y",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CED_FT_y",
+        "name": "CED_FT_y",
+        "Computation": {
+         "computedFieldRelPath": "../ED_FT_y",
+         "computationAlternatives": [
+          {
+           "operation": "DayFromDate(EndOfDateRange(FT_y))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SM_FT_y",
+        "name": "SM_FT_y",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSM_FT_y",
+        "name": "CSM_FT_y",
+        "Computation": {
+         "computedFieldRelPath": "../SM_FT_y",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(StartOfDateRange(FT_y))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SY_LF_dm",
+        "name": "SY_LF_dm",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSY_LF_dm",
+        "name": "CSY_LF_dm",
+        "Computation": {
+         "computedFieldRelPath": "../SY_LF_dm",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(StartOfDateRange(LF_dm))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/EY_LF_dm",
+        "name": "EY_LF_dm",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CEY_LF_dm",
+        "name": "CEY_LF_dm",
+        "Computation": {
+         "computedFieldRelPath": "../EY_LF_dm",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(EndOfDateRange(LF_dm))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ED_LF_dm",
+        "name": "ED_LF_dm",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CED_LF_dm",
+        "name": "CED_LF_dm",
+        "Computation": {
+         "computedFieldRelPath": "../ED_LF_dm",
+         "computationAlternatives": [
+          {
+           "operation": "DayFromDate(EndOfDateRange(LF_dm))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SM_LF_dm",
+        "name": "SM_LF_dm",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSM_LF_dm",
+        "name": "CSM_LF_dm",
+        "Computation": {
+         "computedFieldRelPath": "../SM_LF_dm",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(StartOfDateRange(LF_dm))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SY_LT_dm",
+        "name": "SY_LT_dm",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSY_LT_dm",
+        "name": "CSY_LT_dm",
+        "Computation": {
+         "computedFieldRelPath": "../SY_LT_dm",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(StartOfDateRange(LT_dm))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/EY_LT_dm",
+        "name": "EY_LT_dm",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CEY_LT_dm",
+        "name": "CEY_LT_dm",
+        "Computation": {
+         "computedFieldRelPath": "../EY_LT_dm",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(EndOfDateRange(LT_dm))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ED_LT_dm",
+        "name": "ED_LT_dm",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CED_LT_dm",
+        "name": "CED_LT_dm",
+        "Computation": {
+         "computedFieldRelPath": "../ED_LT_dm",
+         "computationAlternatives": [
+          {
+           "operation": "DayFromDate(EndOfDateRange(LT_dm))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SM_LT_dm",
+        "name": "SM_LT_dm",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSM_LT_dm",
+        "name": "CSM_LT_dm",
+        "Computation": {
+         "computedFieldRelPath": "../SM_LT_dm",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(StartOfDateRange(LT_dm))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SY_LF_m",
+        "name": "SY_LF_m",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSY_LF_m",
+        "name": "CSY_LF_m",
+        "Computation": {
+         "computedFieldRelPath": "../SY_LF_m",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(StartOfDateRange(LF_m))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/EY_LF_m",
+        "name": "EY_LF_m",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CEY_LF_m",
+        "name": "CEY_LF_m",
+        "Computation": {
+         "computedFieldRelPath": "../EY_LF_m",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(EndOfDateRange(LF_m))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ED_LF_m",
+        "name": "ED_LF_m",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CED_LF_m",
+        "name": "CED_LF_m",
+        "Computation": {
+         "computedFieldRelPath": "../ED_LF_m",
+         "computationAlternatives": [
+          {
+           "operation": "DayFromDate(EndOfDateRange(LF_m))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SM_LF_m",
+        "name": "SM_LF_m",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSM_LF_m",
+        "name": "CSM_LF_m",
+        "Computation": {
+         "computedFieldRelPath": "../SM_LF_m",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(StartOfDateRange(LF_m))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SY_LT_m",
+        "name": "SY_LT_m",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSY_LT_m",
+        "name": "CSY_LT_m",
+        "Computation": {
+         "computedFieldRelPath": "../SY_LT_m",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(StartOfDateRange(LT_m))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/EY_LT_m",
+        "name": "EY_LT_m",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CEY_LT_m",
+        "name": "CEY_LT_m",
+        "Computation": {
+         "computedFieldRelPath": "../EY_LT_m",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(EndOfDateRange(LT_m))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ED_LT_m",
+        "name": "ED_LT_m",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CED_LT_m",
+        "name": "CED_LT_m",
+        "Computation": {
+         "computedFieldRelPath": "../ED_LT_m",
+         "computationAlternatives": [
+          {
+           "operation": "DayFromDate(EndOfDateRange(LT_m))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SM_LT_m",
+        "name": "SM_LT_m",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSM_LT_m",
+        "name": "CSM_LT_m",
+        "Computation": {
+         "computedFieldRelPath": "../SM_LT_m",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(StartOfDateRange(LT_m))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SY_LF_iso",
+        "name": "SY_LF_iso",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSY_LF_iso",
+        "name": "CSY_LF_iso",
+        "Computation": {
+         "computedFieldRelPath": "../SY_LF_iso",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(StartOfDateRange(LF_iso))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/EY_LF_iso",
+        "name": "EY_LF_iso",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CEY_LF_iso",
+        "name": "CEY_LF_iso",
+        "Computation": {
+         "computedFieldRelPath": "../EY_LF_iso",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(EndOfDateRange(LF_iso))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ED_LF_iso",
+        "name": "ED_LF_iso",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CED_LF_iso",
+        "name": "CED_LF_iso",
+        "Computation": {
+         "computedFieldRelPath": "../ED_LF_iso",
+         "computationAlternatives": [
+          {
+           "operation": "DayFromDate(EndOfDateRange(LF_iso))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SM_LF_iso",
+        "name": "SM_LF_iso",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSM_LF_iso",
+        "name": "CSM_LF_iso",
+        "Computation": {
+         "computedFieldRelPath": "../SM_LF_iso",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(StartOfDateRange(LF_iso))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SY_LT_iso",
+        "name": "SY_LT_iso",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSY_LT_iso",
+        "name": "CSY_LT_iso",
+        "Computation": {
+         "computedFieldRelPath": "../SY_LT_iso",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(StartOfDateRange(LT_iso))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/EY_LT_iso",
+        "name": "EY_LT_iso",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CEY_LT_iso",
+        "name": "CEY_LT_iso",
+        "Computation": {
+         "computedFieldRelPath": "../EY_LT_iso",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(EndOfDateRange(LT_iso))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ED_LT_iso",
+        "name": "ED_LT_iso",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CED_LT_iso",
+        "name": "CED_LT_iso",
+        "Computation": {
+         "computedFieldRelPath": "../ED_LT_iso",
+         "computationAlternatives": [
+          {
+           "operation": "DayFromDate(EndOfDateRange(LT_iso))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SM_LT_iso",
+        "name": "SM_LT_iso",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CSM_LT_iso",
+        "name": "CSM_LT_iso",
+        "Computation": {
+         "computedFieldRelPath": "../SM_LT_iso",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(StartOfDateRange(LT_iso))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

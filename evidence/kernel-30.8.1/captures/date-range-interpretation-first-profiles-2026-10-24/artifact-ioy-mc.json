@@ -1,0 +1,4853 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "IOY_mc.json",
+  "locale": "en_US",
+  "clock": "2024-03-30T23:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "ordered",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CED_FF_mc",
+       "field": "Form/ED_FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_FF_mc",
+        "Form/FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_FT_mc",
+       "field": "Form/ED_FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_FT_mc",
+        "Form/FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LF_dm",
+       "field": "Form/ED_LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_dm",
+        "Form/LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LF_iso",
+       "field": "Form/ED_LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_iso",
+        "Form/LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LF_m",
+       "field": "Form/ED_LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_m",
+        "Form/LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LT_dm",
+       "field": "Form/ED_LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_dm",
+        "Form/LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LT_iso",
+       "field": "Form/ED_LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_iso",
+        "Form/LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LT_m",
+       "field": "Form/ED_LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_m",
+        "Form/LT_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_FF_mc",
+       "field": "Form/EY_FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_FF_mc",
+        "Form/FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_FT_mc",
+       "field": "Form/EY_FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_FT_mc",
+        "Form/FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LF_dm",
+       "field": "Form/EY_LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_dm",
+        "Form/LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LF_iso",
+       "field": "Form/EY_LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_iso",
+        "Form/LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LF_m",
+       "field": "Form/EY_LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_m",
+        "Form/LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LT_dm",
+       "field": "Form/EY_LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_dm",
+        "Form/LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LT_iso",
+       "field": "Form/EY_LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_iso",
+        "Form/LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LT_m",
+       "field": "Form/EY_LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_m",
+        "Form/LT_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_FF_mc",
+       "field": "Form/SM_FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FF_mc",
+        "Form/SM_FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_FT_mc",
+       "field": "Form/SM_FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FT_mc",
+        "Form/SM_FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LF_dm",
+       "field": "Form/SM_LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_dm",
+        "Form/SM_LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LF_iso",
+       "field": "Form/SM_LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_iso",
+        "Form/SM_LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LF_m",
+       "field": "Form/SM_LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_m",
+        "Form/SM_LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LT_dm",
+       "field": "Form/SM_LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_dm",
+        "Form/SM_LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LT_iso",
+       "field": "Form/SM_LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_iso",
+        "Form/SM_LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LT_m",
+       "field": "Form/SM_LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_m",
+        "Form/SM_LT_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_FF_mc",
+       "field": "Form/SY_FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FF_mc",
+        "Form/SY_FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_FT_mc",
+       "field": "Form/SY_FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FT_mc",
+        "Form/SY_FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LF_dm",
+       "field": "Form/SY_LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_dm",
+        "Form/SY_LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LF_iso",
+       "field": "Form/SY_LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_iso",
+        "Form/SY_LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LF_m",
+       "field": "Form/SY_LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_m",
+        "Form/SY_LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LT_dm",
+       "field": "Form/SY_LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_dm",
+        "Form/SY_LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LT_iso",
+       "field": "Form/SY_LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_iso",
+        "Form/SY_LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LT_m",
+       "field": "Form/SY_LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_m",
+        "Form/SY_LT_m"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/ED_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/ED_FF_mc",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "value": "31"
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "value": "3"
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "value": "2000"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "ED_FF_mc": 31,
+        "ED_FT_mc": 31,
+        "ED_LF_dm": 31,
+        "ED_LF_iso": 31,
+        "ED_LF_m": 31,
+        "ED_LT_dm": 31,
+        "ED_LT_iso": 31,
+        "ED_LT_m": 31,
+        "EY_FF_mc": 2000,
+        "EY_FT_mc": 2000,
+        "EY_LF_dm": 2000,
+        "EY_LF_iso": 2000,
+        "EY_LF_m": 2000,
+        "EY_LT_dm": 2000,
+        "EY_LT_iso": 2000,
+        "EY_LT_m": 2000,
+        "FF_mc": "0310",
+        "FT_mc": "0310",
+        "LF_dm": "01.03-31.10",
+        "LF_iso": "2023-03-01/2024-10-31",
+        "LF_m": "03/10",
+        "LT_dm": "01.03-31.10",
+        "LT_iso": "2023-03-01/2024-10-31",
+        "LT_m": "03/10",
+        "SM_FF_mc": 3,
+        "SM_FT_mc": 3,
+        "SM_LF_dm": 3,
+        "SM_LF_iso": 3,
+        "SM_LF_m": 3,
+        "SM_LT_dm": 3,
+        "SM_LT_iso": 3,
+        "SM_LT_m": 3,
+        "SY_FF_mc": 2000,
+        "SY_FT_mc": 2000,
+        "SY_LF_dm": 2000,
+        "SY_LF_iso": 2000,
+        "SY_LF_m": 2000,
+        "SY_LT_dm": 2000,
+        "SY_LT_iso": 2000,
+        "SY_LT_m": 2000
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CED_FF_mc",
+       "field": "Form/ED_FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_FF_mc",
+        "Form/FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_FT_mc",
+       "field": "Form/ED_FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_FT_mc",
+        "Form/FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LF_dm",
+       "field": "Form/ED_LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_dm",
+        "Form/LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LF_iso",
+       "field": "Form/ED_LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_iso",
+        "Form/LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LF_m",
+       "field": "Form/ED_LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_m",
+        "Form/LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LT_dm",
+       "field": "Form/ED_LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_dm",
+        "Form/LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LT_iso",
+       "field": "Form/ED_LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_iso",
+        "Form/LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CED_LT_m",
+       "field": "Form/ED_LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_m",
+        "Form/LT_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_FF_mc",
+       "field": "Form/EY_FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_FF_mc",
+        "Form/FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_FT_mc",
+       "field": "Form/EY_FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_FT_mc",
+        "Form/FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LF_dm",
+       "field": "Form/EY_LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_dm",
+        "Form/LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LF_iso",
+       "field": "Form/EY_LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_iso",
+        "Form/LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LF_m",
+       "field": "Form/EY_LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_m",
+        "Form/LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LT_dm",
+       "field": "Form/EY_LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_dm",
+        "Form/LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LT_iso",
+       "field": "Form/EY_LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_iso",
+        "Form/LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CEY_LT_m",
+       "field": "Form/EY_LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_m",
+        "Form/LT_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_FF_mc",
+       "field": "Form/SM_FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FF_mc",
+        "Form/SM_FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_FT_mc",
+       "field": "Form/SM_FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FT_mc",
+        "Form/SM_FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LF_dm",
+       "field": "Form/SM_LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_dm",
+        "Form/SM_LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LF_iso",
+       "field": "Form/SM_LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_iso",
+        "Form/SM_LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LF_m",
+       "field": "Form/SM_LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_m",
+        "Form/SM_LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LT_dm",
+       "field": "Form/SM_LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_dm",
+        "Form/SM_LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LT_iso",
+       "field": "Form/SM_LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_iso",
+        "Form/SM_LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSM_LT_m",
+       "field": "Form/SM_LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_m",
+        "Form/SM_LT_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_FF_mc",
+       "field": "Form/SY_FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FF_mc",
+        "Form/SY_FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_FT_mc",
+       "field": "Form/SY_FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FT_mc",
+        "Form/SY_FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LF_dm",
+       "field": "Form/SY_LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_dm",
+        "Form/SY_LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LF_iso",
+       "field": "Form/SY_LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_iso",
+        "Form/SY_LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LF_m",
+       "field": "Form/SY_LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_m",
+        "Form/SY_LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LT_dm",
+       "field": "Form/SY_LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_dm",
+        "Form/SY_LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LT_iso",
+       "field": "Form/SY_LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_iso",
+        "Form/SY_LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSY_LT_m",
+       "field": "Form/SY_LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_m",
+        "Form/SY_LT_m"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/ED_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "31"
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "2000"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/ED_FF_mc",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "value": "31"
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "value": "31"
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "value": "2000"
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "value": "3"
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "value": "3"
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "value": "2000"
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "value": "2000"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "ED_FF_mc": 31,
+        "ED_FT_mc": 31,
+        "ED_LF_dm": 31,
+        "ED_LF_iso": 31,
+        "ED_LF_m": 31,
+        "ED_LT_dm": 31,
+        "ED_LT_iso": 31,
+        "ED_LT_m": 31,
+        "EY_FF_mc": 2000,
+        "EY_FT_mc": 2000,
+        "EY_LF_dm": 2000,
+        "EY_LF_iso": 2000,
+        "EY_LF_m": 2000,
+        "EY_LT_dm": 2000,
+        "EY_LT_iso": 2000,
+        "EY_LT_m": 2000,
+        "FF_mc": "0310",
+        "FT_mc": "0310",
+        "LF_dm": "01.03-31.10",
+        "LF_iso": "2023-03-01/2024-10-31",
+        "LF_m": "03/10",
+        "LT_dm": "01.03-31.10",
+        "LT_iso": "2023-03-01/2024-10-31",
+        "LT_m": "03/10",
+        "SM_FF_mc": 3,
+        "SM_FT_mc": 3,
+        "SM_LF_dm": 3,
+        "SM_LF_iso": 3,
+        "SM_LF_m": 3,
+        "SM_LT_dm": 3,
+        "SM_LT_iso": 3,
+        "SM_LT_m": 3,
+        "SY_FF_mc": 2000,
+        "SY_FT_mc": 2000,
+        "SY_LF_dm": 2000,
+        "SY_LF_iso": 2000,
+        "SY_LF_m": 2000,
+        "SY_LT_dm": 2000,
+        "SY_LT_iso": 2000,
+        "SY_LT_m": 2000
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "wrapping",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_m"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/ED_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/FF_mc",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/FF_mc"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/FT_mc",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/FT_mc"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LF_dm",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_dm"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LF_iso",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_iso"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LF_m",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_m"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LT_dm",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_dm"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LT_iso",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_iso"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LT_m",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_m"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "ED_FF_mc": null,
+        "ED_FT_mc": null,
+        "ED_LF_dm": null,
+        "ED_LF_iso": null,
+        "ED_LF_m": null,
+        "ED_LT_dm": null,
+        "ED_LT_iso": null,
+        "ED_LT_m": null,
+        "EY_FF_mc": null,
+        "EY_FT_mc": null,
+        "EY_LF_dm": null,
+        "EY_LF_iso": null,
+        "EY_LF_m": null,
+        "EY_LT_dm": null,
+        "EY_LT_iso": null,
+        "EY_LT_m": null,
+        "FF_mc": "1102",
+        "FT_mc": "1102",
+        "LF_dm": "01.11-28.02",
+        "LF_iso": "2023-11-01/2024-02-28",
+        "LF_m": "11/02",
+        "LT_dm": "01.11-28.02",
+        "LT_iso": "2023-11-01/2024-02-28",
+        "LT_m": "11/02",
+        "SM_FF_mc": null,
+        "SM_FT_mc": null,
+        "SM_LF_dm": null,
+        "SM_LF_iso": null,
+        "SM_LF_m": null,
+        "SM_LT_dm": null,
+        "SM_LT_iso": null,
+        "SM_LT_m": null,
+        "SY_FF_mc": null,
+        "SY_FT_mc": null,
+        "SY_LF_dm": null,
+        "SY_LF_iso": null,
+        "SY_LF_m": null,
+        "SY_LT_dm": null,
+        "SY_LT_iso": null,
+        "SY_LT_m": null
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichNichtGueltig",
+       "field": "Form/LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_m"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/ED_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/FF_mc",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/FF_mc"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/FT_mc",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/FT_mc"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LF_dm",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_dm"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LF_iso",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_iso"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LF_m",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_m"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LT_dm",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_dm"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LT_iso",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_iso"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichNichtGueltig",
+        "field": "Form/LT_m",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_m"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "ED_FF_mc": null,
+        "ED_FT_mc": null,
+        "ED_LF_dm": null,
+        "ED_LF_iso": null,
+        "ED_LF_m": null,
+        "ED_LT_dm": null,
+        "ED_LT_iso": null,
+        "ED_LT_m": null,
+        "EY_FF_mc": null,
+        "EY_FT_mc": null,
+        "EY_LF_dm": null,
+        "EY_LF_iso": null,
+        "EY_LF_m": null,
+        "EY_LT_dm": null,
+        "EY_LT_iso": null,
+        "EY_LT_m": null,
+        "FF_mc": "1102",
+        "FT_mc": "1102",
+        "LF_dm": "01.11-28.02",
+        "LF_iso": "2023-11-01/2024-02-28",
+        "LF_m": "11/02",
+        "LT_dm": "01.11-28.02",
+        "LT_iso": "2023-11-01/2024-02-28",
+        "LT_m": "11/02",
+        "SM_FF_mc": null,
+        "SM_FT_mc": null,
+        "SM_LF_dm": null,
+        "SM_LF_iso": null,
+        "SM_LF_m": null,
+        "SM_LT_dm": null,
+        "SM_LT_iso": null,
+        "SM_LT_m": null,
+        "SY_FF_mc": null,
+        "SY_FT_mc": null,
+        "SY_LF_dm": null,
+        "SY_LF_iso": null,
+        "SY_LF_m": null,
+        "SY_LT_dm": null,
+        "SY_LT_iso": null,
+        "SY_LT_m": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CED_FF_mc",
+       "field": "Form/ED_FF_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_FF_mc",
+        "Form/FF_mc"
+       ],
+       "fillToFix": [
+        "Form/ED_FF_mc",
+        "Form/FF_mc"
+       ]
+      },
+      {
+       "code": "CED_FT_mc",
+       "field": "Form/ED_FT_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_FT_mc",
+        "Form/FT_mc"
+       ],
+       "fillToFix": [
+        "Form/ED_FT_mc",
+        "Form/FT_mc"
+       ]
+      },
+      {
+       "code": "CED_LF_dm",
+       "field": "Form/ED_LF_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_dm",
+        "Form/LF_dm"
+       ],
+       "fillToFix": [
+        "Form/ED_LF_dm",
+        "Form/LF_dm"
+       ]
+      },
+      {
+       "code": "CED_LF_iso",
+       "field": "Form/ED_LF_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_iso",
+        "Form/LF_iso"
+       ],
+       "fillToFix": [
+        "Form/ED_LF_iso",
+        "Form/LF_iso"
+       ]
+      },
+      {
+       "code": "CED_LF_m",
+       "field": "Form/ED_LF_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_m",
+        "Form/LF_m"
+       ],
+       "fillToFix": [
+        "Form/ED_LF_m",
+        "Form/LF_m"
+       ]
+      },
+      {
+       "code": "CED_LT_dm",
+       "field": "Form/ED_LT_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_dm",
+        "Form/LT_dm"
+       ],
+       "fillToFix": [
+        "Form/ED_LT_dm",
+        "Form/LT_dm"
+       ]
+      },
+      {
+       "code": "CED_LT_iso",
+       "field": "Form/ED_LT_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_iso",
+        "Form/LT_iso"
+       ],
+       "fillToFix": [
+        "Form/ED_LT_iso",
+        "Form/LT_iso"
+       ]
+      },
+      {
+       "code": "CED_LT_m",
+       "field": "Form/ED_LT_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_m",
+        "Form/LT_m"
+       ],
+       "fillToFix": [
+        "Form/ED_LT_m",
+        "Form/LT_m"
+       ]
+      },
+      {
+       "code": "CEY_FF_mc",
+       "field": "Form/EY_FF_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_FF_mc",
+        "Form/FF_mc"
+       ],
+       "fillToFix": [
+        "Form/EY_FF_mc",
+        "Form/FF_mc"
+       ]
+      },
+      {
+       "code": "CEY_FT_mc",
+       "field": "Form/EY_FT_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_FT_mc",
+        "Form/FT_mc"
+       ],
+       "fillToFix": [
+        "Form/EY_FT_mc",
+        "Form/FT_mc"
+       ]
+      },
+      {
+       "code": "CEY_LF_dm",
+       "field": "Form/EY_LF_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_dm",
+        "Form/LF_dm"
+       ],
+       "fillToFix": [
+        "Form/EY_LF_dm",
+        "Form/LF_dm"
+       ]
+      },
+      {
+       "code": "CEY_LF_iso",
+       "field": "Form/EY_LF_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_iso",
+        "Form/LF_iso"
+       ],
+       "fillToFix": [
+        "Form/EY_LF_iso",
+        "Form/LF_iso"
+       ]
+      },
+      {
+       "code": "CEY_LF_m",
+       "field": "Form/EY_LF_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_m",
+        "Form/LF_m"
+       ],
+       "fillToFix": [
+        "Form/EY_LF_m",
+        "Form/LF_m"
+       ]
+      },
+      {
+       "code": "CEY_LT_dm",
+       "field": "Form/EY_LT_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_dm",
+        "Form/LT_dm"
+       ],
+       "fillToFix": [
+        "Form/EY_LT_dm",
+        "Form/LT_dm"
+       ]
+      },
+      {
+       "code": "CEY_LT_iso",
+       "field": "Form/EY_LT_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_iso",
+        "Form/LT_iso"
+       ],
+       "fillToFix": [
+        "Form/EY_LT_iso",
+        "Form/LT_iso"
+       ]
+      },
+      {
+       "code": "CEY_LT_m",
+       "field": "Form/EY_LT_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_m",
+        "Form/LT_m"
+       ],
+       "fillToFix": [
+        "Form/EY_LT_m",
+        "Form/LT_m"
+       ]
+      },
+      {
+       "code": "CSM_FF_mc",
+       "field": "Form/SM_FF_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FF_mc",
+        "Form/SM_FF_mc"
+       ],
+       "fillToFix": [
+        "Form/FF_mc",
+        "Form/SM_FF_mc"
+       ]
+      },
+      {
+       "code": "CSM_FT_mc",
+       "field": "Form/SM_FT_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FT_mc",
+        "Form/SM_FT_mc"
+       ],
+       "fillToFix": [
+        "Form/FT_mc",
+        "Form/SM_FT_mc"
+       ]
+      },
+      {
+       "code": "CSM_LF_dm",
+       "field": "Form/SM_LF_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_dm",
+        "Form/SM_LF_dm"
+       ],
+       "fillToFix": [
+        "Form/LF_dm",
+        "Form/SM_LF_dm"
+       ]
+      },
+      {
+       "code": "CSM_LF_iso",
+       "field": "Form/SM_LF_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_iso",
+        "Form/SM_LF_iso"
+       ],
+       "fillToFix": [
+        "Form/LF_iso",
+        "Form/SM_LF_iso"
+       ]
+      },
+      {
+       "code": "CSM_LF_m",
+       "field": "Form/SM_LF_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_m",
+        "Form/SM_LF_m"
+       ],
+       "fillToFix": [
+        "Form/LF_m",
+        "Form/SM_LF_m"
+       ]
+      },
+      {
+       "code": "CSM_LT_dm",
+       "field": "Form/SM_LT_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_dm",
+        "Form/SM_LT_dm"
+       ],
+       "fillToFix": [
+        "Form/LT_dm",
+        "Form/SM_LT_dm"
+       ]
+      },
+      {
+       "code": "CSM_LT_iso",
+       "field": "Form/SM_LT_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_iso",
+        "Form/SM_LT_iso"
+       ],
+       "fillToFix": [
+        "Form/LT_iso",
+        "Form/SM_LT_iso"
+       ]
+      },
+      {
+       "code": "CSM_LT_m",
+       "field": "Form/SM_LT_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_m",
+        "Form/SM_LT_m"
+       ],
+       "fillToFix": [
+        "Form/LT_m",
+        "Form/SM_LT_m"
+       ]
+      },
+      {
+       "code": "CSY_FF_mc",
+       "field": "Form/SY_FF_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FF_mc",
+        "Form/SY_FF_mc"
+       ],
+       "fillToFix": [
+        "Form/FF_mc",
+        "Form/SY_FF_mc"
+       ]
+      },
+      {
+       "code": "CSY_FT_mc",
+       "field": "Form/SY_FT_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FT_mc",
+        "Form/SY_FT_mc"
+       ],
+       "fillToFix": [
+        "Form/FT_mc",
+        "Form/SY_FT_mc"
+       ]
+      },
+      {
+       "code": "CSY_LF_dm",
+       "field": "Form/SY_LF_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_dm",
+        "Form/SY_LF_dm"
+       ],
+       "fillToFix": [
+        "Form/LF_dm",
+        "Form/SY_LF_dm"
+       ]
+      },
+      {
+       "code": "CSY_LF_iso",
+       "field": "Form/SY_LF_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_iso",
+        "Form/SY_LF_iso"
+       ],
+       "fillToFix": [
+        "Form/LF_iso",
+        "Form/SY_LF_iso"
+       ]
+      },
+      {
+       "code": "CSY_LF_m",
+       "field": "Form/SY_LF_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_m",
+        "Form/SY_LF_m"
+       ],
+       "fillToFix": [
+        "Form/LF_m",
+        "Form/SY_LF_m"
+       ]
+      },
+      {
+       "code": "CSY_LT_dm",
+       "field": "Form/SY_LT_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_dm",
+        "Form/SY_LT_dm"
+       ],
+       "fillToFix": [
+        "Form/LT_dm",
+        "Form/SY_LT_dm"
+       ]
+      },
+      {
+       "code": "CSY_LT_iso",
+       "field": "Form/SY_LT_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_iso",
+        "Form/SY_LT_iso"
+       ],
+       "fillToFix": [
+        "Form/LT_iso",
+        "Form/SY_LT_iso"
+       ]
+      },
+      {
+       "code": "CSY_LT_m",
+       "field": "Form/SY_LT_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_m",
+        "Form/SY_LT_m"
+       ],
+       "fillToFix": [
+        "Form/LT_m",
+        "Form/SY_LT_m"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/ED_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/ED_FF_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "value": "0"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "ED_FF_mc": 0,
+        "ED_FT_mc": 0,
+        "ED_LF_dm": 0,
+        "ED_LF_iso": 0,
+        "ED_LF_m": 0,
+        "ED_LT_dm": 0,
+        "ED_LT_iso": 0,
+        "ED_LT_m": 0,
+        "EY_FF_mc": 0,
+        "EY_FT_mc": 0,
+        "EY_LF_dm": 0,
+        "EY_LF_iso": 0,
+        "EY_LF_m": 0,
+        "EY_LT_dm": 0,
+        "EY_LT_iso": 0,
+        "EY_LT_m": 0,
+        "SM_FF_mc": 0,
+        "SM_FT_mc": 0,
+        "SM_LF_dm": 0,
+        "SM_LF_iso": 0,
+        "SM_LF_m": 0,
+        "SM_LT_dm": 0,
+        "SM_LT_iso": 0,
+        "SM_LT_m": 0,
+        "SY_FF_mc": 0,
+        "SY_FT_mc": 0,
+        "SY_LF_dm": 0,
+        "SY_LF_iso": 0,
+        "SY_LF_m": 0,
+        "SY_LT_dm": 0,
+        "SY_LT_iso": 0,
+        "SY_LT_m": 0
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CED_FF_mc",
+       "field": "Form/ED_FF_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_FF_mc",
+        "Form/FF_mc"
+       ],
+       "fillToFix": [
+        "Form/ED_FF_mc",
+        "Form/FF_mc"
+       ]
+      },
+      {
+       "code": "CED_FT_mc",
+       "field": "Form/ED_FT_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_FT_mc",
+        "Form/FT_mc"
+       ],
+       "fillToFix": [
+        "Form/ED_FT_mc",
+        "Form/FT_mc"
+       ]
+      },
+      {
+       "code": "CED_LF_dm",
+       "field": "Form/ED_LF_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_dm",
+        "Form/LF_dm"
+       ],
+       "fillToFix": [
+        "Form/ED_LF_dm",
+        "Form/LF_dm"
+       ]
+      },
+      {
+       "code": "CED_LF_iso",
+       "field": "Form/ED_LF_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_iso",
+        "Form/LF_iso"
+       ],
+       "fillToFix": [
+        "Form/ED_LF_iso",
+        "Form/LF_iso"
+       ]
+      },
+      {
+       "code": "CED_LF_m",
+       "field": "Form/ED_LF_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LF_m",
+        "Form/LF_m"
+       ],
+       "fillToFix": [
+        "Form/ED_LF_m",
+        "Form/LF_m"
+       ]
+      },
+      {
+       "code": "CED_LT_dm",
+       "field": "Form/ED_LT_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_dm",
+        "Form/LT_dm"
+       ],
+       "fillToFix": [
+        "Form/ED_LT_dm",
+        "Form/LT_dm"
+       ]
+      },
+      {
+       "code": "CED_LT_iso",
+       "field": "Form/ED_LT_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_iso",
+        "Form/LT_iso"
+       ],
+       "fillToFix": [
+        "Form/ED_LT_iso",
+        "Form/LT_iso"
+       ]
+      },
+      {
+       "code": "CED_LT_m",
+       "field": "Form/ED_LT_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/ED_LT_m",
+        "Form/LT_m"
+       ],
+       "fillToFix": [
+        "Form/ED_LT_m",
+        "Form/LT_m"
+       ]
+      },
+      {
+       "code": "CEY_FF_mc",
+       "field": "Form/EY_FF_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_FF_mc",
+        "Form/FF_mc"
+       ],
+       "fillToFix": [
+        "Form/EY_FF_mc",
+        "Form/FF_mc"
+       ]
+      },
+      {
+       "code": "CEY_FT_mc",
+       "field": "Form/EY_FT_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_FT_mc",
+        "Form/FT_mc"
+       ],
+       "fillToFix": [
+        "Form/EY_FT_mc",
+        "Form/FT_mc"
+       ]
+      },
+      {
+       "code": "CEY_LF_dm",
+       "field": "Form/EY_LF_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_dm",
+        "Form/LF_dm"
+       ],
+       "fillToFix": [
+        "Form/EY_LF_dm",
+        "Form/LF_dm"
+       ]
+      },
+      {
+       "code": "CEY_LF_iso",
+       "field": "Form/EY_LF_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_iso",
+        "Form/LF_iso"
+       ],
+       "fillToFix": [
+        "Form/EY_LF_iso",
+        "Form/LF_iso"
+       ]
+      },
+      {
+       "code": "CEY_LF_m",
+       "field": "Form/EY_LF_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LF_m",
+        "Form/LF_m"
+       ],
+       "fillToFix": [
+        "Form/EY_LF_m",
+        "Form/LF_m"
+       ]
+      },
+      {
+       "code": "CEY_LT_dm",
+       "field": "Form/EY_LT_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_dm",
+        "Form/LT_dm"
+       ],
+       "fillToFix": [
+        "Form/EY_LT_dm",
+        "Form/LT_dm"
+       ]
+      },
+      {
+       "code": "CEY_LT_iso",
+       "field": "Form/EY_LT_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_iso",
+        "Form/LT_iso"
+       ],
+       "fillToFix": [
+        "Form/EY_LT_iso",
+        "Form/LT_iso"
+       ]
+      },
+      {
+       "code": "CEY_LT_m",
+       "field": "Form/EY_LT_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/EY_LT_m",
+        "Form/LT_m"
+       ],
+       "fillToFix": [
+        "Form/EY_LT_m",
+        "Form/LT_m"
+       ]
+      },
+      {
+       "code": "CSM_FF_mc",
+       "field": "Form/SM_FF_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FF_mc",
+        "Form/SM_FF_mc"
+       ],
+       "fillToFix": [
+        "Form/FF_mc",
+        "Form/SM_FF_mc"
+       ]
+      },
+      {
+       "code": "CSM_FT_mc",
+       "field": "Form/SM_FT_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FT_mc",
+        "Form/SM_FT_mc"
+       ],
+       "fillToFix": [
+        "Form/FT_mc",
+        "Form/SM_FT_mc"
+       ]
+      },
+      {
+       "code": "CSM_LF_dm",
+       "field": "Form/SM_LF_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_dm",
+        "Form/SM_LF_dm"
+       ],
+       "fillToFix": [
+        "Form/LF_dm",
+        "Form/SM_LF_dm"
+       ]
+      },
+      {
+       "code": "CSM_LF_iso",
+       "field": "Form/SM_LF_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_iso",
+        "Form/SM_LF_iso"
+       ],
+       "fillToFix": [
+        "Form/LF_iso",
+        "Form/SM_LF_iso"
+       ]
+      },
+      {
+       "code": "CSM_LF_m",
+       "field": "Form/SM_LF_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_m",
+        "Form/SM_LF_m"
+       ],
+       "fillToFix": [
+        "Form/LF_m",
+        "Form/SM_LF_m"
+       ]
+      },
+      {
+       "code": "CSM_LT_dm",
+       "field": "Form/SM_LT_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_dm",
+        "Form/SM_LT_dm"
+       ],
+       "fillToFix": [
+        "Form/LT_dm",
+        "Form/SM_LT_dm"
+       ]
+      },
+      {
+       "code": "CSM_LT_iso",
+       "field": "Form/SM_LT_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_iso",
+        "Form/SM_LT_iso"
+       ],
+       "fillToFix": [
+        "Form/LT_iso",
+        "Form/SM_LT_iso"
+       ]
+      },
+      {
+       "code": "CSM_LT_m",
+       "field": "Form/SM_LT_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_m",
+        "Form/SM_LT_m"
+       ],
+       "fillToFix": [
+        "Form/LT_m",
+        "Form/SM_LT_m"
+       ]
+      },
+      {
+       "code": "CSY_FF_mc",
+       "field": "Form/SY_FF_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FF_mc",
+        "Form/SY_FF_mc"
+       ],
+       "fillToFix": [
+        "Form/FF_mc",
+        "Form/SY_FF_mc"
+       ]
+      },
+      {
+       "code": "CSY_FT_mc",
+       "field": "Form/SY_FT_mc",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/FT_mc",
+        "Form/SY_FT_mc"
+       ],
+       "fillToFix": [
+        "Form/FT_mc",
+        "Form/SY_FT_mc"
+       ]
+      },
+      {
+       "code": "CSY_LF_dm",
+       "field": "Form/SY_LF_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_dm",
+        "Form/SY_LF_dm"
+       ],
+       "fillToFix": [
+        "Form/LF_dm",
+        "Form/SY_LF_dm"
+       ]
+      },
+      {
+       "code": "CSY_LF_iso",
+       "field": "Form/SY_LF_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_iso",
+        "Form/SY_LF_iso"
+       ],
+       "fillToFix": [
+        "Form/LF_iso",
+        "Form/SY_LF_iso"
+       ]
+      },
+      {
+       "code": "CSY_LF_m",
+       "field": "Form/SY_LF_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LF_m",
+        "Form/SY_LF_m"
+       ],
+       "fillToFix": [
+        "Form/LF_m",
+        "Form/SY_LF_m"
+       ]
+      },
+      {
+       "code": "CSY_LT_dm",
+       "field": "Form/SY_LT_dm",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_dm",
+        "Form/SY_LT_dm"
+       ],
+       "fillToFix": [
+        "Form/LT_dm",
+        "Form/SY_LT_dm"
+       ]
+      },
+      {
+       "code": "CSY_LT_iso",
+       "field": "Form/SY_LT_iso",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_iso",
+        "Form/SY_LT_iso"
+       ],
+       "fillToFix": [
+        "Form/LT_iso",
+        "Form/SY_LT_iso"
+       ]
+      },
+      {
+       "code": "CSY_LT_m",
+       "field": "Form/SY_LT_m",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/LT_m",
+        "Form/SY_LT_m"
+       ],
+       "fillToFix": [
+        "Form/LT_m",
+        "Form/SY_LT_m"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/ED_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/ED_FF_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "value": "0"
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "value": "0"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "ED_FF_mc": 0,
+        "ED_FT_mc": 0,
+        "ED_LF_dm": 0,
+        "ED_LF_iso": 0,
+        "ED_LF_m": 0,
+        "ED_LT_dm": 0,
+        "ED_LT_iso": 0,
+        "ED_LT_m": 0,
+        "EY_FF_mc": 0,
+        "EY_FT_mc": 0,
+        "EY_LF_dm": 0,
+        "EY_LF_iso": 0,
+        "EY_LF_m": 0,
+        "EY_LT_dm": 0,
+        "EY_LT_iso": 0,
+        "EY_LT_m": 0,
+        "SM_FF_mc": 0,
+        "SM_FT_mc": 0,
+        "SM_LF_dm": 0,
+        "SM_LF_iso": 0,
+        "SM_LF_m": 0,
+        "SM_LT_dm": 0,
+        "SM_LT_iso": 0,
+        "SM_LT_m": 0,
+        "SY_FF_mc": 0,
+        "SY_FT_mc": 0,
+        "SY_LF_dm": 0,
+        "SY_LF_iso": 0,
+        "SY_LF_m": 0,
+        "SY_LT_dm": 0,
+        "SY_LT_iso": 0,
+        "SY_LT_m": 0
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "malformed",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_m"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/ED_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/FF_mc",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/FF_mc"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/FT_mc",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/FT_mc"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LF_dm",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_dm"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LF_iso",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_iso"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LF_m",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_m"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LT_dm",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_dm"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LT_iso",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_iso"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LT_m",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_m"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "ED_FF_mc": null,
+        "ED_FT_mc": null,
+        "ED_LF_dm": null,
+        "ED_LF_iso": null,
+        "ED_LF_m": null,
+        "ED_LT_dm": null,
+        "ED_LT_iso": null,
+        "ED_LT_m": null,
+        "EY_FF_mc": null,
+        "EY_FT_mc": null,
+        "EY_LF_dm": null,
+        "EY_LF_iso": null,
+        "EY_LF_m": null,
+        "EY_LT_dm": null,
+        "EY_LT_iso": null,
+        "EY_LT_m": null,
+        "FF_mc": "bad",
+        "FT_mc": "bad",
+        "LF_dm": "bad",
+        "LF_iso": "bad",
+        "LF_m": "bad",
+        "LT_dm": "bad",
+        "LT_iso": "bad",
+        "LT_m": "bad",
+        "SM_FF_mc": null,
+        "SM_FT_mc": null,
+        "SM_LF_dm": null,
+        "SM_LF_iso": null,
+        "SM_LF_m": null,
+        "SM_LT_dm": null,
+        "SM_LT_iso": null,
+        "SM_LT_m": null,
+        "SY_FF_mc": null,
+        "SY_FT_mc": null,
+        "SY_LF_dm": null,
+        "SY_LF_iso": null,
+        "SY_LF_m": null,
+        "SY_LT_dm": null,
+        "SY_LT_iso": null,
+        "SY_LT_m": null
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/FF_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/FF_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/FT_mc",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/FT_mc"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LF_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LF_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LF_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LF_m"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LT_dm",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_dm"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LT_iso",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_iso"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumBereichFormatFalsch",
+       "field": "Form/LT_m",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/LT_m"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/ED_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ED_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/EY_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SM_LT_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_FF_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_FT_mc",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LF_m",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_dm",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_iso",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/SY_LT_m",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/FF_mc",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/FF_mc"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/FT_mc",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/FT_mc"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LF_dm",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_dm"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LF_iso",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_iso"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LF_m",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LF_m"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LT_dm",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_dm"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LT_iso",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_iso"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumBereichFormatFalsch",
+        "field": "Form/LT_m",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/LT_m"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "ED_FF_mc": null,
+        "ED_FT_mc": null,
+        "ED_LF_dm": null,
+        "ED_LF_iso": null,
+        "ED_LF_m": null,
+        "ED_LT_dm": null,
+        "ED_LT_iso": null,
+        "ED_LT_m": null,
+        "EY_FF_mc": null,
+        "EY_FT_mc": null,
+        "EY_LF_dm": null,
+        "EY_LF_iso": null,
+        "EY_LF_m": null,
+        "EY_LT_dm": null,
+        "EY_LT_iso": null,
+        "EY_LT_m": null,
+        "FF_mc": "bad",
+        "FT_mc": "bad",
+        "LF_dm": "bad",
+        "LF_iso": "bad",
+        "LF_m": "bad",
+        "LT_dm": "bad",
+        "LT_iso": "bad",
+        "LT_m": "bad",
+        "SM_FF_mc": null,
+        "SM_FT_mc": null,
+        "SM_LF_dm": null,
+        "SM_LF_iso": null,
+        "SM_LF_m": null,
+        "SM_LT_dm": null,
+        "SM_LT_iso": null,
+        "SM_LT_m": null,
+        "SY_FF_mc": null,
+        "SY_FT_mc": null,
+        "SY_LF_dm": null,
+        "SY_LF_iso": null,
+        "SY_LF_m": null,
+        "SY_LT_dm": null,
+        "SY_LT_iso": null,
+        "SY_LT_m": null
+       }
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
