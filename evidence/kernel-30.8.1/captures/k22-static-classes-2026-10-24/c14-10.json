@@ -1,0 +1,19 @@
+{
+ "computedField": "/Shop/Total",
+ "alternatives": [
+  {
+   "precondition": "FieldFilled(NoSuch)",
+   "operation": "1"
+  },
+  {
+   "precondition": "FieldFilled(Nope2)",
+   "operation": "2"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

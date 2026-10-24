@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Rows/RLabel",
+ "alternatives": [
+  {
+   "operation": "[RKind -> Band]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

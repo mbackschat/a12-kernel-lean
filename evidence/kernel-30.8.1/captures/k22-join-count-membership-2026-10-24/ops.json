@@ -1,0 +1,172 @@
+[
+ {
+  "id": "r1-j1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "j1",
+   "--field",
+   "/Shop/Tags/TVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Tags/TVal) And [Tags/TVal] < [Marks/MVal]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r1-j2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "j2",
+   "--field",
+   "/Shop/Marks/MVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Marks/MVal) And [Marks/MVal] < [Tags/TVal]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r1-j3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "j3",
+   "--field",
+   "/Shop/Tags/TVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Tags/TVal) And FieldFilled(Marks/MVal)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r1-j4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "j4",
+   "--field",
+   "/Shop/Tags/TVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Tags/TVal) And [Tags/TVal] < [Marks0/M0Val]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r1-g1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g1",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(/Shop/Rows, /Shop/Box) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r1-g2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g2",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(Rows, Box) == 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r1-g3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g3",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(Rows/Fix, Items*) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r1-m1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Items/ILabel For \"a\", \"x\", \"y\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r1-m2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueNotIncludedInValueList(Items/ILabel For \"a\", \"x\", \"y\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r1-g4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Rows/Fix, Items*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

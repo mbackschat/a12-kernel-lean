@@ -16,9 +16,13 @@ def elaborateDistinctCountSource (model : FlatModel) (declaringGroup : GroupPath
     (source : SurfaceFieldEntitySource) (fixedTargetGroup? : Option GroupPath := none)
     (bindingGroup? : Option GroupPath := none) :
     Except NumberEntityElabError (CheckedDistinctCountSource model) :=
+  -- A count asks the category gate ahead of the list's repeat and root gates on every overload, so
+  -- the Number overload, whose refusal stands when none accepts, asks it there too
+  -- (k22-static-classes-2026-10-24, `s9-n3`, `s9-n4`).
   match elaborateNumberEntitySource model declaringGroup source
       (fixedTargetGroup? := fixedTargetGroup?)
-      (writtenGroup := bindingGroup?.getD declaringGroup) (bindingGroup? := bindingGroup?) with
+      (writtenGroup := bindingGroup?.getD declaringGroup) (bindingGroup? := bindingGroup?)
+      (categoryGate := .aheadOfRepeat) with
   | .ok checked => pure (.number checked)
   | .error error =>
       match elaborateTokenDistinctCountSource model declaringGroup source

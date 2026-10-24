@@ -586,14 +586,15 @@ many-required default; entity-valued membership uses the sole-allowed rule
 def elaborateNumberEntitySource (model : FlatModel)
     (declaringGroup : GroupPath) (authored : SurfaceNumberEntitySource)
     (fixedTargetGroup? : Option GroupPath := none) (writtenGroup : GroupPath := declaringGroup)
-    (arity : EntityListArity := .manyRequired) (bindingGroup? : Option GroupPath := none) :
+    (arity : EntityListArity := .manyRequired) (bindingGroup? : Option GroupPath := none)
+    (categoryGate : EntityListCategoryGate := .absent) :
     Except NumberEntityElabError (CheckedNumberEntitySource model) := do
   let bindingGroup? := bindingGroup?.or fixedTargetGroup?
   let shape ←
     elaborateFieldEntityShapeIn model declaringGroup
       (bindingGroup?.map model.repeatableScopeForGroupPath |>.getD [])
       authored arity (fixedTargetGroup? := fixedTargetGroup?)
-      (writtenGroup := writtenGroup)
+      (writtenGroup := writtenGroup) (categoryGate := categoryGate)
       (groupReadScope := if bindingGroup?.isSome && fixedTargetGroup?.isNone then .ruleBound else .scalar)
     |>.mapError NumberEntityElabError.shape
   certifyNumberEntityShape model declaringGroup shape (bindingGroup?.getD declaringGroup)

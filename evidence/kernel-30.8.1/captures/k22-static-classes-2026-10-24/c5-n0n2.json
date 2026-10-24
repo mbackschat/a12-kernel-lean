@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Tags/TOut",
+ "alternatives": [
+  {
+   "operation": "[/Shop/Marks/MVal] + [TVal]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

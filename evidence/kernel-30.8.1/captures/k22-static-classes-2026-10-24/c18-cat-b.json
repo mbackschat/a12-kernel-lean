@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Flag",
+ "alternatives": [
+  {
+   "operation": "[Kind -> Band]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Tags/TOut",
+ "alternatives": [
+  {
+   "precondition": "FieldFilled(/Shop/Marks0/M0Val)",
+   "operation": "[/Shop/Marks0/M0Val] + [TVal]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

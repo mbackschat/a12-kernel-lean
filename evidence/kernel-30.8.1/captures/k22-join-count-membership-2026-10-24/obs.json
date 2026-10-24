@@ -1,0 +1,72 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "08b0d6499c98b132257ec961eb214de73fa223e3",
+    "state" : "CLEAN"
+  },
+  "model" : "3a80db128f3ac889f4f5561448a6199e865cd1b3d7f1da72d9adc919c72cb5fa",
+  "observations" : [ {
+    "id" : "r1-j1",
+    "inputHash" : "274074f320557cea420da2c5de02d3ff0ffd3562303cc3f695b82f1c5b0adac9",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "r1-j2",
+    "inputHash" : "c6a8346ca905f4f46af99bdc0781e498bf6630c048ee5964041bc9b6f86df692",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "r1-j3",
+    "inputHash" : "684532d7591eaf65de9e3060cb77b4041185a69550e81b316c5a72e06a7800b4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "r1-j4",
+    "inputHash" : "9e190aad1263267cbe3821c6442ccde757bb51147fc86ac0dfe434b758ef4523",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "r1-g1",
+    "inputHash" : "07f46fbfbcffa892b2fc84af53837390fab69bf366d100d7a26faf1c8444e98e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "r1-g2",
+    "inputHash" : "ff2ddc2c121f5b817d96da795c0f47d03a9842a71cc4de61ad08df3d37a4a455",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "r1-g3",
+    "inputHash" : "2d236bc60b90419c28ae2b81c90174080861545fa699a7f735bb92390a497074",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "r1-m1",
+    "inputHash" : "b86113fc1862660c29367d0845486b0805367dac67d04a48867ff1b670114e1b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "r1-m2",
+    "inputHash" : "fed38c6a1a7d2e7e019cb66b08cbf6f389abcb0c7736c1b86a05362d2860aea6",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "r1-g4",
+    "inputHash" : "a765f199cf9e58b89c0272bde8897cc04ccbd8e75bbb271c6ec532143ecb251d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  } ]
+}

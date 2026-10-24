@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Lines/LOut",
+ "alternatives": [
+  {
+   "operation": "[/Shop/Picks/PQty] + [LQty]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

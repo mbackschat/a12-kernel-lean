@@ -117,16 +117,17 @@ def isRoot (reference : ResolvedGroupReference) : Bool :=
   reference.path.length == 1
 
 /-- Ordinary paths are fixed either outside every repeatable scope or beneath the exact scope supplied
-by the validation binding. The terminal group itself must remain nonrepeatable. `RuleGroup` binds
-the already-selected rule instance even when that instance belongs to a repeatable group. -/
+by the validation binding. A repeatable terminal group is admitted only bound at the declaring
+group's own row, the instance `RuleGroup` names when that row is the rule's; an unbound one denotes
+no single instance. `RuleGroup` binds the already-selected rule instance even when that instance
+belongs to a repeatable group. -/
 def fixedWellFormedBool (reference : ResolvedGroupReference)
     (model : FlatModel) (declaringGroup : GroupPath) : Bool :=
   model.hasGroupPath reference.path &&
     match reference.origin with
     | .path =>
         let scope := model.repeatableScopeForGroupPath reference.path
-        !model.repeatableGroups.any (fun group => group.path == reference.path) &&
-          reference.boundRepeatableScope == scope &&
+        reference.boundRepeatableScope == scope &&
           (scope.isEmpty ||
             scope == model.repeatableScopeForGroupPath declaringGroup)
     | .ruleGroup => reference.path == declaringGroup
@@ -297,6 +298,10 @@ private inductive FixedGroupScopePolicy where
   read its own fields there, its fixed descendants, and every instance of a repeatable one
   (capture `rulegroup-field-fill-2026-10-24`). -/
   | fieldFillRow
+  /-- As `validationBound`, and the repeatable group whose row the error field binds, bound at that
+  row, which `NumberOfFilledGroups` admits beside another operand from an enclosing rule
+  (k22-static-classes-2026-10-24, `s8-desc-cntrows`). -/
+  | groupCountRow
   /-- Refused with the class `UnboundOperandLevel` selects, for a computation whose target repeats
   at no level; the group's own level counts when it is repeatable. -/
   | fixedTarget (targetGroup : GroupPath)
@@ -325,7 +330,7 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           | none => pure resolved
           | some unbound => throw (.unboundOperandLevel resolved.path unbound)
       | .fixedTargetList => pure { resolved with boundRepeatableScope := operandScope }
-      | .scalar | .ruleBound | .validationBound | .fieldFillRow =>
+      | .scalar | .ruleBound | .validationBound | .fieldFillRow | .groupCountRow =>
           let bindingGroup := if policy matches .scalar then declaringGroup
             else writtenGroup?.getD declaringGroup
           let bindingScope := model.repeatableScopeForGroupPath bindingGroup
@@ -341,8 +346,10 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           -- checked, so admitting a bound repeatable root reaches no executable list the core
           -- predicate refuses.
           if model.repeatableGroups.any (fun group => group.path == resolved.path) &&
-              !(policy matches .validationBound && resolved.path.length == 1) then
-            if policy matches .fieldFillRow && operandScope == bindingScope then
+              !((policy matches .validationBound || policy matches .groupCountRow) &&
+                resolved.path.length == 1) then
+            if (policy matches .fieldFillRow || policy matches .groupCountRow) &&
+                operandScope == bindingScope then
               pure { resolved with boundRepeatableScope := operandScope }
             else refuse
           else if operandScope.isEmpty then
@@ -437,7 +444,7 @@ def FlatModel.resolveRuleBoundFixedGroupReferences (model : FlatModel)
       pure (resolved ::
         (← model.resolveRuleBoundFixedGroupReferences declaringGroup remaining))
 
-/-- Resolve validation-bound fixed operands in authored order. -/
+/-- Resolve a validation group count's fixed operands in authored order, under `groupCountRow`. -/
 def FlatModel.resolveValidationBoundFixedGroupReferences (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) :
     List SurfaceGroupReference →
@@ -445,7 +452,7 @@ def FlatModel.resolveValidationBoundFixedGroupReferences (model : FlatModel)
   | [] => pure []
   | surface :: remaining => do
       let resolved ←
-        model.resolveValidationBoundFixedGroupReference declaringGroup surface writtenGroup
+        model.resolveFixedGroupReferenceWith .groupCountRow declaringGroup surface (some writtenGroup)
       pure (resolved ::
         (← model.resolveValidationBoundFixedGroupReferences declaringGroup writtenGroup remaining))
 

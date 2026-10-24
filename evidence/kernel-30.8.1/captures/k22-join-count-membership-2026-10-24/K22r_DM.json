@@ -1,0 +1,1579 @@
+{
+ "header": {
+  "id": "K22r_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K22r_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Shop",
+     "name": "Shop",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Shop/Title",
+        "name": "Title",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Memo",
+        "name": "Memo",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Dup",
+        "name": "Dup",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Amount",
+        "name": "Amount",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Price",
+        "name": "Price",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Frac",
+        "name": "Frac",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 1
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Flag",
+        "name": "Flag",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Flag2",
+        "name": "Flag2",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Due",
+        "name": "Due",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Stamp",
+        "name": "Stamp",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Clock",
+        "name": "Clock",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Kind",
+        "name": "Kind",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ],
+           "categories": [
+            {
+             "name": "Band",
+             "values": [
+              "Hi",
+              "Lo"
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Level",
+        "name": "Level",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "1"
+            },
+            {
+             "value": "2"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Span",
+        "name": "Span",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Span2",
+        "name": "Span2",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Shop/Day",
+        "name": "Day",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM.yyyy"
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Box",
+        "name": "Box",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Box/Lid",
+           "name": "Lid",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Box/BoxNum",
+           "name": "BoxNum",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Box/BoxKind",
+           "name": "BoxKind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/EBox",
+        "name": "EBox",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/EBox/E1",
+           "name": "E1",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/EBox/E2",
+           "name": "E2",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Mix",
+        "name": "Mix",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Mix/MixS",
+           "name": "MixS",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Mix/MixD",
+           "name": "MixD",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Hollow",
+        "name": "Hollow",
+        "Group": {
+         "repeatability": 1,
+         "elements": []
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Rows/RQty",
+           "name": "RQty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Rows/RCost",
+           "name": "RCost",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Rows/RLabel",
+           "name": "RLabel",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Rows/RPrice",
+           "name": "RPrice",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Rows/RDay",
+           "name": "RDay",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Rows/RStamp",
+           "name": "RStamp",
+           "Field": {
+            "fieldType": {
+             "type": "DateTimeType",
+             "DateTimeType": {
+              "format": "yyyy-MM-dd'T'HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Rows/RClock",
+           "name": "RClock",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Rows/RKind",
+           "name": "RKind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Rows/RFlag",
+           "name": "RFlag",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Rows/RSpan",
+           "name": "RSpan",
+           "Field": {
+            "fieldType": {
+             "type": "DateRangeType",
+             "DateRangeType": {
+              "format": "yyyy-MM-dd",
+              "rangeSeparator": "/"
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Shop/Rows/Sub",
+           "name": "Sub",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Shop/Rows/Sub/SubS",
+              "name": "SubS",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Shop/Rows/Sub/SubN",
+              "name": "SubN",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Shop/Rows/Fix",
+           "name": "Fix",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Shop/Rows/Fix/FixV",
+              "name": "FixV",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Shop/Rows/Gap",
+           "name": "Gap",
+           "Group": {
+            "repeatability": 1,
+            "elements": []
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Items",
+        "name": "Items",
+        "Group": {
+         "repeatability": 5,
+         "indexFieldName": "ItemNo",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Items/ItemNo",
+           "name": "ItemNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Items/IQty",
+           "name": "IQty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Items/ILabel",
+           "name": "ILabel",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Items/IPrice",
+           "name": "IPrice",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Items/IDay",
+           "name": "IDay",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Items/IKind",
+           "name": "IKind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Items/IFlag",
+           "name": "IFlag",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Shop/Items/IFix",
+           "name": "IFix",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Shop/Items/IFix/IFixV",
+              "name": "IFixV",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Zone",
+        "name": "Zone",
+        "Group": {
+         "repeatability": 4,
+         "indexFieldName": "ZKey",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Zone/ZKey",
+           "name": "ZKey",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Zone/ZV",
+           "name": "ZV",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Zone/ZLabel",
+           "name": "ZLabel",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Shop/Zone/Cell",
+           "name": "Cell",
+           "Group": {
+            "repeatability": 3,
+            "indexFieldName": "CKey",
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Shop/Zone/Cell/CKey",
+              "name": "CKey",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Shop/Zone/Cell/CV",
+              "name": "CV",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Shop/Zone/Cell/CLabel",
+              "name": "CLabel",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Shop/Zone/Plain",
+           "name": "Plain",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Shop/Zone/Plain/PV",
+              "name": "PV",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Lines",
+        "name": "Lines",
+        "Group": {
+         "repeatability": 5,
+         "indexFieldName": "LineNo",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Lines/LineNo",
+           "name": "LineNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Lines/LQty",
+           "name": "LQty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Lines/LNote",
+           "name": "LNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Lines/LOut",
+           "name": "LOut",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Lines2",
+        "name": "Lines2",
+        "Group": {
+         "repeatability": 5,
+         "indexFieldName": "LineNo",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Lines2/LineNo",
+           "name": "LineNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Lines2/L2Qty",
+           "name": "L2Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Lines2/L2Out",
+           "name": "L2Out",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Picks",
+        "name": "Picks",
+        "Group": {
+         "repeatability": 5,
+         "indexFieldName": "LineNo",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Picks/LineNo",
+           "name": "LineNo",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Picks/PQty",
+           "name": "PQty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Picks/PNote",
+           "name": "PNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Picks/POut",
+           "name": "POut",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Tags",
+        "name": "Tags",
+        "Group": {
+         "repeatability": 5,
+         "indexFieldName": "TagNo",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Tags/TagNo",
+           "name": "TagNo",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Tags/TVal",
+           "name": "TVal",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Tags/TOut",
+           "name": "TOut",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Marks",
+        "name": "Marks",
+        "Group": {
+         "repeatability": 5,
+         "indexFieldName": "TagNo",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Marks/TagNo",
+           "name": "TagNo",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Marks/MVal",
+           "name": "MVal",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Marks/MOut",
+           "name": "MOut",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Shop/Marks0",
+        "name": "Marks0",
+        "Group": {
+         "repeatability": 5,
+         "indexFieldName": "TagNo",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Shop/Marks0/TagNo",
+           "name": "TagNo",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Marks0/M0Val",
+           "name": "M0Val",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Shop/Marks0/M0Out",
+           "name": "M0Out",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Shop/j1",
+        "name": "j1",
+        "Rule": {
+         "errorEntityRelPath": "../Tags/TVal",
+         "errorCode": "j1",
+         "errorCondition": "FieldFilled(Tags/TVal) And [Tags/TVal] < [Marks/MVal]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Shop/j2",
+        "name": "j2",
+        "Rule": {
+         "errorEntityRelPath": "../Marks/MVal",
+         "errorCode": "j2",
+         "errorCondition": "FieldFilled(Marks/MVal) And [Marks/MVal] < [Tags/TVal]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Shop/j3",
+        "name": "j3",
+        "Rule": {
+         "errorEntityRelPath": "../Tags/TVal",
+         "errorCode": "j3",
+         "errorCondition": "FieldFilled(Tags/TVal) And FieldFilled(Marks/MVal)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Shop/j4",
+        "name": "j4",
+        "Rule": {
+         "errorEntityRelPath": "../Tags/TVal",
+         "errorCode": "j4",
+         "errorCondition": "FieldFilled(Tags/TVal) And [Tags/TVal] < [Marks0/M0Val]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Shop/g1",
+        "name": "g1",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/RLabel",
+         "errorCode": "g1",
+         "errorCondition": "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(/Shop/Rows, /Shop/Box) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Shop/g2",
+        "name": "g2",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/RLabel",
+         "errorCode": "g2",
+         "errorCondition": "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(Rows, Box) == 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Shop/g3",
+        "name": "g3",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/RLabel",
+         "errorCode": "g3",
+         "errorCondition": "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(Rows/Fix, Items*) > 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Shop/m1",
+        "name": "m1",
+        "Rule": {
+         "errorEntityRelPath": "../Title",
+         "errorCode": "m1",
+         "errorCondition": "FieldFilled(Title) And FieldValueIncludedInValueList(Items/ILabel For \"a\", \"x\", \"y\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Shop/m2",
+        "name": "m2",
+        "Rule": {
+         "errorEntityRelPath": "../Title",
+         "errorCode": "m2",
+         "errorCondition": "FieldFilled(Title) And FieldValueNotIncludedInValueList(Items/ILabel For \"a\", \"x\", \"y\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Other",
+     "name": "Other",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Other/OVal",
+        "name": "OVal",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Other/Dup",
+        "name": "Dup",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Other/OKind",
+        "name": "OKind",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ],
+           "categories": [
+            {
+             "name": "Band",
+             "values": [
+              "Hi",
+              "Lo"
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Other/OBox",
+        "name": "OBox",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Other/OBox/ONum",
+           "name": "ONum",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Other/OBox/OLid",
+           "name": "OLid",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Other/ORows",
+        "name": "ORows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Other/ORows/OQty",
+           "name": "OQty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Other/ORows/OLabel",
+           "name": "OLabel",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Eroot",
+     "name": "Eroot",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Eroot/EK",
+        "name": "EK",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ],
+           "categories": [
+            {
+             "name": "Band",
+             "values": [
+              "Hi",
+              "Lo"
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Eroot/EL",
+        "name": "EL",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ],
+           "categories": [
+            {
+             "name": "Band",
+             "values": [
+              "Hi",
+              "Lo"
+             ]
+            }
+           ]
+          }
+         }
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Void",
+     "name": "Void",
+     "Group": {
+      "repeatability": 1,
+      "elements": []
+     }
+    }
+   ]
+  }
+ }
+}

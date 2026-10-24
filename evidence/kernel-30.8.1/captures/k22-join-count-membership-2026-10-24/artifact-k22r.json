@@ -1,0 +1,1181 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "08b0d6499c98b132257ec961eb214de73fa223e3",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "K22r_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-10-24T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "dj1",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "j1",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j3",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j4",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks0/M0Val",
+                "Shop/Marks0/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "j1",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j3",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j4",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks0/M0Val",
+                "Shop/Marks0/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dj2",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "j1",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j3",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "j1",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j3",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dj3",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "dj4",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "j1",
+              "field" : "Shop/Tags[2]/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags[2]/TVal",
+                "Shop/Tags[2]/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j2",
+              "field" : "Shop/Marks[2]/MVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks[2]/MVal",
+                "Shop/Marks[2]/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j3",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks[2]/MVal",
+                "Shop/Marks[2]/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j3",
+              "field" : "Shop/Tags[2]/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags[2]/TVal",
+                "Shop/Tags[2]/TagNo"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "j1",
+              "field" : "Shop/Tags[2]/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags[2]/TVal",
+                "Shop/Tags[2]/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j2",
+              "field" : "Shop/Marks[2]/MVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks[2]/MVal",
+                "Shop/Marks[2]/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j3",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks[2]/MVal",
+                "Shop/Marks[2]/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j3",
+              "field" : "Shop/Tags[2]/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks/MVal",
+                "Shop/Marks/TagNo",
+                "Shop/Tags[2]/TVal",
+                "Shop/Tags[2]/TagNo"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dj5",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "j1",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks[2]/MVal",
+                "Shop/Marks[2]/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j3",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks[2]/MVal",
+                "Shop/Marks[2]/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "j1",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks[2]/MVal",
+                "Shop/Marks[2]/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j3",
+              "field" : "Shop/Tags/TVal",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Marks[2]/MVal",
+                "Shop/Marks[2]/TagNo",
+                "Shop/Tags/TVal",
+                "Shop/Tags/TagNo"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dg1",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ],
+              "fillToFix" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ],
+              "fillToFix" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dg2",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "g1",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "g1",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dg3",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "g1",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g1",
+              "field" : "Shop/Rows[3]/RLabel",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[3]/Sub[0]/SubN",
+                "/Shop[1]/Rows[3]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows[3]/Fix/FixV",
+                "Shop/Rows[3]/RClock",
+                "Shop/Rows[3]/RCost",
+                "Shop/Rows[3]/RDay",
+                "Shop/Rows[3]/RFlag",
+                "Shop/Rows[3]/RKind",
+                "Shop/Rows[3]/RLabel",
+                "Shop/Rows[3]/RPrice",
+                "Shop/Rows[3]/RQty",
+                "Shop/Rows[3]/RSpan",
+                "Shop/Rows[3]/RStamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "g1",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "g1",
+              "field" : "Shop/Rows[3]/RLabel",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[3]/Sub[0]/SubN",
+                "/Shop[1]/Rows[3]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows[3]/Fix/FixV",
+                "Shop/Rows[3]/RClock",
+                "Shop/Rows[3]/RCost",
+                "Shop/Rows[3]/RDay",
+                "Shop/Rows[3]/RFlag",
+                "Shop/Rows[3]/RKind",
+                "Shop/Rows[3]/RLabel",
+                "Shop/Rows[3]/RPrice",
+                "Shop/Rows[3]/RQty",
+                "Shop/Rows[3]/RSpan",
+                "Shop/Rows[3]/RStamp"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dg4",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ],
+              "fillToFix" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ],
+              "fillToFix" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dg5",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ],
+              "fillToFix" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ]
+            },
+            {
+              "code" : "g2",
+              "field" : "Shop/Rows[2]/RLabel",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[2]/Sub[0]/SubN",
+                "/Shop[1]/Rows[2]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows[2]/Fix/FixV",
+                "Shop/Rows[2]/RClock",
+                "Shop/Rows[2]/RCost",
+                "Shop/Rows[2]/RDay",
+                "Shop/Rows[2]/RFlag",
+                "Shop/Rows[2]/RKind",
+                "Shop/Rows[2]/RLabel",
+                "Shop/Rows[2]/RPrice",
+                "Shop/Rows[2]/RQty",
+                "Shop/Rows[2]/RSpan",
+                "Shop/Rows[2]/RStamp"
+              ],
+              "fillToFix" : [
+                "/Shop[1]/Rows[2]/Sub[0]/SubN",
+                "/Shop[1]/Rows[2]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows[2]/Fix/FixV",
+                "Shop/Rows[2]/RClock",
+                "Shop/Rows[2]/RCost",
+                "Shop/Rows[2]/RDay",
+                "Shop/Rows[2]/RFlag",
+                "Shop/Rows[2]/RKind",
+                "Shop/Rows[2]/RLabel",
+                "Shop/Rows[2]/RPrice",
+                "Shop/Rows[2]/RQty",
+                "Shop/Rows[2]/RSpan",
+                "Shop/Rows[2]/RStamp"
+              ]
+            },
+            {
+              "code" : "g3",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Items[0]/IDay",
+                "/Shop[1]/Items[0]/IFix[1]/IFixV",
+                "/Shop[1]/Items[0]/IFlag",
+                "/Shop[1]/Items[0]/IKind",
+                "/Shop[1]/Items[0]/ILabel",
+                "/Shop[1]/Items[0]/IPrice",
+                "/Shop[1]/Items[0]/IQty",
+                "/Shop[1]/Items[0]/ItemNo",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RLabel"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "g2",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ],
+              "fillToFix" : [
+                "/Shop[1]/Rows[1]/Sub[0]/SubN",
+                "/Shop[1]/Rows[1]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RClock",
+                "Shop/Rows/RCost",
+                "Shop/Rows/RDay",
+                "Shop/Rows/RFlag",
+                "Shop/Rows/RKind",
+                "Shop/Rows/RLabel",
+                "Shop/Rows/RPrice",
+                "Shop/Rows/RQty",
+                "Shop/Rows/RSpan",
+                "Shop/Rows/RStamp"
+              ]
+            },
+            {
+              "code" : "g2",
+              "field" : "Shop/Rows[2]/RLabel",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Rows[2]/Sub[0]/SubN",
+                "/Shop[1]/Rows[2]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows[2]/Fix/FixV",
+                "Shop/Rows[2]/RClock",
+                "Shop/Rows[2]/RCost",
+                "Shop/Rows[2]/RDay",
+                "Shop/Rows[2]/RFlag",
+                "Shop/Rows[2]/RKind",
+                "Shop/Rows[2]/RLabel",
+                "Shop/Rows[2]/RPrice",
+                "Shop/Rows[2]/RQty",
+                "Shop/Rows[2]/RSpan",
+                "Shop/Rows[2]/RStamp"
+              ],
+              "fillToFix" : [
+                "/Shop[1]/Rows[2]/Sub[0]/SubN",
+                "/Shop[1]/Rows[2]/Sub[0]/SubS",
+                "Shop/Box/BoxKind",
+                "Shop/Box/BoxNum",
+                "Shop/Box/Lid",
+                "Shop/Rows[2]/Fix/FixV",
+                "Shop/Rows[2]/RClock",
+                "Shop/Rows[2]/RCost",
+                "Shop/Rows[2]/RDay",
+                "Shop/Rows[2]/RFlag",
+                "Shop/Rows[2]/RKind",
+                "Shop/Rows[2]/RLabel",
+                "Shop/Rows[2]/RPrice",
+                "Shop/Rows[2]/RQty",
+                "Shop/Rows[2]/RSpan",
+                "Shop/Rows[2]/RStamp"
+              ]
+            },
+            {
+              "code" : "g3",
+              "field" : "Shop/Rows/RLabel",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "/Shop[1]/Items[0]/IDay",
+                "/Shop[1]/Items[0]/IFix[1]/IFixV",
+                "/Shop[1]/Items[0]/IFlag",
+                "/Shop[1]/Items[0]/IKind",
+                "/Shop[1]/Items[0]/ILabel",
+                "/Shop[1]/Items[0]/IPrice",
+                "/Shop[1]/Items[0]/IQty",
+                "/Shop[1]/Items[0]/ItemNo",
+                "Shop/Rows/Fix/FixV",
+                "Shop/Rows/RLabel"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dm1",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "m1",
+              "field" : "Shop/Title",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Items/ILabel",
+                "Shop/Items/ItemNo",
+                "Shop/Title"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "m1",
+              "field" : "Shop/Title",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Items/ILabel",
+                "Shop/Items/ItemNo",
+                "Shop/Title"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dm2",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "m2",
+              "field" : "Shop/Title",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Items/ILabel",
+                "Shop/Items/ItemNo",
+                "Shop/Title"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "m2",
+              "field" : "Shop/Title",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Items/ILabel",
+                "Shop/Items/ItemNo",
+                "Shop/Title"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "dm3",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "dm4",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "dm5",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "m1",
+              "field" : "Shop/Title",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Items[2]/ILabel",
+                "Shop/Items[2]/ItemNo",
+                "Shop/Title"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "m1",
+              "field" : "Shop/Title",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "probe",
+              "referenced" : [
+                "Shop/Items[2]/ILabel",
+                "Shop/Items[2]/ItemNo",
+                "Shop/Title"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

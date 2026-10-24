@@ -531,7 +531,7 @@ def FlatModel.declaresEmptyGroup (model : FlatModel) (path : GroupPath) : Bool :
     ([fields](../../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier),
     [groups](../../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)). -/
 def FlatModel.declaresRoot (model : FlatModel) (name : String) : Bool :=
-  model.hasGroupPath [name]
+  model.hasGroupPath [name] || model.declaresEmptyGroup [name]
 
 /-- Every field declared anywhere in a group's subtree, in declaration order. A group declares no kind, value, or instance of its own, so this recursive extent is the whole of what a group-scope operand contributes, and a deeper descendant group's field belongs to it exactly like a direct child's.
 
@@ -788,9 +788,8 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
           | some declaration => pure declaration
           | none => throw (.invalidEntity reference)
 
-/-- The declared group a field reference's path names, or `none` when it names none. -/
-def FlatModel.groupNamedBy? (model : FlatModel) (declaringGroup : GroupPath)
-    (reference : SurfaceFieldPath) : Option GroupPath := do
+/-- The group path a field reference's spelling names, whether or not the model declares it. -/
+private def namedGroupPath? (declaringGroup : GroupPath) (reference : SurfaceFieldPath) : Option GroupPath := do
   let base ← match reference.base with
     -- A turning point on an absolute path is a spelling defect, whatever group the path names.
     | .absolute => if reference.turningPoint.isSome then none else some []
@@ -798,8 +797,21 @@ def FlatModel.groupNamedBy? (model : FlatModel) (declaringGroup : GroupPath)
         match GroupPath.walkUp declaringGroup parents with
         | .ok base => if base.matchesTurningPoint reference.turningPoint then some base else none
         | .error _ => none
-  let group := base ++ reference.groups ++ [reference.field]
-  if model.hasGroupPath group then some group else none
+  pure (base ++ reference.groups ++ [reference.field])
+
+/-- The declared group a field reference's path names, or `none` when it names none. -/
+def FlatModel.groupNamedBy? (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Option GroupPath :=
+  (namedGroupPath? declaringGroup reference).filter model.hasGroupPath
+
+/-- As `groupNamedBy?`, and a declared group without any field too. The Kernel resolves a path
+    against every declared group before an operand gate classifies a fieldless one, so a read of such
+    a group draws its emptiness class rather than the unknown-entity one
+    (k22-static-classes-2026-10-24, rows `s7-*`, `s3-*-hollow`). -/
+def FlatModel.declaredGroupNamedBy? (model : FlatModel) (declaringGroup : GroupPath)
+    (reference : SurfaceFieldPath) : Option GroupPath :=
+  (namedGroupPath? declaringGroup reference).filter fun group =>
+    model.hasGroupPath group || model.declaresEmptyGroup group
 
 /-- Class a presence predicate's or a field-value read's field operand whose path names a declared
     group rather than a field, or `none` when it names none. The rule group binds and the written field places an

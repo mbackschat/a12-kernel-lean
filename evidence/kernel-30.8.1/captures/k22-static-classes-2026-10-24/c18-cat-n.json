@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Amount",
+ "alternatives": [
+  {
+   "operation": "[Kind -> Band]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

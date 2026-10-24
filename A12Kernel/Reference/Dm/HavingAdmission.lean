@@ -64,7 +64,7 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
     correlated := false
     segments := reference.path.segments.map fun segment => { segment with star := false } }
   let some field := plain.toFieldPath? | refuse "Having" "unsupported indexed entity path"
-  let entity ← match model.groupNamedBy? group field with
+  let entity ← match model.declaredGroupNamedBy? group field with
     | some path => pure (.inr path)
     | none => do
         let source : SurfaceStarFieldPath := {

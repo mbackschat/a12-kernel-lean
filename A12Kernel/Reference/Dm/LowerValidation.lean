@@ -263,43 +263,54 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
           elaborated leaf.construct (CheckedValidationCondition.checkCore model bindingGroup (.leaf (.flat condition)) hModel rowGroup)
         else refuse leaf.construct "invalid model"]
     | _ => []
+  -- Scalar membership is the one-subject quantifier (spec/06 §B.4); a keyed subject, which the flat
+  -- carrier cannot read, takes that route (k22-static-classes-2026-10-24, `s10-in-ok`).
+  let keyedMembership? : Option (String × List Argument × List Argument × ValueListQuantifier) :=
+    match leaf with
+    | .call id (subject@(.mk (.entity { index := some _, .. }) none) :: members) none none =>
+        match id with
+        | "FieldValueIncludedInValueList" => some (id, [subject], members, .atLeastOne)
+        | "FieldValueNotIncludedInValueList" => some (id, [subject], members, .notAll)
+        | _ => none
+    | _ => none
   let scalarMembership := match leaf with
     | .call "FieldValueIncludedInValueList" _ none none
-    | .call "FieldValueNotIncludedInValueList" _ none none => [do
+    | .call "FieldValueNotIncludedInValueList" _ none none => if keyedMembership?.isSome then [] else [do
         let some surface := lowerFlat model rowGroup leaf | refuse leaf.construct "scalar membership operands"
         let condition ← elaborated leaf.construct (BoundScalarMembership.elaborate model rowGroup bindingGroup surface)
         if hModel : model.validate.isOk = true then
           elaborated leaf.construct (CheckedValidationCondition.checkCore model bindingGroup (.leaf (.flat condition)) hModel rowGroup)
         else refuse leaf.construct "invalid model"]
     | _ => []
-  let valueLists := match leaf with
-    | .call id arguments (some values) none =>
-        match valueListQuantifier? id with
-        | none => []
-        | some quantifier =>
-            let fields := lowerEntitySource model rowGroup arguments filterBinding? suppress
-            let literals := values.mapM fun
-              | .mk (.string value) none => some value
-              | _ => none
-            match literals with
-            | some literals => [do
-                let source ← elaborated id (elaborateTokenEntityStringLiteralValueListSource model rowGroup
-                  { quantifier, fields := ← fields, values := literals }
-                  (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
-                elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.literals source) rowGroup)]
-            | none =>
-                let values := lowerEntitySource model rowGroup values filterBinding? suppress
-                [do
-                  let source ← elaborated id (elaborateNumberEntityValueListSource model rowGroup
-                    { quantifier, fields := ← fields, values := ← values }
-                    (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
-                  elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.number source) rowGroup),
-                 do
-                  let source ← elaborated id (elaborateTokenEntityValueListSource model rowGroup
-                    { quantifier, fields := ← fields, values := ← values }
-                    (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
-                  elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.token source) rowGroup)]
-    | _ => []
+  let valueListCall? : Option (String × List Argument × List Argument × ValueListQuantifier) :=
+    match leaf with
+    | .call id arguments (some values) none => (valueListQuantifier? id).map (id, arguments, values, ·)
+    | _ => keyedMembership?
+  let valueLists := match valueListCall? with
+    | some (id, arguments, values, quantifier) =>
+        let fields := lowerEntitySource model rowGroup arguments filterBinding? suppress
+        let literals := values.mapM fun
+          | .mk (.string value) none => some value
+          | _ => none
+        match literals with
+        | some literals => [do
+            let source ← elaborated id (elaborateTokenEntityStringLiteralValueListSource model rowGroup
+              { quantifier, fields := ← fields, values := literals }
+              (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
+            elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.literals source) rowGroup)]
+        | none =>
+            let values := lowerEntitySource model rowGroup values filterBinding? suppress
+            [do
+              let source ← elaborated id (elaborateNumberEntityValueListSource model rowGroup
+                { quantifier, fields := ← fields, values := ← values }
+                (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
+              elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.number source) rowGroup),
+             do
+              let source ← elaborated id (elaborateTokenEntityValueListSource model rowGroup
+                { quantifier, fields := ← fields, values := ← values }
+                (writtenGroup := bindingGroup) (bindingGroup? := some bindingGroup))
+              elaborated id (CheckedValidationCondition.fromValueList bindingGroup (.token source) rowGroup)]
+    | none => []
   let fieldFill := match leaf with
     | .call id arguments none none => match fieldFillOp? id with
         | some operator => [do
@@ -315,7 +326,8 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
         if threshold.authoredScale != 0 then refuse "NumberOfFilledGroups" "fractional threshold"
         let operands ← arguments.mapM lowerGroupCountOperand
         let checked ← elaborated "NumberOfFilledGroups"
-          (elaborateMixedFilledGroupCountComparison model rowGroup operands numericOp threshold.value.num)
+          (elaborateMixedFilledGroupCountComparison model rowGroup operands numericOp threshold.value.num
+            (writtenGroup := bindingGroup))
         elaborated "NumberOfFilledGroups" (CheckedValidationCondition.fromOrderedNumeric checked)]
     | _ => []
   let specific := match leaf with
@@ -562,6 +574,15 @@ partial def lowerCondition (model : FlatModel) (rowGroup : GroupPath) (suppress 
       if let .call id (_ :: _ :: _) none none := leaf then
         if id == "FieldFilled" || id == "FieldNotFilled" then
           refuse construct KernelStaticDiagnostic.paramSizeInvalid1.kernelCode
+      -- A field slot spelled by up-steps alone names the group they reach, so reaching a root draws
+      -- the class `FieldFilled(/Shop)` draws (k22-static-classes-2026-10-24, `s6-r-slot`). A non-root
+      -- group reached this way is unmeasured and keeps the reader's refusal.
+      if let .call id [.mk (.entity { path, index := none, category := none, filter := none }) none]
+          none none := leaf then
+        if (id == "FieldFilled" || id == "FieldNotFilled") && !path.absolute && !path.correlated &&
+            path.segments.isEmpty && 0 < path.ups &&
+            (GroupPath.walkUp rowGroup path.ups).toOption.any (·.length == 1) then
+          refuse construct KernelStaticDiagnostic.rootGroupReferenced.kernelCode
       firstAdmitted construct ((leafCarriers model rowGroup world suppress leaf bindingGroup).map fun attempt =>
         attempt.bind fun checked => elaborated construct (checked.atBinding bindingGroup))
 

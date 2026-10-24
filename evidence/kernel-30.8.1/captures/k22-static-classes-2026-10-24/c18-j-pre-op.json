@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Tags/TOut",
+ "alternatives": [
+  {
+   "precondition": "GroupFilled(/Shop/Nope)",
+   "operation": "[/Shop/Marks0/M0Val] + [Title]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

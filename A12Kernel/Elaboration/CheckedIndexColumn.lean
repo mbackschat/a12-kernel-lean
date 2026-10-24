@@ -121,6 +121,15 @@ def admitsErrorOnLeft : ParallelOuterScopePlan → Bool → Bool
 
 end ParallelOuterScopePlan
 
+/-- Whether two index fields' kinds join: equal kinds, or two Numbers whatever their scales. The
+    Kernel admits a Number join across maximum scales (k22-static-classes-2026-10-24, `s5-j-n0n2`),
+    and its lookup re-normalizes a key under the destination declaration without rounding, so equal
+    numbers meet as equal kinds' do
+    ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens)). -/
+def FieldKind.joinsAsIndex : FieldKind → FieldKind → Bool
+  | .number _, .number _ => true
+  | left, right => left == right
+
 /-- A model-certified pair of index groups with either one common outer repeatable scope or one non-indexed frame on exactly one side. -/
 structure CheckedParallelIndexGroups (model : FlatModel) where
   private mk ::
@@ -149,8 +158,7 @@ structure CheckedParallelIndexGroups (model : FlatModel) where
   commonIndexName :
     (leftIndexDeclaration.name == rightIndexDeclaration.name) = true
   commonIndexKind :
-    (leftIndexDeclaration.policy.kind ==
-      rightIndexDeclaration.policy.kind) = true
+    leftIndexDeclaration.policy.kind.joinsAsIndex rightIndexDeclaration.policy.kind = true
 
 namespace ResolvedCheckedIndexColumn
 
@@ -206,8 +214,7 @@ def WellFormed (groups : CheckedParallelIndexGroups model) : Prop :=
         some groups.outerScopePlan ∧
     (groups.leftIndexDeclaration.name ==
       groups.rightIndexDeclaration.name) = true ∧
-    (groups.leftIndexDeclaration.policy.kind ==
-      groups.rightIndexDeclaration.policy.kind) = true
+    groups.leftIndexDeclaration.policy.kind.joinsAsIndex groups.rightIndexDeclaration.policy.kind = true
 
 end CheckedParallelIndexGroups
 
@@ -331,8 +338,7 @@ def checkParallelIndexGroups (model : FlatModel)
                     if hName :
                         (leftIndex.name == rightIndex.name) = true then
                       if hKind :
-                          (leftIndex.policy.kind ==
-                            rightIndex.policy.kind) = true then
+                          leftIndex.policy.kind.joinsAsIndex rightIndex.policy.kind = true then
                         pure {
                           leftGroup := left
                           rightGroup := right

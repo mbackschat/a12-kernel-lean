@@ -1,0 +1,293 @@
+{
+ "model": "K22r_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "dj1",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Tags": [
+      {
+       "TagNo": "1",
+       "TVal": "1"
+      }
+     ],
+     "Marks": [
+      {
+       "TagNo": "1",
+       "MVal": "5"
+      }
+     ],
+     "Marks0": [
+      {
+       "TagNo": "1",
+       "M0Val": "5"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dj2",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Tags": [
+      {
+       "TagNo": "1",
+       "TVal": "1"
+      }
+     ],
+     "Marks": [
+      {
+       "TagNo": "1.00",
+       "MVal": "5"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dj3",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Tags": [
+      {
+       "TagNo": "1",
+       "TVal": "1"
+      }
+     ],
+     "Marks": [
+      {
+       "TagNo": "1.5",
+       "MVal": "5"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dj4",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Tags": [
+      {
+       "TagNo": "1",
+       "TVal": "1"
+      },
+      {
+       "TagNo": "2",
+       "TVal": "1"
+      }
+     ],
+     "Marks": [
+      {
+       "TagNo": "2.00",
+       "MVal": "5"
+      },
+      {
+       "TagNo": "1",
+       "MVal": "0"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dj5",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Tags": [
+      {
+       "TagNo": "1",
+       "TVal": "1"
+      }
+     ],
+     "Marks": [
+      {
+       "TagNo": "1.50",
+       "MVal": "5"
+      },
+      {
+       "TagNo": "1.0",
+       "MVal": "7"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dg1",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Rows": [
+      {
+       "RLabel": "a"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dg2",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Rows": [
+      {
+       "RLabel": "a"
+      }
+     ],
+     "Box": {
+      "Lid": "l"
+     }
+    }
+   }
+  },
+  {
+   "name": "dg3",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Rows": [
+      {
+       "RLabel": "a"
+      },
+      {
+       "RQty": "3"
+      },
+      {
+       "RLabel": "b"
+      }
+     ],
+     "Box": {
+      "Lid": "l"
+     }
+    }
+   }
+  },
+  {
+   "name": "dg4",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Rows": [
+      {
+       "RLabel": "a",
+       "Fix": {
+        "FixV": "1"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dg5",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Rows": [
+      {
+       "RLabel": "a",
+       "Fix": {
+        "FixV": "1"
+       }
+      },
+      {
+       "RLabel": "b"
+      }
+     ],
+     "Items": [
+      {
+       "ItemNo": "a"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dm1",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Items": [
+      {
+       "ItemNo": "a",
+       "ILabel": "x"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dm2",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Items": [
+      {
+       "ItemNo": "a",
+       "ILabel": "z"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dm3",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Items": [
+      {
+       "ItemNo": "b",
+       "ILabel": "x"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dm4",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Items": [
+      {
+       "ItemNo": "a",
+       "IQty": "1"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "dm5",
+   "documentInline": {
+    "Shop": {
+     "Title": "t",
+     "Items": [
+      {
+       "ItemNo": "b",
+       "ILabel": "z"
+      },
+      {
+       "ItemNo": "a",
+       "ILabel": "y"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

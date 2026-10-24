@@ -263,7 +263,10 @@ def firstStarOnNamedNonrepeatable? (model : FlatModel) :
   | _, [] => none
   | pathPrefix, segment :: rest =>
       let path := pathPrefix ++ [segment.name]
-      if !(model.hasGroupPath path || model.fields.any (·.path == path)) then none
+      -- A star on a declared group without a field draws the wildcard class ahead of its emptiness
+      -- (k22-static-classes-2026-10-24, `s7-star1`, `s11-c8`).
+      if !(model.hasGroupPath path || model.declaresEmptyGroup path ||
+          model.fields.any (·.path == path)) then none
       else if segment.starred && !model.repeatableGroups.any (·.path == path) then some path
       else firstStarOnNamedNonrepeatable? model path rest
 

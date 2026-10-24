@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Lines/LOut",
+ "alternatives": [
+  {
+   "precondition": "FieldFilled(NoSuch)",
+   "operation": "[/Shop/Picks/PQty] + [LQty]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

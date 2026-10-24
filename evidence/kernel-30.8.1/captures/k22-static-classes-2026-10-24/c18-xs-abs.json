@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Rows/RQty",
+ "alternatives": [
+  {
+   "operation": "[/Shop/Rows/RLabel]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

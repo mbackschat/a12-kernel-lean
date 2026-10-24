@@ -70,6 +70,20 @@ private def shiftOperators : List String :=
 private def valueOperators : List String :=
   ["Abs", "Min", "Max", "RoundUp", "RoundDown", "RoundAccounting"]
 
+/-- The scalar membership operators, whose items after the subject form a value list unless an `In`
+follows. -/
+private def valueListOperators : List String :=
+  ["FieldValueIncludedInValueList", "FieldValueNotIncludedInValueList"]
+
+/-- Whether an `In` follows at the current call's own depth before its closing parenthesis. -/
+private partial def inFollowsInCall (ahead : Nat := 0) (depth : Nat := 0) : P Bool := do
+  match ← peekAt ahead with
+  | none => pure false
+  | some (.symbol "(") => inFollowsInCall (ahead + 1) (depth + 1)
+  | some (.symbol ")") => if depth == 0 then pure false else inFollowsInCall (ahead + 1) (depth - 1)
+  | some (.keyword "In") => if depth == 0 then pure true else inFollowsInCall (ahead + 1) depth
+  | some _ => inFollowsInCall (ahead + 1) depth
+
 /-- Keywords that never open an operand. -/
 private def separatorKeywords : List String :=
   ["And", "Or", "In", "To", "Having", "For", "@From", "@SuppressWarning", "PatternMatched",
@@ -309,6 +323,10 @@ private partial def call (id : String) : P Expr := do
   return closed
 
 private partial def callBody (id : String) : P Expr := do
+  -- Only `Time` takes an optional first operand; every other production requires one, so its `)`
+  -- right after `(` is a token defect (grammar `timeKonstrukt`; k22-static-classes-2026-10-24,
+  -- `s6-slot-empty`).
+  if (← peek) == some (.symbol ")") && id != "Time" then failHere .unexpectedToken
   if ← acceptSymbol ")" then return .call id [] none none
   let arguments ← argumentList id
   -- datumParam uses entitySpec; digit-only names are identifiers here (KF532; grammar idName).
@@ -349,6 +367,13 @@ private partial def argument (id : String) (index : Nat) : P Argument := do
     | some (.name _ _) | some (.symbol "/") | some (.symbol "..") | some (.symbol "$") =>
         failHere .incompleteInput
     | _ => pure ()
+  -- A value list holds only String and number literals and bracketed field reads, so a bare name or
+  -- a keyword constant there is a token defect at its start (grammar `wertListenSpezifier2`;
+  -- k22-static-classes-2026-10-24, `s17-in-bool2`, `s17-in-boolf`).
+  if index ≥ 1 && valueListOperators.contains id && !(← inFollowsInCall) then
+    match ← peek with
+    | some (.string _) | some (.number _) | some (.symbol "-") | some (.symbol "[") => pure ()
+    | _ => failHere .incompleteInput
   let expr ← condition false
   let rangeEnd ← if ← acceptKeyword "To" then pure (some (← condition false)) else pure none
   return .mk expr rangeEnd

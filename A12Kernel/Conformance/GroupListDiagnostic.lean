@@ -311,12 +311,13 @@ private def countAtDiagnostic? (rowGroup : GroupPath) (operands : List SurfaceGr
    class unguarded and admission guarded
    ([checkpoint](../../docs/sources/group-list-and-capacity-probes.md#src-group-list-rnu-admission-correction),
    [inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26j-count-star)). The comparison route, which sees
-   no guard, refuses the pair without a class. From the root the walk refuses, and a lone repeatable
+   no guard, admits the pair bound at the row, leaving the unguarded form to the rule's iteration gate
+   ([checkpoint](../../docs/sources/group-count-topology.md#src-k22-join-count-membership)). From the root the walk refuses, and a lone repeatable
    group, a repeatable root included, draws the missing star ahead of arity, which a lone fixed group
    meets. -/
 example :
     let g (gs : GroupPath) : SurfaceGroupCountOperand := .fixed (.path { base := .absolute, groups := gs })
-    countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"], g ["Probe", "B"]] = some none ∧
+    countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"], g ["Probe", "B"]] = none ∧
     countAtDiagnostic? ["Probe", "Rows"] [g ["Probe", "Rows"]] = some (some .paramSizeInvalidGN) ∧
     countAtDiagnostic? ["Probe"] [g ["Probe", "Rows"], g ["Probe", "B"]] = some (some .noWildcard) ∧
     countAtDiagnostic? ["Probe"] [g ["Probe", "B"], g ["Probe", "Rows"]] = some (some .noWildcard) ∧

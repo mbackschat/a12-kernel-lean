@@ -1,0 +1,10243 @@
+[
+ {
+  "id": "s1-frac",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1frac",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) > 1.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-frac-eq",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fraceq",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) == 1.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-frac-ne",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fracne",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) != 0.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-frac-ge",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fracge",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) >= 1.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-frac-le",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fracle",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) <= 1.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-frac-lt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fraclt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) < 1.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-frac-sole",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fracsole",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box) != 0.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-frac-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fracstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Rows*) >= 1.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-frac-rev",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fracrev",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And 1.5 < NumberOfFilledGroups(Box, Mix)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-d20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1d20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) > 2.0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-d20eq",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1d20eq",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) == 2.0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-d200",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1d200",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) == 2.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-int",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1int",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) > 2",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-fld1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fld1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) < [Frac]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-fld0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fld0",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) < [Amount]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-fld1eq",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fld1eq",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) == [Frac]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-fld0eq",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fld0eq",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) == [Amount]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-flds-frac",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fldsfrac",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Title, Memo) > 1.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s1-flds-d20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s1fldsd20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Title, Memo) > 2.0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2ctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-str-l",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2strl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Title, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-str-r",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2strr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Title) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-unk-l",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2unkl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(NoSuch, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-unk-r",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2unkr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, NoSuch) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-grp-l",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2grpl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Box, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-flt-l",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2fltl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount Having [Amount] > 0, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-flt-r",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2fltr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Total Having [Total] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-twin-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2twinstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Rows*/RLabel, Rows*/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-twin-unk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2twinunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Rows*/NoSuch, Rows*/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-twin-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2twinok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Rows*/RQty, Rows*/RCost) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-fl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kfl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Items*/IQty Having [Items/IQty] > 0, Items*/IPrice) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-fr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kfr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Items*/IQty, Items*/IPrice Having [Items/IQty] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-ms-fr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kmsfr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone*/Cell*/CV, Zone*/Cell*/CV Having [Zone/Cell/CV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-fl-ms",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kflms",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone*/Cell*/CV Having [Zone/Cell/CV] > 0, Zone*/Cell*/CV) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-ms-ms",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kmsms",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone*/Cell*/CV, Zone*/Cell*/CV) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-pfor-fr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kpforfr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV For \"z1\", Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-pfor-fl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kpforfl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0, Zone/Plain*/PV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-pfor-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kpforctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV For \"z1\", Zone/Plain*/PV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-pfor-ms",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kpforms",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV For \"z1\", Zone/Plain*/PV For \"z1\" Having [Zone/ZKey] == \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-for-fr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kforfr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV For \"z1\", Zone/Cell*/CV For \"z1\" Having [Zone/Cell/CV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-for-fl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kforfl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV For \"z1\" Having [Zone/Cell/CV] > 0, Zone/Cell*/CV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-k-for-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2kforctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV For \"z1\", Zone/Cell*/CV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-sum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2msum",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And Sum(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-max",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mmax",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And MaxValue(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-min",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mmin",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And MinValue(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-ndv",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mndv",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfDifferentValues(Rows*/RLabel Having [Rows/RQty] > [$Rows/RQty]) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-ffn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mffn",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And FirstFilledValue(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-ffs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mffs",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And FirstFilledValue(Rows*/RLabel Having [Rows/RQty] > [$Rows/RQty]) == \"x\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-cnt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mcnt",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledFields(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mcmp",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And [$Rows/RQty] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-cmp2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mcmp2",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And [Rows/RQty] > [$Rows/RQty]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mroot",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And [$Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-nonrep",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mnonrep",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And MaxValue(Rows*/RQty Having [Rows/RQty] > [$Amount]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-ffbool",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mffbool",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And FirstFilledValue(Rows*/RFlag Having [Rows/RQty] > [$Rows/RQty]) == True",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-norow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mnorow",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-norow-ffn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mnorowffn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s2-m-norow-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s2mnorowcmp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [$Rows/RQty] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Title, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-box",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasbox",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Box, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-rows",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasrows",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Rows, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-rowsstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasrowsstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Rows*/RLabel, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-hollow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rashollow",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Hollow, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-num",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasnum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Amount, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasdate",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Due, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-bool",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasbool",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Flag, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-enum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasenum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Kind, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-time",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rastime",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Clock, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasdt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Stamp, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-range",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasrange",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Span, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-ras-unk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3rasunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(NoSuch, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-len-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3lenok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-len-enum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3lenenum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-len-bool",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3lenbool",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-len-time",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3lentime",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-len-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3lendt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Stamp) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-len-range",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3lenrange",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-len-hollow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3lenhollow",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Hollow) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-len-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3lenstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Rows*/RLabel) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-len-rowsgrp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3lenrowsgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Rows*) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvn-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvnok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvn-level",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvnlevel",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Level) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvn-num",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvnnum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvn-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvndate",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvn-bool",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvnbool",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvn-enum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvnenum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvn-time",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvntime",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvn-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvndt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Stamp) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvn-range",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvnrange",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvn-hollow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvnhollow",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Hollow) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvs-hollow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvshollow",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Hollow) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-fvs-rowsstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3fvsrowsstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Rows*/RQty) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box/BoxKind -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-ctl-und",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catctlund",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box/BoxKind -> Nope] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-row",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catrow",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows/RKind -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-row-und",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catrowund",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows/RKind -> Nope] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-rowstr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catrowstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows/RLabel -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-rowstr-und",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catrowstrund",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows/RLabel -> Nope] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-rowstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catrowstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows*/RKind -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-rowgrp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catrowgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-rowunk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catrowunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows/NoSuch -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-b-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catbok",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And [Rows/RKind -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-b-und",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catbund",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And [Rows/RKind -> Nope] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-b-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catbstr",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And [Rows/RLabel -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s3-cat-b-strund",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3catbstrund",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And [Rows/RLabel -> Nope] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4ctl",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-cat",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4cat",
+   "--field",
+   "/Shop/Rows/RKind",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RKind) And RepetitionNotUnique(Rows/RKind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-cat2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4cat2",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel, Rows/RKind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-cat-from",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4catfrom",
+   "--field",
+   "/Shop/Rows/RKind",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RKind) And RepetitionNotUnique(Rows/RKind -> Band @From /Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-cat-und",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4catund",
+   "--field",
+   "/Shop/Rows/RKind",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RKind) And RepetitionNotUnique(Rows/RKind -> Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4star",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows*/RLabel @From /Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-star2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4star2",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows*/RLabel, Rows/RCost @From /Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-star3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4star3",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel, Rows*/RCost)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-idx",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4idx",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Items/ILabel) And RepetitionNotUnique(Items/ILabel For \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-idx-from",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4idxfrom",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Items/ILabel) And RepetitionNotUnique(Items/ILabel For \"a\" @From /Shop/Items)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-idx2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4idx2",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Items/ILabel) And RepetitionNotUnique(Items/ILabel, Items/IQty For \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-mark",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4mark",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique($Rows/RLabel)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-mark-from",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4markfrom",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique($Rows/RLabel @From /Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-mark2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4mark2",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel, $Rows/RCost)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-mark-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4markroot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RepetitionNotUnique($Rows/RLabel)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-scopefixed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skscopefixed",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel @From /Shop/Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-keyunk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skkeyunk",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(NoSuch @From /Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-both",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skboth",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(NoSuch @From /Shop/Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-keyout",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skkeyout",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Items/ILabel @From /Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-keyout-scopefixed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skkeyoutscopefixed",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Items/ILabel @From /Shop/Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-scopefield",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skscopefield",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel @From /Shop/Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-scopeunk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skscopeunk",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-keyunk-scopeunk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skkeyunkscopeunk",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(NoSuch @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-keygrp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skkeygrp",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows @From /Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-keygrp-scopefixed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skkeygrpscopefixed",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows @From /Shop/Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-keyfixed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skkeyfixed",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Title @From /Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-keyfixed-scopefixed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skkeyfixedscopefixed",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Title @From /Shop/Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-sk-scoperoot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4skscoperoot",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel @From /Shop)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-n1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4n1",
+   "--field",
+   "/Shop/Zone/Cell/CLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Cell/CLabel) And RepetitionNotUnique(Zone/Cell/CLabel)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-n2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4n2",
+   "--field",
+   "/Shop/Zone/Cell/CLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Cell/CLabel) And RepetitionNotUnique(Zone/Cell/CLabel @From /Shop/Zone/Cell)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-n3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4n3",
+   "--field",
+   "/Shop/Zone/Cell/CLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Cell/CLabel) And RepetitionNotUnique(Zone/Cell/CLabel @From /Shop/Zone)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-n4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4n4",
+   "--field",
+   "/Shop/Zone/Cell/CLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Cell/CLabel) And RepetitionNotUnique(Zone/Cell/CLabel @From /Shop)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-n5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4n5",
+   "--field",
+   "/Shop/Zone/Cell/CLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Cell/CLabel) And RepetitionNotUnique(Zone/Cell/CLabel, Zone/ZLabel @From /Shop/Zone)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-n6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4n6",
+   "--field",
+   "/Shop/Zone/Plain/PV",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Plain/PV) And RepetitionNotUnique(Zone/Plain/PV @From /Shop/Zone)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-n7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4n7",
+   "--field",
+   "/Shop/Zone/Plain/PV",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Plain/PV) And RepetitionNotUnique(Zone/Plain/PV)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-n8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4n8",
+   "--field",
+   "/Shop/Zone/Cell/CLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Cell/CLabel) And RepetitionNotUnique(Zone/Cell/CLabel, Zone/Plain/PV @From /Shop/Zone)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s4-n9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s4n9",
+   "--field",
+   "/Shop/Zone/Cell/CLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Cell/CLabel) And RepetitionNotUnique(Zone/Cell/CLabel, Zone/Cell/CKey @From /Shop/Zone)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-sn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jsn",
+   "--field",
+   "/Shop/Lines/LNote",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Lines/LNote) And FieldFilled(Picks/PQty)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-ns",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jns",
+   "--field",
+   "/Shop/Picks/PNote",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Picks/PNote) And FieldFilled(Lines/LQty)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-ss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jss",
+   "--field",
+   "/Shop/Lines/LNote",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Lines/LNote) And FieldFilled(Lines2/L2Qty)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-sn-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jsncmp",
+   "--field",
+   "/Shop/Lines/LNote",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Lines/LNote) And [Lines/LQty] < [Picks/PQty]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-ns-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jnscmp",
+   "--field",
+   "/Shop/Picks/PNote",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Picks/PNote) And [Picks/PQty] < [Lines/LQty]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-ss-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jsscmp",
+   "--field",
+   "/Shop/Lines/LNote",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Lines/LNote) And [Lines/LQty] < [Lines2/L2Qty]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-n0n2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jn0n2",
+   "--field",
+   "/Shop/Tags/TVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Tags/TVal) And FieldFilled(Marks/MVal)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-n2n0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jn2n0",
+   "--field",
+   "/Shop/Marks/MVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Marks/MVal) And FieldFilled(Tags/TVal)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-n0n0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jn0n0",
+   "--field",
+   "/Shop/Tags/TVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Tags/TVal) And FieldFilled(Marks0/M0Val)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-n0n2-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jn0n2cmp",
+   "--field",
+   "/Shop/Tags/TVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Tags/TVal) And [Tags/TVal] < [Marks/MVal]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-n2n0-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jn2n0cmp",
+   "--field",
+   "/Shop/Marks/MVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Marks/MVal) And [Marks/MVal] < [Tags/TVal]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s5-j-n0n0-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s5jn0n0cmp",
+   "--field",
+   "/Shop/Tags/TVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Tags/TVal) And [Tags/TVal] < [Marks0/M0Val]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-box",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6upbox",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box/../Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-boxbox",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6upboxbox",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box/../Box/BoxNum] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-mix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6upmix",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box/../Mix/MixS)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-rows",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6uprows",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows/../Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-rowmix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6uprowmix",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Rows/../Mix/MixS)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-field",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6upfield",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Title/../Memo)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6upgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(Box/..)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-beyond",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6upbeyond",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box/../../Shop/Memo)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6upstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/../Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-starfield",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6upstarfield",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty/../RCost) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-up-starcnt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6upstarcnt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Rows*/..) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-dot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6dot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(./Memo)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-dot-mid",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6dotmid",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box/./Lid)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-dot-only",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6dotonly",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(.)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-dot-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6dotgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(.)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-dot-grp2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6dotgrp2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(Box/.)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-dot-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6dotstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/./RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotroot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-empty",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotempty",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled()",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-shop",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotshop",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/Shop)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-box",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotbox",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-val-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotvalroot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-val-shop",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotvalshop",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/Shop] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-grp-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotgrproot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(/)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-grp-empty",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotgrpempty",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled()",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-len-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotlenroot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(/) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-len-empty",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotlenempty",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length() > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-fvs-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotfvsroot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(/) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-cnt-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotcntroot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(/) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-cnt-empty",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotcntempty",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups() > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-flds-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotfldsroot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(/) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-slot-flds-empty",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6slotfldsempty",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields() > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-r-up",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6rup",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [../Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-r-fix-up",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6rfixup",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [Fix/../RQty] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-r-sib",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6rsib",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [../Rows/RQty] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-r-upupname",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6rupupname",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [../Box/BoxNum] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-r-slot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6rslot",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And FieldFilled(..)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s6-r-slot-dot",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s6rslotdot",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And FieldFilled(.)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-star1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7star1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Hollow*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-star2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7star2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Hollow*, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-star3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7star3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Hollow*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-unstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7unstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Hollow, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-unstar1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7unstar1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Hollow) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-gf",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7gf",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(Hollow)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-gf-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7gfstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(Hollow*)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-box-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7boxstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-cr-hollow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7crhollow",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Hollow) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-cr-box",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7crbox",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-hav-hollow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7havhollow",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Hollow] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-hav-box",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7havbox",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Box] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-hav-gap",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7havgap",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/Gap] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-hav-fix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7havfix",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/Fix] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-hav-gf-gap",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7havgfgap",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having GroupFilled(Rows/Gap)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-hav-gf-fix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7havgffix",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having GroupFilled(Rows/Fix)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-hav-gf-hollow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7havgfhollow",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having GroupFilled(Hollow)) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-below",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7below",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Hollow/X)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-below-val",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7belowval",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Hollow/X] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-below-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7belowgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(Hollow/X)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-below-box",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7belowbox",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box/X)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-root-field",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7rootfield",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/Void/X)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-root-val",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7rootval",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/Void/X] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-root-fld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7rootfld",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/Void)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-root-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7rootgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(/Void)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-root-cnt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7rootcnt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(/Void) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-root-cntstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7rootcntstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(/Void*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-root-cntbox",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7rootcntbox",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(/Void, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-root-flds",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7rootflds",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(/Void) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-root-valgrp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7rootvalgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/Void] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-cr-gap",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7crgap",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows/Gap) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-cr-fix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7crfix",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows/Fix) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-cr-rows",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7crrows",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-cr-rowsstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7crrowsstar",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-below-gap",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7belowgap",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And FieldFilled(Rows/Gap/X)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-gap-gf",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7gapgf",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And GroupFilled(Rows/Gap)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-gap-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7gapstar",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(Rows/Gap*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s7-gap-cnt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s7gapcnt",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(Rows/Gap, Rows/Fix) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-fld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8absfld",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/Other/OVal)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-val",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8absval",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/Other/OVal] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-nested",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8absnested",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/Other/OBox/ONum] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-sum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8abssum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(/Other/ORows*/OQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8absgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(/Other/OBox)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8absroot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(/Other)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-cnt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8abscnt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(/Other/OBox, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-flds",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8absflds",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(/Other/OVal, Title) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-ndv",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8absndv",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(/Other/Dup, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-cmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8abscmp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/Other/OVal] > [Amount]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-kind",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8abskind",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/Other/OKind -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-abs-unstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8absunstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/Other/ORows/OQty)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-short-fld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8shortfld",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(OVal)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-short-val",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8shortval",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [OVal] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-short-nested",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8shortnested",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [ONum] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-short-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8shortgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And GroupFilled(OBox)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-dup-fld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8dupfld",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Dup)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-dup-val",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8dupval",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Dup] == \"x\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-dup-len",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8duplen",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Dup) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-dup-shop",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8dupshop",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/Shop/Dup)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-dup-other",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8dupother",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/Other/Dup)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-dup-rel",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8duprel",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(../Other/Dup)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-dup-cnt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8dupcnt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Dup, Title) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-rel-up",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8relup",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(../Other/OVal)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-err-other",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8errother",
+   "--field",
+   "/Other/OVal",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(/Other/OVal) And [Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-err-other-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8errothergrp",
+   "--field",
+   "/Other/OVal",
+   "--group",
+   "/Other",
+   "--condition",
+   "FieldFilled(OVal) And FieldFilled(/Shop/Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-err-other-grp2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8errothergrp2",
+   "--field",
+   "/Other/OVal",
+   "--group",
+   "/Other",
+   "--condition",
+   "FieldFilled(OVal) And [/Shop/Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-box",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8descbox",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And GroupFilled(/Shop/Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-fix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8descfix",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And GroupFilled(Fix)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-fixrel",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8descfixrel",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And GroupFilled(Rows/Fix)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-fixabs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8descfixabs",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And GroupFilled(/Shop/Rows/Fix)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-items",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8descitems",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And GroupFilled(/Shop/Items)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-rows",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8descrows",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And GroupFilled(/Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-shop",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8descshop",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And GroupFilled(/Shop)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-cnt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8desccnt",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(/Shop/Box, Fix) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-cntrel",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8desccntrel",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(/Shop/Box, Rows/Fix) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-cntrows",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8desccntrows",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(/Shop/Rows, /Shop/Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-cntstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8desccntstar",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(/Shop/Rows*, Rows/Fix) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-other",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8descother",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And GroupFilled(/Other/OBox)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-itemsstar",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8descitemsstar",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(/Shop/Items*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s8-desc-hollow",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s8deschollow",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And GroupFilled(/Shop/Hollow)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-a1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9a1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Box, Box/BoxKind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-a2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9a2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Box/BoxKind -> Band, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-a3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9a3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldFilled(Box, Box/BoxKind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-a4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9a4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldFilled(Box/BoxKind -> Band, Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-a5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9a5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Mix, Box/BoxKind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-a6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9a6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Box/BoxKind, Box/BoxKind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-a7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9a7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Box/BoxKind -> Band, Box/BoxKind) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-a8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9a8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Box, Box/BoxKind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-n1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9n1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box, Box/BoxKind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-n2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9n2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box/BoxKind -> Band, Box) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-n3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9n3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(/Shop, Kind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-n4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9n4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Band, /Shop) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-n5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9n5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Band, Kind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-n6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9n6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Band, Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-n7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9n7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Mix, Box/BoxKind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-v1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9v1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Box, Box/BoxKind -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-v2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9v2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Box/BoxKind -> Band, Box In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-v3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9v3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(/Shop, Kind -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-v4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9v4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Kind -> Band, Kind -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-v5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9v5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Kind -> Band, Title In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-v6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9v6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NoFieldValueIncludedInValueList(Box, Box/BoxKind -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-v7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9v7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Mix, Box/BoxKind -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(EBox, EBox/E1 -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(EBox/E1 -> Band, EBox In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(EBox/E1, EBox/E2 In \"A\", \"B\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(EBox/E1 -> Band, EBox/E2 -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(EBox/E1 -> Band, EBox/E1 In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(EBox, EBox/E1 In \"A\", \"B\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(/Eroot, /Eroot/EK -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(/Eroot/EK -> Band, /Eroot In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(/Eroot, /Eroot/EK In \"A\", \"B\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(/Eroot/EK -> Band, /Eroot/EL -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NoFieldValueIncludedInValueList(EBox, EBox/E1 -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(EBox, EBox/E1 -> Band, EBox/E1 -> Band In \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(EBox/E1 -> Band, EBox/E2 -> Band) == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(EBox, EBox/E1 -> Band) == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(EBox/E1 -> Band, EBox) == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(/Eroot, /Eroot/EK -> Band) == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-e17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9e17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Kind -> Band, \"Hi\", \"Lo\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-a9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9a9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Rows*, Rows*/RKind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-b1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9b1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(/Shop, Kind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-b2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9b2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Kind -> Band, /Shop) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-b3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9b3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldFilled(/Shop, Kind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-b4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9b4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(/Shop, Kind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-b5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9b5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(/Shop, Title) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-b6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9b6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Title, /Shop) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-b7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9b7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(/Other, Kind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Kind -> Band, Kind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldFilled(Kind -> Band, Kind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Kind -> Band, Kind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Box/BoxKind -> Band, Box/BoxKind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Title, Title) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Title, Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Kind, Kind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Kind, Kind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Box, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(/Shop, /Shop) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(/Shop, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s9-d12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s9d12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Box, /Shop) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-br-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10brok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/IQty For \"a\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-br-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10brk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Picks/PQty For \"a\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-br-o",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10bro",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Items/NoSuch For \"a\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-br-ko",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10brko",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Picks/NoSuch For \"a\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-br-k1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10brk1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows/RQty For \"a\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-br-k1o",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10brk1o",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows/NoSuch For \"a\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-sum-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10sumok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Items/IQty For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-sum-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10sumk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Picks/PQty For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-sum-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10sumstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Items/ILabel For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-sum-unk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10sumunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Items/NoSuch For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-sum-kstr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10sumkstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Picks/PNote For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-sum-kunk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10sumkunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Picks/NoSuch For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-sum-k1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10sumk1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows/RQty For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-sum-k1str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10sumk1str",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows/RLabel For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-max-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10maxok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Items/IQty For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-max-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10maxk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Picks/PQty For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-max-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10maxstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Items/ILabel For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-max-unk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10maxunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Items/NoSuch For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-max-kstr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10maxkstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Picks/PNote For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-max-kunk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10maxkunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Picks/NoSuch For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ffv-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ffvok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Items/IQty For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ffv-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ffvk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Picks/PQty For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ffv-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ffvstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Items/ILabel For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ffv-unk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ffvunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Items/NoSuch For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ffv-kstr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ffvkstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Picks/PNote For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ffv-kunk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ffvkunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Picks/NoSuch For \"a\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ndv-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ndvok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Items/ILabel For \"a\", Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ndv-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ndvk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Picks/PNote For \"a\", Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ndv-o",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ndvo",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Items/NoSuch For \"a\", Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ndv-ko",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ndvko",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Picks/NoSuch For \"a\", Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-len-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lenok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Items/ILabel For \"a\") > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-len-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lenk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Picks/PNote For \"a\") > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-len-o",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10leno",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Items/NoSuch For \"a\") > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-len-ko",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lenko",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Picks/NoSuch For \"a\") > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-in-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10inok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Items/ILabel For \"a\", \"x\", \"y\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-in-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ink",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Picks/PNote For \"a\", \"x\", \"y\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-in-o",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ino",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Items/NoSuch For \"a\", \"x\", \"y\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-in-ko",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10inko",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Picks/NoSuch For \"a\", \"x\", \"y\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ff-ok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ffok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Items/ILabel For \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ff-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ffk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Picks/PNote For \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ff-o",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ffo",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Items/NoSuch For \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ff-ko",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10ffko",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Picks/NoSuch For \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lsctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-hav",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lshav",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-havo",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lshavo",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/NoSuch] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-havk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lshavk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\" Having [Zone/ZKey] == \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-k5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lsk5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-unk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lsunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/NoSuch For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-k5unk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lsk5unk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/NoSuch For 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-k5hav",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lsk5hav",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For 5 Having [Zone/Plain/NoSuch] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cnt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscnt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Plain* For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cnt2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscnt2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Plain* For \"z1\", Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cnt3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscnt3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone For \"z1\", Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cnt4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscnt4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Plain*, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cnt5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscnt5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneGroupFilled(Zone/Plain* For \"z1\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cntk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscntk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Plain* For \"z1\", Picks For \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cntk5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscntk5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Plain* For 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cntkunk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscntkunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Nope* For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cnthav",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscnthav",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Plain* For \"z1\" Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cell-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscellctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Cell*/CV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-cell-cnt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lscellcnt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Cell* For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-mk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lsmk",
+   "--field",
+   "/Shop/Zone/Cell/CLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Cell/CLabel) And Sum(Zone/Cell*/CV For \"z1\" Having [Zone/Cell/CV] > [$Zone/Cell/CV]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-mk3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lsmk3",
+   "--field",
+   "/Shop/Zone/Cell/CLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Cell/CLabel) And Sum(Zone/Cell*/CV Having [Zone/Cell/CKey] != [$Zone/Cell/CKey]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-pmk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lspmk",
+   "--field",
+   "/Shop/Zone/Plain/PV",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Plain/PV) And Sum(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > [$Zone/Plain/PV]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-pmk2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lspmk2",
+   "--field",
+   "/Shop/Zone/Plain/PV",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Plain/PV) And Sum(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > [$Zone/ZV]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-pmk3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lspmk3",
+   "--field",
+   "/Shop/Zone/Plain/PV",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Plain/PV) And Sum(Zone/Plain*/PV Having [Zone/Plain/PV] > [$Zone/Plain/PV]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s10-ls-pmk-cnt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s10lspmkcnt",
+   "--field",
+   "/Shop/Zone/Plain/PV",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Zone/Plain/PV) And NumberOfFilledGroups(Zone/Plain* For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-bool",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11bool",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Flag, Flag2) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-bool-s",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11bools",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Flag, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-s-bool",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11sbool",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Title, Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-range",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11range",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Span, Span2) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-range-s",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11ranges",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Span, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-s-range",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11srange",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Title, Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11grp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-grp-s",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11grps",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-s-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11sgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Title, Box) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-grp-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11grpgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box, Mix) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11ctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Title, Memo) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-max-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11maxstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RLabel) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-min-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11minstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinValue(Rows*/RLabel) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-max-strcmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11maxstrcmp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RLabel) > \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-min-strcmp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11minstrcmp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinValue(Rows*/RLabel) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-max-fixed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11maxfixed",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Title) > \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-max-fixedn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11maxfixedn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Title) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-max-bool",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11maxbool",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RFlag) == True",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-max-enum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11maxenum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RKind) == \"A\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-max-range",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11maxrange",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RSpan) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-max-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11maxctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Hollow*, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Hollow, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(/Shop, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(/Shop, Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Hollow*, Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Rows*/RLabel Having [Rows/NoSuch] > 0, Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Rows*/RLabel Having [Rows/NoSuch] > 0, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Hollow*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RLabel Having [Rows/NoSuch] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Rows*/RLabel Having [Rows/RQty] > 0, Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Hollow*, Hollow*) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(/Shop*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s11-c13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s11c13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RLabel Having [Rows/RQty] > 0) > \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12ctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-sn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12ksn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RLabel] > [Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-dn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12kdn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RDay] > [Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-bn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12kbn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RFlag] == [Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-en",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12ken",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RKind] == [Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-tdt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12ktdt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RClock] > [Rows/RStamp]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-dtd",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12kdtd",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RStamp] > [Rows/RDay]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-td",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12ktd",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RClock] > [Rows/RDay]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-rd",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12krd",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RSpan] == [Rows/RDay]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-ns",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12kns",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] > \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-sn5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12ksn5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RLabel] > 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-bs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12kbs",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RFlag] == \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-ds",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12kds",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RDay] > \"2020-01-01\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-ts",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12kts",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RClock] > \"10:00:00\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-k-dtn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12kdtn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RStamp] > 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sh-grp",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12shgrp",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/Fix] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sh-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12shstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows*/RQty] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sh-other",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12shother",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Items/IQty] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sh-deeper",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12shdeeper",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/Sub/SubN] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sh-fixed",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12shfixed",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/Fix/FixV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sh-const",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12shconst",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having 1 > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sh-root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12shroot",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Amount] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sc-lit",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12sclit",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] == 1.5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sc-lit2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12sclit2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RPrice] == 1.555) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sc-lit3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12sclit3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RPrice] == 1.55) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sc-fld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12scfld",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] == [Rows/RPrice]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-sc-fld2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12scfld2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RPrice] == [Frac]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-arith-s",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12ariths",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having {[Rows/RLabel] + 1} > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-arith-sc",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12arithsc",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having {[Rows/RQty] * 1.5} > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-arith-d",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s12arithd",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having {[Rows/RDay] + 1} > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-unk-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122unkk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/NoSuch] > 0 And [Rows/RLabel] > [Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-k-unk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122kunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RLabel] > [Rows/RQty] And [Rows/NoSuch] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-sh-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122shk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/Fix] > 0 And [Rows/RLabel] > 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-k-sh",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122ksh",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RLabel] > 5 And [Rows/Fix] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-k-sc",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122ksc",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RLabel] > 5 And [Rows/RQty] == 1.5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-sc-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122sck",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] == 1.5 And [Rows/RLabel] > 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-sh-sc",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122shsc",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/Fix] > 0 And [Rows/RQty] == 1.5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-sc-sh",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122scsh",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] == 1.5 And [Rows/Fix] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-or-k-unk",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122orkunk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RLabel] > [Rows/RQty] Or [Rows/NoSuch] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-or-unk-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122orunkk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/NoSuch] > 0 Or [Rows/RLabel] > [Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-star-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122stark",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows*/RQty] > 0 And [Rows/RLabel] > 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-k-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122kstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RLabel] > 5 And [Rows*/RQty] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-ok-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122okk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] > 0 And [Rows/RLabel] > 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-const-k",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122constk",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having 1 > 0 And [Rows/RLabel] > 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s12-2-k-const",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s122kconst",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RLabel] > 5 And 1 > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-star-b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13starb",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-star-r",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13starr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Rows*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-fld-b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13fldb",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-fld-r",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13fldr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Title) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-fld-r2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13fldr2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Rows/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-fldstar-b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13fldstarb",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows*/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-ctl-b",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13ctlb",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-ctl-r",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13ctlr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Rows) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-hav-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13havstar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having CurrentRepetition(Rows*) > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-hav-fld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13havfld",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having CurrentRepetition(Rows/RQty) > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-hav-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13havctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having CurrentRepetition(Rows) > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-hav-rootfld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13havrootfld",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having CurrentRepetition(Title) > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-items-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13itemsstar",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Items/ILabel) And CurrentRepetition(Items*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-items-fld",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13itemsfld",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Items/ILabel) And CurrentRepetition(Items/IQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s13-sub-star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s13substar",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Rows/Sub*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-d-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15ddt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Due] < [Stamp]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-dt-d",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15dtd",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Stamp] < [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-d-dtgt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15ddtgt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Due] > [Stamp]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-d-t",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15dt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Due] < [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-t-d",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15td",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Clock] < [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-dt-t",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15dtt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Stamp] < [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-t-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15tdt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Clock] < [Stamp]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-d-dt-eq",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15ddteq",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Due] == [Stamp]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-d-t-eq",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15dteq",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Due] == [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-dt-t-eq",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15dtteq",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Stamp] == [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-d-d2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15dd2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Due] < [Day]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-ctl-d",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15ctld",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Due] < [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-ctl-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15ctldt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Stamp] < [Stamp]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s15-ctl-t",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s15ctlt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Clock] < [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-ctl-y",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16ctly",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Due) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-ctl-h",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16ctlh",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-ctl-dfd",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16ctldfd",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Stamp) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-ctl-q",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16ctlq",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Due) == 4",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-ctl-va",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16ctlva",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Title, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-y-time",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16ytime",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Clock) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-y-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16ydt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Stamp) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-y-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16ystr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Title) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-y-num",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16ynum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Amount) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-h-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16hdate",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-h-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16hdt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Stamp) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-h-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16hstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-dfd-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16dfddate",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Due) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-dfd-time",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16dfdtime",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Clock) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-dfd-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16dfdstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Title) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-q-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16qdt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Stamp) == 4",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-q-time",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16qtime",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Clock) == 4",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-q-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16qstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Title) == 4",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-va-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16vadate",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Due, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-va-num",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16vanum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Amount, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-va-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16vadt",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Stamp, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-va-time",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16vatime",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Clock, LastDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s16-va-enum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s16vaenum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Kind, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-ctl",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catctl",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-und",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catund",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Nope] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-und-in",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catundin",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Kind -> Nope, \"Hi\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-und-ndv",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catundndv",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Nope, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-und-rev",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catundrev",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And \"Hi\" == [Kind -> Nope]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-num",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catnum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] == 5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-fnum",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catfnum",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] == [Amount]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-ord",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catord",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] > [Amount]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-bool",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catbool",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] == [Flag]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-true",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17cattrue",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] == True",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catdate",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] == [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-str",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catstr",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] == [Title]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-rev",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catrev",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Title] == [Kind -> Band]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-revn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catrevn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] == [Kind -> Band]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-tok",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17cattok",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] == \"Zzz\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-val",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catval",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] == \"A\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-ndvn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catndvn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Band, Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-ndvs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catndvs",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Band, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-cat-ndvd",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17catndvd",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Band, Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-in-bool",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17inbool",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Flag, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-in-bool2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17inbool2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Flag, True)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-in-boolf",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17inboolf",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Flag, Flag2)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-in-date",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17indate",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Due, \"2020-01-01\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-in-datef",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17indatef",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Due, [Due])",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-in-time",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17intime",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Clock, \"10:00:00\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-in-range",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17inrange",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Span, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-in-ctl-s",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17inctls",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Title, \"a\", \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-in-ctl-n",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17inctln",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Amount, 1, 2)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-in-ctl-e",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17inctle",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Kind, \"A\", \"B\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-sn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffsn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Title, Amount) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-ns",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffns",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Amount, Title) == 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-ssn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffssn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Title, Memo, Amount) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-nns",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffnns",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Amount, Price, Title) == 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-se",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffse",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Title, Kind) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-es",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffes",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Kind, Title) == \"A\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-ds",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffds",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Due, Title) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-bs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffbs",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Flag, Title) == True",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-sb",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffsb",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Title, Flag) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-nd",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffnd",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Amount, Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-ctl-ss",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffctlss",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Title, Memo) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "s17-ff-ctl-nn",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s17ffctlnn",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Amount, Price) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "c5-sn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c5-sn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c5-ns",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c5-ns.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c5-ss",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c5-ss.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c5-n0n2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c5-n0n2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c5-n2n0",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c5-n2n0.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c5-n0n0",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c5-n0n0.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-9",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-12",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-12.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-13",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-13.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-14",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-14.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-15",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-15.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-16",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-16.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-s1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-s1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-s2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-s2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-s3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-s3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-s4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-s4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-s5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-s5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-s6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-s6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-s7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-s7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-s8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-s8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-s9",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-s9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c14-s10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c14-s10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-xs",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-xs.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-xs-abs",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-xs-abs.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-xs-item",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-xs-item.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-xs-star",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-xs-star.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-xs-fixed",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-xs-fixed.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-xs-sn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-xs-sn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-xs-sn-abs",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-xs-sn-abs.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-xs-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-xs-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-xs-ctl-s",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-xs-ctl-s.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-s",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-s.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-n",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-n.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-e",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-e.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-rs",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-rs.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-rn",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-rn.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-rs-abs",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-rs-abs.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-b",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-b.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-d",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-d.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-ctl",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-ctl.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-und",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-und.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-cat-nonenum",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-cat-nonenum.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-pre",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-pre.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-op",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-op.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-both",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-both.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-both-unk",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-both-unk.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-join-pre",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-join-pre.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-join-op",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-join-op.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-join-str",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-join-str.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-prejoin",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-prejoin.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-pre-grp",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-pre-grp.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-pre-op",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-pre-op.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-pre-opstr",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-pre-opstr.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-common",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-common.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c18-j-common-ok",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c18-j-common-ok.json",
+   "--dry-run"
+  ]
+ }
+]
