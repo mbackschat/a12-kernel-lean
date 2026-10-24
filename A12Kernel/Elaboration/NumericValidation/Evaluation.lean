@@ -720,7 +720,8 @@ def OrderedNumericComparison.evalAddressedPartialResult?
             let document ← match context.input with
               | .checked document | .partialView document _ => pure document
               | .legacy _ _ => throw (Sum.inl (.checkedDocumentRequired []))
-            let partialRead : TemporalPartialReadContext model := { document, scope, read := context.readPartialCell }
+            let partialRead : TemporalPartialReadContext model :=
+              { document, scope, read := context.readPartialCell, resolveGroup? := some resolveGroup }
             (source.evalResult .validation context.scalar.fields none context.outer (some partialRead))
               |>.mapError ScalarTemporalEvaluationFault.separateAddressing
         | atom => (atom.resolveAddressedPartialUnchecked context scope isRelevant resolveGroup).mapError Sum.inl

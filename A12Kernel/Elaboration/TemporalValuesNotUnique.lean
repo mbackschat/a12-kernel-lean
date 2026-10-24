@@ -250,7 +250,8 @@ def resolveValidationCore (operand : CheckedTemporalUniquenessOperand model)
   | .selected source _ => throw (.checkedDocumentRequired source.path)
   | .field source =>
       -- The reading row, as `DateRangesOverlap` reads it: a nonrepeatable operand addresses
-      -- identically, and a distinct-count operand the rule's row binds is read at that row.
+      -- identically, and a direct operand the rule's row binds is read at that row
+      -- (k22-runtime-r11-2026-10-25, `L13`, `L15`).
       document.resolveCheckedDirectEntityOperandCoreAt outer source.declaration.id
   | .star path _ filter =>
       path.resolveCheckedValidationEntityOperandCore (world := world) (traversalMode := traversalMode) document outer filter

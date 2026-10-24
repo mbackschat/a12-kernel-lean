@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.TemporalExpression.Types
 import A12Kernel.Elaboration.PartialSemanticIndex
+import A12Kernel.Elaboration.PartialGroupCount
 
 namespace A12Kernel
 
@@ -9,6 +10,9 @@ structure TemporalPartialReadContext (model : FlatModel) where
   document : CheckedDocument model
   scope : ValidationRelevanceScope
   read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)
+  /-- The rule evaluator's group-presence slice, which a filled-group count amount walks; absent,
+  that amount keeps its structural refusal. -/
+  resolveGroup? : Option PartialGroupResolver := none
 
 namespace TemporalPartialReadContext
 

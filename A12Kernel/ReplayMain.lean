@@ -131,6 +131,7 @@ import A12Kernel.Reference.Dm.OrdinaryPartialCompressionLocks
 import A12Kernel.Reference.Dm.EmptyRuleGroupLocks
 import A12Kernel.Reference.Dm.GroupTargetCustomAbortLocks
 import A12Kernel.Reference.Dm.ComputeMessagesLocks
+import A12Kernel.Reference.Dm.PartialCountAmountLocks
 import A12Kernel.Reference.Dm.MessageReferenceLocks
 import A12Kernel.Reference.Dm.ApplicationKindLocks
 import A12Kernel.Reference.Dm.SemanticIndexLocks
@@ -285,24 +286,33 @@ private def tableOutcomes (requestPath : System.FilePath) :
 /-- The full and partial messages a capture retained as a table rather than an artifact, as artifact
 rows: every `.tsv` beside the request headed `# row observation code-field-type`, whose `validateFull`
 and `validatePart` lines list each message's code, field and type. Such a row is marked `tabled`,
-since the table keeps no reference channels. -/
+since the table keeps no reference channels. A channel without its line stays absent rather than
+empty, and a malformed line, an unreadable list or a second line for the same row and channel, from
+any table beside the request, fails the request instead of pairing silently. -/
 private def tableMessageRows (requestPath : System.FilePath) : IO (Array Json) := do
-  let mut rows : Array (String × Array Json × Array Json) := #[]
+  let mut rows : Array (String × Option (Array Json) × Option (Array Json)) := #[]
   for entry in ← (requestPath.parent.getD ".").readDir do
     if entry.path.extension != some "tsv" then continue
-    let lines := ((← IO.FS.readFile entry.path).splitOn "\n").filter (· != "")
+    let lines := ((← IO.FS.readFile entry.path).splitOn "\n").map (·.dropRightWhile (· == '\r'))
+      |>.filter (· != "")
     if lines.head? != some "# row\tobservation\tcode-field-type" then continue
     for line in lines.drop 1 do
-      let [row, observation, list] := line.splitOn "\t" | continue
-      let messages := ((Json.parse list).toOption.bind (·.getArr?.toOption)).getD #[]
-      let (full, part) := (rows.find? (·.1 == row)).map (·.2) |>.getD (#[], #[])
-      let updated := match observation with
-        | "validateFull" => (full ++ messages, part)
-        | "validatePart" => (full, part ++ messages)
-        | _ => (full, part)
+      let [row, observation, list] := line.splitOn "\t"
+        | throw (IO.userError s!"{entry.path}: malformed table line {line}")
+      let some messages := (Json.parse list).toOption.bind (·.getArr?.toOption)
+        | throw (IO.userError s!"{entry.path}: unreadable message list for {row}")
+      let (full, part) := (rows.find? (·.1 == row)).map (·.2) |>.getD (none, none)
+      let updated ← match observation, full, part with
+        | "validateFull", none, _ => pure (some messages, part)
+        | "validatePart", _, none => pure (full, some messages)
+        | _, _, _ => throw (IO.userError s!"{entry.path}: repeated or unknown observation {observation} for {row}")
       rows := (rows.filter (·.1 != row)).push (row, updated)
-  pure (rows.map fun (row, full, part) => Json.mkObj [("name", Json.str row), ("tabled", true),
-    ("engines", Json.arr #[Json.mkObj [("messages", Json.arr full), ("partialMessages", Json.arr part)]])])
+  pure (rows.map fun (row, full, part) =>
+    let channel (key : String) : Option (Array Json) → List (String × Json)
+      | some messages => [(key, Json.arr messages)]
+      | none => []
+    Json.mkObj [("name", Json.str row), ("tabled", true),
+      ("engines", Json.arr #[Json.mkObj (channel "messages" full ++ channel "partialMessages" part)])])
 
 /-- The first engine's messages on one channel, `messages` for full validation or `partialMessages`
 for the row's partial call. -/
@@ -552,7 +562,9 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
     else pure none
   let artifactRows ← match artifact with
     | some json => pure ((json.getObjValAs? (Array Json) "rows").toOption.getD #[])
-    | none => tableMessageRows requestPath
+    | none =>
+        try tableMessageRows requestPath catch error => do
+          line "-" "-" "-" "absent" s!"Table\tunreadable: {error}"; return
   let (tabledRows, tabled) ← if artifact.isNone then tableOutcomes requestPath else pure ([], [])
   let prepared ← match prepareFlatStringContext world builtinStringPatternCompiler model.flat with
     | .ok prepared => pure prepared

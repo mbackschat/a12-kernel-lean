@@ -172,7 +172,7 @@ def admitted (atom : OrderedNumericValidationAtom model)
       | .modelWideNonrepeatable => source.directFields?.isSome
       | .modelWideCheckedComputation => true
   -- A direct list of fixed fields keeps its scalar owner. One naming a row field is admitted here and
-  -- its slots read at the rule's row, whose runtime is `external evidence pending`.
+  -- its slots read at the rule's row (k22-runtime-r7-2026-10-24, `rD`; k22-runtime-r10-2026-10-25).
   | .aggregate _ source => bound source.bindingScopes &&
       (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed) &&
         (source.directAggregateFields?.isNone || source.bindingScopes.any (!·.isEmpty))

@@ -204,13 +204,14 @@ private def evalFlatLeafAddressedPartial
       pure (leaf.evalSelected fields available)
 
 def evalTemporalPartialResult? (context : AddressedValidationEvaluationContext model)
-    (scope : ValidationRelevanceScope) : ValidationConditionLeaf model →
+    (scope : ValidationRelevanceScope) (resolveGroup? : Option PartialGroupResolver := none) :
+    ValidationConditionLeaf model →
     Option (Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) Verdict)
   | .scalarTemporal comparison => some do
       let document ← match context.input with
         | .checked document | .partialView document _ => pure document
         | .legacy _ _ => throw (Sum.inl (.checkedDocumentRequired []))
-      let partialRead : TemporalPartialReadContext model := { document, scope, read := context.readPartialCell }
+      let partialRead : TemporalPartialReadContext model := { document, scope, read := context.readPartialCell, resolveGroup? }
       (comparison.evalResult .validation context.scalar.fields none context.outer (some partialRead))
         |>.mapError ScalarTemporalEvaluationFault.separateAddressing
   | .constructedDateValidity operation source =>
@@ -218,7 +219,7 @@ def evalTemporalPartialResult? (context : AddressedValidationEvaluationContext m
         let document ← match context.input with
           | .checked document | .partialView document _ => pure document
           | .legacy _ _ => throw (Sum.inl (.checkedDocumentRequired []))
-        let partialRead : TemporalPartialReadContext model := { document, scope, read := context.readPartialCell }
+        let partialRead : TemporalPartialReadContext model := { document, scope, read := context.readPartialCell, resolveGroup? }
         let selected := { (document.indexedComputationContextAt context.outer) with world := context.scalar.fields.world }
         let observation ← (source.evaluateScalarValidity .validation selected (some partialRead))
           |>.mapError ScalarTemporalEvaluationFault.separateAddressing
@@ -397,12 +398,12 @@ def evalAddressedPartial?
       | .checked document | .partialView document _ =>
           some (comparison.evalPartial document scope context.outer context.readPartialCell isRelevant)
       | .legacy _ _ => none
-  | leaf@(.scalarTemporal _) => (leaf.evalTemporalPartialResult? context scope).map
+  | leaf@(.scalarTemporal _) => (leaf.evalTemporalPartialResult? context scope (some resolveGroup)).map
       (Except.mapError fun | .inl error => error | .inr fault => fault.toAddressing)
   | leaf@(.constructedDateValidity operation source) =>
       match source.directComponents? with
       | some direct => some (evalDirectConstructedDateAddressed context isRelevant operation direct)
-      | none => (leaf.evalTemporalPartialResult? context scope).map
+      | none => (leaf.evalTemporalPartialResult? context scope (some resolveGroup)).map
           (Except.mapError fun | .inl error => error | .inr fault => fault.toAddressing)
   | .indexedFieldPresence operator source =>
       some do

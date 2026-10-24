@@ -5,12 +5,12 @@ import A12Kernel.Elaboration.BooleanValueCount
 
 namespace A12Kernel
 
-/-- Each count owns its extent gate: value counts are existential and distinct counts use
+/-- Each count owns its extent gate: value counts take declared-slot coverage and distinct counts
 reduced-universal relevance (spec/10 §5). Topology fixes the unreopened coordinates. -/
 private def partialCountExtent (document : CheckedDocument model) (outer : Env)
     (scope : ValidationRelevanceScope) (declarations : List FlatFieldDecl) (bound : Nat)
     (extentRelevant : FlatFieldDecl → List RepeatableLevel → List RepeatableLevel → Env → Bool :=
-      fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment) :
+      fun declaration _ reopened environment => scope.coversValueCountExtent model declaration.path reopened environment) :
     Except CheckedAddressingError (Option (CellObservation (List (FlatFieldDecl × Env) × Bool))) := do
   if !declarations.all (fun declaration => extentRelevant declaration
       (declaration.repeatableScope.take bound) (declaration.repeatableScope.drop bound) outer) then return none
@@ -72,7 +72,7 @@ private def tokenPartialCountSide (source : CheckedTokenEntityOperand model)
     (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
     (extentRelevant : FlatFieldDecl → List RepeatableLevel → List RepeatableLevel → Env → Bool :=
-      fun declaration bound reopened environment => scope.coversValueListExtent model declaration.path bound reopened environment) :
+      fun declaration _ reopened environment => scope.coversValueCountExtent model declaration.path reopened environment) :
     Except CheckedAddressingError (Sum (ResolvedValueListSide .token) PartialValidationNumberAggregateResult) := do
   let selection ← match source with
     | .field source => pure (some (.value ([(source.declaration, outer)], false)))

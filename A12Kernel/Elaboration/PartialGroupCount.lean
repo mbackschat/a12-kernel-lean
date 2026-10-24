@@ -75,27 +75,33 @@ private def walkGroupCount (model : FlatModel) (scope : ValidationRelevanceScope
           visit false count remaining
   visit true 0 coordinates
 
+/-- A fixed group's count under partial validation: the group is its own first instance. -/
+def partialFixedGroupCount (model : FlatModel) (scope : ValidationRelevanceScope)
+    (resolveGroup : PartialGroupResolver) (groupPath : GroupPath) (boundScope : List RepeatableLevel)
+    (outer : Env) : Except CheckedAddressingError (Option Nat) := do
+  let bound ← boundScope.mapM fun level => do
+    pure (level, ← (outer.bindingAt level).mapError CheckedAddressingError.environment)
+  walkGroupCount model scope resolveGroup groupPath bound [] [bound] outer
+
+/-- A starred group's count under partial validation, walking the levels its path reopens. -/
+def partialStarredGroupCount (model : FlatModel) (scope : ValidationRelevanceScope)
+    (resolveGroup : PartialGroupResolver) (document : Document) (groupPath : GroupPath) (path : StarPath)
+    (outer : Env) : Except CheckedAddressingError (Option Nat) := do
+  let bound ← (path.boundEnvironment outer).mapError .addressing
+  let held ← (path.inCapacityEnvironments document outer).mapError .addressing
+  walkGroupCount model scope resolveGroup groupPath bound (path.axes.drop path.firstStar) held outer
+
 namespace CheckedGroupCountOperand
 
 /-- One operand's count under partial validation, or `none` when the walk leaves it undecidable. -/
 def partialCount (operand : CheckedGroupCountOperand model) (scope : ValidationRelevanceScope)
     (resolveGroup : PartialGroupResolver) (document : Document) (outer : Env) :
-    Except CheckedAddressingError (Option Nat) := do
+    Except CheckedAddressingError (Option Nat) :=
   match operand with
   | .fixed reference =>
-      let bound ← reference.boundRepeatableScope.mapM fun level => do
-        pure (level, ← (outer.bindingAt level).mapError CheckedAddressingError.environment)
-      walkGroupCount model scope resolveGroup reference.path bound [] [bound] outer
-  | .starred source => do
-      let bound ← (source.path.boundEnvironment outer).mapError .addressing
-      let held ← (source.path.inCapacityEnvironments document outer).mapError .addressing
-      walkGroupCount model scope resolveGroup source.group.path bound
-        (source.path.axes.drop source.path.firstStar) held outer
-  | .starredPresence source => do
-      let bound ← (source.path.boundEnvironment outer).mapError .addressing
-      let held ← (source.path.inCapacityEnvironments document outer).mapError .addressing
-      walkGroupCount model scope resolveGroup source.groupPath bound
-        (source.path.axes.drop source.path.firstStar) held outer
+      partialFixedGroupCount model scope resolveGroup reference.path reference.boundRepeatableScope outer
+  | .starred source => partialStarredGroupCount model scope resolveGroup document source.group.path source.path outer
+  | .starredPresence source => partialStarredGroupCount model scope resolveGroup document source.groupPath source.path outer
 
 /-- A filled-group count under partial validation: decided when every operand's walk is, counting
     their sum. `resolveGroup` must answer from the same relevance-selected slice as `scope`. -/

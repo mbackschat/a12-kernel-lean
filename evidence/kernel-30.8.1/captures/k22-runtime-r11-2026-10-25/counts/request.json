@@ -1,0 +1,1011 @@
+{
+ "model": "KR11A_DM.json",
+ "clock": "2026-10-25T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "rows": [
+  {
+   "name": "NWild-g12",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows/N",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "SWild-g12",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows/S",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "BWild-g12",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows/B",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DWild-g12",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows/D",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TWild-g12",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows/T",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "NWild-g123",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows/N",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      2
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      3
+     ]
+    }
+   ]
+  },
+  {
+   "name": "NRow1-gWild",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows/N",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "allButItemsD",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows/Id",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/D",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/T",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/N",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/S",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/B",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "allDirect+ItemsD",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows/Id",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/D",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/T",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/N",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/S",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/B",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/Items/D",
+     "reps": [
+      1,
+      0,
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "gWild",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bad1-gWild",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "x",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bad1-all",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "x",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "3",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows/Id",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/D",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/T",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/N",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/S",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/B",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Form/Rows/Items/D",
+     "reps": [
+      1,
+      0,
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bad2-gWild",
+   "documentInline": {
+    "Form": {
+     "Ref": "x",
+     "Key": "B",
+     "Bad": "4",
+     "Amount": "1",
+     "Low": "2024-03-01",
+     "Rows": [
+      {
+       "Id": "A",
+       "D": "2024-01-01",
+       "T": "01:02:03",
+       "N": "1",
+       "S": "2",
+       "Items": [
+        {
+         "D": "2024-01-01"
+        }
+       ],
+       "B": "true"
+      },
+      {
+       "Id": "B",
+       "D": "2024-02-01",
+       "T": "03:04:05",
+       "N": "x",
+       "S": "1",
+       "Items": [
+        {
+         "D": "2024-02-01"
+        },
+        {
+         "D": "2024-03-01"
+        }
+       ],
+       "B": "true"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Ref"
+    },
+    {
+     "path": "/Form/Low"
+    },
+    {
+     "path": "/Form/Rows",
+     "reps": [
+      1,
+      0
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -444,7 +444,7 @@ def _root_.A12Kernel.ValidationCondition.evalPartialAddressedResult (condition :
             | .inl error => .inl (.inl (.conditionAddressing error))
             | .inr fault => .inr fault)
       (temporalPartialResult? := fun leaf =>
-        (leaf.evalTemporalPartialResult? context scope).map (Except.mapError fun
+        (leaf.evalTemporalPartialResult? context scope (some resolveGroup)).map (Except.mapError fun
           | .inl error => .inl (.inl (.conditionAddressing error))
           | .inr fault => .inr fault))
       (numericResult := fun comparison =>

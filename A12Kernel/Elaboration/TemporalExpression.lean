@@ -385,32 +385,51 @@ def elaborateScalarTemporalComparison (model : FlatModel) (rowGroup : GroupPath)
 
 
 /-- Whether a partial call evaluates an aggregate, count or group-count shift amount such as
-`Sum(Rows*/N)`: each walked extent member passes the all-rows aggregate gate, and each direct slot is
-relevant at the bound row. Wildcard relevance of the column or its group passes; one concrete row, or
-concrete group rows beside the wildcard, does not, alike for `Sum`, `MaxValue`, `MinValue`,
-`NumberOfDifferentValues` and `NumberOfFilledFields` (k22-runtime-r7-2026-10-24, `rC`, `KS3`,
-`KX5`–`KX8`), and for Number, String and Boolean value counts, String and Date distinct counts and
-`NumberOfFilledGroups` (k22-runtime-r9-2026-10-25). A group count's members are every field the group
-declares, so only the group's own wildcard covers it, not one member column's. `none` for any other
-amount: no other expanded amount is measured under partial validation, so each keeps its structural
-refusal. -/
+`Sum(Rows*/N)`. Each takes the gate the same operation takes as a comparison operand
+(k22-runtime-r11-2026-10-25, where every shift amount answers as its comparison twin):
+
+- `Sum`, `MaxValue`, `MinValue`, `NumberOfDifferentValues` and `NumberOfFilledFields` walk each extent
+  member through the all-rows aggregate gate, so concrete group rows beside a column wildcard leave
+  the amount unavailable (k22-runtime-r7-2026-10-24, `rC`; k22-runtime-r9-2026-10-25);
+- value counts take the declared-slot gate, which concrete group rows beside the wildcard, or
+  covering the whole capacity, still pass (r11, `SV1`, `SV2`, `SB7`);
+- `NumberOfFilledGroups` takes the counted group's four-step walk on the rule's group-presence slice,
+  so a malformed first instance leaves it unavailable (r11, `SG3`); without that slice it keeps its
+  structural refusal.
+
+Every direct slot must be relevant at the bound row. `none` for any other amount: no other expanded
+amount is measured under partial validation, so each keeps its structural refusal. -/
 private def partialAggregateAmountCovered (context : ScalarComputationContext)
     (partialRead : TemporalPartialReadContext model)
     (atom : HavingNumericAtomOf (ScalarTemporalExpression model)) :
     Except ScalarTemporalEvaluationFault (Option Bool) := do
-  match atom with
-  | .aggregate _ _ | .collectionCount _ | .groupCount _ => pure ()
-  | _ => return none
   let scope := partialRead.effectiveScope
-  let memberCovered (bound : Nat) (field : FieldId) : Bool :=
-    (model.lookupUniqueId field).toOption.any fun declaration =>
-      scope.coversAggregateExtent model declaration.path (declaration.repeatableScope.take bound)
-        (declaration.repeatableScope.drop bound) context.row
-  let slotCovered (slot : HavingFieldListSlot HavingPresenceRef) :
-      Except ScalarTemporalEvaluationFault Bool := match slot with
-    | .direct reference => return (← partialRead.readCell context.row reference.field).isSome
-    | .extent source references => return references.all (memberCovered source.boundCount ·.field)
-  pure (some (← (atom.presenceSlotsWith (fun _ _ => [])).allM slotCovered))
+  let aggregateMember (bound : Nat) (declaration : FlatFieldDecl) : Bool :=
+    scope.coversAggregateExtent model declaration.path (declaration.repeatableScope.take bound)
+      (declaration.repeatableScope.drop bound) context.row
+  let valueCountMember (bound : Nat) (declaration : FlatFieldDecl) : Bool :=
+    scope.coversValueCountExtent model declaration.path (declaration.repeatableScope.drop bound) context.row
+  let slotsCovered (memberCovered : Nat → FlatFieldDecl → Bool) :
+      Except ScalarTemporalEvaluationFault Bool :=
+    (atom.presenceSlotsWith (fun _ _ => [])).allM fun
+      | .direct reference => return (← partialRead.readCell context.row reference.field).isSome
+      | .extent source references => return references.all fun reference =>
+          (model.lookupUniqueId reference.field).toOption.any (memberCovered source.boundCount)
+  match atom with
+  | .aggregate _ _ | .collectionCount (.filledFields _ _) | .collectionCount (.temporalDistinct _ _ _)
+  | .collectionCount (.tokenDistinct _) => some <$> slotsCovered aggregateMember
+  | .collectionCount (.numberValue _ _) | .collectionCount (.tokenValue _ _)
+  | .collectionCount (.booleanValue _ _) => some <$> slotsCovered valueCountMember
+  | .groupCount operands =>
+      let some resolveGroup := partialRead.resolveGroup? | return none
+      let document := partialRead.document.source.toDocument
+      let counts ← (operands.mapM fun (operand : HavingGroupCountOperand) => match operand.source.starPath with
+        | none => partialFixedGroupCount model partialRead.scope resolveGroup operand.source.reference.path
+            operand.source.reference.boundRepeatableScope context.row
+        | some path => partialStarredGroupCount model partialRead.scope resolveGroup document
+            operand.source.reference.path path context.row).mapError .addressing
+      pure (some (counts.all Option.isSome))
+  | _ => pure none
 
 mutual
 private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context : ScalarComputationContext)

@@ -131,7 +131,7 @@ def wildcardsLevels (entity : RelevantEntityPattern)
     (model : FlatModel) (levels : List RepeatableLevel) : Bool :=
   wildcardsLevelsAt entity model levels [] entity.path entity.indices
 
-/-- Project one caller identifier onto the operand field for wildcard-only consumers such as value counts and missing-key lookup. Partial list quantifiers instead combine identifiers through `ValidationRelevanceScope.coversDeclaredFieldExtent` (spec/10 §5). -/
+/-- Project one caller identifier onto the operand field for wildcard-only consumers such as missing-key lookup. Partial list quantifiers instead combine identifiers through `ValidationRelevanceScope.coversDeclaredFieldExtent` (spec/10 §5). -/
 def coversValueListExtent (entity : RelevantEntityPattern)
     (model : FlatModel) (targetPath : List String)
     (boundLevels reopenedLevels : List RepeatableLevel) (outer : Env) : Bool :=
@@ -236,7 +236,7 @@ def coversGroupCountExtent (scope : ValidationRelevanceScope) (model : FlatModel
       reducedUniversalCovers (groupCountPatterns entities model groupPath boundLevels outer)
         model reopenedLevels
 
-/-- Wildcard-only extent policy for value counts, missing-key lookup and legacy adapters: concrete siblings do not cancel a qualifying wildcard. Partial list quantifiers use `coversDeclaredFieldExtent` to combine concrete coverage (spec/10 §5). -/
+/-- Wildcard-only extent policy for missing-key lookup and legacy adapters: concrete siblings do not cancel a qualifying wildcard. Value counts take `coversValueCountExtent`. Partial list quantifiers use `coversDeclaredFieldExtent` to combine concrete coverage (spec/10 §5). -/
 def coversValueListExtent (scope : ValidationRelevanceScope) (model : FlatModel)
     (targetPath : List String) (boundLevels reopenedLevels : List RepeatableLevel)
     (outer : Env) : Bool :=
@@ -307,6 +307,14 @@ def coversDeclaredFieldExtent (scope : ValidationRelevanceScope) (model : FlatMo
     (targetPath : List String) (reopenedLevels : List RepeatableLevel) (outer : Env)
     (missingParent : Option RepeatableLevel := none) : Except StarAddressingError Bool :=
   coversDeclaredFieldExtentUsing (.fixed 1) scope model targetPath reopenedLevels outer missingParent
+
+/-- A value count's extent gate, the value-list quantifiers' declared-slot coverage: a column
+wildcard passes beside concrete group rows, and concrete group rows covering a finite capacity pass
+without one (k22-runtime-r11-2026-10-25, `CV1`, `CV2`, `CB7`). A binding the walk cannot read leaves
+the extent unavailable. -/
+def coversValueCountExtent (scope : ValidationRelevanceScope) (model : FlatModel)
+    (targetPath : List String) (reopenedLevels : List RepeatableLevel) (outer : Env) : Bool :=
+  (scope.coversDeclaredFieldExtent model targetPath reopenedLevels outer).toOption.getD false
 
 /-- Per-cell relevance retains concrete row identity and ancestor descent. Unlike all-rows relevance, different concrete entities may cover different reached cells. -/
 def coversCell (scope : ValidationRelevanceScope) (model : FlatModel)

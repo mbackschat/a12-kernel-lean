@@ -1,0 +1,305 @@
+{
+ "header": {
+  "id": "KR11B_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "KR11B_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "name": "N1",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           },
+           "id": "/Form/Rows/N1"
+          },
+          {
+           "type": "Field",
+           "name": "N2",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           },
+           "id": "/Form/Rows/N2"
+          },
+          {
+           "type": "Field",
+           "name": "S1",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           },
+           "id": "/Form/Rows/S1"
+          },
+          {
+           "type": "Field",
+           "name": "S2",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           },
+           "id": "/Form/Rows/S2"
+          },
+          {
+           "type": "Field",
+           "name": "D1",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           },
+           "id": "/Form/Rows/D1"
+          },
+          {
+           "type": "Field",
+           "name": "D2",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           },
+           "id": "/Form/Rows/D2"
+          },
+          {
+           "type": "Field",
+           "name": "T1",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           },
+           "id": "/Form/Rows/T1"
+          },
+          {
+           "type": "Field",
+           "name": "T2",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           },
+           "id": "/Form/Rows/T2"
+          },
+          {
+           "type": "Field",
+           "name": "B1",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           },
+           "id": "/Form/Rows/B1"
+          },
+          {
+           "type": "Field",
+           "name": "B2",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType"
+            }
+           },
+           "id": "/Form/Rows/B2"
+          },
+          {
+           "type": "Field",
+           "name": "E",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           },
+           "id": "/Form/Rows/E"
+          },
+          {
+           "type": "Rule",
+           "name": "L06",
+           "Rule": {
+            "errorEntityRelPath": "../E",
+            "errorCode": "L06",
+            "errorCondition": "FieldFilled(E) And (NumberOfDifferentValues(T1, T2) == 1)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           },
+           "id": "/Form/Rows/L06"
+          },
+          {
+           "type": "Rule",
+           "name": "L07",
+           "Rule": {
+            "errorEntityRelPath": "../E",
+            "errorCode": "L07",
+            "errorCondition": "FieldFilled(E) And (NumberOfValueInFields(True In B1, B2) == 2)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           },
+           "id": "/Form/Rows/L07"
+          },
+          {
+           "type": "Rule",
+           "name": "L10",
+           "Rule": {
+            "errorEntityRelPath": "../E",
+            "errorCode": "L10",
+            "errorCondition": "FieldFilled(E) And (NumberOfDifferentValues(D1, D2) == 1)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           },
+           "id": "/Form/Rows/L10"
+          },
+          {
+           "type": "Rule",
+           "name": "L13",
+           "id": "/Form/Rows/L13",
+           "Rule": {
+            "errorEntityRelPath": "../E",
+            "errorCode": "L13",
+            "errorCondition": "FieldFilled(E) And (FieldValuesNotUnique(D1, D2))",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "name": "L14",
+           "id": "/Form/Rows/L14",
+           "Rule": {
+            "errorEntityRelPath": "../E",
+            "errorCode": "L14",
+            "errorCondition": "FieldFilled(E) And (NumberOfValueInFields(True In /Form/RB1, /Form/RB2) == 2)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "name": "L15",
+           "id": "/Form/Rows/L15",
+           "Rule": {
+            "errorEntityRelPath": "../E",
+            "errorCode": "L15",
+            "errorCondition": "FieldFilled(E) And (FieldValuesNotUnique(T1, T2))",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          }
+         ]
+        },
+        "id": "/Form/Rows"
+       },
+       {
+        "type": "Field",
+        "name": "RB1",
+        "id": "/Form/RB1",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "name": "RB2",
+        "id": "/Form/RB2",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType"
+         }
+        }
+       }
+      ]
+     },
+     "id": "/Form"
+    }
+   ]
+  }
+ }
+}
