@@ -6,7 +6,7 @@ import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked group-scope filled-field counts
 
-This boundary admits two whole-operand group forms for the count and seven field-fill quantifiers: one fixed nonrepeatable ordinary path group or one starred group, whose terminal is repeatable or a nonrepeatable group below a starred level. Declared slots supplement the instantiated extent only for predicates that read the missing tail. Computation, mixed lists, filters, partial validation, and raw-document execution remain outside.
+This boundary admits two whole-operand group forms for the count and seven field-fill quantifiers: one fixed ordinary path group, nonrepeatable or the repeatable group whose row the error field binds, or one starred group, whose terminal is repeatable or a nonrepeatable group below a starred level. Declared slots supplement the instantiated extent only for predicates that read the missing tail. Computation, mixed lists, filters, partial validation, and raw-document execution remain outside.
 -/
 
 namespace A12Kernel
@@ -116,7 +116,7 @@ def elaborateFilledFieldCountFixedGroupValidationSource (model : FlatModel)
   match model.validate with
   | .error error => throw (.shape (.resolve error))
   | .ok () =>
-      let reference ← model.resolveRuleBoundFixedGroupReference declaringGroup
+      let reference ← model.resolveFieldFillRowGroupReference declaringGroup
         (.path authored.group) (some writtenGroup)
         |>.mapError fun error => .shape (.groupReference error)
       CheckedFilledFieldCountGroupSource.ofResolved model (.fixed reference)

@@ -1,0 +1,359 @@
+[
+ {
+  "id": "c1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c1",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "c2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c2",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 2",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "c3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c3",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 3",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "c4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c4",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 4",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "c5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c5",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "c6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "c6",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 6",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "all",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "all",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And AllFieldsFilled(RuleGroup)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "nall",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "nall",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NotAllFieldsFilled(RuleGroup)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "any",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "any",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And AtLeastOneFieldFilled(RuleGroup)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "none",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "none",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NoFieldFilled(RuleGroup)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "pabs",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "pabs",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(/Item/Rows) == 2",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "prel",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "prel",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(../Rows) == 2",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "mix",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "mix",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup, Title) == 2",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "box",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "box",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(Box) == 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "note",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "note",
+   "--field",
+   "/Item/Rows/Note",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 2",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ung",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ung",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "NumberOfFilledFields(RuleGroup) < 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ungpos",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ungpos",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "NumberOfFilledFields(RuleGroup) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ungnone",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ungnone",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "NoFieldFilled(RuleGroup)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ungany",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ungany",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "AtLeastOneFieldFilled(RuleGroup)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "root",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "root",
+   "--field",
+   "/Item/Title",
+   "--group",
+   "/Item",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(RuleGroup) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "star",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "star",
+   "--field",
+   "/Item/Rows/Qty",
+   "--group",
+   "/Item/Rows",
+   "--condition",
+   "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

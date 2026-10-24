@@ -1,0 +1,220 @@
+{
+ "model": "K22rgr_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "d1",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d2",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1",
+       "Note": "n"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d3",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1",
+       "Box": {
+        "Lid": "l"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d4",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1",
+       "Sub": [
+        {
+         "S": "s"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d5",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1",
+       "Sub": [
+        {
+         "S": "s"
+        },
+        {
+         "S": "t"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d6",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1",
+       "Note": "n",
+       "Box": {
+        "Lid": "l"
+       },
+       "Sub": [
+        {
+         "S": "s"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d7",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1",
+       "Note": "n",
+       "Box": {
+        "Lid": "l"
+       },
+       "Sub": [
+        {
+         "S": "s"
+        },
+        {
+         "S": "t"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d8",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1",
+       "Note": "n"
+      },
+      {
+       "Qty": "2"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d9",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1",
+       "Sub": [
+        {},
+        {
+         "S": "t"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d10",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Note": "n"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d11",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Box": {
+        "Lid": "l"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "d12",
+   "documentInline": {
+    "Item": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Sub": [
+        {
+         "S": "s"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,417 @@
+{
+ "header": {
+  "id": "K22rgr_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K22rgr_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Item",
+     "name": "Item",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Item/Title",
+        "name": "Title",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Item/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Item/Rows/Qty",
+           "name": "Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Item/Rows/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Item/Rows/Box",
+           "name": "Box",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Item/Rows/Box/Lid",
+              "name": "Lid",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Item/Rows/Sub",
+           "name": "Sub",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Item/Rows/Sub/S",
+              "name": "S",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/c1",
+           "name": "c1",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "c1",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 1",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/c2",
+           "name": "c2",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "c2",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 2",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/c3",
+           "name": "c3",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "c3",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 3",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/c4",
+           "name": "c4",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "c4",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 4",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/c5",
+           "name": "c5",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "c5",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 5",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/c6",
+           "name": "c6",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "c6",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 6",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/all",
+           "name": "all",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "all",
+            "errorCondition": "FieldFilled(Qty) And AllFieldsFilled(RuleGroup)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/nall",
+           "name": "nall",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "nall",
+            "errorCondition": "FieldFilled(Qty) And NotAllFieldsFilled(RuleGroup)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/any",
+           "name": "any",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "any",
+            "errorCondition": "FieldFilled(Qty) And AtLeastOneFieldFilled(RuleGroup)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/none",
+           "name": "none",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "none",
+            "errorCondition": "FieldFilled(Qty) And NoFieldFilled(RuleGroup)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/pabs",
+           "name": "pabs",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "pabs",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(/Item/Rows) == 2",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/prel",
+           "name": "prel",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "prel",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(../Rows) == 2",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/mix",
+           "name": "mix",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "mix",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup, Title) == 2",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/box",
+           "name": "box",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "box",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(Box) == 1",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/note",
+           "name": "note",
+           "Rule": {
+            "errorEntityRelPath": "../Note",
+            "errorCode": "note",
+            "errorCondition": "FieldFilled(Qty) And NumberOfFilledFields(RuleGroup) == 2",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/ungpos",
+           "name": "ungpos",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "ungpos",
+            "errorCondition": "NumberOfFilledFields(RuleGroup) > 0",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Item/Rows/ungany",
+           "name": "ungany",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "ungany",
+            "errorCondition": "AtLeastOneFieldFilled(RuleGroup)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

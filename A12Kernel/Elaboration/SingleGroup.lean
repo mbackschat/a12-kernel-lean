@@ -292,6 +292,11 @@ private inductive FixedGroupScopePolicy where
   reach the root classes the walk leaves them. A non-root repeatable group stays refused here: its
   error-locus matrix is `OneLevelUnstarredGroupUse`'s, which builds no executable condition. -/
   | validationBound
+  /-- As `ruleBound`, and the repeatable group whose row the error field binds is admitted too,
+  bound at that row, whether named by path or as `RuleGroup`: the field-fill count and quantifiers
+  read its own fields there, its fixed descendants, and every instance of a repeatable one
+  (capture `rulegroup-field-fill-2026-10-24`). -/
+  | fieldFillRow
   /-- Refused with the class `UnboundOperandLevel` selects, for a computation whose target repeats
   at no level; the group's own level counts when it is repeatable. -/
   | fixedTarget (targetGroup : GroupPath)
@@ -320,7 +325,7 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           | none => pure resolved
           | some unbound => throw (.unboundOperandLevel resolved.path unbound)
       | .fixedTargetList => pure { resolved with boundRepeatableScope := operandScope }
-      | .scalar | .ruleBound | .validationBound =>
+      | .scalar | .ruleBound | .validationBound | .fieldFillRow =>
           let bindingGroup := if policy matches .scalar then declaringGroup
             else writtenGroup?.getD declaringGroup
           let bindingScope := model.repeatableScopeForGroupPath bindingGroup
@@ -337,7 +342,9 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
           -- predicate refuses.
           if model.repeatableGroups.any (fun group => group.path == resolved.path) &&
               !(policy matches .validationBound && resolved.path.length == 1) then
-            refuse
+            if policy matches .fieldFillRow && operandScope == bindingScope then
+              pure { resolved with boundRepeatableScope := operandScope }
+            else refuse
           else if operandScope.isEmpty then
             pure resolved
           else if !(policy matches .scalar) &&
@@ -348,7 +355,12 @@ private def FlatModel.resolveFixedGroupReferenceWith (model : FlatModel)
             pure { resolved with boundRepeatableScope := operandScope }
           else
             refuse
-  | .ruleGroup => pure resolved
+  | .ruleGroup =>
+      let operandScope := model.repeatableScopeForGroupPath resolved.path
+      if !(policy matches .fieldFillRow) || operandScope.isEmpty then pure resolved
+      else if operandScope == model.repeatableScopeForGroupPath (writtenGroup?.getD declaringGroup) then
+        pure { resolved with boundRepeatableScope := operandScope }
+      else throw (.walkedRepeatableGroupUnsupported resolved.path)
 
 /-- Resolve the established scalar fixed-group boundary. A group below repeatable ancestry still
 requires a carrier that explicitly opts into rule-bound scope. -/
@@ -366,11 +378,20 @@ def FlatModel.resolveRuleBoundFixedGroupReference (model : FlatModel)
     Except FixedGroupReferenceError ResolvedGroupReference :=
   model.resolveFixedGroupReferenceWith .ruleBound declaringGroup surface writtenGroup?
 
+/-- Resolve a group operand of the field-fill count or a field-fill quantifier, which also admits the
+repeatable group whose row the error field binds (`FixedGroupScopePolicy.fieldFillRow`). -/
+def FlatModel.resolveFieldFillRowGroupReference (model : FlatModel)
+    (declaringGroup : GroupPath) (surface : SurfaceGroupReference)
+    (writtenGroup? : Option GroupPath := none) :
+    Except FixedGroupReferenceError ResolvedGroupReference :=
+  model.resolveFixedGroupReferenceWith .fieldFillRow declaringGroup surface writtenGroup?
+
 /-- Validation entity lists keep scalar resolution unless their addressed consumer retains the
 rule-bound certificate measured by `src-fixed-group-repeatable-ancestor-carriers`. -/
 inductive FixedGroupReadScope where
   | scalar
   | ruleBound
+  | fieldFillRow
 
 /-- Select the existing reference resolver without changing its path or placement gates. -/
 def FixedGroupReadScope.resolve (scope : FixedGroupReadScope) (model : FlatModel)
@@ -380,6 +401,7 @@ def FixedGroupReadScope.resolve (scope : FixedGroupReadScope) (model : FlatModel
   match scope with
   | .scalar => model.resolveFixedGroupReference declaringGroup surface writtenGroup?
   | .ruleBound => model.resolveRuleBoundFixedGroupReference declaringGroup surface writtenGroup?
+  | .fieldFillRow => model.resolveFieldFillRowGroupReference declaringGroup surface writtenGroup?
 
 /-- Resolve a fixed group operand of a validation carrier whose measured admission covers the
 repeatable root its rule sits in as well as a fixed child of the rule's group

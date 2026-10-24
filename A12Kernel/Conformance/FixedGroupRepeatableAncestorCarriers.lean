@@ -369,18 +369,21 @@ example : (match elaborateFieldFillList model ["Probe", "Outer"]
     | .error (.shape (.overlappingOperands _ _)) => true
     | _ => false) = true := by native_decide
 
-private def listScopeRefused (declaring path : GroupPath) (level? : Option RepeatableLevel) : Bool :=
+private def listScopeRefused (declaring path : GroupPath) (level : RepeatableLevel) : Bool :=
   match elaborateFieldFillList boundaryModel declaring
       { first := .group (fixedGroup path), rest := [.group peer] } with
   | .error (.shape (.groupReference (.unboundOperandLevel actual unbound))) =>
-      actual == path && level? == some unbound.level
-  | .error (.shape (.groupReference (.walkedRepeatableGroupUnsupported actual))) =>
-      actual == path && level?.isNone
+      actual == path && level == unbound.level
   | _ => false
 
-example : listScopeRefused ["Probe"] ["Probe", "Outer", "Flat"] (some 10) = true ∧
-    listScopeRefused ["Probe", "Outer"] ["Probe", "Outer", "Flat", "Rows", "Deep"] (some 20) = true ∧
-    listScopeRefused ["Probe", "Outer"] ["Probe", "Outer"] none = true := by native_decide
+example : listScopeRefused ["Probe"] ["Probe", "Outer", "Flat"] 10 = true ∧
+    listScopeRefused ["Probe", "Outer"] ["Probe", "Outer", "Flat", "Rows", "Deep"] 20 = true ∧
+    listScopeRefused ["Probe", "Outer"] ["Probe", "Outer", "Flat", "Rows"] 20 = true := by native_decide
+
+-- The row group the rule iterates is itself an admitted operand, bound at its row, as the
+-- Kernel admits `RuleGroup` and its path (rulegroup-field-fill-2026-10-24, rows pabs/prel).
+example : (elaborateFieldFillList boundaryModel ["Probe", "Outer"]
+    { first := .group (fixedGroup ["Probe", "Outer"]), rest := [] }).isOk = true := by native_decide
 
 example : (do
     let condition ← (CheckedValidationCondition.fromFieldFill model ["Probe", "Outer"]

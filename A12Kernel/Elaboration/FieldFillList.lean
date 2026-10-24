@@ -502,7 +502,7 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
   let shape ← (elaborateFieldEntityShapeIn model rowGroup (model.repeatableScopeForGroupPath bindingGroup)
     authored .manyRequired none bindingGroup
     (categoryGate := if consumer == .quantifier then .behindRootGate else .aheadOfRepeat)
-    (groupReadScope := .ruleBound)).mapError .shape
+    (groupReadScope := .fieldFillRow)).mapError .shape
   let operands ← ((authored.first :: authored.rest).zip shape.operands).mapM fun
     | (_, .indexed source .stored) => pure (.indexed source)
     | (_, .keyed source .stored) => pure (.keyed source)
@@ -511,7 +511,7 @@ def elaborateFieldFillList (model : FlatModel) (rowGroup : GroupPath)
     | (_, .starHaving source having .stored) => do
         pure (.star (← (CheckedFilledFieldStarSource.withHaving model rowGroup bindingGroup
           source having).mapError .having))
-    | (.group (.path _), .group reference) =>
+    | (.group _, .group reference) =>
         (CheckedFieldFillOperand.group <$>
           CheckedFilledFieldCountGroupSource.ofResolved model (.fixed reference)).mapError .group
     | (.starredGroup group, _) =>

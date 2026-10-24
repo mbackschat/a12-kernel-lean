@@ -306,7 +306,9 @@ private def fieldFillIterationExtents? (source : CheckedFieldFillList model) :
     | .star source => (starIterationExtent? source.source).map ([·])
     | .indexed source => selectedIterationExtents? (.inl source)
     | .keyed source => selectedIterationExtents? (.inr source)
-    | .group _ => none
+    -- A group weighs the fields it reads, as on the uniqueness carrier, so `NoFieldFilled(RuleGroup)`
+    -- at the row is unguarded (capture `rulegroup-field-fill-2026-10-24`, row `ungnone`).
+    | .group source => groupIterationExtents? model source.source
 
 /-- Every overload weighs its operands alike: direct fields, wildcards and selections as for field
 fill, and groups by the fields they read (`uniqueness-iteration-guard-2026-10-13`). -/

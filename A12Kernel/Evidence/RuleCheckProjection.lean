@@ -69,6 +69,7 @@ def captures : List (String × String × String) := [
   ("captures/message-name-position-carriers-2026-10-01/obs-3.json", "captures/message-group-availability-2026-09-30/GroupAvailTwin_DM.json", "captures/message-name-position-carriers-2026-10-01/obs-3.json"),
   ("captures/message-name-position-refusals-2026-10-01/obs.json", "captures/message-group-availability-2026-09-30/GroupAvailTwin_DM.json", "captures/message-name-position-refusals-2026-10-01/obs.json"),
   ("captures/selected-range-compositions-2026-10-13/static/observations.json", "captures/selected-range-compositions-2026-10-13/static/base-model.json", "captures/selected-range-compositions-2026-10-13/static/observations.json"),
+  ("captures/rulegroup-field-fill-2026-10-24/obs.json", "captures/rulegroup-field-fill-2026-10-24/K22rg_DM.json", "captures/rulegroup-field-fill-2026-10-24/ops.json"),
   ("captures/field-value-read-remaining-sites/observations-grid.json", "captures/field-value-read-remaining-sites/Grid25h_DM.json", "captures/field-value-read-remaining-sites/ops-grid.json"),
   ("captures/field-value-read-predictions/observations-grid2.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid2.json"),
   ("captures/field-value-read-predictions/observations-grid3.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid3.json"),
@@ -269,8 +270,7 @@ def deferred : List (String × String) := [
   ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus-abs", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs-review.json#pv-unique", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus", "host pattern compiler, SG7"),
-  ("entity-list-kind-empty-and-root-carriers/obs.json#rulegroup-at-rows-count-control", "K22: RuleGroup in a field-fill count")]
+  ("pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus", "host pattern compiler, SG7")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with
