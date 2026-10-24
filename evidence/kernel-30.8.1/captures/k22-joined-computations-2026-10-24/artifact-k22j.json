@@ -1,0 +1,3165 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "K22j_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-24T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "join",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply[2]/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply[3]/Out02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out02"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out02"
+       ]
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out03"
+       ]
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply[2]/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out03"
+       ]
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply[3]/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out03"
+       ]
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply[2]/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply[3]/Out04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out04"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out04"
+       ]
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply/Out05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Note",
+        "Staffing/Supply/Out05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply[2]/Out05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/Out05"
+       ],
+       "fillToFix": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/Out05"
+       ]
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply[3]/Out05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Note",
+        "Staffing/Supply[3]/Out05"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Note",
+        "Staffing/Supply[3]/Out05"
+       ]
+      },
+      {
+       "code": "Cd1",
+       "field": "Staffing/Supply/OutD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ce1",
+       "field": "Staffing/Supply/OutE",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Kind",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutE"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cg1",
+       "field": "Staffing/Supply/Out06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Ledger[3]/Amount",
+        "Staffing/Ledger[3]/Code",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Out06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cj1",
+       "field": "Jn/NA/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Jn/NA/NK",
+        "Jn/NA/Out",
+        "Jn/NA/V",
+        "Jn/NB/NK",
+        "Jn/NB/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cj1",
+       "field": "Jn/NA[2]/Out",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Jn[1]/NB[-5]/NK",
+        "/Jn[1]/NB[-5]/W",
+        "Jn/NA[2]/NK",
+        "Jn/NA[2]/Out",
+        "Jn/NA[2]/V"
+       ],
+       "fillToFix": [
+        "/Jn[1]/NB[-5]/NK",
+        "/Jn[1]/NB[-5]/W",
+        "Jn/NA[2]/NK",
+        "Jn/NA[2]/Out",
+        "Jn/NA[2]/V"
+       ]
+      },
+      {
+       "code": "Cj1",
+       "field": "Jn/NA[3]/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Jn/NA[3]/NK",
+        "Jn/NA[3]/Out",
+        "Jn/NA[3]/V",
+        "Jn/NB[3]/NK",
+        "Jn/NB[3]/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply[2]/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply[3]/Out01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Out01"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Out01"
+       ]
+      },
+      {
+       "code": "Cs1",
+       "field": "Staffing/Supply/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cs1",
+       "field": "Staffing/Supply[2]/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/OutS1"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Jn/NA/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "11"
+       },
+       {
+        "field": "Jn/NA[2]/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Jn/NA[3]/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "33"
+       },
+       {
+        "field": "Staffing/Supply/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "11"
+       },
+       {
+        "field": "Staffing/Supply/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "14"
+       },
+       {
+        "field": "Staffing/Supply/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "24"
+       },
+       {
+        "field": "Staffing/Supply/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "34"
+       },
+       {
+        "field": "Staffing/Supply/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "Staffing/Supply/Out06",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Staffing/Supply/OutD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-10-01"
+       },
+       {
+        "field": "Staffing/Supply/OutE",
+        "cleared": false,
+        "errored": false,
+        "value": "a"
+       },
+       {
+        "field": "Staffing/Supply/OutS1",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "27"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "24"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "34"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "44"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "21"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutS1",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "4"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "14"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "24"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutS1",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply[2]/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply[3]/Out02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out02"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out02"
+       ]
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out03"
+       ]
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply[2]/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out03"
+       ]
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply[3]/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out03"
+       ]
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply[2]/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply[3]/Out04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out04"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out04"
+       ]
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply/Out05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Note",
+        "Staffing/Supply/Out05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply[2]/Out05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/Out05"
+       ],
+       "fillToFix": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/Out05"
+       ]
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply[3]/Out05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Note",
+        "Staffing/Supply[3]/Out05"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Note",
+        "Staffing/Supply[3]/Out05"
+       ]
+      },
+      {
+       "code": "Cd1",
+       "field": "Staffing/Supply/OutD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ce1",
+       "field": "Staffing/Supply/OutE",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Kind",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutE"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cg1",
+       "field": "Staffing/Supply/Out06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Ledger[3]/Amount",
+        "Staffing/Ledger[3]/Code",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Out06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cj1",
+       "field": "Jn/NA/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Jn/NA/NK",
+        "Jn/NA/Out",
+        "Jn/NA/V",
+        "Jn/NB/NK",
+        "Jn/NB/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cj1",
+       "field": "Jn/NA[2]/Out",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Jn[1]/NB[-5]/NK",
+        "/Jn[1]/NB[-5]/W",
+        "Jn/NA[2]/NK",
+        "Jn/NA[2]/Out",
+        "Jn/NA[2]/V"
+       ],
+       "fillToFix": [
+        "/Jn[1]/NB[-5]/NK",
+        "/Jn[1]/NB[-5]/W",
+        "Jn/NA[2]/NK",
+        "Jn/NA[2]/Out",
+        "Jn/NA[2]/V"
+       ]
+      },
+      {
+       "code": "Cj1",
+       "field": "Jn/NA[3]/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Jn/NA[3]/NK",
+        "Jn/NA[3]/Out",
+        "Jn/NA[3]/V",
+        "Jn/NB[3]/NK",
+        "Jn/NB[3]/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply[2]/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply[3]/Out01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Out01"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Out01"
+       ]
+      },
+      {
+       "code": "Cs1",
+       "field": "Staffing/Supply/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cs1",
+       "field": "Staffing/Supply[2]/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/OutS1"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Jn/NA/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "11"
+       },
+       {
+        "field": "Jn/NA[2]/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Jn/NA[3]/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "33"
+       },
+       {
+        "field": "Staffing/Supply/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "11"
+       },
+       {
+        "field": "Staffing/Supply/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "14"
+       },
+       {
+        "field": "Staffing/Supply/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "24"
+       },
+       {
+        "field": "Staffing/Supply/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "34"
+       },
+       {
+        "field": "Staffing/Supply/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "Staffing/Supply/Out06",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Staffing/Supply/OutD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-10-01"
+       },
+       {
+        "field": "Staffing/Supply/OutE",
+        "cleared": false,
+        "errored": false,
+        "value": "a"
+       },
+       {
+        "field": "Staffing/Supply/OutS1",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "27"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "24"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "34"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "44"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "21"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutS1",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "4"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "14"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "24"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutS1",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "badidx",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Staffing/Supply[3]/Department",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[3]/Department"
+       ],
+       "fillToFix": [
+        "Staffing/Supply[3]/Department"
+       ]
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Staffing/Supply/Department",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply/Department"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Staffing/Supply[2]/Department",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[2]/Department"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Staffing/Supply/Out01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/Out02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/Out03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/Out04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/Out05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/OutS1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutS1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutS1",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "mandatoryField",
+        "field": "Staffing/Supply[3]/Department",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[3]/Department"
+        ],
+        "fillToFix": [
+         "Staffing/Supply[3]/Department"
+        ]
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Staffing/Supply/Department",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply/Department"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Staffing/Supply[2]/Department",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[2]/Department"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Staffing/Supply[3]/Department",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[3]/Department"
+       ],
+       "fillToFix": [
+        "Staffing/Supply[3]/Department"
+       ]
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Staffing/Supply/Department",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply/Department"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Staffing/Supply[2]/Department",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[2]/Department"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Staffing/Supply/Out01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/Out02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/Out03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/Out04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/Out05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply/OutS1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutS1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutS1",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "mandatoryField",
+        "field": "Staffing/Supply[3]/Department",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[3]/Department"
+        ],
+        "fillToFix": [
+         "Staffing/Supply[3]/Department"
+        ]
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Staffing/Supply/Department",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply/Department"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Staffing/Supply[2]/Department",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[2]/Department"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "overlimit",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply[2]/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply[3]/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out03"
+       ]
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply[2]/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out03"
+       ]
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply[3]/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out03"
+       ]
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply[2]/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply[3]/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply/Out05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Note",
+        "Staffing/Supply/Out05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply[2]/Out05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/Out05"
+       ],
+       "fillToFix": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/Out05"
+       ]
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply[3]/Out05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Note",
+        "Staffing/Supply[3]/Out05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cd1",
+       "field": "Staffing/Supply/OutD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cd1",
+       "field": "Staffing/Supply[3]/OutD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Stamp",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/OutD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ce1",
+       "field": "Staffing/Supply/OutE",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Kind",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutE"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cg1",
+       "field": "Staffing/Supply/Out06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Ledger[3]/Amount",
+        "Staffing/Ledger[3]/Code",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Out06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cg1",
+       "field": "Staffing/Supply[3]/Out06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Out06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply[2]/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply[3]/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cs1",
+       "field": "Staffing/Supply/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cs1",
+       "field": "Staffing/Supply[2]/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/OutS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cs1",
+       "field": "Staffing/Supply[3]/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/OutS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Department",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Department"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Headcount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Headcount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/OutD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/OutD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/OutE",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/OutE"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/OutS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Staffing/Supply[4]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Staffing/Supply/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "11"
+       },
+       {
+        "field": "Staffing/Supply/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "14"
+       },
+       {
+        "field": "Staffing/Supply/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "24"
+       },
+       {
+        "field": "Staffing/Supply/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "34"
+       },
+       {
+        "field": "Staffing/Supply/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "Staffing/Supply/Out06",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Staffing/Supply/OutD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-10-01"
+       },
+       {
+        "field": "Staffing/Supply/OutE",
+        "cleared": false,
+        "errored": false,
+        "value": "a"
+       },
+       {
+        "field": "Staffing/Supply/OutS1",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "27"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "24"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "34"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "44"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "21"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutS1",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "8"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "9"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "19"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "29"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out06",
+        "cleared": false,
+        "errored": false,
+        "value": "4"
+       },
+       {
+        "field": "Staffing/Supply[3]/OutD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-11-20"
+       },
+       {
+        "field": "Staffing/Supply[3]/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutS1",
+        "cleared": false,
+        "errored": false,
+        "value": "k1"
+       },
+       {
+        "field": "Staffing/Supply[4]/Out01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/Out02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/Out03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/Out04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/Out05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/OutS1",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Staffing/Supply[4]/Department",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[4]/Department"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Staffing/Supply[4]/Headcount",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[4]/Headcount"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Staffing/Supply[4]/Note",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[4]/Note"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Staffing/Supply[4]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[4]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply[2]/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca1",
+       "field": "Staffing/Supply[3]/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out03"
+       ]
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply[2]/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out03"
+       ]
+      },
+      {
+       "code": "Ca2",
+       "field": "Staffing/Supply[3]/Out03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Ledger[0]/Amount",
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out03"
+       ]
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply[2]/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca3",
+       "field": "Staffing/Supply[3]/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply/Out05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Note",
+        "Staffing/Supply/Out05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply[2]/Out05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/Out05"
+       ],
+       "fillToFix": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/Out05"
+       ]
+      },
+      {
+       "code": "Ca4",
+       "field": "Staffing/Supply[3]/Out05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Note",
+        "Staffing/Supply[3]/Out05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cd1",
+       "field": "Staffing/Supply/OutD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cd1",
+       "field": "Staffing/Supply[3]/OutD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Stamp",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/OutD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Ce1",
+       "field": "Staffing/Supply/OutE",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Kind",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutE"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cg1",
+       "field": "Staffing/Supply/Out06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Ledger[3]/Amount",
+        "Staffing/Ledger[3]/Code",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Out06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cg1",
+       "field": "Staffing/Supply[3]/Out06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Ledger/Amount",
+        "Staffing/Ledger/Code",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Out06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply[2]/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cn1",
+       "field": "Staffing/Supply[3]/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cs1",
+       "field": "Staffing/Supply/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/OutS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cs1",
+       "field": "Staffing/Supply[2]/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/OutS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "Cs1",
+       "field": "Staffing/Supply[3]/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/OutS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Department",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Department"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Headcount",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Headcount"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/Out06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/Out06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/OutD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/OutD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/OutE",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/OutE"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Staffing/Supply[4]/OutS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]/OutS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Staffing/Supply[4]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[4]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Staffing/Supply/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "11"
+       },
+       {
+        "field": "Staffing/Supply/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "14"
+       },
+       {
+        "field": "Staffing/Supply/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "24"
+       },
+       {
+        "field": "Staffing/Supply/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "34"
+       },
+       {
+        "field": "Staffing/Supply/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "12"
+       },
+       {
+        "field": "Staffing/Supply/Out06",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Staffing/Supply/OutD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-10-01"
+       },
+       {
+        "field": "Staffing/Supply/OutE",
+        "cleared": false,
+        "errored": false,
+        "value": "a"
+       },
+       {
+        "field": "Staffing/Supply/OutS1",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "27"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "24"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "34"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "44"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "21"
+       },
+       {
+        "field": "Staffing/Supply[2]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[2]/OutS1",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out01",
+        "cleared": false,
+        "errored": false,
+        "value": "8"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out02",
+        "cleared": false,
+        "errored": false,
+        "value": "9"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out03",
+        "cleared": false,
+        "errored": false,
+        "value": "19"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out04",
+        "cleared": false,
+        "errored": false,
+        "value": "29"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out05",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       },
+       {
+        "field": "Staffing/Supply[3]/Out06",
+        "cleared": false,
+        "errored": false,
+        "value": "4"
+       },
+       {
+        "field": "Staffing/Supply[3]/OutD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2026-11-20"
+       },
+       {
+        "field": "Staffing/Supply[3]/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/OutS1",
+        "cleared": false,
+        "errored": false,
+        "value": "k1"
+       },
+       {
+        "field": "Staffing/Supply[4]/Out01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/Out02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/Out03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/Out04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/Out05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/Out06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/OutD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/OutE",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/OutS1",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Staffing/Supply[4]/Department",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[4]/Department"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Staffing/Supply[4]/Headcount",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[4]/Headcount"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Staffing/Supply[4]/Note",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[4]/Note"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Staffing/Supply[4]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[4]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

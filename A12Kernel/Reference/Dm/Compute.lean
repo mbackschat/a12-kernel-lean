@@ -373,8 +373,16 @@ private def lowerParallelNumber (language : Language) (model : FlatModel) (compu
   let guardFields := guards.flatMap parallelNumericGuardFields
   let guardPaths := guardFields.filterMap fun field => (model.lookupUniqueId field).toOption.map fun declaration =>
     { base := .absolute, groups := declaration.groupPath, field := declaration.name : SurfaceFieldPath }
+  -- A guard leaf keyed by a partner field joins that partner by itself, so the partner's own key
+  -- anchors the route when no operand reads it (k22-joined-computations-2026-10-24, `Cg1`).
+  let partnerKeys := (model.parallelJoinedGroups target).filterMap fun path => do
+    if !guards.any (·.any (·.keysPartner path)) then none
+    let key ← (model.repeatableGroups.find? (·.path == path)).bind (·.indexField)
+    let declaration ← (model.lookupUniqueId key).toOption
+    pure { base := .absolute, groups := declaration.groupPath, field := declaration.name : SurfaceFieldPath }
   let fields := expressions.flatMap (fun expression =>
-    (expression.atoms.filterMap (·.joined?)).flatMap SurfaceNumericAtom.parallelFields) ++ guardPaths
+    (expression.atoms.filterMap (·.joined?)).flatMap SurfaceNumericAtom.parallelFields) ++ guardPaths ++
+      partnerKeys
   let some operand := fields.find? fun path => (checkParallelNumericTargetRoute model group target.id path).isOk
     | refuse "ParallelNumber" "no joined operand"
   let operations ← ((guards.zip expressions).zip outputModes).mapM fun ((guard, expression), mode) => do
@@ -406,6 +414,7 @@ private def lowerJoinedRows (language : Language) (model : FlatModel) (computati
     match ← lowerRowAlternativeOperation view group viewTarget expression suppress with
     | .stringExpression operation => pure (ParallelJoinedRowOperation.string operation)
     | .temporalExpression operation => pure (.temporal operation)
+    | .fixedEnumeration operation => pure (.enumeration operation)
     | _ => refuse "ParallelRows" "operation"
   let alternatives := (guards.zip operations).map fun (precondition, operation) =>
     ({ precondition, operation } : ParallelJoinedRowAlternative model joined)
@@ -525,9 +534,11 @@ private def lowerComputationWith (allowParallelGuards : Bool)
     pure body
   let suppress ← if hasHaving then pure suppress else validatedSuppression
   let row := !target.repeatableScope.isEmpty
+  -- Only an atom carrying a filter is typed at the filter's binding; a partner read beside it keeps
+  -- the unbound reading the joined route resolves (k22-joined-computations-2026-10-24, `Ca2`).
   let numericExpressions := operations.mapM fun expression => do
-    let filterBinding? := if expression.hasHaving then some target.groupPath else none
-    let atom := fun operand => lowerCompleteComputationNumericAtom model computation.group operand filterBinding? suppress
+    let atom := fun (operand : Expr) => lowerCompleteComputationNumericAtom model computation.group operand
+      (if operand.hasHaving then some target.groupPath else none) suppress
     lowerNumericExpr atom (lowerNumericFieldAtom model computation.group atom) expression
   if allowParallelGuards then
     if !row then refuse "Guard" "joined route"

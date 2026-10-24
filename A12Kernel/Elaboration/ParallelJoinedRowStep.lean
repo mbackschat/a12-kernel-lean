@@ -1,9 +1,9 @@
 import A12Kernel.Elaboration.ParallelNumericDirectRun
 import A12Kernel.Elaboration.RowComputationTable
 
-/-! # Key-joined String and temporal targets
+/-! # Key-joined String, temporal and Enumeration targets
 
-A computation into a String or temporal field of an indexed repeatable group may read the partner row
+A computation into a String, temporal or Enumeration field of an indexed repeatable group may read the partner row
 its key matches in a parallel group, as a joined Number computation does (spec/09 §5). Each target row
 is evaluated once with that partner row bound beside it: a copy of a partner field takes the partner's
 value, and an unmatched key or an empty partner field clears the target
@@ -17,33 +17,39 @@ other field at the target row. Guards are the joined Number carrier's guards, an
 their keys and their partner rows come from the same key joins.
 
 An invalid-index or over-limit row clears without a guard or operand read, the joined Number
-carrier's disposition. For these target kinds that is an assumption: the retained capture has neither
-row, and the gap register keeps the evidence item.
+carrier's disposition, measured for String, Date and Enumeration targets on duplicated and empty
+keys and on a row beyond capacity
+([joined-computation checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-joined-computations)).
+An Enumeration copy reads the partner's stored token as the fixed Enumeration carrier reads a field.
 -/
 
 namespace A12Kernel
 
-/-- A String or temporal operation certified against an instance view. Both evaluate over one
+/-- A String, temporal or Enumeration operation certified against an instance view. Both evaluate over one
 supplied read context, which is what lets a joined instance place each read. -/
 inductive ParallelJoinedRowOperation (view : FlatModel) where
   | string (operation : CheckedRowStringExpression view)
   | temporal (operation : CheckedTemporalExpressionComputation view)
+  | enumeration (operation : CheckedEnumerationComputationOperation view)
 
 namespace ParallelJoinedRowOperation
 
 def target : ParallelJoinedRowOperation view → FieldId
   | .string operation => operation.targetField
   | .temporal operation => operation.target
+  | .enumeration operation => operation.target.field
 
 def family : ParallelJoinedRowOperation view → DocumentTargetFamily
   | .string _ => .string
   | .temporal operation => operation.family
+  | .enumeration _ => .enumeration
 
 /-- Field identities are the model's, since the instance view keeps every field. -/
 def referencesWith (field : FieldId) (filterReads : CorrelatedHaving → Bool) :
     ParallelJoinedRowOperation view → Bool
   | .string operation => operation.expression.referencesField field
   | .temporal operation => operation.expression.referencesWith field filterReads
+  | .enumeration operation => operation.source.referencesField field
 
 def evaluateIn (matchers : StringTargetMatchers) (context : ScalarComputationContext) :
     ParallelJoinedRowOperation view → Except RowComputationTableFault (DocumentTargetOutcome × CheckedCell)
@@ -52,6 +58,9 @@ def evaluateIn (matchers : StringTargetMatchers) (context : ScalarComputationCon
         | throw (.targetPatternUnavailable operation.targetField)
       operation.evaluateIn matcher context context
   | .temporal operation => operation.run context |>.mapError .readBack
+  | .enumeration operation =>
+      let outcome := (operation.source.evaluate { read := context.read }).asExactStringTargetOutcome
+      pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
 
 end ParallelJoinedRowOperation
 

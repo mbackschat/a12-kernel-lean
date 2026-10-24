@@ -58,6 +58,21 @@ private partial def Expr.fieldPaths : Expr → List SurfaceFieldPath
   | .logic _ parts => parts.flatMap Expr.fieldPaths
   | .number _ | .string _ | .constant _ | .custom _ _ => []
 
+/-- The field-valued key of every keyed read, in authored order. A key read off a partner field
+anchors the join as a direct read does: a computation whose only partner read is such a key in its
+guard runs joined, and so does its generated rule (k22-joined-computations-2026-10-24, `Cg1`). -/
+private partial def Expr.keyFieldPaths : Expr → List SurfaceFieldPath
+  | .value reference | .entity reference => match reference.index with
+      | some (.reference key) => key.path.toFieldPath?.toList
+      | _ => []
+  | .call _ arguments listed _ =>
+      (arguments ++ listed.getD []).flatMap fun (.mk expression rangeEnd) =>
+        expression.keyFieldPaths ++ (rangeEnd.map Expr.keyFieldPaths).getD []
+  | .arith _ left right | .compare _ left right => left.keyFieldPaths ++ right.keyFieldPaths
+  | .braces body | .parens body => body.keyFieldPaths
+  | .logic _ parts => parts.flatMap Expr.keyFieldPaths
+  | .number _ | .string _ | .constant _ | .custom _ _ => []
+
 /-- The unstarred prefix of every unkeyed starred read, in authored order. A star below a joined
 group still reads that group's joined row, so the prefix anchors the join (parallel-child capture,
 `r02`, 2026-10-14); a prefix of the error side's or an unjoined group anchors nothing. -/
@@ -105,7 +120,7 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
         else refuse "ParallelRule" "Number comparison required"
       tryCatch ((.leaf ∘ .pair) <$> comparison strict) fun _ => do
         let reads ← expression.fieldPaths.mapM (pairPath model group)
-        pure (.leaf (.ordinary expression reads.eraseDups (comparison mixed).toOption))
+        pure (.leaf (.ordinary expression (reads ++ keyReads expression).eraseDups (comparison mixed).toOption))
   | .call name [.mk field none] none none => do
       if let some op := (match name with
           | "GroupFilled" => some GroupPresenceOperator.filled
@@ -113,7 +128,7 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
           | _ => none) then
         -- A keyed group read selects a row of a group the join does not bind, so it stays an
         -- ordinary leaf (keyed-membership capture, rows p00-p02, 2026-10-13).
-        let some reference := field.groupReference? | pure (.leaf (.ordinary (.call name [.mk field none] none none) []))
+        let some reference := field.groupReference? | ordinary (.call name [.mk field none] none none)
         let resolved ← elaborated "ParallelRule" (reference.resolveAgainst group)
         pure (.leaf (.pair (.groupPresence op { resolved with
           boundRepeatableScope := model.repeatableScopeForGroupPath resolved.path })))
@@ -142,7 +157,11 @@ where
   /-- A leaf the pair carrier has no form for, kept with the plain fields it reads. -/
   ordinary (expression : Expr) : Lowering (ConditionTree PairSyntaxLeaf) := do
     let reads ← expression.fieldPaths.mapM (pairPath model group)
-    pure (.leaf (.ordinary expression reads.eraseDups))
+    pure (.leaf (.ordinary expression (reads ++ keyReads expression).eraseDups))
+  /-- The keys a leaf reads that resolve to a field; a key resolving to none is the leaf's own
+  refusal, which its ordinary lowering reports. -/
+  keyReads (expression : Expr) : List FieldId :=
+    expression.keyFieldPaths.filterMap fun path => (pairPath model group path).toOption
 
 private def pairReferences : ConditionTree PairSyntaxLeaf → List FieldId
   | .leaf (.pair (.groupPresence _ _)) => []

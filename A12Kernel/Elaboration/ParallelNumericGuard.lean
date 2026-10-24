@@ -191,6 +191,10 @@ def protectionView (guard : ParallelNumericGuard model) : ComputationProtectionV
 def readsField (guard : ParallelNumericGuard model) (field : FieldId) : Bool :=
   guard.condition.anyLeaf (·.readsJoinedField field)
 
+/-- Whether a leaf is certified at a row of the joined partner `group`, keyed by a partner field. -/
+def keysPartner (guard : ParallelNumericGuard model) (group : GroupPath) : Bool :=
+  guard.condition.anyLeaf fun | .partner partner _ => partner == group | _ => false
+
 def admitted (guard : ParallelNumericGuard model) (admits : FieldId → Bool) : Bool :=
   guard.condition.allLeaves (·.admitted admits)
 

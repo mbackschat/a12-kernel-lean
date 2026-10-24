@@ -1,0 +1,314 @@
+{
+ "model": "K22j_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "join",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01",
+       "Kind": "a"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz",
+       "Kind": "b"
+      },
+      {
+       "Department": "C",
+       "Base": "5",
+       "Label": "k1",
+       "Stamp": "2026-11-20"
+      }
+     ],
+     "Supply": [
+      {
+       "OutS1": "seed",
+       "OutD1": "2000-01-01",
+       "OutE": "b",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x"
+      },
+      {
+       "OutS1": "seed",
+       "OutD1": "2000-01-01",
+       "OutE": "b",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Department": "B",
+       "Headcount": "7"
+      },
+      {
+       "OutS1": "seed",
+       "OutD1": "2000-01-01",
+       "OutE": "b",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Department": "E",
+       "Headcount": "2",
+       "Note": "q"
+      }
+     ]
+    },
+    "Jn": {
+     "NA": [
+      {
+       "NK": "1",
+       "V": "1",
+       "Out": "999"
+      },
+      {
+       "NK": "2",
+       "V": "2",
+       "Out": "999"
+      },
+      {
+       "NK": "3",
+       "V": "3",
+       "Out": "999"
+      }
+     ],
+     "NB": [
+      {
+       "NK": "1.00",
+       "W": "10"
+      },
+      {
+       "NK": "2.5",
+       "W": "20"
+      },
+      {
+       "NK": "3",
+       "W": "30"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "badidx",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01",
+       "Kind": "a"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz",
+       "Kind": "b"
+      }
+     ],
+     "Supply": [
+      {
+       "OutS1": "seed",
+       "OutD1": "2000-01-01",
+       "OutE": "b",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x"
+      },
+      {
+       "OutS1": "seed",
+       "OutD1": "2000-01-01",
+       "OutE": "b",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Department": "A",
+       "Headcount": "3"
+      },
+      {
+       "OutS1": "seed",
+       "OutD1": "2000-01-01",
+       "OutE": "b",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Department": "",
+       "Headcount": "4",
+       "Note": "k1"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "overlimit",
+   "documentInline": {
+    "Staffing": {
+     "Ledger": [
+      {
+       "Code": "k1",
+       "Amount": "4"
+      },
+      {
+       "Code": "x",
+       "Amount": "9"
+      },
+      {
+       "Code": "LA",
+       "Amount": "5"
+      }
+     ],
+     "Demand": [
+      {
+       "Department": "A",
+       "Base": "10",
+       "Label": "LA",
+       "Stamp": "2026-10-01",
+       "Kind": "a"
+      },
+      {
+       "Department": "B",
+       "Base": "20",
+       "Label": "zz",
+       "Kind": "b"
+      },
+      {
+       "Department": "C",
+       "Base": "5",
+       "Label": "k1",
+       "Stamp": "2026-11-20"
+      },
+      {
+       "Department": "D",
+       "Base": "7",
+       "Label": "x",
+       "Stamp": "2026-12-01",
+       "Kind": "a"
+      }
+     ],
+     "Supply": [
+      {
+       "OutS1": "seed",
+       "OutD1": "2000-01-01",
+       "OutE": "b",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Department": "A",
+       "Headcount": "1",
+       "Note": "x"
+      },
+      {
+       "OutS1": "seed",
+       "OutD1": "2000-01-01",
+       "OutE": "b",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Department": "B",
+       "Headcount": "7"
+      },
+      {
+       "OutS1": "seed",
+       "OutD1": "2000-01-01",
+       "OutE": "b",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Department": "C",
+       "Headcount": "3",
+       "Note": "k1"
+      },
+      {
+       "OutS1": "seed",
+       "OutD1": "2000-01-01",
+       "OutE": "b",
+       "Out01": "999",
+       "Out02": "999",
+       "Out03": "999",
+       "Out04": "999",
+       "Out05": "999",
+       "Out06": "999",
+       "Department": "D",
+       "Headcount": "5",
+       "Note": "x"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}
