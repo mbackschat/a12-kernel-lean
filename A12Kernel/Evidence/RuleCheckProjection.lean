@@ -162,14 +162,101 @@ def captures : List (String × String × String) := [
   ("captures/consumer-readiness-k21-2026-10-23/dry-run-codes.json", "captures/consumer-readiness-k21-2026-10-23/K21_DM.json", "captures/consumer-readiness-k21-2026-10-23/dry-ops-k21.json"),
   ("captures/joined-filled-count-2026-10-24/dry-run-codes.json", "captures/handback-rows-2026-10-23/K0607f_DM.json", "captures/joined-filled-count-2026-10-24/dry-ops.json"),
   ("captures/keyed-group-beside-join-2026-10-24/dry-run-codes-keyed.json", "captures/keyed-group-beside-join-2026-10-24/K22k_DM.json", "captures/keyed-group-beside-join-2026-10-24/dry-ops.json"),
-  ("captures/keyed-group-beside-join-2026-10-24/dry-run-codes-unkeyed.json", "captures/keyed-group-beside-join-2026-10-24/K22u_DM.json", "captures/keyed-group-beside-join-2026-10-24/dry-ops.json")]
+  ("captures/keyed-group-beside-join-2026-10-24/dry-run-codes-unkeyed.json", "captures/keyed-group-beside-join-2026-10-24/K22u_DM.json", "captures/keyed-group-beside-join-2026-10-24/dry-ops.json"),
+  ("captures/ancestor-starred-group-count-computation/obs-admission.json", "captures/ancestor-starred-group-count-computation/GroupCountAdmission_DM.json", "captures/ancestor-starred-group-count-computation/ops-admission.json"),
+  ("captures/ancestor-starred-group-count-separators/obs-admission.json", "captures/ancestor-starred-group-count-separators/GroupCountSeparatorsAdmission_DM.json", "captures/ancestor-starred-group-count-separators/ops-admission.json"),
+  ("captures/below-star-group-runtime/obs-admission.json", "captures/starred-group-value-count-classes/ProbeN_DM.json", "captures/below-star-group-runtime/ops-admission.json"),
+  ("captures/computation-star-binding-gate/obs.json", "captures/computation-star-binding-gate/StarBinding_DM.json", "captures/computation-star-binding-gate/ops.json"),
+  ("captures/computation-star-binding-gate/obs10.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops10.json"),
+  ("captures/computation-star-binding-gate/obs12-StarBinding3_DM.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/obs12-StarBinding3_DM.json"),
+  ("captures/computation-star-binding-gate/obs12-StarBinding4_DM.json", "captures/computation-star-binding-gate/StarBinding4_DM.json", "captures/computation-star-binding-gate/obs12-StarBinding4_DM.json"),
+  ("captures/computation-star-binding-gate/obs2.json", "captures/computation-star-binding-gate/StarBinding2_DM.json", "captures/computation-star-binding-gate/ops2.json"),
+  ("captures/computation-star-binding-gate/obs3.json", "captures/computation-star-binding-gate/StarBinding2_DM.json", "captures/computation-star-binding-gate/ops3.json"),
+  ("captures/computation-star-binding-gate/obs4.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops4.json"),
+  ("captures/computation-star-binding-gate/obs5.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops5.json"),
+  ("captures/computation-star-binding-gate/obs6.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops6.json"),
+  ("captures/computation-star-binding-gate/obs7.json", "captures/computation-star-binding-gate/StarBinding4_DM.json", "captures/computation-star-binding-gate/ops7.json"),
+  ("captures/computation-star-binding-gate/obs8-StarBinding4_DM.json", "captures/computation-star-binding-gate/StarBinding4_DM.json", "captures/computation-star-binding-gate/obs8-StarBinding4_DM.json"),
+  ("captures/computation-star-binding-gate/obs8-StarBinding5_DM.json", "captures/computation-star-binding-gate/StarBinding5_DM.json", "captures/computation-star-binding-gate/obs8-StarBinding5_DM.json"),
+  ("captures/computation-star-binding-gate/obs9.json", "captures/group-count-list-extent/CompGate_DM.json", "captures/computation-star-binding-gate/ops9.json"),
+  ("captures/cross-kind-format-runtime-parser/obs-reverse.json", "captures/cross-kind-format-runtime-parser/Rev_DM.json", "captures/cross-kind-format-runtime-parser/ops-reverse.json"),
+  ("captures/cross-kind-format-runtime-parser/obs.json", "captures/cross-kind-format-runtime-parser/Kind_DM.json", "captures/cross-kind-format-runtime-parser/ops.json"),
+  ("captures/distinct-count-component-omitting-fold/obs.json", "captures/distinct-count-component-omitting-fold/Omit_DM.json", "captures/distinct-count-component-omitting-fold/ops.json"),
+  ("captures/distinct-count-group-expansion-fold/obs.json", "captures/distinct-count-group-expansion-fold/Grp_DM.json", "captures/distinct-count-group-expansion-fold/ops.json"),
+  ("captures/distinct-count-temporal-identity/obs-admission.json", "captures/distinct-count-temporal-identity/Dist_DM.json", "captures/distinct-count-temporal-identity/ops-admission.json"),
+  ("captures/distinct-count-time-bearing-fold/obs.json", "captures/distinct-count-time-bearing-fold/Clock_DM.json", "captures/distinct-count-time-bearing-fold/ops.json"),
+  ("captures/distinct-count-yearless-and-supplemented-fold/obs-baseyear.json", "captures/distinct-count-yearless-and-supplemented-fold/BaseYear_DM.json", "captures/distinct-count-yearless-and-supplemented-fold/ops-baseyear.json"),
+  ("captures/distinct-count-yearless-and-supplemented-fold/obs.json", "captures/distinct-count-yearless-and-supplemented-fold/NoBase_DM.json", "captures/distinct-count-yearless-and-supplemented-fold/ops.json"),
+  ("captures/entity-list-gate-denominator-closure/obs.json", "captures/entity-list-gate-denominator-closure/XFmt3_DM.json", "captures/entity-list-gate-denominator-closure/ops.json"),
+  ("captures/entity-list-kind-empty-and-root-carriers/obs-star-gate.json", "captures/entity-list-kind-empty-and-root-carriers/ProbeE_DM.json", "captures/entity-list-kind-empty-and-root-carriers/ops-star-gate.json"),
+  ("captures/entity-list-kind-empty-and-root-carriers/obs.json", "captures/entity-list-kind-empty-and-root-carriers/ProbeE_DM.json", "captures/entity-list-kind-empty-and-root-carriers/ops.json"),
+  ("captures/equal-set-spelling-families-carrier-split/obs-baseyear.json", "captures/equal-set-spelling-families-carrier-split/XFmt2_BaseYear_DM.json", "captures/equal-set-spelling-families-carrier-split/ops-baseyear.json"),
+  ("captures/equal-set-spelling-families-carrier-split/obs.json", "captures/equal-set-spelling-families-carrier-split/XFmt2_DM.json", "captures/equal-set-spelling-families-carrier-split/ops.json"),
+  ("captures/extrema-component-omitting-fold/obs.json", "captures/extrema-component-omitting-fold/Ext_DM.json", "captures/extrema-component-omitting-fold/ops.json"),
+  ("captures/extrema-operand-kind-grid/obs-grid.json", "captures/extrema-operand-kind-grid/Rng_DM.json", "captures/extrema-operand-kind-grid/obs-grid.json"),
+  ("captures/field-value-read-predictions/observations-grid4.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid4.json"),
+  ("captures/field-value-read-predictions/observations-grid5.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid5.json"),
+  ("captures/filter-reference-two-levels-above/obs-field-positions.json", "captures/filter-reference-two-levels-above/Rep_DM.json", "captures/filter-reference-two-levels-above/ops-field-positions.json"),
+  ("captures/filter-reference-two-levels-above/obs-group-leaf-and-arms.json", "captures/filter-reference-two-levels-above/Rep_DM2.json", "captures/filter-reference-two-levels-above/ops-group-leaf-and-arms.json"),
+  ("captures/filter-suppression-and-row-carriers-2026-10-14/obs-c.json", "captures/filter-suppression-and-row-carriers-2026-10-14/R11C_DM.json", "captures/filter-suppression-and-row-carriers-2026-10-14/ops-c.json"),
+  ("captures/filter-suppression-and-row-carriers-2026-10-14/obs-k.json", "captures/filter-suppression-and-row-carriers-2026-10-14/R11_DM.json", "captures/filter-suppression-and-row-carriers-2026-10-14/ops-k.json"),
+  ("captures/filter-waiver-carriers-2026-10-14/obs-x.json", "captures/filter-waiver-carriers-2026-10-14/R11C_DM.json", "captures/filter-waiver-carriers-2026-10-14/ops-x.json"),
+  ("captures/filtered-star-leading-kind/obs.json", "captures/filtered-star-leading-kind/FiltLead_DM.json", "captures/filtered-star-leading-kind/ops.json"),
+  ("captures/filtered-star-leading-kind/obs2.json", "captures/filtered-star-leading-kind/FiltLead_DM.json", "captures/filtered-star-leading-kind/ops2.json"),
+  ("captures/filtered-star-leading-kind/obs3.json", "captures/filtered-star-leading-kind/FiltLead_DM.json", "captures/filtered-star-leading-kind/ops3.json"),
+  ("captures/first-filled-reads-the-format-string/obs.json", "captures/first-filled-reads-the-format-string/XFmt_DM.json", "captures/first-filled-reads-the-format-string/ops.json"),
+  ("captures/group-operand-and-short-name-classes/obs-computation.json", "captures/group-operand-and-short-name-classes/ProbeJ_DM.json", "captures/group-operand-and-short-name-classes/ops-computation.json"),
+  ("captures/group-operand-and-short-name-classes/obs.json", "captures/group-operand-and-short-name-classes/ProbeJ_DM.json", "captures/group-operand-and-short-name-classes/ops.json"),
+  ("captures/iteration-binding-2026-10-23/obs-order-review.json", "captures/iteration-binding-2026-10-23/Order22c_DM.json", "captures/iteration-binding-2026-10-23/ops-order-review.json"),
+  ("captures/iteration-binding-2026-10-23/obs-order-review2.json", "captures/iteration-binding-2026-10-23/Order22c_DM.json", "captures/iteration-binding-2026-10-23/ops-order-review2.json"),
+  ("captures/iteration-binding-2026-10-23/obs-order.json", "captures/iteration-binding-2026-10-23/Order22c_DM.json", "captures/iteration-binding-2026-10-23/ops-order.json"),
+  ("captures/iteration-binding-2026-10-23/obs-plan.json", "captures/iteration-binding-2026-10-23/Plan22c_DM.json", "captures/iteration-binding-2026-10-23/ops-plan.json"),
+  ("captures/iteration-binding-2026-10-23/obs-rota-review.json", "captures/iteration-binding-2026-10-23/Rota22c_DM.json", "captures/iteration-binding-2026-10-23/ops-rota-review.json"),
+  ("captures/iteration-binding-2026-10-23/obs-rota.json", "captures/iteration-binding-2026-10-23/Rota22c_DM.json", "captures/iteration-binding-2026-10-23/ops-rota.json"),
+  ("captures/iteration-guard-2026-10-22/obs.json", "captures/iteration-guard-2026-10-22/IterGuard_DM.json", "captures/iteration-guard-2026-10-22/ops.json"),
+  ("captures/parallel-instance-leaves-2026-10-14/obs-guard.json", "captures/parallel-instance-leaves-2026-10-14/GuardJoin_DM.json", "captures/parallel-instance-leaves-2026-10-14/ops-guard.json"),
+  ("captures/parser-index-and-iteration-classes/obsc.json", "captures/parser-index-and-iteration-classes/IdxProbe_DM.json", "captures/parser-index-and-iteration-classes/opsc.json"),
+  ("captures/pattern-and-key-resolver-classes/obs-glfield.json", "captures/pattern-and-key-resolver-classes/ProbeL_DM.json", "captures/pattern-and-key-resolver-classes/ops-glfield.json"),
+  ("captures/pattern-and-key-resolver-classes/obs-locus.json", "captures/pattern-and-key-resolver-classes/ProbeL_DM.json", "captures/pattern-and-key-resolver-classes/ops-locus.json"),
+  ("captures/pattern-and-key-resolver-classes/obs-review.json", "captures/pattern-and-key-resolver-classes/ProbeL_DM.json", "captures/pattern-and-key-resolver-classes/ops-review.json"),
+  ("captures/pattern-and-key-resolver-classes/obs-rnu.json", "captures/pattern-and-key-resolver-classes/ProbeL_DM.json", "captures/pattern-and-key-resolver-classes/ops-rnu.json"),
+  ("captures/pattern-and-key-resolver-classes/obs.json", "captures/pattern-and-key-resolver-classes/ProbeL_DM.json", "captures/pattern-and-key-resolver-classes/ops.json"),
+  ("captures/resolver-failure-classes-every-carrier/obs-segments.json", "captures/resolver-failure-classes-every-carrier/ProbeE_DM.json", "captures/resolver-failure-classes-every-carrier/ops-segments.json"),
+  ("captures/resolver-failure-classes-every-carrier/obs.json", "captures/resolver-failure-classes-every-carrier/ProbeE_DM.json", "captures/resolver-failure-classes-every-carrier/ops.json"),
+  ("captures/rounding-argument/observations.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/rounding-argument/ops.json"),
+  ("captures/rounding-argument/observations2.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/rounding-argument/ops2.json"),
+  ("captures/selected-overlap-streams-2026-10-09/observations.json", "captures/selected-overlap-streams-2026-10-09/Probe_DM.json", "captures/selected-overlap-streams-2026-10-09/ops.json"),
+  ("captures/selected-typed-comparison-2026-10-09/operand-syntax/observations.json", "captures/selected-typed-comparison-2026-10-09/operand-syntax/Probe_DM.json", "captures/selected-typed-comparison-2026-10-09/operand-syntax/ops.json"),
+  ("captures/starred-group-value-count-classes/obs-below.json", "captures/starred-group-value-count-classes/ProbeM_DM.json", "captures/starred-group-value-count-classes/ops-below.json"),
+  ("captures/starred-group-value-count-classes/obs-quant.json", "captures/starred-group-value-count-classes/ProbeM_DM.json", "captures/starred-group-value-count-classes/ops-quant.json"),
+  ("captures/starred-group-value-count-classes/obs-value-below.json", "captures/starred-group-value-count-classes/ProbeN_DM.json", "captures/starred-group-value-count-classes/ops-value-below.json"),
+  ("captures/starred-group-value-count-classes/obs.json", "captures/starred-group-value-count-classes/ProbeM_DM.json", "captures/starred-group-value-count-classes/ops.json"),
+  ("captures/starred-path-segment-order/obs.json", "captures/starred-path-segment-order/ProbeI_DM.json", "captures/starred-path-segment-order/ops.json"),
+  ("captures/typedef-resolves-to-base-kind/obs.json", "captures/typedef-resolves-to-base-kind/TdBase_DM.json", "captures/typedef-resolves-to-base-kind/ops.json"),
+  ("captures/value-list-base-type-cross-pairs/observations-basetype.json", "captures/pattern-comparison-left-kind-gate/Probe4_DM.json", "captures/value-list-base-type-cross-pairs/ops-basetype.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) := [
   ("comparison-entry-gates/observations.json#groupregex", "host pattern compiler, SG7"),
   ("comparison-entry-gates/observations2.json#violatedcontrol", "host pattern compiler, SG7"),
   ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7"),
-  ("comparison-entry-gates/observations.json#regex", "host pattern compiler, SG7")]
+  ("comparison-entry-gates/observations.json#regex", "host pattern compiler, SG7"),
+  ("pattern-and-key-resolver-classes/obs.json#pm-ctl", "host pattern compiler, SG7"),
+  ("pattern-and-key-resolver-classes/obs.json#pm-ctlrel", "host pattern compiler, SG7"),
+  ("pattern-and-key-resolver-classes/obs.json#pm-unique", "host pattern compiler, SG7"),
+  ("pattern-and-key-resolver-classes/obs.json#pv-ctl", "host pattern compiler, SG7"),
+  ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus", "host pattern compiler, SG7"),
+  ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus-abs", "host pattern compiler, SG7"),
+  ("pattern-and-key-resolver-classes/obs-review.json#pv-unique", "host pattern compiler, SG7"),
+  ("pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus", "host pattern compiler, SG7"),
+  ("computation-star-binding-gate/obs4.json#e-fx-tb", "K22: a group count computation the Kernel admits"),
+  ("entity-list-kind-empty-and-root-carriers/obs.json#rulegroup-at-rows-count-control", "K22: RuleGroup in a field-fill count"),
+  ("filter-waiver-carriers-2026-10-14/obs-x.json#bx4", "K22: a row target's self-read class"),
+  ("group-operand-and-short-name-classes/obs.json#sn-sum-dup", "K22: an ambiguous short name in an aggregate list"),
+  ("group-operand-and-short-name-classes/obs.json#sn-nff-dup", "K22: an ambiguous short name in an aggregate list"),
+  ("pattern-and-key-resolver-classes/obs-glfield.json#gl-field-rowlocus-referenced", "K22: a field operand of a group-list quantifier at row locus"),
+  ("pattern-and-key-resolver-classes/obs-glfield.json#gl-field-rowlocus-guarded", "K22: a field operand of a group-list quantifier at row locus"),
+  ("pattern-and-key-resolver-classes/obs-review.json#gl-field-rowlocus", "K22: a field operand of a group-list quantifier at row locus")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with
@@ -268,7 +355,10 @@ private def refusedAgainst (refusal : Refusal) (valid : Bool) (kernel : List Str
   let named := kernel.filter (· != "MVK_INTERNAL_ERROR")
   if valid then some s!"refused {refusal.construct}"
   else match refusal.kernelClass? with
-    | some code => if named.contains code then none else some s!"class {code} against {kernel}"
+    -- This project names the internal-error class where it models the Kernel's defect (rounding
+    -- overflow, a raw String's length bound), so that one class agrees with itself.
+    | some code => if named.contains code || (code == "MVK_INTERNAL_ERROR" && kernel.contains code) then none
+        else some s!"class {code} against {kernel}"
     | none => if named.isEmpty then none else some s!"unclassed {refusal.construct} ({refusal.detail}) against {kernel}"
 
 inductive Outcome where
@@ -367,7 +457,7 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
         | some "rule", "add" :: "--dry-run" :: file :: _ => do
             let spec ← readJson ((root / requests).parent.getD root / file)
             pure (some (Sum.inl (specRule spec), specEntries locales spec))
-        | some "computation", "add" :: file :: _ => do
+        | some "computation", "add" :: "--dry-run" :: file :: _ | some "computation", "add" :: file :: _ => do
             let spec ← readJson ((root / requests).parent.getD root / file)
             pure (some (Sum.inr (requestedComputation spec), specEntries locales spec))
         | _, _ => pure none
