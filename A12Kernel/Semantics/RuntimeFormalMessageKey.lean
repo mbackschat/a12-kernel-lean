@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.NumericInput
+import A12Kernel.Semantics.StringFieldPolicy
 
 /-! # Runtime formal-error message keys and their parameter contract
 
@@ -382,5 +383,28 @@ def numberMessageKey (constraints : NumericTargetConstraints) (info : NumField) 
     | .moneyWithoutCents, .textTooLong => .textGbocZuLang
     | .moneyWithoutCents, .belowMinimum => .textGbocZuKlein
     | .moneyWithoutCents, .aboveMaximum => .textGbocZuGross
+
+/-- The key a String formal refusal selects, or `none` for a pattern refusal, whose message is the
+declaration's own error text: a pattern is admitted only with one. The length keys interpolate the
+declared bound. Basis: the 30.8.1 runtime String format, calibrated by rendered text at measurement
+([checkpoint](../../docs/sources/domain-ingestion-probes.md#src-date-message-keys-k22)). -/
+def StringFieldError.messageKey? : StringFieldError → Option RuntimeFormalMessageKey
+  | .lineBreak => some .textStringEnthaeltNewline
+  | .pattern => none
+  | .tooShort => some .textStringZuKurz
+  | .tooLong => some .textStringZuLang
+
+/-- The key an Enumeration value outside its declared values selects: the catalog default unless the
+declaration carries its own error text, which is then the message (`none`). The refusal's code is
+the String pattern code either way. -/
+def enumerationMessageKey? (declaresErrorText : Bool) : Option RuntimeFormalMessageKey :=
+  if declaresErrorText then none else some .textEnumerationDefaultError
+
+/-- The key a Boolean or Confirm token refusal selects; every other cause has its own family's
+selection. -/
+def FormalCause.tokenMessageKey? : FormalCause → Option RuntimeFormalMessageKey
+  | .booleanToken => some .textFeldJaNein
+  | .confirmToken => some .textFeldJa
+  | _ => none
 
 end A12Kernel

@@ -1,0 +1,275 @@
+{
+ "basis": "each key identified at measurement by the rendered text of the first engine's message; 'declared' marks the declaration's own error text",
+ "rows": [
+  {
+   "row": "d1-0",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "row": "d1-1",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "row": "d1-2",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FEBRUAR_29_FEHLER"
+  },
+  {
+   "row": "d1-3",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "row": "d1-4",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "row": "d1-5",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "row": "d1-6",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "row": "d1-7",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "row": "d1-8",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "row": "d1-9",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_FORMAT"
+  },
+  {
+   "row": "d1-10",
+   "field": "Form/D1",
+   "code": "datumFalsch",
+   "key": "DATUM"
+  },
+  {
+   "row": "d1-11",
+   "field": "Form/D1",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "row": "d2-0",
+   "field": "Form/D2",
+   "code": "datumFalsch",
+   "key": "DATUM_ADDITIONAL_CHECK"
+  },
+  {
+   "row": "d2-1",
+   "field": "Form/D2",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_ADDITIONAL_CHECK"
+  },
+  {
+   "row": "d2-2",
+   "field": "Form/D2",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "row": "d2-3",
+   "field": "Form/D2",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_ADDITIONAL_CHECK"
+  },
+  {
+   "row": "d3-0",
+   "field": "Form/D3",
+   "code": "datumFalsch",
+   "key": "DATUM_MONAT_FEHLT"
+  },
+  {
+   "row": "d3-1",
+   "field": "Form/D3",
+   "code": "datumFalsch",
+   "key": "DATUM_MONAT_FEHLT"
+  },
+  {
+   "row": "d3-2",
+   "field": "Form/D3",
+   "code": "datumFalsch",
+   "key": "DATUM_JAHR_FEHLT"
+  },
+  {
+   "row": "d3-3",
+   "field": "Form/D3",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_MONAT_FEHLER"
+  },
+  {
+   "row": "d4-0",
+   "field": "Form/D4",
+   "code": "datumFalsch",
+   "key": "DATUM_MONATOPTIONAL_TAG_ANGEGEBEN"
+  },
+  {
+   "row": "d4-1",
+   "field": "Form/D4",
+   "code": "datumFalsch",
+   "key": "DATUM_JAHR_FEHLT"
+  },
+  {
+   "row": "d4-2",
+   "field": "Form/D4",
+   "code": "datumFalsch",
+   "key": "DATUM_JAHR_FEHLT"
+  },
+  {
+   "row": "d4-3",
+   "field": "Form/D4",
+   "code": "datumFormatFalsch",
+   "key": "DATUM_TAG_FEHLER"
+  },
+  {
+   "row": "d5-0",
+   "field": "Form/D5",
+   "code": "datumFalsch",
+   "key": "DATUM_JAHROPTIONAL_MONAT_ODER_TAG_ANGEGEBEN"
+  },
+  {
+   "row": "d5-1",
+   "field": "Form/D5",
+   "code": "datumFalsch",
+   "key": "DATUM_JAHROPTIONAL_MONAT_ODER_TAG_ANGEGEBEN"
+  },
+  {
+   "row": "d5-2",
+   "field": "Form/D5",
+   "code": "datumFalsch",
+   "key": "DATUM_MONATOPTIONAL_TAG_ANGEGEBEN"
+  },
+  {
+   "row": "d5-3",
+   "field": "Form/D5",
+   "code": "datumFalsch",
+   "key": "DATUM_JAHROPTIONAL_MONAT_ODER_TAG_ANGEGEBEN"
+  },
+  {
+   "row": "r1-0",
+   "field": "Form/R1",
+   "code": "datumBereichNichtGueltig",
+   "key": "DATUM_BEREICH_NICHT_GUELTIG"
+  },
+  {
+   "row": "r1-1",
+   "field": "Form/R1",
+   "code": "datumBereichFormatFalsch",
+   "key": "DATUM_BEREICH_START_MONAT_FEHLER"
+  },
+  {
+   "row": "r1-2",
+   "field": "Form/R1",
+   "code": "datumBereichFormatFalsch",
+   "key": "DATUM_BEREICH_END_TAG_FEHLER"
+  },
+  {
+   "row": "r1-3",
+   "field": "Form/R1",
+   "code": "datumBereichFormatFalsch",
+   "key": "DATUM_BEREICH_START_FEBRUAR_29_FEHLER"
+  },
+  {
+   "row": "r1-4",
+   "field": "Form/R1",
+   "code": "datumBereichFormatFalsch",
+   "key": "DATUM_BEREICH_END_FEBRUAR_29_FEHLER"
+  },
+  {
+   "row": "r1-5",
+   "field": "Form/R1",
+   "code": "datumBereichTrennerFehlt",
+   "key": "DATUM_BEREICH_FORMAT"
+  },
+  {
+   "row": "r1-6",
+   "field": "Form/R1",
+   "code": "datumBereichFormatFalsch",
+   "key": "DATUM_BEREICH_FORMAT"
+  },
+  {
+   "row": "r1-7",
+   "field": "Form/R1",
+   "code": "datumBereichFormatFalsch",
+   "key": "DATUM_BEREICH_START_TAG_FEHLER"
+  },
+  {
+   "row": "r1-8",
+   "field": "Form/R1",
+   "code": "datumBereichDatumFalsch",
+   "key": "DATUM_BEREICH_DATUM"
+  },
+  {
+   "row": "b-0",
+   "field": "Form/B",
+   "code": "feldJaNeinFalsch",
+   "key": "FELD_JA_NEIN"
+  },
+  {
+   "row": "c-0",
+   "field": "Form/C",
+   "code": "feldJaFalsch",
+   "key": "FELD_JA"
+  },
+  {
+   "row": "s1-0",
+   "field": "Form/S1",
+   "code": "stringZuKurz",
+   "key": "STRING_ZU_KURZ"
+  },
+  {
+   "row": "s1-1",
+   "field": "Form/S1",
+   "code": "stringZuLang",
+   "key": "STRING_ZU_LANG"
+  },
+  {
+   "row": "s1-2",
+   "field": "Form/S1",
+   "code": "stringMitNewline",
+   "key": "STRING_ENTHAELT_NEWLINE"
+  },
+  {
+   "row": "s2-0",
+   "field": "Form/S2",
+   "code": "stringFalschesMuster",
+   "key": "declared"
+  },
+  {
+   "row": "e1-0",
+   "field": "Form/E1",
+   "code": "stringFalschesMuster",
+   "key": "ENUMERATION_DEFAULT_ERROR"
+  },
+  {
+   "row": "e2-0",
+   "field": "Form/E2",
+   "code": "stringFalschesMuster",
+   "key": "declared"
+  }
+ ]
+}

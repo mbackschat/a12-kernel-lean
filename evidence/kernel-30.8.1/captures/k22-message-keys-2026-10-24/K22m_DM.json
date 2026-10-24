@@ -1,0 +1,229 @@
+{
+ "header": {
+  "id": "K22m_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K22m_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/D1",
+        "name": "D1",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/D2",
+        "name": "D2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "dd.MM.yyyy",
+           "youngerThan1900Check": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/D3",
+        "name": "D3",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "DAY_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/D4",
+        "name": "D4",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "MONTH_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/D5",
+        "name": "D5",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "YEAR_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/R1",
+        "name": "R1",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/B",
+        "name": "B",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType",
+          "BooleanType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/C",
+        "name": "C",
+        "Field": {
+         "fieldType": {
+          "type": "ConfirmType",
+          "ConfirmType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/S1",
+        "name": "S1",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {
+           "minLength": 2,
+           "maxLength": 3
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/S2",
+        "name": "S2",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {
+           "pattern": "[A-Z]+",
+           "errorMessage": [
+            {
+             "locale": "en_US",
+             "text": "own"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/E1",
+        "name": "E1",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/E2",
+        "name": "E2",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ],
+           "errorMessage": [
+            {
+             "locale": "en_US",
+             "text": "own"
+            }
+           ]
+          }
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

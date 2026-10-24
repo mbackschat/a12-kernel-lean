@@ -1,0 +1,370 @@
+{
+ "model": "K22m_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "d1-0",
+   "documentInline": {
+    "Form": {
+     "D1": "2026-13-01"
+    }
+   }
+  },
+  {
+   "name": "d1-1",
+   "documentInline": {
+    "Form": {
+     "D1": "2026-02-30"
+    }
+   }
+  },
+  {
+   "name": "d1-2",
+   "documentInline": {
+    "Form": {
+     "D1": "2025-02-29"
+    }
+   }
+  },
+  {
+   "name": "d1-3",
+   "documentInline": {
+    "Form": {
+     "D1": "2024-02-30"
+    }
+   }
+  },
+  {
+   "name": "d1-4",
+   "documentInline": {
+    "Form": {
+     "D1": "2026-04-31"
+    }
+   }
+  },
+  {
+   "name": "d1-5",
+   "documentInline": {
+    "Form": {
+     "D1": "abc"
+    }
+   }
+  },
+  {
+   "name": "d1-6",
+   "documentInline": {
+    "Form": {
+     "D1": "2026-1-01"
+    }
+   }
+  },
+  {
+   "name": "d1-7",
+   "documentInline": {
+    "Form": {
+     "D1": "2026-00-10"
+    }
+   }
+  },
+  {
+   "name": "d1-8",
+   "documentInline": {
+    "Form": {
+     "D1": "2026-03-00"
+    }
+   }
+  },
+  {
+   "name": "d1-9",
+   "documentInline": {
+    "Form": {
+     "D1": "0000-03-10"
+    }
+   }
+  },
+  {
+   "name": "d1-10",
+   "documentInline": {
+    "Form": {
+     "D1": "0999-01-01"
+    }
+   }
+  },
+  {
+   "name": "d1-11",
+   "documentInline": {
+    "Form": {
+     "D1": "1582-10-10"
+    }
+   }
+  },
+  {
+   "name": "d2-0",
+   "documentInline": {
+    "Form": {
+     "D2": "01.01.1899"
+    }
+   }
+  },
+  {
+   "name": "d2-1",
+   "documentInline": {
+    "Form": {
+     "D2": "30.02.1899"
+    }
+   }
+  },
+  {
+   "name": "d2-2",
+   "documentInline": {
+    "Form": {
+     "D2": "31.04.2020"
+    }
+   }
+  },
+  {
+   "name": "d2-3",
+   "documentInline": {
+    "Form": {
+     "D2": "13.13.1850"
+    }
+   }
+  },
+  {
+   "name": "d3-0",
+   "documentInline": {
+    "Form": {
+     "D3": "2026-00-00"
+    }
+   }
+  },
+  {
+   "name": "d3-1",
+   "documentInline": {
+    "Form": {
+     "D3": "2026-00-05"
+    }
+   }
+  },
+  {
+   "name": "d3-2",
+   "documentInline": {
+    "Form": {
+     "D3": "0000-03-00"
+    }
+   }
+  },
+  {
+   "name": "d3-3",
+   "documentInline": {
+    "Form": {
+     "D3": "2026-13-00"
+    }
+   }
+  },
+  {
+   "name": "d4-0",
+   "documentInline": {
+    "Form": {
+     "D4": "2026-00-05"
+    }
+   }
+  },
+  {
+   "name": "d4-1",
+   "documentInline": {
+    "Form": {
+     "D4": "0000-05-00"
+    }
+   }
+  },
+  {
+   "name": "d4-2",
+   "documentInline": {
+    "Form": {
+     "D4": "0000-00-00"
+    }
+   }
+  },
+  {
+   "name": "d4-3",
+   "documentInline": {
+    "Form": {
+     "D4": "2026-02-30"
+    }
+   }
+  },
+  {
+   "name": "d5-0",
+   "documentInline": {
+    "Form": {
+     "D5": "0000-05-01"
+    }
+   }
+  },
+  {
+   "name": "d5-1",
+   "documentInline": {
+    "Form": {
+     "D5": "0000-00-05"
+    }
+   }
+  },
+  {
+   "name": "d5-2",
+   "documentInline": {
+    "Form": {
+     "D5": "2026-00-05"
+    }
+   }
+  },
+  {
+   "name": "d5-3",
+   "documentInline": {
+    "Form": {
+     "D5": "0000-13-00"
+    }
+   }
+  },
+  {
+   "name": "r1-0",
+   "documentInline": {
+    "Form": {
+     "R1": "2020-01-01/2019-12-31"
+    }
+   }
+  },
+  {
+   "name": "r1-1",
+   "documentInline": {
+    "Form": {
+     "R1": "2020-13-01/2021-01-01"
+    }
+   }
+  },
+  {
+   "name": "r1-2",
+   "documentInline": {
+    "Form": {
+     "R1": "2020-01-01/2021-02-30"
+    }
+   }
+  },
+  {
+   "name": "r1-3",
+   "documentInline": {
+    "Form": {
+     "R1": "2021-02-29/2021-03-01"
+    }
+   }
+  },
+  {
+   "name": "r1-4",
+   "documentInline": {
+    "Form": {
+     "R1": "2020-01-01/2021-02-29"
+    }
+   }
+  },
+  {
+   "name": "r1-5",
+   "documentInline": {
+    "Form": {
+     "R1": "2020-01-01"
+    }
+   }
+  },
+  {
+   "name": "r1-6",
+   "documentInline": {
+    "Form": {
+     "R1": "xx/yy"
+    }
+   }
+  },
+  {
+   "name": "r1-7",
+   "documentInline": {
+    "Form": {
+     "R1": "2020-04-31/2020-05-01"
+    }
+   }
+  },
+  {
+   "name": "r1-8",
+   "documentInline": {
+    "Form": {
+     "R1": "0999-01-01/2020-01-01"
+    }
+   }
+  },
+  {
+   "name": "b-0",
+   "documentInline": {
+    "Form": {
+     "B": "yes"
+    }
+   }
+  },
+  {
+   "name": "c-0",
+   "documentInline": {
+    "Form": {
+     "C": "false"
+    }
+   }
+  },
+  {
+   "name": "s1-0",
+   "documentInline": {
+    "Form": {
+     "S1": "a"
+    }
+   }
+  },
+  {
+   "name": "s1-1",
+   "documentInline": {
+    "Form": {
+     "S1": "abcd"
+    }
+   }
+  },
+  {
+   "name": "s1-2",
+   "documentInline": {
+    "Form": {
+     "S1": "a\nb"
+    }
+   }
+  },
+  {
+   "name": "s2-0",
+   "documentInline": {
+    "Form": {
+     "S2": "abc"
+    }
+   }
+  },
+  {
+   "name": "e1-0",
+   "documentInline": {
+    "Form": {
+     "E1": "C"
+    }
+   }
+  },
+  {
+   "name": "e2-0",
+   "documentInline": {
+    "Form": {
+     "E2": "C"
+    }
+   }
+  }
+ ]
+}
