@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Flag",
+ "alternatives": [
+  {
+   "operation": "[Flag2]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

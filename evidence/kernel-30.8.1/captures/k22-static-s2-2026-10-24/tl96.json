@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Due",
+ "alternatives": [
+  {
+   "operation": "DateFromDateTime(Title)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

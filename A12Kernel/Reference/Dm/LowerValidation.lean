@@ -66,6 +66,14 @@ private def groupListOperand? (model : FlatModel) (rowGroup : GroupPath) :
   | .constant "RuleGroup" => some (.group (.ruleGroup false))
   | _ => none
 
+/-- Whether `expression` is a bracketed read whose path only climbs, so that it names the ancestor
+group the climb reaches. -/
+private def climbingGroupRead (rowGroup : GroupPath) : Expr → Bool
+  | .value { path, index := none, category := none, filter := none } =>
+      !path.correlated && !path.absolute && path.turningPoint.isNone && path.segments.isEmpty &&
+        0 < path.ups && path.ups < rowGroup.length
+  | _ => false
+
 /-- A comparison both of whose sides are numeric operations. -/
 def lowerNumericComparison (model : FlatModel) (rowGroup : GroupPath) (op : CompareOp) (left right : Expr) (suppress : Bool) :
     Lowering SurfaceNumericComparison := do
@@ -455,7 +463,16 @@ private def leafCarriers (model : FlatModel) (rowGroup : GroupPath) (world : Wor
               (CheckedValidationCondition.checkCore model bindingGroup (.leaf (.flat condition)) hModel rowGroup)
           else refuse "BooleanComparison" "invalid model"] else []
     | _, _ => []
-  flat ++ boundText ++ range ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ scalarMembership ++ valueLists ++ uniqueness ++ validity ++ overlap ++ booleanComparison
+  -- A read of the group a climb reaches meets the read's group gate, which answers at its bracket
+  -- before the comparison's own checks (k22-static-s2-2026-10-24, `td35`). No carrier represents a
+  -- fieldless read, so this refusal stands for them all; a later operand's read stays unclassed.
+  let groupRead := match leaf with
+    | .compare _ left _ =>
+        if climbingGroupRead rowGroup left then
+          [refuse "Comparison" KernelStaticDiagnostic.noGroupsAllowed.kernelCode]
+        else []
+    | _ => []
+  flat ++ boundText ++ range ++ firstFilled ++ temporal ++ stringExpression ++ token ++ specific ++ groupCount ++ fieldFill ++ pattern ++ scalarMembership ++ valueLists ++ uniqueness ++ validity ++ overlap ++ booleanComparison ++ groupRead
 
 /-- The first admitting carrier, or else the refusal of the last, the most general one tried. -/
 private def firstAdmitted (construct : String) :

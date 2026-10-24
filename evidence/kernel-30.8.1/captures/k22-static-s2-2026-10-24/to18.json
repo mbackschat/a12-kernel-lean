@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Span",
+ "alternatives": [
+  {
+   "operation": "[Span2]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

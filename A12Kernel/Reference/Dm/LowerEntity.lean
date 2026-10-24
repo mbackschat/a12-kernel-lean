@@ -15,13 +15,18 @@ import A12Kernel.Reference.Dm.RefusalClass
 
 namespace A12Kernel.Dm
 
-/-- Fixed and addressed Enumeration first-filled carriers retain the same calculation refusal identity; any other carrier error keeps its static class, where it has one, before its local detail. -/
-def elaboratedEnumerationFirstFilled [Repr ε] [StaticClassified ε] (calculationRefusal : ε → Option CalculationRefusal) :
-    Except ε α → Lowering α
+/-- Lift an Enumeration calculation's result, reporting a calculation refusal by its catalog key; any other carrier error keeps its static class, where it has one, before its local detail. -/
+def elaboratedCalculation [Repr ε] [StaticClassified ε] (construct : String)
+    (calculationRefusal : ε → Option CalculationRefusal) : Except ε α → Lowering α
   | .ok value => .ok value
   | .error error => .error {
-      construct := "FirstFilledValue"
+      construct
       detail := (calculationRefusal error).map (·.catalogKey) |>.getD (classifiedDetail error) }
+
+/-- Fixed and addressed Enumeration first-filled carriers retain the same calculation refusal identity. -/
+def elaboratedEnumerationFirstFilled [Repr ε] [StaticClassified ε] (calculationRefusal : ε → Option CalculationRefusal) :
+    Except ε α → Lowering α :=
+  elaboratedCalculation "FirstFilledValue" calculationRefusal
 
 /-- Whether an unstarred path is read as a field at the operator's group: it names one, or its field
 miss is not one a group could displace, so a short name two fields share keeps

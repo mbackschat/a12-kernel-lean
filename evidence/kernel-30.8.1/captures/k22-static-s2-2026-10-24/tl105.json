@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Due",
+ "alternatives": [
+  {
+   "operation": "ValueAsDate(Part, LastDay)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

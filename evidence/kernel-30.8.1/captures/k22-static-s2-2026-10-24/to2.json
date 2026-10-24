@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Raw",
+ "alternatives": [
+  {
+   "operation": "[Raw2]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

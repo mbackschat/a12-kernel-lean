@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Day",
+ "alternatives": [
+  {
+   "operation": "[Due]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

@@ -72,6 +72,7 @@ def captures : List (String × String × String) := [
   ("captures/rulegroup-field-fill-2026-10-24/obs.json", "captures/rulegroup-field-fill-2026-10-24/K22rg_DM.json", "captures/rulegroup-field-fill-2026-10-24/ops.json"),
   ("captures/k22-static-classes-2026-10-24/obs.json", "captures/k22-static-classes-2026-10-24/K22s_DM.json", "captures/k22-static-classes-2026-10-24/ops.json"),
   ("captures/k22-join-count-membership-2026-10-24/obs.json", "captures/k22-join-count-membership-2026-10-24/K22r_DM.json", "captures/k22-join-count-membership-2026-10-24/ops.json"),
+  ("captures/k22-static-s2-2026-10-24/obs.json", "captures/k22-static-s2-2026-10-24/K22t_DM.json", "captures/k22-static-s2-2026-10-24/ops.json"),
   ("captures/field-value-read-remaining-sites/observations-grid.json", "captures/field-value-read-remaining-sites/Grid25h_DM.json", "captures/field-value-read-remaining-sites/ops-grid.json"),
   ("captures/field-value-read-predictions/observations-grid2.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid2.json"),
   ("captures/field-value-read-predictions/observations-grid3.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid3.json"),

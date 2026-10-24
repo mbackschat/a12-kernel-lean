@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Clock",
+ "alternatives": [
+  {
+   "operation": "TimeFromDateTime(Stamp)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

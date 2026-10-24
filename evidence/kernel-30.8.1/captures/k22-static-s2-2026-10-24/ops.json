@@ -1,0 +1,9600 @@
+[
+ {
+  "id": "ta1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Total) > 0 And [NoSuch] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NoSuch] > 0 And SumOfProducts(Amount, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Total) > 0 And [Title] > 5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Title] > 5 And SumOfProducts(Amount, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Total) > 0 And [Kind -> Nope] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Nope] == \"Hi\" And SumOfProducts(Amount, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Total) > 0 And [Kind -> Band] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Band] == \"Hi\" And SumOfProducts(Amount, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Rows*/RQty, Rows*/RCost) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Rows*/RQty, Rows*/RCost) > 0 And [NoSuch] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NoSuch] > 0 And SumOfProducts(Rows*/RQty, Rows*/RCost) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Rows*/RQty, Rows*/RCost) > 0 And [Title] > 5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Title] > 5 And SumOfProducts(Rows*/RQty, Rows*/RCost) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Rows*/RQty, Rows*/RCost) > 0 And [Kind -> Nope] == \"Hi\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Kind -> Nope] == \"Hi\" And SumOfProducts(Rows*/RQty, Rows*/RCost) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Kind -> Band, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Kind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Kind -> Nope, Total) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Kind -> Nope) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(NoSuch, Title) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta22",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Title, NoSuch) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta23",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(NoSuch, Kind -> Nope) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta24",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Rows*/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta25",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Rows*/RQty, Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta26",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta26",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Rows*/RLabel, Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta27",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta27",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Amount, Rows*/RLabel) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta28",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta28",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV For \"z1\", Zone/Plain*/PV) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta29",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta29",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV, Zone/Plain*/PV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta30",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta30",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV For \"z1\", Zone/Plain*/PV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta31",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta31",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV Having [Zone/Plain/PV] > 0, Zone/Plain*/PV) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta32",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta32",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV, Zone/Plain*/PV Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta33",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta33",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0, Zone/Plain*/PV) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta34",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta34",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV For \"z1\", Zone/Plain*/PV Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta35",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta35",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV Having [Zone/Plain/PV] > 0, Zone/Plain*/PV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta36",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta36",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV, Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta37",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta37",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0, Zone/Plain*/PV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta38",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta38",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Plain*/PV For \"z1\", Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta39",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta39",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV For \"z1\", Zone/Cell*/CV) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta40",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta40",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV, Zone/Cell*/CV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta41",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta41",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV For \"z1\", Zone/Cell*/CV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta42",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta42",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV Having [Zone/Cell/CV] > 0, Zone/Cell*/CV) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta43",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta43",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV, Zone/Cell*/CV Having [Zone/Cell/CV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta44",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta44",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV For \"z1\" Having [Zone/Cell/CV] > 0, Zone/Cell*/CV) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta45",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta45",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV For \"z1\", Zone/Cell*/CV Having [Zone/Cell/CV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta46",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta46",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV Having [Zone/Cell/CV] > 0, Zone/Cell*/CV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta47",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta47",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV, Zone/Cell*/CV For \"z1\" Having [Zone/Cell/CV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta48",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta48",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV For \"z1\" Having [Zone/Cell/CV] > 0, Zone/Cell*/CV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta49",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta49",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SumOfProducts(Zone/Cell*/CV For \"z1\", Zone/Cell*/CV For \"z1\" Having [Zone/Cell/CV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta50",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta50",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta51",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta51",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And MaxValue(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta52",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta52",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RQty] > [$Amount]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta53",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta53",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And MaxValue(Rows*/RQty Having [Rows/RQty] > [$Amount]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta54",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta54",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta55",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta55",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledFields(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta56",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta56",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta57",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta57",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And FirstFilledValue(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta58",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta58",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ta59",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ta59",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And Sum(Rows*/RQty Having [Rows/RQty] > [$Rows/RQty]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Box) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Box, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Box) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Box) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Abs([Box]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box] == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Abs([Title]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Abs([Amount]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Title, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Title) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Level) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Level, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Level) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Level) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Amount, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Amount) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb22",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb23",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Flag, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb24",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb25",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Flag) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb26",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb26",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb27",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb27",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Due, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb28",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb28",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb29",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb29",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Due) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb30",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb30",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Stamp) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb31",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb31",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Stamp, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb32",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb32",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Stamp) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb33",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb33",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Stamp) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb34",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb34",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb35",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb35",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Clock, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb36",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb36",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb37",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb37",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Clock) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb38",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb38",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb39",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb39",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Kind, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb40",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb40",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb41",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb41",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Kind) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb42",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb42",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Kind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb43",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb43",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Kind -> Band, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb44",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb44",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Kind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb45",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb45",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Kind -> Band) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb46",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb46",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb47",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb47",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Span, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb48",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb48",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb49",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb49",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Span) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb50",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb50",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Raw) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb51",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb51",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Raw, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb52",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb52",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Raw) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb53",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb53",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Raw) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb54",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb54",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Rows/RKind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb55",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb55",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Rows/RKind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb56",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb56",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Length(Rows/RLabel) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb57",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb57",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Rows/RKind -> Band, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb58",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb58",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Rows/RKind, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb59",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb59",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And RangeAsString(Rows/RLabel, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb60",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb60",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Rows/RKind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb61",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb61",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Rows/RKind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb62",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb62",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsNumber(Rows/RLevel) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb63",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb63",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Rows/RKind -> Band) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb64",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb64",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Rows/RKind) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb65",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb65",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueAsString(Rows/RQty) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb66",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb66",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And Length(Rows/Sub/SubS) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb67",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb67",
+   "--field",
+   "/Shop/Rows/Sub/SubS",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/Sub/SubS) And Length(Rows/Sub/SubS) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb68",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb68",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And Length(Rows/RLabel) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb69",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb69",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RangeAsString(Rows/Sub/SubS, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb70",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb70",
+   "--field",
+   "/Shop/Rows/Sub/SubS",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/Sub/SubS) And RangeAsString(Rows/Sub/SubS, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb71",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb71",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RangeAsString(Rows/RLabel, 1, 2) == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb72",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb72",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And FieldValueAsNumber(Rows/Sub/SubLv) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb73",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb73",
+   "--field",
+   "/Shop/Rows/Sub/SubS",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/Sub/SubS) And FieldValueAsNumber(Rows/Sub/SubLv) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb74",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb74",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And FieldValueAsNumber(Rows/RLevel) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb75",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb75",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And FieldValueAsString(Rows/Sub/SubN) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb76",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb76",
+   "--field",
+   "/Shop/Rows/Sub/SubS",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/Sub/SubS) And FieldValueAsString(Rows/Sub/SubN) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tb77",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tb77",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And FieldValueAsString(Rows/RQty) == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc1",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc2",
+   "--field",
+   "/Shop/Rows/RKind",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RKind) And RepetitionNotUnique(Rows/RKind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc3",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel, Rows/RKind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc4",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RKind -> Band, Rows/RLabel)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc5",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows*/RLabel)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc6",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows*/RLabel, Rows/RCost)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc7",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RCost, Rows*/RLabel)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc8",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Items/ILabel) And RepetitionNotUnique(Items/ILabel For \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc9",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Items/ILabel) And RepetitionNotUnique(Items/ILabel, Items/IQty For \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc10",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Items/ILabel) And RepetitionNotUnique(Items/ILabel For \"a\", Items/IQty)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc11",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique($Rows/RLabel)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc12",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel, $Rows/RCost)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc13",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique($Rows/RCost, Rows/RLabel)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc14",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc15",
+   "--field",
+   "/Shop/Rows/RKind",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RKind) And RepetitionNotUnique(Rows/RKind -> Band @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc16",
+   "--field",
+   "/Shop/Rows/RKind",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RKind) And RepetitionNotUnique(Rows/RKind -> Nope @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc17",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel, Rows/RKind -> Band @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc18",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RKind -> Band, Rows/RLabel @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc19",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows*/RLabel @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc20",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel, Rows*/RCost @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc21",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows*/RCost, Rows/RLabel @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc22",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique($Rows/RLabel @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc23",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel, $Rows/RCost @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc24",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Items/ILabel) And RepetitionNotUnique(Items/ILabel For \"a\" @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc25",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Items/ILabel) And RepetitionNotUnique(Items/ILabel, Items/IQty For \"a\" @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc26",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc26",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(NoSuch, Rows/RLabel @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc27",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc27",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel, NoSuch @From /Shop/Nope)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc28",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc28",
+   "--field",
+   "/Shop/Rows/RKind",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RKind) And RepetitionNotUnique(Rows/RKind -> Band @From /Shop/Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc29",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc29",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows*/RLabel @From /Shop/Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc30",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc30",
+   "--field",
+   "/Shop/Rows/RKind",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RKind) And RepetitionNotUnique(Rows/RKind -> Band @From /Shop/Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc31",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc31",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows*/RLabel @From /Shop/Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc32",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc32",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And RepetitionNotUnique(Rows/RLabel @From /Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tc33",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tc33",
+   "--field",
+   "/Shop/Rows/RKind",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RKind) And RepetitionNotUnique(Rows/RKind -> Band @From /Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Rows/../Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box/../Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box/../../Shop/Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Rows.*)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Title.*)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/Shop)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box/..)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box/../..)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/Shop] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box/..] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box/../..] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows/../Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box/../Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box/../../Shop/Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows.*] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount.*] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Rows/../Title] == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box/../Title] == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Box/../../Shop/Title] == \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td22",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box/Lid)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td23",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(/Shop/Box/Lid)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td24",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldFilled(Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td25",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [/Shop/Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td26",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td26",
+   "--field",
+   "/Shop/Box/Lid",
+   "--group",
+   "/Shop/Box",
+   "--condition",
+   "FieldFilled(Lid) And FieldFilled(../Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td27",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td27",
+   "--field",
+   "/Shop/Box/Lid",
+   "--group",
+   "/Shop/Box",
+   "--condition",
+   "FieldFilled(Lid) And [../Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td28",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td28",
+   "--field",
+   "/Shop/Box/Lid",
+   "--group",
+   "/Shop/Box",
+   "--condition",
+   "FieldFilled(Lid) And [../../Shop/Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td29",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td29",
+   "--field",
+   "/Shop/Box/Lid",
+   "--group",
+   "/Shop/Box",
+   "--condition",
+   "FieldFilled(Lid) And FieldFilled(../Box/Lid)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td30",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td30",
+   "--field",
+   "/Shop/Box/Lid",
+   "--group",
+   "/Shop/Box",
+   "--condition",
+   "FieldFilled(Lid) And FieldFilled(../../Shop/Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td31",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td31",
+   "--field",
+   "/Shop/Box/Lid",
+   "--group",
+   "/Shop/Box",
+   "--condition",
+   "FieldFilled(Lid) And FieldFilled(Lid/../Lid)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td32",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td32",
+   "--field",
+   "/Shop/Box/Lid",
+   "--group",
+   "/Shop/Box",
+   "--condition",
+   "FieldFilled(Lid) And [Lid/../BoxNum] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td33",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td33",
+   "--field",
+   "/Shop/Box/Lid",
+   "--group",
+   "/Shop/Box",
+   "--condition",
+   "FieldFilled(Lid) And FieldFilled(Lid/..)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td34",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td34",
+   "--field",
+   "/Shop/Box/Lid",
+   "--group",
+   "/Shop/Box",
+   "--condition",
+   "FieldFilled(Lid) And FieldFilled(..)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td35",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td35",
+   "--field",
+   "/Shop/Box/Lid",
+   "--group",
+   "/Shop/Box",
+   "--condition",
+   "FieldFilled(Lid) And [..] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "td36",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td36",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $Nope$"
+  ]
+ },
+ {
+  "id": "td37",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td37",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $Box$"
+  ]
+ },
+ {
+  "id": "td38",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td38",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $/Shop$"
+  ]
+ },
+ {
+  "id": "td39",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td39",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $Rows/RLabel$"
+  ]
+ },
+ {
+  "id": "td40",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td40",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $Title$"
+  ]
+ },
+ {
+  "id": "td41",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td41",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $Amount$"
+  ]
+ },
+ {
+  "id": "td42",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td42",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $Box/Lid$"
+  ]
+ },
+ {
+  "id": "td43",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td43",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $Rows$"
+  ]
+ },
+ {
+  "id": "td44",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td44",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $Kind$"
+  ]
+ },
+ {
+  "id": "td45",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td45",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $/Shop/Title$"
+  ]
+ },
+ {
+  "id": "td46",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td46",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $Title.value$"
+  ]
+ },
+ {
+  "id": "td47",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "td47",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] > 0",
+   "--message",
+   "en_US=see $Rows/../Title$"
+  ]
+ },
+ {
+  "id": "te1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box, Box/BoxKind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box/BoxKind -> Band, Box) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box/BoxKind, Box) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Box, Box/BoxKind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Box/BoxKind -> Band, Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Box/BoxKind, Box)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Box, Box/BoxKind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Box/BoxKind -> Band, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Box/BoxKind, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(/Shop, Kind -> Band, Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind, Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Band, Kind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(/Shop, /Shop) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Nope, Level) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind, Kind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind, Level) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Band, Level) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Level, Kind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Nope, Kind -> Nope) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(/Shop, Kind -> Nope, Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box, Box) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te22",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box, Box/BoxKind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "te23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "te23",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Box/BoxKind, Box/BoxKind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Picks*/PQty For \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Picks*/NoSuch For \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Items*/IQty For \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Items*/NoSuch For \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Picks/NoSuch For \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Picks/PQty For \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Items/IQty For \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Items/NoSuch For \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Picks*/PNote For \"a\", Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Items*/ILabel For \"a\", Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Items/ILabel For \"a\", Title)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Zone*/Cell*/CV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Zone/Cell*/CV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Zone*/Cell*/CV) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Cell* For \"z1\", Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Cell*, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Zone/Plain* For \"z1\", Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Zone/Cell* For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf22",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FirstFilledValue(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf23",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf24",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\", Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tf25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tf25",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\" Having [Zone/Plain/PV] > 0, Amount) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Flag, Flag2) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Due, Day) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Stamp, Stamp2) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Clock, Clock2) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Span, Span2) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Raw, Raw2) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Amount, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Title, Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Amount, Price) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Title, Memo) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind, Level) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Due, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Title, Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Stamp, Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Amount, Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Flag, Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Raw, Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Title, Raw) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Raw, Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Amount, Raw) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RLabel) > \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg22",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RFlag) == True",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg23",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RKind) == \"A\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg24",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RSpan) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg25",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg26",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg26",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RClock) > [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg27",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg27",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RStamp) > [Stamp]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg28",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg28",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg29",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg29",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinValue(Rows*/RLabel) > \"a\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg30",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg30",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinValue(Rows*/RFlag) == True",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg31",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg31",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinValue(Rows*/RSpan) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg32",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg32",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinValue(Rows*/RClock) > [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg33",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg33",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinValue(Rows*/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg34",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg34",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(/Shop, Rows/Fix) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg35",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg35",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(Rows/Fix, /Shop) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg36",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg36",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(Box, Rows/Fix) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg37",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg37",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(Rows/Fix, Box) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg38",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg38",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And NumberOfFilledGroups(Rows/Fix, Rows/Gap) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg39",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg39",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(/Shop, Rows/Fix) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tg40",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tg40",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Rows/Fix, /Shop) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) > 0.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) > 1.0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) >= 0.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) >= 1.0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) < 0.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) < 1.0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) <= 0.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) <= 1.0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) == 0.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) == 1.0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) != 0.5",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) != 1.0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) == 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledGroups(Box, Mix) != 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And 0.5 < NumberOfFilledGroups(Box, Mix)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And 1.5 == NumberOfFilledGroups(Box, Mix)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "th18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "th18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And 1.0 != NumberOfFilledGroups(Box, Mix)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RLabel] > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] == \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RPrice] == 1.234) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RDay] > 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having Length([Rows/RLabel]) > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RFlag] == True) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RLabel] == \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RFlag] == False) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having Length(Rows/RLabel) > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RPrice] > 1.23) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RKind] == \"A\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RDay] > [Due]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RQty Having [Rows/RQty] == 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RLabel] > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RQty] == \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RPrice] == 1.234) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RDay] > 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having Length([Rows/RLabel]) > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RFlag] == True) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Rows*/RQty Having [Rows/RLabel] > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti22",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Rows*/RQty Having [Rows/RQty] == \"a\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti23",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Rows*/RQty Having [Rows/RPrice] == 1.234) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti24",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Rows*/RQty Having [Rows/RDay] > 5) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti25",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Rows*/RQty Having Length([Rows/RLabel]) > 1) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ti26",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ti26",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Rows*/RQty Having [Rows/RFlag] == True) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Rows*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Rows*/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Rows/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Rows) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Rows/Sub) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And CurrentRepetition(Rows/Sub*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj7",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj8",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows*/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj9",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj10",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj11",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows/Sub) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj12",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And CurrentRepetition(Rows/Sub*) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj13",
+   "--field",
+   "/Shop/Rows/RQty",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RQty) And [Rows/RQty] > CurrentRepetition(Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj14",
+   "--field",
+   "/Shop/Rows/RQty",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RQty) And CurrentRepetition(Rows) < [Rows/RQty]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj15",
+   "--field",
+   "/Shop/Rows/RQty",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RQty) And [RQty] > CurrentRepetition(/Shop/Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj16",
+   "--field",
+   "/Shop/Rows/RQty",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RQty) And [RQty] > CurrentRepetition(Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj17",
+   "--field",
+   "/Shop/Rows/Sub/SubN",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/Sub/SubN) And [Rows/Sub/SubN] > CurrentRepetition(Rows/Sub)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj18",
+   "--field",
+   "/Shop/Rows/Sub/SubN",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/Sub/SubN) And [Rows/Sub/SubN] > CurrentRepetition(Rows)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj19",
+   "--field",
+   "/Shop/Rows/Sub/SubN",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/Sub/SubN) And CurrentRepetition(Rows) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tj20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tj20",
+   "--field",
+   "/Shop/Rows/Sub/SubN",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/Sub/SubN) And CurrentRepetition(Rows/Sub) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tk1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk9",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk12",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk12.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk13",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk13.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk14",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk14.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk15",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk15.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk16",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk16.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk17",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk17.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk18",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk18.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk19",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk19.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk20",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk20.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk21",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk21.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk22",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk22.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk23",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk23.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk24",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk24.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk25",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk25.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk26",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk26.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk27",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk27.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk28",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk28.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk29",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk29.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk30",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk30.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk31",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk31.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk32",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk32.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk33",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk33.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk34",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk34.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk35",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk35.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk36",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk36.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk37",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk37.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk38",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk38.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk39",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk39.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk40",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk40.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk41",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk41.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tk42",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tk42.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DayFromDate(Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DayFromDate(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DayFromDate(Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DayFromDate(Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DayFromDate(Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DayFromDate(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DayFromDate(Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MonthFromDate(Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MonthFromDate(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MonthFromDate(Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MonthFromDate(Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MonthFromDate(Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MonthFromDate(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MonthFromDate(Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And QuarterFromDate(Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl22",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Amount) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl23",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Title) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl24",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Flag) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl25",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Kind) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl26",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl26",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Span) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl27",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl27",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Clock) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl28",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl28",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And YearFromDate(Due) > 2020",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl29",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl29",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl30",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl30",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl31",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl31",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl32",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl32",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl33",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl33",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl34",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl34",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl35",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl35",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And HoursFromTime(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl36",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl36",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinutesFromTime(Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl37",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl37",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinutesFromTime(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl38",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl38",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinutesFromTime(Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl39",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl39",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinutesFromTime(Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl40",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl40",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinutesFromTime(Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl41",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl41",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinutesFromTime(Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl42",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl42",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MinutesFromTime(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl43",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl43",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SecondsFromTime(Amount) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl44",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl44",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SecondsFromTime(Title) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl45",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl45",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SecondsFromTime(Flag) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl46",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl46",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SecondsFromTime(Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl47",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl47",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SecondsFromTime(Span) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl48",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl48",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SecondsFromTime(Due) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl49",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl49",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And SecondsFromTime(Clock) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl50",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl50",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Amount) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl51",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl51",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Title) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl52",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl52",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Flag) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl53",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl53",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Kind) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl54",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl54",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Span) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl55",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl55",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Clock) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl56",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl56",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateFromDateTime(Stamp) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl57",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl57",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And TimeFromDateTime(Amount) > [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl58",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl58",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And TimeFromDateTime(Title) > [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl59",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl59",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And TimeFromDateTime(Flag) > [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl60",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl60",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And TimeFromDateTime(Kind) > [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl61",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl61",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And TimeFromDateTime(Span) > [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl62",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl62",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And TimeFromDateTime(Clock) > [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl63",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl63",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And TimeFromDateTime(Stamp) > [Clock]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl64",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl64",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Amount, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl65",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl65",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Title, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl66",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl66",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Flag, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl67",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl67",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Kind, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl68",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl68",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Span, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl69",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl69",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Clock, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl70",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl70",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Frag, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl71",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl71",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Part, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl72",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl72",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Due, FirstDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl73",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl73",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Amount, LastDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl74",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl74",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Title, LastDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl75",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl75",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Flag, LastDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl76",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl76",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Kind, LastDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl77",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl77",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Span, LastDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl78",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl78",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Clock, LastDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl79",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl79",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Frag, LastDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl80",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl80",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Part, LastDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl81",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tl81",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And ValueAsDate(Due, LastDay) > [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tl82",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl82.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl83",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl83.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl84",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl84.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl85",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl85.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl86",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl86.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl87",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl87.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl88",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl88.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl89",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl89.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl90",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl90.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl91",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl91.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl92",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl92.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl93",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl93.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl94",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl94.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl95",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl95.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl96",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl96.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl97",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl97.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl98",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl98.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl99",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl99.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl100",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl100.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl101",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl101.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl102",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl102.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl103",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl103.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl104",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl104.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tl105",
+  "verb": "computation",
+  "args": [
+   "add",
+   "tl105.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tm1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Amount -> Band, Price) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Amount, Price -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Due -> Band, Day) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Due, Day -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Amount -> Band, Amount -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Amount -> Nope, Price) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Nope, Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind, Kind -> Nope) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Level -> Band, Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind, Level -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Level -> Band, Level) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind -> Band, Kind) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind, Kind -> Band) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Kind -> Band, Kind)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValuesNotUnique(Kind, Kind -> Band)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Kind -> Band, Kind) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfFilledFields(Kind, Kind -> Band) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Kind, Level) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tm19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tm19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NumberOfDifferentValues(Amount, Price) > 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Title, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Due, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Stamp, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Clock, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Flag, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Span, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Raw, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Box, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(/Shop, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Rows, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Rows*/RLabel, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Rows/RLabel, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Rows*, \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Kind, \"A\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And FieldValueIncludedInValueList(Amount, 1)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Raw In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Title In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Title, Memo In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Raw, Memo In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Memo, Raw In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Raw, Raw2 In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn22",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn22",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NoFieldValueIncludedInValueList(Raw, Memo In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn23",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn23",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NoFieldValueIncludedInValueList(Title, Memo In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn24",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn24",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And NoFieldValueIncludedInValueList(Memo, Raw In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn25",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn25",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Due In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn26",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn26",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Flag In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn27",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn27",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Span In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn28",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn28",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Clock In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tn29",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tn29",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneFieldValueIncludedInValueList(Box In \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "to1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to9",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to12",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to12.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to13",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to13.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to14",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to14.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to15",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to15.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to16",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to16.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to17",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to17.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to18",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to18.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to19",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to19.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to20",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to20.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to21",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to21.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "to22",
+  "verb": "computation",
+  "args": [
+   "add",
+   "to22.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "tp1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Span] == \"2020-01-01/2020-02-01\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And \"2020-01-01/2020-02-01\" == [Span]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Span] != \"2020-01-01/2020-02-01\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Span] == [Span2]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateRangesOverlap(Span, \"2020-01-01/2020-02-01\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateRangesOverlap(\"2020-01-01/2020-02-01\", Span)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateRangesOverlap(Span, Span2)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateRangesOverlap(\"2020-01-01/2020-02-01\", \"2020-01-01/2020-02-01\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneDateRangeOverlaps(Span In \"2020-01-01/2020-02-01\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneDateRangeOverlaps(\"2020-01-01/2020-02-01\" In Span2)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp11",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneDateRangeOverlaps(Span In Span2)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp12",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And AtLeastOneDateRangeOverlaps(Span In Span2, \"2020-01-01/2020-02-01\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp13",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And StartOfDateRange(\"2020-01-01/2020-02-01\") == [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp14",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And EndOfDateRange(\"2020-01-01/2020-02-01\") == [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp15",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And StartOfDateRange(Span) == [Due]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp16",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateRange(\"2020-01-01/2020-02-01\", Due) == [Span]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp17",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateRange(Due, \"2020-01-01/2020-02-01\") == [Span]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp18",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateRange(Due, Day) == [Span]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp19",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateRange(Due, Day) == \"2020-01-01/2020-02-01\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp20",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Span] == \"01.01.2020-01.02.2020\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "tp21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "tp21",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And DateRangesOverlap(Span, \"01.01.2020-01.02.2020\")",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

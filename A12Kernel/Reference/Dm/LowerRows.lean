@@ -87,8 +87,10 @@ def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : 
 private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
     (target : FlatFieldDecl) (source : SurfaceEnumerationComputationSource) :
     Lowering (CheckedRowComputationOperation model) := do
+  -- A fixed target's String source or out-of-domain Enumeration source is the calculation's own
+  -- refusal (k22-static-s2-2026-10-24, `to4`, `to21`); a repeatable target's is not measured.
   if target.repeatableScope.isEmpty then
-    pure (.fixedEnumeration (← elaborated "EnumerationComputation"
+    pure (.fixedEnumeration (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
       (elaborateEnumerationComputation model group target.id source)))
   else
     pure (.enumeration (← elaborated "EnumerationComputation"

@@ -75,6 +75,11 @@ follows. -/
 private def valueListOperators : List String :=
   ["FieldValueIncludedInValueList", "FieldValueNotIncludedInValueList"]
 
+/-- The DateRange operators, whose operand slots read a field or the reference year, never a String
+literal. -/
+private def dateRangeOperators : List String :=
+  ["DateRange", "StartOfDateRange", "EndOfDateRange", "DateRangesOverlap", "AtLeastOneDateRangeOverlaps"]
+
 /-- Whether an `In` follows at the current call's own depth before its closing parenthesis. -/
 private partial def inFollowsInCall (ahead : Nat := 0) (depth : Nat := 0) : P Bool := do
   match ← peekAt ahead with
@@ -337,7 +342,13 @@ private partial def callBody (id : String) : P Expr := do
             .mk (.entity { path := { segments := [{ name := digits, star := false }] } }) none
           else .mk (.number digits) none
       | argument => argument) else arguments
-  let listed ← if ← acceptKeyword "In" then pure (some (← argumentList "In")) else pure none
+  -- The overlap list after `In` is a field list or a String list, so a field-led list carries its
+  -- operand slots' String-literal defect while a String-led one reaches the constant refusal
+  -- (k22-static-s2-2026-10-24, `tp12` against `tp9`).
+  let listed ← if ← acceptKeyword "In" then
+      let fieldLed := id == "AtLeastOneDateRangeOverlaps" && !((← peek) matches some (.string _))
+      pure (some (← argumentList (if fieldLed then id else "In")))
+    else pure none
   let scope ← if ← acceptKeyword "@From" then pure (some (← reference)) else pure none
   -- Validity takes a constructed Date or a field and a type name, so a lone field operand meets `)`
   -- where the grammar expects `,` (spec/05; parallel-instance-leaves rows `v17`, `v18`, 2026-10-14),
@@ -374,6 +385,10 @@ private partial def argument (id : String) (index : Nat) : P Argument := do
     match ← peek with
     | some (.string _) | some (.number _) | some (.symbol "-") | some (.symbol "[") => pure ()
     | _ => failHere .incompleteInput
+  -- A DateRange slot reads an entity or the reference year, so a String literal there is a token
+  -- defect at its start (grammar `datumBereichKonstrukt`, `datumBereichAngabe`, `entityListe`;
+  -- k22-static-s2-2026-10-24, `tp5`–`tp21`).
+  if dateRangeOperators.contains id && (← peek) matches some (.string _) then failHere .unexpectedToken
   let expr ← condition false
   let rangeEnd ← if ← acceptKeyword "To" then pure (some (← condition false)) else pure none
   return .mk expr rangeEnd

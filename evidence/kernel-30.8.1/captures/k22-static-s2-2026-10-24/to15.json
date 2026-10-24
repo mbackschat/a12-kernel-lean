@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Stamp",
+ "alternatives": [
+  {
+   "operation": "[Clock]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

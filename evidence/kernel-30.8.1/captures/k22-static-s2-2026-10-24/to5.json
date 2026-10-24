@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Kind",
+ "alternatives": [
+  {
+   "operation": "\"A\""
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}
