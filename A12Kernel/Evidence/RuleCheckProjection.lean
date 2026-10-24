@@ -240,6 +240,7 @@ def captures : List (String × String × String) := [
   ("captures/cross-root-reads-2026-10-24/static-codes.json", "captures/cross-root-reads-2026-10-24/XR_DM.json", "captures/cross-root-reads-2026-10-24/ops.json"),
   ("captures/cross-root-reads-2026-10-24/static-codes2.json", "captures/cross-root-reads-2026-10-24/XR2_DM.json", "captures/cross-root-reads-2026-10-24/ops2.json"),
   ("captures/cross-root-reads-2026-10-24/static-codes3.json", "captures/cross-root-reads-2026-10-24/XR2_DM.json", "captures/cross-root-reads-2026-10-24/ops3.json"),
+  ("captures/parallel-custom-condition-reach-2026-10-24/static-codes.json", "captures/parallel-custom-condition-reach-2026-10-24/K22c_DM.json", "captures/parallel-custom-condition-reach-2026-10-24/ops-shapes.json"),
   ("captures/iteration-guard-2026-10-22/obs.json", "captures/iteration-guard-2026-10-22/IterGuard_DM.json", "captures/iteration-guard-2026-10-22/ops.json"),
   ("captures/parallel-instance-leaves-2026-10-14/obs-guard.json", "captures/parallel-instance-leaves-2026-10-14/GuardJoin_DM.json", "captures/parallel-instance-leaves-2026-10-14/ops-guard.json"),
   ("captures/parser-index-and-iteration-classes/obsc.json", "captures/parser-index-and-iteration-classes/IdxProbe_DM.json", "captures/parser-index-and-iteration-classes/opsc.json"),

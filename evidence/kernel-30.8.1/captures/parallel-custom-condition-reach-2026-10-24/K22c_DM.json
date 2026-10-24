@@ -1,0 +1,429 @@
+{
+ "header": {
+  "id": "K22c_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K22c_DM"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Claim",
+     "name": "Claim",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Claim/Note",
+        "name": "Note",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Claim/Demand",
+        "name": "Demand",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Claim/Demand/Department",
+           "name": "Department",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Claim/Demand/Headcount",
+           "name": "Headcount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Department"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Claim/Supply",
+        "name": "Supply",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Claim/Supply/Department",
+           "name": "Department",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Claim/Supply/Headcount",
+           "name": "Headcount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Department"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Claim/Region",
+        "name": "Region",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Claim/Region/Tag",
+           "name": "Tag",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Claim/Region/Demand2",
+           "name": "Demand2",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Claim/Region/Demand2/Department",
+              "name": "Department",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Claim/Region/Demand2/Headcount",
+              "name": "Headcount",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ],
+            "indexFieldName": "Department"
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Claim/Region/Supply2",
+           "name": "Supply2",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Claim/Region/Supply2/Department",
+              "name": "Department",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Claim/Region/Supply2/Headcount",
+              "name": "Headcount",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ],
+            "indexFieldName": "Department"
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Region/Q1",
+           "name": "Q1",
+           "Rule": {
+            "errorEntityRelPath": "../Demand2/Headcount",
+            "errorCode": "Q1",
+            "errorCondition": "[Demand2/Headcount] > [Supply2/Headcount] Or ([Supply2/Headcount] > 0 And CustomCondition Ghost)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Region/Q2",
+           "name": "Q2",
+           "Rule": {
+            "errorEntityRelPath": "../Demand2/Headcount",
+            "errorCode": "Q2",
+            "errorCondition": "[Demand2/Headcount] > [Supply2/Headcount] And CustomCondition K01",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Region/Q4",
+           "name": "Q4",
+           "Rule": {
+            "errorEntityRelPath": "../Demand2/Headcount",
+            "errorCode": "Q4",
+            "errorCondition": "FieldsNotCollectivelyFilled(Demand2/Headcount, Supply2/Headcount) Or ([Demand2/Headcount] > 2 And CustomCondition Ghost)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Region/Q5",
+           "name": "Q5",
+           "Rule": {
+            "errorEntityRelPath": "../Demand2/Headcount",
+            "errorCode": "Q5",
+            "errorCondition": "[Demand2/Headcount] > [Supply2/Headcount] And CustomCondition K02",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Region/Q7",
+           "name": "Q7",
+           "Rule": {
+            "errorEntityRelPath": "../Demand2/Headcount",
+            "errorCode": "Q7",
+            "errorCondition": "FieldsNotCollectivelyFilled(Demand2/Headcount, Supply2/Headcount) Or (FieldFilled(Demand2/Headcount) And CustomCondition Ghost)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Claim/Region/Q3",
+           "name": "Q3",
+           "Rule": {
+            "errorEntityRelPath": "../Demand2/Headcount",
+            "errorCode": "Q3",
+            "errorCondition": "[Demand2/Headcount] > 2 And [Supply2/Headcount] > 0 And CustomCondition Ghost",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/P1",
+        "name": "P1",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Headcount",
+         "errorCode": "P1",
+         "errorCondition": "[Demand/Headcount] > [Supply/Headcount] Or ([Supply/Headcount] > 0 And CustomCondition Ghost)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/P2",
+        "name": "P2",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Headcount",
+         "errorCode": "P2",
+         "errorCondition": "[Demand/Headcount] > [Supply/Headcount] And CustomCondition K01",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/P3",
+        "name": "P3",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Headcount",
+         "errorCode": "P3",
+         "errorCondition": "[Demand/Headcount] > 2 And [Supply/Headcount] > 0 And CustomCondition Ghost",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/P4",
+        "name": "P4",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Headcount",
+         "errorCode": "P4",
+         "errorCondition": "FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount) Or ([Demand/Headcount] > 2 And CustomCondition Ghost)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/P5",
+        "name": "P5",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Headcount",
+         "errorCode": "P5",
+         "errorCondition": "[Demand/Headcount] > [Supply/Headcount] And CustomCondition K02",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/P6",
+        "name": "P6",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Headcount",
+         "errorCode": "P6",
+         "errorCondition": "FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount) And CustomCondition K02",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Claim/P7",
+        "name": "P7",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Headcount",
+         "errorCode": "P7",
+         "errorCondition": "FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount) Or (FieldFilled(Demand/Headcount) And CustomCondition Ghost)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

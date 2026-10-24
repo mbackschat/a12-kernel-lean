@@ -1,0 +1,32 @@
+[
+ {
+  "id": "h1",
+  "verb": "rule",
+  "args": ["check", "--code", "h1", "--field", "/Claim/Demand/Headcount", "--group", "/Claim", "--condition", "[Demand/Headcount] > [Supply/Headcount] Or CustomCondition Ghost", "--message", "en_US=m"]
+ },
+ {
+  "id": "h2",
+  "verb": "rule",
+  "args": ["check", "--code", "h2", "--field", "/Claim/Demand/Headcount", "--group", "/Claim", "--condition", "[Demand/Headcount] > [Supply/Headcount] Or CustomCondition K01", "--message", "en_US=m"]
+ },
+ {
+  "id": "h3",
+  "verb": "rule",
+  "args": ["check", "--code", "h3", "--field", "/Claim/Demand/Headcount", "--group", "/Claim", "--condition", "CustomCondition K01 Or [Demand/Headcount] > [Supply/Headcount]", "--message", "en_US=m"]
+ },
+ {
+  "id": "h4",
+  "verb": "rule",
+  "args": ["check", "--code", "h4", "--field", "/Claim/Demand/Headcount", "--group", "/Claim", "--condition", "[Demand/Headcount] > [Supply/Headcount] Or ([Supply/Headcount] > 0 And CustomCondition Ghost)", "--message", "en_US=m"]
+ },
+ {
+  "id": "h5",
+  "verb": "rule",
+  "args": ["check", "--code", "h5", "--field", "/Claim/Demand/Headcount", "--group", "/Claim", "--condition", "[Demand/Headcount] > [Supply/Headcount] Or FieldFilled(Note)", "--message", "en_US=m"]
+ },
+ {
+  "id": "h6",
+  "verb": "rule",
+  "args": ["check", "--code", "h6", "--field", "/Claim/Demand/Headcount", "--group", "/Claim", "--condition", "FieldsNotCollectivelyFilled(Demand/Headcount, Supply/Headcount) Or (FieldFilled(Demand/Headcount) And CustomCondition Ghost)", "--message", "en_US=m"]
+ }
+]

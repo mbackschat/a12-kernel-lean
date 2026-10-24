@@ -1,0 +1,772 @@
+{
+ "model": "K22c_DM.json",
+ "clock": "2024-03-30T23:00:00Z",
+ "locale": "en_US",
+ "customConditions": {
+  "K01": {
+   "returns": true
+  },
+  "K02": {
+   "returns": false
+  }
+ },
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "rows": [
+  {
+   "name": "mid",
+   "documentInline": {
+    "Claim": {
+     "Note": "n",
+     "Demand": [
+      {
+       "Department": "A",
+       "Headcount": "5"
+      },
+      {
+       "Department": "B",
+       "Headcount": "1"
+      },
+      {
+       "Department": "C",
+       "Headcount": "9"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1"
+      },
+      {
+       "Department": "B",
+       "Headcount": "1"
+      },
+      {
+       "Department": "C",
+       "Headcount": "1"
+      }
+     ],
+     "Region": [
+      {
+       "Tag": "r1",
+       "Demand2": [
+        {
+         "Department": "A",
+         "Headcount": "5"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "9"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      },
+      {
+       "Tag": "r2",
+       "Demand2": [
+        {
+         "Department": "A",
+         "Headcount": "5"
+        },
+        {
+         "Department": "B",
+         "Headcount": "6"
+        },
+        {
+         "Department": "C",
+         "Headcount": "9"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Claim"
+    }
+   ]
+  },
+  {
+   "name": "all",
+   "documentInline": {
+    "Claim": {
+     "Note": "n",
+     "Demand": [
+      {
+       "Department": "A",
+       "Headcount": "5"
+      },
+      {
+       "Department": "B",
+       "Headcount": "6"
+      },
+      {
+       "Department": "C",
+       "Headcount": "9"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1"
+      },
+      {
+       "Department": "B",
+       "Headcount": "1"
+      },
+      {
+       "Department": "C",
+       "Headcount": "1"
+      }
+     ],
+     "Region": [
+      {
+       "Tag": "r1",
+       "Demand2": [
+        {
+         "Department": "A",
+         "Headcount": "5"
+        },
+        {
+         "Department": "B",
+         "Headcount": "6"
+        },
+        {
+         "Department": "C",
+         "Headcount": "9"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      },
+      {
+       "Tag": "r2",
+       "Demand2": [
+        {
+         "Department": "A",
+         "Headcount": "5"
+        },
+        {
+         "Department": "B",
+         "Headcount": "6"
+        },
+        {
+         "Department": "C",
+         "Headcount": "9"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Claim"
+    }
+   ]
+  },
+  {
+   "name": "first",
+   "documentInline": {
+    "Claim": {
+     "Note": "n",
+     "Demand": [
+      {
+       "Department": "A",
+       "Headcount": "1"
+      },
+      {
+       "Department": "B",
+       "Headcount": "5"
+      },
+      {
+       "Department": "C",
+       "Headcount": "9"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1"
+      },
+      {
+       "Department": "B",
+       "Headcount": "1"
+      },
+      {
+       "Department": "C",
+       "Headcount": "1"
+      }
+     ],
+     "Region": [
+      {
+       "Tag": "r1",
+       "Demand2": [
+        {
+         "Department": "A",
+         "Headcount": "5"
+        },
+        {
+         "Department": "B",
+         "Headcount": "6"
+        },
+        {
+         "Department": "C",
+         "Headcount": "9"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      },
+      {
+       "Tag": "r2",
+       "Demand2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "5"
+        },
+        {
+         "Department": "C",
+         "Headcount": "9"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Claim"
+    }
+   ]
+  },
+  {
+   "name": "reg2",
+   "documentInline": {
+    "Claim": {
+     "Note": "n",
+     "Demand": [
+      {
+       "Department": "A",
+       "Headcount": "5"
+      },
+      {
+       "Department": "B",
+       "Headcount": "6"
+      },
+      {
+       "Department": "C",
+       "Headcount": "9"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1"
+      },
+      {
+       "Department": "B",
+       "Headcount": "1"
+      },
+      {
+       "Department": "C",
+       "Headcount": "1"
+      }
+     ],
+     "Region": [
+      {
+       "Tag": "r1",
+       "Demand2": [
+        {
+         "Department": "A",
+         "Headcount": "5"
+        },
+        {
+         "Department": "B",
+         "Headcount": "6"
+        },
+        {
+         "Department": "C",
+         "Headcount": "9"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      },
+      {
+       "Tag": "r2",
+       "Demand2": [
+        {
+         "Department": "A",
+         "Headcount": "5"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "9"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Claim"
+    }
+   ]
+  },
+  {
+   "name": "keep",
+   "documentInline": {
+    "Claim": {
+     "Note": "n",
+     "Demand": [
+      {
+       "Department": "A"
+      },
+      {
+       "Department": "B",
+       "Headcount": "5"
+      },
+      {
+       "Department": "C"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1"
+      },
+      {
+       "Department": "B",
+       "Headcount": "1"
+      },
+      {
+       "Department": "C",
+       "Headcount": "1"
+      }
+     ],
+     "Region": [
+      {
+       "Tag": "r1",
+       "Demand2": [
+        {
+         "Department": "A"
+        },
+        {
+         "Department": "B",
+         "Headcount": "5"
+        },
+        {
+         "Department": "C"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      },
+      {
+       "Tag": "r2",
+       "Demand2": [
+        {
+         "Department": "A"
+        },
+        {
+         "Department": "B",
+         "Headcount": "5"
+        },
+        {
+         "Department": "C"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Claim"
+    }
+   ]
+  },
+  {
+   "name": "all-r2",
+   "documentInline": {
+    "Claim": {
+     "Note": "n",
+     "Demand": [
+      {
+       "Department": "A",
+       "Headcount": "5"
+      },
+      {
+       "Department": "B",
+       "Headcount": "6"
+      },
+      {
+       "Department": "C",
+       "Headcount": "9"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1"
+      },
+      {
+       "Department": "B",
+       "Headcount": "1"
+      },
+      {
+       "Department": "C",
+       "Headcount": "1"
+      }
+     ],
+     "Region": [
+      {
+       "Tag": "r1",
+       "Demand2": [
+        {
+         "Department": "A",
+         "Headcount": "5"
+        },
+        {
+         "Department": "B",
+         "Headcount": "6"
+        },
+        {
+         "Department": "C",
+         "Headcount": "9"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      },
+      {
+       "Tag": "r2",
+       "Demand2": [
+        {
+         "Department": "A",
+         "Headcount": "5"
+        },
+        {
+         "Department": "B",
+         "Headcount": "6"
+        },
+        {
+         "Department": "C",
+         "Headcount": "9"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Claim/Region/Demand2/Headcount",
+     "reps": [
+      1,
+      2,
+      2,
+      1
+     ]
+    },
+    {
+     "path": "/Claim/Region/Supply2/Headcount",
+     "reps": [
+      1,
+      2,
+      2,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "keep-r2",
+   "documentInline": {
+    "Claim": {
+     "Note": "n",
+     "Demand": [
+      {
+       "Department": "A"
+      },
+      {
+       "Department": "B",
+       "Headcount": "5"
+      },
+      {
+       "Department": "C"
+      }
+     ],
+     "Supply": [
+      {
+       "Department": "A",
+       "Headcount": "1"
+      },
+      {
+       "Department": "B",
+       "Headcount": "1"
+      },
+      {
+       "Department": "C",
+       "Headcount": "1"
+      }
+     ],
+     "Region": [
+      {
+       "Tag": "r1",
+       "Demand2": [
+        {
+         "Department": "A"
+        },
+        {
+         "Department": "B",
+         "Headcount": "5"
+        },
+        {
+         "Department": "C"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      },
+      {
+       "Tag": "r2",
+       "Demand2": [
+        {
+         "Department": "A"
+        },
+        {
+         "Department": "B",
+         "Headcount": "5"
+        },
+        {
+         "Department": "C"
+        }
+       ],
+       "Supply2": [
+        {
+         "Department": "A",
+         "Headcount": "1"
+        },
+        {
+         "Department": "B",
+         "Headcount": "1"
+        },
+        {
+         "Department": "C",
+         "Headcount": "1"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Claim/Region/Demand2/Headcount",
+     "reps": [
+      1,
+      2,
+      2,
+      1
+     ]
+    },
+    {
+     "path": "/Claim/Region/Supply2/Headcount",
+     "reps": [
+      1,
+      2,
+      2,
+      1
+     ]
+    }
+   ]
+  }
+ ]
+}
