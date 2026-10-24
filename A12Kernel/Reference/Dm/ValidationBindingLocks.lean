@@ -153,7 +153,11 @@ private def partialPatternRows : Option (List (Env × Verdict)) := do
       | .skipped => none
       | .evaluated result => some (environment, result.verdict)
 
-example : partialPatternRows = some [([(10, 1)], .fired .value), ([(10, 2)], .notFired)] := by native_decide
+-- The document holds two rows but `Rows` declares capacity 3: partial validation walks the declared
+-- capacity, so the absent third row is an evaluated environment (its key reads empty and does not
+-- fire) rather than omitted (spec/10 §5; partial channel of the population replay, 2026-10-24).
+example : partialPatternRows = some [([(10, 1)], .fired .value), ([(10, 2)], .notFired),
+    ([(10, 3)], .notFired)] := by native_decide
 
 example : (checkRule dm .english {
     (rule "[/Form/Rows/Key] PatternMatched \"[0-9]+\"") with

@@ -1,0 +1,4087 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "KRb_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-24T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "absent-all",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [],
+     "partialMessages": [],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [],
+     "partialMessages": [],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "absent-qty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [],
+     "partialMessages": [],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [],
+     "partialMessages": [],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "absent-row1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [],
+     "partialMessages": [],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [],
+     "partialMessages": [],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "empty-all",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "empty-qty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "empty-row1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "space-all",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "fuehrendesBlank",
+       "field": "Form/Rows[2]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[2]/Label"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "fuehrendesBlank",
+       "field": "Form/Rows[2]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[2]/Label"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "fuehrendesBlank",
+       "field": "Form/Rows[2]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[2]/Label"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "fuehrendesBlank",
+       "field": "Form/Rows[2]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[2]/Label"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "space-qty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "fuehrendesBlank",
+       "field": "Form/Rows[2]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[2]/Label"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "fuehrendesBlank",
+       "field": "Form/Rows[2]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[2]/Label"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "space-row1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "fuehrendesBlank",
+       "field": "Form/Rows[2]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[2]/Label"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "fuehrendesBlank",
+       "field": "Form/Rows[2]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[2]/Label"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [
+        "Form/Rows[2]/Label"
+       ],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "filled-all",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "filled-qty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "filled-row1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": false
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "over-all",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form[0]"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "over-qty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "/Form[1]/Rows[0]/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "over-row1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W2",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "W2",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W3",
+       "field": "Form/Rows/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Label",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Label"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Form/Rows[3]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Form/Rows[3]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[3]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "customConditionCalls": [
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W2",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validateFull",
+       "name": "W3",
+       "relevant": null,
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows[2]/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W2",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      },
+      {
+       "observation": "validatePart",
+       "name": "W3",
+       "relevant": [
+        "Form/Rows/Qty"
+       ],
+       "formallyIncorrect": [],
+       "errorEntity": "Form/Rows/Qty",
+       "result": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

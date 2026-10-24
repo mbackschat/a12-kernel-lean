@@ -197,7 +197,8 @@ prints one tab-separated line per instance:
 `request  row  rule  code  tier  construct  detail`
 
 A rule whose messages match also prints a line with the code `references`, comparing those messages'
-`referenced` and `fillToFix` pointer sets.
+`referenced` and `fillToFix` pointer sets. A row naming a relevant set prints one more line per rule
+with the code `partial`, comparing the partial call's messages under that set.
 
 where `tier` is `match`, `tier1` (Lean fires a different message set), `unattributed` (a computation
 sharing a refused computation's target or reading one, directly or through other computations, whose outcome is
@@ -276,16 +277,31 @@ private def tableOutcomes (requestPath : System.FilePath) :
       if let some text := text? then outcomes := outcomes ++ [(row, { pointer, outcome := text })]
   pure (rows, outcomes)
 
-private def kernelMessages (row : Json) : Option (Bool × List ObservedMessage) := do
+/-- The first engine's messages on one channel, `messages` for full validation or `partialMessages`
+for the row's partial call. -/
+private def kernelMessages (row : Json) (channel : String := "messages") :
+    Option (Bool × List ObservedMessage) := do
   let engines ← (row.getObjValAs? (Array Json) "engines").toOption
   let first ← engines[0]?
-  let messages ← (first.getObjValAs? (Array Json) "messages").toOption
+  let messages ← (first.getObjValAs? (Array Json) channel).toOption
   let agree := (row.getObjValAs? Bool "enginesAgree").toOption.getD true
   pure (agree, messages.toList.filterMap fun message => do
     pure { code := ← (message.getObjValAs? String "code").toOption
            pointer := ← (message.getObjValAs? String "field").toOption
            messageType := ← (message.getObjValAs? String "type").toOption
            severity := (message.getObjValAs? String "severity").toOption.getD "ERROR" })
+
+/-- A row's relevant set in the probe's spelling: a model path, and one repetition per path part
+with `0` for every instance, all of them when `reps` is omitted. -/
+private def relevantSet (row : Json) : Option (List RelevantEntityPattern) := do
+  let entries ← (row.getObjValAs? (Array Json) "relevant").toOption
+  entries.toList.mapM fun entry => do
+    let path := ((← (entry.getObjValAs? String "path").toOption).splitOn "/").filter (· != "")
+    match (entry.getObjValAs? (Array Nat) "reps").toOption with
+    | none => pure (RelevantEntityPattern.allInstances path)
+    | some reps =>
+        if reps.size != path.length then none
+        else pure { path, indices := reps.toList.map fun n => if n == 0 then .all else .concrete n }
 
 /-- Each message's reference channels as the first engine reported them. -/
 private def kernelReferences (row : Json) : List ObservedReferences := Id.run do
@@ -417,11 +433,29 @@ private def replayComputations (line : String → String → String → String �
         else if lean == expected then line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "match" ""
         else line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "tier1" s!"Divergence\tlean={lean} kernel={expected}"
 
+/-- One concrete cell in A12's `DocumentPointer` spelling, `Form/Rows[2]/Label` with each omitted
+repetition `[1]`, as the probe's `whenFilled` names it; a wildcard `[0]` names no cell. -/
+private def pointerCell (model : FlatModel) (pointer : String) : Option CellAddr := do
+  let parts ← (pointer.splitOn "/").mapM fun segment =>
+    match segment.splitOn "[" with
+    | [name] => some (name, 1)
+    | [name, index] => do
+        let n ← (index.dropRightWhile (· == ']')).toNat?
+        if n == 0 then none else some (name, n)
+    | _ => none
+  let names := parts.map (·.1)
+  let field ← model.fields.find? fun declaration => declaration.groupPath ++ [declaration.name] == names
+  let path ← field.repeatableScope.mapM fun level => do
+    let group ← model.repeatableGroups.find? (·.level == level)
+    (parts[group.path.length - 1]?).map (·.2)
+  pure { field := field.id, path }
+
 /-- The request's declared custom conditions as the host's one factory: `returns` answers a constant,
 `whenFilled` whether the named cell holds a stored text, and any other name is unregistered
-(a12-dmkits `DeclarativeCustomConditions` at the measurement pin). Only a nonrepeatable field path
-is read. A placed empty or blank text counts as filled, since the callback's data view hands it over
-where only an absent cell reads as none (k22-static-s6-2026-10-24, `when-filled`). -/
+(a12-dmkits `DeclarativeCustomConditions` at the measurement pin). A placed empty or blank text counts
+as filled, since the callback's data view hands it over where only an absent cell reads as none
+(k22-static-s6-2026-10-24, `when-filled`); a repeatable cell reads the same way whatever the call's
+relevant set (k22-runtime-r7-2026-10-24, `rB`). -/
 private def declaredConditions (model : FlatModel) (request : Json) :
     Except String (CustomValidationRegistry model) := do
   let .ok declared := request.getObjVal? "customConditions" | pure {}
@@ -434,11 +468,10 @@ private def declaredConditions (model : FlatModel) (request : Json) :
     match spec.getObjValAs? Bool "returns", spec.getObjValAs? String "whenFilled" with
     | .ok value, .error _ => pure (name, fun (_ : CustomValidationInvocation model) => value)
     | .error _, .ok pointer =>
-        match model.fields.find? fun declaration => declaration.repeatableScope.isEmpty &&
-            declaration.groupPath ++ [declaration.name] == pointer.splitOn "/" with
-        | some field => pure (name, fun (input : CustomValidationInvocation model) =>
-            (input.data.storedTextAt { field := field.id, path := [] }).isSome)
-        | none => throw s!"whenFilled {pointer} names no nonrepeatable field"
+        match pointerCell model pointer with
+        | some cell => pure (name, fun (input : CustomValidationInvocation model) =>
+            (input.data.storedTextAt cell).isSome)
+        | none => throw s!"whenFilled {pointer} names no cell"
     | _, _ => throw s!"{name} must declare exactly one of returns and whenFilled"
   pure { configured := some fun name => (answers.find? (·.1 == name)).map (·.2) }
 
@@ -518,6 +551,16 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
                 -- The reference channels report under the code `references`, an arm of their own.
                 if let some status := verdict.references then
                   line name ruleName "references" status.tier status.detail
+            -- The partial channel reports under the code `partial`, as the reference channels do.
+            if (row.getObjVal? "relevant").toOption.isSome then
+              match relevantSet row, observedRow.bind (kernelMessages · "partialMessages") with
+              | none, _ => line name "-" "partial" "tier2" "Request\tunreadable relevant set"
+              | some _, none => pure ()
+              | some relevant, some (_, partialKernel) =>
+                  for verdict in replayRulesPartial model language world checked relevant partialKernel registry do
+                    let ruleName := replayName (model.rules.map (·.name)) verdict.rule.group verdict.rule.name
+                    if !(clock?.isNone && readsClock language verdict.rule.condition) then
+                      line name ruleName "partial" verdict.status.tier verdict.status.detail
             if let some computed := observedRow.bind kernelComputations then
               replayComputations (line name) clock?.isSome model language world prepared checked computed
 

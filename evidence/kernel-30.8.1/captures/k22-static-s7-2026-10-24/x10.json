@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Same",
+ "alternatives": [
+  {
+   "operation": "[Kind]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

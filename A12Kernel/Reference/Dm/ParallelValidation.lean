@@ -493,14 +493,15 @@ def runParallelRuleReferences (document : CheckedDocument model) (rule : Checked
 /-- Execute a checked parallel rule for one normalized partial call. Duplicate message coordinates share the partial cache producer while value reads retain partial unavailability. -/
 def runPartialParallelRule (document : CheckedDocument model)
     (rule : CheckedParallelFieldRule model) (relevant : List RelevantEntityPattern)
-    (messageCache : Option MessageIndexCache := none) (world : Option World := none) :
+    (messageCache : Option MessageIndexCache := none) (world : Option World := none)
+    (registry : CustomValidationRegistry model := {}) :
     Except String (List FlatRuleMessage) := do
   let view ← document.applyPartialGeneratedPreliminary relevant |>.mapError (fun error => (repr error).pretty)
-  let initial := rule.evalPartialDocument view (messageCache.map MessageIndexContext.known) (world := world)
+  let initial := rule.evalPartialDocument view (messageCache.map MessageIndexContext.known) registry world
   let evaluated := match messageCache, initial with
     | none, .error (.join (.unresolvedDuplicatePointer _ _)) =>
         match view.messageCacheContext with
-        | .ok cache => rule.evalPartialDocument view (some cache) (world := world)
+        | .ok cache => rule.evalPartialDocument view (some cache) registry world
         | .error _ => initial
     | _, _ => initial
   let rows ← evaluated.mapError (fun error => (repr error).pretty)

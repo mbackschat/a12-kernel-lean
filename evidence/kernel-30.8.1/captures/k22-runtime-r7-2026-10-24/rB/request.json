@@ -1,0 +1,408 @@
+{
+ "model": "KRb_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "customConditions": {
+  "W2": {
+   "whenFilled": "Form/Rows[2]/Label"
+  },
+  "W3": {
+   "whenFilled": "Form/Rows[3]/Label"
+  }
+ },
+ "rows": [
+  {
+   "name": "absent-all",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "absent-qty",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Rows/Qty",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "absent-row1",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Rows/Qty",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "empty-all",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": ""
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "empty-qty",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": ""
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Rows/Qty",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "empty-row1",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": ""
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Rows/Qty",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "space-all",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": " "
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "space-qty",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": " "
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Rows/Qty",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "space-row1",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": " "
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Rows/Qty",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "filled-all",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": "x"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "filled-qty",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": "x"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Rows/Qty",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "filled-row1",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": "x"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Rows/Qty",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "over-all",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": "x"
+      },
+      {
+       "Qty": "3",
+       "Label": "z"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "over-qty",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": "x"
+      },
+      {
+       "Qty": "3",
+       "Label": "z"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Rows/Qty",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "over-row1",
+   "documentInline": {
+    "Form": {
+     "Title": "t",
+     "Rows": [
+      {
+       "Qty": "1"
+      },
+      {
+       "Qty": "2",
+       "Label": "x"
+      },
+      {
+       "Qty": "3",
+       "Label": "z"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Rows/Qty",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    }
+   ]
+  }
+ ]
+}

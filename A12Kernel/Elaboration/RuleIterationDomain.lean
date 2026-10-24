@@ -42,7 +42,8 @@ then projects the shared coordinate domain back onto named repeatable levels.
 Physical encounter order followed by implicit coordinates preserves the native API's
 existing deterministic order; the captures establish membership, not message order.
 Staged native models without capacities retain their earlier physical-domain account;
-the DM boundary always supplies capacities. Partial validation owns its separate view.
+the DM boundary always supplies capacities. A partial call walks the same domain `ungated`, since it
+overrides the content gate (spec/10 §5).
 
 An `ungated` rule, one evaluated without admitted content, runs under a nonrepeatable root that holds
 none, as the Kernel's global rule bucket does

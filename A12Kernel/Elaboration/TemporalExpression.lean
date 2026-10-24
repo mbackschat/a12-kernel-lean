@@ -384,6 +384,31 @@ def elaborateScalarTemporalComparison (model : FlatModel) (rowGroup : GroupPath)
   pure { left, right, operator, comparisonZone?, modelWellFormed := left.modelWellFormed }
 
 
+/-- Whether a partial call evaluates an aggregate or filled-field-count shift amount such as
+`Sum(Rows*/N)`: each walked extent member passes the all-rows aggregate gate, and each direct slot is
+relevant at the bound row. Wildcard relevance of the column or its group passes; one concrete row, or
+concrete group rows beside the wildcard, does not, alike for `Sum`, `MaxValue`, `MinValue`,
+`NumberOfDifferentValues` and `NumberOfFilledFields` (k22-runtime-r7-2026-10-24, `rC`, `KS3`,
+`KX5`–`KX8`). `none` for any other amount: no other expanded amount is measured under partial
+validation, so each keeps its structural refusal. -/
+private def partialAggregateAmountCovered (context : ScalarComputationContext)
+    (partialRead : TemporalPartialReadContext model)
+    (atom : HavingNumericAtomOf (ScalarTemporalExpression model)) :
+    Except ScalarTemporalEvaluationFault (Option Bool) := do
+  match atom with
+  | .aggregate _ _ | .collectionCount (.filledFields _ _) => pure ()
+  | _ => return none
+  let scope := partialRead.effectiveScope
+  let memberCovered (bound : Nat) (field : FieldId) : Bool :=
+    (model.lookupUniqueId field).toOption.any fun declaration =>
+      scope.coversAggregateExtent model declaration.path (declaration.repeatableScope.take bound)
+        (declaration.repeatableScope.drop bound) context.row
+  let slotCovered (slot : HavingFieldListSlot HavingPresenceRef) :
+      Except ScalarTemporalEvaluationFault Bool := match slot with
+    | .direct reference => return (← partialRead.readCell context.row reference.field).isSome
+    | .extent source references => return references.all (memberCovered source.boundCount ·.field)
+  pure (some (← (atom.presenceSlotsWith (fun _ _ => [])).allM slotCovered))
+
 mutual
 private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context : ScalarComputationContext)
     (partialRead? : Option (TemporalPartialReadContext model))
@@ -498,6 +523,16 @@ private def readRecursiveScalarAtom (phase : Phase) (context : ScalarComputation
   match atom with
   | .numeric atom =>
       let some profile := ModelZone.ConcreteProfile.ofId? model.timeZoneId | throw .calendarUnavailable
+      -- A covered aggregate amount walks its extent over the checked document as full validation
+      -- does: the gate has made every member it reads relevant.
+      let (context, partialRead?) ← match partialRead? with
+        | some partialRead =>
+            match ← partialAggregateAmountCovered context partialRead atom with
+            | some false => return .error .nonRelevant
+            | some true => pure ({ (partialRead.document.indexedComputationContextAt context.row) with
+                world := context.world }, none)
+            | none => pure (context, partialRead?)
+        | none => pure (context, none)
       let result := atom.readArithmetic phase (scalarAmountReadContext context partialRead?)
         { innerEnv := context.row, outerEnv := context.row }
         (fun part source _ => do

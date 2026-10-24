@@ -1,0 +1,115 @@
+{
+ "header": {
+  "id": "KRd_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "KRd_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "name": "Lines",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "name": "Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           },
+           "id": "/Form/Lines/Qty"
+          },
+          {
+           "type": "Field",
+           "name": "Price",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           },
+           "id": "/Form/Lines/Price"
+          }
+         ]
+        },
+        "id": "/Form/Lines"
+       },
+       {
+        "type": "Rule",
+        "name": "DS",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Qty",
+         "errorCode": "DS",
+         "errorCondition": "Sum(Lines/Qty, Lines/Price) == 0.5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/DS"
+       },
+       {
+        "type": "Rule",
+        "name": "DM",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Qty",
+         "errorCode": "DM",
+         "errorCondition": "MaxValue(Lines/Qty, Lines/Price) > 1.5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/DM"
+       }
+      ]
+     },
+     "id": "/Form"
+    }
+   ]
+  }
+ }
+}

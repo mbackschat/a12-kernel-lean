@@ -63,6 +63,14 @@ def evalSelected (context : ValidationEvaluationContext)
       else .unknown
   | .firstFilledComparison _ | .stringExpression _ | .tokenComparison _ | .constructedDateValidity _ _ | .fieldFill _ _ | .valueList _ | .valuesNotUnique _ => .unknown
 
+/-- A plain numeric comparison read through the ordered carrier, every atom as an ordinary one. In each
+call of partial validation each atom then reads with its own relevance, and a fixed-group `NumberOfFilledGroups`
+walks its counted groups as the ordered leaf does (spec/10 §5): the population replay's partial channel
+over the negated-corpus, group-coverage and computation-guard captures, 2026-10-24. -/
+def _root_.A12Kernel.NumericComparisonOf.toOrdered (comparison : NumericComparison) : OrderedNumericComparison model :=
+  { op := comparison.op, left := comparison.left.map .ordinary, right := comparison.right.map .ordinary
+    suppressExactScaleWarning := comparison.suppressExactScaleWarning }
+
 /-- Whether a leaf has an exact partial addressed interpretation. `false` is structural unsupported information and must not be converted to semantic UNKNOWN. -/
 def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .fieldFill _ source => !source.hasHaving
@@ -73,6 +81,7 @@ def supportsAddressedPartial : ValidationConditionLeaf model → Bool
   | .flat _ | .groupPresence _ _ | .repeatableFieldPresence _ _ => true
   | .orderedNumeric _ comparison =>
       comparison.supportsAddressedPartial
+  | .numeric _ comparison => (comparison.toOrdered (model := model)).supportsAddressedPartial
   | .groupList operator operands =>
       operands.all fun
         | .field _ | .indexed _ | .group _ => true
@@ -449,6 +458,8 @@ def evalAddressedPartial?
       | none => pure .unknown
   | .orderedNumeric _ comparison =>
       comparison.evalAddressedPartial? context scope isRelevant resolveGroup
+  | .numeric _ comparison =>
+      comparison.toOrdered.evalAddressedPartial? context scope isRelevant resolveGroup
   | .groupPresence operator reference =>
       some do
         let input ← resolveGroup reference.path context.outer

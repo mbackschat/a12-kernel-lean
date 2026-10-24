@@ -422,9 +422,13 @@ example : partialBoundCounts .full = some [.fired .value, .fired .value] ∧
       { path := ["Form", "Rows", "Qty"], indices := [.all, .concrete 1, .all] }]) =
       some [.fired .value, .unknown] := by native_decide
 
-example : partialBoundCounts .full true = some [.fired .value, .fired .value, .unknown] ∧
+/- A row beyond the declared capacity is outside the partial call's declared-capacity domain and has no
+   environment (spec/10 §5; partial channel of the population replay, 2026-10-24). Reporting it as
+   UNKNOWN would emit no message either; the Kernel's over-capacity row reports no rule message under
+   partial validation (`k22-runtime-r7-2026-10-24`, `rB`, `over-*`). -/
+example : partialBoundCounts .full true = some [.fired .value, .fired .value] ∧
     partialBoundCounts .full true "NumberOfFilledFields(Qty, Keep) == 0" =
-      some [.notFired, .notFired, .unknown] := by native_decide
+      some [.notFired, .notFired] := by native_decide
 
 example : filteredComparison (filteredOperation ++ " == 2") "0" true true = some ["match"] ∧
     partialCount filteredModel (filteredInput "0" true) (filteredOperation ++ " == 2") = none := by native_decide

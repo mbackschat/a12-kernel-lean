@@ -1,0 +1,15 @@
+{
+ "computedField": "/Shop/Total",
+ "alternatives": [
+  {
+   "operation": "[Zone/ZV For \"z1\"] + [Zone/ZV For \"z2\"]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "group": "/Shop"
+}

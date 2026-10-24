@@ -312,9 +312,12 @@ private def boundCount (enumeration numeric partialRun : Bool) (distinct : Bool 
         match result with | .skipped => none | .evaluated outcome => some outcome.verdict)
   else pure ((← (rule.evalOrdinaryRepeatableFull document).toOption).map (·.2.verdict))
 
+-- Both channels walk the declared three-row capacity over a two-row document, so the partial list
+-- agrees with the full one down to the absent third row, which does not fire (spec/10 §5; partial
+-- channel of the population replay, 2026-10-24).
 example : [(false, false), (true, false), (false, true)].all (fun (enumeration, numeric) =>
     boundCount enumeration numeric false == some [.fired .value, .unknown, .notFired] &&
-    boundCount enumeration numeric true == some [.fired .value, .unknown]) = true := by native_decide
+    boundCount enumeration numeric true == some [.fired .value, .unknown, .notFired]) = true := by native_decide
 
 private def selectedSource : Option (CheckedTokenEntitySource (model false)) := do
   let parsed ← (parseText .english "FirstFilledValue(Rows/Body For Key)").toOption
@@ -550,7 +553,7 @@ example : [false, true].all (fun enumeration =>
     tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Body For Key) == 2" .full { secondCode := "R1" } == some .unknown &&
     tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Body For Key) == 2" .full { firstA := "bad" } == some .unknown &&
     tokenListVerdict enumeration "NumberOfDifferentValues(Rows/Children*/Value For Key) == 0" .full { children := [] } == some (.fired .omission) &&
-    boundCount enumeration false true true == some [.fired .value, .unknown] &&
+    boundCount enumeration false true true == some [.fired .value, .unknown, .notFired] &&
     boundCount enumeration false false true == some [.fired .value, .unknown, .notFired]) = true := by native_decide
 
 example : tokenListVerdict true "NumberOfDifferentValues(Rows/Body For Key) == 2" .full

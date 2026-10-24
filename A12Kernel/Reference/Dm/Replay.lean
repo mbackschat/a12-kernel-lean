@@ -176,6 +176,71 @@ def replayParallelReferences (model : FlatModel) (document : CheckedDocument mod
       | .error error => .refused { construct := "References", detail := (repr error).pretty }
       | .ok lean => compareReferences lean kernel
 
+/-- Whether a Kernel message is one this rule raised: it names the rule's code and error field. -/
+private def attributedTo (rule : DmRule) (message : ObservedMessage) : Bool :=
+  message.code == rule.errorCode && unindexedPointer message.pointer == errorFieldPath rule
+
+private def sortedMessages (messages : List ObservedMessage) : List ObservedMessage :=
+  messages.mergeSort (compare · · != .gt)
+
+/-- Check one rule for comparison. A message names its code and error field, so only two rules sharing
+both cannot be told apart, and such a rule is refused. -/
+private def checkAttributed (model : DmModel) (language : Language) (world : World)
+    (rules : List DmRule) (rule : DmRule) : Lowering (CheckedDmValidationRule model.flat) :=
+  let shared := (rules.filter fun other =>
+    other.errorCode == rule.errorCode && errorFieldPath other == errorFieldPath rule).length > 1
+  if shared then .error { construct := "ErrorCode", detail := s!"{rule.errorCode} is shared" }
+  else checkValidationRule model language rule world
+
+/-- Run one checked rule for one partial-validation call over a caller-supplied relevant set. Each plan
+applies its own call-local partial preliminary, so it reads the checked document, not full validation's. -/
+def runRulePartial (world : World) (checked : CheckedDocument model) (relevant : List RelevantEntityPattern)
+    (rule : CheckedDmValidationRule model) (registry : CustomValidationRegistry model := {}) :
+    Except String (List FlatRuleMessage) :=
+  let scope := ValidationRelevanceScope.partialSet relevant
+  let failed (error : OrdinaryRepeatableRuleEvaluationError) : Except String (List FlatRuleMessage) :=
+    .error (repr error).pretty
+  match rule with
+  | .parallel parallel => runPartialParallelRule checked parallel relevant none (some world) registry
+  | .ordinary ordinary =>
+      match ordinary.ordinaryIterationPlan with
+      | .rows _ =>
+          match ordinary.evalOrdinaryRepeatablePartial checked scope (some world) registry with
+          | .ok .skipped => .ok []
+          | .ok (.evaluated rows) => .ok (rows.filterMap fun
+              | (_, .evaluated outcome) => outcome.message?
+              | (_, .skipped) => none)
+          | .error error => failed error
+      | .once _ =>
+          match ordinary.evalOrdinaryOncePartial checked scope (some world) registry with
+          | .ok .skipped => .ok []
+          | .ok (.evaluated _ outcome) => .ok outcome.message?.toList
+          | .error error => failed error
+      | .scalar =>
+          match ordinary.evalAddressedPartial checked scope (some world) registry with
+          | .ok .skipped => .ok []
+          | .ok (.evaluated outcome) => .ok outcome.message?.toList
+          | .error error => failed error
+
+/-- The partial-validation counterpart of `replayRules` for one caller-supplied relevant set, attributing
+the Kernel's partial messages the same way. Message rendering and the reference channels are not
+compared on this channel. -/
+def replayRulesPartial (model : DmModel) (language : Language) (world : World)
+    (checked : CheckedDocument model.flat) (relevant : List RelevantEntityPattern)
+    (kernel : List ObservedMessage) (registry : CustomValidationRegistry model.flat := {}) :
+    List RuleVerdict :=
+  let rules := validationRules model language
+  rules.map fun rule =>
+    let expected := sortedMessages (kernel.filter (attributedTo rule))
+    match checkAttributed model language world rules rule with
+    | .error refusal => { rule, status := .refused refusal }
+    | .ok checked' =>
+        match runRulePartial world checked relevant checked' registry with
+        | .error detail => { rule, status := .runFault detail }
+        | .ok messages =>
+            let actual := sortedMessages (messages.map (observe model.flat))
+            { rule, status := if actual == expected then .matched else .diverged actual expected }
+
 /-- Compare every authored and generated rule of `model` on one checked document against the
 Kernel's messages, attributed by code and error field. With `rendering`, an ordinary rule's firings
 first pass through `renderFirings` for that prepared context and locale. A custom condition resolves
@@ -191,15 +256,9 @@ def replayRules (model : DmModel) (language : Language) (world : World)
   let validated := checked.fullValidationDocument
   let rules := validationRules model language
   rules.map fun rule =>
-    let attributed (message : ObservedMessage) :=
-      message.code == rule.errorCode && unindexedPointer message.pointer == errorFieldPath rule
-    let expected := (kernel.filter attributed).mergeSort (compare · · != .gt)
-    -- A message names its code and error field, so only two rules sharing both cannot be told apart.
-    let shared := (rules.filter fun other =>
-      other.errorCode == rule.errorCode && errorFieldPath other == errorFieldPath rule).length > 1
-    let checkedRule := if shared then .error { construct := "ErrorCode", detail := s!"{rule.errorCode} is shared" }
-      else checkValidationRule model language rule world
-    match checkedRule, validated with
+    let attributed := attributedTo rule
+    let expected := sortedMessages (kernel.filter attributed)
+    match checkAttributed model language world rules rule, validated with
     | .error refusal, _ => { rule, status := .refused refusal }
     | .ok _, .error error => { rule, status := .runFault (repr error).pretty }
     | .ok checked', .ok document =>
@@ -214,7 +273,7 @@ def replayRules (model : DmModel) (language : Language) (world : World)
         match run with
         | .error detail => { rule, status := .runFault detail }
         | .ok (messages, fired) =>
-            let actual := (messages.map (observe model.flat)).mergeSort (compare · · != .gt)
+            let actual := sortedMessages (messages.map (observe model.flat))
             if actual != expected then { rule, status := .diverged actual expected } else
             let references := match checked', fired with
               | .parallel parallel, _ => some (replayParallelReferences model.flat document parallel

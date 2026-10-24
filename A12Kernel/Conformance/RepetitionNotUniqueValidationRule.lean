@@ -448,32 +448,36 @@ example :
         ([(10, 2)], .fired .omission), ([(10, 3)], .notFired)] := by
   native_decide
 
-/- Every composite-key component must be relevant before a row joins the duplicate relation. Complete relevance fires both omission-valued duplicates; count-only relevance admits both error instances but leaves the RNU leaf UNKNOWN. -/
+/- Every composite-key component must be relevant before a row joins the duplicate relation. Complete relevance fires both omission-valued duplicates; count-only relevance admits both error instances but leaves the RNU leaf UNKNOWN. Row 3 is within the declared capacity but absent from the document: it is an evaluated environment whose RNU leaf has no relation result in the partial view, so it reads UNKNOWN under both scopes, where full validation defaults the same row to not fired; the two physical duplicates are unaffected by it (spec/10 §5; partial channel of the population replay, 2026-10-24). -/
 example :
     partialVerdicts? compositeRnuRule? compositeRnuData
         allCompositeKeysRelevant =
       some [
         ([(10, 1)], some (.fired .omission)),
-        ([(10, 2)], some (.fired .omission))] ∧
+        ([(10, 2)], some (.fired .omission)),
+        ([(10, 3)], some .unknown)] ∧
     partialVerdicts? compositeRnuRule? compositeRnuData
         countOnlyRelevant =
       some [
         ([(10, 1)], some .unknown),
-        ([(10, 2)], some .unknown)] := by
+        ([(10, 2)], some .unknown),
+        ([(10, 3)], some .unknown)] := by
   native_decide
 
-/- A sole relevant composite row cannot duplicate an excluded peer. The same count-only split still permits an independent relevant positive branch to decide `Or`. -/
+/- A sole relevant composite row cannot duplicate an excluded peer. The same count-only split still permits an independent relevant positive branch to decide `Or`. The declared-capacity row 3 is outside the first-row relevant set, so it is skipped like row 2; under count-only relevance it is evaluated, its `Count` is empty and its RNU leaf has no relation result, so the `Or` stays UNKNOWN there (spec/10 §5; partial channel of the population replay, 2026-10-24). -/
 example :
     partialVerdicts? compositeRnuRule? compositeRnuData
         firstCompositeKeyRelevant =
       some [
         ([(10, 1)], some .notFired),
-        ([(10, 2)], none)] ∧
+        ([(10, 2)], none),
+        ([(10, 3)], none)] ∧
     partialVerdicts? compositeRnuOrCountRule? compositeRnuData
         countOnlyRelevant =
       some [
         ([(10, 1)], some (.fired .value)),
-        ([(10, 2)], some (.fired .value))] := by
+        ([(10, 2)], some (.fired .value)),
+        ([(10, 3)], some .unknown)] := by
   native_decide
 
 /- The checked condition rejects a second RNU leaf before runtime composition. -/

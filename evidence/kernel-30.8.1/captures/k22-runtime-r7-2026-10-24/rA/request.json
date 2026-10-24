@@ -1,0 +1,725 @@
+{
+ "model": "KRa_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "rows": [
+  {
+   "name": "p2-qty",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Qty",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p2-tag",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Tag",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p5-qty",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Qty",
+     "reps": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p5-tag",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Tag",
+     "reps": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p6-qty",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Qty",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p6-tag",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Tag",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "c1-qty",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Qty",
+     "reps": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "c1-tag",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Tag",
+     "reps": [
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p4-qty",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Qty",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p4-tag",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Tag",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "c2-qty",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Qty",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      1,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "c2-tag",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Tag",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      1,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "c3-qty",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Qty",
+     "reps": [
+      0,
+      1,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "c3-tag",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Tag",
+     "reps": [
+      0,
+      1,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items",
+     "reps": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p1-qty",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Qty",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "p1-tag",
+   "documentInline": {
+    "Order": {
+     "Ack": "x",
+     "Items": [
+      {
+       "Tag": "B",
+       "Qty": "10"
+      },
+      {
+       "Tag": "B",
+       "Qty": "10"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Ack",
+     "reps": [
+      0,
+      0
+     ]
+    },
+    {
+     "path": "/Order/Items/Tag",
+     "reps": [
+      1,
+      0,
+      1
+     ]
+    }
+   ]
+  }
+ ]
+}

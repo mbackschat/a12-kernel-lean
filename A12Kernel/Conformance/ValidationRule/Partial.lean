@@ -276,16 +276,21 @@ in every other respect, goes UNKNOWN under that same coverage. The twin is what 
 measurement of the masking layer rather than of a partial validation that ignores coverage. The
 error-field gate is separate and stricter, and it is checked per row before any addressed read: a
 coverage naming only the *other* field skips both rows even though that rule's own operand reads
-nothing at all, and the empty coverage does the same. Every row is the Kernel's
-([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)). -/
+nothing at all, and the empty coverage does the same. Every row over the document's two rows is the
+Kernel's ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)).
+The group declares capacity 5, so the three further entries are rows the document lacks: each is an
+evaluated environment whose empty `Err` leaves the guard false (or, under a coverage lacking the error
+field, a skip), and so adds no finding to the measured two (spec/10 §5; partial channel of the
+population replay, 2026-10-24). -/
 example :
     let fired := some (Verdict.fired .value)
-    repVerdicts repetitionOperand .full = some [some .notFired, fired] ∧
-      repVerdicts repetitionOperand (repCoverage [repErr.path]) = some [some .notFired, fired] ∧
-      repVerdicts baseOperand .full = some [fired, fired] ∧
-      repVerdicts baseOperand (repCoverage [repErr.path]) = some [some .unknown, some .unknown] ∧
-      repVerdicts repetitionOperand (repCoverage [repBase.path]) = some [none, none] ∧
-      repVerdicts repetitionOperand (repCoverage []) = some [none, none] := by
+    let absent := List.replicate 3 (some Verdict.notFired)
+    repVerdicts repetitionOperand .full = some ([some .notFired, fired] ++ absent) ∧
+      repVerdicts repetitionOperand (repCoverage [repErr.path]) = some ([some .notFired, fired] ++ absent) ∧
+      repVerdicts baseOperand .full = some ([fired, fired] ++ absent) ∧
+      repVerdicts baseOperand (repCoverage [repErr.path]) = some ([some .unknown, some .unknown] ++ absent) ∧
+      repVerdicts repetitionOperand (repCoverage [repBase.path]) = some (List.replicate 5 none) ∧
+      repVerdicts repetitionOperand (repCoverage []) = some (List.replicate 5 none) := by
   native_decide
 
 end A12Kernel.Conformance.ValidationRule.Partial

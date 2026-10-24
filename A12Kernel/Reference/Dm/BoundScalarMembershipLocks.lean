@@ -200,17 +200,20 @@ private def defaultModel (field : FieldId) : FlatModel :=
 
 example : (defaultModel 2).validate.isOk = true ∧ (defaultModel 3).validate.isOk = true := by native_decide
 
+-- With one physical row and a two-row capacity, the partial list's second entry is the absent row:
+-- its cells read empty and it does not fire (spec/10 §5; partial channel of the population replay,
+-- 2026-10-24).
 example :
     run .enumeration "FieldValueIncludedInValueList(Rows/A,[Rows/B],[Rows/C])" true
       { rows := [{ b := "", c := "1" }] } (defaultModel 3) = some first ∧
     partiallyObserved .enumeration "FieldValueIncludedInValueList(Rows/A,[Rows/B],[Rows/C])"
       [rowField "A", rowField "B", rowField "C"]
-      { rows := [{ b := "", c := "1" }] } (defaultModel 3) = some [.fired .value] := by native_decide
+      { rows := [{ b := "", c := "1" }] } (defaultModel 3) = some [.fired .value, .notFired] := by native_decide
 
 example :
     partiallyObserved .enumeration "FieldValueNotIncludedInValueList(Rows/A,[Rows/C])"
       [rowField "A", rowField "C"] { rows := [{ a := "", c := "1" }] }
-      (defaultModel 2) "../Rows/C" = some [.notFired] := by native_decide
+      (defaultModel 2) "../Rows/C" = some [.notFired, .notFired] := by native_decide
 
 example : operators.all (fun op =>
     let base := model (.number { scale := 0, signed := true })

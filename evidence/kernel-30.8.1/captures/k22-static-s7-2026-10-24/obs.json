@@ -1,0 +1,179 @@
+{
+ "schemaVersion": 2,
+ "dmtool": "0.13.0",
+ "kernelBuilt": "30.8.1",
+ "kernelRuntime": "30.8.1",
+ "source": {
+  "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "state": "CLEAN"
+ },
+ "model": "11c3a0e0d51c22812ee6e5a2b906911f4c47ab98e37c9992c27b96f8df4e2828",
+ "observations": [
+  {
+   "id": "x1",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ]
+  },
+  {
+   "id": "x2",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_NO_STRING_OR_NUMBER_FOR_ADD"
+   ]
+  },
+  {
+   "id": "x3",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "x4",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ]
+  },
+  {
+   "id": "x5",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "x6",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "x7",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_NO_NUMBER_FOR_CALC"
+   ]
+  },
+  {
+   "id": "x8",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ]
+  },
+  {
+   "id": "x9",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ]
+  },
+  {
+   "id": "x10",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "y1",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ]
+  },
+  {
+   "id": "y2",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ]
+  },
+  {
+   "id": "y3",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "y4",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "y5",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "y6",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "y7",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "y8",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "id": "y9",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "y10",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ]
+  },
+  {
+   "id": "y11",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "y12",
+   "ok": true,
+   "valid": null,
+   "codes": []
+  },
+  {
+   "id": "y13",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_MULTIPLE_INDEX_FIELDS"
+   ]
+  }
+ ]
+}

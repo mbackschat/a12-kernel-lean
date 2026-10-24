@@ -764,8 +764,12 @@ def evalOrdinaryRepeatablePartialPrepared
     let some errorDeclaration := rule.errorPlacement.fieldDeclaration? | throw .unsupportedCondition
     let errorField := errorDeclaration.id
     let checked := preliminary.index.base
+    -- A partial call walks full validation's declared-capacity domain with the content gate
+    -- overridden, so a relevant row the document lacks is evaluated (spec/10 §5): `[Qty] < 100`
+    -- fires at each declared `Items` row of an empty document (generated-requiredness capture,
+    -- partial channel, 2026-10-24).
     let environments ←
-      checked.validationRowEnvironments iterationScope
+      checked.fullValidationRowEnvironments iterationScope (ungated := true)
         |>.mapError toOrdinaryRowEnvironmentError
     let admittedEnvironments := environments.filter fun environment =>
       preliminary.relevance.coversFieldAtBoundLevels model errorField

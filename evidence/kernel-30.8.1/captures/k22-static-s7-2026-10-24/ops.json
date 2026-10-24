@@ -1,0 +1,289 @@
+[
+ {
+  "id": "x1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x9",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "x10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "x10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "y1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Zone/Cell/CV For \"z1\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Zone/Cell/CV For \"z1\" For \"c1\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Amount, Zone/Plain*/PV For \"z1\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\", Rows*/RQty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\", Rows*/RQty Having [Rows/RQty] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\") > Sum(Zone/Plain*/PV For \"z2\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Zone/ZV For \"z1\"] > [Zone/ZV For Title]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Zone/ZV For [Zone/ZLabel For \"z1\"]] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y9",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\", Zone/Plain*/PV For \"z2\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "y10",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Zone/Cell/CV For \"z1\"] > [Zone/ZV For \"z1\"]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "y11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "y11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "y12",
+  "verb": "computation",
+  "args": [
+   "add",
+   "y12.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "y13",
+  "verb": "computation",
+  "args": [
+   "add",
+   "y13.json",
+   "--dry-run"
+  ]
+ }
+]

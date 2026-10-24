@@ -1,0 +1,416 @@
+{
+ "header": {
+  "id": "KRc_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "KRc_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Group",
+           "name": "Items",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "name": "D",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              },
+              "id": "/Form/Rows/Items/D"
+             }
+            ]
+           },
+           "id": "/Form/Rows/Items"
+          },
+          {
+           "type": "Field",
+           "name": "Id",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           },
+           "id": "/Form/Rows/Id"
+          },
+          {
+           "type": "Field",
+           "name": "D",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           },
+           "id": "/Form/Rows/D"
+          },
+          {
+           "type": "Field",
+           "name": "T",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           },
+           "id": "/Form/Rows/T"
+          },
+          {
+           "type": "Field",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": true,
+              "maxLength": 2
+             }
+            }
+           },
+           "id": "/Form/Rows/N"
+          },
+          {
+           "type": "Field",
+           "name": "S",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {
+              "errorMessage": [
+               {
+                "locale": "en_US",
+                "text": "probe"
+               }
+              ],
+              "maxLength": 2,
+              "pattern": "[0-9]+"
+             }
+            }
+           },
+           "id": "/Form/Rows/S"
+          }
+         ],
+         "indexFieldName": "Id"
+        },
+        "id": "/Form/Rows"
+       },
+       {
+        "type": "Field",
+        "name": "Ref",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        },
+        "id": "/Form/Ref"
+       },
+       {
+        "type": "Field",
+        "name": "Key",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        },
+        "id": "/Form/Key"
+       },
+       {
+        "type": "Field",
+        "name": "Bad",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {
+           "errorMessage": [
+            {
+             "locale": "en_US",
+             "text": "probe"
+            }
+           ],
+           "maxLength": 2,
+           "pattern": "[0-9]+"
+          }
+         }
+        },
+        "id": "/Form/Bad"
+       },
+       {
+        "type": "Field",
+        "name": "Amount",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/Amount"
+       },
+       {
+        "type": "Field",
+        "name": "Low",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        },
+        "id": "/Form/Low"
+       },
+       {
+        "type": "Field",
+        "name": "Out",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/Out"
+       },
+       {
+        "type": "Field",
+        "name": "Out2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/Out2"
+       },
+       {
+        "type": "Rule",
+        "name": "KD1",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "KD1",
+         "errorCondition": "FieldFilled(Ref) And (DifferenceInDays(Rows/D For Key, Low) != 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/KD1"
+       },
+       {
+        "type": "Rule",
+        "name": "KD2",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "KD2",
+         "errorCondition": "FieldFilled(Ref) And (DifferenceInDays(AddDays(Rows/D For Key,[Amount]), Low) != 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/KD2"
+       },
+       {
+        "type": "Rule",
+        "name": "KS3",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "KS3",
+         "errorCondition": "FieldFilled(Ref) And (AddDays(Low, Sum(Rows*/N)) == \"05.03.2024\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/KS3"
+       },
+       {
+        "type": "Rule",
+        "name": "KF4",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "KF4",
+         "errorCondition": "FieldFilled(Ref) And (AddDays(Low, Sum(Rows*/N Having [Rows/S] == \"1\")) == \"04.03.2024\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/KF4"
+       },
+       {
+        "type": "Rule",
+        "name": "KX5",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "KX5",
+         "errorCondition": "FieldFilled(Ref) And (AddDays(Low, MaxValue(Rows*/N)) == \"04.03.2024\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/KX5"
+       },
+       {
+        "type": "Rule",
+        "name": "KX6",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "KX6",
+         "errorCondition": "FieldFilled(Ref) And (AddDays(Low, MinValue(Rows*/N)) == \"02.03.2024\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/KX6"
+       },
+       {
+        "type": "Rule",
+        "name": "KX7",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "KX7",
+         "errorCondition": "FieldFilled(Ref) And (AddDays(Low, NumberOfDifferentValues(Rows*/N)) == \"03.03.2024\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/KX7"
+       },
+       {
+        "type": "Rule",
+        "name": "KX8",
+        "Rule": {
+         "errorEntityRelPath": "../Ref",
+         "errorCode": "KX8",
+         "errorCondition": "FieldFilled(Ref) And (AddDays(Low, NumberOfFilledFields(Rows*/N)) == \"03.03.2024\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/KX8"
+       },
+       {
+        "type": "Computation",
+        "name": "OutComp",
+        "Computation": {
+         "computedFieldRelPath": "../Out",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(Rows/D For Key, Low)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        },
+        "id": "/Form/OutComp"
+       },
+       {
+        "type": "Computation",
+        "name": "Out2Comp",
+        "Computation": {
+         "computedFieldRelPath": "../Out2",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(AddDays(Rows/D For Key,[Amount]), Low)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        },
+        "id": "/Form/Out2Comp"
+       }
+      ]
+     },
+     "id": "/Form"
+    }
+   ]
+  }
+ }
+}

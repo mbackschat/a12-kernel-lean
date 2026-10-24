@@ -1,0 +1,42 @@
+{
+ "model": "KRd_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "two",
+   "documentInline": {
+    "Form": {
+     "Lines": [
+      {
+       "Qty": "0",
+       "Price": "0.50"
+      },
+      {
+       "Qty": "1",
+       "Price": "2.00"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "one-empty",
+   "documentInline": {
+    "Form": {
+     "Lines": [
+      {
+       "Price": "0.50"
+      },
+      {
+       "Qty": "1"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

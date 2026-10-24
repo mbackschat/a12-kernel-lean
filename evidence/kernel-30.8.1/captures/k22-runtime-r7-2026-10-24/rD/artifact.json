@@ -1,0 +1,131 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "KRd_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-24T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "two",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "DM",
+       "field": "Form/Lines[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Lines[2]/Price",
+        "Form/Lines[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "DS",
+       "field": "Form/Lines/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Lines/Price",
+        "Form/Lines/Qty"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "DM",
+       "field": "Form/Lines[2]/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Lines[2]/Price",
+        "Form/Lines[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "DS",
+       "field": "Form/Lines/Qty",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Lines/Price",
+        "Form/Lines/Qty"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "one-empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "DS",
+       "field": "Form/Lines/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Lines/Price",
+        "Form/Lines/Qty"
+       ],
+       "fillToFix": [
+        "Form/Lines/Price",
+        "Form/Lines/Qty"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "DS",
+       "field": "Form/Lines/Qty",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Lines/Price",
+        "Form/Lines/Qty"
+       ],
+       "fillToFix": [
+        "Form/Lines/Price",
+        "Form/Lines/Qty"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

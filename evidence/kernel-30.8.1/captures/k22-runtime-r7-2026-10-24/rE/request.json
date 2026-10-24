@@ -1,0 +1,439 @@
+{
+ "model": "KRe_DM.json",
+ "clock": "2026-10-24T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "r1",
+   "documentInline": {
+    "Form": {
+     "Title": "z2",
+     "Out": "99",
+     "Rows": [
+      {
+       "Code": "R1",
+       "Body": {
+        "A": "7",
+        "B": ""
+       },
+       "Children": []
+      },
+      {
+       "Code": "R2",
+       "Body": {
+        "A": "2",
+        "B": ""
+       },
+       "Children": [
+        {
+         "C": "3"
+        }
+       ]
+      }
+     ],
+     "Zone": [
+      {
+       "ZKey": "z1",
+       "ZV": "5",
+       "Plain": [
+        {
+         "PV": "5"
+        },
+        {
+         "PV": "5"
+        }
+       ]
+      },
+      {
+       "ZKey": "z2",
+       "ZV": "1",
+       "Plain": [
+        {
+         "PV": "1"
+        }
+       ]
+      }
+     ],
+     "Key": "R1"
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "r2",
+   "documentInline": {
+    "Form": {
+     "Title": "z2",
+     "Out": "99",
+     "Rows": [
+      {
+       "Code": "R1",
+       "Body": {
+        "A": "7",
+        "B": ""
+       },
+       "Children": []
+      },
+      {
+       "Code": "R2",
+       "Body": {
+        "A": "2",
+        "B": ""
+       },
+       "Children": [
+        {
+         "C": "3"
+        }
+       ]
+      }
+     ],
+     "Zone": [
+      {
+       "ZKey": "z1",
+       "ZV": "5",
+       "Plain": [
+        {
+         "PV": "5"
+        },
+        {
+         "PV": "5"
+        }
+       ]
+      },
+      {
+       "ZKey": "z2",
+       "ZV": "1",
+       "Plain": [
+        {
+         "PV": "1"
+        }
+       ]
+      }
+     ],
+     "Key": "R2"
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "r2-emptybody",
+   "documentInline": {
+    "Form": {
+     "Title": "z2",
+     "Out": "99",
+     "Rows": [
+      {
+       "Code": "R1",
+       "Body": {
+        "A": "7",
+        "B": ""
+       },
+       "Children": []
+      },
+      {
+       "Code": "R2",
+       "Body": {},
+       "Children": []
+      }
+     ],
+     "Zone": [
+      {
+       "ZKey": "z1",
+       "ZV": "5",
+       "Plain": [
+        {
+         "PV": "5"
+        },
+        {
+         "PV": "5"
+        }
+       ]
+      },
+      {
+       "ZKey": "z2",
+       "ZV": "1",
+       "Plain": [
+        {
+         "PV": "1"
+        }
+       ]
+      }
+     ],
+     "Key": "R2"
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "missing",
+   "documentInline": {
+    "Form": {
+     "Title": "z2",
+     "Out": "99",
+     "Rows": [
+      {
+       "Code": "R1",
+       "Body": {
+        "A": "7",
+        "B": ""
+       },
+       "Children": []
+      },
+      {
+       "Code": "R2",
+       "Body": {
+        "A": "2",
+        "B": ""
+       },
+       "Children": [
+        {
+         "C": "3"
+        }
+       ]
+      }
+     ],
+     "Zone": [
+      {
+       "ZKey": "z1",
+       "ZV": "5",
+       "Plain": [
+        {
+         "PV": "5"
+        },
+        {
+         "PV": "5"
+        }
+       ]
+      },
+      {
+       "ZKey": "z2",
+       "ZV": "1",
+       "Plain": [
+        {
+         "PV": "1"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "dup",
+   "documentInline": {
+    "Form": {
+     "Title": "z2",
+     "Out": "99",
+     "Rows": [
+      {
+       "Code": "R1",
+       "Body": {
+        "A": "7",
+        "B": ""
+       },
+       "Children": []
+      },
+      {
+       "Code": "R1",
+       "Body": {
+        "A": "2",
+        "B": ""
+       },
+       "Children": [
+        {
+         "C": "3"
+        }
+       ]
+      }
+     ],
+     "Zone": [
+      {
+       "ZKey": "z1",
+       "ZV": "5",
+       "Plain": [
+        {
+         "PV": "5"
+        },
+        {
+         "PV": "5"
+        }
+       ]
+      },
+      {
+       "ZKey": "z2",
+       "ZV": "1",
+       "Plain": [
+        {
+         "PV": "1"
+        }
+       ]
+      }
+     ],
+     "Key": "R1"
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "r1-ab",
+   "documentInline": {
+    "Form": {
+     "Title": "z2",
+     "Out": "99",
+     "Rows": [
+      {
+       "Code": "R1",
+       "Body": {
+        "A": "7",
+        "B": "7"
+       },
+       "Children": []
+      },
+      {
+       "Code": "R2",
+       "Body": {
+        "A": "2",
+        "B": ""
+       },
+       "Children": [
+        {
+         "C": "3"
+        }
+       ]
+      }
+     ],
+     "Zone": [
+      {
+       "ZKey": "z1",
+       "ZV": "5",
+       "Plain": [
+        {
+         "PV": "5"
+        },
+        {
+         "PV": "5"
+        }
+       ]
+      },
+      {
+       "ZKey": "z2",
+       "ZV": "1",
+       "Plain": [
+        {
+         "PV": "1"
+        }
+       ]
+      }
+     ],
+     "Key": "R1"
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form"
+    }
+   ]
+  },
+  {
+   "name": "r1-noCode",
+   "documentInline": {
+    "Form": {
+     "Title": "z2",
+     "Out": "99",
+     "Rows": [
+      {
+       "Code": "R1",
+       "Body": {
+        "A": "7",
+        "B": ""
+       },
+       "Children": []
+      },
+      {
+       "Code": "R2",
+       "Body": {
+        "A": "2",
+        "B": ""
+       },
+       "Children": [
+        {
+         "C": "3"
+        }
+       ]
+      }
+     ],
+     "Zone": [
+      {
+       "ZKey": "z1",
+       "ZV": "5",
+       "Plain": [
+        {
+         "PV": "5"
+        },
+        {
+         "PV": "5"
+        }
+       ]
+      },
+      {
+       "ZKey": "z2",
+       "ZV": "1",
+       "Plain": [
+        {
+         "PV": "1"
+        }
+       ]
+      }
+     ],
+     "Key": "R1"
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Key"
+    },
+    {
+     "path": "/Form/Out"
+    },
+    {
+     "path": "/Form/Title"
+    },
+    {
+     "path": "/Form/Rows/Body"
+    },
+    {
+     "path": "/Form/Rows/Children"
+    },
+    {
+     "path": "/Form/Zone"
+    }
+   ]
+  }
+ ]
+}

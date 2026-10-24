@@ -398,10 +398,13 @@ private def relevantPartialGroup : RelevantEntityPattern :=
   { path := ["Order", "Sections"]
     indices := [.all, .concrete 1] }
 
+/-- One entry per declared row, `none` for a row the relevant set skips. The one-row fixtures leave
+the declared second row to the relevant set, which names `Sections[1]` only, so that absent row is
+skipped (spec/10 §5; partial channel of the population replay, 2026-10-24). -/
 private def partialGroupVerdicts?
     (rule : Option (CheckedResolvedValidationRule partialGroupModel))
     (data : DocumentData) (relevant : List RelevantEntityPattern) :
-    Option (List Verdict) := do
+    Option (List (Option Verdict)) := do
   let checkedRule ← rule
   let prepared ←
     (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
@@ -414,10 +417,10 @@ private def partialGroupVerdicts?
   match result with
   | .skipped => none
   | .evaluated rows =>
-      rows.mapM fun row =>
+      some (rows.map fun row =>
         match row.2 with
         | .skipped => none
-        | .evaluated outcome => some outcome.verdict
+        | .evaluated outcome => some outcome.verdict)
 
 private def partialTerminalGroupVerdict?
     (operator : GroupFillQuantifier) (data : DocumentData)
@@ -562,20 +565,26 @@ example :
       ]) := by
   native_decide
 
-/- A caller-relevant ancestor does not manufacture a missing physical row for a per-row rule. Phantom row-1 anchoring belongs to the distinct once-evaluation rule shape. -/
+/- A caller-relevant ancestor covers the error field at every declared row, so a per-row rule evaluates the rows an empty document lacks; both cells read empty and neither declared row fires. The domain is the declared capacity (two rows here), not a single phantom row 1, which belongs to the once-evaluation rule shape (spec/10 §5; partial channel of the population replay, 2026-10-24). -/
 example :
     snapshot? (pairedRule? false) noRows orderAncestor =
-      some (some []) := by
+      some (some [
+        ([(10, 1)], some .notFired),
+        ([(10, 2)], some .notFired)
+      ]) := by
   native_decide
 
-/- Partial validation uses the same nested validation domain as full validation. A relevant inner Number below an existing outer row evaluates at implicit child row 1 and retains empty-as-zero omission polarity. -/
+/- A partial call walks the nested declared-capacity domain of full validation. A relevant inner Number evaluates at the lone outer row's implicit child row 1, at its absent second child, and at both children of the absent second outer row, each retaining empty-as-zero omission polarity (spec/10 §5; partial channel of the population replay, 2026-10-24). -/
 example :
     snapshot? nestedRepeatableNumericRule? {
         instantiatedRows := [{ group := 10, path := [1] }]
         cells := []
       } (.partialSet [RelevantEntityPattern.allInstances innerAmount.path]) =
       some (some [
-        ([(10, 1), (20, 1)], some (.fired .omission))
+        ([(10, 1), (20, 1)], some (.fired .omission)),
+        ([(10, 1), (20, 2)], some (.fired .omission)),
+        ([(10, 2), (20, 1)], some (.fired .omission)),
+        ([(10, 2), (20, 2)], some (.fired .omission))
       ]) := by
   native_decide
 
@@ -590,7 +599,7 @@ example :
       (partialGroupData none (some (.parsed (.num 9))))
       [relevantPartialGroupField partialGroupError,
         relevantPartialGroupField selectedDetail] =
-      some [.notFired] ∧
+      some [some .notFired, none] ∧
     fullPartialGroupVerdicts? partialGroupFilledRule?
       (partialGroupData none (some (.parsed (.num 9)))) =
       some [.fired .value, .notFired] := by
@@ -601,13 +610,13 @@ example :
 example :
     partialGroupVerdicts? partialGroupNotFilledRule?
         (partialGroupData (some ("1", .parsed (.enum "1"))))
-        [relevantPartialGroup] = some [.notFired] ∧
+        [relevantPartialGroup] = some [some .notFired, none] ∧
     partialGroupVerdicts? partialGroupNotFilledRule?
         (partialGroupData (some ("bad", .rejected .malformed)))
-        [relevantPartialGroup] = some [.notFired] ∧
+        [relevantPartialGroup] = some [some .notFired, none] ∧
     partialGroupVerdicts? partialGroupNotFilledRule?
         (partialGroupData none) [relevantPartialGroup] =
-      some [.notFired] := by
+      some [some .notFired, none] := by
   native_decide
 
 /- One visible filled descendant decides a partly covered terminal group as filled. The positive
@@ -689,7 +698,7 @@ example :
       ] := by
   native_decide
 
-/- Cause-free suppression of a relevant defaulted index remains UNKNOWN to the ordinary reader; it is not reinterpreted as an empty checked cell. -/
+/- Cause-free suppression of a relevant defaulted index remains UNKNOWN to the ordinary reader; it is not reinterpreted as an empty checked cell. The declared second row the document lacks is outside the relevant set and skipped (spec/10 §5; partial channel of the population replay, 2026-10-24). -/
 example :
     partialIndexSnapshot? [
         relevantPartialGroupFieldAt partialGroupIndex 1] {
@@ -697,7 +706,8 @@ example :
           cells := []
         } =
       some [
-        ([(10, 1)], some .unknown)
+        ([(10, 1)], some .unknown),
+        ([(10, 2)], none)
       ] := by
   native_decide
 
@@ -706,7 +716,7 @@ example :
     partialGroupVerdicts? partialIndexNumericRule?
         (partialGroupData none)
         [relevantPartialGroupField partialGroupIndex] =
-      some [.unknown] := by
+      some [some .unknown, none] := by
   native_decide
 
 /- The shared partial read also feeds ordinary numeric atoms: duplicate Number indices are UNKNOWN, while omitting the partner restores the positive comparison on the selected row. -/

@@ -52,6 +52,7 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `owner`: [`PartialValidation.lean`](../../A12Kernel/Semantics/PartialValidation.lean), [`ValidationRelevance.lean`](../../A12Kernel/Elaboration/ValidationRelevance.lean), partial rule owners
 - `coverage`: Declared-slot coverage partitions relevant coordinates and wildcard remainder without allocating the capacity product. [Coverage locks](../../A12Kernel/Conformance/PartialGroupList.lean) compare every two-level pattern subset with explicit slots, plus bound/missing parents and maximum-capacity controls. Full parent-group relevance reuses that coverage query; its [product owner](cross-clause.md#cap-resolved-group-presence-both-arms) owns the matrix.
 - `assurance`: E/P closed for admitted rules; LF23 source-closed; selected C/X
+- `row-domain`: an ordinary repeatable partial rule walks full validation's [declared-capacity domain](../../A12Kernel/Elaboration/RuleIterationDomain.lean) with the content gate overridden, and a plain numeric leaf reads through the ordered carrier. The replay's [partial channel](../sources/group-count-topology.md#src-k22-partial-channel) compares every retained partial message, all 40360 matching on 2026-10-24.
 - `remains`: Wider addressed/custom leaves: [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion), [SG11](../SEMANTICS-GAPS.md#sg11--custom-condition-checked-orchestration)
 
 <a id="cap-fill-group-quantifiers"></a>

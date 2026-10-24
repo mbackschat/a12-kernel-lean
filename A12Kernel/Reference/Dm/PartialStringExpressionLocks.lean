@@ -225,16 +225,23 @@ private def fullRules (text : String) (repeated : Bool) (scenario : Scenario := 
   let messages ← (runRule world document rule).toOption
   pure (messages.map fun message => (observe model message).messageType)
 
+-- `Rows` declares capacity 3 over a two-row document: the partial list ends with the absent third
+-- row, whose empty `Ref` leaves the rule's `FieldFilled(Rows/Ref)` guard false, while the
+-- full-validation message list names only the two physical rows (spec/10 §5; partial channel of
+-- the population replay, 2026-10-24).
+private def partialExpected (repeated : Bool) (verdict : Verdict) : List (Option Verdict) :=
+  if repeated then [some verdict, some verdict, some .notFired] else [some verdict]
+
 example : [false,true].all (fun repeated => (equalities.take 6).all fun (expression, expected) =>
     let text := expression ++ " == \"" ++ expected ++ "\""
-    partialRules text repeated == some (List.replicate (if repeated then 2 else 1) (some (.fired .value))) &&
+    partialRules text repeated == some (partialExpected repeated (.fired .value)) &&
     fullRules text repeated == some (List.replicate (if repeated then 2 else 1) "VALUE_ERROR") &&
     partialRules text repeated {} (coverage [rootField "Key", rootField "S", rowField "Code"]) ==
-      some (List.replicate (if repeated then 2 else 1) (some .unknown))) = true := by native_decide
+      some (partialExpected repeated .unknown)) = true := by native_decide
 
 example : [false,true].all (fun repeated =>
     partialRules "[Rows/S For Key] + \"!\" == \"!\"" repeated { key := "missing" } ==
-      some (List.replicate (if repeated then 2 else 1) (some (.fired .omission))) &&
+      some (partialExpected repeated (.fired .omission)) &&
     fullRules "[Rows/S For Key] + \"!\" == \"!\"" repeated { key := "missing" } ==
       some (List.replicate (if repeated then 2 else 1) "OMISSION_ERROR")) = true := by native_decide
 

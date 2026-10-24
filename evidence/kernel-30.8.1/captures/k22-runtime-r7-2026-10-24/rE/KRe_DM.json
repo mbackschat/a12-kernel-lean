@@ -1,0 +1,306 @@
+{
+ "header": {
+  "id": "KRe_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "KRe_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "name": "Key",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        },
+        "id": "/Form/Key"
+       },
+       {
+        "type": "Field",
+        "name": "Out",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        },
+        "id": "/Form/Out"
+       },
+       {
+        "type": "Field",
+        "name": "Title",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        },
+        "id": "/Form/Title"
+       },
+       {
+        "type": "Group",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "name": "Code",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {
+              "maxLength": 2
+             }
+            }
+           },
+           "id": "/Form/Rows/Code"
+          },
+          {
+           "type": "Group",
+           "name": "Body",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "name": "A",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              },
+              "id": "/Form/Rows/Body/A"
+             },
+             {
+              "type": "Field",
+              "name": "B",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              },
+              "id": "/Form/Rows/Body/B"
+             },
+             {
+              "type": "Rule",
+              "name": "RG1",
+              "Rule": {
+               "errorEntityRelPath": "../A",
+               "errorCode": "RG1",
+               "errorCondition": "GroupFilled(RuleGroup For /Form/Key)",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "probe"
+                }
+               ]
+              },
+              "id": "/Form/Rows/Body/RG1"
+             },
+             {
+              "type": "Rule",
+              "name": "RG2",
+              "Rule": {
+               "errorEntityRelPath": "../A",
+               "errorCode": "RG2",
+               "errorCondition": "NumberOfFilledFields(RuleGroup For /Form/Key) == 1",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "probe"
+                }
+               ]
+              },
+              "id": "/Form/Rows/Body/RG2"
+             },
+             {
+              "type": "Computation",
+              "name": "OutComp",
+              "Computation": {
+               "computedFieldRelPath": "../../../Out",
+               "computationAlternatives": [
+                {
+                 "operation": "1"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ],
+               "commonPrecondition": "GroupFilled(RuleGroup For /Form/Key)"
+              },
+              "id": "/Form/Rows/Body/OutComp"
+             }
+            ]
+           },
+           "id": "/Form/Rows/Body"
+          },
+          {
+           "type": "Group",
+           "name": "Children",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "name": "C",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              },
+              "id": "/Form/Rows/Children/C"
+             }
+            ]
+           },
+           "id": "/Form/Rows/Children"
+          }
+         ],
+         "indexFieldName": "Code"
+        },
+        "id": "/Form/Rows"
+       },
+       {
+        "type": "Group",
+        "name": "Zone",
+        "Group": {
+         "repeatability": 4,
+         "elements": [
+          {
+           "type": "Field",
+           "name": "ZKey",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           },
+           "id": "/Form/Zone/ZKey"
+          },
+          {
+           "type": "Field",
+           "name": "ZV",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           },
+           "id": "/Form/Zone/ZV"
+          },
+          {
+           "type": "Group",
+           "name": "Plain",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "name": "PV",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              },
+              "id": "/Form/Zone/Plain/PV"
+             }
+            ]
+           },
+           "id": "/Form/Zone/Plain"
+          }
+         ],
+         "indexFieldName": "ZKey"
+        },
+        "id": "/Form/Zone"
+       },
+       {
+        "type": "Rule",
+        "name": "SK1",
+        "Rule": {
+         "errorEntityRelPath": "../Title",
+         "errorCode": "SK1",
+         "errorCondition": "FieldFilled(Title) And Sum(Zone/Plain*/PV For \"z1\") > Sum(Zone/Plain*/PV For \"z2\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/SK1"
+       },
+       {
+        "type": "Rule",
+        "name": "SK2",
+        "Rule": {
+         "errorEntityRelPath": "../Title",
+         "errorCode": "SK2",
+         "errorCondition": "FieldFilled(Title) And [Zone/ZV For \"z1\"] > [Zone/ZV For Title]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Form/SK2"
+       }
+      ]
+     },
+     "id": "/Form"
+    }
+   ]
+  }
+ }
+}

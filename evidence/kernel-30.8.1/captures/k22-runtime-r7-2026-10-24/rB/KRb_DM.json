@@ -1,0 +1,122 @@
+{
+ "header": {
+  "id": "KRb_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "KRb_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "name": "Title",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        },
+        "id": "/Form/Title"
+       },
+       {
+        "type": "Group",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "name": "Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           },
+           "id": "/Form/Rows/Qty"
+          },
+          {
+           "type": "Field",
+           "name": "Label",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           },
+           "id": "/Form/Rows/Label"
+          },
+          {
+           "type": "Rule",
+           "name": "W2",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "W2",
+            "errorCondition": "FieldFilled(Qty) And CustomCondition W2",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           },
+           "id": "/Form/Rows/W2"
+          },
+          {
+           "type": "Rule",
+           "name": "W3",
+           "Rule": {
+            "errorEntityRelPath": "../Qty",
+            "errorCode": "W3",
+            "errorCondition": "FieldFilled(Qty) And CustomCondition W3",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           },
+           "id": "/Form/Rows/W3"
+          }
+         ]
+        },
+        "id": "/Form/Rows"
+       }
+      ]
+     },
+     "id": "/Form"
+    }
+   ]
+  }
+ }
+}

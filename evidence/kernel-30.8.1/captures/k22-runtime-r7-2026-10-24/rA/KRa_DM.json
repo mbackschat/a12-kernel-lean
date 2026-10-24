@@ -1,0 +1,173 @@
+{
+ "header": {
+  "id": "KRa_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "KRa_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "name": "Order",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "name": "Ack",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        },
+        "id": "/Order/Ack"
+       },
+       {
+        "type": "Group",
+        "name": "Items",
+        "Group": {
+         "repeatability": 50,
+         "elements": [
+          {
+           "type": "Field",
+           "name": "Tag",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           },
+           "id": "/Order/Items/Tag"
+          },
+          {
+           "type": "Field",
+           "name": "Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           },
+           "id": "/Order/Items/Qty"
+          }
+         ]
+        },
+        "id": "/Order/Items"
+       },
+       {
+        "type": "Rule",
+        "name": "NFF",
+        "Rule": {
+         "errorEntityRelPath": "../Ack",
+         "errorCode": "NFF",
+         "errorCondition": "FieldFilled(Ack) And NumberOfFilledFields(Items*/Qty) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Order/NFF"
+       },
+       {
+        "type": "Rule",
+        "name": "NFG",
+        "Rule": {
+         "errorEntityRelPath": "../Ack",
+         "errorCode": "NFG",
+         "errorCondition": "FieldFilled(Ack) And NumberOfFilledGroups(Items*) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Order/NFG"
+       },
+       {
+        "type": "Rule",
+        "name": "NVV",
+        "Rule": {
+         "errorEntityRelPath": "../Ack",
+         "errorCode": "NVV",
+         "errorCondition": "FieldFilled(Ack) And NumberOfValueInFields(10 In Items*/Qty) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Order/NVV"
+       },
+       {
+        "type": "Rule",
+        "name": "SUM",
+        "Rule": {
+         "errorEntityRelPath": "../Ack",
+         "errorCode": "SUM",
+         "errorCondition": "FieldFilled(Ack) And Sum(/Order/Items*/Qty) > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Order/SUM"
+       },
+       {
+        "type": "Rule",
+        "name": "NVL",
+        "Rule": {
+         "errorEntityRelPath": "../Ack",
+         "errorCode": "NVL",
+         "errorCondition": "FieldFilled(Ack) And NoFieldValueIncludedInValueList(/Order/Items*/Tag In \"A\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        },
+        "id": "/Order/NVL"
+       }
+      ]
+     },
+     "id": "/Order"
+    }
+   ]
+  }
+ }
+}

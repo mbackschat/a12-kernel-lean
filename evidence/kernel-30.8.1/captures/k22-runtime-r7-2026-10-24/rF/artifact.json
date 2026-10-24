@@ -1,0 +1,269 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "KRf_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-24T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "depth3",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "D3",
+       "field": "Rt/A[2]/B/C[2]/Fl",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Rt/A[2]/B/C[2]/Fl",
+        "Rt/A[2]/B/C[2]/K/Kid",
+        "Rt/A[2]/B/C[2]/K/V"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K/Kid"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K[2]/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K[2]/Kid"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "D3",
+       "field": "Rt/A[2]/B/C[2]/Fl",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Rt/A[2]/B/C[2]/Fl",
+        "Rt/A[2]/B/C[2]/K/Kid",
+        "Rt/A[2]/B/C[2]/K/V"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K/Kid"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K[2]/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K[2]/Kid"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "D3",
+       "field": "Rt/A[2]/B/C[2]/Fl",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Rt/A[2]/B/C[2]/Fl",
+        "Rt/A[2]/B/C[2]/K/Kid",
+        "Rt/A[2]/B/C[2]/K/V"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K/Kid"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K[2]/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K[2]/Kid"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "D3",
+       "field": "Rt/A[2]/B/C[2]/Fl",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Rt/A[2]/B/C[2]/Fl",
+        "Rt/A[2]/B/C[2]/K/Kid",
+        "Rt/A[2]/B/C[2]/K/V"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K/Kid"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K[2]/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K[2]/Kid"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "depth3-noKid",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "D3",
+       "field": "Rt/A[2]/B/C[2]/Fl",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Rt/A[2]/B/C[2]/Fl",
+        "Rt/A[2]/B/C[2]/K/Kid",
+        "Rt/A[2]/B/C[2]/K/V"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K/Kid"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K[2]/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K[2]/Kid"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "D3",
+       "field": "Rt/A[2]/B/C[2]/Fl",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Rt/A[2]/B/C[2]/Fl",
+        "Rt/A[2]/B/C[2]/K/Kid",
+        "Rt/A[2]/B/C[2]/K/V"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K/Kid"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Rt/A/B[2]/C/K[2]/Kid",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Rt/A/B[2]/C/K[2]/Kid"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": []
+    }
+   ]
+  }
+ ]
+}

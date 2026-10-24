@@ -107,16 +107,19 @@ example : kinds.all (fun kind => operators.all fun op =>
     run kind ("FieldFilled(Rows/A) And ([A] " ++ op ++ " \"2\")") ==
       some (if op == "==" then first ++ second else [])) = true := by native_decide
 
+-- The capacity is two rows, so the second partial environment is the absent row: its cells read
+-- empty and it does not fire. The physical row's verdict is the first entry (spec/10 §5; partial
+-- channel of the population replay, 2026-10-24).
 example : kinds.all (fun kind => operators.all fun op =>
     let pair := "[Rows/A] " ++ op ++ " [Rows/B]"
     let literal := "[Rows/A] " ++ op ++ " \"1\""
     [(("", "1"), Verdict.notFired), (("bad", "1"), .unknown),
       (("1", ""), .notFired), (("1", "bad"), .unknown)].all (fun (row, expected) =>
       run kind pair [row] == some [] &&
-      partialVerdicts kind pair .full [row] == some [some expected]) &&
+      partialVerdicts kind pair .full [row] == some [some expected, some .notFired]) &&
     [("", Verdict.notFired), ("bad", .unknown)].all (fun (value, expected) =>
       run kind literal [(value, "1")] == some [] &&
-      partialVerdicts kind literal .full [(value, "1")] == some [some expected]) &&
+      partialVerdicts kind literal .full [(value, "1")] == some [some expected, some .notFired]) &&
     run kind pair [] == some [] && run kind literal [] == some []) = true := by native_decide
 
 example : kinds.all (fun kind => operators.all fun op =>
@@ -140,13 +143,16 @@ private def defaultModel (field : FieldId) : FlatModel :=
           { domain with defaultStoredToken := some "2" } }
     repeatableGroups := base.repeatableGroups.map fun group => { group with indexField := some field } }
 
+-- The second entry is the absent row of the two-row capacity: it reads empty and does not fire,
+-- while the physical row stays unknown through its default token (spec/10 §5; partial channel of
+-- the population replay, 2026-10-24).
 example : (defaultModel 2).validate.isOk = true ∧ (defaultModel 3).validate.isOk = true ∧
     operators.all (fun op =>
       let body := "[Rows/A] " ++ op ++ " [Rows/B]"
       partialVerdicts .enumeration body (.partialSet [rowField "A", rowField "B"])
-        [("1", "")] (defaultModel 3) == some [some .unknown] &&
+        [("1", "")] (defaultModel 3) == some [some .unknown, some .notFired] &&
       partialVerdicts .enumeration body (.partialSet [rowField "A", rowField "B"])
-        [("", "1")] (defaultModel 2) == some [some .unknown]) = true := by native_decide
+        [("", "1")] (defaultModel 2) == some [some .unknown, some .notFired]) = true := by native_decide
 
 private def scalarAPI (kind : FieldKind) (op : String) (rows : Bool) : Option Bool := do
   let definition := { (rule ((if rows then "[Rows/A]" else "[A]") ++ " " ++ op ++ " \"1\"")) with
