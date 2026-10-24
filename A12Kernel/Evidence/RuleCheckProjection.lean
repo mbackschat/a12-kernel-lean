@@ -50,6 +50,26 @@ def captures : List (String × String × String) := [
   ("captures/field-value-read-carriers/observations-grid.json", "captures/field-value-read-carriers/Grid25g_DM.json", "captures/field-value-read-carriers/ops-grid.json"),
   ("captures/field-value-read-grid/observations-grid.json", "captures/field-value-read-grid/Grid25f_DM.json", "captures/field-value-read-grid/ops-grid.json"),
   ("captures/field-value-read-grid/observations-grid2.json", "captures/field-value-read-grid/Grid25f_DM.json", "captures/field-value-read-grid/ops-grid2.json"),
+  ("captures/field-value-read-predictions/observations-grid.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid.json"),
+  ("captures/field-value-read-predictions/observations-grid6.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid6.json"),
+  ("captures/parser-index-and-iteration-classes/obs.json", "captures/parser-index-and-iteration-classes/IdxProbe0_DM.json", "captures/parser-index-and-iteration-classes/ops.json"),
+  ("captures/parser-index-and-iteration-classes/obs2.json", "captures/parser-index-and-iteration-classes/IdxProbe0_DM.json", "captures/parser-index-and-iteration-classes/ops2.json"),
+  ("captures/parser-index-and-iteration-classes/obs3.json", "captures/parser-index-and-iteration-classes/IdxProbe0_DM.json", "captures/parser-index-and-iteration-classes/ops3.json"),
+  ("captures/parser-index-and-iteration-classes/obs-spell.json", "captures/parser-index-and-iteration-classes/IdxProbe0_DM.json", "captures/parser-index-and-iteration-classes/ops-spell.json"),
+  ("captures/selected-parent-binding/observations.json", "captures/selected-parent-binding/model.json", "captures/selected-parent-binding/ops.json"),
+  ("captures/message-group-availability-2026-09-30/obs-1.json", "captures/message-group-availability-2026-09-30/GroupAvail_DM.json", "captures/message-group-availability-2026-09-30/obs-1.json"),
+  ("captures/message-group-availability-2026-09-30/obs-2.json", "captures/message-group-availability-2026-09-30/GroupAvail_DM.json", "captures/message-group-availability-2026-09-30/obs-2.json"),
+  ("captures/message-group-availability-2026-09-30/obs-3.json", "captures/message-group-availability-2026-09-30/GroupAvail_DM.json", "captures/message-group-availability-2026-09-30/obs-3.json"),
+  ("captures/message-group-argument-events-2026-10-01/obs.json", "captures/message-group-availability-2026-09-30/GroupAvail_DM.json", "captures/message-group-argument-events-2026-10-01/obs.json"),
+  ("captures/message-group-argument-events-2026-10-01/obs-2.json", "captures/message-group-availability-2026-09-30/GroupAvail_DM.json", "captures/message-group-argument-events-2026-10-01/obs-2.json"),
+  ("captures/message-group-walk-and-dotted-2026-10-01/obs.json", "captures/message-group-availability-2026-09-30/GroupAvail_DM.json", "captures/message-group-walk-and-dotted-2026-10-01/obs.json"),
+  ("captures/message-group-walk-and-dotted-2026-10-01/obs-2.json", "captures/message-group-availability-2026-09-30/GroupAvail_DM.json", "captures/message-group-walk-and-dotted-2026-10-01/obs-2.json"),
+  ("captures/message-name-position-carriers-2026-10-01/obs.json", "captures/message-group-availability-2026-09-30/GroupAvailTwin_DM.json", "captures/message-name-position-carriers-2026-10-01/obs.json"),
+  ("captures/message-name-position-carriers-2026-10-01/obs-2.json", "captures/message-group-availability-2026-09-30/GroupAvailTwin_DM.json", "captures/message-name-position-carriers-2026-10-01/obs-2.json"),
+  ("captures/message-name-position-carriers-2026-10-01/obs-3.json", "captures/message-group-availability-2026-09-30/GroupAvailTwin_DM.json", "captures/message-name-position-carriers-2026-10-01/obs-3.json"),
+  ("captures/message-name-position-refusals-2026-10-01/obs.json", "captures/message-group-availability-2026-09-30/GroupAvailTwin_DM.json", "captures/message-name-position-refusals-2026-10-01/obs.json"),
+  ("captures/selected-range-compositions-2026-10-13/static/observations.json", "captures/selected-range-compositions-2026-10-13/static/base-model.json", "captures/selected-range-compositions-2026-10-13/static/observations.json"),
+  ("captures/field-value-read-remaining-sites/observations-grid.json", "captures/field-value-read-remaining-sites/Grid25h_DM.json", "captures/field-value-read-remaining-sites/ops-grid.json"),
   ("captures/field-value-read-predictions/observations-grid2.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid2.json"),
   ("captures/field-value-read-predictions/observations-grid3.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid3.json"),
   ("captures/field-value-read-predictions/observations-grid7.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid7.json"),
@@ -241,6 +261,7 @@ def deferred : List (String × String) := [
   ("comparison-entry-gates/observations2.json#violatedcontrol", "host pattern compiler, SG7"),
   ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7"),
   ("comparison-entry-gates/observations.json#regex", "host pattern compiler, SG7"),
+  ("field-value-read-remaining-sites/observations-grid.json#p5", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs.json#pm-ctl", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs.json#pm-ctlrel", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs.json#pm-unique", "host pattern compiler, SG7"),
@@ -249,14 +270,7 @@ def deferred : List (String × String) := [
   ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus-abs", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs-review.json#pv-unique", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus", "host pattern compiler, SG7"),
-  ("computation-star-binding-gate/obs4.json#e-fx-tb", "K22: a group count computation the Kernel admits"),
-  ("entity-list-kind-empty-and-root-carriers/obs.json#rulegroup-at-rows-count-control", "K22: RuleGroup in a field-fill count"),
-  ("filter-waiver-carriers-2026-10-14/obs-x.json#bx4", "K22: a row target's self-read class"),
-  ("group-operand-and-short-name-classes/obs.json#sn-sum-dup", "K22: an ambiguous short name in an aggregate list"),
-  ("group-operand-and-short-name-classes/obs.json#sn-nff-dup", "K22: an ambiguous short name in an aggregate list"),
-  ("pattern-and-key-resolver-classes/obs-glfield.json#gl-field-rowlocus-referenced", "K22: a field operand of a group-list quantifier at row locus"),
-  ("pattern-and-key-resolver-classes/obs-glfield.json#gl-field-rowlocus-guarded", "K22: a field operand of a group-list quantifier at row locus"),
-  ("pattern-and-key-resolver-classes/obs-review.json#gl-field-rowlocus", "K22: a field operand of a group-list quantifier at row locus")]
+  ("entity-list-kind-empty-and-root-carriers/obs.json#rulegroup-at-rows-count-control", "K22: RuleGroup in a field-fill count")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with
@@ -426,6 +440,53 @@ private def compareComputation (dm : DmModel) (locales : List String) (computati
     | some rule => compare dm locales rule entries observation true
     | none => .diverges "admitted computation without a generated rule"
 
+/-- A self-contained row is its own `rule check`, its one message in the model's first locale. -/
+private def selfContained (locales : List String) (request : Json) :
+    Option (Sum DmRule DmComputation × List (String × String)) := do
+  let condition ← (request.getObjValAs? String "condition").toOption
+  let field := (request.getObjValAs? String "field").toOption.getD ""
+  let id := (request.getObjValAs? String "id").toOption.getD ""
+  let text := (request.getObjValAs? String "message").toOption.getD ""
+  let rule := ruleAt (segments field) (request.getObjValAs? String "group").toOption id condition
+  pure (Sum.inl rule, messageEntries locales [s!"--message={locales.headD ""}={text}"])
+
+/-- The root-group element a structured `apply` operation adds, `none` for any other operation. Only
+a DateRange field is built: its operation writes its whole type, while a field of another kind takes
+instrument defaults the captures do not retain. -/
+private def addedElement? (op : Json) : Option (String × Json) := do
+  guard ((op.getObjValAs? String "target").toOption == some "field")
+  guard ((op.getObjValAs? String "kind").toOption == some "DATERANGE")
+  let group ← (op.getObjValAs? String "group").toOption
+  let name ← (op.getObjValAs? String "name").toOption
+  let range := op.getObjValD "dateRange"
+  let format ← (range.getObjValAs? String "format").toOption
+  let separator ← (range.getObjValAs? String "separator").toOption
+  pure (group, Json.mkObj [("type", "Field"), ("id", Json.str s!"{group}/{name}"), ("name", Json.str name),
+    ("Field", Json.mkObj [("fieldType", Json.mkObj [("type", "DateRangeType"),
+      ("DateRangeType", Json.mkObj [("format", Json.str format), ("rangeSeparator", Json.str separator)])])])])
+
+/-- `model` with `element` appended to the root group `group`. -/
+private def appendToRootGroup (model : Json) (group : String) (element : Json) : Json :=
+  let roots := ((model.getObjValD "content").getObjValD "modelRoot").getObjValD "rootGroups"
+  let roots := (roots.getArr?.toOption.getD #[]).map fun root =>
+    if (root.getObjValAs? String "id").toOption != some group then root else
+    let body := root.getObjValD "Group"
+    root.setObjVal! "Group" (body.setObjVal! "elements"
+      (Json.arr (((body.getObjValAs? (Array Json) "elements").toOption.getD #[]).push element)))
+  let modelRoot := ((model.getObjValD "content").getObjValD "modelRoot").setObjVal! "rootGroups" (Json.arr roots)
+  model.setObjVal! "content" ((model.getObjValD "content").setObjVal! "modelRoot" modelRoot)
+
+/-- A model and the locales its header declares, after the elements `added` places in root groups. -/
+private def loadModel (path : System.FilePath) (added : List (String × Json) := []) :
+    IO (DmModel × List String) := do
+  let modelJson ← match parseModelJson (← IO.FS.readFile path) with
+    | .ok json => pure (added.foldl (fun model (group, element) => appendToRootGroup model group element) json)
+    | .error message => throw (IO.userError s!"{path}: {message}")
+  let some dm := (readModel modelJson).toOption
+    | throw (IO.userError s!"{path}: unreadable model")
+  pure (dm, (((modelJson.getObjValD "header").getObjValAs? (Array Json) "locales").toOption.getD #[]).toList.filterMap
+    fun locale => (locale.getObjValAs? String "code").toOption)
+
 /-- Replay every batch and return the agreeing and skipped row counts. -/
 def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
   let mut agreeing := 0
@@ -433,13 +494,7 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
   let mut failures : Array String := #[]
   let mut deferredSeen : Array String := #[]
   for (observations, modelPath, requests) in captures do
-    let modelJson ← match parseModelJson (← IO.FS.readFile (root / modelPath)) with
-      | .ok json => pure json
-      | .error message => throw (IO.userError s!"{modelPath}: {message}")
-    let some dm := (readModel modelJson).toOption
-      | throw (IO.userError s!"{modelPath}: unreadable model")
-    let locales := (((modelJson.getObjValD "header").getObjValAs? (Array Json) "locales").toOption.getD #[]).toList.filterMap
-      fun locale => (locale.getObjValAs? String "code").toOption
+    let (batchModel, batchLocales) ← loadModel (root / modelPath)
     -- A dry-run batch retains only each row's verdict and Kernel codes, keyed by row id, since the
     -- instrument's envelope renders the Kernel's messages.
     let retained ← readJson (root / observations)
@@ -447,9 +502,30 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
       | .ok rows, _ => rows
       | .error _, .ok (.obj rows) => rows.foldl (init := #[]) fun batch (id : String) (row : Json) => batch.push (Json.mkObj
           [("id", Json.str id), ("valid", row.getObjValD "admitted"), ("codes", row.getObjValD "codes")])
-      | .error _, _ => #[]
-    for request in ((← readJson (root / requests)).getArr?).toOption.getD #[] do
+      -- A structured `apply` packet retains one row per case.
+      | .error _, _ => (retained.getArr?.toOption.getD #[]).map fun (row : Json) => Json.mkObj
+          [("id", row.getObjValD "case"), ("valid", row.getObjValD "admitted"), ("codes", row.getObjValD "codes")]
+    let requestRows := match (← readJson (root / requests)) with
+      | .arr rows => rows
+      | json => (json.getObjValAs? (Array Json) "observations").toOption.getD #[]
+    for request in requestRows do
       let args := ((request.getObjValAs? (Array String) "args").toOption.getD #[]).toList
+      -- A structured `apply` case is its `<case>-spec.json`: field additions, then the computation.
+      let applyOps ← match (request.getObjValAs? String "case").toOption with
+        | some case => do
+            let spec ← readJson ((root / requests).parent.getD root / s!"{case}-spec.json")
+            pure (some (spec.getArr?.toOption.getD #[]).toList)
+        | none => pure none
+      let fieldAdds := (applyOps.getD []).filter fun op => (op.getObjValAs? String "target").toOption == some "field"
+      let added := fieldAdds.filterMap addedElement?
+      if added.length != fieldAdds.length then continue
+      -- A row may name its own model, with the instrument's `-m` or a self-contained row's `model`:
+      -- a file beside the request file, or else beside the batch's model.
+      let (dm, locales) ← match argsOf args "-m" ++ (request.getObjValAs? String "model").toOption.toList with
+        | file :: _ =>
+            let beside := (root / requests).parent.getD root / file
+            loadModel (if ← beside.pathExists then beside else (root / modelPath).parent.getD root / file)
+        | [] => if added.isEmpty then pure (batchModel, batchLocales) else loadModel (root / modelPath) added
       -- A batch may interleave other verbs. A rule check is its rule's static verdict, a computation
       -- preview its computation's.
       let declaration ← match (request.getObjValAs? String "verb").toOption, args with
@@ -460,9 +536,14 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
         | some "computation", "add" :: "--dry-run" :: file :: _ | some "computation", "add" :: file :: _ => do
             let spec ← readJson ((root / requests).parent.getD root / file)
             pure (some (Sum.inr (requestedComputation spec), specEntries locales spec))
+        | none, [] =>
+          if let some ops := applyOps then
+            pure ((ops.find? fun op => (op.getObjValAs? String "target").toOption == some "computation").map
+              fun op => (Sum.inr (requestedComputation op), specEntries locales op))
+          else pure (selfContained locales request)
         | _, _ => pure none
       let some (declaration, entries) := declaration | continue
-      let id := (request.getObjValAs? String "id").toOption.getD ""
+      let id := ((request.getObjValAs? String "id").toOption <|> (request.getObjValAs? String "case").toOption).getD ""
       let some observation := batch.find? (fun row => (row.getObjValAs? String "id").toOption == some id)
         | continue
       let key := s!"{(observations.drop "captures/".length)}#{id}"

@@ -166,8 +166,14 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
     let surface ← lowerScalarTemporalExpression model group expression suppress
     let checked ← elaborated "TemporalExpression"
       (elaborateScalarTemporalExpression model group surface (some target.groupPath))
-    let operation ← (checkTemporalExpressionComputation? checked target.id).getDM
-      (refuse "TemporalExpression" "target, binding or dependency")
+    let operation ← (checkTemporalExpressionComputation? checked target.id).getDM do
+      -- A bound operation reading its own target directly draws the calculated-field class, as
+      -- `AddDays(D, 1)` into `D` does (row `bx4` of the filter-waiver batch); a read inside a
+      -- filter, and the order against a binding failure, are unmeasured and keep no class.
+      if checked.bindingScopes.all (·.isPrefixOf target.repeatableScope) &&
+          checked.referencesWith target.id (fun _ => false) then
+        refuse "TemporalExpression" KernelStaticDiagnostic.errorReferenceToCalculatedField.kernelCode
+      refuse "TemporalExpression" "target, binding or dependency"
     return .temporalExpression operation
   if target.policy.kind == .string then
     return .stringExpression (← elaborated "StringExpression"

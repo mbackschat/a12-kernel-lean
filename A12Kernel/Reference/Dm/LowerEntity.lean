@@ -23,9 +23,14 @@ def elaboratedEnumerationFirstFilled [Repr ε] [StaticClassified ε] (calculatio
       construct := "FirstFilledValue"
       detail := (calculationRefusal error).map (·.catalogKey) |>.getD (classifiedDetail error) }
 
-/-- Whether an unstarred path names a field of the model, read at the operator's group. -/
+/-- Whether an unstarred path is read as a field at the operator's group: it names one, or its field
+miss is not one a group could displace, so a short name two fields share keeps
+`MVK_FIELDNAME_NOT_UNIQUE` in an entity list as in a predicate (rows `sn-sum-dup` and `sn-nff-dup` of
+the [short-name batch](../../../evidence/kernel-30.8.1/captures/group-operand-and-short-name-classes/)). -/
 def namesField (model : FlatModel) (group : GroupPath) (path : SurfaceFieldPath) : Bool :=
-  (model.resolveFieldDeclarationUnchecked group path).toOption.isSome
+  match model.resolveFieldDeclarationUnchecked group path with
+  | .ok _ => true
+  | .error error => !error.isGroupDisplaceableMiss
 
 private def lowerIndexKey (model : FlatModel) (group : GroupPath) (index : FlatFieldDecl) (key : IndexKey) :
     Lowering SurfaceSemanticIndexKey := do

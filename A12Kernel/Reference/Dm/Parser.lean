@@ -17,11 +17,14 @@ namespace A12Kernel.Dm
 
 /-- What the parse completed that the Kernel checks as soon as it completes (spec/12 §12.3): a reference
 whose path closed, the steps of a path still open, each step a segment the parse read up to its `/`,
-and a call whose closing parenthesis the parse read. -/
+a call whose closing parenthesis the parse read, and a whole reference read, its category, key and
+filter included. A read inside a key or a filter body is not recorded, since it binds in a scope the
+event does not carry. -/
 inductive ParseEvent where
   | reference (path : Path)
   | openPath (path : Path)
   | closedCall (call : Expr)
+  | read (reference : Reference)
   deriving Repr, BEq
 
 /-- The cursor over the lexemes, and beneath the failure the events completed so far, which survive a
@@ -114,6 +117,9 @@ private partial def segments (header : Path) : P (List Segment) := do
     modifyThe (Array ParseEvent)
       (·.push (.openPath { header with segments := header.segments ++ [{ first with star := true }] }))
     throw { errorClass := .pointInA12Model, offset }
+  -- A `.` alone leaves the step open, the walk still reading for its `*`, so the reference never
+  -- completes and `Items*/NoSuch.` draws the token class (spec/12 §12.3).
+  if (← peek) == some (.symbol ".") then failHere .unexpectedToken
   if ← acceptSymbol "/" then
     let header := { header with segments := header.segments ++ [first] }
     modifyThe (Array ParseEvent) (·.push (.openPath header))
@@ -147,6 +153,14 @@ private def path : P Path := do
   modifyThe (Array ParseEvent) (·.shrink opened)
   return { header with segments }
 
+/-- Run `grammar`, dropping the reads it records whether or not it fails. -/
+private def withoutReads (grammar : P α) : P α := do
+  let opened := (← getThe (Array ParseEvent)).size
+  let drop := fun (events : Array ParseEvent) => events.extract 0 opened ++
+    (events.extract opened events.size).filter fun | .read _ => false | _ => true
+  tryCatch (do let result ← grammar; modifyThe (Array ParseEvent) drop; pure result)
+    fun error => do modifyThe (Array ParseEvent) drop; throw error
+
 mutual
 private partial def indexSuffix : P (Option IndexKey) := do
   if ← acceptKeyword "For" then
@@ -171,9 +185,11 @@ private partial def reference : P Reference := do
       | some (.name name _) => advance; pure (some name)
       | _ => failHere .expectedTokenNotFound
     else pure none
-  let index ← indexSuffix
-  let filter ← if ← acceptKeyword "Having" then pure (some (← condition false)) else pure none
-  return { path := target, index, category, filter }
+  let index ← withoutReads indexSuffix
+  let filter ← if ← acceptKeyword "Having" then pure (some (← withoutReads (condition false))) else pure none
+  let read : Reference := { path := target, index, category, filter }
+  modifyThe (Array ParseEvent) (·.push (.read read))
+  return read
 
 /-- A condition: branches joined by one connective (spec §12.3). `comments` admits a comment at each
 branch boundary, which an argument list refuses. -/

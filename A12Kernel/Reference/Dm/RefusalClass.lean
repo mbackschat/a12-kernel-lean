@@ -63,6 +63,18 @@ instance : StaticClassified StringFirstFilledComputationElabError :=
 instance : StaticClassified EnumerationFirstFilledComputationElabError :=
   ⟨EnumerationFirstFilledComputationElabError.targetDiagnostic?⟩
 
+/-- An Enumeration computation's source read reports its resolver class, as a Number computation's
+does: a group, a raw String and a partial Date source each draw the class the Kernel reports for that
+source into a Number target (rule-check rows `c12`, `c13`, `y2` and `y7` of the
+[field-value-read grids](../../../evidence/kernel-30.8.1/captures/field-value-read-predictions/)). -/
+instance : StaticClassified EnumerationComputationElabError := ⟨fun
+  | .source (.resolve error) => error.diagnostic?
+  | _ => none⟩
+
+instance : StaticClassified AddressedEnumerationComputationElabError := ⟨fun
+  | .ordinary (.source (.resolve error)) => error.diagnostic?
+  | _ => none⟩
+
 instance : StaticClassified AddressedEnumerationFirstFilledComputationElabError := ⟨fun
   | .source cause => cause.targetDiagnostic?
   | _ => none⟩

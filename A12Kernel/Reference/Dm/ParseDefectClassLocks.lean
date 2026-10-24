@@ -60,6 +60,17 @@ example :
     spec12Class "FieldFilled(Items*/NoSuch.)" = some "MVK_UNEXPECTED_TOKEN" := by
   native_decide
 
+/- A whole reference completed before a stray name runs its read at the error field: an unbound
+repeatable level draws `MVK_NO_WILDCARD` and a starred path naming nothing `MVK_INVALID_ENTITY`, while
+the starred twin and a read bound at a row field reach the token (parser-index rows `A01`, `A20`, `B01`). -/
+example :
+    spec12Class "FieldFilled(Items/Count Code)" = some "MVK_NO_WILDCARD" ∧
+    spec12Class "FieldFilled(Items*/NoSuch Code)" = some "MVK_INVALID_ENTITY" ∧
+    spec12Class "FieldFilled(Items*/Count Code)" = some "MVK_UNEXPECTED_TOKEN" ∧
+    parseDefectClass? spec12 ["Form"] .english "FieldFilled(Items/Count Code)" ["Form", "Items"] =
+      some "MVK_UNEXPECTED_TOKEN" := by
+  native_decide
+
 /- A `.*` step is walked before its own class is raised: a step naming nothing draws the name's class,
 a resolving one `MVK_POINT_IN_A12_MODEL` (spec/12 §12.3); the plain star is the admitted twin. -/
 example :

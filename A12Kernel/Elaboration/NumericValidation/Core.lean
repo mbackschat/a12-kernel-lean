@@ -434,8 +434,10 @@ def NumericValidationAtom.admitted
           | .modelWideNonrepeatable | .modelWideCheckedComputation =>
               model.admitsNumberModelWide field
   | .filledGroupCount groups =>
+      -- An addressed count needs one row-bound operand; a fixed group outside the row reads its sole
+      -- instance beside it, as the computing row reads it (row `e-fx-tb` of the star-binding batch).
       (scope != .sameGroupAddressed ||
-        groups.all (fun reference => !reference.boundRepeatableScope.isEmpty)) &&
+        groups.any (fun reference => !reference.boundRepeatableScope.isEmpty)) &&
         1 < groups.length &&
         !groups.any ResolvedGroupReference.isRoot &&
         (ResolvedGroupReferences.firstOverlap? groups).isNone &&

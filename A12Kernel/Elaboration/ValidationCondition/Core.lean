@@ -95,7 +95,8 @@ def wellFormedBool (operand : ResolvedGroupListOperand model)
   | .field declaration =>
       match model.lookupUniqueId declaration.id with
       | .ok checked =>
-          checked == declaration && declaration.repeatableScope.isEmpty
+          checked == declaration &&
+            declaration.repeatableScope.isPrefixOf (model.repeatableScopeForGroupPath rowGroup)
       | .error _ => false
   | .group reference =>
       reference.fixedWellFormedBool model rowGroup
@@ -168,7 +169,10 @@ def iterationScope :
   | .starredGroupPresence source =>
       let scope := source.path.bindingScope
       if scope.isEmpty then none else some scope
-  | .indexed _ | .keyed _ | .field _ => none
+  | .field declaration =>
+      let scope := declaration.repeatableScope
+      if scope.isEmpty then none else some scope
+  | .indexed _ | .keyed _ => none
 
 end ResolvedGroupListOperand
 
@@ -392,8 +396,9 @@ end ResolvedGroupReference
 def ResolvedGroupListOperand.evalDirectPresence?
     (context : ValidationEvaluationContext) (isRelevant : FlatRelevance) :
     ResolvedGroupListOperand model → Option GroupListPresenceState
+  -- The scalar channel reads no row, so a row-bound field is unavailable on it.
   | .field declaration =>
-      some (if isRelevant declaration.id then
+      some (if isRelevant declaration.id && declaration.repeatableScope.isEmpty then
         (declaration.toPresenceField.observeValidation
           context.fields).asGroupListPresence
       else
@@ -420,13 +425,14 @@ def ResolvedGroupListOperand.evalAddressedTally
       match ← source.validationGroupStates document context.outer with
       | none => pure (GroupListPresenceTally.ofStates [.unavailable])
       | some states => pure (GroupListPresenceTally.ofGroupStates states)
-  | .field declaration =>
-      pure (GroupListPresenceTally.ofStates [if context.directRelevant
-          declaration.id then
-        (declaration.toPresenceField.observeValidation
-          context.scalar.fields).asGroupListPresence
-      else
-        .unavailable])
+  | .field declaration => do
+      if !context.directRelevant declaration.id then
+        return GroupListPresenceTally.ofStates [.unavailable]
+      if declaration.repeatableScope.isEmpty then
+        return GroupListPresenceTally.ofStates
+          [(declaration.toPresenceField.observeValidation context.scalar.fields).asGroupListPresence]
+      pure (GroupListPresenceTally.ofStates
+        [(observeCell .validation (← context.readCell context.outer declaration.id)).asGroupListPresence])
   | .group reference =>
       match context.input with
       | .legacy _ _ | .partialView _ _ =>

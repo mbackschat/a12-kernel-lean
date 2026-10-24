@@ -503,10 +503,13 @@ private def resolveGroupListOperand (model : FlatModel) (rowGroup writtenGroup :
         (some (model.repeatableScopeForGroupPath writtenGroup))).mapError .keyedGroup
       if !checked.isGroup then throw .incoherentCore
       pure (.keyed checked)
+  -- A field the rule's row binds contributes its presence at that row, as a field outside every
+  -- repeatable level contributes its sole cell (spec/02; rows `gl-field-rowlocus*` of the
+  -- pattern-and-key batch).
   | .field reference => do
-      let declaration ←
-        (model.resolveNonrepeatableFieldUnchecked rowGroup reference writtenGroup).mapError
-          .fieldReference
+      let declaration ← (model.resolveFieldDeclarationUnchecked rowGroup reference).mapError .fieldReference
+      if let some unbound := model.unboundReadLevel? rowGroup writtenGroup declaration.repeatableScope then
+        throw (.fieldReference (.unboundOperandLevel declaration.path unbound))
       pure (.field declaration)
   | .group reference => do
       let resolved ←
@@ -549,13 +552,14 @@ private def singletonGroupListCondition? (operator : GroupFillQuantifier) :
       | .noGroupFilled => some (.leaf (.keyedGroupPresence .notFilled source))
       | _ => none
   | .field declaration =>
+      let repeatable := !declaration.repeatableScope.isEmpty
       match operator with
       | .atLeastOneGroupFilled =>
-          some (ValidationCondition.flat
-            (.fieldFilled declaration.toPresenceField))
+          some (if repeatable then ValidationCondition.repeatableFieldPresence .filled declaration
+            else ValidationCondition.flat (.fieldFilled declaration.toPresenceField))
       | .noGroupFilled =>
-          some (ValidationCondition.flat
-            (.fieldNotFilled declaration.toPresenceField))
+          some (if repeatable then ValidationCondition.repeatableFieldPresence .notFilled declaration
+            else ValidationCondition.flat (.fieldNotFilled declaration.toPresenceField))
       | .allGroupsFilled | .notAllGroupsFilled
       | .groupsNotCollectivelyFilled => none
   | .group reference =>
