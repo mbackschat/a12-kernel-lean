@@ -1,0 +1,518 @@
+{
+ "header": {
+  "id": "K22t_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K22t_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/DClock",
+        "name": "DClock",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TClock",
+        "name": "TClock",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DDT",
+        "name": "DDT",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DT",
+        "name": "DT",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TDate",
+        "name": "TDate",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/M",
+        "name": "M",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Rows/PD",
+           "name": "PD",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd",
+              "datePrecision": "DAY_OPTIONAL"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/R",
+           "name": "R",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/N",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/Y",
+           "name": "Y",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/C",
+           "name": "C",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/TC",
+           "name": "TC",
+           "Field": {
+            "fieldType": {
+             "type": "TimeType",
+             "TimeType": {
+              "format": "HH:mm:ss"
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/c1",
+        "name": "c1",
+        "Rule": {
+         "errorEntityRelPath": "../DClock",
+         "errorCode": "c1",
+         "errorCondition": "[DClock] < [TClock]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/c2",
+        "name": "c2",
+        "Rule": {
+         "errorEntityRelPath": "../DClock",
+         "errorCode": "c2",
+         "errorCondition": "[DClock] > [TClock]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/c3",
+        "name": "c3",
+        "Rule": {
+         "errorEntityRelPath": "../DClock",
+         "errorCode": "c3",
+         "errorCondition": "[DClock] <= [TClock]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/c4",
+        "name": "c4",
+        "Rule": {
+         "errorEntityRelPath": "../DDT",
+         "errorCode": "c4",
+         "errorCondition": "[DDT] < [DT]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/c5",
+        "name": "c5",
+        "Rule": {
+         "errorEntityRelPath": "../DDT",
+         "errorCode": "c5",
+         "errorCondition": "[DDT] >= [DT]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/c6",
+        "name": "c6",
+        "Rule": {
+         "errorEntityRelPath": "../TDate",
+         "errorCode": "c6",
+         "errorCondition": "[TDate] < [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/c7",
+        "name": "c7",
+        "Rule": {
+         "errorEntityRelPath": "../TDate",
+         "errorCode": "c7",
+         "errorCondition": "[TDate] > [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/c8",
+        "name": "c8",
+        "Rule": {
+         "errorEntityRelPath": "../TDate",
+         "errorCode": "c8",
+         "errorCondition": "[TDate] == [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/k2",
+        "name": "k2",
+        "Computation": {
+         "computedFieldRelPath": "../M",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(TDate)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/r1",
+        "name": "r1",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/R",
+         "errorCode": "r1",
+         "errorCondition": "FieldFilled(Rows/R) And ValueAsDate(Rows/PD,FirstDay) == [Rows/R]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/r2",
+        "name": "r2",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/R",
+         "errorCode": "r2",
+         "errorCondition": "FieldFilled(Rows/R) And ValueAsDate(Rows/PD,LastDay) < [Rows/R]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/r3",
+        "name": "r3",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/R",
+         "errorCode": "r3",
+         "errorCondition": "FieldFilled(Rows/R) And YearFromDate(Rows/R) > 2025",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/r4",
+        "name": "r4",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/N",
+         "errorCode": "r4",
+         "errorCondition": "FieldFilled(Rows/N) And [Rows/N] == DayFromDate(Rows/R)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/r5",
+        "name": "r5",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/R",
+         "errorCode": "r5",
+         "errorCondition": "FieldFilled(Rows/R) And MonthFromDate(Rows/PD) == 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/r6",
+        "name": "r6",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/C",
+         "errorCode": "r6",
+         "errorCondition": "FieldFilled(Rows/C) And [Rows/C] < [Rows/TC]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/r7",
+        "name": "r7",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/C",
+         "errorCode": "r7",
+         "errorCondition": "FieldFilled(Rows/C) And [Rows/C] >= [Rows/TC]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/k1",
+        "name": "k1",
+        "Computation": {
+         "computedFieldRelPath": "../Rows/Y",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(Rows/R)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

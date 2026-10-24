@@ -1,0 +1,997 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "K22t_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-24T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "d1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "c1",
+       "field": "Form/DClock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DClock",
+        "Form/TClock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c3",
+       "field": "Form/DClock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DClock",
+        "Form/TClock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c4",
+       "field": "Form/DDT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DDT",
+        "Form/DT"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c7",
+       "field": "Form/TDate",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/D",
+        "Form/TDate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/Rows[5]/PD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[5]/PD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r1",
+       "field": "Form/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/PD",
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r2",
+       "field": "Form/Rows[2]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/PD",
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r2",
+       "field": "Form/Rows[3]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[3]/PD",
+        "Form/Rows[3]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows[2]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows[3]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[3]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows[5]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[5]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r4",
+       "field": "Form/Rows/N",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/N",
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r4",
+       "field": "Form/Rows[2]/N",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/N",
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r4",
+       "field": "Form/Rows[3]/N",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[3]/N",
+        "Form/Rows[3]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r4",
+       "field": "Form/Rows[5]/N",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[5]/N",
+        "Form/Rows[5]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r5",
+       "field": "Form/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/PD",
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r5",
+       "field": "Form/Rows[2]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/PD",
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r5",
+       "field": "Form/Rows[3]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[3]/PD",
+        "Form/Rows[3]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r6",
+       "field": "Form/Rows/C",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/C",
+        "Form/Rows/TC"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r7",
+       "field": "Form/Rows[2]/C",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/C",
+        "Form/Rows[2]/TC"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r7",
+       "field": "Form/Rows[3]/C",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[3]/C",
+        "Form/Rows[3]/TC"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/M",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/Rows/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2026"
+       },
+       {
+        "field": "Form/Rows[2]/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2026"
+       },
+       {
+        "field": "Form/Rows[3]/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2026"
+       },
+       {
+        "field": "Form/Rows[4]/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2024"
+       },
+       {
+        "field": "Form/Rows[5]/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2027"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/Rows[5]/PD",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/Rows[5]/PD"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "c1",
+       "field": "Form/DClock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DClock",
+        "Form/TClock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c3",
+       "field": "Form/DClock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DClock",
+        "Form/TClock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c4",
+       "field": "Form/DDT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DDT",
+        "Form/DT"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c7",
+       "field": "Form/TDate",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/D",
+        "Form/TDate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/Rows[5]/PD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/Rows[5]/PD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r1",
+       "field": "Form/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/PD",
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r2",
+       "field": "Form/Rows[2]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/PD",
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r2",
+       "field": "Form/Rows[3]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[3]/PD",
+        "Form/Rows[3]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows[2]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows[3]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[3]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows[5]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[5]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r4",
+       "field": "Form/Rows/N",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/N",
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r4",
+       "field": "Form/Rows[2]/N",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/N",
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r4",
+       "field": "Form/Rows[3]/N",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[3]/N",
+        "Form/Rows[3]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r4",
+       "field": "Form/Rows[5]/N",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[5]/N",
+        "Form/Rows[5]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r5",
+       "field": "Form/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/PD",
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r5",
+       "field": "Form/Rows[2]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/PD",
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r5",
+       "field": "Form/Rows[3]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[3]/PD",
+        "Form/Rows[3]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r6",
+       "field": "Form/Rows/C",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/C",
+        "Form/Rows/TC"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r7",
+       "field": "Form/Rows[2]/C",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/C",
+        "Form/Rows[2]/TC"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r7",
+       "field": "Form/Rows[3]/C",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[3]/C",
+        "Form/Rows[3]/TC"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/M",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/Rows/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2026"
+       },
+       {
+        "field": "Form/Rows[2]/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2026"
+       },
+       {
+        "field": "Form/Rows[3]/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2026"
+       },
+       {
+        "field": "Form/Rows[4]/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2024"
+       },
+       {
+        "field": "Form/Rows[5]/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2027"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/Rows[5]/PD",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/Rows[5]/PD"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "d2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "c3",
+       "field": "Form/DClock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DClock",
+        "Form/TClock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c5",
+       "field": "Form/DDT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DDT",
+        "Form/DT"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c8",
+       "field": "Form/TDate",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/D",
+        "Form/TDate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r1",
+       "field": "Form/Rows[2]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/PD",
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows[2]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r5",
+       "field": "Form/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/PD",
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/M",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Form/Rows/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2026"
+       },
+       {
+        "field": "Form/Rows[2]/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2026"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "c3",
+       "field": "Form/DClock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DClock",
+        "Form/TClock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c5",
+       "field": "Form/DDT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DDT",
+        "Form/DT"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c8",
+       "field": "Form/TDate",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/D",
+        "Form/TDate"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r1",
+       "field": "Form/Rows[2]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/PD",
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r3",
+       "field": "Form/Rows[2]/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows[2]/R"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "r5",
+       "field": "Form/Rows/R",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/Rows/PD",
+        "Form/Rows/R"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/M",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Form/Rows/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2026"
+       },
+       {
+        "field": "Form/Rows[2]/Y",
+        "cleared": false,
+        "errored": false,
+        "value": "2026"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "d3",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "c2",
+       "field": "Form/DClock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DClock",
+        "Form/TClock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c5",
+       "field": "Form/DDT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DDT",
+        "Form/DT"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c6",
+       "field": "Form/TDate",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/D",
+        "Form/TDate"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/M",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "c2",
+       "field": "Form/DClock",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DClock",
+        "Form/TClock"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c5",
+       "field": "Form/DDT",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/DDT",
+        "Form/DT"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "c6",
+       "field": "Form/TDate",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "probe",
+       "referenced": [
+        "Form/D",
+        "Form/TDate"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/M",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  }
+ ]
+}
