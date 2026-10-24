@@ -7,11 +7,16 @@ A12 uses one partially-known pointer domain for validation, computation, registe
 
 namespace A12Kernel
 
-/-- One repetition coordinate in a partially-known message pointer. Wildcard and unknown are values, not matching operators. -/
+/-- One repetition coordinate in a partially-known message pointer. Wildcard, unknown and the
+parallel-iteration placeholder are values, not matching operators. The placeholder is the Kernel's
+`-6`, which a reference keeps at a keyed error group's own level beside a join
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join),
+`runtime-keyed`). -/
 inductive MessageRepetitionCoordinate where
   | concrete (index : Nat)
   | wildcard
   | unknown
+  | parallelIteration
   deriving Repr, DecidableEq
 
 /-- One resolved field identity with its possibly-partial repetition coordinates. Every formal-message channel shares this type. -/
@@ -33,7 +38,7 @@ def toConcretePath? : List MessageRepetitionCoordinate → Option (List Nat)
   | [] => some []
   | .concrete index :: remaining =>
       (toConcretePath? remaining).map (index :: ·)
-  | .wildcard :: _ | .unknown :: _ => none
+  | .wildcard :: _ | .unknown :: _ | .parallelIteration :: _ => none
 
 /-- Recover an exact document address only when every repetition coordinate is concrete. -/
 def toCellAddr? (pointer : MessagePointer) : Option CellAddr := do

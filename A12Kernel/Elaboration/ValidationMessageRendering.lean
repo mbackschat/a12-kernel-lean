@@ -148,7 +148,7 @@ def CheckedValidationMessagePart.toRenderPartAt
           match ← context.selectedGroupIndex access.group key with
           | .concrete coordinate => pure (.group { repetitionIndex := coordinate })
           | .unknown => pure (.text "?")
-          | .wildcard => throw .invalidGroupBinding
+          | .wildcard | .parallelIteration => throw .invalidGroupBinding
   | .fieldValue reference => do
       let path ← context.referencePath reference
       pure (part.toRenderPartWithGroupIndex inputs (fun _ => 1) (fun _ => path))

@@ -176,7 +176,7 @@ where
   renderAt (groupPath : GroupPath) (leaf : List String) : String :=
     let isPartial := pointer.coordinates.any fun coordinate => match coordinate with
       | .concrete _ => false
-      | .wildcard | .unknown => true
+      | .wildcard | .unknown | .parallelIteration => true
     let rec walk (prefix_ : GroupPath) (remaining : List String)
         (coordinates : List MessageRepetitionCoordinate) : List String :=
       match remaining with
@@ -189,6 +189,7 @@ where
               | some (.concrete index) => if index == 1 && !isPartial then name else s!"{name}[{index}]"
               | some .wildcard => s!"{name}[0]"
               | some .unknown => s!"{name}[-5]"
+              | some .parallelIteration => s!"{name}[-6]"
               | none => s!"{name}[?]"
             label :: walk path rest coordinates.tail
           else (if isPartial then s!"{name}[1]" else name) :: walk path rest coordinates

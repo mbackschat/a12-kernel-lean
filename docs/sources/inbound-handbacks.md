@@ -708,6 +708,17 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `source-reading`: The letter's account, a constant selection fixing only its own level and the parallel binding asked after the per-level loop, is the peer's hypothesis with source pointers; it is not adopted here until measured.
 - `sync`: Inbound facts about clauses this project owns; no outbound ledger entry is created.
 
+<a id="src-inbound-2026-10-24"></a>
+## Reviewed October 24 instrument handback
+
+- `source`: Peer-session letter of 2026-10-24, delivered to this session and placed by the peer as `a12-kernel-lean-spec-corrections-2026-10-24.md`, SHA-256 `94f6ac4fcd9837875e92fd92f7c113e607b23dc8f48492b0e49227bee01489b0`. It answers this project's instrument note of the same day on the probe's `-6` fault and disposes of no ledger entry.
+- `revision`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`; the fix `082ea50ee` and its review commits `61fb70c5f` and `08b0d6499` resolve, read with `git` only. The [measurement checkout](cross-layer-routes.md#src-measurement-checkout-route) was fast-forwarded to it for this fix.
+- `review`: A HIGH reconciliation on 2026-10-24. The letter's `k8` table was not adopted from the letter: `request-k22kk8.json` was rerun unchanged at the new pin as `k22kk8b`, which reproduces every row's count, target, type, references and fill-to-fix the table states, and Lean's replay matches it ([checkpoint](model-structure-and-declaration-probes.md#src-keyed-group-beside-join), `runtime-keyed`).
+- `adopted`: The letter's scope limit, measured where the group's key differs from the join key, the error entity is a group and the condition a presence form, bounds the [spec clause](../../spec/07-repetition-and-iteration.md#1-when-a-rule-iterates-and-where-its-error-lands). That a harness reading Kernel messages with Java assertions enabled cannot observe these messages concerns the peer's harness, which this project runs only through the unchanged probe task.
+- `instrument-limit`: The probe's slash-led address omits a group target's own-level coordinate on every artifact (the peer's CG24), as Lean's [renderer](../../A12Kernel/Reference/Dm/Validate.lean) already reproduces; the peer asks whether this project wants an opt-in lossless coordinate vector. That answer is the owner's.
+- `hypotheses`: None offered; why `k8`'s target stays at `Lines[1]` while its references name the joined line is not settled by either side.
+- `sync`: Instrument facts and inbound rows about clauses this project owns; no outbound ledger entry is created. Our measurement extends the pending `SPEC-2026-10-24-03`.
+
 <a id="src-inbound-2026-10-23"></a>
 ## Reviewed October 23 handback of the October 22 and 23 entries
 

@@ -1,0 +1,367 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "K22kk8_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-24T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "slots2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "mixed",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[2]/Slots[-6]/Mark",
+        "/Order[1]/Lines[2]/Slots[-6]/Num",
+        "/Order[1]/Lines[2]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[2]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[2]/Slots[-6]/Mark",
+        "/Order[1]/Lines[2]/Slots[-6]/Num",
+        "/Order[1]/Lines[2]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[2]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[2]/Slots[-6]/Mark",
+        "/Order[1]/Lines[2]/Slots[-6]/Num",
+        "/Order[1]/Lines[2]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[2]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[2]/Slots[-6]/Mark",
+        "/Order[1]/Lines[2]/Slots[-6]/Num",
+        "/Order[1]/Lines[2]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[2]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "twoLines",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      },
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[2]/Slots[-6]/Mark",
+        "/Order[1]/Lines[2]/Slots[-6]/Num",
+        "/Order[1]/Lines[2]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[2]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks[2]/LineNo",
+        "Order/Picks[2]/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[2]/Slots[-6]/Mark",
+        "/Order[1]/Lines[2]/Slots[-6]/Num",
+        "/Order[1]/Lines[2]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[2]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      },
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[2]/Slots[-6]/Mark",
+        "/Order[1]/Lines[2]/Slots[-6]/Num",
+        "/Order[1]/Lines[2]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[2]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks[2]/LineNo",
+        "Order/Picks[2]/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[2]/Slots[-6]/Mark",
+        "/Order[1]/Lines[2]/Slots[-6]/Num",
+        "/Order[1]/Lines[2]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[2]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "noSlots",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[1]/Slots[-6]/Mark",
+        "/Order[1]/Lines[1]/Slots[-6]/Num",
+        "/Order[1]/Lines[1]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "unmatched",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[-5]/Slots[-6]/Mark",
+        "/Order[1]/Lines[-5]/Slots[-6]/Num",
+        "/Order[1]/Lines[-5]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[-5]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[-5]/Slots[-6]/Mark",
+        "/Order[1]/Lines[-5]/Slots[-6]/Num",
+        "/Order[1]/Lines[-5]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[-5]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "k8",
+       "field": "/Order[1]/Lines[1]/Slots",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "probe",
+       "referenced": [
+        "/Order[1]/Lines[-5]/Slots[-6]/Mark",
+        "/Order[1]/Lines[-5]/Slots[-6]/Num",
+        "/Order[1]/Lines[-5]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[-5]/Slots[-6]/Tagged[1]/Flag",
+        "Order/Picks/LineNo",
+        "Order/Picks/Ref"
+       ],
+       "fillToFix": [
+        "/Order[1]/Lines[-5]/Slots[-6]/Mark",
+        "/Order[1]/Lines[-5]/Slots[-6]/Num",
+        "/Order[1]/Lines[-5]/Slots[-6]/SlotNo",
+        "/Order[1]/Lines[-5]/Slots[-6]/Tagged[1]/Flag"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "noRef",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  }
+ ]
+}

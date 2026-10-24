@@ -15,20 +15,16 @@ inductive ParallelReferenceError where
   | join (error : CheckedIndexColumnError)
   | outer (error : ReferenceProjectionError)
   | repeatableOperand (path : GroupPath)
-  /-- A keyed error group's subtree beside the join: the Kernel's references there carry its
-  parallel-iteration placeholder, coordinate `-6`, which no message pointer here represents and the
-  instrument refuses to publish
-  ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join),
-  `runtime-keyed`). -/
-  | parallelPlaceholder (path : GroupPath)
   deriving Repr, DecidableEq
 
 /-- One authored read: a field pointed at through the joined row, a field of a group operand's
-subtree inside a joined side, which keeps only the operand's own repeatable levels, or an ancestor
-group's expansion, already pointed at through the outer environment. -/
+subtree inside a joined side, which keeps only the operand's own repeatable levels, a field of a keyed
+error group's subtree, read at the group's placeholder level, or an ancestor group's expansion,
+already pointed at through the outer environment. -/
 inductive ParallelRead where
   | joined (declaration : FlatFieldDecl)
   | subtree (declaration : FlatFieldDecl) (depth : Nat)
+  | placeholder (declaration : FlatFieldDecl) (level : RepeatableLevel)
   | expanded (pointer : MessagePointer)
 
 /-- The reads one leaf authors and the subset whose filling could repair an omission. The subset is
@@ -54,8 +50,8 @@ private def groupReads (pair : CheckedParallelFieldPair model) (outer : Env)
   match [pair.groups.leftGroup, pair.groups.rightGroup].find? (·.path.isPrefixOf reference.path) with
   | none => (·.map .expanded) <$> (fixedGroupPointers model reference outer).mapError .outer
   | some joined =>
-      if pair.errorGroup == some reference.path && pair.placeholderLevel?.isSome then
-        throw (.parallelPlaceholder reference.path) else
+      if let (true, some level) := (pair.errorGroup == some reference.path, pair.placeholderLevel?) then
+        pure ((model.groupSubtreeFields reference.path).map (.placeholder · level)) else
       let scope := model.repeatableScopeForGroupPath reference.path
       let joinedScope := model.repeatableScopeForGroupPath joined.path
       if scope != joinedScope && !(pair.errorGroup.any (·.isPrefixOf reference.path) &&
@@ -194,7 +190,7 @@ def messageReferences (pair : CheckedParallelFieldPair model) (document : Checke
   if message.origin == .runtimeFailure then return { referenced := [], fillToFix := [] }
   let reads ← leafReads pair document row outer inputs condition
   let project := fun (reads : List ParallelRead) => do
-    let joined := reads.filterMap fun | .joined declaration | .subtree declaration _ => some declaration | .expanded _ => none
+    let joined := reads.filterMap fun | .joined declaration | .subtree declaration _ => some declaration | _ => none
     let depths := reads.filterMap fun | .subtree declaration depth => some (declaration.id, depth) | _ => none
     -- Assumption, unmeasured as of 2026-10-24: a field both read directly and reached through a group
     -- operand keeps the direct read's bound rows.
@@ -202,7 +198,15 @@ def messageReferences (pair : CheckedParallelFieldPair model) (document : Checke
     let pointed ← ((withIndexFields pair joined).eraseDups).mapM fun declaration =>
       fieldPointer pair row outer cache declaration
         (if direct.contains declaration.id then none else depths.lookup declaration.id)
-    pure (pointed ++ reads.filterMap fun | .expanded pointer => some pointer | _ => none)
+    -- A placeholder read keeps the joined row above its level and brings no index field of its
+    -- side, as measured on one carrier (`runtime-keyed`, rule `k8`); why is not measured.
+    let placeholders ← (reads.filterMap fun | .placeholder declaration level => some (declaration, level) | _ => none)
+      |>.eraseDups |>.mapM fun (declaration, level) => do
+        let pointer ← fieldPointer pair row outer cache declaration
+          (some (declaration.repeatableScope.idxOf level))
+        pure { pointer with coordinates := (declaration.repeatableScope.zip pointer.coordinates).map fun
+          (scopeLevel, coordinate) => if scopeLevel == level then .parallelIteration else coordinate }
+    pure (placeholders ++ pointed ++ reads.filterMap fun | .expanded pointer => some pointer | _ => none)
   let referenced ← project (reads.flatMap (·.referenced))
   let fillToFix ← match message.messageType with
     | .value => pure []
