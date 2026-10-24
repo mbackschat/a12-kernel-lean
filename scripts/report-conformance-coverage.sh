@@ -303,14 +303,14 @@ find evidence/kernel-30.8.1/captures -type f \( -name 'req*.json' -o -name 'requ
 replay_requests="$(count "$work/replay-requests")"
 # shellcheck disable=SC2046
 .lake/build/bin/a12-kernel-replay $(cat "$work/replay-requests") > "$work/replay"
-# Columns: request, row, rule or computation, code, `compute` or a rule's `references` or `partial`, tier, construct, detail. A line whose
+# Columns: request, row, rule, computation or `call`, code, `compute`, a rule's `references` or `partial` or a call's `operands`, tier, construct, detail. A line whose
 # third column is `-` speaks for a whole row, not one rule.
 replay_tally() {
   awk -F'\t' -v arm="$1" -v tier="$2" '
-    $3 != "-" && (arm == "rule" ? $4 != "compute" && $4 != "references" && $4 != "partial" : $4 == arm) && $5 == tier { n++ }
+    $3 != "-" && (arm == "rule" ? $4 != "compute" && $4 != "references" && $4 != "partial" && $4 != "operands" : $4 == arm) && $5 == tier { n++ }
     END { print n + 0 }' "$work/replay"
 }
-for replay_arm in rule compute references partial; do
+for replay_arm in rule compute references partial operands; do
   for replay_tier in match tier1 tier2 unattributed fault; do
     printf -v "replay_${replay_arm}_${replay_tier}" '%s' "$(replay_tally "$replay_arm" "$replay_tier")"
   done
@@ -497,13 +497,13 @@ Each instance, one rule or computation on one document row, lands in one tier:
 - **fault**: Lean admitted the rule or plan but failed running it.
 - **absent**: no comparable Kernel observation: none retained, an unreadable artifact or model file, or engines that disagree. These are counted as rows below.
 
-| | rules | computations | rule references | partial rules |
-|---|---|---|---|---|
-| match | ${replay_rule_match} | ${replay_compute_match} | ${replay_references_match} | ${replay_partial_match} |
-| tier 1 | ${replay_rule_tier1} | ${replay_compute_tier1} | ${replay_references_tier1} | ${replay_partial_tier1} |
-| tier 2 | ${replay_rule_tier2} | ${replay_compute_tier2} | ${replay_references_tier2} | ${replay_partial_tier2} |
-| unattributed | ${replay_rule_unattributed} | ${replay_compute_unattributed} | ${replay_references_unattributed} | ${replay_partial_unattributed} |
-| fault | ${replay_rule_fault} | ${replay_compute_fault} | ${replay_references_fault} | ${replay_partial_fault} |
+| | rules | computations | rule references | partial rules | computation operand channels |
+|---|---|---|---|---|---|
+| match | ${replay_rule_match} | ${replay_compute_match} | ${replay_references_match} | ${replay_partial_match} | ${replay_operands_match} |
+| tier 1 | ${replay_rule_tier1} | ${replay_compute_tier1} | ${replay_references_tier1} | ${replay_partial_tier1} | ${replay_operands_tier1} |
+| tier 2 | ${replay_rule_tier2} | ${replay_compute_tier2} | ${replay_references_tier2} | ${replay_partial_tier2} | ${replay_operands_tier2} |
+| unattributed | ${replay_rule_unattributed} | ${replay_compute_unattributed} | ${replay_references_unattributed} | ${replay_partial_unattributed} | ${replay_operands_unattributed} |
+| fault | ${replay_rule_fault} | ${replay_compute_fault} | ${replay_references_fault} | ${replay_partial_fault} | ${replay_operands_fault} |
 
 Of the ${replay_rows} rows, ${replay_rows_absent} have no matching row in a retained artifact, and ${replay_rows_refused} could not be read or prepared as a whole. Matching instances are calibration over this population only; they make no claim about a model the population does not contain.
 

@@ -671,7 +671,7 @@ private def numberOutcome (model : FlatModel) (entry : SourcedNumericTargetOutco
       if NumericComputationRunView.shouldClear entry then some { pointer, outcome := "cleared" } else none
 
 /-- The text an errored whole-document target attempted. -/
-private def documentAttempt? : DocumentTargetOutcome → Option String
+def documentAttempt? : DocumentTargetOutcome → Option String
   | .dateTime (.errored attempted _) | .fullDate (.errored attempted _)
   | .dateRange (.errored attempted _) => some attempted.text
   | .enumeration (.errored attempted _) | .dateFragment (.errored attempted _)
@@ -694,14 +694,20 @@ private def textOutcome (model : FlatModel) (checked : CheckedDocument model) (a
   | none, some attempted => some { pointer, outcome := s!"errored {attempted}" }
   | none, none => if !stored.isEmpty then some { pointer, outcome := "cleared" } else none
 
-/-- Assemble one checked call before projecting the lowered computations' changes. -/
-def runComputations (world : World) (prepared : PreparedFlatStringContext model compilePattern)
+/-- Certify the lowered computations as one plan and run one checked call, returning the plan beside
+its result, whose message channel is scoped by that plan. -/
+def runCheckedComputations (world : World) (prepared : PreparedFlatStringContext model compilePattern)
     (checked : CheckedDocument model) (lowered : List (LoweredComputation model)) :
-    Lowering (List ComputedOutcome) := do
+    Lowering (CheckedMixedComputationPlan model compilePattern × MixedComputationCheckedResult) := do
   let steps := lowered.map (·.toMixedStep compilePattern)
   let plan ← elaborated "ComputationPlan" (certifyAuthoredMixedComputationPlan steps)
   let result ← elaborated "ComputationRun" (plan.executeResultWithFormalInputs world prepared.patterns checked)
-  pure (result.outcomes.filterMap fun
+  pure (plan, result)
+
+/-- The change projection of one checked call's outcomes. -/
+def projectOutcomes (checked : CheckedDocument model) (result : MixedComputationCheckedResult) :
+    List ComputedOutcome :=
+  result.outcomes.filterMap fun
     | .number entry => numberOutcome model entry
     | .string target (.accepted value) => textOutcome model checked { field := target, path := [] }
         (some value.text) none
@@ -709,6 +715,13 @@ def runComputations (world : World) (prepared : PreparedFlatStringContext model 
         none (some attempted.text)
     | .string target _ => textOutcome model checked { field := target, path := [] } none none
     | .document address outcome => textOutcome model checked address outcome.storedText?
-        (documentAttempt? outcome))
+        (documentAttempt? outcome)
+
+/-- Assemble one checked call before projecting the lowered computations' changes. -/
+def runComputations (world : World) (prepared : PreparedFlatStringContext model compilePattern)
+    (checked : CheckedDocument model) (lowered : List (LoweredComputation model)) :
+    Lowering (List ComputedOutcome) := do
+  let (_, result) ← runCheckedComputations world prepared checked lowered
+  pure (projectOutcomes checked result)
 
 end A12Kernel.Dm

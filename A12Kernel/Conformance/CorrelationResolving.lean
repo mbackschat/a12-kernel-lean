@@ -543,7 +543,7 @@ example : (numericStorageContext.scalarContext { fields := [] }).addressed.bind 
       some "current spelling" ∧
     ({ numericStorageContext with starStoredText := fun _ _ => none }.scalarContext { fields := [] }).addressed.bind
       (fun view => view.storedText [] payload.id) = none ∧
-    NumericComputationFault.isFilterValueFailure (.repeatableAddressing (.storedTextUnavailable payload.id)) = false := by
+    NumericComputationFault.isReachedValueFailure (.repeatableAddressing (.storedTextUnavailable payload.id)) = false := by
   native_decide
 
 end A12Kernel.Conformance.CorrelationResolving

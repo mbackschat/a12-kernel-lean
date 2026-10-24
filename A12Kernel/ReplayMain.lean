@@ -75,6 +75,7 @@ import A12Kernel.Reference.Dm.BoundTypeValidityLocks
 import A12Kernel.Reference.Dm.RowAlternativeLocks
 import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.Compute
+import A12Kernel.Reference.Dm.ComputeMessages
 import A12Kernel.Reference.Dm.ParserLocks
 import A12Kernel.Reference.Dm.RecursiveReferenceSyntaxLocks
 import A12Kernel.Reference.Dm.RecursiveReferenceAdmissionLocks
@@ -129,6 +130,7 @@ import A12Kernel.Reference.Dm.ParallelNestedPartialLocks
 import A12Kernel.Reference.Dm.OrdinaryPartialCompressionLocks
 import A12Kernel.Reference.Dm.EmptyRuleGroupLocks
 import A12Kernel.Reference.Dm.GroupTargetCustomAbortLocks
+import A12Kernel.Reference.Dm.ComputeMessagesLocks
 import A12Kernel.Reference.Dm.MessageReferenceLocks
 import A12Kernel.Reference.Dm.ApplicationKindLocks
 import A12Kernel.Reference.Dm.SemanticIndexLocks
@@ -199,6 +201,8 @@ prints one tab-separated line per instance:
 A rule whose messages match also prints a line with the code `references`, comparing those messages'
 `referenced` and `fillToFix` pointer sets. A row naming a relevant set prints one more line per rule
 with the code `partial`, comparing the partial call's messages under that set.
+After its computations a row with a retained operand-error channel prints one `call` line with the
+code `operands`, comparing that channel as pointer and code sets.
 
 where `tier` is `match`, `tier1` (Lean fires a different message set), `unattributed` (a computation
 sharing a refused computation's target or reading one, directly or through other computations, whose outcome is
@@ -330,6 +334,16 @@ private def kernelComputations (row : Json) : Option (List ComputedOutcome) := d
       else s!"value {value}"
     pure { pointer, outcome := text })
 
+/-- The call's formal-error channel as the Kernel reported it, sorted, since order is not compared. -/
+private def kernelOperandMessages (row : Json) : Option (List ComputedMessage) := do
+  let engines ← (row.getObjValAs? (Array Json) "engines").toOption
+  let computations ← (engines[0]?.getD Json.null).getObjVal? "computations" |>.toOption
+  let messages ← (computations.getObjValAs? (Array Json) "formalErrorsInOperands").toOption
+  pure ((messages.toList.filterMap fun message => do
+    pure { pointer := ← (message.getObjValAs? String "field").toOption
+           code := ← (message.getObjValAs? String "code").toOption : ComputedMessage }).mergeSort
+    (compare · · != .gt))
+
 /-- A pointer without its row indices, the target path it addresses. -/
 private def unindexed (pointer : String) : String :=
   "/".intercalate ((pointer.splitOn "/").map fun segment => (segment.splitOn "[").head!)
@@ -380,11 +394,14 @@ example : replayName ["Same", "Same", "Unique"] ["Form"] "Same" = "Form/Same" �
     replayName ["Same", "Same", "Unique"] ["Form"] "Unique" = "Unique" := by native_decide
 
 /-- Compare every computation of `model` on one checked document against the Kernel's outcomes,
-printing one line per computation through `line`. -/
+printing one line per computation through `line`, and then the call's formal-error channel against
+`kernelMessages?` on a `call` line under the code `operands`. The channel is the whole call's, so a refused
+computation leaves it unattributed. -/
 private def replayComputations (line : String → String → String → String → IO Unit)
     (clocked : Bool) (model : DmModel) (language : Language) (world : World)
     (prepared : PreparedFlatStringContext model.flat compilePattern)
-    (checked : CheckedDocument model.flat) (kernel : List ComputedOutcome) : IO Unit := do
+    (checked : CheckedDocument model.flat) (kernel : List ComputedOutcome)
+    (kernelMessages? : Option (List ComputedMessage) := none) : IO Unit := do
   let attempts := model.computations.map fun computation =>
     (computation, if !clocked && (computationTexts computation).any (readsClock language) then
         .error { construct := "Clock", detail := "the request pins no clock" }
@@ -409,17 +426,18 @@ private def replayComputations (line : String → String → String → String �
   let fedTargets := (List.range model.computations.length).foldl (init := refused) fun fed _ =>
     fed ++ model.computations.filter fun computation =>
       !(fed.map targetName).contains (targetName computation) && reads fed computation
-  let result := if refused.isEmpty then
-      runModelComputations model language world prepared checked
+  let result : Lowering (List ComputedOutcome × Option (List ComputedMessage)) := if refused.isEmpty then
+      (fun (outcomes, messages) => (outcomes, some messages)) <$>
+        runModelComputationsWithMessages model language world prepared checked
     else
-      runComputations world prepared checked (admitted.map (·.2.2))
+      (·, none) <$> runComputations world prepared checked (admitted.map (·.2.2))
   match result with
   | .error refusal =>
       -- A plan Lean certified and then failed to run is a fault; an uncertified plan is a refusal.
       let tier := if refusal.construct == "ComputationRun" then "fault" else "tier2"
       for (computation, _, _) in admitted do
         line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" tier s!"{refusal.construct}\t{oneLine refusal.detail}"
-  | .ok outcomes =>
+  | .ok (outcomes, messages?) =>
       for (computation, target, _) in admitted do
         let path := "/".intercalate target.path
         let lean := sorted (outcomes.filter (unindexed ·.pointer == path))
@@ -432,6 +450,12 @@ private def replayComputations (line : String → String → String → String �
           line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "unattributed" s!"Fed\tlean={lean} kernel={expected}"
         else if lean == expected then line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "match" ""
         else line (replayName (model.computations.map (·.name)) computation.group computation.name) "compute" "tier1" s!"Divergence\tlean={lean} kernel={expected}"
+      if let some kernelMessages := kernelMessages? then
+        match messages? with
+        | none => line "call" "operands" "unattributed" "Fed\ta refused computation leaves the channel incomplete"
+        | some lean =>
+            if lean == kernelMessages then line "call" "operands" "match" ""
+            else line "call" "operands" "tier1" s!"Divergence\tlean={lean} kernel={kernelMessages}"
 
 /-- One concrete cell in A12's `DocumentPointer` spelling, `Form/Rows[2]/Label` with each omitted
 repetition `[1]`, as the probe's `whenFilled` names it; a wildcard `[0]` names no cell. -/
@@ -563,6 +587,7 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
                       line name ruleName "partial" verdict.status.tier verdict.status.detail
             if let some computed := observedRow.bind kernelComputations then
               replayComputations (line name) clock?.isSome model language world prepared checked computed
+                (observedRow.bind kernelOperandMessages)
 
 end A12Kernel.Replay
 

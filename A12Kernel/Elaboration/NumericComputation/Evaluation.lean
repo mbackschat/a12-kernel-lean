@@ -293,7 +293,9 @@ def readNumericComputationAtom (context : ScalarComputationContext) :
     (fun _ => throw .groupCountNeedsModel)
 
 /-- Numeric extraction consumes the temporal source's computation observation before discarding
-validation-only fillability; formal poison and calendar faults remain distinct. -/
+validation-only fillability; formal poison and calendar faults remain distinct. A reached runtime
+failure escapes as its fault, which ends the fold as a reached value failure rather than a value-level
+domain failure a later poison would replace. -/
 def readTemporalNumericExpression (context : ScalarComputationContext)
     (source : CheckedTemporalNumericExpression model)
     (filtered : FilteredShiftAmountReader model := .unavailable) :
@@ -302,7 +304,6 @@ def readTemporalNumericExpression (context : ScalarComputationContext)
       read := context.read, storedText := context.storedText, world := context.world } context.addressed context.row
       (filtered := filtered) with
     | .ok result => pure result
-    | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return .domainFailure
     | .error fault => throw (.temporalExpression fault)
   match result with
   | .ok (.value amount _) => pure (.value amount)

@@ -211,10 +211,11 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 <a id="cap-computation-formal-messages"></a>
 #### Computation formal messages
 
-- `boundary`: Shared partial-pointer identity and payload-independent computed/residual partition
-- `owner`: [`MessagePointer.lean`](../../A12Kernel/Semantics/MessagePointer.lean), [`ComputationMessage.lean`](../../A12Kernel/Semantics/ComputationMessage.lean)
-- `assurance`: E/P closed for the current partition; upstream pointer-domain L at [source registry](../SOURCES.md); C/X/Q none
-- `remains`: Error-code mapping and localized payload construction: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
+- `boundary`: Shared partial-pointer identity and payload-independent computed/residual partition. The reader projects one checked call's residual stream to pointer and runtime code, recomputing each declaration-dependent code from the placement's stored input.
+- `owner`: [`MessagePointer.lean`](../../A12Kernel/Semantics/MessagePointer.lean), [`ComputationMessage.lean`](../../A12Kernel/Semantics/ComputationMessage.lean), [reader projection](../../A12Kernel/Reference/Dm/ComputeMessages.lean)
+- `assurance`: E/P closed for the current partition; upstream pointer-domain L at [source registry](../SOURCES.md); [locks](../../A12Kernel/Reference/Dm/ComputeMessagesLocks.lean) for the reached-literal order and the Enumeration class; X/Q none
+- `calibration`: the population replay compares every admitted call's channel with the Kernel's `formalErrorsInOperands` ([operand-channel checkpoint](../sources/group-count-topology.md#src-k22-operands-channel)).
+- `remains`: Localized payload construction: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
 
 <a id="cap-custom-field-formal-messages"></a>
 #### Custom-field formal messages

@@ -86,13 +86,18 @@ inductive NumericComputationFault where
   | repeatableAddressing (error : StarAddressingError)
   deriving Repr, DecidableEq
 
-/-- Reached filter failures escape the expression fold before the target handler records VALUE;
-formal poison and unavailable host inputs retain their separate channels (spec/07 §3). -/
-def NumericComputationFault.isFilterValueFailure : NumericComputationFault → Bool
+/-- Reached runtime value failures escape the expression fold before the target handler records
+VALUE, so no later operand is read: a filter failure (spec/07 §3), and a temporal operand's
+unresolvable model-zone label or unconvertible component, whose reached failure is reported although
+a later operand is formally invalid (the effects batch of the
+[recursive temporal checkpoint](../../../docs/sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression),
+`leftGap` on `badClock`). Formal poison and unavailable host inputs retain their separate channels. -/
+def NumericComputationFault.isReachedValueFailure : NumericComputationFault → Bool
   | .repeatableAddressing error => error.isFilterValueFailure
   | .indexSelection error => error.isFilterValueFailure
   | .guardBinding (.fieldFill (.addressing error)) => error.isFilterValueFailure
   | .temporalExpression (.addressing error) => error.isFilterValueFailure
+  | .temporalExpression .dateTimeLabelUnresolved | .temporalExpression .componentNumberInvalid => true
   | _ => false
 
 /-- The bounded runtime inputs needed when one checked numeric expression contains repeatable entity-list atoms. This is an expression evaluator context, not a document scheduler or dependency overlay. -/

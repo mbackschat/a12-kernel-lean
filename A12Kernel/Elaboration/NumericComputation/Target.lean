@@ -68,7 +68,7 @@ def evaluate (operation : CheckedNumericTargetComputationOperation model)
     Except NumericComputationFault NumericTargetCheckResult := do
   match operation.operation.evaluate context with
   | .ok result => pure (operation.checkResult result)
-  | .error error => if error.isFilterValueFailure then pure (operation.checkResult .domainFailure) else throw error
+  | .error error => if error.isReachedValueFailure then pure (operation.checkResult .domainFailure) else throw error
 
 /-- Preserve the same retained target-policy dispatch after repeatable expression evaluation. Source-relative target policy and result classification are not recomputed or reordered. -/
 def evaluateIn (operation : CheckedNumericTargetComputationOperation model)
@@ -76,7 +76,7 @@ def evaluateIn (operation : CheckedNumericTargetComputationOperation model)
     Except NumericComputationFault NumericTargetCheckResult := do
   match operation.operation.evaluateIn context with
   | .ok result => pure (operation.checkResult result)
-  | .error error => if error.isFilterValueFailure then pure (operation.checkResult .domainFailure) else throw error
+  | .error error => if error.isReachedValueFailure then pure (operation.checkResult .domainFailure) else throw error
 
 end CheckedNumericTargetComputationOperation
 
