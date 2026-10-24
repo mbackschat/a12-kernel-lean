@@ -1,0 +1,581 @@
+{
+ "header": {
+  "id": "K22o_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K22o_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Order",
+     "name": "Order",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Order/Email",
+        "name": "Email",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Order/Phone",
+        "name": "Phone",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Order/Tier",
+        "name": "Tier",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Order/Budget",
+        "name": "Budget",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Lines",
+        "name": "Lines",
+        "Group": {
+         "repeatability": 50,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Lines/LineNo",
+           "name": "LineNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Sku",
+           "name": "Sku",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Code",
+           "name": "Code",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Qty",
+           "name": "Qty",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Price",
+           "name": "Price",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Day",
+           "name": "Day",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Month",
+           "name": "Month",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Lines/Parts",
+           "name": "Parts",
+           "Group": {
+            "repeatability": 5,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Parts/PartNo",
+              "name": "PartNo",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Parts/Count",
+              "name": "Count",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Parts/Tag",
+              "name": "Tag",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Lines/Slots",
+           "name": "Slots",
+           "Group": {
+            "repeatability": 2,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Slots/SlotNo",
+              "name": "SlotNo",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Slots/Mark",
+              "name": "Mark",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ],
+            "indexFieldName": "SlotNo"
+           }
+          }
+         ],
+         "indexFieldName": "LineNo"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Picks",
+        "name": "Picks",
+        "Group": {
+         "repeatability": 10,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Picks/LineNo",
+           "name": "LineNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Picks/Ref",
+           "name": "Ref",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "LineNo"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Gifts",
+        "name": "Gifts",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Gifts/GiftNo",
+           "name": "GiftNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Gifts/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Gifts/Card",
+           "name": "Card",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Gifts/Card/Text",
+              "name": "Text",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "GiftNo"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Wraps",
+        "name": "Wraps",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Wraps/Style",
+           "name": "Style",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Wraps/Ribbon",
+           "name": "Ribbon",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Wraps/Ribbon/Color",
+              "name": "Color",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Wraps/Tag",
+           "name": "Tag",
+           "Group": {
+            "repeatability": 1,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Wraps/Tag/Label",
+              "name": "Label",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Wraps/Bows",
+           "name": "Bows",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Wraps/Bows/BowNo",
+              "name": "BowNo",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Order/Wraps/Bows/Shade",
+              "name": "Shade",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ],
+            "indexFieldName": "BowNo"
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/O1",
+        "name": "O1",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "O1",
+         "severity": "ERROR",
+         "errorCondition": "FieldFilled(Lines/Parts/Tag) And (FieldFilled(Email) Or FieldFilled(Lines/Parts/Count))",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/O2",
+        "name": "O2",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "O2",
+         "severity": "ERROR",
+         "errorCondition": "FieldFilled(Lines/Parts/Count) And CurrentRepetition(Lines) > 1",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/O3",
+        "name": "O3",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "O3",
+         "severity": "ERROR",
+         "errorCondition": "FieldFilled(Lines/Parts/Count) And CurrentRepetition(Lines/Parts) > 1",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/O4",
+        "name": "O4",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "O4",
+         "severity": "ERROR",
+         "errorCondition": "FieldFilled(Lines/Parts/Tag) And (CurrentRepetition(Lines) > 2 Or FieldFilled(Lines/Parts/Count))",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/O5",
+        "name": "O5",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Sku",
+         "errorCode": "O5",
+         "severity": "ERROR",
+         "errorCondition": "FieldFilled(Lines/Code) And (FieldFilled(Email) Or FieldFilled(Lines/Sku))",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/O6",
+        "name": "O6",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "O6",
+         "severity": "ERROR",
+         "errorCondition": "FieldFilled(Lines/Parts/Count)",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/M1",
+        "name": "M1",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "M1",
+         "severity": "ERROR",
+         "errorCondition": "FieldFilled(Lines/Parts/Count) And NumberOfFilledFields(Picks*/Ref Having [Picks/LineNo] == [$Lines/LineNo]) > 0",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/M2",
+        "name": "M2",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "M2",
+         "severity": "ERROR",
+         "errorCondition": "FieldFilled(Lines/Parts/Count) And NumberOfFilledFields(Lines/Parts*/Count Having [Lines/Parts/Count] > [$Lines/Parts/Count]) > 0",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/M3",
+        "name": "M3",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Sku",
+         "errorCode": "M3",
+         "severity": "ERROR",
+         "errorCondition": "FieldFilled(Lines/Sku) And NumberOfFilledFields(Lines/Parts*/Count Having [Lines/Parts/Count] > [$Lines/Qty]) > 0",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

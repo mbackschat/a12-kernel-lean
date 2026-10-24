@@ -344,7 +344,7 @@ def iteratorStart? (scope : ValidationRelevanceScope) (model : FlatModel) (error
   | .partialSet entities => (compressedSelector? entities errorPath).bind fun selector =>
       environments.find? (selector.matchesBoundSubtree model boundLevels ·)
 
-/-- Resolve the partial rule-run gate at exactly the repeatable levels bound by the rule's checked iteration plan. A relevant field or ancestor must still project onto the error path, coordinates at bound levels must match the current environment, and deeper coordinates are deliberately ignored because iteration did not choose them. This is distinct from exact per-cell relevance used by condition leaves. -/
+/-- Resolve the partial rule-run gate at exactly the repeatable levels bound by the rule's checked iteration plan. A relevant field or ancestor must still project onto the error path. The projected selectors are compressed into one envelope first, so two selectors differing at a bound level let every row there run, and the envelope's coordinates at bound levels must match the current environment; deeper coordinates are deliberately ignored because iteration did not choose them ([ordinary partial dispatch capture](../../docs/sources/group-count-topology.md#src-k22-ordinary-partial-dispatch), 2026-10-24). This is distinct from exact per-cell relevance used by condition leaves. -/
 def coversFieldAtBoundLevels (scope : ValidationRelevanceScope)
     (model : FlatModel) (field : FieldId)
     (boundLevels : List RepeatableLevel) (environment : Env) : Bool :=
@@ -353,11 +353,8 @@ def coversFieldAtBoundLevels (scope : ValidationRelevanceScope)
   | .ok declaration =>
       match scope with
       | .full => true
-      | .partialSet entities => entities.any fun entity =>
-          match entity.projectOntoTarget? declaration.path with
-          | none => false
-          | some projected =>
-              projected.matchesBoundSubtree model boundLevels environment
+      | .partialSet entities => (compressedSelector? entities declaration.path).any
+          (·.matchesBoundSubtree model boundLevels environment)
 
 /-- Derive the kernel's three-level relevance for one concrete group instance. Any intersecting selection supplies partial visibility; definite absence additionally requires an ancestor group selection or complete union coverage of every declared descendant. Finite deeper levels accept all concrete positions; unbounded levels require a wildcard (spec/10 §5). -/
 def groupRelevance (scope : ValidationRelevanceScope) (model : FlatModel)
