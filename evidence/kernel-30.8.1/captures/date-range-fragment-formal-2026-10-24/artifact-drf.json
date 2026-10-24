@@ -1,0 +1,4743 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "DRF_DM.json",
+  "locale": "en_US",
+  "clock": "2024-03-30T23:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "ok",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CD",
+       "field": "Form/TD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/DF",
+        "Form/DS",
+        "Form/TD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CM",
+       "field": "Form/TM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/MF",
+        "Form/MS",
+        "Form/TM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CN",
+       "field": "Form/TN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/TN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CY",
+       "field": "Form/TY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/YF",
+        "Form/YS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "eD",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/DF",
+        "Form/DS",
+        "Form/SD",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "eM",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/MF",
+        "Form/MS",
+        "Form/SM",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "eN",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/SN",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "eY",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/SY",
+        "Form/W",
+        "Form/YF",
+        "Form/YS"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": false,
+        "errored": false,
+        "value": "01-31/02-28"
+       },
+       {
+        "field": "Form/TM",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-06/2024-09"
+       },
+       {
+        "field": "Form/TN",
+        "cleared": false,
+        "errored": false,
+        "value": "02/03"
+       },
+       {
+        "field": "Form/TY",
+        "cleared": false,
+        "errored": false,
+        "value": "2024/2025"
+       },
+       {
+        "field": "Form/XD",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/XM",
+        "cleared": false,
+        "errored": false,
+        "value": "2024"
+       },
+       {
+        "field": "Form/XN",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Form/XY",
+        "cleared": false,
+        "errored": false,
+        "value": "2024"
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": false,
+        "errored": false,
+        "value": "2025"
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": false,
+        "errored": false,
+        "value": "2025"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/TD",
+        "value": "01-31/02-28"
+       },
+       {
+        "field": "Form/TM",
+        "value": "2024-06/2024-09"
+       },
+       {
+        "field": "Form/TN",
+        "value": "02/03"
+       },
+       {
+        "field": "Form/TY",
+        "value": "2024/2025"
+       },
+       {
+        "field": "Form/XD",
+        "value": "1"
+       },
+       {
+        "field": "Form/XM",
+        "value": "2024"
+       },
+       {
+        "field": "Form/XN",
+        "value": "2"
+       },
+       {
+        "field": "Form/XY",
+        "value": "2024"
+       },
+       {
+        "field": "Form/ZD",
+        "value": "2"
+       },
+       {
+        "field": "Form/ZM",
+        "value": "2025"
+       },
+       {
+        "field": "Form/ZN",
+        "value": "3"
+       },
+       {
+        "field": "Form/ZY",
+        "value": "2025"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "DS": "01-31",
+        "MF": "2024-09",
+        "MS": "2024-06",
+        "NF": "03",
+        "NS": "02",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": "01-31/02-28",
+        "TM": "2024-06/2024-09",
+        "TN": "02/03",
+        "TY": "2024/2025",
+        "W": "w",
+        "XD": 1,
+        "XM": 2024,
+        "XN": 2,
+        "XY": 2024,
+        "YF": "2025",
+        "YS": "2024",
+        "ZD": 2,
+        "ZM": 2025,
+        "ZN": 3,
+        "ZY": 2025
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CD",
+       "field": "Form/TD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/DF",
+        "Form/DS",
+        "Form/TD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CM",
+       "field": "Form/TM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/MF",
+        "Form/MS",
+        "Form/TM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CN",
+       "field": "Form/TN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/TN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CY",
+       "field": "Form/TY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/YF",
+        "Form/YS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "eD",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/DF",
+        "Form/DS",
+        "Form/SD",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "eM",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/MF",
+        "Form/MS",
+        "Form/SM",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "eN",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/SN",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "eY",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/SY",
+        "Form/W",
+        "Form/YF",
+        "Form/YS"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": false,
+        "errored": false,
+        "value": "01-31/02-28"
+       },
+       {
+        "field": "Form/TM",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-06/2024-09"
+       },
+       {
+        "field": "Form/TN",
+        "cleared": false,
+        "errored": false,
+        "value": "02/03"
+       },
+       {
+        "field": "Form/TY",
+        "cleared": false,
+        "errored": false,
+        "value": "2024/2025"
+       },
+       {
+        "field": "Form/XD",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/XM",
+        "cleared": false,
+        "errored": false,
+        "value": "2024"
+       },
+       {
+        "field": "Form/XN",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Form/XY",
+        "cleared": false,
+        "errored": false,
+        "value": "2024"
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": false,
+        "errored": false,
+        "value": "2025"
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": false,
+        "errored": false,
+        "value": "2025"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/TD",
+        "value": "01-31/02-28"
+       },
+       {
+        "field": "Form/TM",
+        "value": "2024-06/2024-09"
+       },
+       {
+        "field": "Form/TN",
+        "value": "02/03"
+       },
+       {
+        "field": "Form/TY",
+        "value": "2024/2025"
+       },
+       {
+        "field": "Form/XD",
+        "value": "1"
+       },
+       {
+        "field": "Form/XM",
+        "value": "2024"
+       },
+       {
+        "field": "Form/XN",
+        "value": "2"
+       },
+       {
+        "field": "Form/XY",
+        "value": "2024"
+       },
+       {
+        "field": "Form/ZD",
+        "value": "2"
+       },
+       {
+        "field": "Form/ZM",
+        "value": "2025"
+       },
+       {
+        "field": "Form/ZN",
+        "value": "3"
+       },
+       {
+        "field": "Form/ZY",
+        "value": "2025"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "DS": "01-31",
+        "MF": "2024-09",
+        "MS": "2024-06",
+        "NF": "03",
+        "NS": "02",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": "01-31/02-28",
+        "TM": "2024-06/2024-09",
+        "TN": "02/03",
+        "TY": "2024/2025",
+        "W": "w",
+        "XD": 1,
+        "XM": 2024,
+        "XN": 2,
+        "XY": 2024,
+        "YF": "2025",
+        "YS": "2024",
+        "ZD": 2,
+        "ZM": 2025,
+        "ZN": 3,
+        "ZY": 2025
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "emptyS",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/XD",
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "value": "1"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "MF": "2024-09",
+        "NF": "03",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": 0,
+        "XM": 0,
+        "XN": 0,
+        "XY": 0,
+        "YF": "2025",
+        "ZD": 1,
+        "ZM": 1,
+        "ZN": 1,
+        "ZY": 1
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/XD",
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "value": "1"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "MF": "2024-09",
+        "NF": "03",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": 0,
+        "XM": 0,
+        "XN": 0,
+        "XY": 0,
+        "YF": "2025",
+        "ZD": 1,
+        "ZM": 1,
+        "ZN": 1,
+        "ZY": 1
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "emptyF",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/XD",
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "value": "1"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DS": "01-31",
+        "MS": "2024-06",
+        "NS": "02",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": 0,
+        "XM": 0,
+        "XN": 0,
+        "XY": 0,
+        "YS": "2024",
+        "ZD": 1,
+        "ZM": 1,
+        "ZN": 1,
+        "ZY": 1
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/XD",
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "value": "1"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DS": "01-31",
+        "MS": "2024-06",
+        "NS": "02",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": 0,
+        "XM": 0,
+        "XN": 0,
+        "XY": 0,
+        "YS": "2024",
+        "ZD": 1,
+        "ZM": 1,
+        "ZN": 1,
+        "ZY": 1
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "blankS",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/XD",
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "value": "1"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "DS": null,
+        "MF": "2024-09",
+        "MS": null,
+        "NF": "03",
+        "NS": null,
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": 0,
+        "XM": 0,
+        "XN": 0,
+        "XY": 0,
+        "YF": "2025",
+        "YS": null,
+        "ZD": 1,
+        "ZM": 1,
+        "ZN": 1,
+        "ZY": 1
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/XD",
+        "value": "0"
+       },
+       {
+        "field": "Form/XM",
+        "value": "0"
+       },
+       {
+        "field": "Form/XN",
+        "value": "0"
+       },
+       {
+        "field": "Form/XY",
+        "value": "0"
+       },
+       {
+        "field": "Form/ZD",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZM",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZN",
+        "value": "1"
+       },
+       {
+        "field": "Form/ZY",
+        "value": "1"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "DS": null,
+        "MF": "2024-09",
+        "MS": null,
+        "NF": "03",
+        "NS": null,
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": 0,
+        "XM": 0,
+        "XN": 0,
+        "XY": 0,
+        "YF": "2025",
+        "YS": null,
+        "ZD": 1,
+        "ZM": 1,
+        "ZN": 1,
+        "ZY": 1
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "malS",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/MS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/MS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/NS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/NS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/YS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/YS"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/DS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/DS"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/MS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/MS"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/NS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/NS"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/YS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/YS"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "DS": "02-30",
+        "MF": "2024-09",
+        "MS": "2024-13",
+        "NF": "03",
+        "NS": "13",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": null,
+        "XM": null,
+        "XN": null,
+        "XY": null,
+        "YF": "2025",
+        "YS": "20x4",
+        "ZD": null,
+        "ZM": null,
+        "ZN": null,
+        "ZY": null
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/MS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/MS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/NS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/NS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/YS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/YS"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/DS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/DS"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/MS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/MS"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/NS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/NS"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/YS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/YS"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "DS": "02-30",
+        "MF": "2024-09",
+        "MS": "2024-13",
+        "NF": "03",
+        "NS": "13",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": null,
+        "XM": null,
+        "XN": null,
+        "XY": null,
+        "YF": "2025",
+        "YS": "20x4",
+        "ZD": null,
+        "ZM": null,
+        "ZN": null,
+        "ZY": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "malF",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DF",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DF"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/MF",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/MF"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/NF",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/NF"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/YF",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/YF"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/DF",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/DF"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/MF",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/MF"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/NF",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/NF"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/YF",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/YF"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-30",
+        "DS": "01-31",
+        "MF": "2024-13",
+        "MS": "2024-06",
+        "NF": "13",
+        "NS": "02",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": null,
+        "XM": null,
+        "XN": null,
+        "XY": null,
+        "YF": "20x4",
+        "YS": "2024",
+        "ZD": null,
+        "ZM": null,
+        "ZN": null,
+        "ZY": null
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DF",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DF"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/MF",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/MF"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/NF",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/NF"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/YF",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/YF"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/DF",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/DF"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/MF",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/MF"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/NF",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/NF"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/YF",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/YF"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-30",
+        "DS": "01-31",
+        "MF": "2024-13",
+        "MS": "2024-06",
+        "NF": "13",
+        "NS": "02",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": null,
+        "XM": null,
+        "XN": null,
+        "XY": null,
+        "YF": "20x4",
+        "YS": "2024",
+        "ZD": null,
+        "ZM": null,
+        "ZN": null,
+        "ZY": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "floorS",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CN",
+       "field": "Form/TN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/TN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFalsch",
+       "field": "Form/MS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/MS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFalsch",
+       "field": "Form/YS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/YS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "eN",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/SN",
+        "Form/W"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": false,
+        "errored": false,
+        "value": "02/03"
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XN",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Form/XY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFalsch",
+        "field": "Form/MS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/MS"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFalsch",
+        "field": "Form/YS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/YS"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/DS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/DS"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/TN",
+        "value": "02/03"
+       },
+       {
+        "field": "Form/XN",
+        "value": "2"
+       },
+       {
+        "field": "Form/ZN",
+        "value": "3"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "DS": "02-29",
+        "MF": "2024-09",
+        "MS": "1500-01",
+        "NF": "03",
+        "NS": "02",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": "02/03",
+        "TY": null,
+        "W": "w",
+        "XD": null,
+        "XM": null,
+        "XN": 2,
+        "XY": null,
+        "YF": "2025",
+        "YS": "1500",
+        "ZD": null,
+        "ZM": null,
+        "ZN": 3,
+        "ZY": null
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CN",
+       "field": "Form/TN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/TN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFalsch",
+       "field": "Form/MS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/MS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFalsch",
+       "field": "Form/YS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/YS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "datumFormatFalsch",
+       "field": "Form/DS",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Form/DS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "eN",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/SN",
+        "Form/W"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/TN",
+        "cleared": false,
+        "errored": false,
+        "value": "02/03"
+       },
+       {
+        "field": "Form/TY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XN",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Form/XY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": false,
+        "errored": false,
+        "value": "3"
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "datumFalsch",
+        "field": "Form/MS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/MS"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFalsch",
+        "field": "Form/YS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/YS"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "datumFormatFalsch",
+        "field": "Form/DS",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Form/DS"
+        ],
+        "fillToFix": []
+       }
+      ]
+     },
+     "computeResults": {
+      "withoutErrors": [
+       {
+        "field": "Form/TN",
+        "value": "02/03"
+       },
+       {
+        "field": "Form/XN",
+        "value": "2"
+       },
+       {
+        "field": "Form/ZN",
+        "value": "3"
+       }
+      ],
+      "errored": [],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "DS": "02-29",
+        "MF": "2024-09",
+        "MS": "1500-01",
+        "NF": "03",
+        "NS": "02",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": "02/03",
+        "TY": null,
+        "W": "w",
+        "XD": null,
+        "XM": null,
+        "XN": 2,
+        "XY": null,
+        "YF": "2025",
+        "YS": "1500",
+        "ZD": null,
+        "ZM": null,
+        "ZN": 3,
+        "ZY": null
+       }
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "inv",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CD",
+       "field": "Form/TD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/DF",
+        "Form/DS",
+        "Form/TD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CM",
+       "field": "Form/TM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/MF",
+        "Form/MS",
+        "Form/TM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CN",
+       "field": "Form/TN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/TN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CY",
+       "field": "Form/TY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/YF",
+        "Form/YS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "nD",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/DF",
+        "Form/DS",
+        "Form/SD",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "nM",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/MF",
+        "Form/MS",
+        "Form/SM",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "nN",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/SN",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "nY",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/SY",
+        "Form/W",
+        "Form/YF",
+        "Form/YS"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": false,
+        "errored": true,
+        "value": "03-01/02-28"
+       },
+       {
+        "field": "Form/TM",
+        "cleared": false,
+        "errored": true,
+        "value": "2024-10/2024-09"
+       },
+       {
+        "field": "Form/TN",
+        "cleared": false,
+        "errored": true,
+        "value": "04/03"
+       },
+       {
+        "field": "Form/TY",
+        "cleared": false,
+        "errored": true,
+        "value": "2026/2025"
+       },
+       {
+        "field": "Form/XD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [],
+      "errored": [
+       {
+        "field": "Form/TD",
+        "value": "03-01/02-28",
+        "errorMessage": {
+         "code": "datumBereichNichtGueltig",
+         "field": "Form/TD",
+         "severity": "ERROR",
+         "type": "VALUE_ERROR",
+         "message": "[redacted]",
+         "referenced": [
+          "Form/TD"
+         ],
+         "fillToFix": []
+        }
+       },
+       {
+        "field": "Form/TM",
+        "value": "2024-10/2024-09",
+        "errorMessage": {
+         "code": "datumBereichNichtGueltig",
+         "field": "Form/TM",
+         "severity": "ERROR",
+         "type": "VALUE_ERROR",
+         "message": "[redacted]",
+         "referenced": [
+          "Form/TM"
+         ],
+         "fillToFix": []
+        }
+       },
+       {
+        "field": "Form/TN",
+        "value": "04/03",
+        "errorMessage": {
+         "code": "datumBereichNichtGueltig",
+         "field": "Form/TN",
+         "severity": "ERROR",
+         "type": "VALUE_ERROR",
+         "message": "[redacted]",
+         "referenced": [
+          "Form/TN"
+         ],
+         "fillToFix": []
+        }
+       },
+       {
+        "field": "Form/TY",
+        "value": "2026/2025",
+        "errorMessage": {
+         "code": "datumBereichNichtGueltig",
+         "field": "Form/TY",
+         "severity": "ERROR",
+         "type": "VALUE_ERROR",
+         "message": "[redacted]",
+         "referenced": [
+          "Form/TY"
+         ],
+         "fillToFix": []
+        }
+       }
+      ],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "DS": "03-01",
+        "MF": "2024-09",
+        "MS": "2024-10",
+        "NF": "03",
+        "NS": "04",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": null,
+        "XM": null,
+        "XN": null,
+        "XY": null,
+        "YF": "2025",
+        "YS": "2026",
+        "ZD": null,
+        "ZM": null,
+        "ZN": null,
+        "ZY": null
+       }
+      }
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CD",
+       "field": "Form/TD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/DF",
+        "Form/DS",
+        "Form/TD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CM",
+       "field": "Form/TM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/MF",
+        "Form/MS",
+        "Form/TM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CN",
+       "field": "Form/TN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/TN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXD",
+       "field": "Form/XD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TD",
+        "Form/XD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXM",
+       "field": "Form/XM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TM",
+        "Form/XM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXN",
+       "field": "Form/XN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TN",
+        "Form/XN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CXY",
+       "field": "Form/XY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/XY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CY",
+       "field": "Form/TY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/TY",
+        "Form/YF",
+        "Form/YS"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZD",
+       "field": "Form/ZD",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XD",
+        "Form/ZD"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZM",
+       "field": "Form/ZM",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XM",
+        "Form/ZM"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZN",
+       "field": "Form/ZN",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XN",
+        "Form/ZN"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CZY",
+       "field": "Form/ZY",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/XY",
+        "Form/ZY"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "nD",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/DF",
+        "Form/DS",
+        "Form/SD",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "nM",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/MF",
+        "Form/MS",
+        "Form/SM",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "nN",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/NF",
+        "Form/NS",
+        "Form/SN",
+        "Form/W"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "nY",
+       "field": "Form/W",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Form/SY",
+        "Form/W",
+        "Form/YF",
+        "Form/YS"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TD",
+        "cleared": false,
+        "errored": true,
+        "value": "03-01/02-28"
+       },
+       {
+        "field": "Form/TM",
+        "cleared": false,
+        "errored": true,
+        "value": "2024-10/2024-09"
+       },
+       {
+        "field": "Form/TN",
+        "cleared": false,
+        "errored": true,
+        "value": "04/03"
+       },
+       {
+        "field": "Form/TY",
+        "cleared": false,
+        "errored": true,
+        "value": "2026/2025"
+       },
+       {
+        "field": "Form/XD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/XY",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZD",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZM",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZN",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Form/ZY",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "computeResults": {
+      "withoutErrors": [],
+      "errored": [
+       {
+        "field": "Form/TD",
+        "value": "03-01/02-28",
+        "errorMessage": {
+         "code": "datumBereichNichtGueltig",
+         "field": "Form/TD",
+         "severity": "ERROR",
+         "type": "VALUE_ERROR",
+         "message": "[redacted]",
+         "referenced": [
+          "Form/TD"
+         ],
+         "fillToFix": []
+        }
+       },
+       {
+        "field": "Form/TM",
+        "value": "2024-10/2024-09",
+        "errorMessage": {
+         "code": "datumBereichNichtGueltig",
+         "field": "Form/TM",
+         "severity": "ERROR",
+         "type": "VALUE_ERROR",
+         "message": "[redacted]",
+         "referenced": [
+          "Form/TM"
+         ],
+         "fillToFix": []
+        }
+       },
+       {
+        "field": "Form/TN",
+        "value": "04/03",
+        "errorMessage": {
+         "code": "datumBereichNichtGueltig",
+         "field": "Form/TN",
+         "severity": "ERROR",
+         "type": "VALUE_ERROR",
+         "message": "[redacted]",
+         "referenced": [
+          "Form/TN"
+         ],
+         "fillToFix": []
+        }
+       },
+       {
+        "field": "Form/TY",
+        "value": "2026/2025",
+        "errorMessage": {
+         "code": "datumBereichNichtGueltig",
+         "field": "Form/TY",
+         "severity": "ERROR",
+         "type": "VALUE_ERROR",
+         "message": "[redacted]",
+         "referenced": [
+          "Form/TY"
+         ],
+         "fillToFix": []
+        }
+       }
+      ],
+      "applied": {
+       "Form": {
+        "DF": "02-28",
+        "DS": "03-01",
+        "MF": "2024-09",
+        "MS": "2024-10",
+        "NF": "03",
+        "NS": "04",
+        "SD": "01-31/02-28",
+        "SM": "2024-06/2024-09",
+        "SN": "02/03",
+        "SY": "2024/2025",
+        "TD": null,
+        "TM": null,
+        "TN": null,
+        "TY": null,
+        "W": "w",
+        "XD": null,
+        "XM": null,
+        "XN": null,
+        "XY": null,
+        "YF": "2025",
+        "YS": "2026",
+        "ZD": null,
+        "ZM": null,
+        "ZN": null,
+        "ZY": null
+       }
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

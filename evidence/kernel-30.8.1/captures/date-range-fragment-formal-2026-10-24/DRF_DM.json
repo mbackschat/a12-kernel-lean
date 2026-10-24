@@ -1,0 +1,737 @@
+{
+ "header": {
+  "id": "DRF_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "DRF_DM",
+   "baseYear": "2023"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/W",
+        "name": "W",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/YS",
+        "name": "YS",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/YF",
+        "name": "YF",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SY",
+        "name": "SY",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TY",
+        "name": "TY",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/XY",
+        "name": "XY",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ZY",
+        "name": "ZY",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CY",
+        "name": "CY",
+        "Computation": {
+         "computedFieldRelPath": "../TY",
+         "computationAlternatives": [
+          {
+           "operation": "DateRange(YS,YF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CXY",
+        "name": "CXY",
+        "Computation": {
+         "computedFieldRelPath": "../XY",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(StartOfDateRange(TY))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CZY",
+        "name": "CZY",
+        "Computation": {
+         "computedFieldRelPath": "../ZY",
+         "computationAlternatives": [
+          {
+           "operation": "[XY] + 1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/eY",
+        "name": "eY",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "eY",
+         "errorCondition": "FieldFilled(W) And DateRange(YS,YF) == [SY]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/nY",
+        "name": "nY",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "nY",
+         "errorCondition": "FieldFilled(W) And DateRange(YS,YF) != [SY]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/MS",
+        "name": "MS",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/MF",
+        "name": "MF",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SM",
+        "name": "SM",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TM",
+        "name": "TM",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "yyyy-MM",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/XM",
+        "name": "XM",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ZM",
+        "name": "ZM",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CM",
+        "name": "CM",
+        "Computation": {
+         "computedFieldRelPath": "../TM",
+         "computationAlternatives": [
+          {
+           "operation": "DateRange(MS,MF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CXM",
+        "name": "CXM",
+        "Computation": {
+         "computedFieldRelPath": "../XM",
+         "computationAlternatives": [
+          {
+           "operation": "YearFromDate(StartOfDateRange(TM))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CZM",
+        "name": "CZM",
+        "Computation": {
+         "computedFieldRelPath": "../ZM",
+         "computationAlternatives": [
+          {
+           "operation": "[XM] + 1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/eM",
+        "name": "eM",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "eM",
+         "errorCondition": "FieldFilled(W) And DateRange(MS,MF) == [SM]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/nM",
+        "name": "nM",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "nM",
+         "errorCondition": "FieldFilled(W) And DateRange(MS,MF) != [SM]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NS",
+        "name": "NS",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NF",
+        "name": "NF",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SN",
+        "name": "SN",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "MM",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TN",
+        "name": "TN",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "MM",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/XN",
+        "name": "XN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ZN",
+        "name": "ZN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CN",
+        "name": "CN",
+        "Computation": {
+         "computedFieldRelPath": "../TN",
+         "computationAlternatives": [
+          {
+           "operation": "DateRange(NS,NF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CXN",
+        "name": "CXN",
+        "Computation": {
+         "computedFieldRelPath": "../XN",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(StartOfDateRange(TN))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CZN",
+        "name": "CZN",
+        "Computation": {
+         "computedFieldRelPath": "../ZN",
+         "computationAlternatives": [
+          {
+           "operation": "[XN] + 1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/eN",
+        "name": "eN",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "eN",
+         "errorCondition": "FieldFilled(W) And DateRange(NS,NF) == [SN]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/nN",
+        "name": "nN",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "nN",
+         "errorCondition": "FieldFilled(W) And DateRange(NS,NF) != [SN]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DS",
+        "name": "DS",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DF",
+        "name": "DF",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SD",
+        "name": "SD",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TD",
+        "name": "TD",
+        "Field": {
+         "fieldType": {
+          "type": "DateRangeType",
+          "DateRangeType": {
+           "format": "MM-dd",
+           "rangeSeparator": "/"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/XD",
+        "name": "XD",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/ZD",
+        "name": "ZD",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CD",
+        "name": "CD",
+        "Computation": {
+         "computedFieldRelPath": "../TD",
+         "computationAlternatives": [
+          {
+           "operation": "DateRange(DS,DF)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CXD",
+        "name": "CXD",
+        "Computation": {
+         "computedFieldRelPath": "../XD",
+         "computationAlternatives": [
+          {
+           "operation": "MonthFromDate(StartOfDateRange(TD))"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/CZD",
+        "name": "CZD",
+        "Computation": {
+         "computedFieldRelPath": "../ZD",
+         "computationAlternatives": [
+          {
+           "operation": "[XD] + 1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/eD",
+        "name": "eD",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "eD",
+         "errorCondition": "FieldFilled(W) And DateRange(DS,DF) == [SD]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/nD",
+        "name": "nD",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "nD",
+         "errorCondition": "FieldFilled(W) And DateRange(DS,DF) != [SD]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
