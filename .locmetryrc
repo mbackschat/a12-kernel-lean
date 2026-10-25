@@ -1,40 +1,71 @@
-# Locmetry policy. Source categories follow the CLAUDE.md estate partition,
-# which scripts/report-conformance-coverage.sh (Axis 4) also computes: theory is
-# semantics + proof + conformance; support is every other Lean category;
-# evidence is the `evidence` category alone. Data and documentation categories
-# follow the artifact lifecycles in docs/ARTIFACTS.md.
+# Locmetry policy. Every category names one role, so the category table reads as
+# an inventory of what the repository contains. Purposes are fixed by Locmetry
+# (production, test, other); categories carry the finer distinction.
+#
+# Lean categories partition the CLAUDE.md estates, which
+# scripts/report-conformance-coverage.sh computes independently: theory is
+# core + elaboration + semantics + proof + conformance + conformance-support;
+# every other Lean category is support.
+#
+# Entries name their exceptions with `except` instead of relying on order, and no
+# entry is a catch-all: a file in a new tree or with a new role stays unclaimed
+# and is reported for a policy decision.
 version = 1
 
 [classification]
-# The lake module would claim every .lean file as production:implementation.
-# The rules below claim every current Lean tree, so a new tree falls back to
-# other:unclaimed and is reported for a policy decision instead.
+# The lake module would claim every .lean file as production implementation.
 builtin_modules = false
 
 [categories]
-semantics = "Theory estate: executable semantics, elaboration and core types"
-proof = "Theory estate: the proof spine"
-conformance = "Theory estate: executable conformance locks"
-reference = "Support estate: DM-JSON reference reader, lowering and protocol"
-reference-locks = "Support estate: locks and fixtures of the reference reader"
-evidence = "Support estate: projections that replay retained Kernel observations"
-process = "Support estate: bounded process relay and candidate-conformance suite"
-trust-audit = "Support estate: elaborated-environment axiom and trust audit"
-driver = "Support estate: lake executable and test-driver roots"
-tooling = "Maintained repository scripts and guards"
-probe-spec = "Retained Kernel probe inputs in the probe DSL"
-kernel-evidence = "Retained Kernel 30.8.1 observations and their probe inputs"
+# Lean theory estate.
+core = "Theory: core value, cell and document types, and the library root"
+elaboration = "Theory: static legality and elaboration of authored rules into checked trees"
+semantics = "Theory: runtime evaluation of validations and computations"
+proof = "Theory: the proof spine of laws and counterexamples"
+conformance = "Theory: executable red/green conformance cases of the semantics"
+conformance-support = "Theory: fixtures and helpers the conformance cases import, without cases of their own"
+# Lean support estate.
+dm-reader = "Support: reader and lowering of authored A12 DM-JSON models into the theory"
+reference-cli = "Support: reference CLI protocol, evaluator and support manifest"
+reference-locks = "Support: locks of the DM reader, and their shared fixture"
+capture-locks = "Support: DM-reader locks pinned to one retained Kernel capture each"
+replay = "Support: replay of retained Kernel probe requests, compared rule by rule"
+evidence = "Support: projections replaying retained Kernel observation bundles, and the lake test driver"
+evidence-locks = "Support: synthetic-JSON locks of the observation-bundle contract and projections"
+integration = "Support: black-box tests of the built executables run as processes"
+qualification = "Support: bounded runner qualifying independent candidate implementations"
+trust-audit = "Support: axiom and trust audit of the elaborated environment, with its adversarial self-test"
+# Scripts and configuration.
+verification-tooling = "Repository guards, their self-tests and the CI workflow"
+probe-tooling = "Helpers that prepare Kernel probe runs"
+report-tooling = "Generator of the conformance-coverage report"
+distribution = "Preparation of a GitHub publication"
+build-tooling = "Lake build, dependency manifest and toolchain pin"
+repository-config = "Git ignore list and shared coding-agent settings"
+# Retained Kernel evidence (data).
+observation-bundle = "Compact semantic-observation bundles that checkKernelEvidence replays"
+kernel-capture = "Retained Kernel 30.8.1 probe requests, models and the Kernel's responses"
+probe-spec = "Probe DSL and rule-placement inputs that generated a capture's requests"
+capture-manifest = "SHA-256 manifests binding each capture's files"
+# Shipments and examples (data).
 shipment = "Portable consumer shipments and the support-manifest mirror"
 golden-example = "Reference-CLI request/response pairs the process tests enumerate"
+# Documentation, by the lifecycle docs/README.md assigns.
 spec = "Canonical language-neutral semantics shared with a12-dmkits"
-docs = "Project documentation and agent guidance"
-build-config = "Lake, toolchain and Git configuration"
-ci = "GitHub Actions workflows"
-agent-config = "Shared coding-agent settings"
+agent-policy = "Mandatory agent guidance: CLAUDE.md files, with AGENTS.md symlinks not counted"
+overview = "Reader entry points and stable reader guides"
+design = "Stable design, architecture, Lean method and documentation policy"
+consumer-contract = "Public protocol, implementer guide and implementer kits"
+methodology = "Testing, probing, peer-coordination and release-engineering procedures"
+proposal = "Proposals awaiting an owner decision"
+live-record = "Volatile operational owners: plan, gaps, implementation map, sync ledger, construct inventory"
+research-record = "Provenance checkpoints, evidence inventory and durable Lean findings"
+consumer-probe-report = "Task-type reports of the consumer-probe laboratory"
+generated = "Generated report"
 license = "License text"
 
-# Counts files the backend does not recognize. Plain Text counts every line as
-# a comment line, so these files land in the documentation kind.
+# Text formats the backend does not recognize. Plain Text counts every line as a
+# comment line, so these files land in the documentation kind.
 [[languages.mappings]]
 id = "evidence-text"
 match = ["evidence/**/*.tsv", "evidence/**/*.sha256", "evidence/**/*.err"]
@@ -55,130 +86,266 @@ id = "root-text"
 match = ["LICENSE", "lean-toolchain", ".gitignore"]
 language = "Plain Text"
 
-# Theory estate.
+# The probe DSL is misrecognized as RPM Specfile; it is input text, not source.
+[[languages.corrections]]
+id = "probe-dsl"
+match = ["evidence/**/*.spec"]
+language = "Plain Text"
+
+# ── Lean theory estate ────────────────────────────────────────────────────────
 
 [[rules]]
-id = "theory-semantics"
+id = "core"
 match = [
   "A12Kernel.lean",
   "A12Kernel/Core.lean",
   "A12Kernel/Cell.lean",
   "A12Kernel/Document.lean",
   "A12Kernel/Basic.lean",
-  "A12Kernel/Semantics/**",
-  "A12Kernel/Elaboration/**",
 ]
+kind = ["source"]
+purpose = "production"
+category = "core"
+
+[[rules]]
+id = "elaboration"
+match = ["A12Kernel/Elaboration/**"]
+kind = ["source"]
+purpose = "production"
+category = "elaboration"
+
+[[rules]]
+id = "semantics"
+match = ["A12Kernel/Semantics/**"]
+kind = ["source"]
 purpose = "production"
 category = "semantics"
 
 [[rules]]
-id = "theory-proofs"
+id = "proof"
 match = ["A12Kernel/Proofs.lean", "A12Kernel/Proofs/**"]
+kind = ["source"]
 purpose = "production"
 category = "proof"
 
 [[rules]]
-id = "theory-conformance"
+id = "conformance-support"
+match = [
+  "A12Kernel/Conformance/**/Support.lean",
+  "A12Kernel/Conformance/**/Support/**",
+  "A12Kernel/Conformance/ValidationRule/OrdinarySupport.lean",
+  "A12Kernel/Conformance/ValidationRule/OrdinarySupport/**",
+]
+kind = ["source"]
+purpose = "test"
+category = "conformance-support"
+reason = "Imported by the family conformance modules; Elaboration/Support.lean carries one sanity example of its own fixture"
+
+[[rules]]
+id = "conformance"
 match = ["A12Kernel/Conformance.lean", "A12Kernel/Conformance/**"]
+except = [
+  "A12Kernel/Conformance/**/Support.lean",
+  "A12Kernel/Conformance/**/Support/**",
+  "A12Kernel/Conformance/ValidationRule/OrdinarySupport.lean",
+  "A12Kernel/Conformance/ValidationRule/OrdinarySupport/**",
+]
+kind = ["source"]
 purpose = "test"
 category = "conformance"
 reason = "Executable red/green locks of the semantics; counted as theory estate by CLAUDE.md"
 
-# Support estate.
+# ── Lean support estate ───────────────────────────────────────────────────────
+
+[[rules]]
+id = "dm-reader"
+match = ["A12Kernel/Reference/Dm/**"]
+except = [
+  "A12Kernel/Reference/Dm/*Locks.lean",
+  "A12Kernel/Reference/Dm/HavingFixture.lean",
+  "A12Kernel/Reference/Dm/Replay.lean",
+]
+kind = ["source"]
+purpose = "production"
+category = "dm-reader"
+
+[[rules]]
+id = "reference-cli"
+match = ["A12Kernel/Reference/*.lean", "A12Kernel/Reference/Support/**", "A12Kernel/ReferenceMain.lean"]
+kind = ["source"]
+purpose = "production"
+category = "reference-cli"
+reason = "Root and library of the a12-kernel-reference executable; Support/ generates reference/supported-fragment-v2.json"
+
+[[rules]]
+id = "capture-locks"
+match = ["A12Kernel/Reference/Dm/*CaptureLocks.lean", "A12Kernel/Reference/Dm/CapturedFilterScopeLocks.lean"]
+kind = ["source"]
+purpose = "test"
+category = "capture-locks"
+reason = "Each replays the model and payloads of one retained Kernel capture through the reader"
 
 [[rules]]
 id = "reference-locks"
-match = ["A12Kernel/Reference/**/*Locks.lean", "A12Kernel/Reference/Dm/HavingFixture.lean"]
+match = ["A12Kernel/Reference/Dm/*Locks.lean", "A12Kernel/Reference/Dm/HavingFixture.lean"]
+except = ["A12Kernel/Reference/Dm/*CaptureLocks.lean", "A12Kernel/Reference/Dm/CapturedFilterScopeLocks.lean"]
+kind = ["source"]
 purpose = "test"
 category = "reference-locks"
 reason = "The *Locks.lean suffix names the reader's lock modules (docs/TESTING.md); HavingFixture serves only them"
 
 [[rules]]
-id = "reference"
-match = ["A12Kernel/Reference/**"]
-purpose = "production"
-category = "reference"
+id = "replay"
+match = ["A12Kernel/Reference/Dm/Replay.lean", "A12Kernel/ReplayMain.lean"]
+kind = ["source"]
+purpose = "test"
+category = "replay"
+reason = "a12-kernel-replay and its per-rule comparison of Lean's messages with the Kernel's, which reader locks also import"
 
 [[rules]]
 id = "evidence"
-match = ["A12Kernel/Evidence/**"]
+match = ["A12Kernel/Evidence/**", "A12Kernel/EvidenceMain.lean"]
+except = ["A12Kernel/Evidence/*Test.lean"]
+kind = ["source"]
 purpose = "test"
 category = "evidence"
-reason = "Differential replay of retained Kernel observations, run by the lake test driver"
+reason = "checkKernelEvidence, the lake testDriver, and the projections it runs"
 
 [[rules]]
-id = "process"
-match = ["A12Kernel/Process/**"]
+id = "evidence-locks"
+match = ["A12Kernel/Evidence/*Test.lean"]
+kind = ["source"]
+purpose = "test"
+category = "evidence-locks"
+reason = "Their module docs state the inputs are synthetic and not Kernel evidence"
+
+[[rules]]
+id = "integration"
+match = ["A12Kernel/ProcessTestMain.lean", "A12Kernel/ReferenceProcessTestMain.lean"]
+kind = ["source"]
+purpose = "test"
+category = "integration"
+reason = "checkBoundedProcess and checkReferenceProcess run the built relay and reference CLI as processes"
+
+[[rules]]
+id = "qualification"
+match = ["A12Kernel/Process/**", "A12Kernel/CandidateConformanceMain.lean"]
+kind = ["source"]
 purpose = "production"
-category = "process"
+category = "qualification"
+reason = "checkCandidateConformance and a12-bounded-process-relay, offered to independent implementations"
 
 [[rules]]
 id = "trust-audit"
 match = ["A12Kernel/TrustAudit.lean", "A12Kernel/Trust/**"]
+kind = ["source"]
 purpose = "test"
 category = "trust-audit"
 reason = "Audit gate over the elaborated environment; ships no semantics"
 
-[[rules]]
-id = "test-drivers"
-match = [
-  "A12Kernel/EvidenceMain.lean",
-  "A12Kernel/ReplayMain.lean",
-  "A12Kernel/ProcessTestMain.lean",
-  "A12Kernel/ReferenceProcessTestMain.lean",
-]
-purpose = "test"
-category = "driver"
-reason = "Roots of checkKernelEvidence, a12-kernel-replay and the process test executables"
+# ── Scripts and configuration ─────────────────────────────────────────────────
 
 [[rules]]
-id = "product-drivers"
-match = ["A12Kernel/ReferenceMain.lean", "A12Kernel/CandidateConformanceMain.lean"]
+id = "guards"
+match = ["scripts/check-*"]
+kind = ["source"]
 purpose = "production"
-category = "driver"
-reason = "Roots of the a12-kernel-reference and checkCandidateConformance executables"
-
-# Non-Lean source.
+category = "verification-tooling"
+reason = "Source, documentation, spec-sync, prose and trust gates"
 
 [[rules]]
-id = "script-self-tests"
+id = "guard-self-tests"
 match = ["scripts/test-*.sh"]
+kind = ["source"]
 purpose = "test"
-category = "tooling"
+category = "verification-tooling"
 reason = "Self-tests of the repository guards"
 
 [[rules]]
-id = "scripts"
-match = ["scripts/**"]
+id = "probe-tooling"
+match = ["scripts/make-probe-ops.sh", "scripts/place-probe-rules.py"]
+kind = ["source"]
 purpose = "production"
-category = "tooling"
-reason = "Maintained guards, report generators and probe helpers"
+category = "probe-tooling"
+
+[[rules]]
+id = "report-tooling"
+match = ["scripts/report-conformance-coverage.sh"]
+kind = ["source"]
+purpose = "production"
+category = "report-tooling"
+reason = "Regenerates docs/CONFORMANCE-COVERAGE.md"
+
+[[rules]]
+id = "distribution"
+match = ["scripts/prepare-github-publish.sh"]
+kind = ["source"]
+purpose = "production"
+category = "distribution"
+
+[[rules]]
+id = "ci"
+match = [".github/**"]
+kind = ["data"]
+purpose = "production"
+category = "verification-tooling"
+reason = "The workflow only builds and runs the gates"
+
+[[rules]]
+id = "build-tooling"
+match = ["lakefile.toml", "lake-manifest.json", "lean-toolchain"]
+purpose = "production"
+category = "build-tooling"
+
+[[rules]]
+id = "repository-config"
+match = [".gitignore", ".claude/settings.json"]
+purpose = "production"
+category = "repository-config"
+
+# ── Retained Kernel evidence ──────────────────────────────────────────────────
+# The kind restrictions keep any source file in these trees unclaimed, so it is
+# reviewed instead of absorbed.
+
+[[rules]]
+id = "observation-bundles"
+match = ["evidence/**/semantic-observations.json"]
+kind = ["data"]
+purpose = "test"
+category = "observation-bundle"
+reason = "The bundles docs/ARTIFACTS.md and docs/EVIDENCE.md name as the ordinary Lean replay interface"
+
+[[rules]]
+id = "capture-manifests"
+match = ["evidence/**/*.sha256"]
+kind = ["documentation"]
+purpose = "test"
+category = "capture-manifest"
 
 [[rules]]
 id = "probe-specs"
-match = ["evidence/**/*.spec"]
-purpose = "other"
+match = ["evidence/**/*.spec", "evidence/**/spec*.txt", "evidence/**/rules-*.txt"]
+kind = ["documentation"]
+purpose = "test"
 category = "probe-spec"
-reason = "Probe DSL inputs for scripts/make-probe-ops.sh, misdetected as RPM Specfile; kept out of source purpose totals"
-
-# Data and documentation. The kind restrictions keep any source file that
-# appears in these trees unclaimed, so it is reviewed instead of absorbed.
+reason = "Inputs of scripts/make-probe-ops.sh and scripts/place-probe-rules.py"
 
 [[rules]]
-id = "kernel-evidence"
+id = "kernel-captures"
 match = ["evidence/**"]
+except = [
+  "evidence/**/semantic-observations.json",
+  "evidence/**/*.sha256",
+  "evidence/**/*.spec",
+  "evidence/**/spec*.txt",
+  "evidence/**/rules-*.txt",
+]
 kind = ["data", "documentation"]
 purpose = "test"
-category = "kernel-evidence"
-reason = "Retained observations that checkKernelEvidence and a12-kernel-replay read (docs/EVIDENCE.md)"
+category = "kernel-capture"
+reason = "Read by a12-kernel-replay and the capture locks (docs/EVIDENCE.md)"
 
-[[rules]]
-id = "golden-examples"
-match = ["examples/reference-cli/**"]
-kind = ["data", "documentation"]
-purpose = "test"
-category = "golden-example"
-reason = "Enumerated by ReferenceProcessTestMain (docs/ARTIFACTS.md)"
+# ── Shipments and examples ────────────────────────────────────────────────────
 
 [[rules]]
 id = "shipments"
@@ -189,37 +356,111 @@ category = "shipment"
 reason = "Consumer shipments derived from Lean and retained evidence (docs/ARTIFACTS.md)"
 
 [[rules]]
+id = "golden-examples"
+match = ["examples/reference-cli/**"]
+kind = ["data", "documentation"]
+purpose = "test"
+category = "golden-example"
+reason = "Enumerated by ReferenceProcessTestMain (docs/ARTIFACTS.md)"
+
+# ── Documentation, by the lifecycle column of docs/README.md ──────────────────
+
+[[rules]]
+id = "agent-policy"
+match = ["CLAUDE.md", "docs/CLAUDE.md", "spec/CLAUDE.md", "docs/consumer-probes/CLAUDE.md"]
+kind = ["documentation"]
+purpose = "production"
+category = "agent-policy"
+
+[[rules]]
 id = "spec"
 match = ["spec/**"]
+except = ["spec/CLAUDE.md"]
 kind = ["documentation"]
 purpose = "production"
 category = "spec"
 
 [[rules]]
-id = "docs"
-match = ["docs/**", "README.md", "CLAUDE.md"]
+id = "overview"
+match = ["README.md", "docs/README.md", "docs/USE-CASES.md", "docs/ARTIFACTS.md"]
 kind = ["documentation"]
 purpose = "production"
-category = "docs"
+category = "overview"
 
 [[rules]]
-id = "build-config"
-match = ["lakefile.toml", "lake-manifest.json", "lean-toolchain", ".gitignore"]
+id = "design"
+match = [
+  "docs/PROJECT-DESIGN.md",
+  "docs/ARCHITECTURE.md",
+  "docs/LEAN-FORMALIZATION.md",
+  "docs/LEAN-ENCODING-GUIDE.md",
+  "docs/DOC-DISCIPLINE.md",
+  "docs/SEMANTIC-CAPSULE-PIPELINE-PROPOSAL.md",
+]
+kind = ["documentation"]
 purpose = "production"
-category = "build-config"
+category = "design"
+reason = "docs/README.md lists the capsule-pipeline proposal as an accepted operating contract"
 
 [[rules]]
-id = "ci"
-match = [".github/**"]
-kind = ["data"]
+id = "consumer-contract"
+match = ["docs/PROTOCOL.md", "docs/IMPLEMENTER-GUIDE.md", "docs/IMPLEMENTER-KIT-*.md"]
+kind = ["documentation"]
 purpose = "production"
-category = "ci"
+category = "consumer-contract"
 
 [[rules]]
-id = "agent-config"
-match = [".claude/settings.json"]
+id = "methodology"
+match = ["docs/TESTING*.md", "docs/PRODUCTION-RELEASE.md"]
+kind = ["documentation"]
 purpose = "production"
-category = "agent-config"
+category = "methodology"
+
+[[rules]]
+id = "proposal"
+match = ["docs/*-PROPOSAL.md"]
+except = ["docs/SEMANTIC-CAPSULE-PIPELINE-PROPOSAL.md"]
+kind = ["documentation"]
+purpose = "production"
+category = "proposal"
+
+[[rules]]
+id = "live-record"
+match = [
+  "docs/PLAN.md",
+  "docs/SEMANTICS-GAPS.md",
+  "docs/gaps/**",
+  "docs/IMPLEMENTATION-MAP.md",
+  "docs/implementation/**",
+  "docs/A12-DMKITS-SPEC-SYNC-LEDGER.md",
+  "docs/CONFORMANCE-CONSTRUCTS.tsv",
+]
+kind = ["documentation"]
+purpose = "production"
+category = "live-record"
+
+[[rules]]
+id = "research-record"
+match = ["docs/SOURCES.md", "docs/sources/**", "docs/EVIDENCE.md", "docs/LEAN-FINDINGS.md"]
+kind = ["documentation"]
+purpose = "production"
+category = "research-record"
+
+[[rules]]
+id = "consumer-probe-reports"
+match = ["docs/consumer-probes/**"]
+except = ["docs/consumer-probes/CLAUDE.md"]
+kind = ["documentation"]
+purpose = "production"
+category = "consumer-probe-report"
+
+[[rules]]
+id = "generated-report"
+match = ["docs/CONFORMANCE-COVERAGE.md"]
+kind = ["documentation"]
+purpose = "production"
+category = "generated"
+reason = "Regenerated by scripts/report-conformance-coverage.sh"
 
 [[rules]]
 id = "license"
