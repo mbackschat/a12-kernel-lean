@@ -277,6 +277,14 @@ category = "report-tooling"
 reason = "Regenerates docs/CONFORMANCE-COVERAGE.md"
 
 [[rules]]
+id = "packet-tooling"
+match = ["scripts/assemble-u01-packet.py"]
+kind = ["source"]
+purpose = "production"
+category = "shipment"
+reason = "Cuts each U01 evaluator packet version from one committed revision"
+
+[[rules]]
 id = "distribution"
 match = ["scripts/prepare-github-publish.sh"]
 kind = ["source"]
