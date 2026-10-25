@@ -18,6 +18,12 @@ case "${1:-}" in
     ;;
 esac
 
+# Only the local pre-push update runs the locmetry guard: CI runs --check and has no locmetry.
+if [[ "$mode" == "--update" ]] && ! ./scripts/check-locmetry-policy.py; then
+  echo "GitHub publication preparation failed: .locmetryrc does not classify the tree" >&2
+  exit 1
+fi
+
 trust_summary=""
 if ! trust_summary="$(./scripts/check-lean-trust.sh)"; then
   echo "GitHub publication preparation failed: trust audit did not pass" >&2
