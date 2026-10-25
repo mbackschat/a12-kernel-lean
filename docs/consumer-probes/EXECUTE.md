@@ -514,3 +514,23 @@ All declarations and authored expressions are statically admitted. Number fields
 - `wrong-accounts`: As in run 01, every listed wrong account is rejected.
 - `questions-and-guesses`: The consumer applied the operand-poison clause to the duplicate-key column on inference; the outcome is the one the column-strict selection clause of [spec/09 §5](../../spec/09-computations.md) already gives. Its other remaining items, the generated checks' references and `RSrc`'s `fillToFix`, are derivable from the packet and agree with the oracle; none changes an output.
 - `exclusions`: The [task exclusions](#task-k21-execute) remain. Artifact-only transport; no interpreter, shipment or independent-evaluator qualification, which [U01](../PLAN.md#consumer-development) owns.
+
+<a id="task-u01-evaluator"></a>
+## U01 evaluator — whole-surface Rust implementation
+
+The task, profile, comparison contract and milestones are the [evaluator kit](../IMPLEMENTER-KIT-EVALUATOR.md); sequencing, packet versions and triage are the [U01 plan](../PLAN.md#u01-plan). The consumer is a separate session working `../a12-rust-interpreter` from the packet alone, and each milestone is reviewed at its qualification commit with `git`, read-only.
+
+<a id="run-u01-m1"></a>
+### U01 M1 — reading
+
+- `task`: [U01 evaluator](#task-u01-evaluator), milestone M1
+- `status`: green
+- `started-at`: after 2026-10-25T22:58:25+01:00, the repository's initialization commit; the session's own start was not captured
+- `finished-at`: 2026-10-25T23:12:34+01:00, qualification commit `e36d884`
+- `semantic-basis`: packet v2, cut from `2e5faf0cd52cd858c6a8b68759a364c4aa6d79c7`
+- `oracle`: HIGH read the reports, evaluator and harness source and tests at `e36d884`. The row classification reproduces the packet's counts, the model reader refuses unknown members instead of ignoring them, and the evaluator crate receives no request, row, path or artifact.
+- `consumer-access`: fresh session limited to the packet and its own repository; no message exchanged during the run.
+- `cost`: about 14 minutes; 2131 nonblank Rust lines with 28 tests, only the three approved dependencies; token usage unavailable.
+- `result`: every model and document of the 3968 in-profile rows read without a refusal; all 4093 rows classified, none evaluated yet, as M1 requires.
+- `questions-and-guesses`: Q-001, the keyword table the packet delegated to Kernel sources, and Q-003, the requiredness mode spellings, were packet defects, settled by packet v3. Q-002, document shapes no capture carries, keeps its fail-closed reading.
+- `exclusions`: no validation, computation or partial evaluation yet.
