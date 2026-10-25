@@ -1,0 +1,225 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "K22mq_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-25T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "lineOneAndThree",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/Sku",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Sku"
+       ]
+      }
+     ],
+     "partialMessages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/Sku",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Sku"
+       ]
+      }
+     ],
+     "partialMessages": []
+    }
+   ]
+  },
+  {
+   "name": "lineOne",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/Sku",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Sku"
+       ]
+      }
+     ],
+     "partialMessages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/Sku",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Sku"
+       ]
+      }
+     ],
+     "partialMessages": []
+    }
+   ]
+  },
+  {
+   "name": "lineTwo",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/Sku",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Sku"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/Sku",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Sku"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/Sku",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Sku"
+       ]
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/Sku",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Sku"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "lineOneThreeNoteTwo",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/Sku",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Sku"
+       ]
+      }
+     ],
+     "partialMessages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Order/Lines[2]/Sku",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Order/Lines[2]/Sku"
+       ],
+       "fillToFix": [
+        "Order/Lines[2]/Sku"
+       ]
+      }
+     ],
+     "partialMessages": []
+    }
+   ]
+  }
+ ]
+}

@@ -265,13 +265,14 @@ def evalWith (pair : CheckedParallelFieldPair model) (condition : Condition)
     (messageCache : Option MessageIndexContext := none)
     (includeAddress : CellAddr → Bool := fun _ => true)
     (admitOuter : Env → Bool := fun _ => true)
-    (caught : ParallelPresenceRuleEvaluationError → Bool := fun _ => false) :
+    (caught : ParallelPresenceRuleEvaluationError → Bool := fun _ => false)
+    (admitRow : ResolvedParallelIndexRow → Bool := fun _ => true) :
     Except ParallelPresenceRuleEvaluationError (List ParallelRuleRowOutcome) := do
   let inner ← pair.innerEnvironments preliminary
   let runJoin := fun first? frameOuter (join : ResolvedParallelIndexJoin) => do
     if !admitOuter frameOuter then pure ([], first?, false)
     else
-      let rows := (← join.rows.mapM (pair.innerRows preliminary inner frameOuter)).flatten
+      let rows := (← join.rows.mapM (pair.innerRows preliminary inner frameOuter)).flatten.filter admitRow
       pair.evalRows condition (evaluate frameOuter) preliminary frameOuter messageCache caught first? rows
   match pair.groups.outerScopePlan with
   | .common _ =>

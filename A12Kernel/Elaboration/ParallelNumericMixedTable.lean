@@ -7,10 +7,11 @@ namespace A12Kernel
 ordinary starred source must not become a key-joined source merely by sharing a target (spec/09 §5).
 
 A `bound` member is a separate declaration that reads no partner field. Under the target's key
-join the Kernel stores nothing once the scan reaches it, whatever its guard: an unguarded constant,
-a starred `Sum`, a target-row read and a guard false at the row all clear there and leave later
-members unreached (k22-cross-declaration-2026-10-24, `Out11`, `Out12`–`Out15`). Its checked
-alternative is kept for dependencies and index participation only. -/
+join it never stores a value. Leading the table, it clears the target at every row whatever its
+guard (k22-cross-declaration-2026-10-24, `Out05`, `Out11`, `Out15`). Behind a joined lead the scan
+passes over it unread: a holding guard selects nothing, a malformed read poisons nothing, and a later
+joined declaration still computes (k22-joined-declaration-order-2026-10-25, `W02`, `W06`). Its
+checked alternative is kept for dependencies and index participation only. -/
 inductive CheckedParallelNumericMember (model : FlatModel) (target : FieldId) where
   | joined (alternative : CheckedParallelNumericAlternative model target)
   | bound (policy : NumericTargetPolicy)
@@ -18,23 +19,9 @@ inductive CheckedParallelNumericMember (model : FlatModel) (target : FieldId) wh
 
 namespace CheckedParallelNumericMember
 
-def guarded : CheckedParallelNumericMember model target → Bool
-  | .joined alternative => alternative.precondition.isSome
-  | .bound _ alternative => alternative.precondition.isSome
-
 def protectionView : CheckedParallelNumericMember model target → Option ComputationProtectionView
   | .joined alternative => alternative.precondition.map (·.protectionView)
   | .bound _ alternative => alternative.precondition.map (·.protectionView)
-
-/-- A joined member's guard reads the joined cells; a bound member is selected unread. -/
-def evalGuard (member : CheckedParallelNumericMember model target)
-    (context : ParallelNumericGuardContext) :
-    Except CheckedComputationConditionError ComputationConditionResult :=
-  match member with
-  | .joined alternative => match alternative.precondition with
-      | some guard => guard.eval context
-      | none => pure .holds
-  | .bound _ _ => pure .holds
 
 def joinedOperation? : CheckedParallelNumericMember model target → Option (CheckedIsolatedParallelNumericDirectRun model)
   | .joined alternative => some alternative.operation
@@ -58,18 +45,11 @@ def requiresProducer (member : CheckedParallelNumericMember model target)
         (CheckedNumericComputationAtom.requiresProducer model target field producerProtected) ||
         alternative.precondition.any (·.requiresProducer target field producerProtected)
 
-def evaluateSelected (member : CheckedParallelNumericMember model target)
-    (context : ParallelNumericGuardContext) :
-    Except CheckedIsolatedParallelNumericDirectRun.ExecutionError NumericTargetOutcome := do
-  match member with
-  | .joined alternative => alternative.operation.evaluateSelected context
-  | .bound _ _ => pure .noValue
-
 end CheckedParallelNumericMember
 
-/-- All declarations for a target share index participation and one first-selection decision;
-a selected joined operation keeps its joined evaluator and a bound member stores nothing
-(spec/09 §§3.1, 5). -/
+/-- All declarations for a target share index participation and one first-selection decision
+over the joined members; a selected joined operation keeps its joined evaluator, and a bound member
+decides the outcome only by leading (spec/09 §§3.1, 5). -/
 structure CheckedMixedParallelNumericTable (model : FlatModel) where
   targetField : FieldId
   primary : CheckedParallelNumericTargetRoute model
@@ -80,6 +60,19 @@ namespace CheckedMixedParallelNumericTable
 
 def operations (table : CheckedMixedParallelNumericTable model) : List (CheckedIsolatedParallelNumericDirectRun model) :=
   table.members.filterMap (·.joinedOperation?)
+
+/-- Whether a declaration reading no partner field comes first, which clears every target row. -/
+def leadsUnjoined (table : CheckedMixedParallelNumericTable model) : Bool :=
+  match table.members with
+  | .bound .. :: _ => true
+  | _ => false
+
+/-- The joined members in declaration order, the alternatives a scan behind a joined lead selects from. -/
+def joinedAlternatives (table : CheckedMixedParallelNumericTable model) :
+    List (ComputationAlternative (CheckedIsolatedParallelNumericDirectRun model) (ParallelNumericGuard model)) :=
+  table.members.filterMap fun
+    | .joined alternative => some { precondition := alternative.precondition, operation := alternative.operation }
+    | .bound .. => none
 
 def operandRoutes (table : CheckedMixedParallelNumericTable model) : List (CheckedParallelNumericTargetRoute model) :=
   table.operations.foldl (fun routes operation => operation.operandRoutes.foldl
@@ -108,15 +101,12 @@ def executeTarget (table : CheckedMixedParallelNumericTable model)
   let context : ParallelNumericGuardContext := {
     joinedRead := scalar.read, ordinary := { ordinary with scalar }
     partnerAt := fun group => (partners.lookup group).map document.parallelGuardContextAt }
-  let alternatives := table.members.map fun member =>
-    ({ precondition := if member.guarded then some member else none, operation := member } :
-      ComputationAlternative (CheckedParallelNumericMember model table.targetField)
-        (CheckedParallelNumericMember model table.targetField))
-  let outcome ← match ComputationAlternative.selectFirstWith (·.evalGuard context) alternatives with
+  let outcome ← if table.leadsUnjoined then pure .noValue else
+    match ComputationAlternative.selectFirstWith (·.eval context) table.joinedAlternatives with
     | .error error => if error.isValueFailure then pure (.invalidNoValue .calculationValue) else throw (.guard error)
     | .ok .noMatch => pure .noValue
     | .ok (.poison cause) => pure (.inheritedPoison cause)
-    | .ok (.selected member) => member.evaluateSelected context
+    | .ok (.selected operation) => operation.evaluateSelected context
   pure { address := target.address, outcome }
 
 end CheckedMixedParallelNumericTable

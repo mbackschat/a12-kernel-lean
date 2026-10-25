@@ -8,8 +8,11 @@ joins `Lines` and `Picks` by `LineNo` and reports `C1` on `Lines/Parts/Count`, a
 `Lines`, under eleven relevant sets. The call reaches the rule only when the error field's selectors,
 compressed into one, leave the joined `Lines` level wild: one concrete part, two parts of one line and
 one whole line select nothing, while two parts of different lines dispatch and then fire only where
-`Count` is relevant. A set naming no index field supplies no join key. Full validation is replayed by
-`lake exe a12-kernel-replay`; these cases run the partial evaluator.
+`Count` is relevant. A set naming no index field supplies no join key. Once the rule runs, the
+compressed selector's part coordinate still narrows the parts it visits, which a rule able to fire
+without `Count` separates from leaf relevance (rule `NESTOR` of the
+[partial-dispatch merge capture](../../../evidence/kernel-30.8.1/captures/k22-partial-dispatch-merge-2026-10-25/)).
+Full validation is replayed by `lake exe a12-kernel-replay`; these cases run the partial evaluator.
 -/
 
 namespace A12Kernel.Dm.ParallelNestedPartialLocks
@@ -24,20 +27,21 @@ private def group (name : String) (count : Nat) (key : Option String) (elements 
     ("repeatability", toJson count), ("elements", Json.arr elements.toArray)] ++
     key.toList.map fun key => ("indexFieldName", Json.str key)))]
 
-private def order : Json :=
+private def order (code condition : String) : Json :=
   Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group "Order" 1 none [
-        group "Lines" 50 (some "LineNo") [field "LineNo", group "Parts" 5 none [field "PartNo", field "Count"]],
+        group "Lines" 50 (some "LineNo") [field "LineNo", group "Parts" 5 none [field "PartNo", field "Count", field "Tag"]],
         group "Picks" 10 (some "LineNo") [field "LineNo", field "Ref"],
-        Json.mkObj [("type", "Rule"), ("name", "C1"), ("Rule", Json.mkObj [
-          ("errorEntityRelPath", "../Lines/Parts/Count"), ("errorCode", "C1"), ("severity", "ERROR"),
-          ("errorCondition", "FieldFilled(Lines/Parts/Count) And NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)")])]]])])])]
+        Json.mkObj [("type", "Rule"), ("name", Json.str code), ("Rule", Json.mkObj [
+          ("errorEntityRelPath", "../Lines/Parts/Count"), ("errorCode", Json.str code), ("severity", "ERROR"),
+          ("errorCondition", Json.str condition)])]]])])])]
 
 /-- The capture's document: line `A` with two counted parts and a `Picks` row without `Ref`, `B` with a
-`Ref`, `C` with two counted parts and no `Picks` row, and a `Picks` row `D` without a line. -/
+`Ref`, `C` with two counted parts and no `Picks` row, and a `Picks` row `D` without a line. Every part
+carries a `Tag`, which only `NESTOR` reads. -/
 private def document : Json :=
-  let parts := fun (counts : List String) => Json.arr (counts.map fun count => Json.mkObj [("Count", Json.str count)]).toArray
+  let parts := fun (counts : List String) => Json.arr (counts.map fun count => Json.mkObj [("Count", Json.str count), ("Tag", "t")]).toArray
   Json.mkObj [("Order", Json.mkObj [
     ("Lines", Json.arr #[Json.mkObj [("LineNo", "A"), ("Parts", parts ["2", "3"])],
       Json.mkObj [("LineNo", "B"), ("Parts", parts ["4"])], Json.mkObj [("LineNo", "C"), ("Parts", parts ["5", "6"])]]),
@@ -56,8 +60,10 @@ private def keys : List RelevantEntityPattern :=
   [every ["Order", "Lines", "LineNo"], every ["Order", "Picks", "LineNo"]]
 
 /-- Each fired message as its line and part. -/
-private def partialMessages (relevant : List RelevantEntityPattern) : Except String (List (Nat × Nat)) := do
-  let dm ← (readModel order).mapError reprStr
+private def partialMessages (relevant : List RelevantEntityPattern)
+    (code := "C1") (condition := "FieldFilled(Lines/Parts/Count) And NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)") :
+    Except String (List (Nat × Nat)) := do
+  let dm ← (readModel (order code condition)).mapError reprStr
   let input ← (readDocument dm document).mapError reprStr
   let world : World := { now := { epochMillis := 0 } }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).mapError reprStr
@@ -85,5 +91,11 @@ example :
         [every ["Order", "Lines", "Parts", "Count"], every ["Order", "Lines", "Parts", "PartNo"]] ++ keys].all
         fun relevant => (partialMessages relevant).toOption == some []) = true := by
   native_decide
+
+/-- Parts 2 of lines 1 and 3 merge into a wild line and part 2: `NESTOR` fires there only, although
+`Tag` and the empty `PartNo` and `Ref` would fire it on the first parts of lines 1 and 3 as well. -/
+example : (partialMessages ([part 1 2, part 3 2, every ["Order", "Lines", "Parts", "Tag"]] ++ payload ++ keys) "NESTOR"
+    "FieldFilled(Lines/Parts/Count) Or (FieldFilled(Lines/Parts/Tag) And NoFieldFilled(Lines/Parts/PartNo, Picks/Ref))").toOption =
+    some [(1, 2), (3, 2)] := by native_decide
 
 end A12Kernel.Dm.ParallelNestedPartialLocks

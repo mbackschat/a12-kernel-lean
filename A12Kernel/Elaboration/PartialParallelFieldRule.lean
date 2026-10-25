@@ -22,6 +22,23 @@ def admitsPartialOuter (pair : CheckedParallelFieldPair model)
           if !ordinary then true else
             compressed.matchesBoundSubtree model bounds outer && compressed.wildcardsLevels model [joined]
 
+/-- Inside a dispatched joined row, the compressed selector still narrows the rows the rule visits
+below its joined group: a nested row runs only where the selector's coordinate at each such level is
+a wildcard or names it. Two parts of different lines dispatch only the part they share
+(k22-partial-dispatch-merge-2026-10-25, `sharedPart`, rule `NESTOR`; a12-dmkits KF621). An
+unmatched error side is gated by the nested bindings its pointer names, by the same reading. -/
+def admitsPartialInner (pair : CheckedParallelFieldPair model)
+    (scope : ValidationRelevanceScope) (row : ResolvedParallelIndexRow) : Bool :=
+  match scope with
+  | .full => true
+  | .partialSet entities =>
+      if pair.innerScope.isEmpty then true else
+      match ValidationRelevanceScope.compressedSelector? entities pair.errorDeclaration.path with
+      | none => false
+      | some compressed =>
+          let side := pair.errorSide row
+          compressed.matchesBoundSubtree model pair.innerScope (side.environment.getD side.inner)
+
 end CheckedParallelFieldPair
 
 namespace CheckedPartialPreliminary
@@ -143,7 +160,8 @@ def CheckedParallelFieldRule.evalPartialDocument (rule : CheckedParallelFieldRul
                 (atom.resolveAddressed (view.addressedValidationContext environment world)).mapError .addressing)
           leaf custom world))
       view.index outer messageCache view.isAddressRelevant
-      (rule.pair.admitsPartialOuter view.relevance) ParallelPresenceRuleEvaluationError.caughtByRule)
+      (rule.pair.admitsPartialOuter view.relevance) ParallelPresenceRuleEvaluationError.caughtByRule
+      (rule.pair.admitsPartialInner view.relevance))
     environments
 
 end A12Kernel

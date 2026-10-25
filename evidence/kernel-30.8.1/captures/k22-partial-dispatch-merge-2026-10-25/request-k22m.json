@@ -1,0 +1,754 @@
+{
+ "model": "K22m_DM.json",
+ "clock": "2026-10-25T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "rows": [
+  {
+   "name": "one",
+   "documentInline": {
+    "Order": {
+     "Email": "e",
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "2",
+         "Tag": "t"
+        },
+        {
+         "Count": "3",
+         "Tag": "t"
+        },
+        {
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "B",
+       "Sku": "s",
+       "Parts": [
+        {
+         "Count": "4",
+         "Tag": "t"
+        },
+        {
+         "Count": "7",
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "C",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "5",
+         "Tag": "t"
+        },
+        {
+         "Count": "6",
+         "Tag": "t"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "r"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Email"
+    },
+    {
+     "path": "/Order/Lines/Parts/Tag"
+    },
+    {
+     "path": "/Order/Lines/Code"
+    },
+    {
+     "path": "/Order/Lines/Parts/PartNo"
+    },
+    {
+     "path": "/Order/Picks/Ref"
+    },
+    {
+     "path": "/Order/Lines/LineNo"
+    },
+    {
+     "path": "/Order/Picks/LineNo"
+    },
+    {
+     "path": "/Order/Lines/Parts/Count",
+     "reps": [
+      1,
+      1,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "across",
+   "documentInline": {
+    "Order": {
+     "Email": "e",
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "2",
+         "Tag": "t"
+        },
+        {
+         "Count": "3",
+         "Tag": "t"
+        },
+        {
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "B",
+       "Sku": "s",
+       "Parts": [
+        {
+         "Count": "4",
+         "Tag": "t"
+        },
+        {
+         "Count": "7",
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "C",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "5",
+         "Tag": "t"
+        },
+        {
+         "Count": "6",
+         "Tag": "t"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "r"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Email"
+    },
+    {
+     "path": "/Order/Lines/Parts/Tag"
+    },
+    {
+     "path": "/Order/Lines/Code"
+    },
+    {
+     "path": "/Order/Lines/Parts/PartNo"
+    },
+    {
+     "path": "/Order/Picks/Ref"
+    },
+    {
+     "path": "/Order/Lines/LineNo"
+    },
+    {
+     "path": "/Order/Picks/LineNo"
+    },
+    {
+     "path": "/Order/Lines/Parts/Count",
+     "reps": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Lines/Parts/Count",
+     "reps": [
+      1,
+      3,
+      2,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "oneLine",
+   "documentInline": {
+    "Order": {
+     "Email": "e",
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "2",
+         "Tag": "t"
+        },
+        {
+         "Count": "3",
+         "Tag": "t"
+        },
+        {
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "B",
+       "Sku": "s",
+       "Parts": [
+        {
+         "Count": "4",
+         "Tag": "t"
+        },
+        {
+         "Count": "7",
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "C",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "5",
+         "Tag": "t"
+        },
+        {
+         "Count": "6",
+         "Tag": "t"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "r"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Email"
+    },
+    {
+     "path": "/Order/Lines/Parts/Tag"
+    },
+    {
+     "path": "/Order/Lines/Code"
+    },
+    {
+     "path": "/Order/Lines/Parts/PartNo"
+    },
+    {
+     "path": "/Order/Picks/Ref"
+    },
+    {
+     "path": "/Order/Lines/LineNo"
+    },
+    {
+     "path": "/Order/Picks/LineNo"
+    },
+    {
+     "path": "/Order/Lines/Parts/Count",
+     "reps": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Lines/Parts/Count",
+     "reps": [
+      1,
+      1,
+      2,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sharedPart",
+   "documentInline": {
+    "Order": {
+     "Email": "e",
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "2",
+         "Tag": "t"
+        },
+        {
+         "Count": "3",
+         "Tag": "t"
+        },
+        {
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "B",
+       "Sku": "s",
+       "Parts": [
+        {
+         "Count": "4",
+         "Tag": "t"
+        },
+        {
+         "Count": "7",
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "C",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "5",
+         "Tag": "t"
+        },
+        {
+         "Count": "6",
+         "Tag": "t"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "r"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Email"
+    },
+    {
+     "path": "/Order/Lines/Parts/Tag"
+    },
+    {
+     "path": "/Order/Lines/Code"
+    },
+    {
+     "path": "/Order/Lines/Parts/PartNo"
+    },
+    {
+     "path": "/Order/Picks/Ref"
+    },
+    {
+     "path": "/Order/Lines/LineNo"
+    },
+    {
+     "path": "/Order/Picks/LineNo"
+    },
+    {
+     "path": "/Order/Lines/Parts/Count",
+     "reps": [
+      1,
+      1,
+      2,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Lines/Parts/Count",
+     "reps": [
+      1,
+      3,
+      2,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "every",
+   "documentInline": {
+    "Order": {
+     "Email": "e",
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "2",
+         "Tag": "t"
+        },
+        {
+         "Count": "3",
+         "Tag": "t"
+        },
+        {
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "B",
+       "Sku": "s",
+       "Parts": [
+        {
+         "Count": "4",
+         "Tag": "t"
+        },
+        {
+         "Count": "7",
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "C",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "5",
+         "Tag": "t"
+        },
+        {
+         "Count": "6",
+         "Tag": "t"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "r"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Email"
+    },
+    {
+     "path": "/Order/Lines/Parts/Tag"
+    },
+    {
+     "path": "/Order/Lines/Code"
+    },
+    {
+     "path": "/Order/Lines/Parts/PartNo"
+    },
+    {
+     "path": "/Order/Picks/Ref"
+    },
+    {
+     "path": "/Order/Lines/LineNo"
+    },
+    {
+     "path": "/Order/Picks/LineNo"
+    },
+    {
+     "path": "/Order/Lines/Parts/Count"
+    }
+   ]
+  },
+  {
+   "name": "skuOfLine3",
+   "documentInline": {
+    "Order": {
+     "Email": "e",
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "2",
+         "Tag": "t"
+        },
+        {
+         "Count": "3",
+         "Tag": "t"
+        },
+        {
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "B",
+       "Sku": "s",
+       "Parts": [
+        {
+         "Count": "4",
+         "Tag": "t"
+        },
+        {
+         "Count": "7",
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "C",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "5",
+         "Tag": "t"
+        },
+        {
+         "Count": "6",
+         "Tag": "t"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "r"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Email"
+    },
+    {
+     "path": "/Order/Lines/Parts/Tag"
+    },
+    {
+     "path": "/Order/Lines/Code"
+    },
+    {
+     "path": "/Order/Lines/Parts/PartNo"
+    },
+    {
+     "path": "/Order/Picks/Ref"
+    },
+    {
+     "path": "/Order/Lines/LineNo"
+    },
+    {
+     "path": "/Order/Picks/LineNo"
+    },
+    {
+     "path": "/Order/Lines/Sku",
+     "reps": [
+      1,
+      3,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "badCount",
+   "documentInline": {
+    "Order": {
+     "Email": "e",
+     "Lines": [
+      {
+       "LineNo": "A",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "2",
+         "Tag": "t"
+        },
+        {
+         "Count": "3",
+         "Tag": "t"
+        },
+        {
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "B",
+       "Sku": "s",
+       "Parts": [
+        {
+         "Count": "4",
+         "Tag": "t"
+        },
+        {
+         "Count": "7",
+         "Tag": "t"
+        }
+       ]
+      },
+      {
+       "LineNo": "C",
+       "Sku": "s",
+       "Code": "c",
+       "Parts": [
+        {
+         "Count": "5",
+         "Tag": "t"
+        },
+        {
+         "Count": "x",
+         "Tag": "t"
+        }
+       ]
+      }
+     ],
+     "Picks": [
+      {
+       "LineNo": "A"
+      },
+      {
+       "LineNo": "B",
+       "Ref": "r"
+      },
+      {
+       "LineNo": "D",
+       "Ref": "r"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Email"
+    },
+    {
+     "path": "/Order/Lines/Parts/Tag"
+    },
+    {
+     "path": "/Order/Lines/Code"
+    },
+    {
+     "path": "/Order/Lines/Parts/PartNo"
+    },
+    {
+     "path": "/Order/Picks/Ref"
+    },
+    {
+     "path": "/Order/Lines/LineNo"
+    },
+    {
+     "path": "/Order/Picks/LineNo"
+    },
+    {
+     "path": "/Order/Lines/Parts/Count",
+     "reps": [
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Lines/Parts/Count",
+     "reps": [
+      1,
+      3,
+      2,
+      1
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,255 @@
+{
+ "header": {
+  "id": "K22m_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K22m_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Order",
+     "name": "Order",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Order/Email",
+        "name": "Email",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Lines",
+        "name": "Lines",
+        "Group": {
+         "repeatability": 4,
+         "indexFieldName": "LineNo",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Lines/LineNo",
+           "name": "LineNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Sku",
+           "name": "Sku",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Lines/Code",
+           "name": "Code",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Order/Lines/Parts",
+           "name": "Parts",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Parts/PartNo",
+              "name": "PartNo",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Parts/Count",
+              "name": "Count",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Order/Lines/Parts/Tag",
+              "name": "Tag",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Picks",
+        "name": "Picks",
+        "Group": {
+         "repeatability": 4,
+         "indexFieldName": "LineNo",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Picks/LineNo",
+           "name": "LineNo",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Order/Picks/Ref",
+           "name": "Ref",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/WIDE",
+        "name": "WIDE",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "WIDE",
+         "errorCondition": "FieldFilled(Lines/Parts/Tag) And (FieldFilled(Email) Or FieldFilled(Lines/Parts/Count))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/EXACT",
+        "name": "EXACT",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "EXACT",
+         "errorCondition": "FieldFilled(Lines/Parts/Tag) And (CurrentRepetition(Lines) > 2 Or FieldFilled(Lines/Parts/Count))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/NESTED",
+        "name": "NESTED",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "NESTED",
+         "errorCondition": "FieldFilled(Lines/Parts/Count) And NoFieldFilled(Lines/Parts/PartNo, Picks/Ref)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/NESTOR",
+        "name": "NESTOR",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Parts/Count",
+         "errorCode": "NESTOR",
+         "errorCondition": "FieldFilled(Lines/Parts/Count) Or (FieldFilled(Lines/Parts/Tag) And NoFieldFilled(Lines/Parts/PartNo, Picks/Ref))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/FLAT",
+        "name": "FLAT",
+        "Rule": {
+         "errorEntityRelPath": "../Lines/Sku",
+         "errorCode": "FLAT",
+         "errorCondition": "FieldFilled(Lines/Sku) Or (FieldFilled(Lines/Code) And FieldNotFilled(Picks/Ref))",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

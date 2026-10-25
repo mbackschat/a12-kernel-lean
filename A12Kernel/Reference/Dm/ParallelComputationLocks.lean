@@ -191,9 +191,10 @@ example : run [downstream, constantTotal "FieldNotFilled(/Form/Demand/Key)", tot
     [demandRow "A" "100"] [row "A" "2"] = some [
     ("Form/Demand/Amount", "value 7"), ("Form/Supply/Total", "value 9"), ("Form/Out", "value 10")] := by native_decide
 
-/-! A separate declaration that reads no partner field ends the joined table's scan wherever it is
-reached, whatever its guard, and stores nothing; a malformed read inside it poisons nothing
-downstream (k22-cross-declaration-2026-10-24, `Out11`–`Out16`). Its reads keep their index
+/-! A separate declaration that reads no partner field never stores a value into a joined target.
+Leading the table it clears every row whatever its guard, and a malformed read inside it poisons
+nothing downstream (k22-cross-declaration-2026-10-24, `Out11`–`Out16`); behind a joined lead the scan
+passes over it unread (k22-joined-declaration-order-2026-10-25, `W02`). Its reads keep their index
 participation and formal input findings. -/
 
 private def scalarFallback : DmComputation :=
@@ -205,8 +206,9 @@ private def starredFallback : DmComputation :=
 private def boundLocal (guard : Option String := none) : DmComputation :=
   definition "Supply" "Total" [{ operation := "[Amount] + 1", precondition := guard }]
 
--- Before and after an unselected joined declaration, a constant, a starred sum, a target-row read
--- and a guard false at the row all clear; an invalid index clears as well.
+-- Leading, a constant, a starred sum, a target-row read and a guard false at the row all clear; behind
+-- an unselected joined declaration with nothing joined after it, the table ends unselected; an invalid
+-- index clears as well.
 example : [
     ([total (some "FieldNotFilled(Amount)"), scalarFallback], [demandRow "A" "10"], [row "A" "2"]),
     ([scalarFallback, total (some "FieldFilled(Amount)")], [demandRow "A" "10"], [row "A" "2"]),
@@ -231,6 +233,12 @@ example : run [downstream, constantTotal "FieldNotFilled(/Form/Demand/Key)", bou
     definition "Supply" "Amount" [{ operation := "7", precondition := none }]]
     [demandRow "A" "10"] [row "A" "2"] = some [
     ("Form/Supply/Amount", "value 7"), ("Form/Supply/Total", "cleared"), ("Form/Out", "value 1")] := by native_decide
+
+-- Behind an unselected joined lead, a holding guard selects nothing and the next joined declaration
+-- computes.
+example : run [total (some "FieldNotFilled(Amount)"), boundLocal (some "FieldFilled(Amount)"),
+    total (some "FieldFilled(Amount)")] [demandRow "A" "10"] [row "A" "2"] =
+    some [("Form/Supply/Total", "value 12")] := by native_decide
 
 -- Alone, the same declaration is an ordinary row computation.
 example : (lowerComputation model .english (boundLocal (some "GroupFilled(/Form/Supply)"))).isOk = true ∧

@@ -1,0 +1,147 @@
+{
+ "model": "K22mq_DM.json",
+ "clock": "2026-10-25T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart"
+ ],
+ "rows": [
+  {
+   "name": "lineOneAndThree",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "Sku": "s"
+      },
+      {
+       "Note": "n"
+      },
+      {
+       "Sku": "s"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Lines/Sku",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Lines/Sku",
+     "reps": [
+      1,
+      3,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "lineOne",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "Sku": "s"
+      },
+      {
+       "Note": "n"
+      },
+      {
+       "Sku": "s"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Lines/Sku",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "lineTwo",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "Sku": "s"
+      },
+      {
+       "Note": "n"
+      },
+      {
+       "Sku": "s"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Lines/Sku",
+     "reps": [
+      1,
+      2,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "lineOneThreeNoteTwo",
+   "documentInline": {
+    "Order": {
+     "Lines": [
+      {
+       "Sku": "s"
+      },
+      {
+       "Note": "n"
+      },
+      {
+       "Sku": "s"
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Order/Lines/Sku",
+     "reps": [
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Lines/Sku",
+     "reps": [
+      1,
+      3,
+      1
+     ]
+    },
+    {
+     "path": "/Order/Lines/Note",
+     "reps": [
+      1,
+      2,
+      1
+     ]
+    }
+   ]
+  }
+ ]
+}

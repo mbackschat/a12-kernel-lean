@@ -1,0 +1,4679 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "K22w_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-25T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "w1",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W01c1",
+       "field": "Staffing/Supply/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c1",
+       "field": "Staffing/Supply[3]/W01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ]
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply[2]/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply[3]/W01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ]
+      },
+      {
+       "code": "W02c1",
+       "field": "Staffing/Supply/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c1",
+       "field": "Staffing/Supply[3]/W02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ]
+      },
+      {
+       "code": "W02c2",
+       "field": "Staffing/Supply[2]/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply[2]/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply[3]/W02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ]
+      },
+      {
+       "code": "W03c1",
+       "field": "Staffing/Supply/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c1",
+       "field": "Staffing/Supply[3]/W03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ]
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply[2]/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply[3]/W03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ]
+      },
+      {
+       "code": "W04c1",
+       "field": "Staffing/Supply/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c1",
+       "field": "Staffing/Supply[3]/W04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ]
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply[2]/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply[3]/W04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ]
+      },
+      {
+       "code": "W05c1",
+       "field": "Staffing/Supply/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c1",
+       "field": "Staffing/Supply[3]/W05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ]
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply[2]/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply[3]/W05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ]
+      },
+      {
+       "code": "W06c1",
+       "field": "Staffing/Supply/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c1",
+       "field": "Staffing/Supply[3]/W06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ]
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply[2]/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply[3]/W06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ]
+      },
+      {
+       "code": "W07c1",
+       "field": "Staffing/Supply/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c1",
+       "field": "Staffing/Supply[3]/W07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ]
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply[2]/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply[3]/W07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ]
+      },
+      {
+       "code": "WD1c1",
+       "field": "Staffing/Supply/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply[2]/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Stamp",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply[4]/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Stamp",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c1",
+       "field": "Staffing/Supply/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c2",
+       "field": "Staffing/Supply[2]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Due",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply[2]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Stamp",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply[4]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Stamp",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c1",
+       "field": "Staffing/Supply/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply[2]/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply[4]/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c1",
+       "field": "Staffing/Supply/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c2",
+       "field": "Staffing/Supply[2]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply[2]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply[4]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Staffing/Supply[2]/Bad",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[2]/Bad"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Staffing/Supply/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-10"
+       },
+       {
+        "field": "Staffing/Supply/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-10"
+       },
+       {
+        "field": "Staffing/Supply/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply[2]/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-20"
+       },
+       {
+        "field": "Staffing/Supply[2]/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-20"
+       },
+       {
+        "field": "Staffing/Supply[2]/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[2]/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[3]/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/WD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WD2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WS1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WS2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W07",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-03-30"
+       },
+       {
+        "field": "Staffing/Supply[4]/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-03-30"
+       },
+       {
+        "field": "Staffing/Supply[4]/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "lf"
+       },
+       {
+        "field": "Staffing/Supply[4]/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "lf"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "Staffing/Supply[2]/Bad",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[2]/Bad"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W01c1",
+       "field": "Staffing/Supply/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c1",
+       "field": "Staffing/Supply[3]/W01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ]
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply[2]/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply[3]/W01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ]
+      },
+      {
+       "code": "W02c1",
+       "field": "Staffing/Supply/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c1",
+       "field": "Staffing/Supply[3]/W02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ]
+      },
+      {
+       "code": "W02c2",
+       "field": "Staffing/Supply[2]/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply[2]/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply[3]/W02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ]
+      },
+      {
+       "code": "W03c1",
+       "field": "Staffing/Supply/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c1",
+       "field": "Staffing/Supply[3]/W03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ]
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply[2]/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply[3]/W03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ]
+      },
+      {
+       "code": "W04c1",
+       "field": "Staffing/Supply/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c1",
+       "field": "Staffing/Supply[3]/W04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ]
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply[2]/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply[3]/W04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ]
+      },
+      {
+       "code": "W05c1",
+       "field": "Staffing/Supply/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c1",
+       "field": "Staffing/Supply[3]/W05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ]
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply[2]/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply[3]/W05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ]
+      },
+      {
+       "code": "W06c1",
+       "field": "Staffing/Supply/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c1",
+       "field": "Staffing/Supply[3]/W06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ]
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply[2]/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply[3]/W06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ]
+      },
+      {
+       "code": "W07c1",
+       "field": "Staffing/Supply/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c1",
+       "field": "Staffing/Supply[3]/W07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ]
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply[2]/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply[3]/W07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ]
+      },
+      {
+       "code": "WD1c1",
+       "field": "Staffing/Supply/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply[2]/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Stamp",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply[4]/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Stamp",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c1",
+       "field": "Staffing/Supply/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c2",
+       "field": "Staffing/Supply[2]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Due",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply[2]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Stamp",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply[4]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Stamp",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c1",
+       "field": "Staffing/Supply/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply[2]/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply[4]/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c1",
+       "field": "Staffing/Supply/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c2",
+       "field": "Staffing/Supply[2]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply[2]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply[4]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatUngueltigeZeichen",
+       "field": "Staffing/Supply[2]/Bad",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "Staffing/Supply[2]/Bad"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Staffing/Supply/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-10"
+       },
+       {
+        "field": "Staffing/Supply/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-10"
+       },
+       {
+        "field": "Staffing/Supply/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply[2]/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-20"
+       },
+       {
+        "field": "Staffing/Supply[2]/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-20"
+       },
+       {
+        "field": "Staffing/Supply[2]/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[2]/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[3]/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/WD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WD2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WS1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WS2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W07",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-03-30"
+       },
+       {
+        "field": "Staffing/Supply[4]/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-03-30"
+       },
+       {
+        "field": "Staffing/Supply[4]/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "lf"
+       },
+       {
+        "field": "Staffing/Supply[4]/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "lf"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "zahlHatUngueltigeZeichen",
+        "field": "Staffing/Supply[2]/Bad",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "[redacted]",
+        "referenced": [
+         "Staffing/Supply[2]/Bad"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "w2",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "W01c1",
+       "field": "Staffing/Supply/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c1",
+       "field": "Staffing/Supply[3]/W01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ]
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply[2]/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply[3]/W01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ]
+      },
+      {
+       "code": "W02c1",
+       "field": "Staffing/Supply/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c1",
+       "field": "Staffing/Supply[3]/W02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ]
+      },
+      {
+       "code": "W02c2",
+       "field": "Staffing/Supply[2]/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply[2]/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply[3]/W02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ]
+      },
+      {
+       "code": "W03c1",
+       "field": "Staffing/Supply/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c1",
+       "field": "Staffing/Supply[3]/W03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ]
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply[2]/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply[3]/W03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ]
+      },
+      {
+       "code": "W04c1",
+       "field": "Staffing/Supply/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c1",
+       "field": "Staffing/Supply[3]/W04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ]
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply[2]/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply[3]/W04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ]
+      },
+      {
+       "code": "W05c1",
+       "field": "Staffing/Supply/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c1",
+       "field": "Staffing/Supply[3]/W05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ]
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply[2]/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply[3]/W05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ]
+      },
+      {
+       "code": "W06c1",
+       "field": "Staffing/Supply/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c1",
+       "field": "Staffing/Supply[3]/W06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ]
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply[2]/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply[3]/W06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ]
+      },
+      {
+       "code": "W07c1",
+       "field": "Staffing/Supply/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c1",
+       "field": "Staffing/Supply[3]/W07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ]
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply[2]/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply[3]/W07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ]
+      },
+      {
+       "code": "WD1c1",
+       "field": "Staffing/Supply/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply[2]/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Stamp",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply[4]/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Stamp",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c1",
+       "field": "Staffing/Supply/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c2",
+       "field": "Staffing/Supply[2]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Due",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply[2]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Stamp",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply[4]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Stamp",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c1",
+       "field": "Staffing/Supply/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply[2]/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply[4]/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c1",
+       "field": "Staffing/Supply/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c2",
+       "field": "Staffing/Supply[2]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply[2]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply[4]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WS2"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Staffing/Supply/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-10"
+       },
+       {
+        "field": "Staffing/Supply/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-10"
+       },
+       {
+        "field": "Staffing/Supply/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply[2]/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-20"
+       },
+       {
+        "field": "Staffing/Supply[2]/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-20"
+       },
+       {
+        "field": "Staffing/Supply[2]/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[2]/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[3]/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/WD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WD2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WS1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WS2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W07",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-03-30"
+       },
+       {
+        "field": "Staffing/Supply[4]/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-03-30"
+       },
+       {
+        "field": "Staffing/Supply[4]/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "lf"
+       },
+       {
+        "field": "Staffing/Supply[4]/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "lf"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "W01c1",
+       "field": "Staffing/Supply/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c1",
+       "field": "Staffing/Supply[3]/W01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ]
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply[2]/W01",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W01"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W01c3",
+       "field": "Staffing/Supply[3]/W01",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W01"
+       ]
+      },
+      {
+       "code": "W02c1",
+       "field": "Staffing/Supply/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c1",
+       "field": "Staffing/Supply[3]/W02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ]
+      },
+      {
+       "code": "W02c2",
+       "field": "Staffing/Supply[2]/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply[2]/W02",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W02"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W02c3",
+       "field": "Staffing/Supply[3]/W02",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W02"
+       ]
+      },
+      {
+       "code": "W03c1",
+       "field": "Staffing/Supply/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c1",
+       "field": "Staffing/Supply[3]/W03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ]
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply[2]/W03",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W03"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W03c4",
+       "field": "Staffing/Supply[3]/W03",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W03"
+       ]
+      },
+      {
+       "code": "W04c1",
+       "field": "Staffing/Supply/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c1",
+       "field": "Staffing/Supply[3]/W04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ]
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply[2]/W04",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W04"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W04c3",
+       "field": "Staffing/Supply[3]/W04",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W04"
+       ]
+      },
+      {
+       "code": "W05c1",
+       "field": "Staffing/Supply/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c1",
+       "field": "Staffing/Supply[3]/W05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ]
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply[2]/W05",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W05"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W05c3",
+       "field": "Staffing/Supply[3]/W05",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W05"
+       ]
+      },
+      {
+       "code": "W06c1",
+       "field": "Staffing/Supply/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c1",
+       "field": "Staffing/Supply[3]/W06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ]
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply[2]/W06",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W06"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W06c3",
+       "field": "Staffing/Supply[3]/W06",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W06"
+       ]
+      },
+      {
+       "code": "W07c1",
+       "field": "Staffing/Supply/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c1",
+       "field": "Staffing/Supply[3]/W07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ]
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply[2]/W07",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/W07"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "W07c3",
+       "field": "Staffing/Supply[3]/W07",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ],
+       "fillToFix": [
+        "/Staffing[1]/Demand[-5]/Base",
+        "/Staffing[1]/Demand[-5]/Department",
+        "Staffing/Supply[3]/Department",
+        "Staffing/Supply[3]/Headcount",
+        "Staffing/Supply[3]/W07"
+       ]
+      },
+      {
+       "code": "WD1c1",
+       "field": "Staffing/Supply/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply[2]/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Stamp",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD1c3",
+       "field": "Staffing/Supply[4]/WD1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Stamp",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WD1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c1",
+       "field": "Staffing/Supply/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c2",
+       "field": "Staffing/Supply[2]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Due",
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Stamp",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply[2]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Stamp",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WD2c3",
+       "field": "Staffing/Supply[4]/WD2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Stamp",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WD2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c1",
+       "field": "Staffing/Supply/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply[2]/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS1c3",
+       "field": "Staffing/Supply[4]/WS1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WS1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c1",
+       "field": "Staffing/Supply/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/Headcount",
+        "Staffing/Supply/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c2",
+       "field": "Staffing/Supply[2]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Note",
+        "Staffing/Supply[2]/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand/Base",
+        "Staffing/Demand/Department",
+        "Staffing/Demand/Label",
+        "Staffing/Supply/Department",
+        "Staffing/Supply/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply[2]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department",
+        "Staffing/Demand[2]/Label",
+        "Staffing/Supply[2]/Department",
+        "Staffing/Supply[2]/WS2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "WS2c3",
+       "field": "Staffing/Supply[4]/WS2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Staffing/Demand[3]/Base",
+        "Staffing/Demand[3]/Department",
+        "Staffing/Demand[3]/Label",
+        "Staffing/Supply[4]/Department",
+        "Staffing/Supply[4]/WS2"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Staffing/Supply/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "10"
+       },
+       {
+        "field": "Staffing/Supply/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-10"
+       },
+       {
+        "field": "Staffing/Supply/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-10"
+       },
+       {
+        "field": "Staffing/Supply/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "LA"
+       },
+       {
+        "field": "Staffing/Supply[2]/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "1020"
+       },
+       {
+        "field": "Staffing/Supply[2]/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-20"
+       },
+       {
+        "field": "Staffing/Supply[2]/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-20"
+       },
+       {
+        "field": "Staffing/Supply[2]/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[2]/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "zz"
+       },
+       {
+        "field": "Staffing/Supply[3]/W01",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W02",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W03",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W04",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W05",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W06",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/W07",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Staffing/Supply[3]/WD1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WD2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WS1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[3]/WS2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W01",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W02",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W03",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W04",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W05",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W06",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/W07",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Staffing/Supply[4]/WD1",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-03-30"
+       },
+       {
+        "field": "Staffing/Supply[4]/WD2",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-03-30"
+       },
+       {
+        "field": "Staffing/Supply[4]/WS1",
+        "cleared": false,
+        "errored": false,
+        "value": "lf"
+       },
+       {
+        "field": "Staffing/Supply[4]/WS2",
+        "cleared": false,
+        "errored": false,
+        "value": "lf"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  }
+ ]
+}

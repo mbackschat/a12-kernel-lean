@@ -1,0 +1,1431 @@
+{
+ "header": {
+  "id": "K22w_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "K22y_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Staffing",
+     "name": "Staffing",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Staffing/PlanName",
+        "name": "PlanName",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Staffing/PNum",
+        "name": "PNum",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Staffing/Down",
+        "name": "Down",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Staffing/Demand",
+        "name": "Demand",
+        "Group": {
+         "repeatability": 50,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Staffing/Demand/Department",
+           "name": "Department",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Demand/Headcount",
+           "name": "Headcount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Demand/Base",
+           "name": "Base",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Demand/Stamp",
+           "name": "Stamp",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Demand/Kind",
+           "name": "Kind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "a"
+               },
+               {
+                "value": "b"
+               }
+              ],
+              "categories": [
+               {
+                "name": "X",
+                "values": [
+                 "yes",
+                 "no"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Demand/Label",
+           "name": "Label",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Department"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Staffing/Supply",
+        "name": "Supply",
+        "Group": {
+         "repeatability": 50,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Department",
+           "name": "Department",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Headcount",
+           "name": "Headcount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Due",
+           "name": "Due",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out01",
+           "name": "Out01",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out02",
+           "name": "Out02",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out03",
+           "name": "Out03",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out04",
+           "name": "Out04",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out05",
+           "name": "Out05",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out06",
+           "name": "Out06",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out07",
+           "name": "Out07",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out08",
+           "name": "Out08",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out09",
+           "name": "Out09",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out10",
+           "name": "Out10",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out11",
+           "name": "Out11",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out12",
+           "name": "Out12",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out13",
+           "name": "Out13",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out14",
+           "name": "Out14",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out15",
+           "name": "Out15",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out16",
+           "name": "Out16",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out17",
+           "name": "Out17",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out18",
+           "name": "Out18",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out19",
+           "name": "Out19",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Out20",
+           "name": "Out20",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/OutS1",
+           "name": "OutS1",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/OutS2",
+           "name": "OutS2",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/OutS3",
+           "name": "OutS3",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/OutS4",
+           "name": "OutS4",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/OutD1",
+           "name": "OutD1",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/OutD2",
+           "name": "OutD2",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/Bad",
+           "name": "Bad",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/W01",
+           "name": "W01",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/W02",
+           "name": "W02",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/W03",
+           "name": "W03",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/W04",
+           "name": "W04",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/W05",
+           "name": "W05",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/W06",
+           "name": "W06",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/W07",
+           "name": "W07",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/WS1",
+           "name": "WS1",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/WS2",
+           "name": "WS2",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/WD1",
+           "name": "WD1",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Supply/WD2",
+           "name": "WD2",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W01c1",
+           "name": "W01c1",
+           "Computation": {
+            "computedFieldRelPath": "../W01",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Base]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W01c2",
+           "name": "W01c2",
+           "Computation": {
+            "computedFieldRelPath": "../W01",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 5",
+              "operation": "[Headcount] + 100"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W01c3",
+           "name": "W01c3",
+           "Computation": {
+            "computedFieldRelPath": "../W01",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 1",
+              "operation": "[/Staffing/Demand/Base] + 1000"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W02c1",
+           "name": "W02c1",
+           "Computation": {
+            "computedFieldRelPath": "../W02",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Base]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W02c2",
+           "name": "W02c2",
+           "Computation": {
+            "computedFieldRelPath": "../W02",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 2",
+              "operation": "[Headcount] + 100"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W02c3",
+           "name": "W02c3",
+           "Computation": {
+            "computedFieldRelPath": "../W02",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 1",
+              "operation": "[/Staffing/Demand/Base] + 1000"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W03c1",
+           "name": "W03c1",
+           "Computation": {
+            "computedFieldRelPath": "../W03",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Base]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W03c2",
+           "name": "W03c2",
+           "Computation": {
+            "computedFieldRelPath": "../W03",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 5",
+              "operation": "[Headcount] + 100"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W03c3",
+           "name": "W03c3",
+           "Computation": {
+            "computedFieldRelPath": "../W03",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 6",
+              "operation": "[Headcount] + 200"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W03c4",
+           "name": "W03c4",
+           "Computation": {
+            "computedFieldRelPath": "../W03",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 1",
+              "operation": "[/Staffing/Demand/Base] + 1000"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W04c1",
+           "name": "W04c1",
+           "Computation": {
+            "computedFieldRelPath": "../W04",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Base]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W04c2",
+           "name": "W04c2",
+           "Computation": {
+            "computedFieldRelPath": "../W04",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 5",
+              "operation": "[Headcount] + 100"
+             },
+             {
+              "precondition": "[Headcount] >= 6",
+              "operation": "[Headcount] + 200"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W04c3",
+           "name": "W04c3",
+           "Computation": {
+            "computedFieldRelPath": "../W04",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 1",
+              "operation": "[/Staffing/Demand/Base] + 1000"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W05c1",
+           "name": "W05c1",
+           "Computation": {
+            "computedFieldRelPath": "../W05",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Base]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W05c2",
+           "name": "W05c2",
+           "Computation": {
+            "computedFieldRelPath": "../W05",
+            "commonPrecondition": "[Headcount] >= 5",
+            "computationAlternatives": [
+             {
+              "operation": "[Headcount] + 100"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W05c3",
+           "name": "W05c3",
+           "Computation": {
+            "computedFieldRelPath": "../W05",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 1",
+              "operation": "[/Staffing/Demand/Base] + 1000"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W06c1",
+           "name": "W06c1",
+           "Computation": {
+            "computedFieldRelPath": "../W06",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Base]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W06c2",
+           "name": "W06c2",
+           "Computation": {
+            "computedFieldRelPath": "../W06",
+            "computationAlternatives": [
+             {
+              "precondition": "[Bad] >= 5",
+              "operation": "[Headcount] + 100"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W06c3",
+           "name": "W06c3",
+           "Computation": {
+            "computedFieldRelPath": "../W06",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 1",
+              "operation": "[/Staffing/Demand/Base] + 1000"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W07c1",
+           "name": "W07c1",
+           "Computation": {
+            "computedFieldRelPath": "../W07",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Base]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W07c2",
+           "name": "W07c2",
+           "Computation": {
+            "computedFieldRelPath": "../W07",
+            "computationAlternatives": [
+             {
+              "precondition": "[/Staffing/PNum] >= 50",
+              "operation": "7"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/W07c3",
+           "name": "W07c3",
+           "Computation": {
+            "computedFieldRelPath": "../W07",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 1",
+              "operation": "[/Staffing/Demand/Base] + 1000"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WS1c1",
+           "name": "WS1c1",
+           "Computation": {
+            "computedFieldRelPath": "../WS1",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Label]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WS1c2",
+           "name": "WS1c2",
+           "Computation": {
+            "computedFieldRelPath": "../WS1",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 5",
+              "operation": "[Note]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WS1c3",
+           "name": "WS1c3",
+           "Computation": {
+            "computedFieldRelPath": "../WS1",
+            "computationAlternatives": [
+             {
+              "precondition": "[/Staffing/Demand/Base] >= 1",
+              "operation": "[/Staffing/Demand/Label]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WS2c1",
+           "name": "WS2c1",
+           "Computation": {
+            "computedFieldRelPath": "../WS2",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Label]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WS2c2",
+           "name": "WS2c2",
+           "Computation": {
+            "computedFieldRelPath": "../WS2",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 2",
+              "operation": "[Note]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WS2c3",
+           "name": "WS2c3",
+           "Computation": {
+            "computedFieldRelPath": "../WS2",
+            "computationAlternatives": [
+             {
+              "precondition": "[/Staffing/Demand/Base] >= 1",
+              "operation": "[/Staffing/Demand/Label]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WD1c1",
+           "name": "WD1c1",
+           "Computation": {
+            "computedFieldRelPath": "../WD1",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Stamp]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WD1c2",
+           "name": "WD1c2",
+           "Computation": {
+            "computedFieldRelPath": "../WD1",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 5",
+              "operation": "[Due]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WD1c3",
+           "name": "WD1c3",
+           "Computation": {
+            "computedFieldRelPath": "../WD1",
+            "computationAlternatives": [
+             {
+              "precondition": "[/Staffing/Demand/Base] >= 1",
+              "operation": "[/Staffing/Demand/Stamp]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WD2c1",
+           "name": "WD2c1",
+           "Computation": {
+            "computedFieldRelPath": "../WD2",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] == 1",
+              "operation": "[/Staffing/Demand/Stamp]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WD2c2",
+           "name": "WD2c2",
+           "Computation": {
+            "computedFieldRelPath": "../WD2",
+            "computationAlternatives": [
+             {
+              "precondition": "[Headcount] >= 2",
+              "operation": "[Due]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Staffing/Supply/WD2c3",
+           "name": "WD2c3",
+           "Computation": {
+            "computedFieldRelPath": "../WD2",
+            "computationAlternatives": [
+             {
+              "precondition": "[/Staffing/Demand/Base] >= 1",
+              "operation": "[/Staffing/Demand/Stamp]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "Department"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Staffing/Ledger",
+        "name": "Ledger",
+        "Group": {
+         "repeatability": 50,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Staffing/Ledger/Code",
+           "name": "Code",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Staffing/Ledger/Amount",
+           "name": "Amount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Code"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

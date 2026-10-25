@@ -536,4 +536,35 @@ example :
       "ChkQty Req/Items[2]/Qty", "ChkQty Req/Items[3]/Qty"] := by
   native_decide
 
+/-! The mandatory check reads only its own cell, so a row only the merged selector reaches stays
+silent: with `Sku` required and empty in line 2, lines 1 and 3 relevant report nothing and line 2
+relevant reports it (`K22mq` of the
+[dispatch-merge checkpoint](../../../docs/sources/group-count-topology.md#src-k22-partial-dispatch-merge)). -/
+
+private def linesModel : Json :=
+  let field (name : String) (extra : List (String × Json)) := Json.mkObj [("type", "Field"), ("name", Json.str name),
+    ("Field", Json.mkObj ([("fieldType", Json.mkObj [("type", "StringType")])] ++ extra))]
+  let group (name : String) (count : Nat) (elements : List Json) := Json.mkObj [("type", "Group"),
+    ("name", Json.str name), ("Group", Json.mkObj [("repeatability", toJson count), ("elements", Json.arr elements.toArray)])]
+  let required := ("requirednessConfig", Json.mkObj [("mode", "absoluteOrRelativeToNextRepAncestor")])
+  let root := group "Order" 1 [group "Lines" 4 [field "Sku" [required], field "Note" []]]
+  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+    ("content", Json.mkObj [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),
+      ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[root])])])]
+
+/-- The `Lines` rows the partial call's mandatory check reports. -/
+private def mandatoryLines (lines : List (String × Nat)) : Option (List (List Nat)) := do
+  let dm ← (readModel linesModel).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
+  let raw ← (readDocument dm (← (Json.parse
+    "{\"Order\":{\"Lines\":[{\"Sku\":\"s\"},{\"Note\":\"n\"},{\"Sku\":\"s\"}]}}").toOption)).toOption
+  let checked ← (checkDocument prepared "en_US" raw.data).toOption
+  let view ← (checked.applyPartialGeneratedPreliminaryForScope (.partialSet (lines.map fun (name, line) =>
+    { path := ["Order", "Lines", name], indices := [.concrete 1, .concrete line, .concrete 1] }))).toOption
+  pure ((RequiredEvaluation.mandatoryAddresses view.required).map (·.path))
+
+example : mandatoryLines [("Sku", 1), ("Sku", 3)] = some [] ∧ mandatoryLines [("Sku", 2)] = some [[2]] ∧
+    mandatoryLines [("Sku", 1), ("Sku", 3), ("Note", 2)] = some [] := by
+  native_decide
+
 end A12Kernel.Dm.GeneratedRequirednessLocks

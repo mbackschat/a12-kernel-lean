@@ -23,10 +23,13 @@ keys and on a row beyond capacity
 An Enumeration copy reads the partner's stored token as the fixed Enumeration carrier reads a field.
 
 Separate declarations into one joined target form one first-selected table in declaration order. A
-declaration that reads no partner field joins it as a `bound` operation: the scan stops there with
-nothing stored, whatever that declaration's guards, and its reads stay in the dependency inventory
-([cross-declaration checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-cross-declaration)).
-Two joined declarations over the same joined groups concatenate their alternatives.
+declaration that reads no partner field joins it as a `bound` operation and never stores a value:
+leading the table it clears every row whatever its guards
+([cross-declaration checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-cross-declaration)),
+and behind a joined lead the scan passes over it unread
+([declaration-order checkpoint](../../docs/sources/group-count-topology.md#src-k22-joined-declaration-order)).
+Its reads stay in the dependency inventory. Two joined declarations over the same joined groups
+concatenate their alternatives.
 -/
 
 namespace A12Kernel
@@ -82,6 +85,7 @@ def evaluateIn (matchers : StringTargetMatchers) (context : ScalarComputationCon
   | .enumeration operation =>
       let outcome := (operation.source.evaluate { read := context.read }).asExactStringTargetOutcome
       pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
+  -- Never selected: `execute` scans only the joined alternatives.
   | .bound _ family _ => pure (family.noValue, DocumentComputationReadBack.empty)
 
 end ParallelJoinedRowOperation
@@ -132,6 +136,18 @@ def targetField (step : CheckedParallelJoinedRowStep model) : FieldId := step.pr
 
 def joins (step : CheckedParallelJoinedRowStep model) : List (CheckedParallelTargetJoin model) :=
   step.primary :: step.additional
+
+/-- Whether a declaration reading no partner field comes first, which clears every target row. -/
+def leadsUnjoined (step : CheckedParallelJoinedRowStep model) : Bool :=
+  match step.alternatives with
+  | { operation := .bound .., .. } :: _ => true
+  | _ => false
+
+/-- The joined alternatives in declaration order, the ones a scan behind a joined lead selects from. -/
+def joinedAlternatives (step : CheckedParallelJoinedRowStep model) : List (ParallelJoinedRowAlternative model step.joined) :=
+  step.alternatives.filter fun alternative => match alternative.operation with
+    | .bound .. => false
+    | _ => true
 
 /-- Index columns participate statically even when a guard prevents every read (spec/07 §2). -/
 def referencesIndexField (step : CheckedParallelJoinedRowStep model) (field : FieldId) : Bool :=
@@ -200,7 +216,9 @@ def execute (step : CheckedParallelJoinedRowStep model) (world : World) (matcher
     let guardContext : ParallelNumericGuardContext := {
       joinedRead := context.read, ordinary := document.parallelGuardContextAt target.environment
       partnerAt := fun group => (partners.lookup group).map document.parallelGuardContextAt }
-    match ComputationAlternative.selectFirstWith (·.eval guardContext) step.alternatives with
+    if step.leadsUnjoined then
+      return (target.address, step.family.noValue, DocumentComputationReadBack.empty)
+    match ComputationAlternative.selectFirstWith (·.eval guardContext) step.joinedAlternatives with
     | .error error =>
         if error.isValueFailure then
           pure (target.address, .valueError step.family, DocumentComputationReadBack.poison)
@@ -229,7 +247,7 @@ private def recertify? (joined : List GroupPath) (primary : CheckedParallelTarge
   else none else none else none else none else none else none
 
 /-- Place a separate declaration that reads no partner field before or after the table's
-alternatives; reaching it ends the scan with nothing stored. -/
+alternatives: placed first it clears every row, placed later the scan passes over it. -/
 def withBound (step : CheckedParallelJoinedRowStep model) (reads : ComputationReadFootprint)
     (before : Bool) : Option (CheckedParallelJoinedRowStep model) :=
   let alternative : ParallelJoinedRowAlternative model step.joined :=
