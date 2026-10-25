@@ -317,11 +317,15 @@ category = "repository-config"
 
 [[rules]]
 id = "observation-bundles"
-match = ["evidence/**/semantic-observations.json"]
+match = [
+  "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
+  "evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json",
+  "evidence/kernel-30.8.1/captures/string-direct-cascade-v1/semantic-observations.json",
+]
 kind = ["data"]
 purpose = "test"
 category = "observation-bundle"
-reason = "The bundles docs/ARTIFACTS.md and docs/EVIDENCE.md name as the ordinary Lean replay interface"
+reason = "The three typed bundles docs/EVIDENCE.md names; a raw capture may use the same file name"
 
 [[rules]]
 id = "capture-manifests"
@@ -342,7 +346,9 @@ reason = "Inputs of scripts/make-probe-ops.sh and scripts/place-probe-rules.py"
 id = "kernel-captures"
 match = ["evidence/**"]
 except = [
-  "evidence/**/semantic-observations.json",
+  "evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json",
+  "evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json",
+  "evidence/kernel-30.8.1/captures/string-direct-cascade-v1/semantic-observations.json",
   "evidence/**/*.sha256",
   "evidence/**/*.spec",
   "evidence/**/spec*.txt",

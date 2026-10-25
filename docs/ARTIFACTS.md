@@ -6,7 +6,7 @@ This guide explains what belongs under [`evidence/`](../evidence/), [`reference/
 
 | Directory | Role | Source of truth? | Normal evolution |
 |---|---|---|---|
-| [`evidence/`](../evidence/) | Three compact accepted semantic-observation bundles | Checked-out observations preserve the current finite empirical claim; compact bundles are the ordinary Lean replay and public-association interface, not a second oracle | Append, version, or explicitly correct; retain raw audit inputs only until a reviewed compact migration records their exact recovery revision |
+| [`evidence/`](../evidence/) | Three compact accepted semantic-observation bundles, and raw calibration captures pinned by their source checkpoints | Checked-out observations preserve the current finite empirical claim; compact bundles are the ordinary Lean replay and public-association interface, not a second oracle | Append, version, or explicitly correct; retain raw audit inputs only until a reviewed compact migration records their exact recovery revision |
 | [`reference/`](../reference/) | Portable consumer shipments and the readable support-manifest mirror | Mostly derived from Lean and retained evidence; the correlation suite remains a reviewed manual index | Derive new current identities from their owners, maintain reviewed indices explicitly, and never regenerate a frozen compatibility line in place |
 | [`examples/`](../examples/) | Runnable user examples, golden process regressions, and generated shipment fixtures | No; expected outputs are reviewed regression locks, not kernel evidence | Curate the small human-facing set and regenerate owned fixture sets |
 | Exact Git revisions of deleted records | Retired compatibility identities, campaign outcomes, deleted artifact digests, and recovery instructions | Yes, for the documented historical claim and recovery boundary; no, for current behavior | Cite the file and the revision that last held it; inspect deleted bytes there rather than restoring them to current source |
@@ -35,13 +35,15 @@ Detailed evidence claims remain in [`EVIDENCE.md`](EVIDENCE.md), process and man
 
 ### Contents
 
-The versioned [`evidence/kernel-30.8.1/`](../evidence/kernel-30.8.1/) tree currently contains exactly three files, all named `semantic-observations.json` under separate capture identities:
+The versioned [`evidence/kernel-30.8.1/`](../evidence/kernel-30.8.1/) tree holds two kinds of capture directory. Exactly three hold a typed compact replay bundle, each named `semantic-observations.json`:
 
 - [validation core](../evidence/kernel-30.8.1/captures/validation-core-v1/semantic-observations.json), 49 records split into 25 public associations and 24 private replays, with 48 distinct external observations because one directional witness is intentionally shared;
 - [root String computation](../evidence/kernel-30.8.1/captures/string-computation-v1/semantic-observations.json), 22 project-reviewed non-public replays;
 - [direct String cascade](../evidence/kernel-30.8.1/captures/string-direct-cascade-v1/semantic-observations.json), five producer-certified non-public replays.
 
-Each bundle preserves the narrow typed input and externally supported observation consumed by the current Lean semantics or public suite. The raw case, diagnostic, model, triangulation, packet, and receipt estates are historical audit inputs recoverable through the archives and Git, not live source-of-truth files that routine replay rechecks.
+Each bundle preserves the narrow typed input and externally supported observation consumed by the current Lean semantics or public suite. The raw case, diagnostic, model, triangulation, packet, and receipt estates behind these three bundles are historical audit inputs recoverable through the archives and Git, not live source-of-truth files that routine replay rechecks.
+
+Every other directory under [`captures/`](../evidence/kernel-30.8.1/captures/) is a raw calibration capture: the probe requests and models sent to the Kernel, the Kernel's responses, the probe specifications that generated the requests, and usually a `MANIFEST.sha256`. A raw file may itself be named `semantic-observations.json` without being a typed bundle. Each capture's source checkpoint under [`sources/`](sources/) is the sole registry of its hashes, producer, observation and exclusions, and [`EVIDENCE.md`](EVIDENCE.md#current-retained-inventory) owns its claim boundary. A raw capture has no typed projection and does not run under `lake test`; the [population replay](TESTING.md#the-population-replay) compares its requests whose model declares a rule or computation, and some reader locks under [`A12Kernel/Reference/Dm/`](../A12Kernel/Reference/Dm/) reproduce a single capture.
 
 ### Responsibility and authority
 
