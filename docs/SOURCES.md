@@ -160,6 +160,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 24a handback](sources/inbound-handbacks.md#src-inbound-2026-10-24a): a12-dmkits `2539feea3b679bebb1c1dd9c2b346bc436311a0d`; the reconciliation of the ten entries `SPEC-2026-10-23-04` to `-06` and `SPEC-2026-10-24-01` to `-07`, and the measured absence of the count-below-one class at rules and computations.
 - [October 24b handback](sources/inbound-handbacks.md#src-inbound-2026-10-24b): a12-dmkits instrument `d2dd5453b` and interpreter correction `3be383e24`; the probe's rule-raise channel and the group-target custom-condition abort of KF615.
 - [October 25 handback](sources/inbound-handbacks.md#src-inbound-2026-10-25): a12-dmkits `f3c2578194b7e2293707fe33980f31920b3983d5`; the reconciliation of the fifteen entries handed off at `e9c7259f`, KF619's declaration position, KF621's dispatch merge and KF615's lookup order.
+- [October 25a handback](sources/inbound-handbacks.md#src-inbound-2026-10-25a): a12-dmkits `95b57fb4a3fb40cc7c605d9e3251e5ff35e60cc6`; acceptance of `SPEC-2026-10-25-03` and `SPEC-2026-10-24-19`, and KF619 corrected to the passing-over rule.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route
