@@ -40,7 +40,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-25-02"></a>
 ### SPEC-2026-10-25-02 — A group-target CustomCondition's name lookup is left unmeasured
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/11](../spec/11-messages-and-custom.md), the group-target CustomCondition bullet.
 - `delta`: Withdraws the claim that the rule fails before the condition's name is looked up and states the outcome only: the rule fails whatever the name answers, the callback is never invoked, and whether a call-specific factory is consulted first is unmeasured. The chosen account resolves no name for such a leaf.
 - `basis`: The [group-target abort checkpoint](sources/model-structure-and-declaration-probes.md#src-k22-group-target-custom-abort), measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, whose rows measure the outcome; the lookup timing came from the peer's source reading at [KF615](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf615) and is not adopted.
@@ -50,7 +50,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-25-01"></a>
 ### SPEC-2026-10-25-01 — Count shift amounts take their comparison gate under partial validation, and value counts accept complete concrete coverage
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/10](../spec/10-validation-and-polarity.md), the shift-amount bullet and the value-count sentence after the partial count table.
 - `delta`: Adds that a shift amount answers a partial call as the same count or aggregate does as a comparison operand: aggregates, distinct counts and `NumberOfFilledFields` keep the all-rows gate, a value count takes its declared-slot extent, which concrete group rows beside the column wildcard still pass, and `NumberOfFilledGroups` takes its four-step walk. Also adds that concrete group rows covering the whole declared capacity make a String or Boolean value-count column relevant without its wildcard.
 - `basis`: The [count shift-amount checkpoint](sources/group-count-topology.md#src-k22-runtime-r9) and the [count-amount twin checkpoint](sources/group-count-topology.md#src-k22-runtime-r11), measured locally 2026-10-25, Kernel 30.8.1, at the measurement pin `08b0d6499`, compared by the runtime replay's full and partial channels.
@@ -60,7 +60,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-20"></a>
 ### SPEC-2026-10-24-20 — A reached unresolvable DateTime literal ends Number arithmetic before a later malformed operand
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/09](../spec/09-computations.md), the sentence after the temporal operand-list extrema paragraph.
 - `delta`: Adds that Number arithmetic over temporal extractions reaches its operands in order like the extrema: an extraction reaching the unresolvable literal on the left of `+` reports `berechnungsWertFehler` at the target although the right operand reads a malformed field, the reversed sum aborts silently, and unlike a division domain failure the reached literal is not replaced by a later reached poison. A precondition comparison reaching the literal reports at its target in the same order and poisons the target's readers.
 - `basis`: The effects batch of the [recursive temporal checkpoint](sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression) (`leftGap`, `rightGap` on `badClock`), measured locally 2026-10-04, Kernel 30.8.1, at the measurement pin `6bc5e753`, whose operand-error channel the runtime replay now compares on every computation row ([operand-channel checkpoint](sources/group-count-topology.md#src-k22-operands-channel)). It instantiates the runtime-failure account the peer's KF513 measures on `Min`/`Max`. The guard carrier and the division contrast are measured on both strategies by the [ordering batch](sources/group-count-topology.md#src-k22-runtime-r8), 2026-10-24, at the measurement pin `08b0d6499`.
@@ -70,7 +70,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-19"></a>
 ### SPEC-2026-10-24-19 — Partial validation's row domain, root coordinates and aggregate shift amounts, and the callback's whole-document view
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/10](../spec/10-validation-and-polarity.md), the root-coordinate sentence after the partial count table, the phantom-row bullet and the aggregate-shift-amount bullet; [spec/11](../spec/11-messages-and-custom.md), the CustomCondition data-view bullet.
 - `delta`: Adds that a partial call walks full validation's declared-capacity rows with the content gate overridden, that relevance root coordinates compare literally with `0` encompassing `1`, and that an aggregate shift amount takes the all-rows aggregate gate while a filtered one skips. Also adds that the callback's data view is the whole document, a nonrelevant or over-capacity repeatable cell included.
 - `basis`: The [K22 runtime checkpoint](sources/group-count-topology.md#src-k22-runtime-r7) (`rA`–`rC`) and the [partial-channel checkpoint](sources/group-count-topology.md#src-k22-partial-channel), measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, compared by the runtime replay's full and partial channels.
@@ -80,7 +80,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-18"></a>
 ### SPEC-2026-10-24-18 — On-demand lexing ahead of a later lexer defect, ASCII index-key digits and the callback's view of an empty String
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/12](../spec/12-concrete-syntax.md), the token-demand paragraph; [spec/08](../spec/08-paths-and-references.md), the index-key literal paragraph; [spec/11](../spec/11-messages-and-custom.md), the CustomCondition data-view bullet.
 - `delta`: Adds that a parse failure at a real token before a lexer defect keeps its own class, that a `For` literal's digits are ASCII on every index kind, and that the callback's data view hands over a placed empty or blank String as a value, only an absent cell reading as none.
 - `basis`: The [K22 S6 checkpoint](sources/group-count-topology.md#src-k22-static-s6), eleven static rows and one runtime probe measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, compared by the [rule-check projection](../A12Kernel/Evidence/RuleCheckProjection.lean) and the runtime replay.
@@ -90,7 +90,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-17"></a>
 ### SPEC-2026-10-24-17 — A name before `(` resolves first in an entity slot, and difference operands admit shifts but not extrema
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/12](../spec/12-concrete-syntax.md), the bare-entity paragraph; [spec/05](../spec/05-dates-and-time.md), the paragraph after the difference evaluation order.
 - `delta`: Narrows the token class of a name that is no keyword before `(` to value positions: in an entity-typed argument slot or inside a bracket the name is resolved first, so an undeclared one draws `MVK_INVALID_ENTITY`. Adds that shifted and `Today` difference operands are admitted, while an extremum in a difference or extractor operand draws `MVK_UNEXPECTED_TOKEN` and a starred operand `MVK_NO_WILDCARDS_ALLOWED`.
 - `basis`: The [K22 S5 checkpoint](sources/group-count-topology.md#src-k22-static-s5), two static batches of 17 and 22 rows measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, compared by the [rule-check projection](../A12Kernel/Evidence/RuleCheckProjection.lean).
@@ -100,7 +100,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-16"></a>
 ### SPEC-2026-10-24-16 — Raw first-filled members, string-like Custom lists, repeatable category and display sources, key pairing by base type and empty-group `RuleGroup`
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/06](../spec/06-strings-and-enumerations.md), the raw String bullets; [spec/09](../spec/09-computations.md), the ENUMERATION and CUSTOM target paragraphs and the category self-read sentence; [spec/08](../spec/08-paths-and-references.md), the empty-group and defective-key bullets.
 - `delta`: Adds that a raw String member of a `FirstFilledValue` list is admitted and reads as the token `X` when filled; that a Custom target's first-filled list admits any string-like source; that a repeatable Enumeration target meets category sources, category self-reads and labelled display classes as measured; that semantic-index keys pair by base type; and that `RuleGroup` naming an empty group draws `MVK_GROUP_IS_EMPTY`.
 - `basis`: The [K22 S4 checkpoint](sources/group-count-topology.md#src-k22-static-s4), three static batches, ten `model check` verdicts and two runtime probes measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, compared by the [rule-check projection](../A12Kernel/Evidence/RuleCheckProjection.lean), the [empty-group locks](../A12Kernel/Reference/Dm/EmptyRuleGroupLocks.lean) and the runtime replay.
@@ -110,7 +110,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-15"></a>
 ### SPEC-2026-10-24-15 — Repeatable Enumeration targets: calculation class and the incompatible-pair self-read
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/09](../spec/09-computations.md), the ENUMERATION target paragraph and the target self-read bullet.
 - `delta`: Adds that a plain String source and an unlabelled Enumeration source of another domain draw `MVK_ERROR_INVALID_ENUM_CALCULATION` into a repeatable Enumeration target as into a fixed one, and that a repeatable target's plain self-read in a two-entry `FirstFilledValue` of stored reads draws `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD` even where the other entry's domain leaves the target's.
 - `basis`: The [K22 S3 checkpoint](sources/group-count-topology.md#src-k22-static-s3), one 176-row batch measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, rows `ud5`–`ud7` and `uf13`–`uf15`, compared by the [rule-check projection](../A12Kernel/Evidence/RuleCheckProjection.lean).
@@ -120,7 +120,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-14"></a>
 ### SPEC-2026-10-24-14 — Date message keys of the component-omitting, clock and DateTime formats
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/05](../spec/05-dates-and-time.md), the stored Date message-key paragraph.
 - `delta`: Adds that one component reading of the completed text serves every date-bearing format: a format without a day selects the format key for every refusal, a day-bearing component-omitting format is completed with the Base Year before the reading, a well-shaped DateTime label is read by its date half whatever its clock holds, and with the 1900 check a malformed date below 1900 selects the check's key ahead of every component.
 - `basis`: The [wider key checkpoint](sources/domain-ingestion-probes.md#src-k22-formal-keys-wider), three runs over 123 single-field documents measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, each key identified by rendered text and checked by the [key locks](../A12Kernel/Conformance/FormalMessageKeys.lean).
@@ -130,7 +130,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-13"></a>
 ### SPEC-2026-10-24-13 — Ordinary partial dispatch compresses the error field's selectors
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/10](../spec/10-validation-and-polarity.md), the rule-gating bullet and the `validatePart` checklist item.
 - `delta`: Replaces the exact per-selector match of bound levels with one compressed selector: the relevant identifiers reaching the error path merge, each differing coordinate becoming a wildcard, before the bound levels are matched, so two parts of different lines admit every part of every line. States that parallel dispatch compresses the same way.
 - `basis`: The [ordinary partial dispatch checkpoint](sources/group-count-topology.md#src-k22-ordinary-partial-dispatch), nine scopes over one document measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, checked by the [compression locks](../A12Kernel/Reference/Dm/OrdinaryPartialCompressionLocks.lean) and replayed for full validation by `lake exe a12-kernel-replay`.
@@ -140,7 +140,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-12"></a>
 ### SPEC-2026-10-24-12 — Partial dispatch of a parallel rule whose error field lies below its joined group
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/10](../spec/10-validation-and-polarity.md), the parallel-dispatch bullet; [spec/07](../spec/07-repetition-and-iteration.md), the nested-error-field paragraph's unmeasured list.
 - `delta`: Adds that a level the error field reopens below its joined group bounds partial dispatch as an ordinary outer level does: a concrete selector of the joined line suppresses the rule, also with concrete parts and for two parts of one line, while parts of two different lines compress to a wildcard line and dispatch, leaf relevance then limiting the firing parts. Removes partial validation from the nested paragraph's unmeasured list.
 - `basis`: The [nested-join partial checkpoint](sources/model-structure-and-declaration-probes.md#src-k22-nested-join-partial), eleven partial scopes over one document measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, checked by the [nested partial locks](../A12Kernel/Reference/Dm/ParallelNestedPartialLocks.lean).
@@ -150,7 +150,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-11"></a>
 ### SPEC-2026-10-24-11 — A parallel rule reaching an unregistered custom condition keeps no earlier joined-row firing and ends
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/11](../spec/11-messages-and-custom.md), the parallel-leaf and registration-lookup bullets.
 - `delta`: Replaces the unmeasured note: a parallel rule that reaches an unregistered name keeps no message of a joined row that fired before the reaching row, evaluates no later joined row, and below a repeatable outer row no later outer row. Adds that an `Or` arm reading no joined field is refused beside the pair whatever it holds, while an arm pairing a joined read with the custom condition is admitted.
 - `basis`: The [parallel reach checkpoint](sources/model-structure-and-declaration-probes.md#src-k22-parallel-custom-reach), seven documents and six static rows, measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, replayed by `lake exe a12-kernel-replay` and the rule-check projection.
@@ -160,7 +160,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-10"></a>
 ### SPEC-2026-10-24-10 — Uniqueness, count and custom-condition leaves beside a joined group target, and joined declarations over different partner groups
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/07](../spec/07-repetition-and-iteration.md), the group error-entity bullet; [spec/09](../spec/09-computations.md), the alternatives bullet.
 - `delta`: Adds that beside a join a group target admits `FieldValuesNotUnique` over the pair, a starred partner group or two error-side fields, `NumberOfDifferentValues` over the pair and a custom condition, the uniqueness leaves firing at the line's first part where their field forms fire; that two joined declarations into one target over different partner groups concatenate; and that the ended scan holds for Date and Enumeration joined targets.
 - `basis`: The [joined group-target checkpoint](sources/model-structure-and-declaration-probes.md#src-k22-joined-group-target-leaves), nine rules over four documents and ten computations over one, measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, replayed by `lake exe a12-kernel-replay`.
@@ -170,7 +170,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-09"></a>
 ### SPEC-2026-10-24-09 — Separate declarations into a key-joined target, ordinary parallel leaves on an unmatched side, and partial calls over them
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/09](../spec/09-computations.md), the alternatives bullet and the joined-precondition bullet; [spec/07](../spec/07-repetition-and-iteration.md), the unmatched-side bullet and the partial-validation note.
 - `delta`: Adds that into a key-joined target a separate declaration reading no partner field ends the combined table's scan with the target cleared wherever it is reached, whatever its preconditions, leaving later alternatives unreached and poisoning no dependent, while one declaration mixing joined and ordinary alternatives and two joined declarations select normally; that `GroupFilled` of an enclosing group holds at a key-only target row without a partner; that `Length`, text comparison, value-list membership, a filled-field count and the side's own key read an unmatched side as empty, an unmatched error side firing at `-5` when its group has no free row; and that a partial call fires an ordinary parallel leaf only for joined rows it covers on both sides.
 - `basis`: The [cross-declaration checkpoint](sources/model-structure-and-declaration-probes.md#src-k22-cross-declaration), two runs over eleven rows measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, replayed by `lake exe a12-kernel-replay` and the [partial leaf locks](../A12Kernel/Reference/Dm/ParallelLeafPartialLocks.lean).
@@ -180,11 +180,11 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-24-08"></a>
 ### SPEC-2026-10-24-08 — Enumeration and invalid-row joined targets, atoms without a joined form, a guard-only join and Number keys in a joined computation
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/09](../spec/09-computations.md), the String or Date joined-target bullet and the bullet after it.
 - `delta`: Adds that a joined Enumeration target copies the partner's token; that String, Date and Enumeration targets clear every instance at a repeated or empty key and clear a target row beyond capacity alone; that a literal-keyed read, a filtered starred `Sum`, `DayFromDate(Today)` and a target-row `NumberOfFilledFields` keep their target-row value inside a joined operation beside an unmatched partner reading empty; that a precondition keyed by a partner field joins by itself; and that Number keys of differing maximum fractional digits join a computation numerically.
 - `basis`: The [joined-computation checkpoint](sources/model-structure-and-declaration-probes.md#src-k22-joined-computations), ten computations over three documents measured locally 2026-10-24, Kernel 30.8.1, at the measurement pin `08b0d6499`, replayed by `lake exe a12-kernel-replay`.
 - `acceptance`: Reconcile the 90 computation and generated-rule instances of the `k22j` run. A Number-keyed computation with differing minimum fractional digits, a Boolean or DateRange joined target and a guard keyed by a partner field beside a joined operation are unmeasured here; do not claim them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
-The fifteen entries above are pending. The ten terminal receipts accepted at the [October 24a handback](sources/inbound-handbacks.md#src-inbound-2026-10-24a) remain in [the ledger at `255d971f`](https://github.com/mbackschat/a12-kernel-lean/blob/255d971f369efe847a4b39d5127b8a290e4f37ff/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). The eight terminal receipts accepted at the [October 23 handback](sources/inbound-handbacks.md#src-inbound-2026-10-23) remain in [the ledger at `e48204df`](https://github.com/mbackschat/a12-kernel-lean/blob/e48204df08f6dd823c28011f520672cfefe0fd60/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). The 16 terminal receipts closed at the [October 18 response](sources/inbound-handbacks.md#src-inbound-2026-10-18), fourteen `accepted` and two `answered`, remain in [the ledger at `bf2216b6`](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
+The fifteen entries above were handed off to a12-dmkits on 2026-10-25 and await its handback. The ten terminal receipts accepted at the [October 24a handback](sources/inbound-handbacks.md#src-inbound-2026-10-24a) remain in [the ledger at `255d971f`](https://github.com/mbackschat/a12-kernel-lean/blob/255d971f369efe847a4b39d5127b8a290e4f37ff/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). The eight terminal receipts accepted at the [October 23 handback](sources/inbound-handbacks.md#src-inbound-2026-10-23) remain in [the ledger at `e48204df`](https://github.com/mbackschat/a12-kernel-lean/blob/e48204df08f6dd823c28011f520672cfefe0fd60/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). The 16 terminal receipts closed at the [October 18 response](sources/inbound-handbacks.md#src-inbound-2026-10-18), fourteen `accepted` and two `answered`, remain in [the ledger at `bf2216b6`](https://github.com/mbackschat/a12-kernel-lean/blob/bf2216b69d5a3bbaefe182b76271ddf8d6b27ecf/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md). The 13 terminal receipts accepted on 2026-10-13 remain in [the ledger at `d502ca6b`](https://github.com/mbackschat/a12-kernel-lean/blob/d502ca6b4736cbfe0fcadbf5b8c12b96b45ad509/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md); [the October 13 provenance](sources/inbound-handbacks.md#src-inbound-2026-10-13) owns their reviewed revision and limits. The 24 receipts retired earlier on 2026-10-13 remain in [the preceding ledger](https://github.com/mbackschat/a12-kernel-lean/blob/cfffb2f1109796e0358e9f953e3fa6ee625797c1/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
