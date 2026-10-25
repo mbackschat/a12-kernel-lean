@@ -1,11 +1,12 @@
 """Assemble a U01 packet from one committed revision of a12-kernel-lean.
 
-Usage: python3 -I scripts/assemble-u01-packet.py <repo> <revision> <version> <out-dir>
+Usage: python3 -I scripts/assemble-u01-packet.py <repo> <revision> <version> <out-dir> [<changes>]
 Every file is read from the revision with `git show`, never from the working tree.
 """
 import hashlib, json, os, re, subprocess, sys
 
 repo, rev, version, out = sys.argv[1:5]
+changes = sys.argv[5] if len(sys.argv) > 5 else None
 if os.path.exists(out):
     sys.exit(f"{out} exists; a packet is never edited in place")
 
@@ -89,11 +90,12 @@ for p in sorted(t for t in tree if t.startswith(root) and t.endswith(".json")):
                else "host-feature" if host else "pattern" if bad_pattern else "candidate")
         counts[key] += 1
 
+change_line = f"- Changes from the previous version: {changes}\n" if changes else ""
 put("PACKET.md", f"""# U01 evaluator packet {version}
 
 - Source: a12-kernel-lean revision `{full}`; every file below was read from that revision.
 - Start with [the evaluator kit](docs/IMPLEMENTER-KIT-EVALUATOR.md).
-- `spec/`: {len(spec)} files, the semantics map and the numbered chapters.
+{change_line}- `spec/`: {len(spec)} files, the semantics map and the numbered chapters.
 - `docs/IMPLEMENTER-GUIDE.md`: the host-input contract section only.
 - `evidence/kernel-30.8.1/captures/`: {counts['requests']} artifact-backed requests with their models and document files.
 
