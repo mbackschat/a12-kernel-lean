@@ -144,34 +144,115 @@ valueListIntro   = "In" ;                                            (* separate
 
 ## 5. Keyword catalog (English ↔ German, verified pairs)
 
-Every English terminal carries a German spelling, but not the converse — the 13 German-only H-model form constructs of §1 have no entry below and no English twin. Symbols are language-neutral. A representative, verified sample (the full set is large; the pattern is systematic — German uses the domain nouns *Feld* = field, *Kontext* = repetition/group-context, *Wiederholung* = repetition, *Angegeben* = specified/filled):
+Every English terminal carries a German spelling, but not the converse — the 13 German-only H-model form constructs of §1 have no entry below and no English twin. Symbols are language-neutral. German uses the domain nouns *Feld* = field, *Kontext* = repetition/group-context, *Wiederholung* = repetition, *Angegeben* = specified/filled.
+
+The table is the complete set of keyword pairs. With the language-neutral `In` family (`In`, `in`, `IN`) and the case variants of §1 (two more spellings each for `And`, `Or` and `To` in either language) it accounts for the 112 English spellings, and with the 13 German-only constructs (`AktuelleVordruckNummer`, `AnzahlAngegebenerVordrucke`, `AnzahlAngegebeneUsb`, `KeinVordruckAngegeben`, `MaximalAngegebenerZeilenindex`, `MindestensEinVordruckAngegeben`, `UsbNichtFortlaufend`, `VordruckAngegeben`, `VordruckNichtAngegeben`, `VordruckNichtFortlaufend`, `ZeileNichtEindeutig`, `ZeilenLueckenlos`, `ZeilenNichtAufsteigend`) for the 125 German ones. A spelling in neither column is an ordinary entity name.
 
 | English | German |
 |---|---|
-| `And` / `Or` | `Und` / `Oder` |
-| `FieldFilled` / `FieldNotFilled` | `FeldAngegeben` / `FeldNichtAngegeben` |
+| `FieldFilled` | `FeldAngegeben` |
+| `FieldNotFilled` | `FeldNichtAngegeben` |
+| `And` | `Und` |
+| `Or` | `Oder` |
+| `DiffersWithToleranceRange1` | `UngleichMitToleranz1` |
+| `DiffersWithToleranceRange2` | `UngleichMitToleranz2` |
+| `DiffersWithToleranceRange5` | `UngleichMitToleranz5` |
+| `DiffersWithToleranceRange10` | `UngleichMitToleranz10` |
 | `AllFieldsFilled` | `AlleFelderAngegeben` |
-| `NumberOfFilledFields` | `AnzahlAngegebenerFelder` |
+| `NoFieldFilled` | `KeinFeldAngegeben` |
+| `AtLeastOneFieldFilled` | `MindestensEinFeldAngegeben` |
+| `NotAllFieldsFilled` | `NichtAlleFelderOderKeinFeldAngegeben` |
+| `FieldsNotCollectivelyFilled` | `FelderNichtGemeinsamAngegeben` |
+| `NotExactlyOneFieldFilled` | `NichtGenauEinFeldAngegeben` |
+| `MoreThanOneFieldFilled` | `MehrAlsEinFeldAngegeben` |
 | `GroupFilled` | `KontextAngegeben` |
-| `NumberOfFilledGroups` | `AnzahlAngegebenerKontexte` |
-| `CurrentRepetition` | `AktuelleWiederholung` |
-| `RepetitionNotUnique` | `WiederholungNichtEindeutig` |
+| `GroupNotFilled` | `KontextNichtAngegeben` |
+| `AllGroupsFilled` | `AlleKontexteAngegeben` |
+| `NoGroupFilled` | `KeinKontextAngegeben` |
+| `AtLeastOneGroupFilled` | `MindestensEinKontextAngegeben` |
+| `NotAllGroupsFilled` | `NichtAlleOderKeinKontextAngegeben` |
+| `GroupsNotCollectivelyFilled` | `KontexteNichtGemeinsamAngegeben` |
+| `True` | `Wahr` |
+| `False` | `Falsch` |
 | `Length` | `Laenge` |
 | `PatternMatched` | `WieMuster` |
+| `PatternViolated` | `NichtWieMuster` |
+| `FieldValueIncludedInValueList` | `FeldWertInWerteListe` |
+| `FieldValueNotIncludedInValueList` | `FeldWertNichtInWerteListe` |
+| `AtLeastOneFieldValueIncludedInValueList` | `MindestensEinFeldWertInWerteListe` |
+| `NoFieldValueIncludedInValueList` | `KeinFeldWertInWerteListe` |
+| `NotAllFieldValuesIncludedInValueList` | `NichtAlleFeldWerteInWerteListe` |
+| `NumberOfFilledFields` | `AnzahlAngegebenerFelder` |
+| `NumberOfFilledGroups` | `AnzahlAngegebenerKontexte` |
+| `RepetitionNotUnique` | `WiederholungNichtEindeutig` |
+| `@From` | `@Von` |
+| `FieldValuesNotUnique` | `FeldWerteNichtEindeutig` |
 | `Sum` | `Summe` |
-| `MaxValue` / `MinValue` | `MaxWert` / `MinWert` |
-| `FirstFilledValue` | `ErsterAngegebenerWert` |
-| `Today` / `Now` | `Heute` / `Jetzt` |
-| `DifferenceInDays` | `DifferenzInTagen` |
-| `AddMonths` | `AddiereMonate` |
-| `Valid` / `Invalid` | `Gueltig` / `Ungueltig` |
-| `CustomCondition` | `ApplikationsBedingung` |
-| `@SuppressWarning` | `@UnterdrueckeWarnung` |
-| `RuleGroup` | `RegelKontext` |
-| `BaseYear` | `Referenzjahr` |
-| `RangeAsNumber` / `RangeAsString` | `BereichAlsZahl` / `BereichAlsString` |
+| `MaxValue` | `MaxWert` |
+| `MinValue` | `MinWert` |
+| `RoundDown` | `Abrunden` |
+| `RoundDownValue` | `AbrundenWert` |
+| `RoundUpValue` | `AufrundenWert` |
+| `RoundAccountingValue` | `RundenWert` |
 | `AbsValue` | `AbsWert` |
-| `FirstDay` / `LastDay` (of `ValueAsDate`) | `ErsterTag` / `LetzterTag` |
+| `Abs` | `Abs` |
+| `Min` | `Min` |
+| `Max` | `Max` |
+| `RoundUp` | `Aufrunden` |
+| `RoundAccounting` | `Runden` |
+| `NumberOfDifferentValues` | `AnzahlVerschiedenerWerte` |
+| `NumberOfValueInFields` | `AnzahlWertInFeldliste` |
+| `Having` | `Mit` |
+| `CurrentRepetition` | `AktuelleWiederholung` |
+| `CustomCondition` | `ApplikationsBedingung` |
+| `For` | `Fuer` |
+| `Today` | `Heute` |
+| `DifferenceInDays` | `DifferenzInTagen` |
+| `DifferenceInMonths` | `DifferenzInMonaten` |
+| `DifferenceInYears` | `DifferenzInJahren` |
+| `DifferenceInHours` | `DifferenzInStunden` |
+| `DifferenceInMinutes` | `DifferenzInMinuten` |
+| `DifferenceInSeconds` | `DifferenzInSekunden` |
+| `AddDays` | `AddiereTage` |
+| `AddMonths` | `AddiereMonate` |
+| `AddYears` | `AddiereJahre` |
+| `AddHours` | `AddiereStunden` |
+| `AddMinutes` | `AddiereMinuten` |
+| `AddSeconds` | `AddiereSekunden` |
+| `YearFromDate` | `JahrAusDatum` |
+| `MonthFromDate` | `MonatAusDatum` |
+| `DayFromDate` | `TagAusDatum` |
+| `QuarterFromDate` | `QuartalAusDatum` |
+| `StartOfDateRange` | `StartAusDatumBereich` |
+| `EndOfDateRange` | `EndeAusDatumBereich` |
+| `DateRangesOverlap` | `DatumsBereicheUeberlappend` |
+| `AtLeastOneDateRangeOverlaps` | `MindestensEinDatumsBereichUeberlappend` |
+| `HoursFromTime` | `StundenAusZeit` |
+| `MinutesFromTime` | `MinutenAusZeit` |
+| `SecondsFromTime` | `SekundenAusZeit` |
+| `DateFromDateTime` | `DatumAusDateTime` |
+| `TimeFromDateTime` | `ZeitAusDateTime` |
+| `RangeAsString` | `BereichAlsString` |
+| `FieldValueAsString` | `FeldWertAlsString` |
+| `RangeAsNumber` | `BereichAlsZahl` |
+| `FieldValueAsNumber` | `FeldWertAlsZahl` |
+| `ValueAsDate` | `WertAlsDatum` |
+| `FirstDay` | `ErsterTag` |
+| `LastDay` | `LetzterTag` |
+| `Date` | `Datum` |
+| `Time` | `Zeit` |
+| `DateTime` | `DateTime` |
+| `Now` | `Jetzt` |
+| `BaseYear` | `Referenzjahr` |
+| `Valid` | `Gueltig` |
+| `Invalid` | `Ungueltig` |
+| `SumOfProducts` | `SummeVonProdukten` |
+| `FirstFilledValue` | `ErsterAngegebenerWert` |
+| `DateRange` | `DatumBereich` |
+| `RuleGroup` | `RegelKontext` |
+| `@SuppressWarning` | `@UnterdrueckeWarnung` |
+| `ValueNotConsistent` | `WertNichtKonsistent` |
+| `To` | `Zu` |
 
 > **Non-normative implementation note.** Model keywords as a table of explicitly accepted spellings mapped to `(opId, lang)`, plus one canonical render spelling per `(opId, lang)`. Do not normalize case before lookup. Keep it *data*, not code — a future port to another surface re-reads the same table. English is the canonical render target; German is a supported second target.
 
