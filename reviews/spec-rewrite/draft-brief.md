@@ -32,4 +32,6 @@ You are rewriting one chapter of the language-neutral semantics in `spec/`. The 
 5. `## Other chapters`: edits other chapters need.
 6. `## Anchors`: every linked anchor and where it now lives.
 
+When corrections arrive after the preservation check, change only what the correction list names; any other cut needs the same check, so list it instead of making it.
+
 Return a five-line summary as your final message: output size in bytes and lines, counts for each notes section.

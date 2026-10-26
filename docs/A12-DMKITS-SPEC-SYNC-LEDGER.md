@@ -265,6 +265,42 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-20"></a>
+### SPEC-2026-10-26-20 — A partially known Date meets its omission check before its calendar reality
+
+- `status`: pending
+- `canonical`: [spec/05 §6.2](../spec/05-dates-and-time.md#62-partially-known-dates).
+- `delta`: The chapter stated both that a partial Date first meets its omission check and that reality is tested before position and precision. The omission pattern now runs first, so a year-optional `yyyy-MM-dd` field holding `0000-13-00` draws `datumFalsch` with the year-optional omission key rather than a format failure.
+- `basis`: the K22 message-key capture's row `d5-3`, where both engines agree; this project's stored classifier still runs reality first, recorded under SG6.
+- `acceptance`: Row `d5-3` replays with `datumFalsch` and the year-optional omission key.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-21"></a>
+### SPEC-2026-10-26-21 — Temporal operands pass one ordered gate per operator
+
+- `status`: pending
+- `canonical`: [spec/05 §9.2](../spec/05-dates-and-time.md#92-the-component-classes), [§3.3](../spec/05-dates-and-time.md#33-datetimedate-time-and-the-datetime-projections), [§1](../spec/05-dates-and-time.md#1-constant-format-and-the-stringdate-literal-ambiguity-) and the [spec/14 temporal operand gate column](../spec/14-operator-reference.md#temporal-operand-gate).
+- `delta`: Each shift, difference and extractor checks its operand through one ladder: precision, then non-temporal kind, then the unit's component, with a Base Year supplying the year, then the date half, then the time half for month and year steps, then year agreement for a difference. Shifts and differences refuse a partial field before their component gates, while `DateTime`'s Date argument checks components and year first. A shift's result carries its source's component set, all six difference units are non-expandable scale 0, ordering comparisons check orderability before kind, and an odd-length empty-separator range token draws `datumBereichFormatFalsch`. Rungs and orders not measured are marked.
+- `basis`: the measured rows the chapter cites, including the yearless-anchor and composition-locus checkpoints, and this project's admission checks for the unmeasured rungs, external evidence pending for those.
+- `acceptance`: A partial field as `DateTime`'s Date argument beside a missing time half, a non-default-format shift source, and an odd-length range token settle the widest unmeasured cases.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-22"></a>
+### SPEC-2026-10-26-22 — `Valid` over an unregistered named type is a runtime failure
+
+- `status`: pending
+- `canonical`: [spec/05 §3.7](../spec/05-dates-and-time.md#37-valid-and-invalid-over-a-named-type).
+- `delta`: spec/05 said both predicates fire as an ordinary rule message for a filled field when the named type is unregistered; it now follows spec/06 A.3, where the registry lookup failure is a runtime failure of the rule.
+- `basis`: spec/06 A.3 already decided it; this project's custom-field validity agrees.
+- `acceptance`: A filled field of an unregistered named type under `Valid` separates a runtime failure from an ordinary VALUE firing.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 
