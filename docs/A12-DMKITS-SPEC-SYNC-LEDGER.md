@@ -210,9 +210,9 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 - `status`: pending
 - `canonical`: [concrete syntax §2](../spec/12-concrete-syntax.md#2-literals) and [§3](../spec/12-concrete-syntax.md#3-the-condition-and-operation-grammar-sketch).
-- `delta`: A number literal's total digit count is ungated, replacing the fifteen-digit bound. A power chains left-associatively in the grammar, and only an ungrouped power as the direct left operand of another power is refused, `MVK_TOO_MANY_POW_FOR_CALC`. At most one division stands in each plain-arithmetic region, `MVK_TOO_MANY_DIV_FOR_CALC`, so `[a]/[b] + [c]/[d]` is admitted. Literal scale, date classification and omitted-year completion now point to their owners in spec/04, spec/05 and spec/09.
+- `delta`: A number literal's total digit count is ungated, replacing the fifteen-digit bound. A power chains left-associatively in the grammar, and only an ungrouped power as the direct left operand of another power is refused, `MVK_TOO_MANY_POW_FOR_CALC`; a grouped power exponent still meets the exponent-scale check. At most one division stands in each plain-arithmetic region, `MVK_TOO_MANY_DIV_FOR_CALC`, so `[a]/[b] + [c]/[d]` is admitted. Literal scale, date classification and omitted-year completion now point to their owners in spec/04, spec/05 and spec/09.
 - `basis`: spec/04 and spec/09 already stated each rule; 16- and 19-digit literals are measured admitted; this project's lexer and arithmetic-shape checks agree.
-- `acceptance`: A 16-digit literal is admitted, `a ^ b ^ c` draws the power code while `a ^ {b ^ c}` is admitted, and two divisions in separate addends are admitted.
+- `acceptance`: A 16-digit literal is admitted, `a ^ b ^ c` draws the power code while `a ^ {b ^ c}` passes it, and two divisions in separate addends are admitted. A grouped power exponent then meets the exponent-scale check: `[N] ^ {2 ^ 2}` is admitted and `[A] ^ {[B] ^ [C]}` over scale-0 fields draws `MVK_INVALID_NUMBER_FOR_EXP`.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
@@ -321,6 +321,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `delta`: The parent-option fixture now places `F5` in group `K` nested in the repeatable `C`, so both columns follow the chapter's own rule that the gate is the field's direct parent and the iteration its nearest repeatable group. An index field nominated in a non-repeatable group is admitted and read by `index(...)`, and neither generated arm checks it, unmeasured.
 - `basis`: the generated-requiredness checkpoint for the parent shape; this project's requiredness scope and index preliminary for the non-repeatable case, external evidence pending.
 - `acceptance`: An empty or duplicated index field nominated in a non-repeatable group draws no generated finding.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-25"></a>
+### SPEC-2026-10-26-25 — Static scale and its capability become per-operator classes
+
+- `status`: pending
+- `canonical`: [spec/04 §1.1](../spec/04-numbers-and-decimals.md#11-static-scale-and-the-multiplicative-constant-capability), [§1.3](../spec/04-numbers-and-decimals.md#13-power-scale-and-the-exponent-gate), [§4.8](../spec/04-numbers-and-decimals.md#48-the-formal-check-of-a-stored-value) and the [spec/14 static scale column](../spec/14-operator-reference.md#static-scale).
+- `delta`: Every Number-valued operator takes a static-scale class and a multiplicative-constant capability. A `−1` maximum fixes the static scale at the declared minimum; `+` and `-` keep the capability only when every operand has it, and rounding removes it. The exponent gate admits a scale-0 aggregate exponent, while an aggregate over a field of nonzero scale takes the largest declared scale and is refused. A grouped power exponent meets the exponent gate, so `[A] ^ {[B] ^ [C]}` over fields is refused while `[N] ^ {2 ^ 2}` is admitted. The formal-read grammar for stored Number text is stated whole, and the constant-pair gate merges into this chapter. Each class not measured is marked.
+- `basis`: the arithmetic-shape and number-operation-node checkpoints for the power cases, the addressed-numeric checkpoints for the measured scales, and this project's scale summary and formal-read parser for the unmeasured classes, external evidence pending for those.
+- `acceptance`: `[F] ^ Sum(G*/D2)` with `D2` at scale 2, a rounded operand inside a `==` against a wider field, and a stored `-1`-maximum Number settle the widest unmeasured classes.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.

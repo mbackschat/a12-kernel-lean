@@ -11,6 +11,7 @@
 - `calibration`: deeper correlation, additional addressed/group expression placements and target profiles beyond the current Number matrices. The [tolerance capture](../sources/computation-placement-and-constant-probes.md#src-tolerance-family-calibration) owns C18; no ordinary tolerance cell remains queued here.
 - `calibration`: the message-key shape of a field carrying the `-1` fractional sentinel is read from source only; its codes, resolved pair and printed bounds are closed at the [bounds checkpoint](../sources/domain-ingestion-probes.md#src-number-declaration-bounds-k17).
 - `representation-boundary`: a bare-Rat flat condition cannot retain authored literal scale. The [reader preflight](../../A12Kernel/Reference/Dm/LowerValidation.lean) and [scale locks](../../A12Kernel/Reference/Dm/LowerLocks.lean) enforce it before that carrier; this is not an ordinary-reader admission defect.
+- `representation-boundary`: the DSL reader records an integer literal's fraction length as its authored scale, so `100` reads scale 0, while [spec/04 §1](../../spec/04-numbers-and-decimals.md) and the semantic scale summary strip it to −2; the conformance cases build the stripped literal directly. No witness is known whose admitted result differs between the two scales.
 - `consumer-gated`: parser nesting ceilings beyond the measured [power/extremum shapes](../sources/computation-placement-and-constant-probes.md#src-power-derived-scale-and-operand-shapes). Further depth is D06, not a missing power mechanism.
 
 #### SG5 family completion
