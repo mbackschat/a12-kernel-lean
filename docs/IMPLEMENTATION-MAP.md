@@ -79,6 +79,19 @@ This is the operational lookup layer. Search the exact capability or type, then 
 
 For an assurance drill, use the row’s linked owner, then the matching [`Proofs/`](../A12Kernel/Proofs/) and [`Conformance/`](../A12Kernel/Conformance/) family; irregular proof owners are linked in the row. [`Proofs.lean`](../A12Kernel/Proofs.lean) is the theorem inventory, [`Conformance.lean`](../A12Kernel/Conformance.lean) is the executable separator inventory, and [`TrustAudit.lean`](../A12Kernel/TrustAudit.lean) is the exhaustive trusted-theorem registry. Exact retained Kernel observations remain in [`EVIDENCE.md`](EVIDENCE.md), while upstream Kernel locks and source-grounded claims route through [`SOURCES.md`](SOURCES.md).
 
+<a id="operator-reference-owners"></a>
+### Operator reference column owners
+
+[spec/14](../spec/14-operator-reference.md) assigns each operator a class per column. Each column's Lean owner:
+
+| Column | Lean owner |
+|---|---|
+| V, C — unavailable read | no single owner: [`CellObservation`](../A12Kernel/Cell.lean) carries unavailability and poison, and each operator's evaluator applies its consumer class |
+| E — classification enablement | `ValidationConditionLeaf.requiresClassificationPass` in [`ValidationCondition/Core.lean`](../A12Kernel/Elaboration/ValidationCondition/Core.lean) |
+| P — polarity class | [`NumericFillability.lean`](../A12Kernel/Semantics/NumericFillability.lean) for arithmetic, [`NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean) and [`FieldFillQuantifier.lean`](../A12Kernel/Semantics/FieldFillQuantifier.lean) for aggregates and counts, [`ScalarEquality.lean`](../A12Kernel/Semantics/ScalarEquality.lean) for the not-given rule |
+| F — `Having` filter effect | the `Having*` modules under [`Semantics/`](../A12Kernel/Semantics/), one per carrier |
+| X — partial extent | `ValidationRelevanceScope` in [`ValidationRelevance.lean`](../A12Kernel/Elaboration/ValidationRelevance.lean) |
+
 ### Detailed capability shards
 
 Each stable anchor remains here as a compatibility entry point. Follow its link to read or update the bounded detailed record.

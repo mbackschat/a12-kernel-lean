@@ -374,17 +374,17 @@ Sources: [K21 consumer-readiness checkpoint](../docs/sources/consumer-readiness-
 
 The empty-value substitutions of [§2](03-empty-and-required.md) apply to the empty state only. A third-state cell answers UNKNOWN in validation and poison in computation, and each consumer class lands it differently:
 
-| What reads the cell | empty cell | not-check-relevant cell |
+| Consumer class | empty cell | not-check-relevant cell |
 |---|---|---|
-| a comparison reading its value | per-kind substitution ([§2](03-empty-and-required.md)) | UNKNOWN — the branch cannot decide |
-| `FieldFilled` / `FieldNotFilled` / field-fill quantifiers | a definite FALSE / TRUE (counts as empty) | UNKNOWN — counted neither filled nor empty, so `NoFieldFilled` does not fire over it ([A.4.3](#a43-classifying-a-slot)) |
-| an all-cells combiner: `Sum`, `MinValue`, `MaxValue`, `NumberOfDifferentValues`, `NumberOfFilledFields` | dropped or substituted per operator | the operand is UNKNOWN wherever in the selection the cell sits |
-| a stop-at-first combiner: `FirstFilledValue` | skipped | UNKNOWN only when reached: an invalid cell in the first-filled position makes it UNKNOWN; one after the first filled row is never reached |
-| a skip-invalid predicate: `FieldValuesNotUnique` | skipped | skipped exactly like an empty cell (below) |
-| a group presence read: `GroupFilled`, `GroupNotFilled`, group-list quantifiers, `NumberOfFilledGroups` | no content | blocks only the negative answer: admitted content elsewhere in the group still decides it filled ([A.4.7](#a47-group-list-quantifiers), [A.4.8](#a48-numberoffilledgroups)) |
-| any read in a computation | the per-kind compute behaviour ([§11](09-computations.md)) | a field-cell read, value or presence, aborts the computing instance (poison); a group presence read never poisons ([B.6](#b6-validation-excludes-computation-poisons)) |
+| `scalar read`: a built-in predicate or operator reading the value | per-kind substitution or the operator's own override ([§2 A.2](03-empty-and-required.md#a2-where-an-operator-overrides-its-kinds-default)) | UNKNOWN — the branch cannot decide ([B.4](#b4-suppression-is-branch-scoped-and-reaches-presence-checks)) |
+| `presence/fill`: a field presence predicate or field-fill quantifier | a definite FALSE / TRUE (counts as empty) | UNKNOWN — counted neither filled nor empty, so `NoFieldFilled` does not fire over it ([A.4.3](#a43-classifying-a-slot)) |
+| `all-cells`: a combiner that accounts for every selected cell | dropped or substituted per operator | the operand is UNKNOWN wherever in the selection the cell sits |
+| `stop-at-first`: a combiner that stops at its first filled cell | skipped | UNKNOWN only when reached: an invalid cell in the first-filled position makes it UNKNOWN; one after the first filled row is never reached |
+| `skip-invalid`: a predicate that compares only the values it collects | skipped | skipped exactly like an empty cell (below) |
+| `group presence`: a read of group content | no content | blocks only the negative answer: admitted content elsewhere in the group still decides it filled ([A.4.7](#a47-group-list-quantifiers), [A.4.8](#a48-numberoffilledgroups)) |
+| any read in a computation | the per-kind compute behaviour ([§11](09-computations.md)) | `poisons`: a field-cell read, value or presence, aborts the computing instance; `never poisons`: a group presence read ([B.6](#b6-validation-excludes-computation-poisons)) |
 
-An UNKNOWN operand does not by itself suppress the rule: the strong-Kleene connectives decide how far it reaches ([B.4](#b4-suppression-is-branch-scoped-and-reaches-presence-checks)). The listed members of each class are the measured ones; the class is per operator and is not inferable from family resemblance, so another operator's behaviour is stated in its own clause.
+An UNKNOWN operand does not by itself suppress the rule: the strong-Kleene connectives decide how far it reaches ([B.4](#b4-suppression-is-branch-scoped-and-reaches-presence-checks)). The class is per operator and is not inferable from family resemblance: [the operator reference](14-operator-reference.md#unavailable-read-in-validation) assigns each operator its validation class and [its computation class](14-operator-reference.md#unavailable-read-in-computation). Measured members: `presence/fill` — `FieldFilled`, `FieldNotFilled` and the field-fill quantifiers; `all-cells` — `Sum`, `MinValue`, `MaxValue`, `NumberOfDifferentValues` and `NumberOfFilledFields`; `stop-at-first` — `FirstFilledValue`; `skip-invalid` — `FieldValuesNotUnique`; `group presence` — `GroupFilled`, `GroupNotFilled`, the group-list quantifiers and `NumberOfFilledGroups`. Another operator's behaviour is stated in its own clause.
 
 The distinction *empty ≠ invalid* is why a two-state value domain cannot model the language: `NoFieldFilled` fires over empties but not over invalids, and an all-cells aggregate drops or substitutes empties but goes UNKNOWN on one invalid cell.
 
@@ -502,9 +502,9 @@ The absorbing cases make suppression branch-scoped: `F And U = F`, `T Or U = T`.
 
 **Rule.** The two operations treat the third state with opposite temperament, which matters wherever computed fields chain:
 
-- **Validation excludes.** A third-state cell stays where it is read and settles nothing: a tally counts it in neither bucket ([A.4.3](#a43-classifying-a-slot)), an all-cells aggregate over it is UNKNOWN, `FieldValuesNotUnique` skips it, and a referencing branch is UNKNOWN ([B.2](#b2-the-three-cell-states--the-third-one-is-not-empty)). Nothing propagates beyond the rules that reference it.
+- **Validation excludes.** A third-state cell stays where it is read and settles nothing: a tally counts it in neither bucket ([A.4.3](#a43-classifying-a-slot)), an all-cells aggregate over it is UNKNOWN, a skip-invalid predicate skips it, and a referencing branch is UNKNOWN ([B.2](#b2-the-three-cell-states--the-third-one-is-not-empty)). Nothing propagates beyond the rules that reference it.
 - **Computation poisons.** During `compute`, a read of a third-state field cell, whether a value read or a presence read such as `FieldFilled` or a field-fill scan, throws: the reading computation instance aborts, produces no value, is itself marked invalid, and that mark poisons its dependents' reads in turn. The cascade is **order-dependent**, because only cells an evaluation actually reaches can poison it.
-- **Group presence is not a field-cell read.** `GroupFilled`, `GroupNotFilled`, `NumberOfFilledGroups` and the group-list quantifiers never poison in computation. A formally invalid stored descendant counts as group content; a descendant invalid only because its computed dependency failed supplies no content ([A.4.8](#a48-numberoffilledgroups)).
+- **Group presence is not a field-cell read.** A group presence read never poisons in computation; [the operator reference](14-operator-reference.md#unavailable-read-in-computation) names the operators whose reads are group presence. A formally invalid stored descendant counts as group content; a descendant invalid only because its computed dependency failed supplies no content ([A.4.8](#a48-numberoffilledgroups)).
 
 The compute side is owned by [§11](09-computations.md#32-an-invalidity-clear-poisons): the same third state that validation handles by exclusion, computation handles by an order-sensitive abort.
 
@@ -521,7 +521,7 @@ Sources: [group-presence computation checkpoint](../docs/sources/computation-sch
 - [ ] Boolean has three field states; `== True` ≠ `FieldFilled`; Confirm-empty = `False` while Boolean-empty = not evaluated; stored tokens are case-folded by the reader, then checked case-sensitively.
 - [ ] Group operands expand recursively; fill quantifiers distinguish the **declared** and **instantiated** ranges and use the canonical field-major / repetition-major stream; filters apply to the predicate's own range.
 - [ ] Validation counts an unavailable cell in neither bucket and keeps it in the list; computation poisons on a reached third-state slot and leaves every suffix after the full predicate's final decision unread.
-- [ ] Each value consumer's treatment of a third-state cell follows its own accumulation rule: all-cells → UNKNOWN; stop-at-first → UNKNOWN only when reached; `FieldValuesNotUnique` → skipped like empty.
+- [ ] Each value consumer's treatment of a third-state cell follows its own accumulation rule: all-cells → UNKNOWN; stop-at-first → UNKNOWN only when reached; skip-invalid → skipped like empty; each operator's class is the one [the operator reference](14-operator-reference.md#unavailable-read-in-validation) assigns.
 - [ ] Group-list quantifiers use one definitely-filled / definitely-empty / neither tally over field and group operands; a starred repeatable operand contributes one filled item per instantiated in-capacity row; a non-repeatable terminal below stars contributes its group product per selected in-capacity environment.
 - [ ] `NumberOfFilledGroups` folds over authored positions; a fixed operand's content is read over its whole subtree (an admitted cell **or** an instantiated repeatable-descendant row); validation leaves the count UNKNOWN only where an operand's presence is undecided, computation counts formally invalid stored content and never poisons; a starred operand contributes its in-capacity row count on both arms; extent is per-operand capacity, not multiplied by repeatable descendants.
 - [ ] Static admission of group and field-slot operands follows the per-carrier tables and gate orders of A.4.9.

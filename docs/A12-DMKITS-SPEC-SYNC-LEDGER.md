@@ -145,6 +145,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-10"></a>
+### SPEC-2026-10-26-10 — An operator reference assigns every operator its class, deciding six cells the chapters left open
+
+- `status`: pending
+- `canonical`: [spec/14](../spec/14-operator-reference.md), with the classes defined in [spec/02 B.2](../spec/02-logic-and-formal-errors.md#b2-the-three-cell-states--the-third-one-is-not-empty) and [spec/10](../spec/10-validation-and-polarity.md).
+- `delta`: Moves the per-operator membership tables of spec/02 and spec/10 into one table without changing a class. Adds six cells: a `Length` polarity seed, arithmetic propagation for the field-form `AbsValue`/`Round*Value`, the symmetric not-given rule on Boolean, Confirm, Enumeration and DateRange comparisons, classification by Boolean/Confirm comparisons, and keyed group operands enabling classification on the group-list quantifiers. 51 cells read `not stated`, 4 of them for one operand kind only.
+- `basis`: this project's executable account for the six added cells, external evidence pending; the moved cells keep their chapter's measured scope.
+- `acceptance`: A fired comparison per added polarity cell and a classification grid row per added enablement cell settle them.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 

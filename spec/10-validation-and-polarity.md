@@ -53,33 +53,24 @@ Strong-Kleene dominance is why a fired `Or` can decide despite an unknown siblin
 
 **Two passes.** An ordinary rule first tests whether its complete condition is known true. This Boolean pass visits leaves in authored order: `And` skips its right side after false or unknown; `Or` skips its right side after true. If the complete condition is true and its authored constructs **enable** classification (table below), the rule evaluates every condition leaf again in authored order and combines their verdicts with the polarity algebra of §3. This second pass is eager across both connectives. A false complete first-pass result runs no classification, including when an earlier omission-valued leaf made an `Or` true. When classification is disabled, the first pass's skipped branches remain unreached and a firing is a VALUE message.
 
-**Enablement is static.** A rule enables classification exactly when at least one of its condition leaves enables it. The decision depends on the authored leaf, never on the current document's eventual message type: field-value operations enable the pass even when the current values are present. The leaf table is closed:
+**Enablement is static.** A rule enables classification exactly when at least one of its condition leaves enables it. The decision depends on the authored leaf, never on the current document's eventual message type: field-value operations enable the pass even when the current values are present. Every condition leaf belongs to one enablement class, and every operand of a comparison to one operand class; [the operator reference](14-operator-reference.md#classification-enablement) assigns each operator its class, and the assignment is closed.
 
-| Leaf | Enables classification |
+| Leaf class | The leaf enables classification |
 |---|---|
-| `FieldFilled` on one field (plain, repeatable or semantic-indexed) | no |
-| `FieldNotFilled` on one field (any of those carriers) | yes |
-| `GroupFilled` | yes, unless its operand is a root group |
-| `GroupNotFilled`, either operand kind | yes |
-| `GroupFilled` / `GroupNotFilled` of a keyed group | yes |
-| `NoGroupFilled` | yes |
-| `AllGroupsFilled`, `AtLeastOneGroupFilled`, `NotAllGroupsFilled`, `GroupsNotCollectivelyFilled` | yes, unless an operand is a root group (a starred root group included) |
-| `NoFieldFilled`, `NotAllFieldsFilled`, `NotExactlyOneFieldFilled`, `AtLeastOneFieldFilled`, `FieldsNotCollectivelyFilled` | yes |
-| `AllFieldsFilled`, `MoreThanOneFieldFilled` | only when an operand carries `Having` |
-| singular `FieldValueIncludedInValueList` / `FieldValueNotIncludedInValueList` | only when its value list contains a field-value operation; a literal-only list does not |
-| plural `No` / `NotAll` value-list quantifiers | yes |
-| plural `AtLeastOne` value-list quantifier | only when either side carries `Having` |
-| `FieldValuesNotUnique` | only when an operand carries `Having` |
-| `RepetitionNotUnique` | yes |
-| `PatternMatched` / `PatternViolated` | yes |
-| `Valid` / `Invalid` over a registered custom type | no |
-| `Valid` / `Invalid` over a constructed `Date(...)` | yes (its admission already requires an immediate field component, [§6](05-dates-and-time.md)) |
-| `CustomCondition` | no |
-| a comparison (Number, String, String expression, token, Date/Time/DateTime) | yes when at least one operand reads a document field, directly or through an aggregate, a count, `FirstFilledValue`, a semantic-index or keyed read, a temporal component, a String length or range, `FieldValueAsNumber`, or a difference with a field operand; no when its operands are only literals, `Now`/`Today`, `BaseYear` and its date parts, and `CurrentRepetition` |
-| a stored date-range equality, a date-range bound comparison, `DateRangesOverlap` (with or without year) | yes |
-| `AtLeastOneDateRangeOverlaps` (with or without year) | only when an operand carries `Having` |
+| `enables` | always |
+| `never` | never |
+| `unless root` | unless an operand is a root group, a starred root group included; a keyed group operand enables |
+| `with Having` | only when an operand carries `Having`, on either side of a value-list quantifier |
+| `with field member` | only when its value list contains a field-value operation; a literal-only list does not |
+| `field-dependent` | exactly when at least one operand is a field source |
 
-A **root group** is a group at the top of the model tree. The root arm is therefore: `GroupFilled` of a root, and every group-list quantifier except `NoGroupFilled` with a root-group operand, do not enable the pass; `GroupNotFilled` of a root and `NoGroupFilled` do. A parallel rule's leaves follow the same table. Plural `No` / `NotAll` / `AtLeastOne` share one pure verdict, but that does not make these authored forms interchangeable in a condition that can fail at runtime, because their enablement differs. Measured members: a child-group `GroupFilled` guard and `FieldNotFilled` enable the pass, while unfiltered `FieldFilled`, a field-free `Now` comparison and `CustomCondition` do not. The same measurements cover Number and String comparison prefixes, false and unknown guards and a false complete condition after a true omission prefix, consistent with this table and the pass order. On the parallel carrier only the fill quantifier is measured. The root arm and the membership rows rest on source reading, and the other rows are unmeasured.
+| Operand class | Meaning |
+|---|---|
+| `field source` | reads a document field, directly or through the operator |
+| `constant source` | reads no document field |
+| `transparent` | a field source exactly when one of its own operands is one |
+
+A **root group** is a group at the top of the model tree. A parallel rule's leaves follow the same classes. A constructed `Date(...)` validity leaf enables because its admission already requires an immediate field component ([§6](05-dates-and-time.md)). Plural `No` / `NotAll` / `AtLeastOne` share one pure verdict, but that does not make these authored forms interchangeable in a condition that can fail at runtime, because their enablement differs. Measured members: a child-group `GroupFilled` guard and `FieldNotFilled` enable the pass, while unfiltered `FieldFilled`, a field-free `Now` comparison and `CustomCondition` do not. The same measurements cover Number and String comparison prefixes, false and unknown guards and a false complete condition after a true omission prefix, consistent with these classes and the pass order. On the parallel carrier only the fill quantifier is measured. The root arm of `unless root` and the singular value-list membership class rest on source reading, and the other assignments are unmeasured.
 
 **A runtime failure fails the rule, not the validation.** A runtime failure reached in either pass — a reached unresolvable DateTime label in a comparison, or a reached `CustomCondition` name no factory resolves — reaches the same enclosing rule handler. It does not become an ordinary unknown operand or truth-valued leaf, and no later connective can suppress a failure already reached: a later false `And` operand does not. The handler reports one VALUE message with the rule's own code at the iterator's **first** error address, even when the failing leaf was reached in a later row; for an unresolved custom-condition name the message's referenced and fill-to-fix sets are empty. A repeatable rule evaluates no later row; ordinary fired verdicts continue iteration, and a failed rule does not stop independent rules. Under partial validation the iterator's first address is where the compressed error-field selector starts it ([§5.2](#52-which-rules-run-and-where)). Measured on `CustomCondition`: the messages of rows that fired before the failing row stand; a parallel rule reports at the error address of the join's first row, an unmatched one with its `UNKNOWN` coordinate included, keeps no message of a joined row that fired before the reaching row, evaluates no later joined row, and below a repeatable outer row no later outer row either. The temporal case is measured with absent, malformed and valid fields in a nonempty Berlin document; it does not change validation's enclosing content or relevance gates.
 
@@ -182,17 +173,17 @@ A group count grows only by rows, so at capacity with every row empty the count 
 
 #### A reached `Having` filter
 
-A filter selects which values a quantity sees, so a **reached** filter adds movement. Encounter is per operator, never a static "some operand is filtered" test:
+A filter selects which values a quantity sees, so a **reached** filter adds movement. Encounter is per operator, never a static "some operand is filtered" test. Each carrier's effect is one of the classes below; [the operator reference](14-operator-reference.md#having-filter-effect) assigns each operator its class.
 
-| Carrier | Effect of a reached filter |
+| Filter-effect class | Effect of a reached filter |
 |---|---|
-| Number `Sum`, `MinValue`, `MaxValue`; `NumberOfDifferentValues` | every available result can grow and shrink, even when the unfiltered combiner would be fixed or one-directional; a fired comparison consuming it is therefore OMISSION |
-| Date/Time/DateTime `MinValue`, `MaxValue` | the result is not-given |
-| `NumberOfValueInFields` (Number, String/Enumeration, Boolean/Confirm) | grows; shrinks only when a currently counted match was selected through a filter — a kept non-match stays grow-only |
-| `NumberOfFilledFields` | grows and shrinks when a filtered operand contributes a filled cell; otherwise the ordinary headroom rule (unmeasured) |
-| `FirstFilledValue` (multi-operand) | each operand slot marks its own filter immediately before that slot is scanned; a terminal value or formal error prevents every later slot and its filter from being observed ([§4.1](#41-the-same-rule-fires-either-type)) |
-| value-list quantifiers | follow their operator-specific traversal: fields-side `AtLeastOne`/`NotAll` use the deciding witness's filter, fields-side `No` retains every reached filter on its exhausted absence scan, values-side `AtLeastOne` retains a filter only when that operand selected a present member, and values-side `No`/`NotAll` retain reached filter/missing potential from their complete values pass |
-| `FieldValuesNotUnique` | positional, below |
+| `full movement` | every available result can grow and shrink, even when the unfiltered combiner would be fixed or one-directional; a fired comparison consuming it is therefore OMISSION |
+| `not-given` | the result is not-given |
+| `match shrink` | grows; shrinks only when a currently counted match was selected through a filter — a kept non-match stays grow-only |
+| `filled shrink` | grows and shrinks when a filtered operand contributes a filled cell; otherwise the ordinary headroom rule (unmeasured) |
+| `slot mark` | over multiple operands, each operand slot marks its own filter immediately before that slot is scanned; a terminal value or formal error prevents every later slot and its filter from being observed ([§4.1](#41-the-same-rule-fires-either-type)) |
+| `deciding witness` | the value-list quantifier's own traversal decides: fields-side `AtLeastOne`/`NotAll` use the deciding witness's filter, fields-side `No` retains every reached filter on its exhausted absence scan, values-side `AtLeastOne` retains a filter only when that operand selected a present member, and values-side `No`/`NotAll` retain reached filter/missing potential from their complete values pass |
+| `positional` | below |
 
 **`FieldValuesNotUnique` escalates on a positionally reached filter.** Its scan walks operands in authored order, marks a filter when a filtered operand yields a value that is *actually compared* — mere specifiedness is not enough, so a present-but-unconvertible cell does not mark it — and answers the moment it detects a duplicate. A firing is therefore OMISSION exactly when a filtered operand's compared value was collected at or before the duplicate — *even when every retained value is filled*, because the filter selects which values are compared — and VALUE otherwise. A filter authored **after** the duplicate-detecting value never retypes it, and a filtered operand that contributes only empty or unconvertible cells never marks anything; the positional and the static account agree on a single operand and on a uniformly filtered or uniformly unfiltered list. No missing potential in the selected cells escalates it, since a skipped empty or an uninstantiated declared row can only add a later duplicate, never clear the present one.
 
@@ -313,21 +304,9 @@ A multi-cell operand (an aggregate, count, list or quantifier) is judged twice: 
 | **complete cross-product** | a weaker completeness gate: each operand's declared starred extent is covered as a complete cross-product, taken over the **union** of the relevant entities addressing that row; it is UNKNOWN under an enumeration covering only present rows when declared slots remain. Independently keyed parents and missing selections follow the [product extent account](07-repetition-and-iteration.md#4-where-a-star-binds--the-anchor-rules-). |
 | **group-count walk** | the four steps of §5.6. |
 | **group relevance** | the `NONE`/`PARTIAL`/`FULL` judgment of §5.6. |
+| **none** | no extent judgment: a non-relevant member is skipped exactly as a formally invalid one is ([§3 B.2](02-logic-and-formal-errors.md#b2-the-three-cell-states--the-third-one-is-not-empty)), and known values are compared even under incomplete extent. |
 
-These predicates specify outcomes, not the Kernel's internal structure. **The operator table** (multi-cell date-range overlap has no row; its extent is unmeasured):
-
-| Operator | Extent predicate | Notes |
-|---|---|---|
-| `Sum`, `MaxValue`, `MinValue`, `NumberOfDifferentValues` | all-rows | |
-| `NumberOfFilledFields` | all-rows | |
-| `NumberOfValueInFields` (Number, String/Enumeration, Boolean/Confirm) | declared slots | |
-| plural `AtLeastOne` / `No` / `NotAll` value-list quantifiers | declared slots | relevant concrete cells remain available witnesses under incomplete extent; extent uncertainty is consumed as below |
-| field-fill quantifiers (`AllFieldsFilled`, `NoFieldFilled`, `AtLeastOneFieldFilled`, `MoreThanOneFieldFilled`, `NotAllFieldsFilled`, `NotExactlyOneFieldFilled`, `FieldsNotCollectivelyFilled`) | per slot | |
-| `FieldValuesNotUnique` | none | a non-relevant member is skipped exactly as a formally invalid one is ([§3 B.2](02-logic-and-formal-errors.md#b2-the-three-cell-states--the-third-one-is-not-empty)); known values are compared even under incomplete extent; unmeasured under a relevant set |
-| `FirstFilledValue` | ordered prefix | relevance of each reached missing slot is checked before a later value can decide the prefix |
-| `SumOfProducts` | complete cross-product | it reaches neither the all-rows combiner nor its survey |
-| `NumberOfFilledGroups` | group-count walk | |
-| `GroupFilled`, `GroupNotFilled`, group-list quantifiers | group relevance | |
+These predicates specify outcomes, not the Kernel's internal structure. Which predicate each multi-cell operator uses is assigned in [the operator reference](14-operator-reference.md#partial-extent). Under **ordered prefix** the relevance of each reached missing slot is checked before a later value can decide the prefix. An operator using the **complete cross-product** reaches neither the all-rows combiner nor its survey. Under **declared slots** a value-list quantifier's relevant concrete cells remain available witnesses under incomplete extent, and its extent uncertainty is consumed as below. Multi-cell date-range overlap has no stated predicate; its extent is unmeasured. The **none** predicate is unmeasured under a relevant set.
 
 **A starred group operand is asked field by field.** It evaluates only when every field the group contains passes the operator's own field predicate at that field's own path, so field patterns alone establish the extent and a pattern on a descendant group covers the fields below it, while the group path itself is never the target. Measured on `Sum`, `MaxValue` and numeric `NumberOfValueInFields`; `MinValue`, `NumberOfDifferentValues` and `SumOfProducts` over a group operand, a multi-star group operand and a starred group containing a nested repeatable group are unmeasured. `MinValue` and `NumberOfDifferentValues` over a group operand follow the same field-by-field rule by default; no rule is stated for `SumOfProducts` over a group operand.
 
@@ -335,7 +314,7 @@ These predicates specify outcomes, not the Kernel's internal structure. **The op
 
 **Value-list quantifiers consume extent uncertainty side-specifically.** For finite starred field and group operands the union of relevant patterns may cover every declared slot with concrete coordinates. An extent-unknown side is consumed like an UNKNOWN on that side: `AtLeastOne` ignores it on either side, `No` is suppressed on either side, and `NotAll` ignores it on the fields side but is suppressed on the values side. Formal unavailability retains the separate quantifier policy. The runtime's additional all-USB relevance gate concerns its separate USB iteration dimension; it must not be generalized into a wildcard requirement at every ordinary repeated group.
 
-**The three direct starred count loops select their extent independently,** as the operator table states: `NumberOfFilledFields(F*)` all-rows, numeric `NumberOfValueInFields(v In F*)` declared slots, `NumberOfFilledGroups` the group-count walk. The exact positive-document outcomes over a two-row `Items*` (50) of a `Tag` and a `Qty`, whose `Tag` no selection names, are:
+**The three direct starred count loops select their extent independently,** each by the predicate [the operator reference](14-operator-reference.md#partial-extent) assigns it. The exact positive-document outcomes over a two-row `Items*` (50) of a `Tag` and a `Qty`, whose `Tag` no selection names, are:
 
 | relevance selection | `NumberOfFilledFields` | `NumberOfFilledGroups` | numeric `NumberOfValueInFields` |
 |---|---:|---:|---:|
@@ -416,9 +395,9 @@ Sources: [nested-join partial checkpoint](../docs/sources/model-structure-and-de
 
 - [ ] Severity is message metadata; only ERROR invalidates; firing is severity-independent.
 - [ ] Every condition result preserves `notFired`, `fired VALUE`, `fired OMISSION`, and `unknown`; `And`→not-fired dominates, then unknown, then omission-wins among fires; `Or`→a fire dominates, then value-wins among fires; no negation.
-- [ ] A true rule runs the eager classification pass exactly when one of its leaves enables it per the closed §3.1 table (root `GroupFilled`, unfiltered `FieldFilled`, field-free comparisons, `CustomCondition`, custom-type `Valid`/`Invalid` and unfiltered `AllFieldsFilled`/`MoreThanOneFieldFilled`/plural `AtLeastOne`/`FieldValuesNotUnique`/`AtLeastOneDateRangeOverlaps` do not); a runtime failure reached in either pass fails the rule with one VALUE message at the iterator's first error address.
-- [ ] Numeric operands carry `canGrow`/`canShrink`, seeded sign-aware (trigger = `positivesOnly`), propagated through arithmetic, operand-list `Min`/`Max`, `Abs`, rounding and aggregates; reopened-star missingness is checked hierarchically per actual parent and unbounded reopened levels stay open; `!=` and tolerance dispatch by normalized gap direction; counts grow only while headroom remains and are fixed at an exhausted extent; dates and temporal extrema use a symmetric `notGiven`; concat ORs `notGiven`; a reached `Having` escalates per the closed §4 carrier table, value counts and filled-field counts gaining shrink only through a filtered counted cell.
+- [ ] A true rule runs the eager classification pass exactly when one of its leaves enables it, by the §3.1 classes as [the operator reference](14-operator-reference.md#classification-enablement) assigns them; a runtime failure reached in either pass fails the rule with one VALUE message at the iterator's first error address.
+- [ ] Numeric operands carry `canGrow`/`canShrink`, seeded sign-aware (trigger = `positivesOnly`), propagated through arithmetic, operand-list `Min`/`Max`, `Abs`, rounding and aggregates; reopened-star missingness is checked hierarchically per actual parent and unbounded reopened levels stay open; `!=` and tolerance dispatch by normalized gap direction; counts grow only while headroom remains and are fixed at an exhausted extent; dates and temporal extrema use a symmetric `notGiven`; concat ORs `notGiven`; a reached `Having` escalates by the §4 filter-effect classes as [the operator reference](14-operator-reference.md#having-filter-effect) assigns them.
 - [ ] The same rule can type either way per document (`NotExactlyOneFieldFilled`, `FirstFilledValue` prefix-sensitivity and missing-prefix provenance, `CurrentRepetition` VALUE with a fillable partner unmeasured).
 - [ ] Kernel 30.8.1 `validatePart`: an empty set reports nothing; every rule containing `Having` is skipped first; a group error entity reports nothing; unfiltered rules are gated by the compressed relevant error-field selector at the iteration-bound levels with deeper levels ignored, and the iterator starts where that selector starts it; the declared-capacity rows are walked with the content gate overridden (phantom relevant rows are evaluated); out-of-set refs read UNKNOWN under the uncompressed set; globals are auto-added; patterns compare coordinates literally, the root and terminal field included.
-- [ ] Multi-cell extents follow the closed §5.4 operator table: all-rows (every retained pattern, after group expansion, wildcard dominance and subtree filtering, wildcards every reopened level, per iteration row) for `Sum`/`MaxValue`/`MinValue`/`NumberOfDifferentValues`/`NumberOfFilledFields`; declared-slot coverage by the union of patterns for value counts and value-list quantifiers; per slot for field-fill quantifiers; ordered prefix for `FirstFilledValue`; union cross-product for `SumOfProducts`; the four-step walk for `NumberOfFilledGroups`; `NONE`/`PARTIAL`/`FULL` group relevance with positive-presence/negative-absence asymmetry for group predicates.
+- [ ] Multi-cell extents follow the §5.4 predicates as [the operator reference](14-operator-reference.md#partial-extent) assigns them: all-rows (every retained pattern, after group expansion, wildcard dominance and subtree filtering, wildcards every reopened level, per iteration row); declared-slot coverage by the union of patterns; per slot; ordered prefix; union cross-product; the four-step group-count walk; `NONE`/`PARTIAL`/`FULL` group relevance with positive-presence/negative-absence asymmetry; none.
 - [ ] A selection resolving to no row is definite absence only when the index column and the read target wildcard-cover the selected level; partial parallel keys come only from relevant index cells; uniqueness and every ordinary read of a `uniqueIndex`-compromised cell need the partner relevant; RNU requires every composite-key component of every participating row relevant; cell-conversion formal findings are gated by coverage while over-repetition findings are not; and an eligible absent or present-empty defaulted index becomes silently unavailable rather than injected or reported.

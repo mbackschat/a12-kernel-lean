@@ -213,6 +213,7 @@ Self-contained definitions of the recurring vocabulary (the deep-dive files assu
 | [`10-validation-and-polarity.md`](10-validation-and-polarity.md) | §12 validation and VALUE/OMISSION polarity |
 | [`11-messages-and-custom.md`](11-messages-and-custom.md) | §13 interpolation + §14 `CustomCondition` |
 | [`12-concrete-syntax.md`](12-concrete-syntax.md) | lexing, keyword catalog, directives, grammar sketch, and refused-text class order |
+| [`14-operator-reference.md`](14-operator-reference.md) | which class each operator takes per mechanism: unavailable reads, classification, polarity, `Having` effect, partial extent |
 
 Read in file order for a first pass. This map plus the relevant deep dive is the normative route for a targeted question; project-specific implementation guidance starts in [`docs/LEAN-ENCODING-GUIDE.md`](../docs/LEAN-ENCODING-GUIDE.md).
 
