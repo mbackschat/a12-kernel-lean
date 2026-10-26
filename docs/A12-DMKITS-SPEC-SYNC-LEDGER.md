@@ -241,6 +241,30 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-18"></a>
+### SPEC-2026-10-26-18 — Message-parameter admission states its stage order, with unmeasured stages marked
+
+- `status`: pending
+- `canonical`: [spec/11 A.6](../spec/11-messages-and-custom.md#a6-name-position-field-references), [A.7](../spec/11-messages-and-custom.md#a7-semantic-index-keys), [A.9](../spec/11-messages-and-custom.md#a9-the-index-terminal), [A.10](../spec/11-messages-and-custom.md#a10-the-group-position) and the [spec/14 keyed message guard column](../spec/14-operator-reference.md#keyed-message-guard).
+- `delta`: Group-parameter and index-terminal admission are ordered stage tables. Leaves outside the three guard classes supply no keyed presence guard; a name-position keyed parameter needs no guard; the value suffix's star gate answers first; a keyed or starred index read draws the repetition class even beside a plain read; a key's group is the nearest enclosing indexed repeatable group. Each order or member not measured is marked source reading.
+- `basis`: the measured rows the chapter cites, and this project's message-authoring checker for the orders and members marked unmeasured, external evidence pending for those.
+- `acceptance`: A value-list leaf beside a keyed group parameter, a keyed index terminal beside a plain read of the same index, and a deeper field keyed past an unindexed intermediate group settle the three widest unmeasured stages.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-19"></a>
+### SPEC-2026-10-26-19 — Message rendering names its one fault and treats quoted group segments as the bare group
+
+- `status`: pending
+- `canonical`: [spec/11 A.11](../spec/11-messages-and-custom.md#a11-rendering-a-rule-owned-message), [A.3](../spec/11-messages-and-custom.md#a3-the-parameter-grammar), [A.9](../spec/11-messages-and-custom.md#a9-the-index-terminal) and [A.13](../spec/11-messages-and-custom.md#a13-field-owned-producers).
+- `delta`: Interpolation is a render step over a fired message except that a key selecting no row faults a value parameter, failing the rule as a runtime failure does. A quoted group segment names the same group as its bare spelling, dropping the earlier admission-only caveat. The index terminal's two readings agree on a non-member S-value, while a blank S-value is unmeasured, replacing a claim that the distinction cannot arise. Only the String-pattern and Enumeration producers insert text opaquely in one pass; requiredness re-reads the running text.
+- `basis`: the chapter's measured keyed-row fault, quoted-segment render and producer rows; the blank S-value case is external evidence pending.
+- `acceptance`: An index terminal over a blank S-value settles whether the two readings agree.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 
