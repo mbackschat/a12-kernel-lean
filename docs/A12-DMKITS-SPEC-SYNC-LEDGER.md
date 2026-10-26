@@ -205,6 +205,42 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-15"></a>
+### SPEC-2026-10-26-15 — Concrete syntax adopts the literal and arithmetic-shape rules of spec/04
+
+- `status`: pending
+- `canonical`: [concrete syntax §2](../spec/12-concrete-syntax.md#2-literals) and [§3](../spec/12-concrete-syntax.md#3-the-condition-and-operation-grammar-sketch).
+- `delta`: A number literal's total digit count is ungated, replacing the fifteen-digit bound. A power chains left-associatively in the grammar, and only an ungrouped power as the direct left operand of another power is refused, `MVK_TOO_MANY_POW_FOR_CALC`. At most one division stands in each plain-arithmetic region, `MVK_TOO_MANY_DIV_FOR_CALC`, so `[a]/[b] + [c]/[d]` is admitted. Literal scale, date classification and omitted-year completion now point to their owners in spec/04, spec/05 and spec/09.
+- `basis`: spec/04 and spec/09 already stated each rule; 16- and 19-digit literals are measured admitted; this project's lexer and arithmetic-shape checks agree.
+- `acceptance`: A 16-digit literal is admitted, `a ^ b ^ c` draws the power code while `a ^ {b ^ c}` is admitted, and two divisions in separate addends are admitted.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-16"></a>
+### SPEC-2026-10-26-16 — Value lists take no parentheses, and the singular forms take no `In`
+
+- `status`: pending
+- `canonical`: [concrete syntax §3](../spec/12-concrete-syntax.md#3-the-condition-and-operation-grammar-sketch) and [§3.2](../spec/12-concrete-syntax.md#32-argument-slots).
+- `delta`: The parenthesised value-list form is withdrawn: a parenthesised argument is refused `MVK_UNEXPECTED_TOKEN` in general, and a parenthesised list after `In` is unmeasured. The singular value-list operators take their members after the subject's comma, as spec/06 lowers them; the `In` form of those operators is unmeasured.
+- `basis`: the chapter's own measured refusal of a parenthesised argument and spec/06's lowering; this project's reader refuses a parenthesis in any argument and matches the singular forms only without an `In` list, external evidence pending for both unmeasured forms.
+- `acceptance`: `FieldValueIncludedInValueList(f In "A", "B")` and a parenthesised list after `In` settle the two unmeasured forms.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-17"></a>
+### SPEC-2026-10-26-17 — Argument-slot classes and keyword categories
+
+- `status`: pending
+- `canonical`: [concrete syntax §3.2](../spec/12-concrete-syntax.md#32-argument-slots), [§5](../spec/12-concrete-syntax.md#5-keyword-catalog-english--german-verified-pairs) and the [spec/14 argument-slot column](../spec/14-operator-reference.md#argument-slots).
+- `delta`: Each operator's argument slots take a named slot class, whether entity, value, literal-or-bracket or another, and spec/14 assigns them per operator; slots no chapter states follow this project's reader and are marked unmeasured. The keyword catalog gains a category column; a condition-call keyword standing where an operation is expected is refused at that keyword, measured on `FieldFilled` only. One name alphabet serves every name, with path segments unmeasured.
+- `basis`: the measured slot rows of spec/04, spec/05 and spec/06, and this project's reader for the rest, external evidence pending.
+- `acceptance`: A bracketed read in an unmeasured `entity` slot, and a condition call other than `FieldFilled` where an operation is expected, settle the two largest unmeasured classes.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 

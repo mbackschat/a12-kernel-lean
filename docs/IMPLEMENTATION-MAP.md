@@ -92,6 +92,7 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 | F — `Having` filter effect | the `Having*` modules under [`Semantics/`](../A12Kernel/Semantics/), one per carrier |
 | X — partial extent | `ValidationRelevanceScope` in [`ValidationRelevance.lean`](../A12Kernel/Elaboration/ValidationRelevance.lean) |
 | T — traversal | `FilterTraversalMode` in [`StarAddressing.lean`](../A12Kernel/Semantics/StarAddressing.lean) for the filter scan; each operator's evaluator selects the mode and range for its operand |
+| S — argument slots | the reader's lowering in [`LowerCore.lean`](../A12Kernel/Reference/Dm/LowerCore.lean) and its sibling `Lower*` modules: `Expr.fieldEntity?` accepts a bare entity, and each operator's lowering types its remaining slots; the keyword categories of concrete syntax §5 are `keywordPairs` and `conditionCallIds` in [`Syntax.lean`](../A12Kernel/Reference/Dm/Syntax.lean) |
 
 ### Detailed capability shards
 
