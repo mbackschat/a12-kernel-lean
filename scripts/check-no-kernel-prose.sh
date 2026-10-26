@@ -176,7 +176,7 @@ PYTHON
 # builds one Aho-Corasick automaton where BSD grep rescans per pattern. The fallback is kept so the gate
 # still runs where ripgrep is absent, just slowly.
 
-git ls-files --cached --others --exclude-standard -- A12Kernel spec docs scripts evidence \
+git ls-files --cached --others --exclude-standard -- A12Kernel spec docs reviews scripts evidence \
   | grep -E '\.(lean|md|sh|json)$' > "$work/files"
 python3 - "$work/files" "$work/corpus" <<'PYTHON'
 import os, re, sys
@@ -196,10 +196,10 @@ PYTHON
 search_status=0
 if command -v rg >/dev/null 2>&1; then
   (cd "$work/corpus" && rg --fixed-strings --ignore-case --no-heading --with-filename --line-number \
-    --no-ignore --file "$work/literals" A12Kernel spec docs scripts evidence) > "$work/candidates" \
+    --no-ignore --file "$work/literals" A12Kernel spec docs reviews scripts evidence) > "$work/candidates" \
     || search_status=$?
 else
-  (cd "$work/corpus" && grep -rniF -f "$work/literals" A12Kernel spec docs scripts evidence) \
+  (cd "$work/corpus" && grep -rniF -f "$work/literals" A12Kernel spec docs reviews scripts evidence) \
     > "$work/candidates" || search_status=$?
 fi
 if (( search_status > 1 )); then
