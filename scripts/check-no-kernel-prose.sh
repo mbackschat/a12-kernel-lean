@@ -138,6 +138,10 @@ PYTHON
 # 2s for 1,096. A context prefix on each short pattern then left ripgrep no literal to anchor on at all,
 # and the search ran unbounded at full CPU.
 #
+# CASE IS IGNORED THROUGHOUT. A quote that starts mid-sentence or lowercases the catalog's capital still
+# copies the sentence: spec/05 carried the date-type refusal's sentence with a lowercase first word,
+# which the case-sensitive gate passed until the 2026-10-26 spec audit found it.
+#
 # ripgrep when it is available, BSD grep otherwise. Measured 2026-09-07 on this repository: 1096
 # fixed strings cost about 98s through BSD `grep -F -f` and under 2s through `rg -Ff`, because ripgrep
 # builds one Aho-Corasick automaton where BSD grep rescans per pattern. The fallback is kept so the gate
@@ -147,11 +151,11 @@ PYTHON
 # once discarded that difference, so a pattern set too large to compile read as a pass on 2026-09-23.
 search_status=0
 if command -v rg >/dev/null 2>&1; then
-  rg --fixed-strings --no-heading --with-filename --line-number --file "$work/literals" \
+  rg --fixed-strings --ignore-case --no-heading --with-filename --line-number --file "$work/literals" \
     --glob '*.lean' --glob '*.md' --glob '*.sh' --glob '*.json' \
     A12Kernel spec docs scripts evidence > "$work/candidates" || search_status=$?
 else
-  grep -rnF -f "$work/literals" A12Kernel spec docs scripts evidence \
+  grep -rniF -f "$work/literals" A12Kernel spec docs scripts evidence \
     --include='*.lean' --include='*.md' --include='*.sh' --include='*.json' \
     > "$work/candidates" || search_status=$?
 fi
@@ -166,7 +170,7 @@ import re, sys
 checks = []
 for row in open(sys.argv[1], encoding='utf-8'):
     kind, literal, pattern = row.rstrip('\n').split('\t')
-    checks.append((kind, literal, re.compile(pattern)))
+    checks.append((kind, literal.lower(), re.compile(pattern, re.IGNORECASE)))
 
 CODE_SPAN = re.compile(r'`[^`]*`')
 # An italic opens on a `*` that follows no word character and precedes a non-space, and closes on one
@@ -189,7 +193,7 @@ for hit in open(sys.argv[2], encoding='utf-8', errors='replace'):
     number, _, text = rest.partition(':')
     is_json = path.endswith('.json')
     for kind, literal, pattern in checks:
-        if literal not in text or (kind == 'json') != is_json and kind != 'long':
+        if literal not in text.lower() or (kind == 'json') != is_json and kind != 'long':
             continue
         for match in pattern.finditer(text):
             if kind in ('long', 'json') or quoted(text, match.start()):
