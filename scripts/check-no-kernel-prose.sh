@@ -43,9 +43,12 @@ fi
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
 
+# The runtime's formal-error texts are TypeScript bundles rather than properties files, and the gate read
+# only the properties form until the 2026-10-26 spec audit noticed the second shape.
 find "$kernel_root/kernel-tool" "$kernel_root/kernel-rt" \
-  \( -name build -o -name .git \) -prune -o \
-  -name 'error_messages*.properties' -print 2>/dev/null | sort > "$work/catalogs"
+  \( -name build -o -name .git -o -name node_modules \) -prune -o \
+  \( -name 'error_messages*.properties' -o -path '*/bundles/*/index.ts' \) -print 2>/dev/null \
+  | sort > "$work/catalogs"
 
 if [[ ! -s "$work/catalogs" ]]; then
   echo "kernel prose guard found no message catalogs; the Kernel layout has changed" >&2
@@ -71,7 +74,7 @@ fi
 python3 - "$work/catalogs" "$work/checks" "$work/literals" <<'PYTHON'
 import re, sys
 
-INTERPOLATION = re.compile(r'<[a-zA-Z0-9]+>|%[0-9]*\$?[a-zA-Z]')
+INTERPOLATION = re.compile(r'<[a-zA-Z0-9]+>|%[0-9]*\$?[a-zA-Z]|\$[A-Za-z]+\$')
 # Separators are dropped on both sides of the comparison (see the corpus pass), because a copy that adds
 # or drops a comma is still the sentence.
 SEPARATORS = re.compile(r'\s*[,;:]+\s*')
@@ -88,16 +91,31 @@ def add(kind, pieces, frame=''):
     body = '.{0,80}'.join(re.escape(piece) for piece in pieces)
     checks.add((kind, literal, f'{frame}{body}{frame}'))
 
+LITERAL = r'"(?:[^"\\\n]|\\.)*"|\'(?:[^\'\\\n]|\\.)*\''
+CONCATENATION = re.compile(rf'(?:{LITERAL})(?:\s*\+\s*(?:{LITERAL}))*')
+COMMENT = re.compile(r'/\*.*?\*/|//[^\n]*', re.S)
+
+def bodies(path):
+    if path.endswith('.ts'):
+        # A bundle message is one string literal or a `+` chain of them; a key is never prose, so only
+        # strings of three or more words are kept.
+        source = COMMENT.sub('', open(path, encoding='utf-8').read())
+        for chain in CONCATENATION.finditer(source):
+            text = ''.join(part[1:-1] for part in re.findall(LITERAL, chain.group(0)))
+            if len(text.split()) >= 3:
+                yield text.strip()
+        return
+    for line in open(path, encoding='latin-1').read().splitlines():
+        matched = re.match(r'^[A-Za-z_][A-Za-z0-9_.]*\s*=\s*(.+)$', line)
+        if matched:
+            yield matched.group(1).strip()
+
 for path in open(sys.argv[1]):
     try:
-        lines = open(path.strip(), encoding='latin-1').read().splitlines()
+        entries = list(bodies(path.strip()))
     except OSError:
         continue
-    for line in lines:
-        matched = re.match(r'^[A-Za-z_][A-Za-z0-9_.]*\s*=\s*(.+)$', line)
-        if not matched:
-            continue
-        body = matched.group(1).strip()
+    for body in entries:
         # A run is trimmed of the quotes, colon and full stop that frame its neighbouring placeholder
         # before it is compared, because a quote drops that framing together with the placeholder:
         # `At '%s': There must be ...` leaves the run `': There must be ...`, which no prose quoting
