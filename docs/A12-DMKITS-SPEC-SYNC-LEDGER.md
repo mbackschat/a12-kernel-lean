@@ -181,6 +181,30 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-13"></a>
+### SPEC-2026-10-26-13 — Parallel join frames split into common and one-sided classes
+
+- `status`: pending
+- `canonical`: [spec/07 §2.1](../spec/07-repetition-and-iteration.md#21-frames).
+- `delta`: The join's outer scopes form two classes. A common frame binds both sides at each common outer row before the key union, so equal keys in different outer rows do not join; a one-sided frame is a repeatable non-indexed level above exactly one joined group, iterating ordinarily with the join inside each frame row. Frames diverging on both sides are not stated, and that a common frame's outer rows follow the rule iteration domain is unmeasured.
+- `basis`: the one-sided frame is measured at the partial parallel checkpoint's frames row; the common-frame binding keeps the chapter's earlier sentence; this project's executable account admits both classes and plans no diverging frame, external evidence pending for the common frame.
+- `acceptance`: A common-frame join whose outer rows differ from the rule iteration domain settles the outer-row clause; a diverging-frame model settles admission.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-14"></a>
+### SPEC-2026-10-26-14 — A group operand's compared set is bounded by its own depth
+
+- `status`: pending
+- `canonical`: [spec/07 §5.3](../spec/07-repetition-and-iteration.md#53-fieldvaluesnotunique).
+- `delta`: The chapter stated a bare repeatable group operand as a per-row anchor judging the current row's cells, and separately that an ancestor operand compares the ancestor's whole extent. Both now follow one rule: repeatable levels above the operand stay bound at the rule's binding and every level below it is reopened. An ancestor operand therefore compares its whole subtree, the rule's sibling rows included, while an unstarred repeatable operand stays bound at the rule's row of its own level, which is unmeasured.
+- `basis`: the ancestor-extent case keeps the chapter's measured sentence; the unstarred repeatable case is this project's executable account, which bounds the compared set by the operand's own scope length or first star, external evidence pending.
+- `acceptance`: An unstarred repeatable group operand admitted with the error field inside it, with a duplicate only between its current row and a sibling row, stays silent under this account.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 

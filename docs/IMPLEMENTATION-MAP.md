@@ -91,6 +91,7 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 | P — polarity class | [`NumericFillability.lean`](../A12Kernel/Semantics/NumericFillability.lean) for arithmetic, [`NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean) and [`FieldFillQuantifier.lean`](../A12Kernel/Semantics/FieldFillQuantifier.lean) for aggregates and counts, [`ScalarEquality.lean`](../A12Kernel/Semantics/ScalarEquality.lean) for the not-given rule |
 | F — `Having` filter effect | the `Having*` modules under [`Semantics/`](../A12Kernel/Semantics/), one per carrier |
 | X — partial extent | `ValidationRelevanceScope` in [`ValidationRelevance.lean`](../A12Kernel/Elaboration/ValidationRelevance.lean) |
+| T — traversal | `FilterTraversalMode` in [`StarAddressing.lean`](../A12Kernel/Semantics/StarAddressing.lean) for the filter scan; each operator's evaluator selects the mode and range for its operand |
 
 ### Detailed capability shards
 
