@@ -534,3 +534,18 @@ The task, profile, comparison contract and milestones are the [evaluator kit](..
 - `result`: every model and document of the 3968 in-profile rows read without a refusal; all 4093 rows classified, none evaluated yet, as M1 requires.
 - `questions-and-guesses`: Q-001, the keyword table the packet delegated to Kernel sources, and Q-003, the requiredness mode spellings, were packet defects, settled by packet v3. Q-002, document shapes no capture carries, keeps its fail-closed reading.
 - `exclusions`: no validation, computation or partial evaluation yet.
+
+<a id="run-u01-m2"></a>
+### U01 M2 — full validation
+
+- `task`: [U01 evaluator](#task-u01-evaluator), milestone M2
+- `status`: green
+- `started-at`: 2026-10-25T23:12:34+01:00, after the M1 qualification commit
+- `finished-at`: 2026-10-26T01:31+01:00, qualification commit `a140a50`
+- `semantic-basis`: packet v3, cut from `f09769fbecd8a9b10cc9567cf9149e9c40b31369`
+- `oracle`: HIGH read the qualification record, the questions log and the evaluator source at `a140a50`. The evaluator crate names no request, row, capture path or artifact; capture names appear only in provenance comments.
+- `consumer-access`: the packet and its own repository; one packet notice received, nothing sent back.
+- `cost`: about 2 h 20 min in six slices and 49 commits; 9538 nonblank Rust lines with 102 tests; dependencies unchanged; token usage unavailable.
+- `result`: on the `messages` channel alone 2226 rows match and none diverge. Every row without a computation, host feature or out-of-profile pattern matches, except 76 whose message address depends on the host's map order for a duplicated index key, which spec/08 §4.3 leaves to the host and the worker refuses.
+- `questions-and-guesses`: Q-004 to Q-011 are spec gaps the worker closed by reading the captures rather than the spec: two finding codes, the partial-Date check order, the content gate's composition, the constructs that enable classification, a typed validity check's inventories, a filtered filled-field count's polarity and a non-repeatable index nomination. They feed the [spec audit](../PLAN.md#u01-plan) rather than separate answers.
+- `exclusions`: computation, partial validation and the computation-generated validation rules wait for M3 and M4.
