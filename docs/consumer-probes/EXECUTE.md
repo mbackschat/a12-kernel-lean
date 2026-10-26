@@ -579,3 +579,13 @@ The task, profile, comparison contract and milestones are the [evaluator kit](..
 - `result`: of the 1548 rows observing `validatePart`, 1443 match, none diverge, 1 is excluded and 104 are refused only at profile boundaries. The messages-only control is byte-identical to M3's, so the partial work changed no full-validation outcome. The whole contract run stands at 3828 matches and the one Q-012 divergence fixed in `fd5af2f1`.
 - `questions-and-guesses`: none logged; `FieldValuesNotUnique` over an uncovered cell and `RepetitionNotUnique`'s partner rule rest on guard tests because no capture separates the readings, and `SumOfProducts` stays refused under partial validation since no partial row reaches it.
 - `exclusions`: M5 waits for its packet and mutation instruction.
+
+<a id="run-u01-close"></a>
+### U01 close — debrief before the spec rewrite
+
+- `task`: [U01 evaluator](#task-u01-evaluator), closed after M4
+- `status`: closed by the owner on 2026-10-26 without M5, so that a fresh cold run measures the rewritten spec against this baseline
+- `baseline`: packet v3; M1–M4 in about 8 h; 13379 nonblank Rust lines with 162 tests; 3828 contract matches, the one divergence being this repository's evidence defect fixed in `fd5af2f1`; 15 logged questions, 12 still open spec gaps.
+- `debrief`: one owner-approved closing message asked for `reports/SPEC-FEEDBACK.md`, committed at Rust `49e24fe` with no code change. It lists 15 rules decided from captures or by choice, 4 disagreeing passages, 4 rules extracted from case lists, 6 rules found in another chapter than the one consulted, and packet costs led by 370 `spec/` links into `docs/sources/` the packet does not carry.
+- `independence`: the worker wrote it without seeing the 2026-10-26 spec audit; it confirms the audit's partial-relevance, enumeration and contradiction classes, adds two contradictions and four gaps the audit missed, and supplies capture evidence for cross-chapter finding xc-1.
+- `kit-lessons`: a whole-row classification hid `messages` divergences behind a refused `partialMessages` channel until the worker added a messages-only run, and captures carry no statement of what they probe.
