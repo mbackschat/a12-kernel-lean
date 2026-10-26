@@ -38,7 +38,7 @@ Draft: `02-new.md` (pilot). Old chapter: `spec/02-logic-and-formal-errors.md` at
    - Side taken: B — per consumer class, and the operand (not the rule) becomes UNKNOWN.
    - Lean: `numberOfFilledFields` (`A12Kernel/Semantics/FieldFillQuantifier.lean`, all-cells → unknown), `scanDistinctCells`/`evalDistinctCountAggregate` (`A12Kernel/Semantics/NumericAggregate.lean`, all-cells), `scanFirstFilledObservations` (`A12Kernel/Semantics/FirstFilledScan.lean`, first non-empty decides), `scanValuesNotUnique` (`A12Kernel/Semantics/NumericAggregate.lean`, skip), `numberOfFilledGroups` (`A12Kernel/Semantics/GroupPresence.lean`), `Verdict.conj`/`Verdict.disj` (`A12Kernel/Core.lean`).
 2. Computation presence reads.
-   - Old A (02:111): "it governs a **read** ([§11](09-computations.md)), and a presence test is not a read."
+   - Old A (02:111): "it governs a **read** ([§11](../../spec/09-computations.md)), and a presence test is not a read."
    - Old B (02:125): "Every reached invalid slot in these computation scans poisons the computation instance."
    - Side taken: field-cell presence reads poison (B); group presence (`GroupFilled`, `GroupNotFilled`, `NumberOfFilledGroups`) never poisons; a computed-dependency failure supplies no group content.
    - Lean: `CellObservation.evalComputationFilled`/`evalComputationNotFilled` and `evalFieldFilled` (`A12Kernel/Semantics/ComputationCondition.lean`), `CellObservation.asComputationFillSlot` (`A12Kernel/Semantics/ComputationFillQuantifier.lean`), `GroupPresenceOperator.evalComputation` and `CellObservation.presentForComputation` (`A12Kernel/Semantics/GroupPresence.lean`). Kernel measurement: `docs/sources/computation-scheduling-probes.md#src-group-presence-computation-guards` (2026-10-03), now cited in A.4.8 and B.6.

@@ -97,6 +97,54 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-06"></a>
+### SPEC-2026-10-26-06 — Partial validation decides a multi-cell operand's extent by one declared-slot rule and a missing keyed row by one wildcard rule
+
+- `status`: pending
+- `canonical`: [spec/10 §5.4](../spec/10-validation-and-polarity.md#54-the-extent-of-a-multi-cell-operand) and [§5.5](../spec/10-validation-and-polarity.md#55-a-selection-that-resolves-to-no-row).
+- `delta`: Value-list quantifiers and value counts are decided when the union of relevant patterns covers every declared slot, replacing the one-covering-pattern wording. The terminal field coordinate covers as `0` or `1`, compares literally in wildcard dominance and is ignored by group-absence coverage. A matched key needs its row's index cell and target covered. A no-match is definite absence only when index column and target both wildcard the selected level. `FieldValuesNotUnique` takes no extent judgment. Group-operand `MinValue`/`NumberOfDifferentValues` default to the field-by-field rule.
+- `basis`: this project's executable account. The value-list union, the measured keyed coverages and the dominance rows are Kernel-measured as the chapter's `Sources:` lines name; the terminal coordinate in cell cover, the index-cell requirement, the wildcard-only no-match case, `FieldValuesNotUnique` and the group-operand defaults are external evidence pending.
+- `acceptance`: Each unmeasured part is marked in the clause; a partial call per part settles it, starting with a matched key whose index cell is uncovered.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-07"></a>
+### SPEC-2026-10-26-07 — Message classification enablement is a closed per-leaf table
+
+- `status`: pending
+- `canonical`: [spec/10 §3.1](../spec/10-validation-and-polarity.md#31-truth-testing-and-message-classification).
+- `delta`: Replaces the three enabling examples with a closed table over every condition leaf, including the root-group arm: root `GroupFilled` and root-operand group lists other than `NoGroupFilled` do not enable, root `GroupNotFilled` and `NoGroupFilled` do; `CustomCondition`, custom-type validity and unfiltered `AllFieldsFilled`/`MoreThanOneFieldFilled`/plural `AtLeastOne`/`FieldValuesNotUnique` do not.
+- `basis`: this project's executable account. The rows named as measured members in the clause are Kernel-measured; the root arm and the membership forms are source-read; the other rows are external evidence pending.
+- `acceptance`: The clause names its measured rows; a classification grid crossing the unmeasured leaves with a reached runtime failure settles the rest.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-08"></a>
+### SPEC-2026-10-26-08 — A count types VALUE once its headroom is exhausted, and four carriers gain polarity rules
+
+- `status`: pending
+- `canonical`: [spec/10 §4](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing).
+- `delta`: A fired `count < n` is OMISSION only while the count has headroom and VALUE once it is fixed, with headroom per count operator. Added rules: a filtered `NumberOfFilledFields` moves both ways when a filtered operand contributes a filled cell, a temporal `MinValue`/`MaxValue` is not-given under an empty selected operand, an open tail or a reached filter, operand-list `Min`/`Max` and `Abs` propagate by table, and `NumberOfDifferentValues` grows from an empty selected cell.
+- `basis`: this project's executable account. Headroom at the exhausted extent and the distinct count's open tail are Kernel-measured as the chapter's `Sources:` lines name; the four added carrier rules are external evidence pending and marked unmeasured.
+- `acceptance`: One fired comparison per added carrier with a fillable operand settles it.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-09"></a>
+### SPEC-2026-10-26-09 — Relevance is a property of the call and formal invalidity of the cell
+
+- `status`: pending
+- `canonical`: [spec/10 §5.1](../spec/10-validation-and-polarity.md#51-the-relevant-set) and [§5.3](../spec/10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set).
+- `delta`: Replaces "a field whose value leads to a formal error is not relevant": a formally invalid cell stays relevant for dispatch and is read as unavailable per consumer class. The formal-finding channel under a relevant set now carries [spec/02 B.3](../spec/02-logic-and-formal-errors.md#over-repetition)'s over-repetition exception.
+- `basis`: this project's executable account and the three-document `validatePart`/`validateFull` measurement the clause cites; the over-repetition exception is spec/02's existing rule.
+- `acceptance`: Already measured on the cited documents; no further row is needed unless a consumer observes the dispatch of a malformed relevant cell.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 

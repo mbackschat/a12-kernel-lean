@@ -5,7 +5,9 @@ You are rewriting one chapter of the language-neutral semantics in `spec/`. The 
 - Chapter: `spec/{CHAPTER}` (read it completely first).
 - The rewrite contract: the `spec-rewrite-plan` section of `docs/PLAN.md`.
 - The verified findings for this chapter: the `spec/{NN}` section of `reviews/2026-10-26-spec-audit.md`, plus these rows from other sections that cite this chapter: {EXTRA_ROWS}.
-- Implementer feedback touching this chapter: {FEEDBACK}.
+- Implementer feedback: the U01 worker's debrief at `{FEEDBACK}`; use every row that names this chapter. A row is a reader-confusion signal and a capture pointer, not a rule.
+- Edits earlier chapter rewrites owe this chapter: the `## Other chapters` sections of `reviews/spec-rewrite/*-notes.md` that name this chapter. Apply each that is within this chapter.
+- If `spec/14-operator-reference.md` exists, operator membership facts (which operators belong to a family, enable a pass, read an unavailable cell a given way) belong there: point to it instead of restating a list it holds, and list any fact you find missing there under "other chapters".
 - You may read other `spec/` chapters, `A12Kernel/` Lean sources and `docs/` as needed. Never open `../a12-kernel/`, `../a12-rulekit/` or any sibling repository.
 
 ## Hard rules
