@@ -549,3 +549,18 @@ The task, profile, comparison contract and milestones are the [evaluator kit](..
 - `result`: on the `messages` channel alone 2226 rows match and none diverge. Every row without a computation, host feature or out-of-profile pattern matches, except 76 whose message address depends on the host's map order for a duplicated index key, which spec/08 §4.3 leaves to the host and the worker refuses.
 - `questions-and-guesses`: Q-004 to Q-011 are spec gaps the worker closed by reading the captures rather than the spec: two finding codes, the partial-Date check order, the content gate's composition, the constructs that enable classification, a typed validity check's inventories, a filtered filled-field count's polarity and a non-repeatable index nomination. They feed the [spec audit](../PLAN.md#u01-plan) rather than separate answers.
 - `exclusions`: computation, partial validation and the computation-generated validation rules wait for M3 and M4.
+
+<a id="run-u01-m3"></a>
+### U01 M3 — computation
+
+- `task`: [U01 evaluator](#task-u01-evaluator), milestone M3
+- `status`: green
+- `started-at`: 2026-10-26T01:31+01:00, after the M2 qualification commit `a140a50`
+- `finished-at`: 2026-10-26T06:14+01:00, qualification commit `7137a21`
+- `semantic-basis`: packet v3, cut from `f09769fbecd8a9b10cc9567cf9149e9c40b31369`
+- `oracle`: HIGH recomputed the raw-output digests and class counts from the committed reports, read the questions log and the computation module at `7137a21`, and scanned the evaluator crate and its tests for capture names outside comments, finding none.
+- `consumer-access`: the packet and its own repository; nothing received or sent during M3.
+- `cost`: about 4 h 45 min in six slices and 36 commits; 12504 nonblank Rust lines with 146 tests; dependencies unchanged; token usage unavailable.
+- `result`: of the 1271 in-profile rows observing `compute` without `validatePart`, 1221 match and 49 are refused only at profile boundaries. The one divergence (Q-012) was this repository's evidence defect, a retained request naming its workspace model, fixed in `fd5af2f1` after a scan of all 533 requests found no other instance.
+- `questions-and-guesses`: Q-013 to Q-015 are spec gaps the worker closed by its chosen reading: a filtered temporal extremum's polarity (taken from the captures), a compromised join key's poison against EMPTY, and Date extractors over a partial Date (no separating capture for either). They feed packet v4 with the [spec audit](../PLAN.md#u01-plan).
+- `exclusions`: partial validation waits for M4.
