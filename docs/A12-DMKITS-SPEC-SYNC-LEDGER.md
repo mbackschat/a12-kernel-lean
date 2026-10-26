@@ -37,6 +37,66 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-26-01"></a>
+### SPEC-2026-10-26-01 — An unavailable cell makes its consuming operand UNKNOWN by consumer class and stays in its operand list
+
+- `status`: pending
+- `canonical`: [spec/02 B.2](../spec/02-logic-and-formal-errors.md#b2-the-three-cell-states--the-third-one-is-not-empty) and [A.4.3](../spec/02-logic-and-formal-errors.md#a43-classifying-a-slot).
+- `delta`: Replaces the single row "an aggregate or count containing an invalid cell is non-evaluable and suppresses the rule wherever the cell sits" with consumer classes: all-cells consumers such as `NumberOfFilledFields` and `NumberOfDifferentValues` are UNKNOWN, `FirstFilledValue` is decided by the first non-empty cell, `FieldValuesNotUnique` skips the cell, and group presence follows A.4.8. The operand, not the rule, becomes UNKNOWN, and `And`/`Or` decide the rest. Replaces "an invalid cell drops out" with: the member stays in its list and settles nothing.
+- `basis`: the clause's existing cases (`FirstFilledValue` after the first filled row, the [erroneous-member checkpoint](sources/inbound-group-operand-batches.md#src-erroneous-member-quantifier-undecidable)), consistent with this project's executable account. Kernel 30.8.1.
+- `acceptance`: Reconcile each consumer class against a12-dmkits' interpreter, notably an invalid member beside a duplicate among the other members under `FieldValuesNotUnique`, which fires. `MinValue`/`MaxValue` as all-cells consumers over a malformed cell in validation are not separately measured; do not claim them.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-02"></a>
+### SPEC-2026-10-26-02 — In computation a field presence read poisons and group presence never does
+
+- `status`: pending
+- `canonical`: [spec/02 A.4.8](../spec/02-logic-and-formal-errors.md#a48-numberoffilledgroups) and [B.6](../spec/02-logic-and-formal-errors.md#b6-validation-excludes-computation-poisons).
+- `delta`: Replaces the rationale "a presence test is not a read" with the line Kernel behaviour draws: a field-cell presence read (`FieldFilled`, the field-fill scans) poisons on a reached invalid cell like a value read, while `GroupFilled`, `GroupNotFilled`, `NumberOfFilledGroups` and the group-list quantifiers never poison. A formally invalid stored descendant counts as group content, and a descendant invalid only because its computed dependency failed supplies none.
+- `basis`: the [group-presence computation checkpoint](sources/computation-scheduling-probes.md#src-group-presence-computation-guards), Kernel 30.8.1, measured 2026-10-03 on Number inputs at depth two with one repeatable level.
+- `acceptance`: Reconcile the field/group split in a12-dmkits' computation arm and its spec/09 cross-reference. Deeper nesting and other kinds are unmeasured; do not claim them.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-03"></a>
+### SPEC-2026-10-26-03 — A group operand of the value and filled-field counts expands recursively
+
+- `status`: pending
+- `canonical`: [spec/02 A.4.1](../spec/02-logic-and-formal-errors.md#a41-operand-expansion); spec/03's contrary "direct fields" sentence is corrected when spec/03 is rewritten.
+- `delta`: States that a group operand of `NumberOfFilledFields` and `NumberOfValueInFields` expands to every field in its subtree, as for the fill quantifiers, where spec/03 said direct fields only. Nested non-repeatable subgroups under these counts are marked unmeasured.
+- `basis`: this project's executable account, which expands the counts' group operands over the whole subtree; no Kernel row separates direct from recursive expansion for these counts.
+- `acceptance`: Confirm the expansion against a12-dmkits; a row with a field only in a nested non-repeatable subgroup separates the accounts and is unmeasured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-04"></a>
+### SPEC-2026-10-26-04 — An instantiated-range filtered predicate never tallies a missing coordinate
+
+- `status`: pending
+- `canonical`: [spec/02 A.4.5](../spec/02-logic-and-formal-errors.md#a45-validation-filtered-field-fill-lists).
+- `delta`: States that under an instantiated-range field-fill predicate a missing coordinate never enters the tally, whatever the filter would answer there. Whether the filter executes at such a coordinate stays with spec/07 §3.
+- `basis`: this project's executable account. Kernel 30.8.1 correspondence for this shape is external evidence pending.
+- `acceptance`: Reconcile against a12-dmkits; a filter that would keep a missing coordinate under an instantiated-range predicate separates the accounts.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-05"></a>
+### SPEC-2026-10-26-05 — A starred computation count operand counts in-capacity rows on its two unmeasured shapes
+
+- `status`: pending
+- `canonical`: [spec/02 A.4.8](../spec/02-logic-and-formal-errors.md#a48-numberoffilledgroups).
+- `delta`: Extends the computation rule "a starred operand takes its group's instantiated in-capacity row count" from "not established" to two shapes, each marked unmeasured: a row holding only formally invalid content counts, and a repeatable descendant does not multiply the count.
+- `basis`: this project's executable account, which reads no cell for a starred count operand. Kernel 30.8.1 correspondence is external evidence pending.
+- `acceptance`: Both shapes are unmeasured on either side; a computation over a malformed-only starred row, and one over a group with a repeatable descendant, settle them.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 
