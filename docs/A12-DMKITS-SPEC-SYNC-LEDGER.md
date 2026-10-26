@@ -301,6 +301,30 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-23"></a>
+### SPEC-2026-10-26-23 — Empty reads and the content gate become per-operator classes
+
+- `status`: pending
+- `canonical`: [spec/03 A.1](../spec/03-empty-and-required.md#a1-the-per-kind-default), [A.2](../spec/03-empty-and-required.md#a2-where-an-operator-overrides-its-kinds-default), [A.4](../spec/03-empty-and-required.md#a4-the-row-gate--where-the-substitutions-stop) and the spec/14 [empty read](../spec/14-operator-reference.md#empty-read) and [content gate](../spec/14-operator-reference.md#content-gate) columns.
+- `delta`: Every operator takes an empty-read class and a content-gate class. The content-gate leaf inventory is closed, and composition follows the connective: `And` fires on empty only when both parts can, `Or` when either can, with `Or` measured and both `And` forms unmeasured. A tolerance comparison lifts on either side, unmeasured. An all-empty concatenation is the empty String, so its comparison is not evaluated, resolving the chapter's two statements. An empty Confirm reads false with not-given provenance and a fired comparison over it types OMISSION, now measured. Count typing, fixed-group count expansion and the empty value-list subject adopt spec/10 §4, spec/02 A.4.1 and spec/06 B.4.
+- `basis`: the measured rows the chapter cites, including the negation pair grid; this project's condition and empty-read evaluation for the leaf inventory and the unmeasured compositions, external evidence pending for those.
+- `acceptance`: An `And` of a content-only part and a fires-on-empty part over an empty instance, and a tolerance comparison with an empty right side, settle the two widest unmeasured cases.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-24"></a>
+### SPEC-2026-10-26-24 — Required gates use the field's direct parent, and a non-repeatable index field arms no generated check
+
+- `status`: pending
+- `canonical`: [spec/03 B.1](../spec/03-empty-and-required.md#b1-the-generated-rule-precisely) and [B.4](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique).
+- `delta`: The parent-option fixture now places `F5` in group `K` nested in the repeatable `C`, so both columns follow the chapter's own rule that the gate is the field's direct parent and the iteration its nearest repeatable group. An index field nominated in a non-repeatable group is admitted and read by `index(...)`, and neither generated arm checks it, unmeasured.
+- `basis`: the generated-requiredness checkpoint for the parent shape; this project's requiredness scope and index preliminary for the non-repeatable case, external evidence pending.
+- `acceptance`: An empty or duplicated index field nominated in a non-repeatable group draws no generated finding.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 

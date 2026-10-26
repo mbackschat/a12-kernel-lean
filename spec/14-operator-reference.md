@@ -22,6 +22,8 @@ Each row names an operator by its English keyword and, where [concrete syntax §
 | **S** | Which slot class each of its argument slots takes, and so how a field is written there ([concrete syntax §3.2](12-concrete-syntax.md#32-argument-slots)) |
 | **G** | Whether the condition leaf supplies the presence guard a keyed group parameter of a message needs ([§13 A.10](11-messages-and-custom.md#the-keyed-presence-guard)) |
 | **D** | Which temporal operand gate its operands meet: the component class their declared formats must satisfy, and the date-precision class a partially known Date must satisfy ([§6 §9](05-dates-and-time.md#9-datetime-rides-the-date-format-definition--but-the-operand-gates-are-per-operator-)) |
+| **N** | How it reads an empty operand or cell: its kind's default or its own override ([§2 A.2](03-empty-and-required.md#a2-where-an-operator-overrides-its-kinds-default)) |
+| **B** | Whether it lets full validation evaluate a rule at an instance without content ([§2 A.4](03-empty-and-required.md#a4-the-row-gate--where-the-substitutions-stop)) |
 
 A cell holds one of three things:
 
@@ -247,226 +249,266 @@ The whole cell is `n/a` for an operator with no operand — the connectives, `To
 
 **Measured scope.** [§6 §9](05-dates-and-time.md#9-datetime-rides-the-date-format-definition--but-the-operand-gates-are-per-operator-) and [§6 §6.2](05-dates-and-time.md#62-partially-known-dates) record which assignments are measured; the comparisons' and `[F]`'s `full only` is the measured bracket-read gate of [§10 §3](08-paths-and-references.md#3-the-asterisk-and-); the `full only` cells of the shifts, the differences and `DateTime`, the precision of the operand-list `Min` and `Max`, and the component class of a shift's result are unmeasured.
 
+### Empty read
+
+A cell names the class by which the operator reads an empty operand or cell; an operator whose slots differ names a class per slot, such as "`no value` (source); `kind default` (amount)".
+
+| Class | Defined in | Meaning |
+|---|---|---|
+| `kind default` | [§2 A.1](03-empty-and-required.md#a1-the-per-kind-default) | the per-kind default |
+| `presence` | [§2 A.2](03-empty-and-required.md#the-empty-read-classes) | emptiness is what the predicate tests |
+| `empty text` | [§2 A.2](03-empty-and-required.md#the-empty-read-classes) | contributes `""` |
+| `fillable zero` | [§2 A.2](03-empty-and-required.md#the-empty-read-classes) | reads a fillable Number `0` |
+| `not evaluated` | [§2 A.2](03-empty-and-required.md#the-empty-read-classes) | fires in neither polarity |
+| `value-list` | [§2 A.2](03-empty-and-required.md#the-empty-read-classes), [§8 B.3](06-strings-and-enumerations.md#b3-the-value-list-quantifiers--per-cell-three-way-classification-), [§8 B.4](06-strings-and-enumerations.md#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-) | supplies no member value |
+| `not counted` | [§2 A.2](03-empty-and-required.md#the-count-family) | never counted by a cell count |
+| `skipped` | [§2 A.2](03-empty-and-required.md#the-empty-read-classes), [§2 A.3](03-empty-and-required.md#a3-what-an-all-empty-selection-folds-to-the-aggregate-identities) | takes no part in the fold or scan |
+| `incomplete` | [§2 A.2](03-empty-and-required.md#the-empty-read-classes), [§6 §3.5](05-dates-and-time.md#35-reasons-and-their-composition) | an incomplete construction |
+| `no value` | [§2 A.2](03-empty-and-required.md#the-empty-read-classes) | a valueless result |
+| `key row` | [§2 A.2](03-empty-and-required.md#the-empty-read-classes), [§9 §6.2](07-repetition-and-iteration.md#62-the-duplicate-relation) | the duplicate relation's empty-key rule |
+| `callback` | [§2 A.2](03-empty-and-required.md#the-empty-read-classes), [§14 B.3](11-messages-and-custom.md#b3-the-invocation) | the callback's data view |
+| `n/a` | — | the operator reads no cell, by the basis below |
+
+N is `n/a` for the connectives, for `Today`, `Now`, `BaseYear`, the literals, `True` and `False`, which take no operand, for `CurrentRepetition`, which reads no cell ([§12 §5.3](10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set)), and for `ValueNotConsistent`, which has no admitted witness.
+
+**Measured scope.** Each cell rests on the operator's owning section — [§2 A.2](03-empty-and-required.md#a2-where-an-operator-overrides-its-kinds-default) for the operators it details, otherwise the section of the operator's own chapter — and that section records whether the assignment is measured. The four `…Value` field forms, `ValueAsDate` and the `DateRange` constructor hold `not stated`.
+
+### Content gate
+
+| Class | Defined in | Meaning |
+|---|---|---|
+| `fires on empty` | [§2 A.4](03-empty-and-required.md#the-structural-predicate) | can hold without content |
+| `content only` | [§2 A.4](03-empty-and-required.md#the-structural-predicate) | cannot by itself |
+| `small-side lift` | [§2 A.4](03-empty-and-required.md#counts-lift-the-gate-without-composing) | lifted by a `lifting count` on its small side |
+| `either-side lift` | [§2 A.4](03-empty-and-required.md#counts-lift-the-gate-without-composing) | lifted by a `lifting count` on either side |
+| `lifting count` | [§2 A.4](03-empty-and-required.md#counts-lift-the-gate-without-composing) | lifts the gate from a small side |
+| `no lift` | [§2 A.4](03-empty-and-required.md#counts-lift-the-gate-without-composing) | never lifts the gate |
+| `n/a` | — | a connective, which composes its parts by [§2 A.4](03-empty-and-required.md#the-structural-predicate), or `ValueNotConsistent`, which has no admitted witness |
+
+The leaf classes are the first four and apply to condition leaves; the operand classes are the last two. The rule-level exemptions, a second root and an uniterated repeatable error root, are not per-operator ([§2 A.4](03-empty-and-required.md#rule-shapes-that-skip-the-gate)).
+
+**Measured scope.** [§2 A.4](03-empty-and-required.md#a4-the-row-gate--where-the-substitutions-stop) records these measured cells: the `fires on empty` members it lists; `small-side lift` on `<`, `<=`, `>`, `>=`, `==` and `!=`, its content-only half on a field-read comparison; `lifting count` on `NumberOfFilledFields`, `NumberOfFilledGroups` and `NumberOfDifferentValues` over Number operands; and `no lift` for a field read and `+`. Others are unmeasured, `either-side lift` included.
+
 ---
 
 ## The table
 
 ### Connectives
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `And` / `Und` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
-| `Or` / `Oder` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `And` / `Und` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
+| `Or` / `Oder` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a |
 
 The connectives read no cell and combine their operands' results by [§3 B.5](02-logic-and-formal-errors.md#b5-the-strong-kleene-tables-the-exact-algebra) and [§12 §3](10-validation-and-polarity.md#3-every-fired-message-is-typed--value-vs-omission-).
 
 ### Presence and fill predicates
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `FieldFilled` / `FeldAngegeben` | `presence/fill` | `poisons` | `never` | `always VALUE` | n/a | n/a | n/a | `entity` | `leaf` | `any format`; `any precision` |
-| `FieldNotFilled` / `FeldNichtAngegeben` | `presence/fill` | `poisons` | `enables` | `always OMISSION` | n/a | n/a | n/a | `entity` | `none` | `any format`; `any precision` |
-| `AllFieldsFilled` / `AlleFelderAngegeben` | `presence/fill` | `poisons` | `with Having` | `fill tally` | `fill witness` | `per slot` | `declared`; filter `declared` | `entity`… | `one operand` | not stated; not stated |
-| `NoFieldFilled` / `KeinFeldAngegeben` | `presence/fill` | `poisons` | `enables` | `fill tally` | `fill witness` | `per slot` | `instantiated`; filter `dense` | `entity`… | `none` | not stated; not stated |
-| `AtLeastOneFieldFilled` / `MindestensEinFeldAngegeben` | `presence/fill` | `poisons` | `enables` | `fill tally` | `fill witness` | `per slot` | `instantiated`; filter `sparse-enabled` | `entity`… | `every operand` | not stated; not stated |
-| `MoreThanOneFieldFilled` / `MehrAlsEinFeldAngegeben` | `presence/fill` | `poisons` | `with Having` | `fill tally` | `fill witness` | `per slot` | `instantiated`; filter `dense` | `entity`… | `every operand` | not stated; not stated |
-| `NotAllFieldsFilled` / `NichtAlleFelderOderKeinFeldAngegeben` | `presence/fill` | `poisons` | `enables` | `fill tally` | `fill witness` | `per slot` | `declared`; filter `declared` | `entity`… | `none` | not stated; not stated |
-| `NotExactlyOneFieldFilled` / `NichtGenauEinFeldAngegeben` | `presence/fill` | `poisons` | `enables` | `fill tally` | `fill witness` | `per slot` | `instantiated`; filter `dense` | `entity`… | `none` | not stated; not stated |
-| `FieldsNotCollectivelyFilled` / `FelderNichtGemeinsamAngegeben` | `presence/fill` | `poisons` | `enables` | `fill tally` | `fill witness` | `per slot` | `instantiated then declared`; filter `sparse-enabled` then `declared` | `entity`… | `none` | not stated; not stated |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `FieldFilled` / `FeldAngegeben` | `presence/fill` | `poisons` | `never` | `always VALUE` | n/a | n/a | n/a | `entity` | `leaf` | `any format`; `any precision` | `presence` | `content only` |
+| `FieldNotFilled` / `FeldNichtAngegeben` | `presence/fill` | `poisons` | `enables` | `always OMISSION` | n/a | n/a | n/a | `entity` | `none` | `any format`; `any precision` | `presence` | `fires on empty` |
+| `AllFieldsFilled` / `AlleFelderAngegeben` | `presence/fill` | `poisons` | `with Having` | `fill tally` | `fill witness` | `per slot` | `declared`; filter `declared` | `entity`… | `one operand` | not stated; not stated | `presence` | `content only` |
+| `NoFieldFilled` / `KeinFeldAngegeben` | `presence/fill` | `poisons` | `enables` | `fill tally` | `fill witness` | `per slot` | `instantiated`; filter `dense` | `entity`… | `none` | not stated; not stated | `presence` | `fires on empty` |
+| `AtLeastOneFieldFilled` / `MindestensEinFeldAngegeben` | `presence/fill` | `poisons` | `enables` | `fill tally` | `fill witness` | `per slot` | `instantiated`; filter `sparse-enabled` | `entity`… | `every operand` | not stated; not stated | `presence` | `content only` |
+| `MoreThanOneFieldFilled` / `MehrAlsEinFeldAngegeben` | `presence/fill` | `poisons` | `with Having` | `fill tally` | `fill witness` | `per slot` | `instantiated`; filter `dense` | `entity`… | `every operand` | not stated; not stated | `presence` | `content only` |
+| `NotAllFieldsFilled` / `NichtAlleFelderOderKeinFeldAngegeben` | `presence/fill` | `poisons` | `enables` | `fill tally` | `fill witness` | `per slot` | `declared`; filter `declared` | `entity`… | `none` | not stated; not stated | `presence` | `fires on empty` |
+| `NotExactlyOneFieldFilled` / `NichtGenauEinFeldAngegeben` | `presence/fill` | `poisons` | `enables` | `fill tally` | `fill witness` | `per slot` | `instantiated`; filter `dense` | `entity`… | `none` | not stated; not stated | `presence` | `fires on empty` |
+| `FieldsNotCollectivelyFilled` / `FelderNichtGemeinsamAngegeben` | `presence/fill` | `poisons` | `enables` | `fill tally` | `fill witness` | `per slot` | `instantiated then declared`; filter `sparse-enabled` then `declared` | `entity`… | `none` | not stated; not stated | `presence` | `content only` |
 
 `FieldFilled` and `FieldNotFilled` keep their E class on the plain, repeatable and semantic-indexed carriers alike ([§12 §3.1](10-validation-and-polarity.md#31-truth-testing-and-message-classification)).
 
 ### Group presence and group-list predicates
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `GroupFilled` / `KontextAngegeben` | `group presence` | `never poisons` | `unless root` | `always VALUE` | n/a | `group relevance` | not stated; filter n/a | `entity` | `leaf` | n/a |
-| `GroupNotFilled` / `KontextNichtAngegeben` | `group presence` | `never poisons` | `enables` | `always OMISSION` | n/a | `group relevance` | not stated; filter n/a | `entity` | `none` | n/a |
-| `AllGroupsFilled` / `AlleKontexteAngegeben` | `group presence` | `never poisons` | `unless root` | `group tally` | not stated | `group relevance` | not stated; filter not stated | `entity`… | `one operand` | not stated; not stated |
-| `NoGroupFilled` / `KeinKontextAngegeben` | `group presence` | `never poisons` | `enables` | `group tally` | not stated | `group relevance` | `instantiated`; filter not stated | `entity`… | `none` | not stated; not stated |
-| `AtLeastOneGroupFilled` / `MindestensEinKontextAngegeben` | `group presence` | `never poisons` | `unless root` | `group tally` | not stated | `group relevance` | `instantiated`; filter not stated | `entity`… | `every operand` | not stated; not stated |
-| `NotAllGroupsFilled` / `NichtAlleOderKeinKontextAngegeben` | `group presence` | `never poisons` | `unless root` | `group tally` | not stated | `group relevance` | not stated; filter not stated | `entity`… | `none` | not stated; not stated |
-| `GroupsNotCollectivelyFilled` / `KontexteNichtGemeinsamAngegeben` | `group presence` | `never poisons` | `unless root` | `group tally` | not stated | `group relevance` | not stated; filter not stated | `entity`… | `none` | not stated; not stated |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `GroupFilled` / `KontextAngegeben` | `group presence` | `never poisons` | `unless root` | `always VALUE` | n/a | `group relevance` | not stated; filter n/a | `entity` | `leaf` | n/a | `presence` | `content only` |
+| `GroupNotFilled` / `KontextNichtAngegeben` | `group presence` | `never poisons` | `enables` | `always OMISSION` | n/a | `group relevance` | not stated; filter n/a | `entity` | `none` | n/a | `presence` | `fires on empty` |
+| `AllGroupsFilled` / `AlleKontexteAngegeben` | `group presence` | `never poisons` | `unless root` | `group tally` | not stated | `group relevance` | not stated; filter not stated | `entity`… | `one operand` | not stated; not stated | `presence` | `content only` |
+| `NoGroupFilled` / `KeinKontextAngegeben` | `group presence` | `never poisons` | `enables` | `group tally` | not stated | `group relevance` | `instantiated`; filter not stated | `entity`… | `none` | not stated; not stated | `presence` | `fires on empty` |
+| `AtLeastOneGroupFilled` / `MindestensEinKontextAngegeben` | `group presence` | `never poisons` | `unless root` | `group tally` | not stated | `group relevance` | `instantiated`; filter not stated | `entity`… | `every operand` | not stated; not stated | `presence` | `content only` |
+| `NotAllGroupsFilled` / `NichtAlleOderKeinKontextAngegeben` | `group presence` | `never poisons` | `unless root` | `group tally` | not stated | `group relevance` | not stated; filter not stated | `entity`… | `none` | not stated; not stated | `presence` | `fires on empty` |
+| `GroupsNotCollectivelyFilled` / `KontexteNichtGemeinsamAngegeben` | `group presence` | `never poisons` | `unless root` | `group tally` | not stated | `group relevance` | not stated; filter not stated | `entity`… | `none` | not stated; not stated | `presence` | `content only` |
 
 `GroupNotFilled` enables over either operand kind, and `GroupFilled` and `GroupNotFilled` over a keyed group enable ([§12 §3.1](10-validation-and-polarity.md#31-truth-testing-and-message-classification)). Whether a field operand of a group-list quantifier can carry a filter is not stated.
 
 ### Value-list predicates
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `FieldValueIncludedInValueList` / `FeldWertInWerteListe` | `value-list` | `poisons` | `with field member` | `value-list` | n/a | n/a | n/a | `entity`, `member`… | `none` | not stated; not stated |
-| `FieldValueNotIncludedInValueList` / `FeldWertNichtInWerteListe` | `value-list` | `poisons` | `with field member` | `value-list` | n/a | n/a | n/a | `entity`, `member`… | `none` | not stated; not stated |
-| `AtLeastOneFieldValueIncludedInValueList` / `MindestensEinFeldWertInWerteListe` | `value-list` | `poisons` | `with Having` | `value-list` | `deciding witness` | `declared slots` | `instantiated`; filter `sparse-enabled` | `entity`… `In` String literals or `entity`… | `none` | not stated; not stated |
-| `NoFieldValueIncludedInValueList` / `KeinFeldWertInWerteListe` | `value-list` | `poisons` | `enables` | `value-list` | `deciding witness` | `declared slots` | `instantiated`; filter `dense` | `entity`… `In` String literals or `entity`… | `none` | not stated; not stated |
-| `NotAllFieldValuesIncludedInValueList` / `NichtAlleFeldWerteInWerteListe` | `value-list` | `poisons` | `enables` | `value-list` | `deciding witness` | `declared slots` | `instantiated`; filter `dense` | `entity`… `In` String literals or `entity`… | `none` | not stated; not stated |
-| `ValueNotConsistent` / `WertNichtKonsistent` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | `entity` `To` values; the values' slot class not stated | n/a | n/a |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `FieldValueIncludedInValueList` / `FeldWertInWerteListe` | `value-list` | `poisons` | `with field member` | `value-list` | n/a | n/a | n/a | `entity`, `member`… | `none` | not stated; not stated | `value-list` | `content only` |
+| `FieldValueNotIncludedInValueList` / `FeldWertNichtInWerteListe` | `value-list` | `poisons` | `with field member` | `value-list` | n/a | n/a | n/a | `entity`, `member`… | `none` | not stated; not stated | `value-list` | `content only` |
+| `AtLeastOneFieldValueIncludedInValueList` / `MindestensEinFeldWertInWerteListe` | `value-list` | `poisons` | `with Having` | `value-list` | `deciding witness` | `declared slots` | `instantiated`; filter `sparse-enabled` | `entity`… `In` String literals or `entity`… | `none` | not stated; not stated | `value-list` | `content only` |
+| `NoFieldValueIncludedInValueList` / `KeinFeldWertInWerteListe` | `value-list` | `poisons` | `enables` | `value-list` | `deciding witness` | `declared slots` | `instantiated`; filter `dense` | `entity`… `In` String literals or `entity`… | `none` | not stated; not stated | `value-list` | `fires on empty` |
+| `NotAllFieldValuesIncludedInValueList` / `NichtAlleFeldWerteInWerteListe` | `value-list` | `poisons` | `enables` | `value-list` | `deciding witness` | `declared slots` | `instantiated`; filter `dense` | `entity`… `In` String literals or `entity`… | `none` | not stated; not stated | `value-list` | `content only` |
+| `ValueNotConsistent` / `WertNichtKonsistent` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | `entity` `To` values; the values' slot class not stated | n/a | n/a | n/a | n/a |
 
 The two singular forms are the one-subject `AtLeastOne` and `NotAll` quantifiers ([§8 B.4](06-strings-and-enumerations.md#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-)); a semantic-index subject adds `selection`. `ValueNotConsistent`'s subject gate demands a table-backed Enumeration, for which no admitted witness is known ([§8 B.3](06-strings-and-enumerations.md#b3-the-value-list-quantifiers--per-cell-three-way-classification-)), so no column applies to it.
 
 ### Uniqueness
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `FieldValuesNotUnique` / `FeldWerteNichtEindeutig` | `skip-invalid` | `poisons` | `with Having` | `positional` | `positional` | `none` | `instantiated`; filter `dense` | `entity`… | `none` | not stated; `any precision` |
-| `RepetitionNotUnique` / `WiederholungNichtEindeutig` | `row drop` | n/a | `enables` | `key fillability` | n/a | `key rows` | `key relation`; filter n/a | `entity`… [`@From` `entity`] | `none` | not stated; not stated |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `FieldValuesNotUnique` / `FeldWerteNichtEindeutig` | `skip-invalid` | `poisons` | `with Having` | `positional` | `positional` | `none` | `instantiated`; filter `dense` | `entity`… | `none` | not stated; `any precision` | `skipped` | `content only` |
+| `RepetitionNotUnique` / `WiederholungNichtEindeutig` | `row drop` | n/a | `enables` | `key fillability` | n/a | `key rows` | `key relation`; filter n/a | `entity`… [`@From` `entity`] | `none` | not stated; not stated | `key row` | `content only` |
 
 A computation refuses `RepetitionNotUnique` in its common precondition (unmeasured), in an alternative's precondition and in its operation ([§11 §1](09-computations.md#1-the-ground-rules)), so its C cell is `n/a`.
 
 ### Patterns and validity
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `PatternMatched` / `WieMuster` | `scalar read` | `poisons` | `enables` | `always VALUE` | n/a | n/a | n/a | `value`, `pattern` (infix) | `none` | not stated; not stated |
-| `PatternViolated` / `NichtWieMuster` | `scalar read` | `poisons` | `enables` | `always VALUE` | n/a | n/a | n/a | `value`, `pattern` (infix) | `none` | not stated; not stated |
-| `Valid` / `Gueltig` over a registered custom type | `scalar read` | `poisons` | `never` | `always VALUE` | n/a | n/a | n/a | `entity`, `type name` | `none` | n/a |
-| `Invalid` / `Ungueltig` over a registered custom type | `scalar read` | `poisons` | `never` | `always VALUE` | n/a | n/a | n/a | `entity`, `type name` | `none` | n/a |
-| `Valid` / `Gueltig` over `Date(...)` | `scalar read` | `poisons` | `enables` | `date validity` | not stated | not stated | not stated | one `Date(...)` call | `none` | `positional`; not stated |
-| `Invalid` / `Ungueltig` over `Date(...)` | `scalar read` | `poisons` | `enables` | `date validity` | not stated | not stated | not stated | one `Date(...)` call | `none` | `positional`; not stated |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `PatternMatched` / `WieMuster` | `scalar read` | `poisons` | `enables` | `always VALUE` | n/a | n/a | n/a | `value`, `pattern` (infix) | `none` | not stated; not stated | `not evaluated` | `content only` |
+| `PatternViolated` / `NichtWieMuster` | `scalar read` | `poisons` | `enables` | `always VALUE` | n/a | n/a | n/a | `value`, `pattern` (infix) | `none` | not stated; not stated | `not evaluated` | `content only` |
+| `Valid` / `Gueltig` over a registered custom type | `scalar read` | `poisons` | `never` | `always VALUE` | n/a | n/a | n/a | `entity`, `type name` | `none` | n/a | `not evaluated` | `content only` |
+| `Invalid` / `Ungueltig` over a registered custom type | `scalar read` | `poisons` | `never` | `always VALUE` | n/a | n/a | n/a | `entity`, `type name` | `none` | n/a | `not evaluated` | `content only` |
+| `Valid` / `Gueltig` over `Date(...)` | `scalar read` | `poisons` | `enables` | `date validity` | not stated | not stated | not stated | one `Date(...)` call | `none` | `positional`; not stated | `incomplete` | `content only` |
+| `Invalid` / `Ungueltig` over `Date(...)` | `scalar read` | `poisons` | `enables` | `date validity` | not stated | not stated | not stated | one `Date(...)` call | `none` | `positional`; not stated | `incomplete` | `fires on empty` |
 
 ### Comparisons
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `==` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` |
-| `!=` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` |
-| `<` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` |
-| `<=` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` |
-| `>` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` |
-| `>=` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` |
-| `DiffersWithToleranceRange1` / `UngleichMitToleranz1` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | not stated; not stated |
-| `DiffersWithToleranceRange2` / `UngleichMitToleranz2` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | not stated; not stated |
-| `DiffersWithToleranceRange5` / `UngleichMitToleranz5` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | not stated; not stated |
-| `DiffersWithToleranceRange10` / `UngleichMitToleranz10` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | not stated; not stated |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `==` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` | `kind default` | `small-side lift` |
+| `!=` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` | `kind default` | `small-side lift` |
+| `<` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` | `kind default` | `small-side lift` |
+| `<=` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` | `kind default` | `small-side lift` |
+| `>` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` | `kind default` | `small-side lift` |
+| `>=` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | `agreement`; `full only` | `kind default` | `small-side lift` |
+| `DiffersWithToleranceRange1` / `UngleichMitToleranz1` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | not stated; not stated | `kind default` | `either-side lift` |
+| `DiffersWithToleranceRange2` / `UngleichMitToleranz2` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | not stated; not stated | `kind default` | `either-side lift` |
+| `DiffersWithToleranceRange5` / `UngleichMitToleranz5` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | not stated; not stated | `kind default` | `either-side lift` |
+| `DiffersWithToleranceRange10` / `UngleichMitToleranz10` | `scalar read` | `poisons` | `field-dependent` | `comparison dispatch` | n/a | n/a | n/a | `value`, `value` (infix) | `none` | not stated; not stated | `kind default` | `either-side lift` |
 
 A comparison's V and C cells concern its own reads; each operand's cells are its operator's.
 
 ### Arithmetic
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `+` (Number) | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | n/a |
-| `-` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | n/a |
-| `*` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | n/a |
-| `/` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | n/a |
-| `^` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | n/a |
-| `Min` / `Min` (operand list) | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` (Number); `not-given` (temporal) | n/a (Number); not stated (temporal) | n/a (Number); not stated (temporal) | n/a | `value`… | n/a | n/a (Number); `same set`; `full only` (temporal) |
-| `Max` / `Max` (operand list) | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` (Number); `not-given` (temporal) | n/a (Number); not stated (temporal) | n/a (Number); not stated (temporal) | n/a | `value`… | n/a | n/a (Number); `same set`; `full only` (temporal) |
-| `Abs` / `Abs` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value` | n/a | not stated; not stated |
-| `RoundDown` / `Abrunden` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value` [, `digits`] | n/a | not stated; not stated |
-| `RoundUp` / `Aufrunden` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value` [, `digits`] | n/a | not stated; not stated |
-| `RoundAccounting` / `Runden` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value` [, `digits`] | n/a | not stated; not stated |
-| `AbsValue` / `AbsWert` | `scalar read` | `poisons` | `field source` | `arithmetic propagation` | not stated | not stated | not stated | `entity` | n/a | not stated; not stated |
-| `RoundDownValue` / `AbrundenWert` | `scalar read` | `poisons` | `field source` | `arithmetic propagation` | not stated | not stated | not stated | `entity` [, `digits`] | n/a | n/a |
-| `RoundUpValue` / `AufrundenWert` | `scalar read` | `poisons` | `field source` | `arithmetic propagation` | not stated | not stated | not stated | `entity` [, `digits`] | n/a | n/a |
-| `RoundAccountingValue` / `RundenWert` | `scalar read` | `poisons` | `field source` | `arithmetic propagation` | not stated | not stated | not stated | `entity` [, `digits`] | n/a | n/a |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `+` (Number) | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | n/a | `kind default` | `no lift` |
+| `-` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | n/a | `kind default` | `no lift` |
+| `*` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | n/a | `kind default` | `no lift` |
+| `/` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | n/a | `kind default` | `no lift` |
+| `^` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | n/a | `kind default` | `no lift` |
+| `Min` / `Min` (operand list) | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` (Number); `not-given` (temporal) | n/a (Number); not stated (temporal) | n/a (Number); not stated (temporal) | n/a | `value`… | n/a | n/a (Number); `same set`; `full only` (temporal) | `kind default` (Number); `skipped` (temporal) | `no lift` |
+| `Max` / `Max` (operand list) | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` (Number); `not-given` (temporal) | n/a (Number); not stated (temporal) | n/a (Number); not stated (temporal) | n/a | `value`… | n/a | n/a (Number); `same set`; `full only` (temporal) | `kind default` (Number); `skipped` (temporal) | `no lift` |
+| `Abs` / `Abs` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value` | n/a | not stated; not stated | `kind default` | `no lift` |
+| `RoundDown` / `Abrunden` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value` [, `digits`] | n/a | not stated; not stated | `kind default` | `no lift` |
+| `RoundUp` / `Aufrunden` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value` [, `digits`] | n/a | not stated; not stated | `kind default` | `no lift` |
+| `RoundAccounting` / `Runden` | `scalar read` | `poisons` | `transparent` | `arithmetic propagation` | n/a | n/a | n/a | `value` [, `digits`] | n/a | not stated; not stated | `kind default` | `no lift` |
+| `AbsValue` / `AbsWert` | `scalar read` | `poisons` | `field source` | `arithmetic propagation` | not stated | not stated | not stated | `entity` | n/a | not stated; not stated | not stated | `no lift` |
+| `RoundDownValue` / `AbrundenWert` | `scalar read` | `poisons` | `field source` | `arithmetic propagation` | not stated | not stated | not stated | `entity` [, `digits`] | n/a | n/a | not stated | `no lift` |
+| `RoundUpValue` / `AufrundenWert` | `scalar read` | `poisons` | `field source` | `arithmetic propagation` | not stated | not stated | not stated | `entity` [, `digits`] | n/a | n/a | not stated | `no lift` |
+| `RoundAccountingValue` / `RundenWert` | `scalar read` | `poisons` | `field source` | `arithmetic propagation` | not stated | not stated | not stated | `entity` [, `digits`] | n/a | n/a | not stated | `no lift` |
 
 `RoundDownValue`, `RoundUpValue` and `RoundAccountingValue` take a Number field and have their operation forms' arithmetic ([§5 §2](04-numbers-and-decimals.md#2-rounding)). Each `…Value` field form, `AbsValue` included, propagates directions as its operation form does over the field's read.
 
 ### Aggregates and counts
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `Sum` / `Summe` | `all-cells` | `poisons` | `field source` | `Number aggregate missingness` | `full movement` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | not stated; not stated |
-| `MinValue` / `MinWert` (Number) | `all-cells` | `poisons` | `field source` | `Number aggregate missingness` | `full movement` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | n/a |
-| `MaxValue` / `MaxWert` (Number) | `all-cells` | `poisons` | `field source` | `Number aggregate missingness` | `full movement` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | n/a |
-| `MinValue` / `MinWert` (Date/Time/DateTime) | `all-cells` | `poisons` | `field source` | `not-given` | `not-given` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | `same set`; `full only` |
-| `MaxValue` / `MaxWert` (Date/Time/DateTime) | `all-cells` | `poisons` | `field source` | `not-given` | `not-given` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | `same set`; `full only` |
-| `SumOfProducts` / `SummeVonProdukten` | `all-cells` | `poisons` | `field source` | `pair product` | n/a | `complete cross-product` | not stated; filter n/a | `entity`, `entity` | n/a | not stated; not stated |
-| `NumberOfFilledFields` / `AnzahlAngegebenerFelder` | `all-cells` | `poisons` | `field source` | `count headroom` | `filled shrink` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | `any format`; `any precision` |
-| `NumberOfValueInFields` / `AnzahlWertInFeldliste` | `all-cells` | `poisons` | `field source` | `count headroom` | `match shrink` | `declared slots` | `instantiated`; filter `dense` | `literal` `In` `entity`… | n/a | not stated; not stated |
-| `NumberOfDifferentValues` / `AnzahlVerschiedenerWerte` | `all-cells` | `poisons` | `field source` | `count headroom` | `full movement` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | not stated; `full only` |
-| `NumberOfFilledGroups` / `AnzahlAngegebenerKontexte` | `group presence` | `never poisons` | `field source` | `count headroom` | n/a | `group-count walk` | `instantiated`; filter n/a | `entity`… | n/a | n/a |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `Sum` / `Summe` | `all-cells` | `poisons` | `field source` | `Number aggregate missingness` | `full movement` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | not stated; not stated | `skipped` | `no lift` |
+| `MinValue` / `MinWert` (Number) | `all-cells` | `poisons` | `field source` | `Number aggregate missingness` | `full movement` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | n/a | `skipped` | `no lift` |
+| `MaxValue` / `MaxWert` (Number) | `all-cells` | `poisons` | `field source` | `Number aggregate missingness` | `full movement` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | n/a | `skipped` | `no lift` |
+| `MinValue` / `MinWert` (Date/Time/DateTime) | `all-cells` | `poisons` | `field source` | `not-given` | `not-given` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | `same set`; `full only` | `skipped` | `no lift` |
+| `MaxValue` / `MaxWert` (Date/Time/DateTime) | `all-cells` | `poisons` | `field source` | `not-given` | `not-given` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | `same set`; `full only` | `skipped` | `no lift` |
+| `SumOfProducts` / `SummeVonProdukten` | `all-cells` | `poisons` | `field source` | `pair product` | n/a | `complete cross-product` | not stated; filter n/a | `entity`, `entity` | n/a | not stated; not stated | `fillable zero` | `no lift` |
+| `NumberOfFilledFields` / `AnzahlAngegebenerFelder` | `all-cells` | `poisons` | `field source` | `count headroom` | `filled shrink` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | `any format`; `any precision` | `not counted` | `lifting count` |
+| `NumberOfValueInFields` / `AnzahlWertInFeldliste` | `all-cells` | `poisons` | `field source` | `count headroom` | `match shrink` | `declared slots` | `instantiated`; filter `dense` | `literal` `In` `entity`… | n/a | not stated; not stated | `not counted` | `no lift` |
+| `NumberOfDifferentValues` / `AnzahlVerschiedenerWerte` | `all-cells` | `poisons` | `field source` | `count headroom` | `full movement` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | not stated; `full only` | `not counted` | `lifting count` |
+| `NumberOfFilledGroups` / `AnzahlAngegebenerKontexte` | `group presence` | `never poisons` | `field source` | `count headroom` | n/a | `group-count walk` | `instantiated`; filter n/a | `entity`… | n/a | n/a | `presence` | `lifting count` |
 
 ### `FirstFilledValue`
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `FirstFilledValue` / `ErsterAngegebenerWert` | `stop-at-first` | `poisons` | `field source` | `prefix` | `slot mark` | `ordered prefix` | `instantiated`; filter `dense` | `entity`… | n/a | not stated; `any precision` |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `FirstFilledValue` / `ErsterAngegebenerWert` | `stop-at-first` | `poisons` | `field source` | `prefix` | `slot mark` | `ordered prefix` | `instantiated`; filter `dense` | `entity`… | n/a | not stated; `any precision` | `skipped` | `no lift` |
 
 ### Temporal operators
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `Today` / `Heute` | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | `none` | n/a | n/a |
-| `Now` / `Jetzt` | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | `none` | n/a | n/a |
-| `BaseYear` / `Referenzjahr` | n/a | n/a | `constant source` | `leaf seed` | n/a | n/a | n/a | `none` | n/a | n/a |
-| `Date` / `Datum` (constructor) | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | two to four components, each `entity`, String literal or extractor call | n/a | `positional`; not stated |
-| `Time` / `Zeit` (constructor) | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | zero to three components, each `entity`, String literal or extractor call | n/a | `positional`; not stated |
-| `DateTime` / `DateTime` (constructor) | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `entity` | n/a | `date + clock`; `full only` |
-| `DateRange` / `DatumBereich` (constructor) | `scalar read` | `poisons` | `field source` | `not-given` | n/a | n/a | n/a | `range entity`, `range entity` | n/a | `range endpoint`; `full only` |
-| `AddDays` / `AddiereTage` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step d`; `full only` |
-| `AddMonths` / `AddiereMonate` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step M`; `full only` |
-| `AddYears` / `AddiereJahre` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step y`; `full only` |
-| `AddHours` / `AddiereStunden` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step H`; `full only` |
-| `AddMinutes` / `AddiereMinuten` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step m`; `full only` |
-| `AddSeconds` / `AddiereSekunden` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step s`; `full only` |
-| `DifferenceInDays` / `DifferenzInTagen` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step d`; `full only` |
-| `DifferenceInMonths` / `DifferenzInMonaten` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step M`; `full only` |
-| `DifferenceInYears` / `DifferenzInJahren` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step y`; `full only` |
-| `DifferenceInHours` / `DifferenzInStunden` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step H`; `full only` |
-| `DifferenceInMinutes` / `DifferenzInMinuten` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step m`; `full only` |
-| `DifferenceInSeconds` / `DifferenzInSekunden` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step s`; `full only` |
-| `YearFromDate` / `JahrAusDatum` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part y`; `month-optional` |
-| `MonthFromDate` / `MonatAusDatum` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part M`; `day-optional` |
-| `DayFromDate` / `TagAusDatum` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part d`; `full only` |
-| `QuarterFromDate` / `QuartalAusDatum` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part M`; `day-optional` |
-| `HoursFromTime` / `StundenAusZeit` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part H`; `full only` |
-| `MinutesFromTime` / `MinutenAusZeit` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part m`; `full only` |
-| `SecondsFromTime` / `SekundenAusZeit` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part s`; `full only` |
-| `DateFromDateTime` / `DatumAusDateTime` | `scalar read` | `poisons` | `transparent` | `not-given` | n/a | n/a | n/a | `entity` | n/a | `stamp`; not stated |
-| `TimeFromDateTime` / `ZeitAusDateTime` | `scalar read` | `poisons` | `transparent` | `not-given` | n/a | n/a | n/a | `entity` | n/a | `stamp`; not stated |
-| `StartOfDateRange` / `StartAusDatumBereich` | `scalar read` | `poisons` | `field source` | `not-given` | n/a | n/a | n/a | `range entity` | n/a | `any range`; n/a |
-| `EndOfDateRange` / `EndeAusDatumBereich` | `scalar read` | `poisons` | `field source` | `not-given` | n/a | n/a | n/a | `range entity` | n/a | `any range`; n/a |
-| `DateRangesOverlap` / `DatumsBereicheUeberlappend` | `skip-invalid` | `poisons` | `enables` | `overlap scan` | `overlap scan` | not stated | `instantiated`; filter `dense` | `range entity`… | `none` | `year class`; n/a |
-| `AtLeastOneDateRangeOverlaps` / `MindestensEinDatumsBereichUeberlappend` | `skip-invalid` | `poisons` | `with Having` | `overlap scan` | `overlap scan` | not stated | `instantiated`; filter `sparse-enabled` | `range entity` `In` `range entity`… | `none` | `year class`; n/a |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `Today` / `Heute` | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | `none` | n/a | n/a | n/a | `no lift` |
+| `Now` / `Jetzt` | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | `none` | n/a | n/a | n/a | `no lift` |
+| `BaseYear` / `Referenzjahr` | n/a | n/a | `constant source` | `leaf seed` | n/a | n/a | n/a | `none` | n/a | n/a | n/a | `no lift` |
+| `Date` / `Datum` (constructor) | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | two to four components, each `entity`, String literal or extractor call | n/a | `positional`; not stated | `incomplete` | `no lift` |
+| `Time` / `Zeit` (constructor) | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | zero to three components, each `entity`, String literal or extractor call | n/a | `positional`; not stated | `incomplete` | `no lift` |
+| `DateTime` / `DateTime` (constructor) | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `entity` | n/a | `date + clock`; `full only` | `no value` | `no lift` |
+| `DateRange` / `DatumBereich` (constructor) | `scalar read` | `poisons` | `field source` | `not-given` | n/a | n/a | n/a | `range entity`, `range entity` | n/a | `range endpoint`; `full only` | not stated | `no lift` |
+| `AddDays` / `AddiereTage` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step d`; `full only` | `no value` (source); `kind default` (amount) | `no lift` |
+| `AddMonths` / `AddiereMonate` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step M`; `full only` | `no value` (source); `kind default` (amount) | `no lift` |
+| `AddYears` / `AddiereJahre` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step y`; `full only` | `no value` (source); `kind default` (amount) | `no lift` |
+| `AddHours` / `AddiereStunden` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step H`; `full only` | `no value` (source); `kind default` (amount) | `no lift` |
+| `AddMinutes` / `AddiereMinuten` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step m`; `full only` | `no value` (source); `kind default` (amount) | `no lift` |
+| `AddSeconds` / `AddiereSekunden` | `scalar read` | `poisons` | `transparent` | `not-given` | not stated | not stated | not stated | `entity`, `value` | n/a | `step s`; `full only` | `no value` (source); `kind default` (amount) | `no lift` |
+| `DifferenceInDays` / `DifferenzInTagen` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step d`; `full only` | `fillable zero` | `no lift` |
+| `DifferenceInMonths` / `DifferenzInMonaten` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step M`; `full only` | `fillable zero` | `no lift` |
+| `DifferenceInYears` / `DifferenzInJahren` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step y`; `full only` | `fillable zero` | `no lift` |
+| `DifferenceInHours` / `DifferenzInStunden` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step H`; `full only` | `fillable zero` | `no lift` |
+| `DifferenceInMinutes` / `DifferenzInMinuten` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step m`; `full only` | `fillable zero` | `no lift` |
+| `DifferenceInSeconds` / `DifferenzInSekunden` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity`, `entity` | n/a | `step s`; `full only` | `fillable zero` | `no lift` |
+| `YearFromDate` / `JahrAusDatum` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part y`; `month-optional` | `fillable zero` | `no lift` |
+| `MonthFromDate` / `MonatAusDatum` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part M`; `day-optional` | `fillable zero` | `no lift` |
+| `DayFromDate` / `TagAusDatum` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part d`; `full only` | `fillable zero` | `no lift` |
+| `QuarterFromDate` / `QuartalAusDatum` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part M`; `day-optional` | `fillable zero` | `no lift` |
+| `HoursFromTime` / `StundenAusZeit` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part H`; `full only` | `fillable zero` | `no lift` |
+| `MinutesFromTime` / `MinutenAusZeit` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part m`; `full only` | `fillable zero` | `no lift` |
+| `SecondsFromTime` / `SekundenAusZeit` | `scalar read` | `poisons` | `transparent` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | `part s`; `full only` | `fillable zero` | `no lift` |
+| `DateFromDateTime` / `DatumAusDateTime` | `scalar read` | `poisons` | `transparent` | `not-given` | n/a | n/a | n/a | `entity` | n/a | `stamp`; not stated | `no value` | `no lift` |
+| `TimeFromDateTime` / `ZeitAusDateTime` | `scalar read` | `poisons` | `transparent` | `not-given` | n/a | n/a | n/a | `entity` | n/a | `stamp`; not stated | `no value` | `no lift` |
+| `StartOfDateRange` / `StartAusDatumBereich` | `scalar read` | `poisons` | `field source` | `not-given` | n/a | n/a | n/a | `range entity` | n/a | `any range`; n/a | `no value` | `no lift` |
+| `EndOfDateRange` / `EndeAusDatumBereich` | `scalar read` | `poisons` | `field source` | `not-given` | n/a | n/a | n/a | `range entity` | n/a | `any range`; n/a | `no value` | `no lift` |
+| `DateRangesOverlap` / `DatumsBereicheUeberlappend` | `skip-invalid` | `poisons` | `enables` | `overlap scan` | `overlap scan` | not stated | `instantiated`; filter `dense` | `range entity`… | `none` | `year class`; n/a | `skipped` | `content only` |
+| `AtLeastOneDateRangeOverlaps` / `MindestensEinDatumsBereichUeberlappend` | `skip-invalid` | `poisons` | `with Having` | `overlap scan` | `overlap scan` | not stated | `instantiated`; filter `sparse-enabled` | `range entity` `In` `range entity`… | `none` | `year class`; n/a | `not evaluated` (scalar); `skipped` (list) | `content only` |
 
 A `DateRange` constructor's endpoints and a bound extractor's operand are field references only ([§6 §8](05-dates-and-time.md#8-date-ranges-and-overlap)), which is why both are field sources.
 
 ### String operators
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `Length` / `Laenge` | `scalar read` | `poisons` | `field source` | `leaf seed` | not stated | not stated | not stated | `entity` | n/a | not stated; not stated |
-| `+` (String concatenation) | `scalar read` | `poisons` | `transparent` | `not-given` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | not stated; not stated |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `Length` / `Laenge` | `scalar read` | `poisons` | `field source` | `leaf seed` | not stated | not stated | not stated | `entity` | n/a | not stated; not stated | `fillable zero` | `no lift` |
+| `+` (String concatenation) | `scalar read` | `poisons` | `transparent` | `not-given` | n/a | n/a | n/a | `value`, `value` (infix) | n/a | not stated; not stated | `empty text` | `no lift` |
 
 ### Coercions
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `RangeAsString` / `BereichAlsString` | `scalar read` | `poisons` | `field source` | `not-given` | n/a | n/a | n/a | `entity`, `digits`, `digits` | n/a | not stated; not stated |
-| `FieldValueAsString` / `FeldWertAlsString` | `scalar read` | `poisons` | `field source` | `not-given` | not stated | not stated | not stated | `entity` | n/a | not stated; not stated |
-| `RangeAsNumber` / `BereichAlsZahl` | `scalar read` | `poisons` | `field source` | `leaf seed` | n/a | n/a | n/a | `entity`, `digits`, `digits` | n/a | not stated; not stated |
-| `FieldValueAsNumber` / `FeldWertAlsZahl` | `scalar read` | `poisons` | `field source` | `leaf seed` | not stated | not stated | not stated | `entity` | n/a | not stated; not stated |
-| `ValueAsDate` / `WertAlsDatum` | `scalar read` | `poisons` | `field source` | `not-given` | n/a | n/a | n/a | `entity`, `endpoint` | n/a | not stated; `partial only` |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `RangeAsString` / `BereichAlsString` | `scalar read` | `poisons` | `field source` | `not-given` | n/a | n/a | n/a | `entity`, `digits`, `digits` | n/a | not stated; not stated | `empty text` | `no lift` |
+| `FieldValueAsString` / `FeldWertAlsString` | `scalar read` | `poisons` | `field source` | `not-given` | not stated | not stated | not stated | `entity` | n/a | not stated; not stated | `empty text` | `no lift` |
+| `RangeAsNumber` / `BereichAlsZahl` | `scalar read` | `poisons` | `field source` | `leaf seed` | n/a | n/a | n/a | `entity`, `digits`, `digits` | n/a | not stated; not stated | `fillable zero` | `no lift` |
+| `FieldValueAsNumber` / `FeldWertAlsZahl` | `scalar read` | `poisons` | `field source` | `leaf seed` | not stated | not stated | not stated | `entity` | n/a | not stated; not stated | `fillable zero` | `no lift` |
+| `ValueAsDate` / `WertAlsDatum` | `scalar read` | `poisons` | `field source` | `not-given` | n/a | n/a | n/a | `entity`, `endpoint` | n/a | not stated; `partial only` | not stated | `no lift` |
 
 `FirstDay` / `ErsterTag` and `LastDay` / `LetzterTag` are `ValueAsDate`'s endpoint arguments, not operators of their own ([§6 §6](05-dates-and-time.md#6-date-fragments-and-fragment-ranges)).
 
 ### Field reads, keyed and indexed reads, literals
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `[F]` field read | `scalar read` | `poisons` | `field source` | `leaf seed` (Number); `not-given` (other kinds) | n/a | n/a | n/a | n/a | n/a | not stated; `full only` |
-| `[F For key]` / `Fuer` semantic-index read | `scalar read` | `poisons` | `field source` | `leaf seed` (Number); `not-given` (other kinds) | not stated | `selection` | not stated | key: String literal or `entity` | n/a | not stated; not stated |
-| `[F -> Category]` category read | `scalar read` | `poisons` | `field source` | `not-given` | not stated | not stated | not stated | n/a | n/a | not stated; not stated |
-| Number literal | n/a | n/a | `constant source` | `leaf seed` | n/a | n/a | n/a | n/a | n/a | n/a |
-| String, date, clock and date-time literal | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | n/a | n/a | n/a |
-| `True` / `Wahr`, `False` / `Falsch` | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | `none` | n/a | n/a |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `[F]` field read | `scalar read` | `poisons` | `field source` | `leaf seed` (Number); `not-given` (other kinds) | n/a | n/a | n/a | n/a | n/a | not stated; `full only` | `kind default` | `no lift` |
+| `[F For key]` / `Fuer` semantic-index read | `scalar read` | `poisons` | `field source` | `leaf seed` (Number); `not-given` (other kinds) | not stated | `selection` | not stated | key: String literal or `entity` | n/a | not stated; not stated | `kind default` | `no lift` |
+| `[F -> Category]` category read | `scalar read` | `poisons` | `field source` | `not-given` | not stated | not stated | not stated | n/a | n/a | not stated; not stated | `kind default` | `no lift` |
+| Number literal | n/a | n/a | `constant source` | `leaf seed` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | `no lift` |
+| String, date, clock and date-time literal | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | `no lift` |
+| `True` / `Wahr`, `False` / `Falsch` | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | `none` | n/a | n/a | n/a | `no lift` |
 
 A semantic-index key may itself carry a filter ([§9 §3](07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation)); what that filter does to the read's typing is not stated.
 
 ### `CurrentRepetition`
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `CurrentRepetition` / `AktuelleWiederholung` | n/a | n/a | `constant source` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | n/a |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `CurrentRepetition` / `AktuelleWiederholung` | n/a | n/a | `constant source` | `leaf seed` | n/a | n/a | n/a | `entity` | n/a | n/a | n/a | `no lift` |
 
 `CurrentRepetition` answers from the iterated row and reads no cell, so no relevant set makes it UNKNOWN ([§12 §5.3](10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set)).
 
 ### `CustomCondition`
 
-| Operator | V | C | E | P | F | X | T | S | G | D |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `CustomCondition` / `ApplikationsBedingung` | `callback` | n/a | `never` | `always VALUE` | n/a | n/a | n/a | `name` | `none` | n/a |
+| Operator | V | C | E | P | F | X | T | S | G | D | N | B |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `CustomCondition` / `ApplikationsBedingung` | `callback` | n/a | `never` | `always VALUE` | n/a | n/a | n/a | `name` | `none` | n/a | `callback` | `fires on empty` |
 
 A computation refuses `CustomCondition` ([§11 §1](09-computations.md#1-the-ground-rules)).
 
@@ -486,3 +528,5 @@ The other keywords of [concrete syntax §5](12-concrete-syntax.md#5-keyword-cata
 - [ ] An S cell decides how a field is written in each slot: bare in an `entity` slot, bracketed in a `value` slot.
 - [ ] A D cell names two classes, component then precision, and an operand meets both; a refused operand's message code is the one the defining clause gives for the gate that asks first.
 - [ ] A G cell names a condition leaf's keyed-guard class; only `leaf`, `one operand` and `every operand` leaves can license a keyed group parameter of a message, and the connectives compose them.
+- [ ] An N cell names how the operator reads an empty operand, per slot where its slots differ; the kind default applies only where the cell says `kind default`.
+- [ ] A B cell names a leaf's content-gate class or an operand's lift class: a rule runs at an instance without content when its leaves compose to `fires on empty` under `And` and `Or`, when a `lifting count` stands on a comparison's small side anywhere in the condition, or by a rule-level exemption of [§2 A.4](03-empty-and-required.md#a4-the-row-gate--where-the-substitutions-stop).
