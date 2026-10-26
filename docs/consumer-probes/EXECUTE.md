@@ -564,3 +564,18 @@ The task, profile, comparison contract and milestones are the [evaluator kit](..
 - `result`: of the 1271 in-profile rows observing `compute` without `validatePart`, 1221 match and 49 are refused only at profile boundaries. The one divergence (Q-012) was this repository's evidence defect, a retained request naming its workspace model, fixed in `fd5af2f1` after a scan of all 533 requests found no other instance.
 - `questions-and-guesses`: Q-013 to Q-015 are spec gaps the worker closed by its chosen reading: a filtered temporal extremum's polarity (taken from the captures), a compromised join key's poison against EMPTY, and Date extractors over a partial Date (no separating capture for either). They feed packet v4 with the [spec audit](../PLAN.md#u01-plan).
 - `exclusions`: partial validation waits for M4.
+
+<a id="run-u01-m4"></a>
+### U01 M4 — partial validation
+
+- `task`: [U01 evaluator](#task-u01-evaluator), milestone M4
+- `status`: green
+- `started-at`: 2026-10-26T06:14+01:00, after the M3 qualification commit `7137a21`
+- `finished-at`: 2026-10-26T06:53+01:00, qualification commit `e0108b4`
+- `semantic-basis`: packet v3, cut from `f09769fbecd8a9b10cc9567cf9149e9c40b31369`
+- `oracle`: HIGH recomputed the raw-output digests and class counts from the committed reports, read the relevance module at `e0108b4`, and scanned the evaluator crate and its tests for capture names outside comments, finding none.
+- `consumer-access`: the packet and its own repository; nothing received or sent during M4.
+- `cost`: about 40 min in five slices and 16 commits; 13379 nonblank Rust lines with 162 tests; dependencies unchanged; token usage unavailable.
+- `result`: of the 1548 rows observing `validatePart`, 1443 match, none diverge, 1 is excluded and 104 are refused only at profile boundaries. The messages-only control is byte-identical to M3's, so the partial work changed no full-validation outcome. The whole contract run stands at 3828 matches and the one Q-012 divergence fixed in `fd5af2f1`.
+- `questions-and-guesses`: none logged; `FieldValuesNotUnique` over an uncovered cell and `RepetitionNotUnique`'s partner rule rest on guard tests because no capture separates the readings, and `SumOfProducts` stays refused under partial validation since no partial row reaches it.
+- `exclusions`: M5 waits for its packet and mutation instruction.
