@@ -161,6 +161,8 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 24b handback](sources/inbound-handbacks.md#src-inbound-2026-10-24b): a12-dmkits instrument `d2dd5453b` and interpreter correction `3be383e24`; the probe's rule-raise channel and the group-target custom-condition abort of KF615.
 - [October 25 handback](sources/inbound-handbacks.md#src-inbound-2026-10-25): a12-dmkits `f3c2578194b7e2293707fe33980f31920b3983d5`; the reconciliation of the fifteen entries handed off at `e9c7259f`, KF619's declaration position, KF621's dispatch merge and KF615's lookup order.
 - [October 25a handback](sources/inbound-handbacks.md#src-inbound-2026-10-25a): a12-dmkits `95b57fb4a3fb40cc7c605d9e3251e5ff35e60cc6`; acceptance of `SPEC-2026-10-25-03` and `SPEC-2026-10-24-19`, and KF619 corrected to the passing-over rule.
+- [October 26 handback](sources/inbound-handbacks.md#src-inbound-2026-10-26): a12-dmkits `eaabfc1dc29098045a602bab3c48772cea2e5bf6`, `a7f502259a5160976813629f1765e6da986bdf69` and `9afbc42f0c8113ec7b18329ad93ef82dbfdd4ead`; required-empty cells stop a `FirstFilledValue` group walk, and list readers skip rows past capacity.
+- [October 26a handback](sources/inbound-handbacks.md#src-inbound-2026-10-26a): a12-dmkits `eadcd1fedb32ad444049d07c1ae0205b154a3161`, `20e1c58431fe35f5135d000f12c5eef8ef124826` and `3217f21aa5d657527ab5e93fa385b1a701b9edd6`; `RuleGroup` in every operand gate, type-defined date-range value lists and group error targets.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route
