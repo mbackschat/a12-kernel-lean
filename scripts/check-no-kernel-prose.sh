@@ -72,6 +72,12 @@ python3 - "$work/catalogs" "$work/checks" "$work/literals" <<'PYTHON'
 import re, sys
 
 INTERPOLATION = re.compile(r'<[a-zA-Z0-9]+>|%[0-9]*\$?[a-zA-Z]')
+# Separators are dropped on both sides of the comparison (see the corpus pass), because a copy that adds
+# or drops a comma is still the sentence.
+SEPARATORS = re.compile(r'\s*[,;:]+\s*')
+
+def bare(text):
+    return ' '.join(SEPARATORS.sub(' ', text).split())
 
 # Each check is (kind, required literal, exact regex). The literal is a piece every match must contain,
 # which is what lets the corpus pass below stay a fixed-string search.
@@ -100,7 +106,7 @@ for path in open(sys.argv[1]):
         # Runs are also split at sentence ends, because a quote of the first sentence of a two-sentence
         # entry otherwise matches no run: a rendered date-type refusal quoted that way passed on
         # 2026-09-23.
-        runs = [sentence.strip().strip("'\":,;.()[] ")
+        runs = [bare(sentence.strip().strip("'\":,;.()[] "))
                 for run in INTERPOLATION.split(body)
                 for sentence in re.split(r'(?<=[.!?])\s+', run)]
         for run in runs:
@@ -113,7 +119,7 @@ for path in open(sys.argv[1]):
                 add('long', [run])
             elif len(run) >= 15 and len(run.split()) >= 4:
                 add('quoted', [run])
-        pieces = [piece for piece in INTERPOLATION.split(body) if piece]
+        pieces = [bare(piece) for piece in INTERPOLATION.split(body) if bare(piece)]
         # The 25-character floor counts an entry's LITERAL words only, so a template that is mostly
         # placeholders is judged on the words it actually contributes.
         if len(INTERPOLATION.sub('', body).strip()) >= 25:
@@ -138,6 +144,11 @@ PYTHON
 # 2s for 1,096. A context prefix on each short pattern then left ripgrep no literal to anchor on at all,
 # and the search ran unbounded at full CPU.
 #
+# SEPARATORS ARE IGNORED THROUGHOUT. The corpus is searched through a mirror whose commas, semicolons and
+# colons are blanked line by line, as the catalog runs above are, so line numbers survive. spec/11 carried
+# the index-field refusal's sentence with one added comma, which the exact gate passed until the
+# 2026-10-26 spec audit found it.
+#
 # CASE IS IGNORED THROUGHOUT. A quote that starts mid-sentence or lowercases the catalog's capital still
 # copies the sentence: spec/05 carried the date-type refusal's sentence with a lowercase first word,
 # which the case-sensitive gate passed until the 2026-10-26 spec audit found it.
@@ -146,17 +157,31 @@ PYTHON
 # fixed strings cost about 98s through BSD `grep -F -f` and under 2s through `rg -Ff`, because ripgrep
 # builds one Aho-Corasick automaton where BSD grep rescans per pattern. The fallback is kept so the gate
 # still runs where ripgrep is absent, just slowly.
-#
+
+git ls-files --cached --others --exclude-standard -- A12Kernel spec docs scripts evidence \
+  | grep -E '\.(lean|md|sh|json)$' > "$work/files"
+python3 - "$work/files" "$work/corpus" <<'PYTHON'
+import os, re, sys
+SEPARATORS = re.compile(r'[ \t]*[,;:]+[ \t]*')
+for path in open(sys.argv[1], encoding='utf-8').read().splitlines():
+    if not os.path.isfile(path):
+        continue
+    text = open(path, encoding='utf-8', errors='replace').read()
+    target = os.path.join(sys.argv[2], path)
+    os.makedirs(os.path.dirname(target), exist_ok=True)
+    with open(target, 'w', encoding='utf-8') as out:
+        out.write(re.sub(r'[ \t]+', ' ', SEPARATORS.sub(' ', text)))
+PYTHON
+
 # Both tools exit 1 for "no match" and 2 for an error, and only the first means a clean tree. The gate
 # once discarded that difference, so a pattern set too large to compile read as a pass on 2026-09-23.
 search_status=0
 if command -v rg >/dev/null 2>&1; then
-  rg --fixed-strings --ignore-case --no-heading --with-filename --line-number --file "$work/literals" \
-    --glob '*.lean' --glob '*.md' --glob '*.sh' --glob '*.json' \
-    A12Kernel spec docs scripts evidence > "$work/candidates" || search_status=$?
+  (cd "$work/corpus" && rg --fixed-strings --ignore-case --no-heading --with-filename --line-number \
+    --no-ignore --file "$work/literals" A12Kernel spec docs scripts evidence) > "$work/candidates" \
+    || search_status=$?
 else
-  grep -rniF -f "$work/literals" A12Kernel spec docs scripts evidence \
-    --include='*.lean' --include='*.md' --include='*.sh' --include='*.json' \
+  (cd "$work/corpus" && grep -rniF -f "$work/literals" A12Kernel spec docs scripts evidence) \
     > "$work/candidates" || search_status=$?
 fi
 if (( search_status > 1 )); then
