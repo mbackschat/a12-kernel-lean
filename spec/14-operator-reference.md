@@ -222,9 +222,9 @@ The two singular forms are the one-subject `AtLeastOne` and `NotAll` quantifiers
 | Operator | V | C | E | P | F | X |
 |---|---|---|---|---|---|---|
 | `FieldValuesNotUnique` / `FeldWerteNichtEindeutig` | `skip-invalid` | `poisons` | `with Having` | `positional` | `positional` | `none` |
-| `RepetitionNotUnique` / `WiederholungNichtEindeutig` | `row drop` | not stated | `enables` | `key fillability` | n/a | `key rows` |
+| `RepetitionNotUnique` / `WiederholungNichtEindeutig` | `row drop` | n/a | `enables` | `key fillability` | n/a | `key rows` |
 
-A computation refuses `RepetitionNotUnique` in an alternative's precondition and in its operation ([§11 §1](09-computations.md#1-the-ground-rules)); its C cell is `not stated` because no chapter states the refusal for every computation position.
+A computation refuses `RepetitionNotUnique` in its common precondition (unmeasured), in an alternative's precondition and in its operation ([§11 §1](09-computations.md#1-the-ground-rules)), so its C cell is `n/a`.
 
 ### Patterns and validity
 

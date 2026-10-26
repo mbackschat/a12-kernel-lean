@@ -157,6 +157,30 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-11"></a>
+### SPEC-2026-10-26-11 — Computation static admission settles five conflicting or silent clauses
+
+- `status`: pending
+- `canonical`: [spec/09 §1](../spec/09-computations.md#1-the-ground-rules), [§1.3](../spec/09-computations.md#13-the-scale-gate), [§4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape), [§5.1](../spec/09-computations.md#51-operand-reach-scope-the-level-walk-and-placement) and [§5.3](../spec/09-computations.md#53-selection-across-alternatives-and-declarations).
+- `delta`: The scale agreement gate applies per alternative, and an alternative with a tolerance band meets none. `MVK_ERROR_FIELD_NO_INDEX` is drawn only by a keyed level beside the target's group whose written path is unkeyed. The empty-precondition gate is per declaration, so a combined first-match table may hold unguarded rows. `RepetitionNotUnique` in the common precondition draws `MVK_ERROR_INVALID_LANGUAGE_FEATURE`. The full-Date-to-yearless copy refusal is scoped as measured, with the declared-Base-Year case unmeasured.
+- `basis`: the band, gate-per-declaration and `FIELD_NO_INDEX` sides follow spec/04, spec/01 and the chapter's own measured rows; the common-precondition refusal is this project's executable account, external evidence pending.
+- `acceptance`: A computation with `RepetitionNotUnique` in its common precondition, and a full-Date field copied into a yearless target under a declared Base Year, settle the two unmeasured parts.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-12"></a>
+### SPEC-2026-10-26-12 — Computation runtime results settle four conflicting or silent clauses
+
+- `status`: pending
+- `canonical`: [spec/09 §2](../spec/09-computations.md#2-separate-operations-and-the-three-outcomes), [§3.2](../spec/09-computations.md#32-an-invalidity-clear-poisons) and [§5.4](../spec/09-computations.md#54-parallel-joins).
+- `delta`: An invalid joined index cell skips the target instances under the common repeatable prefix of the target and the malformed group's parent, and every instance only when no repeatable level is shared. A skipped instance stores no value and a dependent reads it as empty. A filtered count or `Sum` over zero survivors is an ordinary `0`, with no value only where the aggregate identity has none. An empty Date operand of a Date-to-Number operation reads as fillable `0`, so only Date-valued operations clear.
+- `basis`: the prefix rule follows the chapter's measured sibling case; the survivor and Date-operand sides follow spec/07 and spec/03/spec/05; the dependent read of a skipped instance is this project's executable account, external evidence pending.
+- `acceptance`: A dependent of a joined instance skipped for an off-path invalid key settles the empty read: EMPTY computes `0`, poison clears it.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 
