@@ -40,398 +40,398 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-26-01"></a>
 ### SPEC-2026-10-26-01 — An unavailable cell makes its consuming operand UNKNOWN by consumer class and stays in its operand list
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/02 B.2](../spec/02-logic-and-formal-errors.md#b2-the-three-cell-states--the-third-one-is-not-empty) and [A.4.3](../spec/02-logic-and-formal-errors.md#a43-classifying-a-slot).
 - `delta`: Replaces the single row "an aggregate or count containing an invalid cell is non-evaluable and suppresses the rule wherever the cell sits" with consumer classes: all-cells consumers such as `NumberOfFilledFields` and `NumberOfDifferentValues` are UNKNOWN, `FirstFilledValue` is decided by the first non-empty cell, `FieldValuesNotUnique` skips the cell, and group presence follows A.4.8. The operand, not the rule, becomes UNKNOWN, and `And`/`Or` decide the rest. Replaces "an invalid cell drops out" with: the member stays in its list and settles nothing.
 - `basis`: the clause's existing cases (`FirstFilledValue` after the first filled row, the [erroneous-member checkpoint](sources/inbound-group-operand-batches.md#src-erroneous-member-quantifier-undecidable)), consistent with this project's executable account. Kernel 30.8.1.
 - `acceptance`: Reconcile each consumer class against a12-dmkits' interpreter, notably an invalid member beside a duplicate among the other members under `FieldValuesNotUnique`, which fires. `MinValue`/`MaxValue` as all-cells consumers over a malformed cell in validation are not separately measured; do not claim them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Reconciles the consumer classes: an all-cells count over a malformed cell is an UNKNOWN operand that an `Or` beside a true leaf still fires and an `And` does not, and `FieldValuesNotUnique` skips the cell and fires on a duplicate among the rest (KF629). `MinValue`/`MaxValue` over a malformed cell are measured as a sole comparison only, so inside a connective they stay unclaimed. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-02"></a>
 ### SPEC-2026-10-26-02 — In computation a field presence read poisons and group presence never does
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/02 A.4.8](../spec/02-logic-and-formal-errors.md#a48-numberoffilledgroups) and [B.6](../spec/02-logic-and-formal-errors.md#b6-validation-excludes-computation-poisons).
 - `delta`: Replaces the rationale "a presence test is not a read" with the line Kernel behaviour draws: a field-cell presence read (`FieldFilled`, the field-fill scans) poisons on a reached invalid cell like a value read, while `GroupFilled`, `GroupNotFilled`, `NumberOfFilledGroups` and the group-list quantifiers never poison. A formally invalid stored descendant counts as group content, and a descendant invalid only because its computed dependency failed supplies none.
 - `basis`: the [group-presence computation checkpoint](sources/computation-scheduling-probes.md#src-group-presence-computation-guards), Kernel 30.8.1, measured 2026-10-03 on Number inputs at depth two with one repeatable level.
 - `acceptance`: Reconcile the field/group split in a12-dmkits' computation arm and its spec/09 cross-reference. Deeper nesting and other kinds are unmeasured; do not claim them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Reconciles the field/group split in computation: `FieldFilled` over a malformed cell poisons, `GroupFilled` and `GroupNotFilled` never do, and a malformed stored descendant is group content while a descendant empty from a failed computation is not (KF630). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-03"></a>
 ### SPEC-2026-10-26-03 — A group operand of the value and filled-field counts expands recursively
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/02 A.4.1](../spec/02-logic-and-formal-errors.md#a41-operand-expansion); spec/03's contrary "direct fields" sentence is corrected when spec/03 is rewritten.
 - `delta`: States that a group operand of `NumberOfFilledFields` and `NumberOfValueInFields` expands to every field in its subtree, as for the fill quantifiers, where spec/03 said direct fields only. Nested non-repeatable subgroups under these counts are marked unmeasured.
 - `basis`: this project's executable account, which expands the counts' group operands over the whole subtree; no Kernel row separates direct from recursive expansion for these counts.
 - `acceptance`: Confirm the expansion against a12-dmkits; a row with a field only in a nested non-repeatable subgroup separates the accounts and is unmeasured.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures the separating row: an unstarred fixed group operand of both counts counts a field held only in a nested non-repeatable subgroup (KF641), now stated in spec/02 A.4.1 and spec/03 A.2. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-04"></a>
 ### SPEC-2026-10-26-04 — An instantiated-range filtered predicate never tallies a missing coordinate
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/02 A.4.5](../spec/02-logic-and-formal-errors.md#a45-validation-filtered-field-fill-lists).
 - `delta`: States that under an instantiated-range field-fill predicate a missing coordinate never enters the tally, whatever the filter would answer there. Whether the filter executes at such a coordinate stays with spec/07 §3.
 - `basis`: this project's executable account. Kernel 30.8.1 correspondence for this shape is external evidence pending.
 - `acceptance`: Reconcile against a12-dmkits; a filter that would keep a missing coordinate under an instantiated-range predicate separates the accounts.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Already satisfied upstream: a filtered field-fill list keeps a selected missing slot without tallying it (KF512). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-05"></a>
 ### SPEC-2026-10-26-05 — A starred computation count operand counts in-capacity rows on its two unmeasured shapes
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/02 A.4.8](../spec/02-logic-and-formal-errors.md#a48-numberoffilledgroups).
 - `delta`: Extends the computation rule "a starred operand takes its group's instantiated in-capacity row count" from "not established" to two shapes, each marked unmeasured: a row holding only formally invalid content counts, and a repeatable descendant does not multiply the count.
 - `basis`: this project's executable account, which reads no cell for a starred count operand. Kernel 30.8.1 correspondence is external evidence pending.
 - `acceptance`: Both shapes are unmeasured on either side; a computation over a malformed-only starred row, and one over a group with a repeatable descendant, settle them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures both shapes: a starred count counts a row holding only malformed content, and a repeatable descendant does not multiply it (KF630), now stated in spec/02 A.4.8. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-06"></a>
 ### SPEC-2026-10-26-06 — Partial validation decides a multi-cell operand's extent by one declared-slot rule and a missing keyed row by one wildcard rule
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/10 §5.4](../spec/10-validation-and-polarity.md#54-the-extent-of-a-multi-cell-operand) and [§5.5](../spec/10-validation-and-polarity.md#55-a-selection-that-resolves-to-no-row).
 - `delta`: Value-list quantifiers and value counts are decided when the union of relevant patterns covers every declared slot, replacing the one-covering-pattern wording. The terminal field coordinate covers as `0` or `1`, compares literally in wildcard dominance and is ignored by group-absence coverage. A matched key needs its row's index cell and target covered. A no-match is definite absence only when index column and target both wildcard the selected level. `FieldValuesNotUnique` takes no extent judgment. Group-operand `MinValue`/`NumberOfDifferentValues` default to the field-by-field rule.
 - `basis`: this project's executable account. The value-list union, the measured keyed coverages and the dominance rows are Kernel-measured as the chapter's `Sources:` lines name; the terminal coordinate in cell cover, the index-cell requirement, the wildcard-only no-match case, `FieldValuesNotUnique` and the group-operand defaults are external evidence pending.
 - `acceptance`: Each unmeasured part is marked in the clause; a partial call per part settles it, starting with a matched key whose index cell is uncovered.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Reconciles the measured parts: a matched key needs its own row's index cell covered (KF461 extended), partial `FieldValuesNotUnique` decides among the relevant cells (KF623), and an unstarred fixed group operand is read field by field, all now stated in spec/10 §5.4 and §5.5. The peer fixed its interpreter. The wildcard-only no-match and the terminal coordinate stay unmeasured as marked. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-07"></a>
 ### SPEC-2026-10-26-07 — Message classification enablement is a closed per-leaf table
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/10 §3.1](../spec/10-validation-and-polarity.md#31-truth-testing-and-message-classification).
 - `delta`: Replaces the three enabling examples with a closed table over every condition leaf, including the root-group arm: root `GroupFilled` and root-operand group lists other than `NoGroupFilled` do not enable, root `GroupNotFilled` and `NoGroupFilled` do; `CustomCondition`, custom-type validity and unfiltered `AllFieldsFilled`/`MoreThanOneFieldFilled`/plural `AtLeastOne`/`FieldValuesNotUnique` do not.
 - `basis`: this project's executable account. The rows named as measured members in the clause are Kernel-measured; the root arm and the membership forms are source-read; the other rows are external evidence pending.
 - `acceptance`: The clause names its measured rows; a classification grid crossing the unmeasured leaves with a reached runtime failure settles the rest.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: The peer's classification grid (KF631) agrees with every cell of the per-leaf table and measures the root arm of `unless root` and the further enabling and non-enabling leaves now named in spec/10 §3.1. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-08"></a>
 ### SPEC-2026-10-26-08 — A count types VALUE once its headroom is exhausted, and four carriers gain polarity rules
 
-- `status`: handed-off
+- `status`: answered
 - `canonical`: [spec/10 §4](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing).
 - `delta`: A fired `count < n` is OMISSION only while the count has headroom and VALUE once it is fixed, with headroom per count operator. Added rules: a filtered `NumberOfFilledFields` moves both ways when a filtered operand contributes a filled cell, a temporal `MinValue`/`MaxValue` is not-given under an empty selected operand, an open tail or a reached filter, operand-list `Min`/`Max` and `Abs` propagate by table, and `NumberOfDifferentValues` grows from an empty selected cell.
 - `basis`: this project's executable account. Headroom at the exhausted extent and the distinct count's open tail are Kernel-measured as the chapter's `Sources:` lines name; the four added carrier rules are external evidence pending and marked unmeasured.
 - `acceptance`: One fired comparison per added carrier with a fillable operand settles it.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: The peer reports confirmation but supplies rows for two carriers only: `NumberOfDifferentValues` over an empty selected cell and a reached `Having` filter on a temporal `MaxValue` (KF639), now stated in spec/10 §4. The filtered `NumberOfFilledFields` movement, operand-list `Min`/`Max` and `Abs` received no row and stay unmeasured. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-09"></a>
 ### SPEC-2026-10-26-09 — Relevance is a property of the call and formal invalidity of the cell
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/10 §5.1](../spec/10-validation-and-polarity.md#51-the-relevant-set) and [§5.3](../spec/10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set).
 - `delta`: Replaces "a field whose value leads to a formal error is not relevant": a formally invalid cell stays relevant for dispatch and is read as unavailable per consumer class. The formal-finding channel under a relevant set now carries [spec/02 B.3](../spec/02-logic-and-formal-errors.md#over-repetition)'s over-repetition exception.
 - `basis`: this project's executable account and the three-document `validatePart`/`validateFull` measurement the clause cites; the over-repetition exception is spec/02's existing rule.
 - `acceptance`: Already measured on the cited documents; no further row is needed unless a consumer observes the dispatch of a malformed relevant cell.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Already satisfied upstream: relevance belongs to the call and formal invalidity to the cell (KF224, KF621). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-10"></a>
 ### SPEC-2026-10-26-10 — An operator reference assigns every operator its class, deciding six cells the chapters left open
 
-- `status`: handed-off
+- `status`: answered
 - `canonical`: [spec/14](../spec/14-operator-reference.md), with the classes defined in [spec/02 B.2](../spec/02-logic-and-formal-errors.md#b2-the-three-cell-states--the-third-one-is-not-empty) and [spec/10](../spec/10-validation-and-polarity.md).
 - `delta`: Moves the per-operator membership tables of spec/02 and spec/10 into one table without changing a class. Adds six cells: a `Length` polarity seed, arithmetic propagation for the field-form `AbsValue`/`Round*Value`, the symmetric not-given rule on Boolean, Confirm, Enumeration and DateRange comparisons, classification by Boolean/Confirm comparisons, and keyed group operands enabling classification on the group-list quantifiers. 51 cells read `not stated`, 4 of them for one operand kind only.
 - `basis`: this project's executable account for the six added cells, external evidence pending; the moved cells keep their chapter's measured scope.
 - `acceptance`: A fired comparison per added polarity cell and a classification grid row per added enablement cell settle them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: The peer measures the classification of Boolean and Confirm comparisons and keyed group operands (KF631), the Confirm not-given row and the unfired Boolean and Enumeration comparisons (KF639), now stated in spec/10 and spec/14. The `Length` seed and the field-form propagation received no row and keep citing no measurement. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-11"></a>
 ### SPEC-2026-10-26-11 — Computation static admission settles five conflicting or silent clauses
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/09 §1](../spec/09-computations.md#1-the-ground-rules), [§1.3](../spec/09-computations.md#13-the-scale-gate), [§4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape), [§5.1](../spec/09-computations.md#51-operand-reach-scope-the-level-walk-and-placement) and [§5.3](../spec/09-computations.md#53-selection-across-alternatives-and-declarations).
 - `delta`: The scale agreement gate applies per alternative, and an alternative with a tolerance band meets none. `MVK_ERROR_FIELD_NO_INDEX` is drawn only by a keyed level beside the target's group whose written path is unkeyed. The empty-precondition gate is per declaration, so a combined first-match table may hold unguarded rows. `RepetitionNotUnique` in the common precondition draws `MVK_ERROR_INVALID_LANGUAGE_FEATURE`. The full-Date-to-yearless copy refusal is scoped as measured, with the declared-Base-Year case unmeasured.
 - `basis`: the band, gate-per-declaration and `FIELD_NO_INDEX` sides follow spec/04, spec/01 and the chapter's own measured rows; the common-precondition refusal is this project's executable account, external evidence pending.
 - `acceptance`: A computation with `RepetitionNotUnique` in its common precondition, a full-Date field copied into a yearless target under a declared Base Year, and a tolerance-banded Number alternative that fits no target scale settle the three unmeasured parts.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures all three parts: `RepetitionNotUnique` in a common precondition draws `MVK_ERROR_INVALID_LANGUAGE_FEATURE` (KF333), a full Date copied into an `MM-dd` target is refused without a Base Year and admitted with one (KF550), and a tolerance-banded copy between scales is admitted both ways (KF483). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-12"></a>
 ### SPEC-2026-10-26-12 — Computation runtime results settle four conflicting or silent clauses
 
-- `status`: handed-off
+- `status`: rejected
 - `canonical`: [spec/09 §2](../spec/09-computations.md#2-separate-operations-and-the-three-outcomes), [§3.2](../spec/09-computations.md#32-an-invalidity-clear-poisons) and [§5.4](../spec/09-computations.md#54-parallel-joins).
 - `delta`: An invalid joined index cell skips the target instances under the common repeatable prefix of the target and the malformed group's parent, and every instance only when no repeatable level is shared. A skipped instance stores no value and a dependent reads it as empty. A filtered count or `Sum` over zero survivors is an ordinary `0`, with no value only where the aggregate identity has none. An empty Date operand of a Date-to-Number operation reads as fillable `0`, so only Date-valued operations clear.
 - `basis`: the prefix rule follows the chapter's measured sibling case; the survivor and Date-operand sides follow spec/07 and spec/03/spec/05; the dependent read of a skipped instance is this project's executable account, external evidence pending.
 - `acceptance`: A dependent of a joined instance skipped for an off-path invalid key settles the empty read: EMPTY computes `0`, poison clears it.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Contrary on the acceptance cell: a dependent of a joined instance skipped at an invalid off-path key is cleared, not an empty `0`, and a starred `Sum` over the skipped targets clears too (`JoinedInstanceSkipDependentDiffTest`). spec/09 §2 and §5.4 and the Lean parallel run now poison the skip. The prefix rule and the zero-survivor clause are confirmed, and the Date-to-Number empty read is measured in rules only (KF78). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-13"></a>
 ### SPEC-2026-10-26-13 — Parallel join frames split into common and one-sided classes
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/07 §2.1](../spec/07-repetition-and-iteration.md#21-frames).
 - `delta`: The join's outer scopes form two classes. A common frame binds both sides at each common outer row before the key union, so equal keys in different outer rows do not join; a one-sided frame is a repeatable non-indexed level above exactly one joined group, iterating ordinarily with the join inside each frame row. Frames diverging on both sides are not stated, and that a common frame's outer rows follow the rule iteration domain is unmeasured.
 - `basis`: the one-sided frame is measured at the partial parallel checkpoint's frames row; the common-frame binding keeps the chapter's earlier sentence; this project's executable account admits both classes and plans no diverging frame, external evidence pending for the common frame.
 - `acceptance`: A common-frame join whose outer rows differ from the rule iteration domain settles the outer-row clause; a diverging-frame model settles admission.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures both cells: a common-frame join visits only the in-capacity frame rows, and two diverging frames are refused `MVK_NO_WILDCARD` (KF636), now stated in spec/07 §2.1. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-14"></a>
 ### SPEC-2026-10-26-14 — A group operand's compared set is bounded by its own depth
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/07 §5.3](../spec/07-repetition-and-iteration.md#53-fieldvaluesnotunique).
 - `delta`: The chapter stated a bare repeatable group operand as a per-row anchor judging the current row's cells, and separately that an ancestor operand compares the ancestor's whole extent. Both now follow one rule: repeatable levels above the operand stay bound at the rule's binding and every level below it is reopened. An ancestor operand therefore compares its whole subtree, the rule's sibling rows included, while an unstarred repeatable operand stays bound at the rule's row of its own level, which is unmeasured.
 - `basis`: the ancestor-extent case keeps the chapter's measured sentence; the unstarred repeatable case is this project's executable account, which bounds the compared set by the operand's own scope length or first star, external evidence pending.
 - `acceptance`: An unstarred repeatable group operand admitted with the error field inside it, with a duplicate only between its current row and a sibling row, stays silent under this account.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures the account: `FieldValuesNotUnique` over the rule's own repeatable group, unstarred or `RuleGroup`, compares that row's cells alone (KF624). The peer fixed its interpreter. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-15"></a>
 ### SPEC-2026-10-26-15 — Concrete syntax adopts the literal and arithmetic-shape rules of spec/04
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [concrete syntax §2](../spec/12-concrete-syntax.md#2-literals) and [§3](../spec/12-concrete-syntax.md#3-the-condition-and-operation-grammar-sketch).
 - `delta`: A number literal's total digit count is ungated, replacing the fifteen-digit bound. A power chains left-associatively in the grammar, and only an ungrouped power as the direct left operand of another power is refused, `MVK_TOO_MANY_POW_FOR_CALC`; a grouped power exponent still meets the exponent-scale check. At most one division stands in each plain-arithmetic region, `MVK_TOO_MANY_DIV_FOR_CALC`, so `[a]/[b] + [c]/[d]` is admitted. Literal scale, date classification and omitted-year completion now point to their owners in spec/04, spec/05 and spec/09.
 - `basis`: spec/04 and spec/09 already stated each rule; 16- and 19-digit literals are measured admitted; this project's lexer and arithmetic-shape checks agree.
 - `acceptance`: A 16-digit literal is admitted, `a ^ b ^ c` draws the power code while `a ^ {b ^ c}` passes it, and two divisions in separate addends are admitted. A grouped power exponent then meets the exponent-scale check: `[N] ^ {2 ^ 2}` is admitted and `[A] ^ {[B] ^ [C]}` over scale-0 fields draws `MVK_INVALID_NUMBER_FOR_EXP`.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Reconciles the arithmetic shapes, including `[Qty] ^ {2 ^ 2}` admitted and `[Qty] ^ {[E1] ^ [E2]}` drawing `MVK_INVALID_NUMBER_FOR_EXP` (KF628). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-16"></a>
 ### SPEC-2026-10-26-16 — Value lists take no parentheses, and the singular forms take no `In`
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [concrete syntax §3](../spec/12-concrete-syntax.md#3-the-condition-and-operation-grammar-sketch) and [§3.2](../spec/12-concrete-syntax.md#32-argument-slots).
 - `delta`: The parenthesised value-list form is withdrawn: a parenthesised argument is refused `MVK_UNEXPECTED_TOKEN` in general, and a parenthesised list after `In` is unmeasured. The singular value-list operators take their members after the subject's comma, as spec/06 lowers them; the `In` form of those operators is unmeasured.
 - `basis`: the chapter's own measured refusal of a parenthesised argument and spec/06's lowering; this project's reader refuses a parenthesis in any argument and matches the singular forms only without an `In` list, external evidence pending for both unmeasured forms.
 - `acceptance`: `FieldValueIncludedInValueList(f In "A", "B")` and a parenthesised list after `In` settle the two unmeasured forms.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures both forms: a singular value-list operator refuses `In`, and a parenthesised `In` list is refused, both `MVK_UNEXPECTED_TOKEN` (KF628), now stated in spec/12 and spec/11. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-17"></a>
 ### SPEC-2026-10-26-17 — Argument-slot classes and keyword categories
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [concrete syntax §3.2](../spec/12-concrete-syntax.md#32-argument-slots), [§5](../spec/12-concrete-syntax.md#5-keyword-catalog-english--german-verified-pairs) and the [spec/14 argument-slot column](../spec/14-operator-reference.md#argument-slots).
 - `delta`: Each operator's argument slots take a named slot class, whether entity, value, literal-or-bracket or another, and spec/14 assigns them per operator; slots no chapter states follow this project's reader and are marked unmeasured. The keyword catalog gains a category column; a condition-call keyword standing where an operation is expected is refused at that keyword, measured on `FieldFilled` only. One name alphabet serves every name, with path segments unmeasured.
 - `basis`: the measured slot rows of spec/04, spec/05 and spec/06, and this project's reader for the rest, external evidence pending.
 - `acceptance`: A bracketed read in an unmeasured `entity` slot, and a condition call other than `FieldFilled` where an operation is expected, settle the two largest unmeasured classes.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Both cells were already measured upstream (KF600, KF565). The peer adds the `ValueAsDate` argument slots (KF643), now stated in spec/05 §6.3. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-18"></a>
 ### SPEC-2026-10-26-18 — Message-parameter admission states its stage order, with unmeasured stages marked
 
-- `status`: handed-off
+- `status`: answered
 - `canonical`: [spec/11 A.6](../spec/11-messages-and-custom.md#a6-name-position-field-references), [A.7](../spec/11-messages-and-custom.md#a7-semantic-index-keys), [A.9](../spec/11-messages-and-custom.md#a9-the-index-terminal), [A.10](../spec/11-messages-and-custom.md#a10-the-group-position) and the [spec/14 keyed message guard column](../spec/14-operator-reference.md#keyed-message-guard).
 - `delta`: Group-parameter and index-terminal admission are ordered stage tables. Leaves outside the three guard classes supply no keyed presence guard; a name-position keyed parameter needs no guard; the value suffix's star gate answers first; a keyed or starred index read draws the repetition class even beside a plain read; a key's group is the nearest enclosing indexed repeatable group. Each order or member not measured is marked source reading.
 - `basis`: the measured rows the chapter cites, and this project's message-authoring checker for the orders and members marked unmeasured, external evidence pending for those.
 - `acceptance`: A value-list leaf beside a keyed group parameter, a keyed index terminal beside a plain read of the same index, and a deeper field keyed past an unindexed intermediate group settle the three widest unmeasured stages.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Two of the three stages are measured: a value-list leaf supplies no keyed presence guard, and a key past an unindexed intermediate group binds the nearest indexed repeatable group (KF637). The index-terminal stage received no row and stays on source reading. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-19"></a>
 ### SPEC-2026-10-26-19 — Message rendering names its one fault and treats quoted group segments as the bare group
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/11 A.11](../spec/11-messages-and-custom.md#a11-rendering-a-rule-owned-message), [A.3](../spec/11-messages-and-custom.md#a3-the-parameter-grammar), [A.9](../spec/11-messages-and-custom.md#a9-the-index-terminal) and [A.13](../spec/11-messages-and-custom.md#a13-field-owned-producers), with [A.14](../spec/11-messages-and-custom.md#a14-parameter-tokens-and-declared-names) and [B.6](../spec/11-messages-and-custom.md#b6-the-extensibility-surface) for the three negative existentials.
 - `delta`: Interpolation is a render step over a fired message except that a key selecting no row faults a value parameter, failing the rule as a runtime failure does. A quoted group segment names the same group as its bare spelling, dropping the earlier admission-only caveat. The index terminal's two readings agree on a non-member S-value, while a blank S-value is unmeasured, replacing a claim that the distinction cannot arise. Only the String-pattern and Enumeration producers insert text opaquely in one pass; requiredness re-reads the running text. Three negative existentials become evidence statements: no admitted use of `Zeile` or `Usb` is known, digit-initial and `:`-bearing declared names are refused on every measured carrier with no resolving witness known, and custom conditions and custom field types are the known hooks, with no custom computation or function known.
 - `basis`: the chapter's measured keyed-row fault, quoted-segment render and producer rows; the blank S-value case is external evidence pending.
 - `acceptance`: An index terminal over a blank S-value settles whether the two readings agree.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures the blank S-value: both readings refuse an empty S-value with `INVALID_INDEX_FIELD_NONREP_ENUM` and admit one space (KF642), now stated in spec/11 A.9. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-20"></a>
 ### SPEC-2026-10-26-20 — A partially known Date meets its omission check before its calendar reality
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/05 §6.2](../spec/05-dates-and-time.md#62-partially-known-dates).
 - `delta`: The chapter stated both that a partial Date first meets its omission check and that reality is tested before position and precision. The omission pattern now runs first, so a year-optional `yyyy-MM-dd` field holding `0000-13-00` draws `datumFalsch` with the year-optional omission key rather than a format failure.
 - `basis`: the K22 message-key capture's row `d5-3`, where both engines agree; this project's stored classifier still runs reality first, recorded under SG6.
 - `acceptance`: Row `d5-3` replays with `datumFalsch` and the year-optional omission key.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Row `d5-3` replays as `datumFalsch` with the year-optional omission key (KF640). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-21"></a>
 ### SPEC-2026-10-26-21 — Temporal operands pass one ordered gate per operator
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/05 §9.2](../spec/05-dates-and-time.md#92-the-component-classes), [§3.3](../spec/05-dates-and-time.md#33-datetimedate-time-and-the-datetime-projections), [§1](../spec/05-dates-and-time.md#1-constant-format-and-the-stringdate-literal-ambiguity-) and the [spec/14 temporal operand gate column](../spec/14-operator-reference.md#temporal-operand-gate).
 - `delta`: Each shift, difference and extractor checks its operand through one ladder: precision, then non-temporal kind, then the unit's component, with a Base Year supplying the year, then the date half, then the time half for month and year steps, then year agreement for a difference. Shifts and differences refuse a partial field before their component gates, while `DateTime`'s Date argument checks components and year first. A shift's result carries its source's component set, all six difference units are non-expandable scale 0, ordering comparisons check orderability before kind, and an odd-length empty-separator range token draws `datumBereichFormatFalsch`. A clock-only DATE_TIME (`HH:mm:ss`) is admitted by the `part H`, `part m` and `part s` extractors, measured for `HoursFromTime`, where a blanket sentence had refused every component extractor on it. Rungs and orders not measured are marked.
 - `basis`: the measured rows the chapter cites, including the yearless-anchor and composition-locus checkpoints, and this project's admission checks for the unmeasured rungs, external evidence pending for those.
 - `acceptance`: A partial field as `DateTime`'s Date argument beside a missing time half, a non-default-format shift source, and an odd-length range token settle the widest unmeasured cases.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures the three cases: `DateTime`'s Date argument refuses a partial field before its Time argument is asked (KF627), an `AddDays` result over an `MM-dd` source keeps its source's format class (KF529), and an odd-length `MM` range token is `datumBereichFormatFalsch` (KF633), now stated in spec/05. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-22"></a>
 ### SPEC-2026-10-26-22 — `Valid` over an unregistered named type is a runtime failure
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/05 §3.7](../spec/05-dates-and-time.md#37-valid-and-invalid-over-a-named-type).
 - `delta`: spec/05 said both predicates fire as an ordinary rule message for a filled field when the named type is unregistered; it now follows spec/06 A.3, where the registry lookup failure is a runtime failure of the rule.
 - `basis`: spec/06 A.3 already decided it; this project's custom-field validity agrees.
 - `acceptance`: A filled field of an unregistered named type under `Valid` separates a runtime failure from an ordinary VALUE firing.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Already satisfied upstream: a reached unregistered lookup fails the whole rule, which reports once with no references (KF51). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-23"></a>
 ### SPEC-2026-10-26-23 — Empty reads and the content gate become per-operator classes
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/03 A.1](../spec/03-empty-and-required.md#a1-the-per-kind-default), [A.2](../spec/03-empty-and-required.md#a2-where-an-operator-overrides-its-kinds-default), [A.4](../spec/03-empty-and-required.md#a4-the-row-gate--where-the-substitutions-stop) and the spec/14 [empty read](../spec/14-operator-reference.md#empty-read) and [content gate](../spec/14-operator-reference.md#content-gate) columns.
 - `delta`: Every operator takes an empty-read class and a content-gate class. The content-gate leaf inventory is closed, and composition follows the connective: `And` fires on empty only when both parts can, `Or` when either can, with `Or` measured and both `And` forms unmeasured. A tolerance comparison lifts on either side, unmeasured. An all-empty concatenation is the empty String, so its comparison is not evaluated, resolving the chapter's two statements. An empty Confirm reads false with not-given provenance and a fired comparison over it types OMISSION, now measured. Count typing, fixed-group count expansion and the empty value-list subject adopt spec/10 §4, spec/02 A.4.1 and spec/06 B.4.
 - `basis`: the measured rows the chapter cites, including the negation pair grid; this project's condition and empty-read evaluation for the leaf inventory and the unmeasured compositions, external evidence pending for those.
 - `acceptance`: An `And` of a content-only part and a fires-on-empty part over an empty instance, and a tolerance comparison with an empty right side, settle the two widest unmeasured cases.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures both cases: an `And` opens the content gate on an empty instance only when both parts can, and `DiffersWithToleranceRange1` opens it when either side counts filled fields (KF632), now stated in spec/03 A.4. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-24"></a>
 ### SPEC-2026-10-26-24 — Required gates use the field's direct parent, and a non-repeatable index field arms no generated check
 
-- `status`: handed-off
+- `status`: rejected
 - `canonical`: [spec/03 B.1](../spec/03-empty-and-required.md#b1-the-generated-rule-precisely) and [B.4](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique).
 - `delta`: The parent-option fixture now places `F5` in group `K` nested in the repeatable `C`, so both columns follow the chapter's own rule that the gate is the field's direct parent and the iteration its nearest repeatable group. An index field nominated in a non-repeatable group is admitted and read by `index(...)`, and neither generated arm checks it, unmeasured.
 - `basis`: the generated-requiredness checkpoint for the parent shape; this project's requiredness scope and index preliminary for the non-repeatable case, external evidence pending.
 - `acceptance`: An empty or duplicated index field nominated in a non-repeatable group draws no generated finding.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Contrary: an index field nominated in a non-repeatable group arms the generated mandatory check, OMISSION at the empty key while the group instance holds content, and draws no uniqueness finding (`NonRepeatableIndexFieldGeneratedChecksDiffTest`). spec/03 B.4 and the Lean index preliminary now arm it. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-25"></a>
 ### SPEC-2026-10-26-25 — Static scale and its capability become per-operator classes
 
-- `status`: handed-off
+- `status`: rejected
 - `canonical`: [spec/04 §1.1](../spec/04-numbers-and-decimals.md#11-static-scale-and-the-multiplicative-constant-capability), [§1.3](../spec/04-numbers-and-decimals.md#13-power-scale-and-the-exponent-gate), [§4.8](../spec/04-numbers-and-decimals.md#48-the-formal-check-of-a-stored-value) and the [spec/14 static scale column](../spec/14-operator-reference.md#static-scale).
 - `delta`: Every Number-valued operator takes a static-scale class and a multiplicative-constant capability. A `−1` maximum fixes the static scale at the declared minimum; `+` and `-` keep the capability only when every operand has it, and rounding removes it. The exponent gate admits a scale-0 aggregate exponent, while an aggregate over a field of nonzero scale takes the largest declared scale and is refused. A grouped power exponent meets the exponent gate, so `[A] ^ {[B] ^ [C]}` over fields is refused while `[N] ^ {2 ^ 2}` is admitted. The formal-read grammar for stored Number text is stated whole, and the constant-pair gate merges into this chapter. Each class not measured is marked.
 - `basis`: the arithmetic-shape and number-operation-node checkpoints for the power cases, the addressed-numeric checkpoints for the measured scales, and this project's scale summary and formal-read parser for the unmeasured classes, external evidence pending for those.
 - `acceptance`: `[F] ^ Sum(G*/D2)` with `D2` at scale 2, a rounded operand inside a `==` against a wider field, and a stored `-1`-maximum Number settle the widest unmeasured classes.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Contrary on one clause: a `-1` maximum is an unknown static scale, not the declared minimum, so equality, inequality, a computation to or from it and its use as an exponent are refused (`CheckerUnknownMaximumScaleAgreementTest`). spec/04 §1.1 and §4.7 and the Lean static scale summary now say so. The three acceptance cells are measured (KF625, KF628). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-26"></a>
 ### SPEC-2026-10-26-26 — A raw String's treatment becomes a per-operator class
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/06 A.1](../spec/06-strings-and-enumerations.md#a1-raw-type-strings-novaluevalidation) and the [spec/14 raw String operand column](../spec/14-operator-reference.md#raw-string-operand).
 - `delta`: Each operator takes a class for a String declared without value validation: refused as a raw read, refused by its own class, read for presence only, or read through its own placeholder or length shape. The earlier blanket refusal of every other value operation is withdrawn for entity-slot operators no chapter decides, whose cells are not stated. Group predicates, `NumberOfFilledGroups` and `CurrentRepetition` refuse a field operand by their own class, and `ValueNotConsistent` refuses a non-table subject, a raw String included.
 - `basis`: the measured rows A.1 names (`==`, `+`, `*`, computation `Abs`, the value-list quantifiers, the coercions, named-type validity, `Length`, `FirstFilledValue`, two presence counts), spec/08 §3 for bracketed reads, and this project's reader for the rest, external evidence pending.
 - `acceptance`: A raw String under `<`, `-` and `Sum` settles the three widest unmeasured classes.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures the three cells on a raw and a plain String: `<`, `-` and `Sum` (KF628), now stated in spec/06 A.1 and spec/14. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-27"></a>
 ### SPEC-2026-10-26-27 — String findings name their codes, and value-list admission states one gate order
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/06 stored-value checking](../spec/06-strings-and-enumerations.md#stored-value-checking-and-normalization), [B.3](../spec/06-strings-and-enumerations.md#b3-the-value-list-quantifiers--per-cell-three-way-classification-) and [B.4](../spec/06-strings-and-enumerations.md#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-).
 - `delta`: The String findings name their codes: a character outside the charset draws `ZeichenNichtImZeichensatz`, and the length, line-break and pattern findings their measured codes; a trailing blank draws `nachfolgendesBlank`, unmeasured. Value-list admission runs repeat, scope, base type, kind, value validation, then the values side. A Custom field counts as String in scalar membership and takes a literal values side, unmeasured. A formally unavailable member makes scalar `NotIncluded` UNKNOWN in validation while it still poisons in computation, and the pattern blacklist is stated as a character-level predicate.
 - `basis`: the string-expression, ingestion and K22 message-key captures for the measured codes, and this project's formal refusal, value-list and pattern checks for the unmeasured items, external evidence pending for those.
 - `acceptance`: A trailing blank in a String cell, a Custom field in `FieldValueIncludedInValueList` with a literal list, and a pattern containing an escaped backslash before `p` settle the unmeasured items.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures the three items: the trailing-blank code before the type check (KF32), the Custom subject on both value-list gates (KF398) and `a\\p` refused while `a\\d` is admitted (KF634). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-28"></a>
 ### SPEC-2026-10-26-28 — Semantic-index reads state their column state, index group and star classes
 
-- `status`: handed-off
+- `status`: rejected
 - `canonical`: [spec/08 §4](../spec/08-paths-and-references.md#4-rows-are-addressed-by-semantic-key-never-by-position-), [§4.1](../spec/08-paths-and-references.md#41-what-a-semantic-index-read-yields), [§1](../spec/08-paths-and-references.md#1-absolute-relative-and-short-name-references) and the [spec/14 keyed and category operand column](../spec/14-operator-reference.md#keyed-and-category-operands).
 - `delta`: A column is compromised by any in-capacity index cell that is empty, duplicated or formally invalid; rows beyond capacity are excluded. In validation a no-match over a clean column reads empty and over a compromised column UNKNOWN, which suppresses only through the branch-scoped rule rather than the whole rule; computation poisons over a compromised column. A key addresses the nearest repeatable group declaring an index field, so a chain with no repeatable index group draws `MVK_NO_INDEX_FIELD`, measured on an unindexed chain and unmeasured where the only index is the root's or a fixed group's. The star-position classes apply to every keyed operand, not only `NumberOfFilledGroups` and `RepetitionNotUnique`. In a condition a turning point naming another group than the one reached draws `MVK_INVALID_ENTITY`. Each operator's keyed and category operand handling becomes a spec/14 column, and the unmeasured items are marked.
 - `basis`: the semantic-index read, runtime-fill and K22 static checkpoints for the measured parts, and this project's semantic-index evaluation, index preliminary and reference resolution for the unmeasured ones, external evidence pending for those.
 - `acceptance`: A no-match over a column holding one empty index cell, in a branch beside an independent firing part, and a keyed `Sum` with a star at the index level settle the widest unmeasured items.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Contrary on one clause: where the only index is the root's or a fixed group's above an unbound repetition, the class is `MVK_NO_WILDCARD`, not `MVK_NO_INDEX_FIELD` (`SemanticIndexPinnedLevelLawsTest`). spec/08 §4 and the Lean admission walk now say so. The branch clause and the star cell are confirmed, and Lean now classes the star at the index level. The turning-point clause stays unmeasured. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-29"></a>
 ### SPEC-2026-10-26-29 — The data model gathers declaration rules and states each operator's fill-to-fix entry
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/01 §1.2](../spec/01-data-model.md#12-model-consistency-rules), [§1.3](../spec/01-data-model.md#13-declaration-generation-classes), [§1.4](../spec/01-data-model.md#14-variant-filters-and-where-a-filtered-declaration-is-seen), [§3.1](../spec/01-data-model.md#31-rules-validation) and the [spec/14 fill-to-fix column](../spec/14-operator-reference.md#fill-to-fix-contribution).
 - `delta`: Each operator states how its operands enter the fill-to-fix set: the measured presence-withheld and upward-count members as before, an own projection for `RepetitionNotUnique`, and every other operator ordinary, with a connective taking the union of its branches, unmeasured. A field reports its printed maximum bound before its minimum, and no other order among declaration notifications is claimed. A filtered declaration is still present where the Kernel reads the model as authored. Imported Enumeration block 6 compares its values as written, while the other blocks trim. Index nomination, Enumeration declaration checks, the declared-name table and document JSON reading now live here; the cross-reference, partial-dispatch, target self-read and no-match clauses adopt spec/07, spec/09 and spec/10.
 - `basis`: the K17 declaration checkpoint for the bound order, the inbound 2026-10-21 letter for block 6, and this project's omission inventory for the ordinary class and the connective union, external evidence pending for those.
 - `acceptance`: A firing rule `A Or B` whose two ordinary leaves read different fields shows whether fill-to-fix holds both fields, and a value comparison over a filled field shows whether the ordinary class lists it.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures both cells: an `Or`'s fill-to-fix set holds both branches' fields, the false branch's included, and a value comparison over a filled field lists that field (KF522 extended). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-27-01"></a>
 ### SPEC-2026-10-27-01 — Five unconditional build failures are not stated under a deleting variant filter
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: the build table of [spec/01 §1.2](../spec/01-data-model.md#12-model-consistency-rules), its filtered `ONLY` column.
 - `delta`: An empty type-reference id, an empty computation target path, two categories of one name, two hint-list entries for one locale and an empty DateFragment `formatOfFragment` still fail the build. Where a variant filter `ONLY` deletes the declaration, their outcome is now not stated, where the old text failed the build unconditionally.
 - `basis`: no filtered case was measured for these five, and filters are measured to lift other build refusals, such as an Enumeration without values.
 - `acceptance`: each of the five on a field that an `ONLY` filter deletes shows whether the build still fails.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures all five under a deleting `ONLY` filter (KF626): the empty type id, the empty computation target path and the duplicated category name each build with one codeless notification, and the duplicated hint-list locale and the empty `formatOfFragment` are admitted. spec/01 §1.2 and the Lean consistency route now state the lift. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-27-02"></a>
 ### SPEC-2026-10-27-02 — Two polarity rules are narrowed to their evidence: filtered value-count shrink and `CurrentRepetition`
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/10 §4](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing) for the filtered value counts and [spec/10 §4.1](../spec/10-validation-and-polarity.md#41-the-same-rule-fires-either-type) for `CurrentRepetition`.
 - `delta`: A filtered value count still shrinks only through a counted match, but that condition now rests on source reading, and a filtered count whose filter counted no match is unmeasured on a comparison only a shrink would falsify. A fired comparison against `CurrentRepetition` is VALUE beside a partner no fill can change. The former "always VALUE" no longer covers a fillable partner, which is unmeasured, while the general dispatch would type it OMISSION.
 - `basis`: the measured filtered and unfiltered value-count rows of spec/10 §4, and the general fill-direction dispatch for the fillable partner, external evidence pending.
 - `acceptance`: a filtered `NumberOfValueInFields` whose filter counts no match, under a comparison only a shrink would falsify, and `CurrentRepetition` compared with an empty Number field, show each typing.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures both typings (KF639): `CurrentRepetition` against an empty Number is OMISSION, and a filtered value count whose filter matched nothing does not shrink, now stated in spec/10 §4 and §4.1. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-27-03"></a>
 ### SPEC-2026-10-27-03 — Two spec/07 reachability claims become no-witness statements
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/07 §3.1](../spec/07-repetition-and-iteration.md#31-the-filter-condition-and-its-static-gates) for the filter gate's discriminating shape and [spec/07 §6.1](../spec/07-repetition-and-iteration.md#61-admission) for the containment gate.
 - `delta`: The model that would separate the two filter-gate accounts was called unauthorable, and the containment check was called unreachable without index-keying. Both now say only that no witness is known. The measured `MVK_NO_WILDCARD` refusal of the operand and the index-keying selection stay unconditional.
 - `basis`: no measurement settles either negative existential, and the spec rule against unmeasured negative existentials requires the weaker statement.
 - `acceptance`: a model reaching the containment gate without index-keying, or a filter-gate model whose operand is admitted, would each be a defeating witness.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: The filter-gate cell has no witness on either side (KF244). For the containment gate the peer supplies a defeating witness: a key outside every repetition reaches it without index-keying and draws `MVK_NOT_IN_GROUP` (KF612), now stated in spec/07 §6.1. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-26-30"></a>
 ### SPEC-2026-10-26-30 — The semantics map becomes a non-normative summary, and empty DateFragment, DateRange and Custom reads move to spec/03
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/SEMANTICS-MAP](../spec/SEMANTICS-MAP.md) and [spec/03 A.1](../spec/03-empty-and-required.md#a1-the-per-kind-default).
 - `delta`: The map no longer defines rules or terms: every rule it mentions is owned by the linked chapter, which wins on a difference. Its four map-only rules found owners: an empty DateFragment or DateRange operand leaves a comparison not evaluated and an empty Custom field reads as the String kind, so its comparison is not evaluated, all now in spec/03 A.1 and unmeasured; the host pointer API is in scope as data model §2.1 states it, not out of scope as the map said.
 - `basis`: this project's DateFragment, DateRange and String comparison operand reads for the three empty reads, external evidence pending, and data model §2.1 for the host pointer API.
 - `acceptance`: `[DF] == [DF2]`, `[DR] == [DR2]` and `[C] == "x"` over an empty DateFragment, DateRange and Custom field show whether each comparison is not evaluated.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `fecf855251c1245fd7048b2a509ddbb2b72989dd`.
+- `disposition`: Measures the three comparisons: an empty DateFragment, DateRange or Custom side leaves the comparison not evaluated (KF635), now stated in spec/03 A.1. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread

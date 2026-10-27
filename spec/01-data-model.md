@@ -140,16 +140,19 @@ Sources: [inbound 2026-09-26m model texts](../docs/sources/inbound-handbacks.md#
 | a Number bound written as text outside the reader's decimal grammar ([§1.3](#13-declaration-generation-classes)) | unreadable | not stated |
 | an element with an empty name; a Java-blank name of a root, group, field, rule or computation (a no-break space is an ordinary name) | build fails | admitted for a field, rule or computation the filter deletes |
 | an object-valued name | build fails | a codeless refusal |
-| a type reference with an empty id | build fails | not stated |
+| a type reference with an empty id | build fails | a codeless refusal |
 | a type-definition reference without its id | build fails | a codeless refusal |
-| a computation with an empty target path; a computation target naming any group, its own (`..`) or another | build fails | not stated |
+| a computation with an empty target path | build fails | a codeless refusal |
+| a computation target naming any group, its own (`..`) or another | build fails | build fails |
+| a computation target climbing past the root or starting with `/`; a rule error target starting with `/` | build fails | build fails |
+| a computation target naming no element | build fails | admitted |
 | a rule's error target on its own group ([§3.1](#the-error-fields-declaration)) | build fails | not stated |
-| an Enumeration with two categories of one name | build fails | not stated |
+| an Enumeration with two categories of one name, with equal or different values | build fails | a codeless refusal |
 | an Enumeration with no value, with categories or without them | build fails | admitted |
-| two hint-list entries for one locale | build fails | not stated |
+| two hint-list entries for one locale, `en_US` beside `en-US` included (an entry with no values beside a filled one is admitted) | build fails | admitted |
 | an empty index-field or sort-field name | build fails | not stated |
 | a Java-blank `format` on a Date, DateTime or Time, inside a type definition too (an omitted one is the default; a no-break space is an ordinary invalid format) | build fails | admitted |
-| an empty DateFragment `formatOfFragment` | build fails | not stated |
+| an empty DateFragment `formatOfFragment` | build fails | admitted |
 | two fields of one name | build fails | admitted when one of them is filtered `ONLY` |
 | a `variantFilter` of unknown, absent, null, object or numeric mode, or a string in the filter's place (an explicit `null` filter is admitted) | build fails | — |
 | an unreadable rule error-code member | no declaration verdict | not stated |
@@ -179,7 +182,7 @@ The required attachment rule conditions, by condition language:
 | `GroupFilled(RuleGroup) and FieldNotFilled(internal_filename)` | `KontextAngegeben(RegelKontext) und FeldNichtAngegeben(internal_filename)` |
 | `GroupFilled(RuleGroup) and FieldNotFilled(mime_type)` | `KontextAngegeben(RegelKontext) und FeldNichtAngegeben(mime_type)` |
 
-Sources: [model consistency checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-model-consistency-k17) and its [retained capture](../evidence/kernel-30.8.1/captures/model-consistency-2026-10-13/rows.json) (rows `a-ok`, `a-de-ok`), [executable declaration admission checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission), [inbound 2026-09-27a variant filter stages](../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-variant-filter-stages), [inbound 2026-09-26m error-target paths](../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21).
+Sources: [model consistency checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-model-consistency-k17) and its [retained capture](../evidence/kernel-30.8.1/captures/model-consistency-2026-10-13/rows.json) (rows `a-ok`, `a-de-ok`), [executable declaration admission checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission), [inbound 2026-09-27a variant filter stages](../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-variant-filter-stages), [inbound 2026-09-26m error-target paths](../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [inbound 2026-10-27](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 ### 1.3 Declaration generation classes
 
@@ -448,7 +451,7 @@ A **rule** has:
 
 Filter references are collected separately even inside a pruned comparison. Thus `NumberOfFilledFields(A, B) > [Limit]` contributes neither `A`, `B` nor `Limit`, while the corresponding downward and equality comparisons keep both sides. These sets are selected structurally, independently of which cells are currently filled. A connective contributes the union of its branches.
 
-Measured scope: presence-only operands excluded, an upward count comparison excluded on both sides with its filter operands retained, positive root-group presence contributing no fields, and the `NumberOfFilledFields` rows above. The `presence withheld` and `upward count` members are the closed lists column O names; that every other operator is `ordinary` and that a connective unions its branches are unmeasured.
+Measured scope: presence-only operands excluded, an upward count comparison excluded on both sides with its filter operands retained, positive root-group presence contributing no fields, and the `NumberOfFilledFields` rows above. The `presence withheld` and `upward count` members are the closed lists column O names. A connective's union is measured on `And`, where a leaf's contribution and a fired `FieldNotFilled`'s field stand together in the set, and on an `Or` that fires through its second branch while the set still holds the false first branch's field. The `ordinary` class is measured on `>` and `>=` over Number fields, a comparison over a filled field listing that field, and on `GroupNotFilled` and `NoFieldFilled`; that every other operator is `ordinary` is unmeasured.
 
 #### Address coordinates
 
@@ -471,7 +474,7 @@ Measured scope: the at-or-below half on both forms; the concrete half on the **u
 
 > **Non-normative implementation note.** A faithful `Rule` is roughly `structure Rule where errorCond : Ast; errorField : Path; severity : Severity; text : Template`. There is deliberately no `polarity` or `assert` field — those are *derived* (polarity from the data; the error semantics from "condition true ⇒ invalid").
 
-Sources: [message construction route](../docs/sources/message-and-pointer-probes.md#src-message-construction-route), [address dialect checkpoint](../docs/sources/message-and-pointer-probes.md#src-address-dialect-selector), [declaration report withholding checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14), [sort list capacity supplement](../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity), [inbound 2026-09-26m error-target paths](../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths).
+Sources: [message construction route](../docs/sources/message-and-pointer-probes.md#src-message-construction-route), [address dialect checkpoint](../docs/sources/message-and-pointer-probes.md#src-address-dialect-selector), [declaration report withholding checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14), [sort list capacity supplement](../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity), [inbound 2026-09-26m error-target paths](../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths), [inbound 2026-10-27](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 ### 3.2 Computations
 

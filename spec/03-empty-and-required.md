@@ -21,7 +21,7 @@ The third cell state (formally invalid) is [§3](02-logic-and-formal-errors.md#p
 | **confirm** | treated as **`False`** |
 | **boolean, string, enumeration, date, time, date-time** | the comparison is **not evaluated** (no error, no fire) |
 
-Three further model types read as follows when empty, unmeasured: an empty DateFragment or DateRange operand leaves the comparison **not evaluated**, and an empty Custom field reads as the String kind, so its comparison is **not evaluated** too. Other model types belong to their own type-family or registered-validator clauses; the eight-kind header does not define them. An operator may override the default for its own operands: A.2 defines the override classes.
+Three further model types read as follows when empty: an empty DateFragment or DateRange operand leaves the comparison **not evaluated**, and an empty Custom field reads as the String kind, so its comparison is **not evaluated** too. Measured on `==` and `!=`: two DateFragment or two DateRange fields fire neither with both sides empty nor with only the right side empty, while the same `!=` fires once both sides hold different values, and a Custom field compared with a String literal fires neither when empty. A left-empty DateFragment or DateRange side beside a filled right side is unmeasured. Other model types belong to their own type-family or registered-validator clauses; the eight-kind header does not define them. An operator may override the default for its own operands: A.2 defines the override classes.
 
 ```
 [Amount] < 100          -- number: FIRES on an empty Amount, because 0 < 100
@@ -49,7 +49,7 @@ Two riders:
 > ```
 > Then a comparison over any `notEvaluated` operand short-circuits to not fired. Give each consumer the provenance shape stated above rather than one universal `given` bit.
 
-Sources: [shared String expressions](../docs/sources/evaluation-and-application-routes.md#src-string-expression-family), [negation pair grid](../docs/sources/evaluation-and-application-routes.md#src-negation-pair-grid).
+Sources: [shared String expressions](../docs/sources/evaluation-and-application-routes.md#src-string-expression-family), [negation pair grid](../docs/sources/evaluation-and-application-routes.md#src-negation-pair-grid), [inbound 2026-10-27](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 ### A.2 Where an operator overrides its kind's default
 
@@ -85,8 +85,8 @@ The classes that deviate from the kind default carry these rules:
 **A cell count never counts an empty cell.** The cell counts are `NumberOfFilledFields`, `NumberOfValueInFields` and `NumberOfDifferentValues`; `NumberOfFilledGroups` reads group presence instead ([§1 A.4.8](02-logic-and-formal-errors.md#a48-numberoffilledgroups)). `NumberOfValueInFields(0 In …)` does *not* count an empty number as a match for `0`. A fired comparison over a count is typed by [§12 §4's counts and headroom](10-validation-and-polarity.md#counts-and-headroom).
 
 - **An all-empty operand list still counts `0`** and compares normally.
-- **A formally invalid operand makes a cell count unavailable** rather than being skipped or counted as filled, so no comparison against it fires; column V of the [operator reference](14-operator-reference.md#unavailable-read-in-validation) gives each count's class. Emptiness and invalidity are therefore not one state here. Measured on `NumberOfFilledFields`: a filled cell beside an invalid one fired none of three rules comparing the count to `0`, `1` and `2`; the other cell counts' invalid reads are unmeasured.
-- **A fixed group operand expands to its fields** for both `NumberOfValueInFields` and `NumberOfFilledFields`, recursively, as [§1 A.4.1](02-logic-and-formal-errors.md#a41-operand-expansion) states. The count's headroom is read over that expansion ([§12 §4](10-validation-and-polarity.md#counts-and-headroom)). Reading the valueless group path itself as one empty cell is not equivalent. A nested non-repeatable subgroup below the fixed group operand is unmeasured.
+- **A formally invalid operand makes a cell count unavailable** rather than being skipped or counted as filled, so no comparison against it fires; column V of the [operator reference](14-operator-reference.md#unavailable-read-in-validation) gives each count's class. Emptiness and invalidity are therefore not one state here. Measured on `NumberOfFilledFields`: a filled cell beside an invalid one fired none of three rules comparing the count to `0`, `1` and `2`. `NumberOfDifferentValues` is unavailable over an invalid cell too: as for `NumberOfFilledFields`, an `Or` beside a true part still fires while an `And` with a true part stays silent ([§3 B.2](02-logic-and-formal-errors.md#b2-the-three-cell-states--the-third-one-is-not-empty)). `NumberOfValueInFields`' invalid read is unmeasured.
+- **A fixed group operand expands to its fields** for both `NumberOfValueInFields` and `NumberOfFilledFields`, recursively, as [§1 A.4.1](02-logic-and-formal-errors.md#a41-operand-expansion) states. The count's headroom is read over that expansion ([§12 §4](10-validation-and-polarity.md#counts-and-headroom)). Reading the valueless group path itself as one empty cell is not equivalent. A field held only in a nested non-repeatable subgroup below the fixed group operand is counted as a direct field is, measured for both counts.
 
 #### Operand-list `Min`/`Max` against the aggregates
 
@@ -98,7 +98,7 @@ These two rules are one design split seen from both sides: `0` is `Sum`'s neutra
 
 Measured scope: the classes rest on the clauses each bullet names; [§12 §4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing) records which of their typings are measured, and the String expression grid measures `empty text` on concatenation, `RangeAsString` and Number `FieldValueAsString`.
 
-Sources: [shared String expressions](../docs/sources/evaluation-and-application-routes.md#src-string-expression-family).
+Sources: [shared String expressions](../docs/sources/evaluation-and-application-routes.md#src-string-expression-family), [inbound 2026-10-27](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 ### A.3 What an all-empty selection folds to (the aggregate identities)
 
@@ -132,7 +132,7 @@ Thus, in an instance holding other content, `MaxValue(A,B) == 0` fires with both
 **Every condition leaf either can fire on empty or is content only, and the connectives compose it:** an `And` can fire on empty when both its parts can, an `Or` when either part can. Column B of the [operator reference](14-operator-reference.md#content-gate) assigns each leaf its class.
 
 - Measured `fires on empty` members, each firing over a blank root: `FieldNotFilled`, `NoFieldFilled`, `NotAllFieldsFilled`, `NotExactlyOneFieldFilled`, `GroupNotFilled`, `NoGroupFilled`, `NotAllGroupsFilled`, `NoFieldValueIncludedInValueList` and `Invalid` over `Date(...)`. A [`CustomCondition`](11-messages-and-custom.md#b3-the-invocation) leaf can fire on empty because its hidden dependencies are not represented in the condition.
-- Measured composition: an `Or` with one part that can fire on empty can fire on empty (`AllFieldsFilled(…) Or NoFieldFilled(…)`, `FieldNotFilled(…) Or FieldFilled(…)`). An `And` with a content-only part (`[Email] == "e" And FieldNotFilled(…)`) and an `And` of two parts that can fire on empty are unmeasured.
+- Measured composition: an `Or` with one part that can fire on empty can fire on empty (`AllFieldsFilled(…) Or NoFieldFilled(…)`, `FieldNotFilled(…) Or FieldFilled(…)`). An `And` of two parts that can fire on empty can fire on empty (`FieldNotFilled(Email) And FieldNotFilled(Note)` fires over a blank document, its root absent or present and empty), while an `And` with a content-only part cannot (`[Email] == "e" And FieldNotFilled(Note)` stays silent there and fires once `Email` holds `e`).
 - Every other leaf is content only; the field-read comparison above is the measured case, and the other content-only assignments are unmeasured.
 
 #### Counts lift the gate without composing
@@ -144,7 +144,7 @@ Thus, in an instance holding other content, `MaxValue(A,B) == 0` fires with both
 | `<`, `<=` | the left |
 | `>`, `>=` | the right |
 | `==`, `!=` | either |
-| `DiffersWithToleranceRange1`, `2`, `5`, `10` | either (unmeasured) |
+| `DiffersWithToleranceRange1`, `2`, `5`, `10` | either (measured on `DiffersWithToleranceRange1`) |
 
 **The lift does not compose:** beneath `And` beside a part that cannot fire on emptiness it still lifts the gate. Over a blank root:
 
@@ -158,7 +158,7 @@ Thus, in an instance holding other content, `MaxValue(A,B) == 0` fires with both
 | `1 >= NumberOfFilledFields(A, W)`, `NumberOfFilledFields(A, W) <= 1` | fire |
 | `NumberOfFilledGroups(G1, G2) + [W] >= 0`, `0 <= …` | silent |
 
-Measured on fixed operands, one root, connectives one level deep and Number operands of `NumberOfDifferentValues`. A starred count, the root-group count and a tolerance comparison are unmeasured. Every other operand, `NumberOfValueInFields` included, does not lift the gate (unmeasured beyond field reads and `+`).
+Measured on fixed operands, one root, connectives one level deep and Number operands of `NumberOfDifferentValues`. A tolerance comparison lifts the gate with a `NumberOfFilledFields` count on either side, measured on `DiffersWithToleranceRange1`, where the same comparison over a field read and `+` stays silent over a blank root. A starred count and the root-group count are unmeasured. Every other operand, `NumberOfValueInFields` included, does not lift the gate (unmeasured beyond field reads and `+`).
 
 #### Rule shapes that skip the gate
 
@@ -178,14 +178,14 @@ Partial validation overrides the gate entirely: a *relevant* instance is always 
 | `fires on empty` | condition leaf | can hold at an instance without content; composes through `And`/`Or` |
 | `content only` | condition leaf | does not let the rule run without content by itself |
 | `small-side lift` | comparison | content only, and lifts the gate from the whole condition when a `lifting count` stands on its small side |
-| `either-side lift` | comparison | as `small-side lift`, with either operand the small side (unmeasured) |
+| `either-side lift` | comparison | as `small-side lift`, with either operand the small side (measured on `DiffersWithToleranceRange1`) |
 | `lifting count` | operand | lifts the gate from a comparison's small side |
 | `no lift` | operand or operation | never lifts the gate; a `lifting count` beneath it still lifts |
 | `n/a` | — | a connective, which composes its parts as above, or an operator with no admitted witness |
 
 > **Non-normative implementation note.** The row gate is easy to miss and produces "fires on a blank document" bugs. Evaluate a rule at an instance under full validation when `hasContent(instance) ∨ firesOnEmpty(cond) ∨ smallSideCount(cond) ∨ skipsGate(rule)`, where `firesOnEmpty` is the leaf class folded with `∧` for `And` and `∨` for `Or`, `smallSideCount` is tested over the whole condition, never through the connectives, and `skipsGate` recognizes the two rule shapes above. Treat an instantiated repeatable row as `hasContent := true` by construction. This eligibility says only that a `CustomCondition` callback may be reached; its supplied relevance and formal-invalid context still decide what it returns.
 
-Sources: [group-count gate](../docs/sources/group-list-and-capacity-probes.md#src-group-count-empty-gate), [rule-bucket gate](../docs/sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate), [count beneath `And`](../docs/sources/group-list-and-capacity-probes.md#src-empty-gate-count-beneath-and), [inbound 2026-10-02 rule buckets](../docs/sources/inbound-handbacks.md#inbound-2026-10-02-rule-buckets), [negation pair grid](../docs/sources/evaluation-and-application-routes.md#src-negation-pair-grid), [negation pair supplement](../docs/sources/evaluation-and-application-routes.md#src-negation-pair-supplement), [blank-root dispatch](../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06).
+Sources: [group-count gate](../docs/sources/group-list-and-capacity-probes.md#src-group-count-empty-gate), [rule-bucket gate](../docs/sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate), [count beneath `And`](../docs/sources/group-list-and-capacity-probes.md#src-empty-gate-count-beneath-and), [inbound 2026-10-02 rule buckets](../docs/sources/inbound-handbacks.md#inbound-2026-10-02-rule-buckets), [negation pair grid](../docs/sources/evaluation-and-application-routes.md#src-negation-pair-grid), [negation pair supplement](../docs/sources/evaluation-and-application-routes.md#src-negation-pair-supplement), [blank-root dispatch](../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06), [inbound 2026-10-27](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 ---
 
@@ -235,7 +235,7 @@ Some UIs show a star for mandatory fields, computed by a fixed "star method" tha
 - the index field is **auto-required** (parent-filled semantics), drawing `mandatoryField` on an empty index cell;
 - its values are auto-checked for **uniqueness**: the engine emits `uniqueIndex` on **every** row whose non-empty index value duplicates another's (*not* all-but-first), scoped **per parent row**, as a **VALUE** error. An empty index value is *excluded* from the uniqueness check and draws `mandatoryField` instead.
 
-A non-repeatable group may also nominate an index field; that nomination is admitted, and a message's `index(...)` parameter reads it ([§13 A.9](11-messages-and-custom.md#a9-the-index-terminal)). It arms neither check (unmeasured).
+A non-repeatable group may also nominate an index field; that nomination is admitted, and a message's `index(...)` parameter reads it ([§13 A.9](11-messages-and-custom.md#a9-the-index-terminal)). It arms the mandatory check and not the uniqueness check. An empty nominated field in a present non-repeatable group draws `mandatoryField`, OMISSION, at that field, measured on a group directly under the root and on one inside a repeatable group, each holding only another field; where that inner group is absent nothing is drawn. Two such inner groups in different rows of the enclosing repeatable group carrying one key value draw nothing. The same documents without the nominations draw nothing. Whether the empty nominated field then enters the third state for authored rules is unmeasured.
 
 **A duplicate-flagged cell enters the third state ([§3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state)) field-locally.**
 
@@ -248,7 +248,7 @@ Because the engine generates both checks, a model must **not** also author the e
 
 > **Non-normative implementation note.** Treat "required" and "index field" as *desugaring passes* over the model that emit ordinary generated rules **plus** staged checked-cell annotations from [§3 B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state). A `required` flag emits a `mandatoryField` rule with the ancestor-decided condition. Validation evaluates that rule on the base checked cells, derives the referenced group's admitted-content, error and relevance state, retains any hit and message, and only on a hit adds the required finding to the empty target for authored-rule observation; computation ignores this validation-scoped annotation. An `indexFieldName` emits the mandatory rule and the per-parent-row uniqueness check, marking *all* duplicate participants not check-relevant, and registers the join key. Desugaring keeps the evaluator's core small and mirrors how the engine treats these as generated, not special-cased.
 
-Sources: [inbound 2026-09-27a index and sort lookup](../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21).
+Sources: [inbound 2026-09-27a index and sort lookup](../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [inbound 2026-10-27](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
 ---
 
