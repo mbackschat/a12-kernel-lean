@@ -210,7 +210,7 @@ def checkRawMembershipLiterals (model : FlatModel) (scalar : Bool) (subjects : L
 
 /-- Value counting checks duplicate/arity/root shape before its constant-selected declaration
 scan. String domains precede raw-string and temporal-literal refusal; Boolean labels are the
-represented default profile (CheckAnzahlWertOpImpl; CheckEntityListenUtils; spec/07 §4). -/
+represented default profile (CheckAnzahlWertOpImpl; CheckEntityListenUtils; spec/07 §3.5). -/
 def checkRawValueCount (model : FlatModel) (reads : List RawListRead) (expected : Expr) : Lowering Unit := do
   checkRawListDuplicates reads
   if reads.length < 2 && !reads.any (·.isMany) then
@@ -326,7 +326,7 @@ def rawFirstFilledType (declarations : List FlatFieldDecl) : Lowering NumericOpe
 /-- Product shape is checked after all reads and before Number typing. A filter restricts its
 star; owning-group disagreement still precedes that restriction. Singleton capacities retain
 star spelling independently of whether their level demands one (CheckEntityListenUtils;
-spec/07 §4; the product operand-reach handback). -/
+spec/07 §3.8; the product operand-reach handback). -/
 def rawProductType (model : FlatModel)
     (reads : List RawListRead) : Lowering NumericOperandType := do
   let fields ← reads.mapM fun read => do

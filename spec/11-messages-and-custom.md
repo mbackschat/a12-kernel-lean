@@ -570,33 +570,9 @@ Sources: [inbound 2026-09-26n field message gates](../docs/sources/inbound-handb
 
 **A parameter's name token is wider than any group may be named.** The Kernel refuses to declare a group named `1Rows` or `Ro-ws` with `MVK_PATH_INVALID`, and a digit-initial or `:`-bearing name is refused on every declaring carrier measured, so the token grammar's digit-initial and `:`-bearing names are well formed but no witness of one resolving is known; their `INVALID_GROUP` is the only answer measured.
 
-**The declared-name alphabet is the carrier's, and it is not one law.** Five of thirteen name shapes answer differently on a **field** than on a **group**, and neither carrier is simply the stricter one:
+**The declared-name alphabet is the carrier's, and it is not one law;** the per-carrier table, its rules and a rule name's classes are [data model §1.3](01-data-model.md#names-groups-and-texts)'s.
 
-| Name shape | Root group | Nested group | Field |
-|---|---|---|---|
-| leading underscore (`_Orders`, `_Slots`) | admitted | `NAME_STARTS_WITH_UNDERSCORE_AND_WRONG_PATTERN`, the prefix being reserved for `__meta` and `__attachment_meta*` | admitted |
-| `ä`, `ö` or `ß` inside or trailing (`Teilä`, `Slöts`, `Codeß`, `Codeä`) | admitted | admitted | refused |
-| `ä` or `ß` leading (`äCode`, `ßCode`) | admitted | `MVK_PATH_INVALID` | refused |
-| `Ö` leading (`Ördner`) | admitted | unmeasured | unmeasured |
-| `é`, `中` or the Arabic-Indic digit `١`, leading or inside (`Codeé`) | `MVK_PATH_INVALID` | `MVK_PATH_INVALID` | `MVK_PATH_INVALID` |
-| 61 characters | refused, codeless | refused, codeless | admitted |
-| `.` or `:`, a leading colon included (`:Code`) | `MVK_PATH_INVALID` alone | `MVK_PATH_INVALID` alone | `MVK_NAME_INVALID_DOT_COLON_A12_DV` |
-| a dot followed by a digit, an underscore, another dot or nothing (`Co.1de`, `Co._de`, `Co..de`, `Co.`) | `MVK_PATH_INVALID` alone | `MVK_PATH_INVALID` alone | `MVK_PATH_INVALID` alone |
-| digit-initial | `MVK_NAME_STARTS_WITH_DIGIT`, no path class | `MVK_PATH_INVALID`, no name class | `MVK_PATH_INVALID` and `MVK_NAME_STARTS_WITH_DIGIT_A12_DV` |
-| `xml`, `XML` or `Xml` prefix | `MVK_NAME_STARTS_WITH_XML` | `MVK_NAME_STARTS_WITH_XML` | `MVK_NAME_STARTS_WITH_XML_A12_DV` |
-| `/` inside an otherwise legal name | `MVK_PATHS_INCONSISTENT` | `MVK_PATHS_INCONSISTENT` | `MVK_PATHS_INCONSISTENT` |
-| `/` beside a refused path character (`Co/-de`, `-Co/de`) | `MVK_PATH_INVALID` | `MVK_PATH_INVALID` | `MVK_PATH_INVALID` |
-
-- On a root or nested group all seven measured dot and colon spellings draw `MVK_PATH_INVALID` alone.
-- The group's non-ASCII allowance is not "any non-ASCII letter": that it is exactly the German umlauts and `ß` its name pattern names is source reading, with `ü`, `Ä` and `Ü` unmeasured. The 60-character limit is the group's alone.
-- **The code moves with the carrier.** A field answers a second validator the group's name never reaches, so its name classes carry the `_A12_DV` suffix, where both group carriers answer with the unsuffixed spellings. Whether a *name* class fires at all splits root from nested, as the digit-initial row shows.
-- **A `/` inside an otherwise legal name answers alike everywhere** because it makes the element's own path disagree with the tree rather than being a bad name.
-- **A refused path character withholds the carrier's name classes:** `1Codeé`, `xmlCodeé` and `_Codeé` draw `MVK_PATH_INVALID` alone on every carrier, where a field's `1Co.de`, whose dot is not in a refused position, keeps `MVK_PATH_INVALID`, `MVK_NAME_INVALID_DOT_COLON_A12_DV` and `MVK_NAME_STARTS_WITH_DIGIT_A12_DV` together.
-- **Codeless notifications.** Where `MVK_PATH_INVALID` is a name's only named class, a codeless notification stands beside it in the whole-model report, except on a root group's `Co/-de`, and none stands beside a field's digit-initial pair; the stage that raises it is not established.
-- **A rule's name** that is digit-initial or dotted produces a codeless consistency notification; an empty rule name instead prevents model construction. An `xml` prefix on a rule is admitted.
-- So one carrier's measured law does not transfer to another: applying it refuses legal models.
-
-Sources: [parameter token versus group declaration alphabet checkpoint](../docs/sources/message-and-pointer-probes.md#src-parameter-token-versus-group-declaration-alphabet), [inbound 2026-09-21 corrections](../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections), [inbound 2026-09-26n field message gates](../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates), [inbound 2026-09-27a element paths](../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-element-paths), [executable declaration admission checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission).
+Sources: [parameter token versus group declaration alphabet checkpoint](../docs/sources/message-and-pointer-probes.md#src-parameter-token-versus-group-declaration-alphabet).
 
 ---
 

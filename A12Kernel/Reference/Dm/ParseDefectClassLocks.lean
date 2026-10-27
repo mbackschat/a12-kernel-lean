@@ -31,7 +31,7 @@ example :
     classOf "1 + + 1" = some "MVK_UNEXPECTED_TOKEN" := by
   native_decide
 
-/-- The spec's production-close and walked-path rows (spec/12 §12.3), read on a form with String
+/-- The spec's production-close and walked-path rows (spec/12 §3.1), read on a form with String
 `Reference` and `Code` and a repeatable `Items` holding a Number `Count`. -/
 private def spec12 : FlatModel :=
   { fields := [{ id := 0, groupPath := ["Form"], name := "Reference", policy := { kind := .string } },
@@ -72,7 +72,7 @@ example :
   native_decide
 
 /- A `.*` step is walked before its own class is raised: a step naming nothing draws the name's class,
-a resolving one `MVK_POINT_IN_A12_MODEL` (spec/12 §12.3); the plain star is the admitted twin. -/
+a resolving one `MVK_POINT_IN_A12_MODEL` (spec/12 §3.1); the plain star is the admitted twin. -/
 example :
     spec12Class "FieldFilled(Items.*/Count)" = some "MVK_POINT_IN_A12_MODEL" ∧
     spec12Class "FieldFilled(NoSuch.*/Items/)" = some "MVK_INVALID_ENTITY" ∧
@@ -92,7 +92,7 @@ private def admissionClass (text : String) : Option String :=
     | .error refusal => some refusal.detail
 
 /- A comparison standing as an operation's operand is a token defect, after the operand read before it
-keeps its own production's check (spec/12 §12.3); the rounding twins separate the gate from the token,
+keeps its own production's check (spec/12 §3.1); the rounding twins separate the gate from the token,
 and the connective is this account's extension of the comparison rows. -/
 example :
     admissionClass "Abs(RoundUpValue(Reference, 2) > 1) > 0" = some "MVK_NO_NUMBER" ∧
@@ -167,7 +167,7 @@ example :
 
 /- The lexer runs on demand: a defect in the token after a completed read answers first, comments
 counting as tokens and whitespace not, while one a token later yields to the read's class and a parse
-failure at an earlier real token keeps its own (spec/12 §12.3, token demand; k22-static-s6-2026-10-24,
+failure at an earlier real token keeps its own (spec/12 §3.1, token demand; k22-static-s6-2026-10-24,
 `z10`). -/
 example :
     spec12Class "FieldFilled(Reference) And [Items*/Count] %" = some "MVK_LEXER_STANDARD_ERROR" ∧

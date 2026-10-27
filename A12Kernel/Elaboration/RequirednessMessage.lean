@@ -15,7 +15,7 @@ and `$field$<fieldName>.Value$` keeps `$field` alone, the peer's row `r14`
 (`docs/sources/inbound-handbacks.md#src-inbound-2026-10-18`). Whether the field's own name in place of
 `<fieldName>` is replaced is unmeasured. The producer
 fires only on an empty field, so the value is always the empty text. Both spellings substitute in a
-model whose conditions are English; a German-condition model is unmeasured.
+model of either condition language, as spec/11 A.13 states.
 
 A field without a template takes the catalog's default text, a host input this module does not name. -/
 

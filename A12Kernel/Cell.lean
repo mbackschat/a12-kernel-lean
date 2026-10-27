@@ -1,6 +1,6 @@
 /- # A12Kernel.Cell — the phase-sensitive cell model
 
-Implements `spec/13`'s phase-sensitive cell boundary as two levels: an invariant
+Implements the phase-sensitive cell boundary of `docs/LEAN-ENCODING-GUIDE.md` §1 as two levels: an invariant
 `CheckedCell` (raw placement + optional typed semantic value + formal findings), and a
 *phase-indexed* read producing a `CellObservation`, where the same formal invalidity
 surfaces as `unknown` in validation but `poison` in computation.

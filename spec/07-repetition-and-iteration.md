@@ -41,15 +41,7 @@ Sources: [iteration-domain and ancestor-error controls](../docs/sources/evaluati
 
 ### 1.2 The document the rule iterates
 
-**Runtime evaluation uses the V2-effective repetition structure.** A mutable V1 document may contain only a placement at repetition `n`, but validation and computation first convert it to immutable V2. That conversion creates missing ancestors and pads repetitions `1..n-1` with empty group instances, scoped independently under each concrete parent. Those padded repeatable rows are instantiated content and participate in per-row iteration exactly like explicitly created empty rows.
-
-This is not an alternative sparse JSON encoding: every object in a canonical Document JSON array is explicit, including `{}`. At the Kernel Document JSON conversion boundary:
-
-- **Non-object array elements** (including `null`, scalars and nested arrays) are discarded before surviving objects receive consecutive coordinates. A null prefix therefore does not create predecessor rows or preserve the original JSON index; an explicit empty object does. This normalization applies independently within each surviving parent. It is separate from field-valued `null`, which remains present-empty.
-- **A member the model declares nothing for is dropped**, leaving no cell, no group and no validation finding, so a document carrying it validates exactly as the one without. Measured members: an undeclared string or object member of a fixed group; an undeclared string key inside a repeatable row; a boolean, `null`, number or array member of a fixed group; an object in a nested fixed group or inside a row; a string beside the root group. Unmeasured: an undeclared boolean, `null`, number or array member inside a row; an undeclared member of any kind other than a string at the document root; any notification the conversion raises for a dropped member.
-- A declared member whose JSON shape does not fit its declaration (an object where a repeatable group is declared, an array where a fixed group is declared, an object or array where a field is declared) is not stated.
-
-Sources: [conversion checkpoint](../docs/sources/evaluation-and-application-routes.md#src-json-row-normalization), [undeclared-member checkpoint](../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members), [inbound 2026-10-23](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-23) (KF1).
+**The document a rule iterates** — the V2-effective repetition structure, its padded rows and the JSON conversion boundary — is [data model §2.3](01-data-model.md#23-reading-a-document-from-json)'s.
 
 ### 1.3 Evaluation domains
 
@@ -157,15 +149,7 @@ Sources: [walk batch reading-scope checkpoint](../docs/sources/group-list-and-ca
 
 ### 1.6 The error target's declaration
 
-**The error field's declaration is checked before the condition's grammar.** The Kernel resolves the rule's error entity and refuses a null one (`MVK_MISSING_ERROR_FIELD`) before it parses the condition at all, so a rule with no usable error field reports that class and none of the syntax classes its condition would otherwise draw.
-
-- A declared relative path that resolves to nothing lands in the same class, beside `MVK_ERROR_FIELD_MISSING`, the pair [01 §3](01-data-model.md#3-rules-and-computations) also names for a blank path. `MVK_ERROR_FIELD_NOT_VALID` is the narrower state of an error entity that resolves but is absent from the model's entity container, and it — unlike the missing class — is suppressed under a lenient parse.
-- The failed target withholds the message's error-text classes too, `RULE_HAS_NO_ERRORTEXT` included, exactly as a refused condition does ([11](11-messages-and-custom.md#part-a--13-error-message-interpolation)). A reserved rule name's `MVK_RULE_NAME_INVALID`, a blank code's `MVK_ERROR_CODE_MISSING` and a missing or blank text's `MVK_ERROR_MESSAGE_MISSING` are reported beside the pair, and so is `MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING` when one of two declared locales has a text.
-- A target naming a group is an ordinary declared entity: with `../Items` as target and a condition reading only `Value`, the rule draws `MVK_ERROR_FIELD_NOT_REFERENCED`, which withholds the error text and gives way to an unresolved name.
-
-**The declared path climbs from the rule element and takes `..` lexically.** From a rule in `/Order`, `../Code` names `/Order/Code`, while `Code` names a child of the rule element and draws `MVK_ERROR_FIELD_MISSING` with `MVK_MISSING_ERROR_FIELD`. An up-step after a named segment is admitted, `../Meta/../Code` naming `/Order/Code`, where a condition reference refuses it as a token. Under a condition naming no group, a path landing on a group draws `MVK_ERROR_FIELD_NOT_REFERENCED` (`../Meta`, `../Meta/Ref/..`), except on the group the rule is declared in, where the model fails to build and no class is reported, by whichever spelling reaches it (`../Code/..`, `../../Order`); to a rule declared in `/Order/Meta` the root is an ordinary group (`../..`). A computation's target naming any group, its own (`..`) or another, fails the build.
-
-Sources: [declaration report-withholding checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14), [sort-list capacity supplement](../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity), [inbound 2026-09-26m error-target paths](../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths).
+**The error target's declaration** — its check before the condition's grammar, the error-target pair, what a failed target withholds and how its path climbs — is [data model §3.1](01-data-model.md#the-error-fields-declaration)'s; a computation target naming any group fails the build ([data model §1.2](01-data-model.md#defects-that-leave-no-model)).
 
 ### 1.7 A group as error entity
 
@@ -278,16 +262,9 @@ The date differences retain two ordered operands under their own zero-sensitive 
 
 - `DifferenceInMonths` and `DifferenceInYears`: every field operand contributes its declaration-owned ordinary scope, compatible prefixes merge to the deeper scope, and a direct or range-selected `BaseYear` operand contributes none.
 - `DifferenceInDays` shares that scope, zero-admission and addressed-order account, and admits a date-bearing DateTime operand ([§6 §9](05-dates-and-time.md#9-datetime-rides-the-date-format-definition--but-the-operand-gates-are-per-operator-)).
-- `DifferenceInHours`, `DifferenceInMinutes` and `DifferenceInSeconds` share the same two-field scope and zero-admission branch. They admit an operand whose declared format carries a date component and the selected time component, the declared kind taking no part, and both operands must agree on year presence; `BaseYear` is not a legal operand. The format rule is measured on `DifferenceInHours`; for `DifferenceInMinutes` and `DifferenceInSeconds` it is unmeasured ([§6 §2](05-dates-and-time.md#2-addition-and-difference-are-asymmetric-and-calendar-corrected)).
+- `DifferenceInHours`, `DifferenceInMinutes` and `DifferenceInSeconds` share the same two-field scope and zero-admission branch. They admit an operand whose declared format carries a date component and the selected time component, the declared kind taking no part, and both operands must agree on year presence; `BaseYear` is not a legal operand. The format rule and its measured scope are [§6 §9.2](05-dates-and-time.md#92-the-component-classes)'s.
 
-**Runtime of these operations.** Their evaluation is owned by [§5](04-numbers-and-decimals.md#4-other-numeric-constraints), [§6](05-dates-and-time.md#2-addition-and-difference-are-asymmetric-and-calendar-corrected) and [§7](06-strings-and-enumerations.md); the facts this chapter has stated about them are:
-
-- Addressed `Length` reads that exact checked String cell and uses the ordinary evaluated UTF-16 length.
-- Addressed `RangeAsNumber` retains its checked interval and its grow-only missing versus fixed fallback-zero distinction.
-- Addressed `FieldValueAsNumber` retains the checked String or stored or category Enumeration projection and the domain-derived scale before applying the established conversion.
-- Addressed temporal extraction retains the checked Date, Time or DateTime declaration and the available-component certificate before projecting the decoded row value. An empty temporal source produces symmetric fillable zero, a filled source produces a fixed component, and formal unavailability remains UNKNOWN.
-- `DifferenceInDays` retains the checked concrete model-zone profile, each decoded local label and each already-resolved exact instant. The sub-day differences retain the exact selected unit and evaluate signed elapsed epoch milliseconds with truncation toward zero.
-- Runtime reads every difference operand in authored order from one complete environment, maps either missing operand to symmetric fillable zero, preserves formal UNKNOWN, and keeps structural addressing failure outside UNKNOWN.
+**Runtime of these operations** is owned elsewhere: addressed `Length` by [§7](06-strings-and-enumerations.md#length), addressed `RangeAsNumber` and `FieldValueAsNumber` by [§5 §4.5](04-numbers-and-decimals.md#45-number-valued-sources), and the temporal extractions and differences by [§6 §2.8](05-dates-and-time.md#28-reading-operands) and [§6 §9](05-dates-and-time.md#9-datetime-rides-the-date-format-definition--but-the-operand-gates-are-per-operator-).
 
 Sources: [temporal difference gates read the format](../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format), [iteration-guard checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-iteration-guard-k04).
 
@@ -377,12 +354,7 @@ Sources: [walk batch reading-scope checkpoint](../docs/sources/group-list-and-ca
 
 **A duplicate key does not imply an absent message address.** When another disjunct fires, a duplicate error-side key is resolved through the index cache's separate pointer association, and its coordinate can remain concrete. The cache population order, rather than physical first or last row order, settles which duplicate address is selected ([§10 §4.3](08-paths-and-references.md#43-selected-references-in-validation-messages)).
 
-**Selected targets below an indexed group.** A target below the indexed group inherits its nearest indexed ancestor: the key selects that outer row, authored target-group coordinates remain independently iterated, and lower levels default to row `1` for message attachment. Message-pointer target identity is authored syntax rather than canonical runtime-key identity:
-
-- An ordinary message reference to the repeated error field, directly or through a containing group operand, keeps physical iteration authoritative.
-- Otherwise only semantic references targeting the repeated error field or an ancestor group containing it count. One exact authored key target carries its selected repetition or clean-no-match `[-5]`, using the deepest error-containing selector independently of operand order, while two distinct key expressions retain ordinary error-row iteration even when they normalize to one Number key or currently select one row.
-- Sibling payload references add no pointer target.
-- On the compute path, the current cascade overlay supplies both a field-valued query key and the selected scalar or group payload below an indexed ancestor.
+**Selected targets below an indexed group** — which row a target below the indexed group attaches to, and which authored references count as message-pointer targets — are [§10 §4.3](08-paths-and-references.md#43-selected-references-in-validation-messages)'s.
 
 **Under partial validation** each side's map is built from the **relevant** index cells only, and the union is taken as above ([§12 §5.7](10-validation-and-polarity.md#57-parallel-iteration-under-partial-validation)). Three consequences are measured:
 
@@ -600,7 +572,7 @@ Sources: [filter reference level runtime](../docs/sources/having-filter-probes.m
 - `Having` selection occurs before the selected target is read (§3.3). The first selected formally unavailable or non-relevant target makes the aggregate unavailable immediately, so the suffix is not read. The kept-successor order determines which reached filter or target failure occurs first, but the public computation result erases that source identity: a draining aggregate that reaches the same failure set cannot expose filter-versus-target precedence, while a prefix consumer such as `FirstFilledValue` can expose which suffix was never reached.
 - `Sum` performs no arithmetic step for an unspecified cell — the same numeric contribution as zero — but records that cell's own declaration for polarity. Its per-step arithmetic is specified in [§5](04-numbers-and-decimals.md#5-internal-precision--the-constants-that-must-match-exactly).
 - `MaxValue` and `MinValue` ignore unspecified fields; a list with none specified yields the all-empty identity of [§2 A.3](03-empty-and-required.md#a3-what-an-all-empty-selection-folds-to-the-aggregate-identities) — the fillable `0` for a Number list, no value for a Date list.
-- **An aggregate's operand list takes field and group paths and no expression of any kind.** `Sum(CurrentRepetition(G))` is a parse refusal, `MVK_UNEXPECTED_TOKEN` naming the operator, and an arithmetic wrapper there is refused identically ([§5](04-numbers-and-decimals.md)).
+- **An aggregate's operand list takes field and group paths and no expression of any kind.** `Sum(CurrentRepetition(G))` is a parse refusal, `MVK_UNEXPECTED_TOKEN` naming the operator, and an arithmetic wrapper there is refused identically.
 
 Sources: [CurrentRepetition operand carriers](../docs/sources/group-and-iteration-probes.md#src-currentrepetition-operand-carriers), [inbound 2026-09-26i expansion order](../docs/sources/inbound-handbacks.md#inbound-2026-09-26i-expansion-order).
 

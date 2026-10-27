@@ -310,7 +310,7 @@ def computationInput (preliminary : CheckedIndexPreliminary model) : CheckedDocu
 read it (spec/10 §5). Generated findings stay out of its cells, because a consumer deriving its own
 preliminary from this view, as an indexed selection does, keys every cell through its observation:
 a duplicate already marked unknown would hide the collision, and its colliding rows would stay
-selectable (spec/07 §4). -/
+selectable (spec/08 §4.1). -/
 def defaultedInput (preliminary : CheckedIndexPreliminary model) : CheckedDocument model :=
   let placed := preliminary.base.checkedCells.filterMap fun placement =>
     (preliminary.defaulted.find? (·.address == placement.address)).map fun defaulted =>

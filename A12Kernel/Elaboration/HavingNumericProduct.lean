@@ -11,7 +11,7 @@ def HavingNumericProduct.wellFormed (source : HavingNumericProduct) (model : Fla
         declaration.toNumberField? == some ref.field)
 
 /-- Product shape is not ordinary list shape: repeated use of the same star is legal, while
-both Number operands must share the immediate owning group and lowest-star plan (spec/07 §4). -/
+both Number operands must share the immediate owning group and lowest-star plan (spec/07 §3.8). -/
 def elaborateHavingNumericProduct (model : FlatModel) (declaringGroup : GroupPath)
     (candidateLevels outerLevels : List RepeatableLevel) (source : SurfaceHavingEntitySource) :
     Except CorrelationElabError HavingNumericProduct := do

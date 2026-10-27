@@ -321,7 +321,7 @@ def TemporalComponents.isFullDateTime (components : TemporalComponents) : Bool :
     engine. Date, Time, and DateTime retain closed payloads with exact instant identity,
     decoded component halves, and date calendar provenance. DateRange cells retain either
     that exact endpoint identity or an explicit yearless `MM`/`MM-dd` component pair;
-    declared format and partial-value admission remain upstream. (`spec/13` §1) -/
+    declared format and partial-value admission remain upstream. (`docs/LEAN-ENCODING-GUIDE.md` §1) -/
 inductive Value where
   | num  (d : Rat)
   | str  (s : String)

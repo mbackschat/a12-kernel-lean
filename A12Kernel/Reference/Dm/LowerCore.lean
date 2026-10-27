@@ -142,7 +142,7 @@ def Expr.groupReference? : Expr → Option SurfaceGroupReference
   | .entity { path, index := none, category := none, filter := none } => (path.toGroupPath?).map .path
   | _ => none
 
-/-- A number literal as authored: its value and the scale its digits spell (spec §12.2). -/
+/-- A number literal as authored: its value and the scale its digits spell (spec/12 §2). -/
 def decodeNumber? (text : String) : Option DecodedNumericLiteral := do
   let negative := text.startsWith "-"
   let digits := if negative then (text.drop 1).toString else text
@@ -166,7 +166,7 @@ private def dateConstantParts? (text : String) : Option (Nat × Nat × Nat) := d
   pure (← year.toNat?, month, day)
 
 /-- The parts of a `DD.MM.YYYY` literal that names a real date on the legacy hybrid calendar; any other
-text is not a date (spec §12.2: zero padding and a real date are part of the shape). Before the 1582
+text is not a date (spec/05 §1: zero padding and a real date are part of the shape). Before the 1582
 cutover the year is Julian, so `29.02.1500` is a date and the ten cutover labels are text (2026-10-21
 §2.15). -/
 def hybridDateConstant? (text : String) : Option DateParts := do

@@ -79,7 +79,7 @@ partial def lowerHavingTemporalExpression (sourceSlot : Bool) : Expr → Lowerin
       pure (.field { origin, field })
   | .value { path, index := none, category := none, filter := none } => do
       -- A temporal source slot takes an entity, so a bracket there is a token defect (Having
-      -- ordinary-leaves row `t09`, 2026-10-14; spec/12 §12.3).
+      -- ordinary-leaves row `t09`, 2026-10-14; spec/12 §3.2).
       if sourceSlot then refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
       let some (origin, field) := path.havingField? | refuse "Having" "temporal value"
       pure (.field { origin, field })

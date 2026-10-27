@@ -55,7 +55,7 @@ def valueReadClass? (model : FlatModel) (group bindingGroup : GroupPath) (refere
         | .error _ => none
 
 /-- The class of the first step of a path left open that names nothing. Only a walked path checks its
-steps: one that is `$`-marked, opens with an up-run, or has read a starred step (spec/12 §12.3); a step
+steps: one that is `$`-marked, opens with an up-run, or has read a starred step (spec/12 §3.1); a step
 is judged by its name alone, its star aside. -/
 def openPathClass? (model : FlatModel) (group : GroupPath) (path : Path) :
     Option KernelStaticDiagnostic :=

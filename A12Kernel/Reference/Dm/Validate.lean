@@ -110,7 +110,7 @@ def parseValidationText (language : Language) (condition : String) : Lowering Te
     | .ok text => pure text
     | .error error => refuse "Syntax" error.errorClass.code
   if !text.body.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
-  -- The scale warning is the only suppressible one (spec §12.4); any other name is a static error.
+  -- The scale warning is the only suppressible one (spec/12 §4); any other name is a static error.
   if text.suppressed.any (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
     refuse "SuppressWarning" KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
   pure text

@@ -281,7 +281,7 @@ example : [IndexKind.string, .number].all (fun kind =>
   native_decide
 
 /-- A selected endpoint as it stands in a construction's first slot: a bare path reads only as an operator
-argument (spec/12 §12.3), so the fragment is parsed inside `DateRange`. -/
+argument (spec/12 §3.2), so the fragment is parsed inside `DateRange`. -/
 private def endpointExpr (endpoint : String) : Option Expr := do
   match (← (parseText .english s!"DateRange({endpoint},Finish)").toOption).body with
   | .call "DateRange" (.mk start none :: _) none none => some start

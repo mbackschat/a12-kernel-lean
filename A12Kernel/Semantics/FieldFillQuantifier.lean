@@ -55,8 +55,9 @@ end FilledFieldCount
 
 **An empty cell is never counted, and an invalid one makes the count unavailable.** Both halves are
 measured: an all-empty operand list counts `0` and compares normally rather than answering unknown, a
-filled-beside-empty pair counts `1`, and a filled-beside-invalid pair answers unknown. The empty rule is
-what keeps the count *growable*, so a comparison it satisfies still types OMISSION rather than VALUE.
+filled-beside-empty pair counts `1`, and a filled-beside-invalid pair answers unknown. The empty rule keeps
+the count *growable* while it has headroom; a comparison over it types by the dispatch of
+[spec/10 §4](../../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing).
 
 A `poison` observation is the computation face of the same invalidity and cannot reach this arm; it is
 folded into `unknown` so a misrouted observation fails closed rather than counting as filled.

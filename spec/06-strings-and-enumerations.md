@@ -40,11 +40,11 @@ Empty behaviour (`== ""` never holds; `Length(empty) = 0`; a nonempty authored p
 - Empty input bypasses the pattern and length clauses through the ordinary empty-value boundary. Every declared-format failure makes later value consumers observe formal unavailability ([§3 B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state)).
 - The other kinds' token keys: a refused Boolean token selects `FELD_JA_NEIN` and a refused Confirm token `FELD_JA`. A message key is chosen on a finer axis than the code ([§5 §4.8](04-numbers-and-decimals.md#48-the-formal-check-of-a-stored-value)).
 
-**Normalization is an ingestion boundary for evaluation, not a rewrite of storage.** A checked-and-valid String enters the evaluation cache with each CRLF pair replaced by LF; the stored document text is never rewritten. The format measure, rule reads including `Length`, and computation reads consume the normalized value: a permitted `"AB\r\nCD"` measures 5 UTF-16 code units and a whitespace-class pattern sees one `\n`.
+**Normalization is an ingestion boundary for evaluation, not a rewrite of storage.** A checked-and-valid String enters the evaluation cache with each CRLF pair replaced by LF, a lone CR unchanged; the stored document text is never rewritten. The format measure, rule reads including `Length`, and computation reads consume the normalized value: a permitted `"AB\r\nCD"` measures 5 UTF-16 code units and a whitespace-class pattern sees one `\n`.
 
-**Message display is a separate path.** Rule-message field-value interpolation consumes the caller's display value; the public DocumentV2 route takes it from the immutable input document rather than the evaluation cache, and the renderer performs no CRLF normalization. A CRLF-bearing String is therefore normalized for rule evaluation while its message display keeps the original CRLF bytes.
+**Message display is a separate path.** Rule-message field-value interpolation consumes the caller's display value, `getValueForDisplay`; the public DocumentV2 route takes it from the immutable input document rather than the evaluation cache, and the renderer performs no CRLF normalization. A CRLF-bearing String is therefore normalized for rule evaluation while its message display keeps the original CRLF bytes.
 
-Sources: [formal pre-check](../docs/sources/static-admission-and-class-probes.md#src-universal-value-formal-precheck), [technical length](../docs/sources/domain-ingestion-probes.md#src-technical-length-k13), [checked String ingestion](../docs/sources/domain-ingestion-probes.md#src-checked-string-ingestion-k13), [String expression family](../docs/sources/evaluation-and-application-routes.md#src-string-expression-family) (charset code), [message keys](../docs/sources/domain-ingestion-probes.md#src-date-message-keys-k22), [inbound 2026-10-13](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-13), a12-dmkits [`CrlfLengthNormalizationDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/CrlfLengthNormalizationDiffTest.kt).
+Sources: [formal pre-check](../docs/sources/static-admission-and-class-probes.md#src-universal-value-formal-precheck), [technical length](../docs/sources/domain-ingestion-probes.md#src-technical-length-k13), [checked String ingestion](../docs/sources/domain-ingestion-probes.md#src-checked-string-ingestion-k13), [String expression family](../docs/sources/evaluation-and-application-routes.md#src-string-expression-family) (charset code), [message keys](../docs/sources/domain-ingestion-probes.md#src-date-message-keys-k22), [inbound 2026-10-13](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-13), a12-dmkits [`CrlfLengthNormalizationDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/CrlfLengthNormalizationDiffTest.kt) (IF124; the display-path CRLF preservation rests on this dual-route differential, with no locally retained observation).
 
 ### `Length`
 
@@ -68,7 +68,7 @@ Sources: a12-dmkits [`AbsLengthDiffTest`](../../a12-rulekit/adapter/src/test/kot
 | a String result type in both slots | `MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON` |
 | a constant on the right; a grouped String literal is one | `MVK_MISSING_CONST_IN_PATTERN_COMP` |
 
-A constant is typed before these checks, so a valid date or `HH:mm:ss` literal, `True` and `Today` on the right each draw the type class, while `"12:30"` is a String there and admitted. A Number field against a String field reports the type refusal before the missing-constant refusal. The left field is a field-value read, so its own classes answer ahead of the type class ([§10 §3](08-paths-and-references.md#3-the-asterisk-and-)).
+A constant is typed before these checks, so a valid date or `HH:mm:ss` literal, `True` and `Today` on the right each draw the type class, while `"12:30"` is a String there and admitted. A Number field against a String field reports the type refusal before the missing-constant refusal. The left field is a field-value read, so its own classes answer ahead of the type class ([§10 §3.2](08-paths-and-references.md#32-the-field-value-read-)).
 
 **Pattern admission: a condition-literal pattern and a declared field pattern pass the same two gates.** The source must compile as a Java `Pattern`, and its source text must then pass a finite blacklist. **The two loci draw different codes, the same two words swapped:** a refused condition literal draws `MVK_INVALID_PATTERN` and a refused declared field pattern `MVK_PATTERN_INVALID`. Passing establishes Java legality only, not portability to another regex host.
 
@@ -119,8 +119,8 @@ How a construct treats a raw String operand is its class in [column W of the ope
 
 | Class | Treatment |
 |---|---|
-| `raw class` | refused `MVK_INVALID_RAW_TYPE`. A bracketed field-value read refuses a raw String wherever it stands ([§10 §3](08-paths-and-references.md#3-the-asterisk-and-)), so every value slot does; an operator naming the field as an entity parameter takes this class only where its own gate is this one. A computation whose target is a raw String is refused the same way. |
-| `own class` | refused by the operator's own class for its operand: `MVK_NO_CONVERT_IN_NUMBER` for `FieldValueAsNumber`, `MVK_NO_NUMBER` for `FieldValueAsString` and `MVK_NO_ENUMERATION` for a category read ([§10 §3](08-paths-and-references.md#3-the-asterisk-and-)); `MVK_NO_FIELDS_ALLOWED` for a field operand of `GroupFilled`, `GroupNotFilled`, `NumberOfFilledGroups` ([§1 A.4.9](02-logic-and-formal-errors.md#a49-static-admission-of-group-and-field-slot-operands)) and `CurrentRepetition`; `MVK_TABLE_ENUM_EXPECTED` for a `ValueNotConsistent` subject ([B.6](#b6-table-backed-enumerations-and-valuenotconsistent)) |
+| `raw class` | refused `MVK_INVALID_RAW_TYPE`. A bracketed field-value read refuses a raw String wherever it stands ([§10 §3.2](08-paths-and-references.md#32-the-field-value-read-)), so every value slot does; an operator naming the field as an entity parameter takes this class only where its own gate is this one. A computation whose target is a raw String is refused the same way. |
+| `own class` | refused by the operator's own class for its operand: `MVK_NO_CONVERT_IN_NUMBER` for `FieldValueAsNumber`, `MVK_NO_NUMBER` for `FieldValueAsString` and `MVK_NO_ENUMERATION` for a category read ([§10 §3.3](08-paths-and-references.md#33-a-field-named-as-an-operators-parameter), [§10 §3.4](08-paths-and-references.md#34-category-reads-and-category-operands)); `MVK_NO_FIELDS_ALLOWED` for a field operand of `GroupFilled`, `GroupNotFilled`, `NumberOfFilledGroups` ([§1 A.4.9](02-logic-and-formal-errors.md#a49-static-admission-of-group-and-field-slot-operands)) and `CurrentRepetition`; `MVK_TABLE_ENUM_EXPECTED` for a `ValueNotConsistent` subject ([B.6](#b6-table-backed-enumerations-and-valuenotconsistent)) |
 | `presence only` | admitted: presence predicates and the field-fill counts observe whether content exists without reading it, and a filled raw cell counts as filled. Raw content inside a group operand counts as content for a group predicate in the same way, whatever the predicate's class for a raw field operand. |
 | `placeholder X` | admitted as a `FirstFilledValue` member, in a rule or a computation and in any position: a filled raw member reads as the token `X` whatever its text, a single space included, and an empty one is skipped, on both Kernel strategies |
 | `length shape` | `Length`: admitted only in the shape below |
@@ -234,31 +234,7 @@ Sources: [reviewed comparison matrix](../docs/sources/inbound-handbacks.md#inbou
 
 An empty enum rides the not-evaluated track, category hop or not. How a category projection classifies an empty, unavailable or invalid cell is [B.3](#b3-the-value-list-quantifiers--per-cell-three-way-classification-)'s.
 
-#### Category declaration
-
-**A category's token list must have exactly as many entries as the enum has values; equal cardinality is the whole rule.**
-
-- A shorter list draws `MVK_MISSING_CATEGORY_VALUE`, once per unclassified value, so an empty list draws it once per value rather than once for the declaration. A longer list draws `MVK_MISSING_INTERNAL_VALUE` once per surplus token, so two surplus tokens draw it twice.
-- Same-length tokens **disjoint** from the enum's own values are admitted, which separates positional pairing from any set-membership reading, and a same-length reordering is admitted too. Repeated category tokens are admitted. Every enum value therefore has exactly one category token, so no stored value lacks a category token.
-- A second category is judged independently of the first, and a body carrying no `categories` member is admitted.
-- An Enumeration with no value fails the build ([data model §1.3](01-data-model.md#13-declaration-generation-classes)), with categories and without them alike, so no category arity class is raised for it.
-
-#### Declaration notifications
-
-**The declaration check collects its notifications rather than stopping at the first, so order and multiplicity are observable.** Every notification is an ERROR, and they arrive in six blocks, in this order:
-
-| Block | Notifications |
-|---|---|
-| 1 | Only under a restricted `supportedCharacters` list: one `MVK_ENUM_VALUE_WITH_INVALID_CHARACTER` per rejected UTF-16 code unit of each stored value, one per rejected index. |
-| 2 | One codeless supplementary-plane notification for the whole field when any stored value or display label holds a supplementary-plane scalar, under every charset; BMP non-ASCII text does not raise it. |
-| 3 | The category arity classes, every category's `MVK_MISSING_CATEGORY_VALUE` notifications ahead of every category's `MVK_MISSING_INTERNAL_VALUE` notifications, whatever the category order. |
-| 4 | One `MVK_CATEGORY_VALUE_DUPLICATE` per repeated stored value and category. |
-| 5 | One `MVK_INTERNAL_VALUES_DUPLICATE` per repeated stored value. |
-| 6 | One codeless repeated-value notification per repeated stored value. |
-
-- **A stored value holding a supplementary-plane scalar.** In block 1 its high surrogate is rejected even under a range numerically covering it, and its low surrogate is judged alone, rejected unless a declared range numerically covers it: under `A-Z` the scalar counts as two, under `U+0020–U+FFFD` as one, and two scalars sharing a high surrogate in one value under that range count once, while two values sharing it count once each. The one model measured declaring a supplementary range does not build. In block 3 such a value draws no shortfall notification, although its position still counts toward the arity; blocks 4 and 5 skip it, and block 6 does not. The repertoire substitution of [data model §1.3](01-data-model.md#13-declaration-generation-classes) therefore does not apply to blocks 1 and 6.
-- **Identical notifications collapse:** the same rejected unit twice in one value, or the same surplus token twice in one category, counts once, while equal notifications from different categories stay separate.
-- The order of categories or values inside blocks 3 and 4 is not observable through class codes and is not stated.
+**A category's declaration arity and the Enumeration declaration's six notification blocks** are [data model §1.3](01-data-model.md#enumeration-declarations)'s.
 
 Sources: [inbound 2026-09-21 corrections](../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections), [declaration notifications](../docs/sources/model-structure-and-declaration-probes.md#src-enumeration-declaration-notifications), [supplementary charset supplement](../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity), [inbound 2026-10-13](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-13).
 

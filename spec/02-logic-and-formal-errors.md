@@ -143,7 +143,7 @@ Empty-row eligibility is a separate whole-condition gate ([§2](03-empty-and-req
 **Rule.** A filtered operand applies its filter to the range its predicate asks for, and only a TRUE filter result keeps a slot. Operand order is retained.
 
 - In a **declared-range** predicate the filter is also evaluated at missing declared coordinates, where absent fields read empty without creating rows; a kept missing slot contributes an omission.
-- In an **instantiated-range** predicate a missing coordinate never enters the tally, whatever the filter would answer there. Whether the filter is nevertheless executed at such a coordinate, which matters only for a filter whose evaluation can fail at runtime, follows the traversal extent of [§9](07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation).
+- In an **instantiated-range** predicate a missing coordinate never enters the tally, whatever the filter would answer there. Whether the filter is nevertheless executed at such a coordinate, which matters only for a filter whose evaluation can fail at runtime, follows the traversal extent of [§9 §3.9](07-repetition-and-iteration.md#39-filter-traversal).
 
 Measured cases, with `Rows` of maximum 2 and only its first row filled: `AllFieldsFilled(Rows*/R Having CurrentRepetition(Rows) == 1)` fires, while replacing `== 1` by `> 0` keeps the missing second slot selected and prevents it. A value filter `[Rows/R] > 0` drops that missing slot. With no rows, the coordinate-selected first slot remains missing, while the value-selected range is empty and `AllFieldsFilled` fires vacuously. A malformed selected Number remains UNAVAILABLE, suppressing `NoFieldFilled`; a filter that drops it removes it from the range. Measured on one finite repeatable level; nested and unbounded declared-range selection are unmeasured.
 
@@ -311,7 +311,7 @@ Known gate orders:
 | inside `R` | sole `NumberOfFilledGroups(R)` | `MVK_PARAMSIZE_INVALIDGN` |
 | inside `R` | `NumberOfFilledGroups(R, other)`, unguarded | `MVK_NEG_CONDITION_IN_ITERATION`; admitted behind a positive guard, measured from a rule declared in `R` and from one declared at the root |
 
-The iteration gate and its positive-guard lift are owned by [§9](07-repetition-and-iteration.md#5-groupfilled-and-the-other-repetition-rules).
+The iteration gate and its positive-guard lift are owned by [§9 §1.8](07-repetition-and-iteration.md#negative-condition-guard).
 
 **A repeatable root is walked like any group.** Read from another root it draws `MVK_NO_WILDCARD` alone on every measured carrier. From a rule inside it the walk passes and each carrier meets its root classes: `AllGroupsFilled` draws `MVK_ROOT_GROUP_REFERENCED`, a sole `AtLeastOneGroupFilled` or `GroupFilled` is admitted, another root beside it draws `MVK_ROOT_GROUP_WITH_OTHER_PARAMETERS`, and a sole count draws `MVK_PARAMSIZE_INVALIDGN`.
 
@@ -370,13 +370,13 @@ Sources: [K21 consumer-readiness checkpoint](../docs/sources/consumer-readiness-
 **Rule.** A cell is in one of three states: **empty**, **filled**, or **not-check-relevant**. A cell is not-check-relevant while it carries a formal finding from one of the producers in [B.3](#b3-what-puts-a-cell-in-the-third-state); it need not hold a value, since requiredness annotates an empty cell and over-repetition stamps written cells whatever they hold. Two refinements:
 
 - The required finding is validation-scoped: computation reads a required-and-empty cell as plain empty.
-- Non-relevance under partial validation is not a cell state. The field-fill tally counts a non-relevant cell with the unavailable ones ([A.4.4](#a44-validation-the-unfiltered-field-fill-tally)); [§12](10-validation-and-polarity.md#5-full-vs-partial-validation) owns how each other consumer treats it.
+- Non-relevance under partial validation is not a cell state. The field-fill tally counts a non-relevant cell with the unavailable ones ([A.4.4](#a44-validation-the-unfiltered-field-fill-tally)); [§12 §5.3](10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set) owns how each other consumer treats it.
 
 The empty-value substitutions of [§2](03-empty-and-required.md) apply to the empty state only. A third-state cell answers UNKNOWN in validation and poison in computation, and each consumer class lands it differently:
 
 | Consumer class | empty cell | not-check-relevant cell |
 |---|---|---|
-| `scalar read`: a built-in predicate or operator reading the value | per-kind substitution or the operator's own override ([§2 A.2](03-empty-and-required.md#a2-where-an-operator-overrides-its-kinds-default)) | UNKNOWN — the branch cannot decide ([B.4](#b4-suppression-is-branch-scoped-and-reaches-presence-checks)) |
+| `scalar read`: a built-in predicate or operator reading the value | per-kind substitution or the operator's own override ([§2 A.2](03-empty-and-required.md#a2-where-an-operator-overrides-its-kinds-default), assigned in [column N](14-operator-reference.md#empty-read)) | UNKNOWN — the branch cannot decide ([B.4](#b4-suppression-is-branch-scoped-and-reaches-presence-checks)) |
 | `presence/fill`: a field presence predicate or field-fill quantifier | a definite FALSE / TRUE (counts as empty) | UNKNOWN — counted neither filled nor empty, so `NoFieldFilled` does not fire over it ([A.4.3](#a43-classifying-a-slot)) |
 | `all-cells`: a combiner that accounts for every selected cell | dropped or substituted per operator | the operand is UNKNOWN wherever in the selection the cell sits |
 | `stop-at-first`: a combiner that stops at its first filled cell | skipped | UNKNOWN only when reached: an invalid cell in the first-filled position makes it UNKNOWN; one after the first filled row is never reached |
@@ -402,7 +402,7 @@ Sources: [checked String ingestion checkpoint](../docs/sources/domain-ingestion-
 
 | Producer | Finding |
 |---|---|
-| **a malformed value** | the base case, preceded on a stored or input value by three cross-kind baseline checks run in this order before any type-format check: a technical length limit, the model's [legal charset](06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching), and no leading or trailing blanks |
+| **a malformed value** | the base case, preceded on a stored or input value by [three cross-kind baseline checks](06-strings-and-enumerations.md#stored-value-checking-and-normalization) run in this order before any type-format check: a technical length limit, the model's [legal charset](06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching), and no leading or trailing blanks |
 | **a declared-constraint violation** | range, length, pattern, digit counts, enumeration domain: a parseable but out-of-bounds value is exactly as invalid as an unparseable one |
 | **a registered custom field-validator rejection** | one project-coded formal observation reused by every consumer of that relevant concrete-valued cell ([§7](06-strings-and-enumerations.md#a3-custom-field-type-validation), which also owns the reserved report that admits its value) |
 | **the required checkbox on an empty field** ([§4](03-empty-and-required.md)) | after the generated mandatory rule has fired and its hit and message are retained, the empty target is annotated with a validation-scoped required finding; authored validation rules then see UNKNOWN, while computation sees plain empty ([§11](09-computations.md)) |
@@ -411,7 +411,7 @@ Sources: [checked String ingestion checkpoint](../docs/sources/domain-ingestion-
 
 During computation, a target marked invalid by an aborted computation reads the same way for its dependents ([B.6](#b6-validation-excludes-computation-poisons)).
 
-**First failure wins.** A value violating several checks reports only the first in the engine's fixed precedence. The order is owned per kind: String and Enumeration below and in [§7](06-strings-and-enumerations.md#pattern-admission-and-execution), Number in [§5](04-numbers-and-decimals.md#4-other-numeric-constraints), Date in [§6](05-dates-and-time.md#4-the-gregorian-floor). For other kinds the order is unspecified here.
+**First failure wins.** A value violating several checks reports only the first in the engine's fixed precedence. The order is owned per kind: String and Enumeration in [§7](06-strings-and-enumerations.md#stored-value-checking-and-normalization), Number in [§5](04-numbers-and-decimals.md#4-other-numeric-constraints), Date in [§6](05-dates-and-time.md#4-the-gregorian-floor). For other kinds the order is unspecified here.
 
 **The requiredness order matters.** The generated `mandatoryField` rule is evaluated against the base cells and its hit retained before the required annotation is applied. Annotating first would make the mandatory rule's own `FieldNotFilled` read UNKNOWN and suppress the message that creates the annotation.
 
@@ -437,21 +437,17 @@ A violated group is the last position of its own address and an interior positio
 
 **Message content.** Every context-number message carries the outermost violated group's declaration path and its offending index, whatever the stamped node's depth; `referenced` holds exactly the stamped address and `fillToFix` is empty. The Kernel channel spells an address by eliding a repetition-one coordinate at every level and indexing the violated row, so a finding reads `A[3]/B/C/Value` with `B` and `C` at row 1.
 
-**Partial validation does not narrow the set.** The check runs before relevance is consulted, so any nonempty relevant selection (the root, an unrelated root field, an unrelated repeatable field) reports the full set, while an empty selection ends the call and reports nothing. This is the exception to the coverage gate that [§12](10-validation-and-polarity.md#5-full-vs-partial-validation) applies to the rest of the formal channel.
+**Partial validation does not narrow the set.** The check runs before relevance is consulted, so any nonempty relevant selection (the root, an unrelated root field, an unrelated repeatable field) reports the full set, while an empty selection ends the call and reports nothing. This is the exception to the coverage gate that [§12 §5.3](10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set) applies to the rest of the formal channel.
 
 Sources: [occurrence scope](../docs/sources/over-repetition-probes.md#src-over-repetition-occurrence-scope), [position classes](../docs/sources/over-repetition-probes.md#src-address-index-position-classes), [multiplicity](../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity), [attribution](../docs/sources/over-repetition-probes.md#src-nested-over-limit-attribution), [absorption depth](../docs/sources/over-repetition-probes.md#src-over-limit-absorption-depth).
 
 #### String ingestion boundary
 
-**Rule.** String checking has an ingestion boundary that precedes every evaluation-side read. A checked-and-valid String replaces each CRLF pair with LF before it enters the evaluation cache; a lone CR is unchanged, and the stored document text is never rewritten. The format measure, rule reads including `Length`, and computation reads consume this normalized cache value.
-
-**The String format check applies its clauses in this order:** raw-type gate → full-check gate → line-break permission on the **raw** text → normalization → pattern XOR enumeration-domain check on the normalized text → minimum/maximum length on the normalized text. The line-break gate also covers Enumeration fields, so a break-carrying value outside the enumeration domain reports the newline error before any domain or pattern error. [§7](06-strings-and-enumerations.md#pattern-admission-and-execution) owns each clause's message key.
-
-**Message display is a separate path.** Rule-message field-value interpolation consumes the caller's `getValueForDisplay` result; the public DocumentV2 route obtains that result from the immutable input document rather than the evaluation cache, and the renderer performs no CRLF normalization. An ordinary CRLF-bearing String is therefore normalized for rule evaluation while its message display preserves the original CRLF bytes.
+**String checking's ingestion boundary** — the CRLF normalization of a checked-and-valid String, the String format check's clause order and the separate message-display path — is [§7](06-strings-and-enumerations.md#stored-value-checking-and-normalization)'s.
 
 **A raw String is not a producer.** A String field declared with `noValueValidation` does not enter the third state. Its stored content remains ordinary content for presence predicates, while model validation closes every operation that would expose its value; the sole admitted `Length` declaration is eliminated into metadata rather than evaluated as a runtime rule ([§7](06-strings-and-enumerations.md#a1-raw-type-strings-novaluevalidation)).
 
-Sources: a12-dmkits [`CrlfLengthNormalizationDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/CrlfLengthNormalizationDiffTest.kt) (IF124; the display-path CRLF preservation rests on this dual-route differential, with no locally retained observation) and [`NvvRawTypeDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/NvvRawTypeDiffTest.kt) (IF125).
+Sources: a12-dmkits [`NvvRawTypeDiffTest`](../../a12-rulekit/adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/NvvRawTypeDiffTest.kt) (IF125).
 
 > **Non-normative implementation note.** Keep one checked-cell representation, but do not route every producer through the base formal check from field policy and raw cell to checked cell. The base check handles ordinary local findings such as malformed data and declared constraints, including String normalization after the raw-text line-break gate. Decide over-repetition first and construct the same checked-cell shape without running the scalar checker. Generated preliminary findings then annotate admitted base cells, in the requiredness order above. The phase read maps applicable findings to validation UNKNOWN and computation poison, ignoring the required finding during computation. Reject value-reading windows onto raw-type Strings during elaboration rather than at the read. Do not scatter invalidity handling across operators, and do not perform per-kind empty substitution inside the read.
 

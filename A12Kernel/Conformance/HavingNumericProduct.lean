@@ -51,7 +51,7 @@ private def unequal : ResolvingCorrelationContext CorrelationRuntimeFault := { (
     computation := fun _ group => .error (.groupUnavailable group.reference.path)
     fieldExtent := fun _ env _ field => pure (if field == 1 then [env, frame.outerEnv] else [env], false) } }
 
--- Unlike independently keyed products (spec/07 §4), these unfiltered iterators reach only
+-- Unlike independently keyed products (spec/07 §3.8), these unfiltered iterators reach only
 -- paired rows (`RuntimeController.summeVonProdukten`); the unpaired suffix is not a value read.
 example : run unequal = .inr (.value 4 .fixed) ∧
     run { unequal with read := fun _ _ => .error .valueFailure } = .inl .valueFailure := by native_decide

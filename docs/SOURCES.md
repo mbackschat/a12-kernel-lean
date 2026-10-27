@@ -110,6 +110,7 @@ The main reusable roots are:
 | §12 validation/polarity | rule backing beans/templates, `MainValidatorController`, `VkBigDecimal.kannGroesser`/`kannKleinerWerden`, partial-validation dispatch, message creation | full/partial/polarity and rule-emission tests |
 | §13 messages | message model/API, `FehlerHandler`, `CheckCommand.ersetzeFeldParameter`, `DocumentComputationResultImpl`, service errortext grammar | message rendering/display and computation-channel tests |
 | §14 custom condition | `ApplicationCondition.st`, `MainValidatorController.applikationsBedingung`, `CustomConditionWrapper`, `ICustomCondition` | custom-condition invocation tests |
+| concrete syntax | `LexerTerminals_en`, `LexerTerminals_de` (the source characterization of the keyword table) | a12-dmkits `KeywordCaseVariantParseTest` and `SemanticIndexFieldKeyedDiffTest`; the full measured concrete syntax §3.1 rows at `spec/12-concrete-syntax.md` revision `7742f8e34b61f6a799ef60ff01034656fb090fc6` |
 
 This table names search loci, not semantic conclusions. The canonical account remains in [`spec/`](../spec/), and exact Lean coverage remains in [`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md).
 

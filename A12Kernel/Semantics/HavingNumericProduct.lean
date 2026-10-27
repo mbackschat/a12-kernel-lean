@@ -3,7 +3,7 @@ import A12Kernel.Semantics.HavingEntityList
 namespace A12Kernel
 
 /-- The two product references share a checked lowest-star topology, but each retains the
-environment selected by its own capture origin (spec/07 §4). -/
+environment selected by its own capture origin (spec/07 §3.8 and §3.2). -/
 structure HavingNumericProduct where
   groupPath : GroupPath
   path : StarPath

@@ -31,8 +31,9 @@ def FlatModel.parallelInstanceView (model : FlatModel) : List GroupPath → Flat
 group's capacity when every row within it is taken. Every slot of a row that does not exist reads
 clean empty, which is the account chosen for an unmatched side: its non-key fields read empty, as the
 Kernel's values show where a free row exists (joined-carrier-limits capture, rows `u01b`–`u03b`,
-2026-10-14). The index slot reads empty too; the capture has no read of an unmatched side's own index
-field. A full group gets the same reading, which no capture measures. None only when a frame level
+2026-10-14). The index slot reads empty too, as a presence test of a side's own key
+field measures ([spec/07 §2.4](../../spec/07-repetition-and-iteration.md#24-reading-the-joined-row)). A full group gets the same reading, measured for an unmatched error side's keyed read and
+own-key presence test (spec/07 §2.4). None only when a frame level
 lies between `outer` and `group`. Bindings of `outer` outside the group's frames are dropped, so a
 target row's environment serves. -/
 def CheckedDocument.keyOnlyEnvironment? (document : CheckedDocument model) (outer : Env)

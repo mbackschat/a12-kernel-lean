@@ -33,7 +33,7 @@ def sideIn (source : CheckedKeyedNumberProductOperand model) (phase : Phase)
 end CheckedKeyedNumberProductOperand
 
 /-- Each independently keyed operand retains its own selection; the shared owning group is a
-static admission constraint, not a runtime row identity (spec/07 §4). -/
+static admission constraint, not a runtime row identity (spec/07 §3.8). -/
 structure CheckedSelectedNumericProductAggregate (model : FlatModel) where
   left : CheckedKeyedNumberProductOperand model
   right : CheckedKeyedNumberProductOperand model
@@ -75,7 +75,7 @@ def elaborateNumericProductAggregate (model : FlatModel) (declaringGroup : Group
       let right ← elaborateKeyedEntityExtent model declaringGroup { target := .star authored.right, key := rightKey }
         (some (model.repeatableScopeForGroupPath writtenGroup)) |>.mapError .keyed
       if left.groupPath != right.groupPath then throw (.differentGroups left.groupPath right.groupPath)
-      -- Operand by operand from the left, as measured for an unkeyed pair (spec/07 §4, inbound
+      -- Operand by operand from the left, as measured for an unkeyed pair (spec/07 §3.8, inbound
       -- 2026-10-18); that a key leaves the order unchanged is assumed, not measured.
       if authored.leftHaving.isSome then throw .wildcardAtLowestLevelRequired
       requireKeyedProductLowestStar left
@@ -188,7 +188,7 @@ private def partialProductRows (left right : CheckedStarNumberSource model)
           | _ => pure ({ left := leftCell, right := rightCell } :: (← partialProductRows left right read rest))
 
 /-- Both product forms use declared extent for relevance and physical extent for values.
-Selection and reached cell reads retain call-local unavailability (spec/07 §4, spec/10 §5). -/
+Selection and reached cell reads retain call-local unavailability (spec/07 §3.8, spec/10 §5). -/
 def evaluatePartialDocument (source : CheckedNumericProductAggregate model)
     (document : CheckedDocument model) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :

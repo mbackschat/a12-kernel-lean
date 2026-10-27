@@ -26,9 +26,7 @@ Thus a decimal-valued `250.00` in a scale-0 field is read as `250`, the same dec
 
 ### Document ingestion
 
-**The typed JSON document reader preserves the coefficient and signed decimal scale of a native decimal number, trailing fractional zeros included.** Before field conversion it derives canonical decimal-node text: plain notation when the scale is nonnegative and the adjusted exponent (coefficient digit count minus one minus scale, counting zero as one digit) is at least −6; scientific notation otherwise. Thus native `10.50` supplies `10.50`, `1e3` supplies `1E+3`, and `0.0000001` supplies `1E-7`. A Number destination converts that text to its exact decimal identity; a String destination retains the node text. Quoted scalar text bypasses numeric-node formatting. Re-serializing a native negative-scale number in plain notation before ingestion changes its source identity even when its amount is unchanged.
-
-**An unquoted document value must be a JSON number.** `abc`, `True`, `NaN`, `0x10`, `01`, `1.`, `.5` or `+1` leaves the whole document unread, while `-0`, `1E1` and `5` are read.
+**How the typed JSON document reader turns a native decimal number into node text, and which unquoted values it reads,** is [data model §2.3](01-data-model.md#23-reading-a-document-from-json)'s.
 
 **Quoted text reaching a Number destination is converted by the host's exact decimal grammar, not by the formal-read grammar of §4.8:** an optional `+` or `-`, decimal digits with an optional fraction, and an optional exponent.
 
@@ -182,7 +180,7 @@ This section holds the static legality of number-valued operations (§4.1–§4.
 
 ### 4.1 Arithmetic operand kinds
 
-**`*`, `/`, `-` and `^` each demand a Number of both operands and refuse anything else `MVK_NO_NUMBER_FOR_CALC`; `+` demands neither, admitting two Numbers or two string-like operands and refusing every other pair `MVK_NO_STRING_OR_NUMBER_FOR_ADD`.** String-like means String, a Custom declaration and a predefined type; an Enumeration is string-like under [§7's](06-strings-and-enumerations.md#part-a--7-strings-and-patterns) display restriction. A Date, a DateRange, a Boolean and a Confirm are neither numeric nor string-like, so they fail both of `+`'s arms. Measured over all seven declared kinds against each of the four numeric operators. An inner operation's **result** type is what the outer operator judges. String concatenation is [§7's](06-strings-and-enumerations.md#part-a--7-strings-and-patterns).
+**`*`, `/`, `-` and `^` each demand a Number of both operands and refuse anything else `MVK_NO_NUMBER_FOR_CALC`; `+` demands neither, admitting two Numbers or two string-like operands and refusing every other pair `MVK_NO_STRING_OR_NUMBER_FOR_ADD`.** String-like means String, a Custom declaration and a predefined type; an Enumeration is string-like under [§7's](06-strings-and-enumerations.md#string-concatenation) display restriction. A Date, a DateRange, a Boolean and a Confirm are neither numeric nor string-like, so they fail both of `+`'s arms. Measured over all seven declared kinds against each of the four numeric operators. An inner operation's **result** type is what the outer operator judges. String concatenation is [§7's](06-strings-and-enumerations.md#string-concatenation).
 
 Sources: [inbound 2026-09-21 corrections](../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections), [node gates](../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-node-gates).
 

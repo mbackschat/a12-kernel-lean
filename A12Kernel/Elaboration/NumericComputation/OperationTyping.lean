@@ -11,10 +11,10 @@ right and both before their parent, is the class it reports: `{[N] + [S]} - [Nop
 class while `[S] - [Nope]` draws the unknown name's
 ([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-number-operation-typing)).
 
-A node first types its operands' results, as [`spec/06`](../../../spec/06-strings-and-enumerations.md)
+A node first types its operands' results, as [`spec/04` §4.1](../../../spec/04-numbers-and-decimals.md#41-arithmetic-operand-kinds)
 states for `+`. Addition admits two Numbers or two string-like sides, a concatenation that types as a
 String, and refuses a mixed pair; a grouped Enumeration bypasses the direct display-remapping gate
-([source-derived boundary](../../../spec/06-strings-and-enumerations.md#part-a--7-strings-and-patterns), externally unverified); subtraction, multiplication, division and power demand two Numbers;
+([source-derived boundary](../../../spec/06-strings-and-enumerations.md#string-concatenation), externally unverified); subtraction, multiplication, division and power demand two Numbers;
 `Abs` demands a Number; and an extrema call's first operand must be sortable and fixes the family
 every later operand must join ([`kf263`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf263)). A
 well-typed operator or power then asks its own authoring gates, measured in this order

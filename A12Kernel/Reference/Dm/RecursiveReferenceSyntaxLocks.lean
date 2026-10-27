@@ -3,7 +3,7 @@ import A12Kernel.Reference.Dm.Print
 
 /-! # Recursive entity-reference syntax locks
 
-The reference grammar in [spec §7.3](../../../spec/07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation)
+The reference grammar in [concrete syntax §3](../../../spec/12-concrete-syntax.md#3-the-condition-and-operation-grammar-sketch)
 owns attachments even when a later static check refuses them. Exact trees separate recursive key
 ownership from a flattened path or a filter stored on the call argument.
 -/

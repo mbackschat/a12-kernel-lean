@@ -76,7 +76,7 @@ Sources: [shared String expressions](../docs/sources/evaluation-and-application-
 The classes that deviate from the kind default carry these rules:
 
 - **`empty text`.** An empty part of a `+` concatenation concatenates as `""`, so the enclosing comparison **is** evaluated: `[Full] != [First] + " " + [Last]` mis-fires on empty parts unless guarded. `RangeAsString` over an empty source yields the empty text ([§11 §1](09-computations.md#1-the-ground-rules)), and `FieldValueAsString` contributes `""` inside a concatenation ([§11 §2](09-computations.md#2-separate-operations-and-the-three-outcomes)).
-- **`fillable zero`.** `Length(F)` reads length **`0`**, evaluated — the String family's own empty-as-`0` backdoor, which needs a `FieldFilled` guard like a number. The Date and Time extractors (`DayFromDate`, …) and the differences read the fillable **`0`**, in validation and in computation alike, so the enclosing comparison is evaluated and can fire ([§6 §2.1](05-dates-and-time.md#21-what-the-operations-produce)). `RangeAsNumber` and `FieldValueAsNumber` over a missing source yield `0` ([§5 §4](04-numbers-and-decimals.md#4-other-numeric-constraints)), and a `SumOfProducts` empty cell supplies `0` with its own declaration's missingness ([§9 §3.8](07-repetition-and-iteration.md#38-sumofproducts)).
+- **`fillable zero`.** `Length(F)` reads length **`0`**, evaluated — the String family's own empty-as-`0` backdoor, which needs a `FieldFilled` guard like a number. The Date and Time extractors (`DayFromDate`, …) and the differences read the fillable **`0`**, in validation and in computation alike, so the enclosing comparison is evaluated and can fire ([§6 §2.1](05-dates-and-time.md#21-what-the-operations-produce)). `RangeAsNumber` and `FieldValueAsNumber` over a missing source yield `0` ([§5 §4.5](04-numbers-and-decimals.md#45-number-valued-sources)), and a `SumOfProducts` empty cell supplies `0` with its own declaration's missingness ([§9 §3.8](07-repetition-and-iteration.md#38-sumofproducts)).
 - **`not evaluated`.** `PatternMatched` and `PatternViolated` are not evaluated on an empty operand for a nonempty pattern source; an [empty authored pattern](06-strings-and-enumerations.md#pattern-admission-and-execution) instead fails when reached. Test absence with `FieldNotFilled`. `Valid` and `Invalid` over a named type fire for neither polarity on an empty operand ([§6 §3.7](05-dates-and-time.md#37-valid-and-invalid-over-a-named-type)), and `AtLeastOneDateRangeOverlaps` over an empty scalar does not fire ([§6 §8.6](05-dates-and-time.md#86-overlap-evaluation)).
 - **`value-list`.** An empty subject makes neither the "included" nor the "not-included" form fire. An empty numeric list *entry* never matches: the `0` substitution does not apply to entries.
 
@@ -244,27 +244,11 @@ A non-repeatable group may also nominate an index field; that nomination is admi
 
 Because the engine generates both checks, a model must **not** also author the equivalent rules — they would double up. The index field is also the join key for parallel iteration and the semantic index ([§9](07-repetition-and-iteration.md#2-parallel-iteration--joining-two-repeatable-groups-by-key)).
 
-#### Index and sort nomination admission
-
-**A nomination is bound against the model as authored and judged against the variant it runs in.** An index nomination and a sort nomination answer alike, each under its own class:
-
-| Nominated name | Class |
-|---|---|
-| resolves nowhere in the authored model, a relative `../Key` whose parent field is absent included | the build fails with no class |
-| the group's direct child field of that short name in the default variant is filtered `ONLY` or physically absent | `MVK_INVALID_INDEX_FIELD`; `MVK_INVALID_SORT_FIELD` for a sort nomination |
-| that direct child field has value validation off | `MVK_INDEX_FIELD_NO_VALUE_VALIDATION`; `MVK_SORT_FIELD_NO_VALUE_VALIDATION` for a sort nomination |
-| its kept short name fails the field-name alphabet | a codeless notification at the group |
-
-- **The local declaration decides, not the referent's.** With `Items` nominating `../Key`, the local `Key` is asked; the parent's `Key` filtered `ONLY` or with value validation off changes nothing. Of two local fields both named `Key` the surviving one is asked, and with both filtered the nomination draws the invalid class. `ALL_EXCEPT` keeps the field, as it does everywhere.
-- **The alphabet gate reads the kept short name:** `../Items/Sku` draws nothing, and `Sk-u` draws the notification whether or not a field of that name exists. Only the three sort entries the model holds are judged.
-- **An index nomination of a field filtered `ONLY`** draws `MVK_INVALID_INDEX_FIELD` on the root group too, where no sort nomination is measured.
-- **The ordering gates are withheld whenever the model's entity walk refused anything:** the invalid and no-value-validation classes of either nomination are withheld then (measured beside a refused path and beside a count below one), while `MVK_SORT_FIELD_DUPLICATE` skips only a refused name.
-- **Every sort nomination is judged.** Two disqualified sort fields draw two classes, and an invalid nomination does not stop the later ones. Each distinct name reports its own class once over the whole list, and a field named more than once among the **first three** entries also draws `MVK_SORT_FIELD_DUPLICATE`, once however often it repeats, beside its own class.
-- **The sort list holds at most three entries.** Every entry beyond the third draws its own codeless capacity notification whatever it names; a fourth entry repeating an earlier one draws no duplicate class, and an unresolved fourth still draws its own class.
+**Index and sort nomination admission** — how an index or sort nomination is bound and which class it draws — is [data model §1.3](01-data-model.md#index-and-sort-nomination-admission)'s.
 
 > **Non-normative implementation note.** Treat "required" and "index field" as *desugaring passes* over the model that emit ordinary generated rules **plus** staged checked-cell annotations from [§3 B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state). A `required` flag emits a `mandatoryField` rule with the ancestor-decided condition. Validation evaluates that rule on the base checked cells, derives the referenced group's admitted-content, error and relevance state, retains any hit and message, and only on a hit adds the required finding to the empty target for authored-rule observation; computation ignores this validation-scoped annotation. An `indexFieldName` emits the mandatory rule and the per-parent-row uniqueness check, marking *all* duplicate participants not check-relevant, and registers the join key. Desugaring keeps the evaluator's core small and mirrors how the engine treats these as generated, not special-cased.
 
-Sources: [inbound 2026-09-27a index and sort lookup](../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [inbound 2026-10-13](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-13), [declaration report withholding](../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14), [sort list capacity](../docs/sources/model-structure-and-declaration-probes.md#src-sort-list-capacity).
+Sources: [inbound 2026-09-27a index and sort lookup](../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21).
 
 ---
 

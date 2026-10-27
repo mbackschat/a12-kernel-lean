@@ -29,7 +29,7 @@ structure CheckedAddressedRangeAsNumber (model : FlatModel) where
   scaleCertified : suppressExactScaleWarning = true ∨ placement.targetPolicy.info.scale = 0
 
 /-- Validate the exact evaluated-String source and interval before the suppressible assignment-scale gate.
-    Computation suppression cannot widen the [field or interval rules](../../spec/04-numbers-and-decimals.md#4-other-numeric-constraints). -/
+    Computation suppression cannot widen the [field or interval rules](../../spec/04-numbers-and-decimals.md#45-number-valued-sources). -/
 def checkAddressedRangeAsNumber
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (sourceReference : SurfaceFieldPath) (start finish : Nat)

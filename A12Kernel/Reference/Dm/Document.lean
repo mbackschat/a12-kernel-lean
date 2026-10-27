@@ -240,7 +240,7 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
     | none =>
         match model.flat.repeatableGroups.find? (·.path == childPath), value with
         | some repeatable, .arr instances =>
-            -- JSON conversion discards non-object rows before assigning coordinates; V1 placement padding is a separate route (spec/07 §1).
+            -- JSON conversion discards non-object rows before assigning coordinates; V1 placement padding is a separate route (spec/01 §2.3).
             let objects := instances.toList.filterMap fun
               | .obj members => some members.toList
               | _ => none

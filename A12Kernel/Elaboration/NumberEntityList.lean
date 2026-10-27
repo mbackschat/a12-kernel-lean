@@ -103,7 +103,8 @@ def allRowsRelevant (group : CheckedNumberEntityGroup model)
   group.source.everyDeclarationCovers (model.groupSubtreeFields group.groupPath)
     fun path bound reopened => scope.coversAggregateExtent model path bound reopened outer
 
-/-- The value count's existential partial gate, asked field by field. -/
+/-- The wildcard-only partial gate for a value count. [spec/10 §5.4](../../spec/10-validation-and-polarity.md#54-the-extent-of-a-multi-cell-operand) decides value counts
+by the declared-slot union; the boundary is recorded under [SG13](../../docs/gaps/paths-and-groups.md#gap-sg13). -/
 def valueListExtentRelevant (group : CheckedNumberEntityGroup model)
     (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
   group.source.everyDeclarationCovers (model.groupSubtreeFields group.groupPath)

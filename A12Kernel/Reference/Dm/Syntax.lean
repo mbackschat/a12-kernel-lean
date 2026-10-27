@@ -12,12 +12,12 @@ and the braced condition included, instead of refusing them here with a guessed 
 Keyword spellings are the a12-dmkits operator catalog's English and German pairs plus the five forms
 it does not list (`In`, the range keyword, `RuleGroup`, `@SuppressWarning`, `ValueNotConsistent`),
 each mapped to its English spelling as the language-neutral id. A model's language selects one table,
-with no fallback to the other (spec §12.1).
+with no fallback to the other (spec/12 §1).
 -/
 
 namespace A12Kernel.Dm
 
-/-- The keyword pairs, English first. Spellings are case-exact; the case families spec §12.1 admits
+/-- The keyword pairs, English first. Spellings are case-exact; the case families spec/12 §1 admits
 are added by `keywordId?`. -/
 def keywordPairs : List (String × String) := [
   ("FieldFilled", "FeldAngegeben"), ("FieldNotFilled", "FeldNichtAngegeben"),
@@ -91,7 +91,7 @@ def Language.ofCode? : String → Option Language
 
 /-- The calls the grammar reads as whole conditions, never as an operation: the field-list, group-list,
 value-list, consistency, validity and repetition conditions (`einfacheBedingung`). Written in an
-operation's position, one is a token defect at its own position (spec/12 §12.3). -/
+operation's position, one is a token defect at its own position (spec/12 §3.1). -/
 def conditionCallIds : List String := [
   "FieldFilled", "FieldNotFilled", "AtLeastOneFieldFilled", "MoreThanOneFieldFilled", "NoFieldFilled",
   "AllFieldsFilled", "FieldsNotCollectivelyFilled", "NotAllFieldsFilled", "NotExactlyOneFieldFilled",
@@ -104,7 +104,7 @@ def conditionCallIds : List String := [
   "Valid", "Invalid", "RepetitionNotUnique"]
 
 /-- The H-model form constructs, keywords only in a German model and with no English spelling
-(spec §12.1: 125 German spellings against 112 English ones). Each is its own id; no lowering admits
+(spec/12 §1: 125 German spellings against 112 English ones). Each is its own id; no lowering admits
 one, so a rule naming one is refused by it rather than read as a field. -/
 def germanOnlyKeywords : List String := [
   "AktuelleVordruckNummer", "AnzahlAngegebenerVordrucke", "AnzahlAngegebeneUsb", "KeinVordruckAngegeben",
@@ -113,7 +113,7 @@ def germanOnlyKeywords : List String := [
   "ZeilenLueckenlos", "ZeilenNichtAufsteigend"]
 
 /-- The keyword a spelling denotes in one language, by its English id. Only the connectives, `In`
-and the range keyword admit case variants, each family enumerated rather than case-folded (spec §12.1). -/
+and the range keyword admit case variants, each family enumerated rather than case-folded (spec/12 §1). -/
 def keywordId? (language : Language) (spelling : String) : Option String :=
   let families : List (String × List String) := match language with
     | .english => [("And", ["and", "AND"]), ("Or", ["or", "OR"]), ("To", ["to", "TO"])]
@@ -125,14 +125,14 @@ def keywordId? (language : Language) (spelling : String) : Option String :=
         spelling == match language with | .english => english | .german => german).map (·.1)).orElse
           fun _ => if language == .german && germanOnlyKeywords.contains spelling then some spelling else none
 
-/-- The Kernel's class for a refused text; spec §12.3.1 owns which one a text draws. -/
+/-- The Kernel's class for a refused text; spec/12 §3.1 owns which one a text draws. -/
 inductive SyntaxErrorClass
   | lexer
   | unexpectedToken
   | expectedTokenNotFound
   | incompleteInput
   | bracketMissing
-  /-- A segment's `.*` star, the H-model spelling an A12 model refuses (spec/12 §12.3). -/
+  /-- A segment's `.*` star, the H-model spelling an A12 model refuses (spec/12 §3.1). -/
   | pointInA12Model
   deriving Repr, BEq, DecidableEq
 
@@ -155,12 +155,12 @@ structure SyntaxError where
 inductive Token
   | keyword (id : String)
   | name (text : String) (quoted : Bool := false)
-  /-- A number literal's digits and point, whitespace inside it removed (spec §12.3). -/
+  /-- A number literal's digits and point, whitespace inside it removed (spec/12 §3.3). -/
   | number (text : String)
   | string (text : String)
   | symbol (text : String)
   | comment
-  /-- `#Zeile`, lexed in either language and refused by the grammar (spec §12.1). -/
+  /-- `#Zeile`, lexed in either language and refused by the grammar (spec/12 §1). -/
   | rowIteration
   deriving Repr, BEq, DecidableEq, Inhabited
 
@@ -169,12 +169,12 @@ structure Lexeme where
   offset : Nat
   deriving Repr, Inhabited
 
-/-- The five whitespace characters; every other space character is a lexer error (spec §12.1). -/
+/-- The five whitespace characters; every other space character is a lexer error (spec/12 §1). -/
 def isDslWhitespace (c : Char) : Bool :=
   c == ' ' || c == '\r' || c == '\t' || c == '\x0c' || c == '\n'
 
 /-- A name character: ASCII letters, digits, underscore, colon and the German letters. The Kernel lexes
-`MVK_GEBÜHR` as one name and refuses `MVK_FRAÉ` lexically (spec §12.4). -/
+`MVK_GEBÜHR` as one name and refuses `MVK_FRAÉ` lexically (spec/12 §4). -/
 def isNameChar (c : Char) : Bool :=
   c.isAlphanum || c == '_' || c == ':' || "äöüÄÖÜß".contains c
 
@@ -217,7 +217,7 @@ partial def lexPrefix (language : Language) (text : String) (recognizeKeywords :
         else fail
       else if c.isDigit then
         let integer := takeWhile Char.isDigit chars index
-        -- Whitespace may stand on either side of the point (spec §12.3), so look past it before
+        -- Whitespace may stand on either side of the point (spec/12 §3.3), so look past it before
         -- deciding that the literal has a fractional part.
         let nameEnd := takeWhile isNameChar chars index
         let point := skipWhitespace chars integer

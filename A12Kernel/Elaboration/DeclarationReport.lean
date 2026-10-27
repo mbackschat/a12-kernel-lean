@@ -8,10 +8,10 @@ declaration ([checkpoint](../../docs/sources/model-structure-and-declaration-pro
 
 - An error target naming nothing, or a class drawn by the DSL members, is the declaration's
   **refusal**. A target refusal ends the rule: the condition is not parsed, so its class never
-  appears ([spec/07](../../spec/07-repetition-and-iteration.md)).
+  appears ([spec/01 §3.1](../../spec/01-data-model.md#the-error-fields-declaration)).
 - A refusal withholds every class the error-text checker draws: the template's character and
   parameter classes and the unprefixed missing-text class
-  ([spec/11](../../spec/11-messages-and-custom.md#part-a--13-error-message-interpolation)).
+  ([spec/11 A.2](../../spec/11-messages-and-custom.md#a2-which-error-text-classes-a-refused-declaration-withholds)).
 - The name and error-code classes and the two prefixed message-presence classes are other members'
   verdicts. They stand beside any refusal, the target's included.
 - Within the DSL members the declaration reports **one** class. A relational class judges the

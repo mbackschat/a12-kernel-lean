@@ -389,7 +389,7 @@ def evalNumericProductAggregate
       .value amount (if side.hasUninstantiatedTail then .both else fillability)
 
 /-- Independently selected product lists pair by position, but both complete lists must be
-formally available, including an unpaired tail (spec/07 §4, keyed products). -/
+formally available, including an unpaired tail (spec/07 §3.8, keyed products). -/
 def evalIndependentNumericProductAggregate (left right : ResolvedValueListSide .number)
     (leftSigned rightSigned : Bool) : NumericOperand :=
   match left.available, right.available with

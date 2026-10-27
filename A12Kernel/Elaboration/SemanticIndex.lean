@@ -720,7 +720,7 @@ private def NumberIndexCandidates.toColumn
 
 namespace CheckedSemanticIndexSource
 
-/-- Dynamic non-Number keys compare by normalized cache text (spec/02 §3), as the column does; a checked Boolean,
+/-- Dynamic non-Number keys compare by normalized cache text (spec/06, stored-value checking and normalization), as the column does; a checked Boolean,
 Enumeration or temporal payload cannot recover that identity. String observations already carry
 the one-pass evaluated value, including changed-cell readers; normalizing their spelling again
 would consume newly exposed CRLF pairs (spec/02 §3). Preserve empty and formal failure

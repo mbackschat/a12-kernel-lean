@@ -2,20 +2,20 @@ import A12Kernel.Reference.Dm.Syntax
 
 /-! # The condition and operation grammar
 
-A recursive-descent reading of spec §12.3's grammar into the untyped `Expr` tree. Conditions and
+A recursive-descent reading of spec/12 §3's grammar into the untyped `Expr` tree. Conditions and
 operations share one entry, `parseText`, because a computation's operation and a rule's condition are
 written in the same productions and only the consumer decides which it needs.
 
 The grammar enforces the purely syntactic laws: one connective per bracket pair
 (`MVK_BRACKET_MISSING`), parentheses around conditions and braces around operations, a sign only on a
 number literal, a comment only at a branch boundary or after `+`. Everything typed is left to lowering.
-The class a refused text draws follows spec §12.3.1 at the first failing token; the exact raise point
+The class a refused text draws follows spec/12 §3.1 at the first failing token; the exact raise point
 of each check is the static-legality work's, not this reader's.
 -/
 
 namespace A12Kernel.Dm
 
-/-- What the parse completed that the Kernel checks as soon as it completes (spec/12 §12.3): a reference
+/-- What the parse completed that the Kernel checks as soon as it completes (spec/12 §3.1): a reference
 whose path closed, the steps of a path still open, each step a segment the parse read up to its `/`,
 a call whose closing parenthesis the parse read, a whole reference read, its category, key and
 filter included, and a bracketed field-value read whose `]` the parse read. A read inside a key or a
@@ -29,7 +29,7 @@ inductive ParseEvent where
   deriving Repr, BEq
 
 /-- A completed event and the index of the token after its production, which the Kernel's on-demand
-lexer must have read before the event's own gates run (spec/12 §12.3, token demand). -/
+lexer must have read before the event's own gates run (spec/12 §3.1, token demand). -/
 structure RecordedEvent where
   event : ParseEvent
   lookahead : Nat
@@ -51,7 +51,7 @@ private def peekAt (ahead : Nat) : P (Option Token) := do
 private def advance : P Unit := modify (· + 1)
 
 /-- Fail at the cursor: `atEnd` is the class the end of the text draws there, a real token always
-drawing `MVK_UNEXPECTED_TOKEN` (spec §12.3.1). -/
+drawing `MVK_UNEXPECTED_TOKEN` (spec/12 §3.1). -/
 private def failHere (atEnd : SyntaxErrorClass) : P α := do
   let lexemes ← read
   match lexemes[← get]? with
@@ -109,7 +109,7 @@ private def separatorKeywords : List String :=
    "DiffersWithToleranceRange5", "DiffersWithToleranceRange10"]
 
 /-- Whether the cursor starts a call argument: it follows a call's `(`, a `,`, or the `In` or `To` of
-an argument list, comments aside. Only there may a bare name stand (spec/12 §12.3). A `(` after a
+an argument list, comments aside. Only there may a bare name stand (spec/12 §3.2). A `(` after a
 connective or `Having` opens a condition, whose sides are values (static-legality sweep row `P70`). -/
 private def startsArgument : P Bool := do
   let before := ((← read).toList.take (← get)).reverse.filter (·.token != .comment)
@@ -140,7 +140,7 @@ private def segment : P Segment := do
 
 /-- The segments after `header`'s prefix, each step read up to its `/` recorded as the open path so far.
 A `.*` after a segment is a starred step the walk checks before the spelling's own class is raised, so
-`NoSuch.*/Items/` draws the name's class and `Items.*/Count` the star's (spec/12 §12.3). Where the class
+`NoSuch.*/Items/` draws the name's class and `Items.*/Count` the star's (spec/12 §3.1). Where the class
 stands for a `.*` not followed by `/` is unmeasured; it is raised the same way. -/
 private partial def segments (header : Path) : P (List Segment) := do
   let first ← segment
@@ -149,7 +149,7 @@ private partial def segments (header : Path) : P (List Segment) := do
     record (.openPath { header with segments := header.segments ++ [{ first with star := true }] })
     throw { errorClass := .pointInA12Model, offset }
   -- A `.` alone leaves the step open, the walk still reading for its `*`, so the reference never
-  -- completes and `Items*/NoSuch.` draws the token class (spec/12 §12.3).
+  -- completes and `Items*/NoSuch.` draws the token class (spec/12 §3.1).
   if (← peek) == some (.symbol ".") then failHere .unexpectedToken
   if ← acceptSymbol "/" then
     let header := { header with segments := header.segments ++ [first] }
@@ -224,7 +224,7 @@ private partial def reference : P Reference := do
   record (.read read)
   return read
 
-/-- A condition: branches joined by one connective (spec §12.3). `comments` admits a comment at each
+/-- A condition: branches joined by one connective (spec/12 §3). `comments` admits a comment at each
 branch boundary, which an argument list refuses. -/
 private partial def condition (comments : Bool) : P Expr := do
   let mut parts := #[← branch comments]
@@ -290,7 +290,7 @@ private partial def atom : P Expr := do
       expectSymbol "]"
       -- The bracketed read completes at its `]` and replaces the whole-reference read, so its gates
       -- wait for the token after it (`[Items*/Count] %` is a lexer defect, `[Items*/Count] > %` the
-      -- read's class; spec/12 §12.3).
+      -- read's class; spec/12 §3.1).
       modifyThe (Array RecordedEvent) fun events =>
         match events.back? with
         | some { event := .read _, .. } => events.pop
@@ -335,7 +335,7 @@ private partial def atom : P Expr := do
   | some (.name _ _) | some (.symbol "/") | some (.symbol "..") | some (.symbol "$") =>
       -- A field's value is read only through a bracket, so a bare name elsewhere, a comparison side
       -- or an arithmetic term, is a token defect at the name: nothing after it is read, and the name
-      -- is never resolved (spec/12 §12.3; `NoSuchField > 0` draws the token class).
+      -- is never resolved (spec/12 §3.2; `NoSuchField > 0` draws the token class).
       if !(← startsArgument) then failHere .incompleteInput
       -- A name that is no keyword before `(` is read as a path, so it is resolved before the `(` is
       -- refused: an undeclared one draws the entity class and a declared one the token class, in every
@@ -387,7 +387,7 @@ private partial def argumentList (id : String) (index : Nat := 0) : P (List Argu
 
 private partial def argument (id : String) (index : Nat) : P Argument := do
   -- A date shift's amount is a value, so a bare name there is a token defect like any bare value
-  -- (spec/12 §12.3). `AddDays` is measured (static-legality sweep row `R40`); the other shifts share
+  -- (spec/12 §3.2). `AddDays` is measured (static-legality sweep row `R40`); the other shifts share
   -- its production, an assumption no row measures.
   -- The numeric operators' value slots follow the same rule, bare outside a filter body and bare or
   -- marked inside one (handback rows of 2026-10-23, `sv1`–`sv9`, `sa1`–`sa4`, `sb1`–`sb6`,
@@ -454,7 +454,7 @@ def parseModelPath (language : Language) (text : String) : Except SyntaxError Pa
   (run grammar lexemes).1
 
 mutual
-/-- Whether every parenthesis groups a condition in a condition position (spec §12.3): a whole
+/-- Whether every parenthesis groups a condition in a condition position (spec/12 §3): a whole
 condition, a connective's part, a parenthesised condition's body or a filter body. A parenthesised
 comparison side, operation, argument or whole computation operation is `MVK_UNEXPECTED_TOKEN`. The
 grammar reads them all as one node, so this law is checked on the tree once the text's position,

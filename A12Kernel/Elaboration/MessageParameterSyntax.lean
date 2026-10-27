@@ -19,7 +19,7 @@ name in the name position answers before that name's lookup
 
 namespace A12Kernel
 
-/-- The seven non-ASCII letters `nameOhnePunkt` names (`spec/11` Part B). They are the whole non-ASCII
+/-- The seven non-ASCII letters `nameOhnePunkt` names (`spec/12` §1). They are the whole non-ASCII
 part of the name token, so a name is refused for being *unknown*, never for its umlaut, and the lexer
 that rejects `é` must let the same seven through. -/
 def messageNameGermanLetters : List Char := "ÄÜÖäüöß".toList

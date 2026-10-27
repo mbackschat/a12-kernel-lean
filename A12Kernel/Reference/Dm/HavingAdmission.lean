@@ -452,7 +452,7 @@ private partial def admitFieldList (model : FlatModel) (group bindingGroup : Gro
       | .mk (.constant "RuleGroup") none =>
           pure ({ path := { absolute := true, segments := group.map fun name => { name, star := false } } } : Reference)
       -- An entity list holds entity specifications, so a bracket there is a token defect
-      -- (condition-class rows `O08`, `O09`, 2026-10-01; spec/12 §12.3).
+      -- (condition-class rows `O08`, `O09`, 2026-10-01; spec/12 §3.2).
       | .mk (.value _) none => do refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
       | .mk (.constant "RuleGroup*") none => do
           refuse "Having" KernelStaticDiagnostic.wildcardOnRuleContext.kernelCode
@@ -583,7 +583,7 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
       pure (.number (.field 0), state)
   | .call id arguments none none => do
       -- A condition call is no operation, so here it is the token defect at its own position, its
-      -- reads unchecked (`Abs(FieldFilled(NoSuch)) > 0` draws the token class; spec/12 §12.3).
+      -- reads unchecked (`Abs(FieldFilled(NoSuch)) > 0` draws the token class; spec/12 §3.1).
       if conditionCallIds.contains id then refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
       if id == "DateRange" then
         let (reads, state) ← admitFieldList model group bindingGroup inFilter insideSemanticIndexKey admission arguments
@@ -698,7 +698,7 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
   -- An operation's operand is arithmetic, so a comparison or connective there is a token defect at
   -- its operator; the operand read before it completed its own production and keeps that check
   -- (`Abs(RoundUpValue(Reference, 2) > 1) > 0` draws `MVK_NO_NUMBER`, `Max([Score] > 1, 2)` the
-  -- token class; spec/12 §12.3).
+  -- token class; spec/12 §3.1).
   | .compare _ left _ => do
       discard <| admitNumericExpression model group bindingGroup inFilter insideSemanticIndexKey admission left
       refuse "Having" KernelStaticDiagnostic.unexpectedToken.kernelCode
@@ -713,7 +713,7 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
 end
 
 /-- The class a completed operation call's own production raises when the parse fails after it, as the
-Kernel checks each production as it completes (spec/12 §12.3): `none` for a condition call, a call that
+Kernel checks each production as it completes (spec/12 §3.1): `none` for a condition call, a call that
 passes, or a refusal with no Kernel class. The call is read at `group`, bound at `bindingGroup`, outside
 any filter. -/
 def operationCallClass? (model : FlatModel) (group : GroupPath) (call : Expr) (bindingGroup : GroupPath := group) :

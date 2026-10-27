@@ -31,7 +31,7 @@ inductive PartialValidationNumberAggregateViewResult where
 
 /-- Products need every declared coordinate, not only physical rows. A missing selected parent
 requires a wildcard there; finite lower capacity can be covered by concrete identifiers
-(spec/07 §4, partial-product capacity matrix, 2026-10-06). -/
+(spec/07 §3.8, partial-product capacity matrix, 2026-10-06). -/
 def CheckedStarFieldPath.productExtentRelevant (source : CheckedStarFieldPath model)
     (scope : ValidationRelevanceScope) (outer : Env)
     (missingParent : Option RepeatableLevel := none) : Except StarAddressingError Bool :=
@@ -229,7 +229,7 @@ def elaborateRowNumericProductAggregate (model : FlatModel)
   if leftRead.declaration.groupPath != rightRead.declaration.groupPath then
     throw (.differentGroups leftRead.declaration.groupPath rightRead.declaration.groupPath)
   -- The filter and star gates are asked operand by operand from the left, so the left operand's
-  -- stars answer before the right operand's filter is read (spec/07 §4).
+  -- stars answer before the right operand's filter is read (spec/07 §3.8).
   leftRead.requireLowestStar authored.leftHaving
   rightRead.requireLowestStar authored.rightHaving
   let left ← leftRead.toShape
@@ -329,7 +329,7 @@ def evaluateValidation (checked : CheckedRowNumericProductAggregate model)
   checked.evaluateAt .validation document outer (checked.checkedRawCell read)
 
 /-- Partial products share the declared-capacity gate with independently selected products;
-the numeric fold still consumes only instantiated rows (spec/07 §4). -/
+the numeric fold still consumes only instantiated rows (spec/07 §3.8). -/
 def evaluatePartial (checked : CheckedRowNumericProductAggregate model)
     (document : Document) (outer : Env) (scope : ValidationRelevanceScope)
     (read : Env → FieldId → RawCell) :

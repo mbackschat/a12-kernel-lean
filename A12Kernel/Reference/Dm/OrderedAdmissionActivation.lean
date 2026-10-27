@@ -6,7 +6,7 @@ import A12Kernel.Reference.Dm.HavingScalarAdmission
 Syntax-only predicates over the parse tree that decide whether a text is walked in authored read order
 before lowering, and what that walk must retain: a filter anywhere, a condition where the grammar
 admits only an operation, an authored scalar slot, and projected target identity. They resolve
-nothing, so activating the walk cannot itself reorder a read failure (spec/07 §3, spec/12 §12.3).
+nothing, so activating the walk cannot itself reorder a read failure (spec/07 §3, spec/12 §3.1).
 -/
 
 namespace A12Kernel.Dm

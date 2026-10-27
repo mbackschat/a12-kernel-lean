@@ -336,7 +336,7 @@ private def refusals (readings : List MemberReading) : List FieldTypeNotificatio
 /-- A field's own message classes, none when its messages are not reached. A text asked for a declared
 locale is also a repertoire carrier: a lone surrogate or a supplementary scalar the invalid-character
 class does not already name is the field's one codeless notification (`we-s`, `we-e`, `we-emoji`,
-[spec/01 §1.1](../../spec/01-data-model.md#11-the-two-special-model-level-configurations)), while an
+[spec/01 §1.1](../../spec/01-data-model.md#the-models-own-texts-meet-the-default-charset)), while an
 authored `U+10FFFF` draws the invalid-character class alone (`we-authored`) and an annotation's does
 draw it (`ux-annot-max`). That the exemption covers every supplementary scalar Java's `\p{C}` matches
 is this account's extension of the one measured. A String message with no pattern is assumed to share

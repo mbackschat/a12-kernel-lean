@@ -391,7 +391,7 @@ def ResolvedComputationGroupSource.eval (source : ResolvedComputationGroupSource
 
 /-- Whether one group instance's computation-phase reads show no instantiated descendant row, no
     value, and at least one formal failure: the malformed-only group that validation leaves
-    undecided ([§2](../../spec/02-logic-and-formal-errors.md)) while `groupPresentForComputation`
+    undecided ([spec/02 A.4.8](../../spec/02-logic-and-formal-errors.md#a48-numberoffilledgroups)) while `groupPresentForComputation`
     counts it as present. It sees only what a computation read carries, so a validation-only finding
     such as a required empty cell, and relevance, are outside it. -/
 def groupPresenceUndecided (cells : List CellObservation) (rowInstantiated : Bool) : Bool :=

@@ -129,7 +129,7 @@ structure SelectedValueListCells (kind : ValueListKind) where
 
 /-- Selection owns phase policy, row identity and omitted extents (spec/08 §4.1); each value-list
 consumer supplies its declaration-aware cell projection and absent-star policy. Products and list
-quantifiers retain omission on an absent selected star (spec/07 §4 and spec/08 §4.1). -/
+quantifiers retain omission on an absent selected star (spec/07 §3.8 and spec/08 §4.1). -/
 def selectedValueListCellsWith {kind : ValueListKind}
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
     (phase : Phase) (document : Document) (outer : Env) (direct : FieldId → CheckedCell)

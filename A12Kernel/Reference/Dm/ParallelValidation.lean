@@ -446,7 +446,7 @@ def checkValidationRule (model : DmModel) (language : Language) (rule : DmRule)
             (parallelRefusal.construct == "ParallelAdmission" && parallelRefusal.kernelClass?.isSome) then
           .error parallelRefusal
         -- A text that does not parse reports the first class a production completed before the
-        -- defect raised, as the Kernel checks each production as it completes (spec/12 §12.3).
+        -- defect raised, as the Kernel checks each production as it completes (spec/12 §3.1).
         else if refusal.construct == "Syntax" then
           let bound := (errorEntityOf language model.flat rule >>= errorGroupOf model.flat).toOption.getD rule.group
           let detail := (parseDefectClass? model.flat rule.group language rule.condition bound).getD refusal.detail

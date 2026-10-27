@@ -2,7 +2,7 @@ import A12Kernel.Semantics.StringCascade
 
 /-! # A12Kernel.Semantics.StringAlternatives — one resolved String alternative table
 
-This capsule implements the resolved runtime boundary of [`spec/09-computations.md` §5](../../spec/09-computations.md#5-where-a-computation-runs--scope-and-the-parallel-join) by composing the existing operation-neutral first-match selector with one already-resolved nonrepeatable String target. An optional common precondition becomes the guard of an unguarded row or is left-conjoined to an existing guard before that same selector runs. Selection completes before the chosen expression is evaluated: no match is clean no-value, selection poison is target poison, and a selected expression is evaluated exactly once without outcome-driven fallback.
+This capsule implements the resolved runtime boundary of [`spec/09-computations.md` §5.3](../../spec/09-computations.md#53-selection-across-alternatives-and-declarations) by composing the existing operation-neutral first-match selector with one already-resolved nonrepeatable String target. An optional common precondition becomes the guard of an unguarded row or is left-conjoined to an existing guard before that same selector runs. Selection completes before the chosen expression is evaluated: no match is clean no-value, selection poison is target poison, and a selected expression is evaluated exactly once without outcome-driven fallback.
 
 The caller supplies a model-legal table and an already-resolved common condition when present. Empty lists are totalized but not claimed authorable. Model checks, source-table cardinality, paths, repeats, same-target table assembly, scheduling, and generated validation remain separate.
 -/
