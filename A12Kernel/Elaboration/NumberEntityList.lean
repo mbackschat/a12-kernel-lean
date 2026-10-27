@@ -86,8 +86,8 @@ def fields (group : CheckedNumberEntityGroup model) : List FlatNumberField :=
 /-- The union scale of the whole expansion, so a nested subgroup's wider scale reaches the list's derived scale exactly as a directly authored operand would. -/
 def scaleSummary (group : CheckedNumberEntityGroup model) : NumericScaleSummary :=
   group.rest.foldl
-    (fun summary field => summary.union (NumericScaleSummary.field field.info.scale))
-    (NumericScaleSummary.field group.first.info.scale)
+    (fun summary field => summary.union field.info.staticSummary)
+    group.first.info.staticSummary
 
 /-- Metadata of the first declaration only; aggregate missingness must inspect every declaration. -/
 def firstDeclarationSigned (group : CheckedNumberEntityGroup model) : Bool :=
@@ -227,10 +227,10 @@ def hasHaving : CheckedNumberEntityOperand model → Bool
   | .field _ | .selected _ | .star _ | .group _ => false
 
 def scaleSummary : CheckedNumberEntityOperand model → NumericScaleSummary
-  | .selected source => source.rest.foldl (fun acc field => acc.union (NumericScaleSummary.field field.info.scale)) (NumericScaleSummary.field source.first.info.scale)
-  | .field source => NumericScaleSummary.field source.field.info.scale
-  | .star source => NumericScaleSummary.field source.field.info.scale
-  | .starHaving source => NumericScaleSummary.field source.source.field.info.scale
+  | .selected source => source.rest.foldl (fun acc field => acc.union field.info.staticSummary) source.first.info.staticSummary
+  | .field source => source.field.info.staticSummary
+  | .star source => source.field.info.staticSummary
+  | .starHaving source => source.source.field.info.staticSummary
   | .group source => source.scaleSummary
 
 def firstDeclarationSigned : CheckedNumberEntityOperand model → Bool

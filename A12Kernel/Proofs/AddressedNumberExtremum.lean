@@ -46,7 +46,7 @@ theorem checkedAddressedNumberExtremumLeaf_abs
     (source : CheckedAddressedNumberSource model)
     (input : CheckedDocument model) (environment : Env) :
     CheckedAddressedNumberExtremumLeaf.scaleSummary (.abs source) =
-        .field source.source.info.scale ∧
+        source.source.info.staticSummary ∧
       (CheckedAddressedNumberExtremumLeaf.abs source).evaluateAtEnvironment
         input environment =
         (do return (← source.evaluateAtEnvironment input environment).absolute) := by
@@ -174,8 +174,8 @@ theorem checkedAddressedNumberExtremum_additionScaleSummary
     (pair : CheckedAddressedNumberPair model) :
     CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic .add (.fields pair)) =
-      NumericScaleSummary.binary .add (.field pair.left.source.info.scale)
-        (.field pair.right.source.info.scale) :=
+      NumericScaleSummary.binary .add pair.left.source.info.staticSummary
+        pair.right.source.info.staticSummary :=
   checkedAddressedNumberExtremum_arithmeticScaleSummary .add (.fields pair)
 
 /-- Subtraction over two fields contributes the maximum child scale. -/
@@ -183,18 +183,24 @@ theorem checkedAddressedNumberExtremum_subtractionScaleSummary
     (pair : CheckedAddressedNumberPair model) :
     CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic .subtract (.fields pair)) =
-      NumericScaleSummary.binary .subtract (.field pair.left.source.info.scale)
-        (.field pair.right.source.info.scale) :=
+      NumericScaleSummary.binary .subtract pair.left.source.info.staticSummary
+        pair.right.source.info.staticSummary :=
   checkedAddressedNumberExtremum_arithmeticScaleSummary .subtract (.fields pair)
 
-/-- Multiplication over two fields instead SUMS their scales, and with no capable operand the product stays incapable of expansion. -/
+/-- Multiplication over two fields of known static scale instead SUMS their scales, and with no capable operand the product stays incapable of expansion. -/
 theorem checkedAddressedNumberExtremum_multiplicationScaleSummary
-    (pair : CheckedAddressedNumberPair model) :
+    (pair : CheckedAddressedNumberPair model)
+    (leftKnown : pair.left.source.info.staticScaleUnknown = false)
+    (rightKnown : pair.right.source.info.staticScaleUnknown = false) :
     CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic .multiply (.fields pair)) =
       { scale := .exact (pair.left.source.info.scale +
-          pair.right.source.info.scale), canExpandScale := false } :=
-  checkedAddressedNumberExtremum_arithmeticScaleSummary .multiply (.fields pair)
+          pair.right.source.info.scale), canExpandScale := false } := by
+  show NumericScaleSummary.binary .multiply pair.left.source.info.staticSummary
+    pair.right.source.info.staticSummary = _
+  simp only [NumField.staticSummary, leftKnown]
+  simp only [rightKnown]
+  rfl
 
 /-- A child literal contributes its AUTHORED scale at its authored position, so the same value written with a trailing zero legally changes the admitted target scale. -/
 theorem checkedAddressedNumberExtremum_fieldLiteralScaleSummary
@@ -204,7 +210,7 @@ theorem checkedAddressedNumberExtremum_fieldLiteralScaleSummary
     CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic operation (.fieldLiteral source decoded)) =
       NumericScaleSummary.binary operation.scaleBinaryOp
-        (.field source.source.info.scale)
+        source.source.info.staticSummary
         (NumericScaleSummary.constant decoded.authoredScale) :=
   checkedAddressedNumberExtremum_arithmeticScaleSummary operation
     (.fieldLiteral source decoded)
@@ -218,19 +224,22 @@ theorem checkedAddressedNumberExtremum_literalFieldScaleSummary
         (.arithmetic operation (.literalField decoded source)) =
       NumericScaleSummary.binary operation.scaleBinaryOp
         (NumericScaleSummary.constant decoded.authoredScale)
-        (.field source.source.info.scale) :=
+        source.source.info.staticSummary :=
   checkedAddressedNumberExtremum_arithmeticScaleSummary operation
     (.literalField decoded source)
 
 /-- A literal-bearing product adds the literal's authored signed scale to its field's scale and RETAINS multiplicative-constant capability, which is what lets an all-capable list be padded up to a larger declared target scale. -/
 theorem checkedAddressedNumberExtremum_multiplicationLiteralScaleSummary
     (source : CheckedAddressedNumberSource model)
-    (decoded : DecodedNumericLiteral) :
+    (decoded : DecodedNumericLiteral)
+    (known : source.source.info.staticScaleUnknown = false) :
     CheckedAddressedNumberExtremumOperand.scaleSummary
         (.arithmetic .multiply (.fieldLiteral source decoded)) =
       { scale := .exact (source.source.info.scale + decoded.authoredScale)
-        canExpandScale := true } :=
-  checkedAddressedNumberExtremum_fieldLiteralScaleSummary .multiply source decoded
+        canExpandScale := true } := by
+  rw [checkedAddressedNumberExtremum_fieldLiteralScaleSummary .multiply source decoded]
+  simp only [NumField.staticSummary, known]
+  rfl
 
 /-- A constant-only child reads no field and stays capability-carrying under every admitted operation, which is why a list built only from such operands is admitted at any declared scale at or above its derived one. -/
 theorem checkedAddressedNumberExtremum_constantOnlyCapable
@@ -266,7 +275,7 @@ theorem checkedAddressedNumberExtremum_sound
         source.placement.targetField = operation.target.targetField) ∧
       exactNumericScaleComparisonAllowedWithSuppression
         operation.suppressExactScaleWarning
-        (NumericScaleSummary.field operation.target.targetPolicy.info.scale)
+        operation.target.targetPolicy.info.staticSummary
         operation.scaleSummary = true := by
   refine ⟨?_, operation.sourcesShareTarget, operation.targetAdmitted⟩
   intro operand _

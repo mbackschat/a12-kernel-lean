@@ -328,7 +328,7 @@ private def checkGeneratedOperationScale (target : FlatNumberField)
   | some _ => pure ()
   | none =>
       if exactNumericScaleComparisonAllowed
-          (NumericScaleSummary.field target.info.scale)
+          target.info.staticSummary
           (NumericScaleSummary.constant operation.authoredScale) then
         pure ()
       else

@@ -123,6 +123,17 @@ def power? (base exponent : NumericScaleSummary)
 
 end NumericScaleSummary
 
+namespace NumField
+
+/-- The scale summary a static read of this field contributes: the declared scale, or an unknown scale
+that cannot expand when the declaration's maximum is the `-1` sentinel (`NumField.staticScaleUnknown`).
+Reads that need the stored values' scale, such as formal checks, use `NumField.scale` instead. -/
+def staticSummary (info : NumField) : NumericScaleSummary :=
+  if info.staticScaleUnknown then { scale := .unknown, canExpandScale := false }
+  else NumericScaleSummary.field info.scale
+
+end NumField
+
 /-- The unsuppressed static gate for numeric equality and inequality. Equal exact scales pass; otherwise only a capable smaller-scale side may be padded. -/
 def exactNumericScaleComparisonAllowed
     (left right : NumericScaleSummary) : Bool :=

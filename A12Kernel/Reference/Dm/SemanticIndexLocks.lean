@@ -2,6 +2,7 @@ import A12Kernel.Elaboration.GeneratedComputationValidation.Assembly
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.LowerValidation
+import A12Kernel.Reference.Dm.ParallelValidation
 
 namespace A12Kernel.Dm.SemanticIndexLocks
 
@@ -179,5 +180,55 @@ example : computation "FieldFilled" "Rows/N For Key" [("1", "7"), ("2", "9")]
       "1" "1" false none false false (some "[Rows/N For Key] + 1") true = some "value 8,value 8" ∧
     computation "FieldFilled" "Rows/N For Key" [("1", "7"), ("2", "9")]
       "1" "1" false none false true none true = some "value x,value x" := by native_decide
+
+/-! ### A key whose only index lies on the root or a fixed group
+
+`Sum(<path> For "X") > 0` from `/Policy`, where the fixed `Cover` holds the repeatable, unindexed
+`Items`. The rule-check rows replay `SemanticIndexPinnedLevelLawsTest` at a12-dmkits `fecf8552`
+([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)): an index on the root or
+on `Cover` lies above the repetition, so the operand's unbound `Items` level answers where an unindexed
+chain draws the missing-index class. -/
+
+private def policyNumber (id : FieldId) (name : String) (group : List String) : FlatFieldDecl :=
+  { id, name, groupPath := group, policy := { kind := .number { scale := 0, signed := true } }
+    repeatableScope := if group.length > 2 then [10] else [] }
+
+private def policyModel (rootIndexed coverIndexed : Bool) : DmModel := {
+  flat := {
+    fields := [policyNumber 1 "Amount" ["Policy", "Cover", "Items"], policyNumber 2 "Total" ["Policy"],
+      { policyNumber 3 "RootKey" ["Policy"] with policy := { kind := .string } },
+      { policyNumber 4 "CoverKey" ["Policy", "Cover"] with policy := { kind := .string } },
+      policyNumber 5 "Plain" ["Policy", "Cover"]]
+    repeatableGroups := [{ level := 10, path := ["Policy", "Cover", "Items"], repeatability := some 3 }]
+    nonrepeatableIndexFields :=
+      (if rootIndexed then [(["Policy"], 3)] else []) ++ (if coverIndexed then [(["Policy", "Cover"], 4)] else []) }
+  rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+
+private def policyClass (rootIndexed coverIndexed : Bool) (operand : String) : String :=
+  match checkValidationRule (policyModel rootIndexed coverIndexed) .english {
+    group := ["Policy"], name := "R", errorCode := "R", errorEntityRelPath := "../Total"
+    condition := s!"Sum({operand} For \"X\") > 0", severity := "ERROR" } with
+  | .ok _ => "admitted"
+  | .error refusal => refusal.kernelClass?.getD s!"unclassed {refusal.construct}"
+
+example : (policyModel true true).flat.validate.isOk = true := by native_decide
+
+/- An index on the root, or on the fixed group, lies above the unbound repetition, so the ordinary walk's
+missing-wildcard class answers; with no index anywhere the missing-index class stands. -/
+example :
+    policyClass false false "Cover/Items/Amount" = "MVK_NO_INDEX_FIELD" ∧
+      policyClass true false "Cover/Items/Amount" = "MVK_NO_WILDCARD" ∧
+      policyClass false true "Cover/Items/Amount" = "MVK_NO_WILDCARD" ∧
+      policyClass true true "Cover/Items/Amount" = "MVK_NO_WILDCARD" := by
+  native_decide
+
+/- Unmeasured, so today's missing-index class stands: a chain that crosses no repetition, and a starred
+operand, whose ordinary walk admits. No selection is made on the root or the fixed group in either. -/
+example :
+    policyClass true false "Cover/Plain" = "MVK_NO_INDEX_FIELD" ∧
+      policyClass false true "Cover/Plain" = "MVK_NO_INDEX_FIELD" ∧
+      policyClass true false "Cover/Items*/Amount" = "MVK_NO_INDEX_FIELD" ∧
+      policyClass false true "Cover/Items*/Amount" = "MVK_NO_INDEX_FIELD" := by
+  native_decide
 
 end A12Kernel.Dm.SemanticIndexLocks

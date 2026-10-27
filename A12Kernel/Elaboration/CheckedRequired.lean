@@ -53,6 +53,32 @@ private def fieldNotFilledVerdict (cell : CheckedCell) : Verdict :=
   | .value _ => .notFired
   | .unknown _ | .poison _ => .unknown
 
+/-- The generated mandatory evaluations of one declaration under its requirement, one per instantiated
+in-capacity row of its own repeatable scope that the call's relevance covers. `rows` and `cells` are
+the call's group-presence slice. A requirement relative to a group gates the evaluation on that group's
+admitted content, as `GroupFilled(G) And FieldNotFilled(F)` does. -/
+def requiredEvaluationsFor (checked : CheckedDocument model)
+    (relevance : ValidationRelevanceScope) (rows : List RowAddr)
+    (cells : List CheckedCellPlacement) (declaration : FlatFieldDecl)
+    (requirement : RequirednessScope) :
+    Except CheckedRequiredError (List RequiredEvaluation) := do
+  let environments ← if declaration.repeatableScope.isEmpty then pure [[]]
+    else checked.actualRowEnvironments declaration.repeatableScope |>.mapError .rows
+  let admitted := environments.filter fun environment =>
+    model.addressOverLimit? declaration.repeatableScope (environment.map (·.2)) == some false &&
+      relevance.coversCell model declaration.path environment
+  admitted.mapM fun environment => do
+    let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment
+    let address : CellAddr := { field := declaration.id, path }
+    let cell ← checked.read address |>.mapError .document
+    let target := fieldNotFilledVerdict cell
+    match requirement with
+    | .absolute => pure { address, verdict := target }
+    | .relativeTo groupPath =>
+        let input ← model.groupPresenceInputFromSlice rows cells groupPath environment
+          (relevance.groupRelevance model groupPath environment) false |>.mapError .group
+        pure { address, verdict := input.derive.groupFilled.conj target }
+
 /-- Every generated mandatory evaluation of one validation call, over the base checked cells.
 `rows` and `cells` are the call's group-presence slice: the whole document for full validation, the
 relevance-filtered rows and placements for a partial call. -/
@@ -65,22 +91,7 @@ def requiredEvaluations (checked : CheckedDocument model)
     match scope with
     | none => pure []
     | some requirement =>
-        let environments ← if declaration.repeatableScope.isEmpty then pure [[]]
-          else checked.actualRowEnvironments declaration.repeatableScope |>.mapError .rows
-        let admitted := environments.filter fun environment =>
-          model.addressOverLimit? declaration.repeatableScope (environment.map (·.2)) == some false &&
-            relevance.coversCell model declaration.path environment
-        admitted.mapM fun environment => do
-          let path ← environment.pathForScope declaration.repeatableScope |>.mapError .environment
-          let address : CellAddr := { field := declaration.id, path }
-          let cell ← checked.read address |>.mapError .document
-          let target := fieldNotFilledVerdict cell
-          match requirement with
-          | .absolute => pure { address, verdict := target }
-          | .relativeTo groupPath =>
-              let input ← model.groupPresenceInputFromSlice rows cells groupPath environment
-                (relevance.groupRelevance model groupPath environment) false |>.mapError .group
-              pure { address, verdict := input.derive.groupFilled.conj target }
+        checked.requiredEvaluationsFor relevance rows cells declaration requirement
 
 /-- Full validation's generated mandatory evaluations. -/
 def fullRequiredEvaluations (checked : CheckedDocument model) :

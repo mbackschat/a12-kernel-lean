@@ -92,11 +92,11 @@ def HavingNumericAtomOf.summary : HavingNumericAtomOf Temporal → NumericScaleS
   | .product source => source.summary
   | .temporalExpressionPart _ _ => .field 0
   | .groupCount _ | .collectionCount _ | .aggregate .distinctCount _ => .field 0
-  | .firstFilled slots | .aggregate _ slots => (slots.flatMap (·.references)).foldl (fun summary reference => summary.union (.field reference.field.info.scale)) (.field 0)
+  | .firstFilled slots | .aggregate _ slots => (slots.flatMap (·.references)).foldl (fun summary reference => summary.union reference.field.info.staticSummary) (.field 0)
   | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ => .field 0
   | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => .field 0
   | .fieldValueAsNumber _ source => .field source.scale
-  | .field reference => .field reference.field.info.scale
+  | .field reference => reference.field.info.staticSummary
   | .dateRangeBoundPart _ _ _ _ | .repetition _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ _ => .field 0
 
 /-- Resolve one repetition reference through the structural addressed channel. -/

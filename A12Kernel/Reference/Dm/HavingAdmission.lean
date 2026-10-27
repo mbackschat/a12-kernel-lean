@@ -82,6 +82,7 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
     let offset := targetPath.length - reference.path.segments.length
     position >= offset && (reference.path.segments[position - offset]?).any (·.star)
   let mut indexedLevel : Option RepeatableLevel := none
+  let mut deferredNoIndex := false
   if let some key := reference.index then
     let checkedKey : Sum String ((Sum FlatFieldDecl GroupPath) × SemanticIndexAdmissionKeyRef) ← match key with
       | .literal spelling => pure (.inl spelling)
@@ -109,32 +110,41 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
       declaredNames := if candidate.indexField.isSome then 1 else 0
       nameResolvesToField := candidate.indexField.any fun id =>
         (model.lookupUniqueId id).toOption.any (·.groupPath == candidate.path) } : IndexDeclaringGroup)
+    -- Where the root or a fixed group nominates the only index and the chain crosses a repetition, the
+    -- missing-index class waits behind the ordinary level walk below, whose unbound level answers
+    -- (`SemanticIndexLocks`, the rule check `SemanticIndexPinnedLevelLawsTest` at a12-dmkits
+    -- `fecf8552`). No group is selected then, so no key is checked against an index. Where that walk
+    -- admits the read, which is unmeasured, the missing-index class stands as before.
+    let nominatedAbove := !groups.isEmpty && model.nominatesNonrepeatableIndexOnChain containingGroup
     match indexResolution indexPath with
     | .error diagnostic => do refuse "Having" diagnostic.kernelCode
-    | .ok none => do refuse "Having" KernelStaticDiagnostic.noIndexField.kernelCode
+    | .ok none => do
+        if !nominatedAbove then refuse "Having" KernelStaticDiagnostic.noIndexField.kernelCode
+        deferredNoIndex := true
     | .ok (some _) => pure ()
-    let some selected := groups.find? (·.indexField.isSome) | refuse "Having" "unresolved index group"
-    let some id := selected.indexField | refuse "Having" "unresolved index field"
-    let index ← checkedHaving ((model.lookupUniqueId id).mapError .resolve)
-    let admissionKey ← match checkedKey with
-      | .inl authored => do
-          let matcher ← match index.stringPatternSource with
-            | none => pure (fun (_ : String) => true)
-            | some pattern => match (admission.compilePattern pattern).matcher? with
-                | some matcher => pure matcher
-                | none => do refuse "Having" "unsupported index pattern"
-          let spelling := normalizeLinebreaks authored
-          let some applicable := index.indexKeyFits? matcher authored | refuse "Having" "unsupported index kind"
-          pure (SemanticIndexAdmissionKey.constant spelling applicable)
-      | .inr (.inl keyDeclaration, shape) => pure (.reference { shape with
-          baseTypeMatchesIndexField :=
-            keyDeclaration.policy.kind.surfaceKind.sharesValueListBaseType index.policy.kind.surfaceKind
-          containedInIndexGroup := selected.path.isPrefixOf keyDeclaration.groupPath })
-      | .inr (.inr _, shape) => pure (.reference shape)
-    let starredAtIndexLevel := starredAt (selected.path.length - 1)
-    if let some diagnostic := semanticIndexAdmissionRefusal { indexPath, starredAtIndexLevel } admissionKey then
-      refuse "Having" diagnostic.kernelCode
-    indexedLevel := some selected.level
+    if !deferredNoIndex then
+      let some selected := groups.find? (·.indexField.isSome) | refuse "Having" "unresolved index group"
+      let some id := selected.indexField | refuse "Having" "unresolved index field"
+      let index ← checkedHaving ((model.lookupUniqueId id).mapError .resolve)
+      let admissionKey ← match checkedKey with
+        | .inl authored => do
+            let matcher ← match index.stringPatternSource with
+              | none => pure (fun (_ : String) => true)
+              | some pattern => match (admission.compilePattern pattern).matcher? with
+                  | some matcher => pure matcher
+                  | none => do refuse "Having" "unsupported index pattern"
+            let spelling := normalizeLinebreaks authored
+            let some applicable := index.indexKeyFits? matcher authored | refuse "Having" "unsupported index kind"
+            pure (SemanticIndexAdmissionKey.constant spelling applicable)
+        | .inr (.inl keyDeclaration, shape) => pure (.reference { shape with
+            baseTypeMatchesIndexField :=
+              keyDeclaration.policy.kind.surfaceKind.sharesValueListBaseType index.policy.kind.surfaceKind
+            containedInIndexGroup := selected.path.isPrefixOf keyDeclaration.groupPath })
+        | .inr (.inr _, shape) => pure (.reference shape)
+      let starredAtIndexLevel := starredAt (selected.path.length - 1)
+      if let some diagnostic := semanticIndexAdmissionRefusal { indexPath, starredAtIndexLevel } admissionKey then
+        refuse "Having" diagnostic.kernelCode
+      indexedLevel := some selected.level
   let filteredBody ← reference.filter.mapM fun expression => do
     let .inl declaration := entity | refuse "Having" KernelStaticDiagnostic.noGroupsAllowed.kernelCode
     let candidate := model.repeatableScopeForGroupPath declaration.groupPath
@@ -176,6 +186,7 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
             parallelIteration := true
             parallelFilteredEntity := facts.parallelFilteredEntity || reference.filter.isSome
             parallelFilterBody := facts.parallelFilterBody || admission.inFilterSyntax }
+  if deferredNoIndex then refuse "Having" KernelStaticDiagnostic.noIndexField.kernelCode
   match entity with
   | .inl _ => pure ()
   | .inr path =>
@@ -495,7 +506,7 @@ private partial def admitNumericExpression (model : FlatModel) (group bindingGro
       liftM <| refuse "Having" KernelStaticDiagnostic.categoryNotAllowed.kernelCode
     let .number info := declaration.policy.kind |
       liftM <| refuse "Having" KernelStaticDiagnostic.noNumber.kernelCode
-    pure (.number (.field info.scale))
+    pure (.number info.staticSummary)
   let beforeRounding (source : Expr) (tree : AuthoredNumericExpr NumericOperandType) : StateT Bool RawAdmissionM Unit :=
     liftM <| checkRawNumericWrapper model.hasBaseYear source tree
   let complete (source : Expr) (tree : AuthoredNumericExpr NumericOperandType) : StateT Bool RawAdmissionM Unit :=

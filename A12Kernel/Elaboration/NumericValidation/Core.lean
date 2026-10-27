@@ -317,7 +317,7 @@ private def FlatModel.admitsAddressedFieldValueAsNumber (model : FlatModel)
 /-- Static numeric-scale summary shared by admission and checked surface resolution. -/
 def numericValidationSummary (atom : NumericValidationAtom) :
     NumericScaleSummary :=
-  atom.summary fun source => NumericScaleSummary.field source.info.scale
+  atom.summary fun source => source.info.staticSummary
 
 /-- Static admission for one scalar numeric-validation atom under the selected ordinary, addressed, or generated-computation scope. -/
 def NumericValidationAtom.admitted

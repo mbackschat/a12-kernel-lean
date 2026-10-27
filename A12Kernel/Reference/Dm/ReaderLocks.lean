@@ -318,19 +318,29 @@ private def numberBodyRefusals (body : List (String × Json)) : Option (List Str
   let json := Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group])])])]
   (readModel json).toOption.map fun model => model.refusals.map (·.2)
 
-/-- The resolved scale, minimum fractional count and whether stored text meets the fractional arms,
-for the one field of a model whose Number body is `body`. -/
-private def numberBodyFractional (body : List (String × Json)) : Option (Nat × Nat × Bool) := do
+/-- The one field of a model whose Number body is `body`. -/
+private def numberBodyDeclaration (body : List (String × Json)) : Option FlatFieldDecl := do
   let field := Json.mkObj [("type", "Field"), ("name", "N"), ("Field", Json.mkObj [("fieldType",
     Json.mkObj [("type", "NumberType"), ("NumberType", Json.mkObj body)])])]
   let group := Json.mkObj [("type", "Group"), ("name", "G"),
     ("Group", Json.mkObj [("repeatability", (1 : Nat)), ("elements", Json.arr #[field])])]
   let json := Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group])])])]
   let model ← (readModel json).toOption
-  let declaration ← model.flat.fields.head?
+  model.flat.fields.head?
+
+/-- The resolved scale, minimum fractional count and whether stored text meets the fractional arms,
+for the one field of a model whose Number body is `body`. -/
+private def numberBodyFractional (body : List (String × Json)) : Option (Nat × Nat × Bool) := do
+  let declaration ← numberBodyDeclaration body
   let .number info := declaration.policy.kind | none
   pure (info.scale, declaration.numericTargetConstraints.minFractionalDigits,
     declaration.numericTargetConstraints.fractionalDigitsChecked)
+
+/-- Whether the one field of a model whose Number body is `body` has an unknown static scale. -/
+private def numberBodyStaticScaleUnknown (body : List (String × Json)) : Option Bool := do
+  let declaration ← numberBodyDeclaration body
+  let .number info := declaration.policy.kind | none
+  pure info.staticScaleUnknown
 
 /- The no-bound sentinel `-1` is not an absent member: it resolves into an ordinary pair, a `-1`
 maximum fixing the count at the minimum, except that a `-1` minimum beside a zero maximum leaves the
@@ -348,6 +358,26 @@ example :
         some ["MVK_FRACT_DIGITS_MISSING"] ∧
       numberBodyRefusals [("maxFractionalDigits", (2 : Nat)), ("minFractionalDigits", (1 : Nat))] =
         some [] := by
+  native_decide
+
+/- A `-1` maximum leaves the static scale unknown while the runtime scale stays the minimum, so stored
+values still resolve at it; only that maximum does so, since a `-1` minimum leaves the maximum as the
+scale (rule check `CheckerUnknownMaximumScaleAgreementTest` at a12-dmkits `fecf8552`,
+[inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)). -/
+example :
+    numberBodyStaticScaleUnknown [("minFractionalDigits", (2 : Nat)), ("maxFractionalDigits", (-1 : Int))] =
+        some true ∧
+      numberBodyStaticScaleUnknown [("maxFractionalDigits", (-1 : Int)), ("minFractionalDigits", (1 : Nat))] =
+        some true ∧
+      numberBodyStaticScaleUnknown [("maxFractionalDigits", (-1 : Int))] = some true ∧
+      numberBodyStaticScaleUnknown [("minFractionalDigits", (-1 : Int)), ("maxFractionalDigits", (2 : Nat))] =
+        some false ∧
+      numberBodyStaticScaleUnknown [("minFractionalDigits", (-1 : Int))] = some false ∧
+      numberBodyStaticScaleUnknown [("minFractionalDigits", (2 : Nat)), ("maxFractionalDigits", (2 : Nat))] =
+        some false ∧
+      numberBodyStaticScaleUnknown [("maxFractionalDigits", (2 : Nat))] = some false ∧
+      numberBodyFractional [("minFractionalDigits", (2 : Nat)), ("maxFractionalDigits", (-1 : Int))] =
+        some (2, 2, true) := by
   native_decide
 
 end A12Kernel.Dm.ReaderLocks

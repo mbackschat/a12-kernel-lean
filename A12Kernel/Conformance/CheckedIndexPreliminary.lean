@@ -589,4 +589,104 @@ example :
       some (.invalidIndexField items.path rawKey.id) := by
   native_decide
 
+/-! ### An index field nominated in a non-repeatable group
+
+`Claim/Holder` is non-repeatable and nominates `HolderKey`; the repeatable `Claim/Covers` holds the
+non-repeatable `Detail`, which nominates `DetailKey`. The rows replay the three-engine
+`NonRepeatableIndexFieldGeneratedChecksDiffTest` at a12-dmkits `fecf8552`
+([inbound](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)). The generated check is
+the mandatory one only: no uniqueness arm, and no check without the group's content. -/
+
+private def holderName : FlatFieldDecl :=
+  { id := 1, groupPath := ["Claim", "Holder"], name := "Name", policy := { kind := .string } }
+
+private def holderKey : FlatFieldDecl :=
+  { id := 2, groupPath := ["Claim", "Holder"], name := "HolderKey", policy := { kind := .string } }
+
+private def detailNote : FlatFieldDecl :=
+  { id := 3, groupPath := ["Claim", "Covers", "Detail"], name := "Note", policy := { kind := .string }
+    repeatableScope := [10] }
+
+private def detailKey : FlatFieldDecl :=
+  { detailNote with id := 4, name := "DetailKey" }
+
+private def nominatedModel : FlatModel :=
+  { fields := [holderName, holderKey, detailNote, detailKey]
+    repeatableGroups := [{ level := 10, path := ["Claim", "Covers"], repeatability := some 3 }]
+    nonrepeatableIndexFields :=
+      [(["Claim", "Holder"], holderKey.id), (["Claim", "Covers", "Detail"], detailKey.id)] }
+
+/-- The control: the same fields and documents with no key nominated. -/
+private def unnominatedModel : FlatModel := { nominatedModel with nonrepeatableIndexFields := [] }
+
+private def textCell (field : FieldId) (path : List Nat) (stored : String) : ClassifiedCellInput :=
+  { address := { field, path }, stored, raw := .parsed (.str stored) }
+
+private def holderOnly : DocumentData :=
+  { instantiatedRows := [], cells := [textCell holderName.id [] "Ada"] }
+
+private def detailNoteOnly : DocumentData :=
+  { instantiatedRows := [row 10 [1]], cells := [textCell detailNote.id [1] "n"] }
+
+private def sharedDetailKey : DocumentData :=
+  { instantiatedRows := [row 10 [1], row 10 [2]]
+    cells := [
+      textCell detailNote.id [1] "n", textCell detailKey.id [1] "a",
+      textCell detailNote.id [2] "m", textCell detailKey.id [2] "a"] }
+
+private def coverWithoutDetail : DocumentData :=
+  { instantiatedRows := [row 10 [1]], cells := [] }
+
+private def mandatoryAt (field : FieldId) (path : List Nat) : IndexPreliminaryFinding :=
+  { address := { field, path }, kind := .mandatory }
+
+/- A present group whose key is empty draws the mandatory finding at the key, whether the group is
+fixed under the root or inside a repeatable row. -/
+example :
+    (preliminaryFor nominatedModel holderOnly).map (·.findings) = some [mandatoryAt holderKey.id []] ∧
+      (preliminaryFor nominatedModel detailNoteOnly).map (·.findings) =
+        some [mandatoryAt detailKey.id [1]] := by
+  native_decide
+
+/- Two details sharing a key draw no finding, because no uniqueness arm exists there, and neither does
+a cover without a `Detail`, whose group has no content. -/
+example :
+    (preliminaryFor nominatedModel sharedDetailKey).map (·.findings) = some [] ∧
+      (preliminaryFor nominatedModel coverWithoutDetail).map (·.findings) = some [] := by
+  native_decide
+
+/- The control: with the keys not nominated, the same empty-key documents draw no finding. -/
+example :
+    (preliminaryFor unnominatedModel holderOnly).map (·.findings) = some [] ∧
+      (preliminaryFor unnominatedModel detailNoteOnly).map (·.findings) = some [] := by
+  native_decide
+
+/- The finding carries the annotation a repeatable index field's mandatory finding carries: the cell
+reads as required-unknown to authored validation. The Kernel rows above observe the generated
+message, not this cell annotation, so the annotation on this carrier is not measured. -/
+example :
+    ((preliminaryFor nominatedModel holderOnly).bind fun preliminary => do
+      let cell ← (preliminary.readAuthoredValidation { field := holderKey.id, path := [] }).toOption
+      pure (observeCell .validation cell == .unknown .required)) = some true := by
+  native_decide
+
+/- A partial call generates the finding only while the group and its key are relevant: the gate reads the
+call's relevance-filtered slice as the generated requirement does, so a relevant key beside an
+irrelevant `Name` finds the group without admitted content. Neither this slice nor the relevance
+scope is measured on this carrier; both are the requirement's and the repeatable index arm's, applied
+unchanged. -/
+example :
+    let relevantHolder : RelevantEntityPattern :=
+      { path := ["Claim", "Holder"], indices := [.concrete 1, .concrete 1] }
+    let relevantHolderKey : RelevantEntityPattern :=
+      { path := ["Claim", "Holder", "HolderKey"], indices := [.concrete 1, .concrete 1, .concrete 1] }
+    let relevantNote : RelevantEntityPattern :=
+      { path := ["Claim", "Covers", "Detail", "Note"]
+        indices := [.concrete 1, .concrete 1, .concrete 1, .concrete 1] }
+    ((partialFor nominatedModel holderOnly [relevantHolder]).map (·.index.findings)) =
+        some [mandatoryAt holderKey.id []] ∧
+      ((partialFor nominatedModel holderOnly [relevantHolderKey]).map (·.index.findings)) = some [] ∧
+      ((partialFor nominatedModel holderOnly [relevantNote]).map (·.index.findings)) = some [] := by
+  native_decide
+
 end A12Kernel.Conformance.CheckedIndexPreliminary

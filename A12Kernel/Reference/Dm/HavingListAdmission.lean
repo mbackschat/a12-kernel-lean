@@ -320,7 +320,7 @@ def rawFirstFilledType (declarations : List FlatFieldDecl) : Lowering NumericOpe
       refuse "Having" KernelStaticDiagnostic.varyingTypesNotAllowed.kernelCode
     if let .number scale := result then
       let .number next := declaration.policy.kind | refuse "Having" "selector family mismatch"
-      result := .number (scale.union (.field next.scale))
+      result := .number (scale.union next.staticSummary)
   pure result
 
 /-- Product shape is checked after all reads and before Number typing. A filter restricts its
@@ -352,7 +352,7 @@ def rawProductType (model : FlatModel)
     if !foundStar then refuse "Having" KernelStaticDiagnostic.repeatableLevelRequired.kernelCode
   let .number leftType := left.policy.kind | refuse "Having" KernelStaticDiagnostic.noNumber.kernelCode
   let .number rightType := right.policy.kind | refuse "Having" KernelStaticDiagnostic.noNumber.kernelCode
-  pure (.number ((NumericScaleSummary.field leftType.scale).binary .multiply (.field rightType.scale)))
+  pure (.number (leftType.staticSummary.binary .multiply rightType.staticSummary))
 
 
 end A12Kernel.Dm.HavingListAdmission

@@ -467,7 +467,7 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
           let numeric ← match fieldOp.toNumeric? with
             | some numeric => pure numeric
             | none => throw (.unsupportedOperator op)
-          if numeric.acceptsScales (.field info.scale) (.field 0) then
+          if numeric.acceptsScales info.staticSummary (.field 0) then
             pure (.compare (.number (.ordinary numeric)
               { id := declaration.id, info } year))
           else

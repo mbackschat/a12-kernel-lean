@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.ComputationCheck
+import A12Kernel.Reference.Dm.ParallelValidation
 
 /-! # The Kernel class a reader refusal leads with
 
@@ -111,6 +112,78 @@ example :
       classOf ["Order"] "../Due" "DifferenceInDays(Due, Signed) > 1" = "admitted" ∧
       classOf ["Order"] "../Due" "DateFromDateTime([Moment]) == [Due]" = "MVK_UNEXPECTED_TOKEN" ∧
       classOf ["Order"] "../Due" "DateFromDateTime(Moment) == [Due]" = "admitted" := by
+  native_decide
+
+/-! ### A `-1` maximum is an unknown static scale
+
+One premium form declares `Rate` and `Rate2` as Number `(minFractionalDigits 2, maxFractionalDigits -1)`,
+`Fee` as `(2, 2)` and `MinOpen` as `(-1, 2)`; the rows replay the rule and computation checks of
+`CheckerUnknownMaximumScaleAgreementTest` at a12-dmkits `fecf8552`
+([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)). `Whole` is `(0, -1)`:
+its exponent row is no Kernel row but the same gate applied to a scale that is exactly zero unless
+unknown, so it is the only exponent row that separates the unknown scale from the minimum. -/
+
+private def scaleNumber (id : Nat) (name : String) (scale : Nat) (unknownScale : Bool := false) :
+    FlatFieldDecl :=
+  { id, groupPath := ["Premium"], name,
+    policy := { kind := .number { scale, signed := true, staticScaleUnknown := unknownScale } } }
+
+/-- `unknownScale := false` is the twin whose `Rate`, `Rate2` and `Whole` keep an ordinary pair with
+the same minimum, so only the unknown scale separates the two models. -/
+private def scaleModel (unknownScale : Bool) : DmModel := {
+  flat := { fields := [scaleNumber 1 "Count" 0, scaleNumber 2 "Rate" 2 unknownScale,
+    scaleNumber 3 "Rate2" 2 unknownScale, scaleNumber 4 "Fee" 2, scaleNumber 5 "MinOpen" 2,
+    scaleNumber 6 "Whole" 0 unknownScale] }
+  rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+
+/-- The class the rule-check route leads with for a rule reporting on `target`. -/
+private def scaleRuleClass (dm : DmModel) (target condition : String) : String :=
+  classOfRefusal (checkValidationRule dm .english
+    { group := ["Premium"], name := "R", errorCode := "R", errorEntityRelPath := "../" ++ target,
+      condition, severity := "ERROR" })
+
+/-- The class a one-alternative Number computation into `target` leads with. -/
+private def scaleComputationClass (dm : DmModel) (target operation : String) : String :=
+  classOfRefusal (checkComputation dm .english
+    { group := ["Premium"], name := "C", targetRelPath := "../" ++ target, commonPrecondition := none
+      alternatives := [{ operation, precondition := none }], errorCodesToSuppress := [] })
+
+private def decimalPlaces : String := "MVK_INVALID_COMPARE_DEC_PLACES"
+
+/- Equality and inequality refuse on an unknown scale, even a field against itself; ordering is
+scale-exempt and a `-1` minimum is an ordinary exact scale. -/
+example :
+    scaleRuleClass (scaleModel true) "Rate" "[Rate] == [Rate]" = decimalPlaces ∧
+      scaleRuleClass (scaleModel true) "Rate" "[Rate] == [Rate2]" = decimalPlaces ∧
+      scaleRuleClass (scaleModel true) "Rate" "[Rate] != [Fee]" = decimalPlaces ∧
+      scaleRuleClass (scaleModel true) "Rate" "[Rate] > [Fee]" = "admitted" ∧
+      scaleRuleClass (scaleModel true) "Fee" "[MinOpen] == [Fee]" = "admitted" := by
+  native_decide
+
+/- The twin without the `-1` maximum admits the same equalities, so the unknown scale is their cause. -/
+example :
+    scaleRuleClass (scaleModel false) "Rate" "[Rate] == [Rate]" = "admitted" ∧
+      scaleRuleClass (scaleModel false) "Rate" "[Rate] == [Rate2]" = "admitted" ∧
+      scaleRuleClass (scaleModel false) "Rate" "[Rate] != [Fee]" = "admitted" := by
+  native_decide
+
+/- A computation refuses an unknown scale as source and as target, and an explicit rounding to the
+target's places fixes the scale. -/
+example :
+    scaleComputationClass (scaleModel true) "Fee" "[Rate]" = decimalPlaces ∧
+      scaleComputationClass (scaleModel true) "Rate" "[Fee]" = decimalPlaces ∧
+      scaleComputationClass (scaleModel true) "Fee" "RoundAccounting([Rate], 2)" = "admitted" ∧
+      scaleComputationClass (scaleModel false) "Fee" "[Rate]" = "admitted" ∧
+      scaleComputationClass (scaleModel false) "Rate" "[Fee]" = "admitted" := by
+  native_decide
+
+/- An exponent with an unknown scale is refused with the exponent class. -/
+example :
+    scaleComputationClass (scaleModel true) "Fee" "[Count] ^ [Rate]" = "MVK_INVALID_NUMBER_FOR_EXP" ∧
+      scaleRuleClass (scaleModel true) "Rate" "[Count] ^ [Rate] > 1" = "MVK_INVALID_NUMBER_FOR_EXP" ∧
+      scaleComputationClass (scaleModel true) "Fee" "[Count] ^ [Whole]" = "MVK_INVALID_NUMBER_FOR_EXP" ∧
+      scaleRuleClass (scaleModel true) "Whole" "[Count] ^ [Whole] > 1" = "MVK_INVALID_NUMBER_FOR_EXP" ∧
+      scaleRuleClass (scaleModel false) "Whole" "[Count] ^ [Whole] > 1" = "admitted" := by
   native_decide
 
 end A12Kernel.Dm.RefusalClassLocks

@@ -219,10 +219,22 @@ structure CheckedRuleGroupSemanticIndexSource (model : FlatModel) where
   groupSelected : (selection.group.path == ruleGroup) = true
 
 /-- The index binds the nearest indexed ancestor (spec/08 §4); fixed descendants retain the
-same row address, while an additional repeatable level needs its own addressing carrier. -/
+same row address, while an additional repeatable level needs its own addressing carrier. Only a
+repeatable group is ever selected: an index nominated on the root or a fixed group is not read for a
+selection, and `nominatesNonrepeatableIndexOnChain` reports it for the admission walk alone. -/
 def FlatModel.semanticIndexGroupForPath? (model : FlatModel) (path : GroupPath) : Option RepeatableGroupDecl :=
   ((model.repeatableScopeForGroupPath path).filterMap fun level =>
     (model.repeatableGroupAtLevel? level).filter (·.indexField.isSome)).getLast?
+
+/-- Whether the root or a fixed group on `path`'s chain nominates an index field. A key whose chain has
+no repeatable index group but one such nomination is no missing-index case where the chain crosses a
+repetition: the operand's unbound repeatable level answers, with the missing-wildcard class when the
+operand binds no level of its own, in the rule check `SemanticIndexPinnedLevelLawsTest` at
+a12-dmkits `fecf8552`
+([inbound](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)). A chain that crosses no
+repetition is not measured. -/
+def FlatModel.nominatesNonrepeatableIndexOnChain (model : FlatModel) (path : GroupPath) : Bool :=
+  model.nonrepeatableIndexFields.any fun (group, _) => group.isPrefixOf path
 
 /-- The identity a literal key spelling has in `index`'s column. A Number index reads it as a decimal,
 taking a comma for the separator; any other index keeps the text. `none` is a spelling the Number

@@ -416,9 +416,12 @@ structure FlatModel where
   group's own fields in depth-first order. -/
   fields : List FlatFieldDecl
   repeatableGroups : List RepeatableGroupDecl := []
-  /-- The index field a non-repeatable group declares, by group path. The Kernel admits the declaration,
-  and only a message's `index(...)` parameter is known to read it
-  ([checkpoint](../../../docs/sources/message-and-pointer-probes.md#src-nonrepeatable-index-field-gate)). -/
+  /-- The index field a non-repeatable group declares, by group path. The Kernel admits the declaration.
+  A message's `index(...)` parameter reads it
+  ([checkpoint](../../../docs/sources/message-and-pointer-probes.md#src-nonrepeatable-index-field-gate)),
+  and an empty key arms the generated mandatory check while the group's instance holds content, with no
+  uniqueness check (`NonRepeatableIndexFieldGeneratedChecksDiffTest` at a12-dmkits `fecf8552`,
+  [inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)). -/
   nonrepeatableIndexFields : List (GroupPath × FieldId) := []
   /-- The nonrepeatable groups the model declares whose subtree holds no field. The Kernel admits such a
   group and refuses every operand naming it, so it is kept apart from the fields and the repeatable

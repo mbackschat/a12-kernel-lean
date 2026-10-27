@@ -97,8 +97,8 @@ def bindingScopes : CheckedNumericProductAggregate model → List (List Repeatab
 def scaleSummary : CheckedNumericProductAggregate model → NumericScaleSummary
   | .row source => source.scaleSummary
   | .selected source => NumericScaleSummary.binary .multiply
-      (NumericScaleSummary.field source.left.field.info.scale)
-      (NumericScaleSummary.field source.right.field.info.scale)
+      source.left.field.info.staticSummary
+      source.right.field.info.staticSummary
 
 def referencesField (source : CheckedNumericProductAggregate model) (field : FieldId) : Bool :=
   match source with

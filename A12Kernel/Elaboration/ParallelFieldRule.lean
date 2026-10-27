@@ -219,7 +219,7 @@ def scaleSummary (pair : CheckedParallelFieldPair model) :
     ParallelNumericAtom model → NumericScaleSummary
   | .field operand =>
       match (pair.declaration operand).toNumberField? with
-      | some number => .field number.info.scale
+      | some number => number.info.staticSummary
       | none => { scale := .unknown, canExpandScale := false }
   | .temporalPart .. | .filledCount _ => .field 0
   | .aggregate op operands =>
@@ -322,7 +322,7 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
   | .numeric op lhs rhs =>
       match (pair.declaration lhs).toNumberField?, (pair.declaration rhs).toNumberField? with
       | some a, some b => (NumericValidationOp.ordinary op).acceptsScalesWithSuppression suppress
-          (.field a.info.scale) (.field b.info.scale)
+          a.info.staticSummary b.info.staticSummary
       | _, _ => false
   | .groupPresence _ reference =>
       let scope := model.repeatableScopeForGroupPath reference.path

@@ -149,7 +149,7 @@ structure CheckedAddressedRepetitionComputation (model : FlatModel) where
   repetitionPresent : hasRepetition expression = true
   scaleAdmitted : (expression.summary? repetitionOperandSummary).any
     (exactNumericScaleComparisonAllowedWithSuppression suppressExactScaleWarning
-      (.field target.targetPolicy.info.scale)) = true
+      target.targetPolicy.info.staticSummary) = true
 
 /-- Resolve one authored difference endpoint against the target's own declaring group. `Now` and `Today` are
     refused rather than resolved: they need an evaluation world this carrier's row read does not
@@ -295,7 +295,7 @@ def checkAddressedRepetitionComputation
       | .accepted =>
           if scaleAdmitted : (resolved.summary? repetitionOperandSummary).any
               (exactNumericScaleComparisonAllowedWithSuppression suppressExactScaleWarning
-                (.field target.targetPolicy.info.scale)) = true then
+                target.targetPolicy.info.staticSummary) = true then
             pure {
               target, expression := resolved, suppressExactScaleWarning
               repetitionPresent, expressionAdmitted, authoringAdmitted, scaleAdmitted }

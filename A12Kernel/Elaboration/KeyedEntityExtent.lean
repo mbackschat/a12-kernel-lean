@@ -197,7 +197,14 @@ def elaborateKeyedEntityExtent (model : FlatModel) (declaringGroup : GroupPath)
   let selection ← elaborateSemanticIndexSelection model declaringGroup group authored.key boundScope? |>.mapError .index
   let depth := selection.indexDeclaration.repeatableScope.length
   if let some firstStar := firstStar? then
-    if firstStar != depth then throw .unsupportedExtent
+    -- A star at the index group's own level draws the index's wildcard class (rule check
+    -- `CheckerEntitySpecModifierAgreementTest` at a12-dmkits `fecf8552`,
+    -- [inbound](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)); a star above it has the
+    -- `MVK_SEMANTIC_INDEX_BELOW_WILDCARD` class (spec/08 §4), which no constructor of this error
+    -- carries, so every other mismatch stays unsupported.
+    if firstStar != depth then
+      throw (if firstStar + 1 == depth then .index (.keyAdmission .semanticIndexAndWildcard)
+        else .unsupportedExtent)
   else if (model.repeatableScopeForGroupPath targetGroup).length != depth then
     throw .unsupportedExtent
   pure { selection, target }

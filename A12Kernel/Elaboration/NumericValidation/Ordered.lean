@@ -97,7 +97,7 @@ private def checkedTokenValueCountAdmittedIn
             | .modelWideCheckedComputation => true
 
 def summary : OrderedNumericValidationAtom model → NumericScaleSummary
-  | .indexed source => NumericScaleSummary.field source.field.info.scale
+  | .indexed source => source.field.info.staticSummary
   | .indexedString source => NumericScaleSummary.field source.projection.scale
   | .temporalExpression _ => NumericScaleSummary.field 0
   | .ordinary source => numericValidationSummary source

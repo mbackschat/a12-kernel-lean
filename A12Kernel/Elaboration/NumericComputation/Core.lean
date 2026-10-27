@@ -146,7 +146,7 @@ def FlatModel.admitsNumericComputationTarget
 def FlatFieldDecl.numericScaleSummary
     (declaration : FlatFieldDecl) : NumericScaleSummary :=
   match declaration.toNumberField? with
-  | some field => NumericScaleSummary.field field.info.scale
+  | some field => field.info.staticSummary
   | none => { scale := .unknown, canExpandScale := false }
 
 def CheckedNumericComputationAtom.numericScaleSummary
@@ -155,7 +155,7 @@ def CheckedNumericComputationAtom.numericScaleSummary
   | .numeric source =>
       source.summaryWith FlatFieldDecl.numericScaleSummary
         CheckedNumberEntitySource.aggregateScaleSummary
-  | .indexed source => NumericScaleSummary.field source.field.info.scale
+  | .indexed source => source.field.info.staticSummary
   | .indexedString source => NumericScaleSummary.field source.projection.scale
   | .firstFilled source => source.scaleSummary
   | .temporalExpression _ | .tokenDistinctCount _ | .temporalDistinctCount _
@@ -244,7 +244,7 @@ def NumericComputationOperation.wellFormedBool
     | some summary =>
         exactNumericScaleComparisonAllowedWithSuppression
           operation.suppressExactScaleWarning
-          (NumericScaleSummary.field operation.target.info.scale) summary
+          operation.target.info.staticSummary summary
     | none => false
 
 def NumericComputationOperation.WellFormed
@@ -699,7 +699,7 @@ def elaborateCompleteNumericComputationOperation
         | none => throw .unsupportedExpression
       if !exactNumericScaleComparisonAllowedWithSuppression
           suppressExactScaleWarning
-          (NumericScaleSummary.field target.info.scale) summary then
+          target.info.staticSummary summary then
         throw (.operationScaleMismatch target.info.scale summary)
       -- A read of the target is refused last, after every atom has resolved, so a per-row read's
       -- class answers first

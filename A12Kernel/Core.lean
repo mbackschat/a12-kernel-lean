@@ -114,6 +114,15 @@ inductive ScaleInfo where
 structure NumField where
   scale  : Nat
   signed : Bool
+  /-- Whether the declaration's maximum fractional digits is the `-1` no-bound sentinel. Its stored
+      values still resolve at `scale`, the declared minimum, so runtime reading, formal checks and
+      stored-text handling are unchanged; only the Kernel's static scale checks see the scale as
+      unknown, through `NumField.staticSummary`. Equality, inequality and a computation to or from
+      such a field are refused, as is a power exponent, while ordering is admitted and an explicit
+      rounding fixes the scale. A `-1` minimum is an ordinary exact scale. Measured by the rule and
+      computation checks of `CheckerUnknownMaximumScaleAgreementTest` at a12-dmkits `fecf8552`
+      ([inbound](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)). -/
+  staticScaleUnknown : Bool := false
   deriving Repr, DecidableEq
 
 /-- Decoded year/month/day components carried by admitted temporal values before consumer-specific calendar proofs. -/

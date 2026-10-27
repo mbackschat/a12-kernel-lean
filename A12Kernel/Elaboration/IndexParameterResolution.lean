@@ -66,7 +66,9 @@ inductive IndexFieldType where
 /-- **The non-repeatable branch's admitting shape.** The Kernel tests that the s-value is *set*, a
 nonempty text, never that it names the declared value. The model gate refuses an s-value whose trim names
 no value before any parameter is examined, so the readings differ only on a blank s-value, which is set
-though it names nothing; that row is source-read (`checkNonRepIndexFieldType`), not measured. -/
+though it names nothing: an empty s-value is refused and a one-space one admitted (a12-dmkits `fecf8552`,
+`CheckerNonRepeatingIndexBlankSValueAgreementTest`,
+[inbound](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)). -/
 def IndexFieldType.admitsNonRepeatable : IndexFieldType → Bool
   | .enumeration valueCount sValueSet => valueCount == 1 && sValueSet
   | .other => false

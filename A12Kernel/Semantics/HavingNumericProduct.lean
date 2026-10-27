@@ -18,7 +18,7 @@ def presenceSlots (source : HavingNumericProduct) : List (HavingFieldListSlot Ha
     .extent (.starField source.groupPath source.path) [{ origin := ref.origin, field := ref.field.id }]
 
 def summary (source : HavingNumericProduct) : NumericScaleSummary :=
-  .binary .multiply (.field source.left.field.info.scale) (.field source.right.field.info.scale)
+  .binary .multiply source.left.field.info.staticSummary source.right.field.info.staticSummary
 
 private def readPairs (source : HavingNumericProduct) (phase : Phase)
     (context : ResolvingCorrelationContext Error) (omitted : Bool) :

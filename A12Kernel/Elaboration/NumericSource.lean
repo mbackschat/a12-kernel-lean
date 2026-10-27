@@ -206,8 +206,8 @@ def hasUniqueFields (source : ResolvedNumericAggregateFields) : Bool :=
 def scaleSummary (source : ResolvedNumericAggregateFields) :
     NumericScaleSummary :=
   source.rest.foldl
-    (fun summary field => summary.union (NumericScaleSummary.field field.info.scale))
-    (NumericScaleSummary.field source.first.info.scale)
+    (fun summary field => summary.union field.info.staticSummary)
+    source.first.info.staticSummary
 
 end ResolvedNumericAggregateFields
 

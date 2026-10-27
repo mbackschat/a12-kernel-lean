@@ -73,7 +73,7 @@ def ComputationNumericAtom.referencesField : ComputationNumericAtom → FieldId 
   | .repetition _, _ | .baseYear _, _ => false
 
 def ComputationNumericAtom.summary : ComputationNumericAtom → NumericScaleSummary
-  | .field source => .field source.info.scale
+  | .field source => source.info.staticSummary
   | .repetition _ | .baseYear _ => .field 0
 
 /-- Missing row coordinates remain structural failures, separate from reached cell poison. -/

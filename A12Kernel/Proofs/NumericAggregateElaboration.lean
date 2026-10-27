@@ -32,12 +32,11 @@ theorem resolvedNumericAggregate_distinctCount_delegates
       evalNumericDistinctCountAggregate (source.resolvedValueSide observe) := by
   rfl
 
-/-- A two-field aggregate derives exactly the union of its declaration scales. -/
+/-- A two-field aggregate derives exactly the union of its declarations' static scale summaries. -/
 theorem resolvedNumericAggregate_pair_scaleSummary
     (first second : FlatNumberField) :
     ({ first, rest := [second] : ResolvedNumericAggregateFields }).scaleSummary =
-      (NumericScaleSummary.field first.info.scale).union
-        (NumericScaleSummary.field second.info.scale) := by
+      first.info.staticSummary.union second.info.staticSummary := by
   rfl
 
 /-- NumberOfDifferentValues has integral result scale independently of every contributing declaration scale. -/
@@ -60,12 +59,11 @@ theorem checkedNumericProductAggregate_bindingScopeBound
       (model.repeatableScopeForGroupPath checked.declaringGroup) = true :=
   checked.bindingScopeBound
 
-/-- The checked pair's result scale is exactly the existing multiplication summary of its two declaration scales. -/
+/-- The checked pair's result scale is exactly the existing multiplication summary of its two declarations' static scale summaries. -/
 theorem checkedNumericProductAggregate_scaleSummary
     (checked : CheckedRowNumericProductAggregate model) :
     checked.scaleSummary = NumericScaleSummary.binary .multiply
-      (NumericScaleSummary.field checked.left.field.info.scale)
-      (NumericScaleSummary.field checked.right.field.info.scale) := by
+      checked.left.field.info.staticSummary checked.right.field.info.staticSummary := by
   rfl
 
 /-- Once the common path resolves to its in-capacity extent, phase-specific checked evaluation delegates exactly to one shared-topology product side and the pure fold. -/

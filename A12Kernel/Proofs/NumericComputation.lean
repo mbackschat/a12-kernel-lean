@@ -334,7 +334,7 @@ theorem checkedNumericComputationOperation_scaleGate
       CheckedNumericComputationAtom.numericScaleSummary = some summary) :
     exactNumericScaleComparisonAllowedWithSuppression
       checked.core.suppressExactScaleWarning
-      (NumericScaleSummary.field checked.core.target.info.scale) summary = true := by
+      checked.core.target.info.staticSummary summary = true := by
   have admitted := checked.wellFormed
   simp only [NumericComputationOperation.WellFormed,
     NumericComputationOperation.wellFormedBool, Bool.and_eq_true,

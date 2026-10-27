@@ -835,3 +835,15 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `confirmed`: the group error-target rows, `MVK_ERROR_FIELDGROUP_ITERATION4_INVALID` on a fixed and a repeatable group target and admission without the field read, follow the role sorting [spec/07](../../spec/07-repetition-and-iteration.md) already states against an error field that is itself a group.
 - `local-readback`: no local lock asserts these rows; [SG9](../gaps/paths-and-groups.md#gap-sg9) records the `RuleGroup` operand gates, and model expansion of type definitions is outside the modelled surface by [spec/01](../../spec/01-data-model.md).
 - `sync`: Inbound facts about clauses this project owns create no outbound entry.
+
+<a id="src-inbound-2026-10-27"></a>
+## Reviewed October 27 handback of the thirty-three spec-rewrite entries
+
+- `source`: Peer-session letter of 2026-10-27, `a12-kernel-lean-spec-corrections-2026-10-27.md`, SHA-256 `23f9ee0f516da10625a0e95458289b7cb4bd44afad9acacd142b0e19f6b840e7`, delivered by the a12-dmkits session. It answers `SPEC-2026-10-26-01` to `-30` and `SPEC-2026-10-27-01` to `-03` as handed off at `5192f2bb`, and replaces nothing.
+- `revision`: a12-dmkits `fecf855251c1245fd7048b2a509ddbb2b72989dd`, read with `git` only. The findings KF623–KF645, KF71 and KF244 and the named locks exist at that revision. The letter's peer-session hypotheses about mechanisms are not adopted.
+- `review`: A HIGH reconciliation on 2026-10-27 and 2026-10-28 against each acceptance condition. Two read-only surveys classified every row against `spec/`, and the rows that a Lean definition decides were probed against the theory.
+- `corrected`: `-12`, `-24`, `-25`, `-28` and `SPEC-2026-10-27-01` contradicted the Lean account. The theory now poisons a joined target skipped at an invalid index column, arms the generated mandatory check of an index field nominated in a non-repeatable group, gives a `-1` maximum an unknown static scale, answers a root- or fixed-indexed chain over an unbound repetition by its walk, classes a keyed extent's star at the index level, and lifts three build failures under a deleting `ONLY` filter.
+- `adopted`: spec/01 to spec/12 and spec/14 now state the measured cells the letter settles, keeps each part the letter leaves unmeasured as unmeasured, and carries this record on its `Sources:` lines.
+- `agrees`: Lean already answered the letter's rows for `27-02`, `27-03` (b), `-07`, `-08` and `-10`, and the probed `-13`, `-17`, `-19`, `-21` and `-26` cells: diverging frames, `ValueAsDate` in `DateTime`'s Time argument, the blank S-value, `DateTime`'s Date-argument order and `Sum` over a raw String. The `-06` unstarred fixed group operand follows the field-by-field rule without a probe of its own.
+- `open`: [SG4](../gaps/keystone.md#gap-sg4), [SG5](../gaps/numeric-and-temporal.md#gap-sg5) and [SG9](../gaps/paths-and-groups.md#gap-sg9) record the carriers the measurements leave unmeasured and the empty-name row the consistency route still refuses.
+- `sync`: The thirty-three entries are terminal in the [ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue). No new entry is created.

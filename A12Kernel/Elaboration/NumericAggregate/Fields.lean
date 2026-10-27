@@ -260,8 +260,8 @@ namespace CheckedRowNumericProductAggregate
 def scaleSummary (checked : CheckedRowNumericProductAggregate model) :
     NumericScaleSummary :=
   NumericScaleSummary.binary .multiply
-    (NumericScaleSummary.field checked.left.field.info.scale)
-    (NumericScaleSummary.field checked.right.field.info.scale)
+    checked.left.field.info.staticSummary
+    checked.right.field.info.staticSummary
 
 /-- Classify both declarations at each environment of the one shared canonical topology. -/
 def selectedSideAt (checked : CheckedRowNumericProductAggregate model)

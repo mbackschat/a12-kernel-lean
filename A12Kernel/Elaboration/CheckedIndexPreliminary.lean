@@ -227,6 +227,27 @@ private def CheckedDocument.indexFindings
       pure (current ++ (← checked.indexFindings defaulted
         silentlyUnavailable relevance groups))
 
+/-- The generated mandatory finding of every index field nominated in a non-repeatable group. The
+check is the generated requirement relative to the nominating group: it fires at an empty key only
+while that group's instance holds admitted content, so a cover without a `Detail` draws none. No
+uniqueness arm exists there. Measured on the three-engine
+`NonRepeatableIndexFieldGeneratedChecksDiffTest` rows at a12-dmkits `fecf8552`
+([inbound](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)): a present `Holder` or
+`Detail` with an empty key fires, a repeated `DetailKey` and an absent `Detail` do not. A present group
+holding no admitted content and the `.required` cell annotation the finding gives on this carrier are
+not measured: the annotation is the repeatable index arm's, applied here unchanged. `rows` and `cells`
+are the call's group-presence slice, as `requiredEvaluations` takes them. -/
+private def CheckedDocument.nonrepeatableIndexFindings (checked : CheckedDocument model)
+    (relevance : ValidationRelevanceScope) (rows : List RowAddr)
+    (cells : List CheckedCellPlacement) :
+    Except CheckedIndexPreliminaryError (List IndexPreliminaryFinding) :=
+  model.nonrepeatableIndexFields.flatMapM fun (groupPath, field) => do
+    let declaration ← model.lookupUniqueId field |>.mapError .model
+    let evaluations ← checked.requiredEvaluationsFor relevance rows cells declaration
+      (.relativeTo groupPath) |>.mapError .required
+    pure ((RequiredEvaluation.mandatoryAddresses evaluations).map fun address =>
+      { address, kind := .mandatory })
+
 namespace CheckedIndexPreliminary
 
 def defaultStoredAt? (preliminary : CheckedIndexPreliminary model)
@@ -334,30 +355,34 @@ namespace CheckedDocument
 
 private def applyIndexPreliminaryForGroups
     (checked : CheckedDocument model)
-    (groups : List RepeatableGroupDecl) :
+    (groups : List RepeatableGroupDecl) (withNonrepeatable : Bool) :
     Except CheckedIndexPreliminaryError (CheckedIndexPreliminary model) := do
   let defaulted := checked.indexDefaults model.repeatableGroups
   pure {
     base := checked
     defaulted
-    findings := ← checked.indexFindings defaulted [] .full
-      groups
+    findings := (← checked.indexFindings defaulted [] .full groups) ++
+      (← if withNonrepeatable then
+        checked.nonrepeatableIndexFindings .full checked.source.instantiatedRows checked.checkedCells
+      else pure [])
   }
 
 /-- Run every model-declared index mandatory/uniqueness preliminary rule over the immutable base checked document without mutating it. -/
 def applyFullIndexPreliminary (checked : CheckedDocument model) :
     Except CheckedIndexPreliminaryError (CheckedIndexPreliminary model) :=
-  checked.applyIndexPreliminaryForGroups model.repeatableGroups
+  checked.applyIndexPreliminaryForGroups model.repeatableGroups true
 
 /-- Stage the full-call index defaults while deriving preliminary findings only for groups whose index field is selected. This is the computation prepass boundary: unused indexes keep their transient defaults but do not run mandatory or uniqueness checks. -/
 def applySelectedFullIndexPreliminary (checked : CheckedDocument model)
     (selectedIndexFields : List FieldId) :
     Except CheckedIndexPreliminaryError (CheckedIndexPreliminary model) :=
+  -- The computation prepass runs no non-repeatable arm: the check is measured only on validation,
+  -- and a computation ignores its `.required` cause.
   checked.applyIndexPreliminaryForGroups
     (model.repeatableGroups.filter fun group =>
       match group.indexField with
       | some field => selectedIndexFields.contains field
-      | none => false)
+      | none => false) false
 
 end CheckedDocument
 
@@ -509,20 +534,20 @@ private def applyPartialGeneratedPreliminaryNormalized
     checked.indexDefaults model.repeatableGroups
       |>.map (·.address)
       |>.filter (partialAddressRelevant model relevance)
+  let rows := checked.source.instantiatedRows.filter
+    (CheckedPartialPreliminary.relevanceCoversRow relevance model)
+  let cells := checked.checkedCells.filter (partialAddressRelevant model relevance ·.address)
   let index : CheckedIndexPreliminary model := {
     base := checked
     defaulted := []
-    findings := ← checked.indexFindings [] silentlyUnavailable relevance
-      model.repeatableGroups
+    findings := (← checked.indexFindings [] silentlyUnavailable relevance
+      model.repeatableGroups) ++ (← checked.nonrepeatableIndexFindings relevance rows cells)
   }
   pure {
     relevance
     index
     silentlyUnavailable
-    required := ← checked.requiredEvaluations relevance
-      (checked.source.instantiatedRows.filter (CheckedPartialPreliminary.relevanceCoversRow relevance model))
-      (checked.checkedCells.filter (partialAddressRelevant model relevance ·.address))
-      |>.mapError .required
+    required := ← checked.requiredEvaluations relevance rows cells |>.mapError .required
     silentRelevant := by
       intro address member
       simpa using (List.mem_filter.mp member).2

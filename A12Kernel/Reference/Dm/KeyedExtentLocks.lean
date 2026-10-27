@@ -740,4 +740,29 @@ example : boundAncestorMatrix (.number { scale := 0, signed := true }) = true :=
 example : boundAncestorMatrix .string = true := by native_decide
 example : boundAncestorMatrix .enumeration = true := by native_decide
 
+/-- The class the lowering refuses `expression` with, or `admitted`. -/
+private def loweredClass (expression : String) : String :=
+  match parseText .english expression with
+  | .error error => error.errorClass.code
+  | .ok parsed => match lowerCondition model ["Form"] false parsed.body with
+    | .ok _ => "admitted"
+    | .error refusal => refusal.kernelClass?.getD s!"unclassed {refusal.construct}"
+
+/- A star at the index group's own level draws the index's wildcard class, where a star below it is
+admitted and expands inside the selected row (rule check `CheckerEntitySpecModifierAgreementTest` at
+a12-dmkits `fecf8552`, [inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)). -/
+example :
+    loweredClass "Sum(Packages*/Header For \"P1\") > 0" = "MVK_SEMANTIC_INDEX_AND_WILDCARD" ∧
+      loweredClass "Sum(Packages/Items*/Weight For \"P1\") > 0" = "admitted" := by
+  native_decide
+
+/- Unmeasured on these carriers, which share the keyed extent's one level check: a starred group at the
+index group's own level, and a star at that level ahead of one below it. A star above the index group
+has the class `MVK_SEMANTIC_INDEX_BELOW_WILDCARD`, which this error type has no constructor for, so
+that case is not locked. -/
+example :
+    loweredClass "NumberOfFilledFields(Packages* For \"P1\") > 0" = "MVK_SEMANTIC_INDEX_AND_WILDCARD" ∧
+      loweredClass "Sum(Packages*/Items*/Weight For \"P1\") > 0" = "MVK_SEMANTIC_INDEX_AND_WILDCARD" := by
+  native_decide
+
 end A12Kernel.Dm.KeyedExtentLocks

@@ -75,13 +75,13 @@ def sources : CheckedAddressedNumberArithmeticChild model →
 def operandSummaries : CheckedAddressedNumberArithmeticChild model →
     NumericScaleSummary × NumericScaleSummary
   | .fields pair =>
-      (.field pair.left.source.info.scale, .field pair.right.source.info.scale)
+      (pair.left.source.info.staticSummary, pair.right.source.info.staticSummary)
   | .fieldLiteral source decoded =>
-      (.field source.source.info.scale,
+      (source.source.info.staticSummary,
         NumericScaleSummary.constant decoded.authoredScale)
   | .literalField decoded source =>
       (NumericScaleSummary.constant decoded.authoredScale,
-        .field source.source.info.scale)
+        source.source.info.staticSummary)
   | .literals left right =>
       (NumericScaleSummary.constant left.authoredScale,
         NumericScaleSummary.constant right.authoredScale)
@@ -201,7 +201,7 @@ def sources : CheckedAddressedNumberExtremumLeaf model →
 /-- The leaf's contribution to its immediate extremum call. -/
 def scaleSummary : CheckedAddressedNumberExtremumLeaf model →
     NumericScaleSummary
-  | .field source | .abs source => .field source.source.info.scale
+  | .field source | .abs source => source.source.info.staticSummary
   | .round _ _ places => .rounded places.val
   | .arithmetic operation child => child.scaleSummary operation
   | .division child =>
@@ -317,7 +317,7 @@ def sourceFields (operand : CheckedAddressedNumberExtremumOperand model) :
 /-- The static scale summary this operand contributes. A direct or `Abs` source keeps its declared scale, explicit rounding replaces it with the authored places, and both remain incapable of trailing-zero expansion; a literal contributes its authored signed scale with that capability. -/
 def scaleSummary : CheckedAddressedNumberExtremumOperand model →
     NumericScaleSummary
-  | .field source | .abs source => .field source.source.info.scale
+  | .field source | .abs source => source.source.info.staticSummary
   | .round _ _ places => .rounded places.val
   | .arithmetic operation child => child.scaleSummary operation
   | .division child =>
@@ -379,7 +379,7 @@ structure CheckedAddressedNumberExtremum (model : FlatModel) where
   /-- Target admission uses the shared scale predicate: suppression admits any summary; otherwise exact equality or capable smaller-scale padding is required. -/
   targetAdmitted :
     exactNumericScaleComparisonAllowedWithSuppression suppressExactScaleWarning
-        (NumericScaleSummary.field target.targetPolicy.info.scale)
+        target.targetPolicy.info.staticSummary
         (addressedNumberExtremumOperandsScaleSummary first rest) = true
 
 private def checkNumberSourceOperand
@@ -580,7 +580,7 @@ private def checkAddressedNumberExtremumOperandsUsing
       let summary := addressedNumberExtremumOperandsScaleSummary first rest
       if hScale : exactNumericScaleComparisonAllowedWithSuppression
           suppressExactScaleWarning
-          (NumericScaleSummary.field target.targetPolicy.info.scale)
+          target.targetPolicy.info.staticSummary
           summary = true then
         pure {
           target

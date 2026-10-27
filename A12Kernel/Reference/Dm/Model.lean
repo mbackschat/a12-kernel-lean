@@ -217,6 +217,8 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
       -- An absent fractional member reads as `0` and `-1` is the no-bound sentinel (spec/04 §4): the
       -- declared pair becomes an ordinary one, except that `-1` beside a zero maximum leaves stored
       -- text's separator and fractional count unchecked. Both written `-1` is a declaration refusal.
+      -- A `-1` maximum also leaves the static scale unknown, which only static scale checks read
+      -- (`NumField.staticScaleUnknown`); the stored values' scale stays the minimum computed below.
       let fractional (key : String) : Except String Int := match body.getObjValAs? Int key with
         | .ok value => if value < -1 then throw s!"NumberType {key} {value}" else pure value
         | .error _ => pure 0
@@ -241,7 +243,8 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
           | some value => pure (some value)
           | none => throw s!"NumberType {key} lies outside the normal double range"
       pure { base with
-        policy := { kind := .number { scale, signed := !(← booleanMember? body "positivesOnly") } }
+        policy := { kind := .number { scale, signed := !(← booleanMember? body "positivesOnly"),
+                                      staticScaleUnknown := maximumDigits == -1 } }
         numericTargetConstraints := {
           minFractionalDigits
           maxIntegerDigits := (nat? body "maxIntegerDigits").orElse fun _ => traitCap

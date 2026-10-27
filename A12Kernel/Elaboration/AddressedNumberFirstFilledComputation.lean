@@ -28,8 +28,8 @@ structure CheckedAddressedNumberFirstFilledOperand (model : FlatModel)
   placement : CheckedFirstFilledStarPlacement model target.targetField
     target.targetDeclaration source.source
   targetAdmitted : exactNumericScaleComparisonAllowedWithSuppression false
-    (NumericScaleSummary.field target.targetPolicy.info.scale)
-    (NumericScaleSummary.field source.field.info.scale) = true
+    target.targetPolicy.info.staticSummary
+    source.field.info.staticSummary = true
 
 /-- One checked nonempty authored list of Number sibling stars sharing the exact target by construction. -/
 structure CheckedAddressedNumberFirstFilledComputation (model : FlatModel) where
@@ -145,8 +145,8 @@ private def checkAddressedNumberFirstFilledOperand
       source.source
     |>.mapError fun cause => .operand index (.placement cause)
   if hScale : exactNumericScaleComparisonAllowedWithSuppression false
-      (NumericScaleSummary.field target.targetPolicy.info.scale)
-      (NumericScaleSummary.field source.field.info.scale) = true then
+      target.targetPolicy.info.staticSummary
+      source.field.info.staticSummary = true then
     pure { source, placement, targetAdmitted := hScale }
   else
     throw (.operand index

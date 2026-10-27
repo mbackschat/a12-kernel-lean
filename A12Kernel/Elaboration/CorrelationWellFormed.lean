@@ -35,7 +35,7 @@ def CorrelationComparisonOp.acceptsScales (op : CorrelationComparisonOp)
     the filter leaf ([checkpoint](../../docs/sources/having-filter-probes.md#src-having-number-leaf-grid)). -/
 def CorrelationComparisonOp.acceptsLiteralScale (op : CorrelationComparisonOp)
     (field : FlatNumberField) (literal : DecodedNumericLiteral) : Bool :=
-  op.toNumeric.acceptsScales (.field field.info.scale) (.constant literal.authoredScale)
+  op.toNumeric.acceptsScales field.info.staticSummary (.constant literal.authoredScale)
 
 
 /-- Filter comparisons share numeric admission, the enclosing text's scale-warning suppression included. -/

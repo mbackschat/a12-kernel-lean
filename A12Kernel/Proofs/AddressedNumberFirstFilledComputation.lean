@@ -31,8 +31,8 @@ theorem checkedAddressedNumberFirstFilled_sound
           operation.targetDeclaration.repeatableScope.contains = true ∧
         operand.source.source.declaration.id ≠ operation.targetField ∧
         exactNumericScaleComparisonAllowedWithSuppression false
-          (NumericScaleSummary.field operation.target.targetPolicy.info.scale)
-          (NumericScaleSummary.field operand.source.field.info.scale) = true := by
+          operation.target.targetPolicy.info.staticSummary
+          operand.source.field.info.staticSummary = true := by
   refine ⟨operation.target.modelWellFormed, operation.target.targetOwned,
     operation.target.declaringGroupValid,
     operation.target.targetContainedInDeclaringGroup, operation.target.targetPolicyOwned,

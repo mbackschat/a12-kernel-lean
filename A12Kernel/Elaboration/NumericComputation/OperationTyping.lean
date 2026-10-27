@@ -48,7 +48,7 @@ namespace NumericOperandType
 /-- The type a declared field contributes. -/
 def ofDeclaration (declaration : FlatFieldDecl) : NumericOperandType :=
   match declaration.policy.kind with
-  | .number info => .number (.field info.scale)
+  | .number info => .number info.staticSummary
   | .string => .stringLike
   | .enumeration =>
       match declaration.enumeration with

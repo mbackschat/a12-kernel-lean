@@ -65,7 +65,7 @@ structure CheckedIsolatedParallelNumericDirectRun (model : FlatModel) where
   operationScaleAdmitted :
     exactNumericScaleComparisonAllowedWithSuppression
       suppressExactScaleWarning
-      (.field route.target.info.scale)
+      route.target.info.staticSummary
       operationScale = true
 
 namespace CheckedIsolatedParallelNumericDirectRun
@@ -121,7 +121,7 @@ def WellFormed
       some checked.operationScale ∧
     exactNumericScaleComparisonAllowedWithSuppression
       checked.suppressExactScaleWarning
-      (.field checked.route.target.info.scale)
+      checked.route.target.info.staticSummary
       checked.operationScale = true
 
 inductive ExecutionError where
@@ -482,7 +482,7 @@ def checkParallelNumericTableOperationWithGuard (model : FlatModel)
                 if scaleAdmitted :
                     exactNumericScaleComparisonAllowedWithSuppression
                       suppressExactScaleWarning
-                      (.field route.target.info.scale)
+                      route.target.info.staticSummary
                       operationScale = true then
                   pure (CheckedIsolatedParallelNumericDirectRun.mk
                     route additionalRoutes precondition

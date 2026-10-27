@@ -119,10 +119,15 @@ theorem analyze_admitsTargetScale_self
         NumericScaleSummary.rounded]
       exact congrArg (fun scale : Nat => ScaleInfo.exact (scale : Int)) shared.symm
   | extremum operation =>
-      simpa [analyze, AddressedNumericOperationAnalysis.admitsTargetScale,
-        AddressedNumericOperationParameters.derivedScaleSummary,
-        CheckedAddressedNumberExtremum.scaleSummary]
-        using operation.targetAdmitted
+      -- The elaborator's gate reads the target's static summary, which an unknown scale turns into a
+      -- refusal unless the warning is suppressed; the consumer's gate reads the declared scale.
+      have admitted := operation.targetAdmitted
+      cases unknown : operation.target.targetPolicy.info.staticScaleUnknown <;>
+        cases suppress : operation.suppressExactScaleWarning <;>
+        simp_all [analyze, AddressedNumericOperationAnalysis.admitsTargetScale,
+          AddressedNumericOperationParameters.derivedScaleSummary,
+          CheckedAddressedNumberExtremum.scaleSummary, NumField.staticSummary,
+          exactNumericScaleComparisonAllowedWithSuppression, exactNumericScaleComparisonAllowed]
 
 /-- The admitted identity Transform preserves the complete Analyze fingerprint universally, so no individual probe case needs to recheck it: target, sources, scope, target policy, and every operation parameter including the derived scale summary and ordered operand identities are retained. -/
 theorem identityTransform_analyze

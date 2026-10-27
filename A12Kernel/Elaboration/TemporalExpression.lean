@@ -237,7 +237,7 @@ private def resolveScalarTemporalAmount (model : FlatModel) (rowGroup : GroupPat
     | .projection _ _ _ | .indexedPart _ _ _ => .field 0
     | .filtered source => source.summary
     | .ordinary (.literal _) => .field 0
-    | .ordinary (.field source _) => .field source.info.scale
+    | .ordinary (.field source _) => source.info.staticSummary
     | .ordinary (.expression checked _) => (checked.core.summary? numericValidationSummary).getD (.field 0)
   if (core.summary? summary).isNone then throw (.amount (.expression .unsupportedExpression))
   pure core
