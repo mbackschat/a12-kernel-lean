@@ -14,6 +14,9 @@ reports, or the one unbuilt-model label. A capture also records codes other owne
 the unbuilt-model label. Row `b-localized-null` is not replayed: the capture recorded an instrument
 fault (`admitted: null`), not an observation of the Kernel.
 
+The one exception is `liftedBuildFailureRows`, which replays a peer measurement of the build failures a
+variant filter lifts rather than a capture.
+
 The captures record labels, not payloads, so the paths the check attaches are checked only by the
 examples at the end, which pin this module's choice and no observation.
 -/
@@ -67,6 +70,9 @@ private def enumerationType (values : List String) (categories : List (String ×
 private def typedefType (id : String) : Json :=
   typeOf "TypeDefType" (some [("typeDefinitionId", .str id)])
 
+/-- A type-definition reference whose body authors no `typeDefinitionId`. -/
+private def typedefTypeWithoutId : Json := typeOf "TypeDefType" (some [])
+
 private def required : String × Json :=
   ("requirednessConfig", Json.mkObj [("mode", "relativeToParent")])
 
@@ -84,11 +90,12 @@ private def ruleEl (id name errorEntityRelPath errorCondition : String) : Json :
     ("errorCondition", .str errorCondition), ("severity", "ERROR"),
     ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])]
 
-private def computationEl (id name computedFieldRelPath : String) (operations : List String) : Json :=
-  element "Computation" id name [("computedFieldRelPath", .str computedFieldRelPath),
+private def computationEl (id name computedFieldRelPath : String) (operations : List String)
+    (extra : List (String × Json) := []) : Json :=
+  element "Computation" id name ([("computedFieldRelPath", .str computedFieldRelPath),
     ("computationAlternatives", Json.arr (operations.map fun operation =>
       Json.mkObj [("operation", .str operation)]).toArray),
-    ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])]
+    ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])] ++ extra)
 
 private def groupEl (id name : String) (repeatability : Nat) (children : List Json)
     (usageType indexFieldName : Option String := none) (sortFieldNames : Option (List String) := none) :
@@ -188,6 +195,9 @@ private def conditionEmpty : String := "codeless:error-condition-empty"
 private def entityNotSet : String := "codeless:error-entity-not-set"
 private def operationEmpty : String := "codeless:computation-operation-empty"
 private def typedefNameEmpty : String := "codeless:typedef-name-empty"
+private def typedefRefEmpty : String := "codeless:typedef-reference-empty"
+private def computedFieldEmpty : String := "codeless:computed-field-empty"
+private def enumCategoryDuplicate : String := "codeless:enum-category-duplicate"
 
 /-- The capture's labels this check owns: codes other owners carry are dropped. -/
 private def projected (observed : List String) : List String :=
@@ -307,6 +317,33 @@ private def emptinessRows : List (String × Row) := [
 
 example : disagreeing emptinessRows = [] := by native_decide
 
+/-- A declaration the default variant's `ONLY` filter deletes is never converted, so the conversion
+failures of its kept twin are lifted: the model builds and the deleted declaration draws one codeless
+notification for its defect (an empty or absent type-definition reference, an empty computed-field path,
+two categories of one name whether their values are equal or differ). Each kept twin still leaves no
+model. The sentences of an empty operation survive the filter as before, so the deletion lifts build
+failures only. The rows are not capture rows: they replay the peer measurement of a12-dmkits `fecf8552`,
+`CheckerBasicSentenceAgreementTest` (BoundModel oracle, kernel 30.8.1), recorded at
+`docs/sources/inbound-handbacks.md#src-inbound-2026-10-27`. That measurement compares sets of classes,
+so no row here carries two lifted notifications and their order is not claimed. -/
+private def liftedBuildFailureRows : List (String × Row) := [
+  ("o-computed-field-empty-kept", { append := [computationEl "/Form/C" "C" "" ["1"]], observed := [notBuilt] }),
+  ("o-computed-field-empty-only", { append := [computationEl "/Form/C" "C" "" ["1"] [onlyV1]], observed := [computedFieldEmpty] }),
+  ("o-computed-field-set-only", { append := [computationEl "/Form/C" "C" "../Total" ["1"] [onlyV1]], observed := [] }),
+  ("o-operation-empty-only", { append := [computationEl "/Form/C" "C" "../Total" [""] [onlyV1]], observed := ["MVK_INCOMPLETE_INPUT", operationEmpty] }),
+  ("o-enum-dup-different-kept", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["b"])])], observed := [notBuilt] }),
+  ("o-enum-dup-different-only", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["b"])]) [onlyV1]], observed := [enumCategoryDuplicate] }),
+  ("o-enum-dup-equal-kept", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["a"])])], observed := [notBuilt] }),
+  ("o-enum-dup-equal-only", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["a"])]) [onlyV1]], observed := [enumCategoryDuplicate] }),
+  ("o-enum-distinct-only", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("L", ["b"])]) [onlyV1]], observed := [] }),
+  ("o-typedef-ref-empty-kept", { append := [fieldEl "/Form/T" "T" (typedefType "")], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [notBuilt] }),
+  ("o-typedef-ref-empty-only", { append := [fieldEl "/Form/T" "T" (typedefType "") [onlyV1]], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [typedefRefEmpty] }),
+  ("o-typedef-ref-absent-kept", { append := [fieldEl "/Form/T" "T" typedefTypeWithoutId], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [notBuilt] }),
+  ("o-typedef-ref-absent-only", { append := [fieldEl "/Form/T" "T" typedefTypeWithoutId [onlyV1]], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [typedefRefEmpty] }),
+  ("o-typedef-ref-resolved-only", { append := [fieldEl "/Form/T" "T" (typedefType "Td") [onlyV1]], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [] })]
+
+example : disagreeing liftedBuildFailureRows = [] := by native_decide
+
 /-- A multi-select group needs repeatability above one, exactly one direct field that is an Enumeration
 or String, is required and is not the group's index field, and no nested group; a field the variant
 filter removes still counts. -/
@@ -353,7 +390,8 @@ example : disagreeing attachmentRows = [] := by native_decide
 The captures observe no paths; these pin the element paths the check attaches. -/
 
 private def rowNamed (id : String) : Option Row :=
-  ((numberLimitRows ++ boundOrderRows ++ identifierRows ++ emptinessRows ++ multiSelectRows).find?
+  ((numberLimitRows ++ boundOrderRows ++ identifierRows ++ emptinessRows ++ liftedBuildFailureRows ++
+      multiSelectRows).find?
     (·.1 == id)).map (·.2)
 
 private def outcomeOf (id : String) : Option ModelConsistencyOutcome :=
@@ -374,6 +412,10 @@ example : outcomeOf "d3-min-long-max-negzero" = some (.checked [
 
 example : outcomeOf "b-typedef-id-empty" = some (.checked [
     { path := ["Td"], kind := .idEmpty }]) := by
+  native_decide
+
+example : outcomeOf "o-computed-field-empty-only" = some (.checked [
+    { path := ["Form", "C"], kind := .computedFieldEmpty }]) := by
   native_decide
 
 end A12Kernel.Dm.ModelConsistencyLocks

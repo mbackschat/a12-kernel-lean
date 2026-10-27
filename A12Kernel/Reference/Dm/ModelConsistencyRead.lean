@@ -75,7 +75,8 @@ private partial def readElement (variant : Option String) (definitions : List (S
   | "Rule" => pure (.rule id name (text body "errorCondition") (text body "errorEntityRelPath"))
   | "Computation" =>
       pure (.computation id name (text body "computedFieldRelPath")
-        ((← members body "computationAlternatives").map (text · "operation")))
+        ((← members body "computationAlternatives").map (text · "operation"))
+        (← acceptedByVariant variant body))
   | other => throw s!"element {other}"
 
 /-- Read the model the consistency check judges, for the variant a field survives the filter of. An
