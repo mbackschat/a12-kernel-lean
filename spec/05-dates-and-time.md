@@ -444,7 +444,7 @@ Sources: [inbound 2026-10-18](../docs/sources/inbound-handbacks.md#src-inbound-2
 - a stored value is first judged real on the legacy hybrid calendar, so a real label below the floor draws the floor's `datumFalsch` and an unreal one the format's `datumFormatFalsch`: `1500-02-29`, `1300-02-29` and `1582-10-04` draw `datumFalsch`, while `1582-10-05`, `1582-10-14` and `1700-02-29` draw `datumFormatFalsch`;
 - a **stored** value below it is the formal error `datumFalsch`, which suppresses referencing rules ([§3 B.1](02-logic-and-formal-errors.md#b1-what-a-formal-error-is)); a **computed** one is ERRORED; a date **range** floors its *start* the same way, with the range's own pair of codes ([§8.1](#81-declaration-and-stored-text)).
 
-**The floor is not a criterion of the `Date(...)` constructor's reality test** ([§3.4](#34-calendar-reality)): it gates stored and computed values only. Static component admission and the immediate-entity requirement of the validity predicates apply separately. The floor is also distinct from the opt-in pre-1900 check below.
+⚠ **The floor is not a criterion of the `Date(...)` constructor's reality test** ([§3.4](#34-calendar-reality)): it gates stored and computed values only. Static component admission and the immediate-entity requirement of the validity predicates apply separately. The floor is also distinct from the opt-in pre-1900 check below.
 
 Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family).
 
