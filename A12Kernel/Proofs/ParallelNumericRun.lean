@@ -40,10 +40,21 @@ theorem parallelNumericPlan_read_pending
     (plan : CheckedParallelNumericPlan model)
     (state : ParallelNumericRunState) (input : CheckedDocument model)
     (address : CellAddr) (target : address.field ∈ plan.targetFields)
-    (pending : state.find? address = none) :
+    (pending : state.find? address = none) (notSkipped : address ∉ state.skipped) :
     plan.readPolicy state input address =
       .ok (NumericDependencyCell.ofObservation .empty).checked := by
-  simp [CheckedParallelNumericPlan.readPolicy, target, pending]
+  simp [CheckedParallelNumericPlan.readPolicy, target, pending, notSkipped]
+
+/-- A pending target the run skipped at an invalid index column reads as poison, not as empty
+(a12-dmkits `fecf8552`, `JoinedInstanceSkipDependentDiffTest`). -/
+theorem parallelNumericPlan_read_skipped
+    (plan : CheckedParallelNumericPlan model)
+    (state : ParallelNumericRunState) (input : CheckedDocument model)
+    (address : CellAddr) (target : address.field ∈ plan.targetFields)
+    (pending : state.find? address = none) (skipped : address ∈ state.skipped) :
+    plan.readPolicy state input address =
+      .ok (NumericDependencyCell.ofObservation .poisoned).checked := by
+  simp [CheckedParallelNumericPlan.readPolicy, target, pending, skipped]
 
 theorem parallelNumericPlan_read_completed
     (plan : CheckedParallelNumericPlan model)
@@ -85,9 +96,14 @@ theorem parallelNumericPlan_executeTables_append
       | error error =>
           simp [CheckedParallelNumericPlan.executeTables, executed] at first
       | ok outcomes =>
-          simp only [CheckedParallelNumericPlan.executeTables, executed,
-            List.cons_append] at first ⊢
-          exact ih _ _ first
+          cases covered : table.skippedTargets preliminary with
+          | error error =>
+              simp only [CheckedParallelNumericPlan.executeTables, executed, covered,
+                reduceCtorEq] at first
+          | ok skipped =>
+              simp only [CheckedParallelNumericPlan.executeTables, executed, covered,
+                List.cons_append] at first ⊢
+              exact ih _ _ first
 
 /-- Appending successful table outcomes preserves ownership by the supplied plan target fields. -/
 theorem parallelNumericPlan_executeTables_owns_target_fields
@@ -118,24 +134,30 @@ theorem parallelNumericPlan_executeTables_owns_target_fields
           simp [CheckedParallelNumericPlan.executeTables,
             tableResult] at executed
       | ok outcomes =>
-          apply ih
-            { completed := state.completed ++ outcomes }
-            final
-          · intro candidate member
-            exact tablesOwned candidate
-              (List.mem_cons_of_mem table member)
-          · intro outcome member
-            rcases List.mem_append.mp member with member | member
-            · exact stateOwned outcome member
-            · have tableField :=
-                parallelNumericAlternativeTable_executeWithRead_owns_target
-                  table preliminary
-                  (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
-                  outcomes tableResult outcome member
-              rw [tableField]
-              exact tablesOwned table (by simp)
-          · simpa [CheckedParallelNumericPlan.executeTables,
-              tableResult] using executed
+          cases covered : table.skippedTargets preliminary with
+          | error error =>
+              simp only [CheckedParallelNumericPlan.executeTables, tableResult, covered,
+                reduceCtorEq] at executed
+          | ok skipped =>
+              apply ih
+                { completed := state.completed ++ outcomes
+                  skipped := state.skipped ++ skipped }
+                final
+              · intro candidate member
+                exact tablesOwned candidate
+                  (List.mem_cons_of_mem table member)
+              · intro outcome member
+                rcases List.mem_append.mp member with member | member
+                · exact stateOwned outcome member
+                · have tableField :=
+                    parallelNumericAlternativeTable_executeWithRead_owns_target
+                      table preliminary
+                      (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
+                      outcomes tableResult outcome member
+                  rw [tableField]
+                  exact tablesOwned table (by simp)
+              · simpa only [CheckedParallelNumericPlan.executeTables,
+                  tableResult, covered] using executed
 
 private theorem parallelNumericPlan_executeTables_addresses_nodup
     (plan : CheckedParallelNumericPlan model)
@@ -165,54 +187,60 @@ private theorem parallelNumericPlan_executeTables_addresses_nodup
           simp [CheckedParallelNumericPlan.executeTables,
             tableResult] at executed
       | ok outcomes =>
-          have outcomesNodup :=
-            parallelNumericAlternativeTable_executeWithRead_addresses_nodup
-              table preliminary
-              (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
-              outcomes tableResult
-          have appendedNodup :
-              ((state.completed ++ outcomes).map (·.address)).Nodup := by
-            rw [List.map_append, List.nodup_append]
-            exact ⟨stateAddressesNodup, outcomesNodup, by
-              intro prior priorMember current currentMember equal
-              rcases List.mem_map.mp priorMember with
-                ⟨priorOutcome, priorOutcomeMember, rfl⟩
-              rcases List.mem_map.mp currentMember with
-                ⟨currentOutcome, currentOutcomeMember, rfl⟩
-              have priorFieldNotCurrent :
-                  priorOutcome.address.field ≠ table.targetField := by
-                intro fieldEqual
-                apply stateDisjoint priorOutcome priorOutcomeMember
-                exact List.mem_cons.mpr (Or.inl fieldEqual)
-              have currentOwned :=
-                parallelNumericAlternativeTable_executeWithRead_owns_target
+          cases covered : table.skippedTargets preliminary with
+          | error error =>
+              simp only [CheckedParallelNumericPlan.executeTables, tableResult, covered,
+                reduceCtorEq] at executed
+          | ok skipped =>
+              have outcomesNodup :=
+                parallelNumericAlternativeTable_executeWithRead_addresses_nodup
                   table preliminary
                   (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
-                  outcomes tableResult currentOutcome
-                  currentOutcomeMember
-              apply priorFieldNotCurrent
-              rw [← currentOwned]
-              exact congrArg CellAddr.field equal⟩
-          apply inductionHypothesis
-            { completed := state.completed ++ outcomes }
-            final
-          · exact (List.nodup_cons.mp tableTargetsNodup).2
-          · exact appendedNodup
-          · intro outcome member
-            rcases List.mem_append.mp member with
-              priorMember | currentMember
-            · intro targetMember
-              apply stateDisjoint outcome priorMember
-              exact List.mem_cons_of_mem table.targetField targetMember
-            · have currentOwned :=
-                parallelNumericAlternativeTable_executeWithRead_owns_target
-                  table preliminary
-                  (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
-                  outcomes tableResult outcome currentMember
-              rw [currentOwned]
-              exact (List.nodup_cons.mp tableTargetsNodup).1
-          · simpa [CheckedParallelNumericPlan.executeTables,
-              tableResult] using executed
+                  outcomes tableResult
+              have appendedNodup :
+                  ((state.completed ++ outcomes).map (·.address)).Nodup := by
+                rw [List.map_append, List.nodup_append]
+                exact ⟨stateAddressesNodup, outcomesNodup, by
+                  intro prior priorMember current currentMember equal
+                  rcases List.mem_map.mp priorMember with
+                    ⟨priorOutcome, priorOutcomeMember, rfl⟩
+                  rcases List.mem_map.mp currentMember with
+                    ⟨currentOutcome, currentOutcomeMember, rfl⟩
+                  have priorFieldNotCurrent :
+                      priorOutcome.address.field ≠ table.targetField := by
+                    intro fieldEqual
+                    apply stateDisjoint priorOutcome priorOutcomeMember
+                    exact List.mem_cons.mpr (Or.inl fieldEqual)
+                  have currentOwned :=
+                    parallelNumericAlternativeTable_executeWithRead_owns_target
+                      table preliminary
+                      (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
+                      outcomes tableResult currentOutcome
+                      currentOutcomeMember
+                  apply priorFieldNotCurrent
+                  rw [← currentOwned]
+                  exact congrArg CellAddr.field equal⟩
+              apply inductionHypothesis
+                { completed := state.completed ++ outcomes
+                  skipped := state.skipped ++ skipped }
+                final
+              · exact (List.nodup_cons.mp tableTargetsNodup).2
+              · exact appendedNodup
+              · intro outcome member
+                rcases List.mem_append.mp member with
+                  priorMember | currentMember
+                · intro targetMember
+                  apply stateDisjoint outcome priorMember
+                  exact List.mem_cons_of_mem table.targetField targetMember
+                · have currentOwned :=
+                    parallelNumericAlternativeTable_executeWithRead_owns_target
+                      table preliminary
+                      (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt
+                      outcomes tableResult outcome currentMember
+                  rw [currentOwned]
+                  exact (List.nodup_cons.mp tableTargetsNodup).1
+              · simpa only [CheckedParallelNumericPlan.executeTables,
+                  tableResult, covered] using executed
 
 /-- A successful finite run emits outcomes only for fields owned by its checked tables. -/
 theorem parallelNumericPlan_execute_owns_target_fields

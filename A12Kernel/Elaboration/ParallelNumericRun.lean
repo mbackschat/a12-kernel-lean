@@ -74,7 +74,20 @@ end CheckedParallelNumericPlan
 /-- Exact addressed outcomes accumulated in supplied table and target-row order. -/
 structure ParallelNumericRunState where
   completed : List ParallelNumericDirectOutcome := []
+  /-- The executed tables' `skippedTargets`, which a later table reads as poison. -/
+  skipped : List CellAddr := []
   deriving Repr, DecidableEq
+
+/-- The table's targets skipped at an invalid index column of any group it reads. An over-capacity
+target is skipped too but is not listed: only the index-invalid skip is measured to poison its
+readers (a12-dmkits `fecf8552`, `JoinedInstanceSkipDependentDiffTest`). -/
+def CheckedParallelNumericAlternativeTable.skippedTargets
+    (table : CheckedParallelNumericAlternativeTable model)
+    (preliminary : CheckedIndexPreliminary model) :
+    Except CheckedIsolatedParallelNumericDirectRun.ExecutionError (List CellAddr) := do
+  let coverage ← CheckedIsolatedParallelNumericDirectRun.targetCoverage
+    table.first.operation.route.join ((table.operandRoutes.drop 1).map (·.join)) preliminary
+  pure ((coverage.filter fun target => target.indexInvalid && !target.overLimit).map (·.address))
 
 namespace ParallelNumericRunState
 
@@ -87,7 +100,7 @@ end ParallelNumericRunState
 
 namespace CheckedParallelNumericPlan
 
-/-- Hide every pending plan-target address, expose an exact completed outcome as a typed dependency cell, and delegate ordinary addresses to the immutable checked document. Stripping by target field is exact for this fragment because each table owns all existing instances of its target; index-invalid instances are independently classified as clears. -/
+/-- Hide every pending plan-target address, expose an exact completed outcome as a typed dependency cell, and delegate ordinary addresses to the immutable checked document. Stripping by target field is exact for this fragment because each table owns all existing instances of its target; a pending instance the run skipped at an invalid index column reads as poison and every other pending instance as empty. -/
 def readPolicy (plan : CheckedParallelNumericPlan model)
     (state : ParallelNumericRunState) (input : CheckedDocument model)
     (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
@@ -96,7 +109,8 @@ def readPolicy (plan : CheckedParallelNumericPlan model)
     | some completion =>
         .ok (NumericDependencyCell.ofOutcome completion.outcome).checked
     | none =>
-        .ok (NumericDependencyCell.ofObservation .empty).checked
+        .ok (NumericDependencyCell.ofObservation
+          (if state.skipped.contains address then .poisoned else .empty)).checked
   else
     input.read address
 
@@ -119,8 +133,12 @@ def executeTables (plan : CheckedParallelNumericPlan model)
           (plan.readPolicy state preliminary.base) preliminary.base.parallelGuardContextAt with
       | .error error => .error (.table table.targetField error)
       | .ok outcomes =>
-          plan.executeTables preliminary remaining
-            { completed := state.completed ++ outcomes }
+          match table.skippedTargets preliminary with
+          | .error error => .error (.table table.targetField error)
+          | .ok skipped =>
+              plan.executeTables preliminary remaining
+                { completed := state.completed ++ outcomes
+                  skipped := state.skipped ++ skipped }
 
 /-- Execute every checked table from an empty overlay and return the complete supplied-order outcome list. -/
 def execute (plan : CheckedParallelNumericPlan model)

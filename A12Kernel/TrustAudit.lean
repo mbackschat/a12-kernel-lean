@@ -2478,6 +2478,7 @@ run_cmd do
 #print axioms A12Kernel.parallelNumericAlternativeTable_executeWithRead_owns_target
 #print axioms A12Kernel.parallelNumericAlternativeTable_executeWithRead_addresses_nodup
 #print axioms A12Kernel.parallelNumericPlan_read_pending
+#print axioms A12Kernel.parallelNumericPlan_read_skipped
 #print axioms A12Kernel.parallelNumericPlan_read_completed
 #print axioms A12Kernel.parallelNumericPlan_read_input
 #print axioms A12Kernel.checkedParallelNumericPlan_targetFields_nodup

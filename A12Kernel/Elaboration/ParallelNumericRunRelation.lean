@@ -13,13 +13,14 @@ abbrev ParallelNumericRunBatch := FieldId × List ParallelNumericDirectOutcome
 structure ParallelNumericTransitionState where
   completedTargets : List FieldId := []
   outcomes : List ParallelNumericDirectOutcome := []
+  skipped : List CellAddr := []
   deriving Repr, DecidableEq
 
 namespace ParallelNumericTransitionState
 
 def runState (state : ParallelNumericTransitionState) :
     ParallelNumericRunState :=
-  { completed := state.outcomes }
+  { completed := state.outcomes, skipped := state.skipped }
 
 end ParallelNumericTransitionState
 
@@ -48,16 +49,19 @@ inductive ParallelNumericRunTransition
       (outcomes : List ParallelNumericDirectOutcome)
       (executed :
         table.executeWithRead preliminary
-          (plan.readPolicy state.runState preliminary.base) preliminary.base.parallelGuardContextAt = .ok outcomes) :
+          (plan.readPolicy state.runState preliminary.base) preliminary.base.parallelGuardContextAt = .ok outcomes)
+      (skipped : List CellAddr)
+      (covered : table.skippedTargets preliminary = .ok skipped) :
       ParallelNumericRunTransition plan preliminary state
         (table.targetField, outcomes) {
           completedTargets := state.completedTargets ++ [table.targetField]
           outcomes := state.outcomes ++ outcomes
+          skipped := state.skipped ++ skipped
         }
 
 /-- One independently chosen enabled repeatable Number table whose structural
-execution fault terminates the run without advancing either completed-target or
-addressed-outcome state. Rich no-value, rejected, and poison outcomes remain
+execution or skipped-target coverage fault terminates the run without advancing
+any transition state. Rich no-value, rejected, and poison outcomes remain
 successful batches rather than failures here. -/
 inductive ParallelNumericRunFailureTransition
     (plan : CheckedParallelNumericPlan model)
@@ -73,6 +77,19 @@ inductive ParallelNumericRunFailureTransition
       (executed :
         table.executeWithRead preliminary
           (plan.readPolicy state.runState preliminary.base) preliminary.base.parallelGuardContextAt = .error error) :
+      ParallelNumericRunFailureTransition plan preliminary state
+        (.table table.targetField error)
+  | uncovered
+      (table : CheckedParallelNumericAlternativeTable model)
+      (member : table ∈ plan.tables)
+      (pending : table.targetField ∉ state.completedTargets)
+      (enabled : ParallelNumericDependenciesEnabled plan table state)
+      (outcomes : List ParallelNumericDirectOutcome)
+      (executed :
+        table.executeWithRead preliminary
+          (plan.readPolicy state.runState preliminary.base) preliminary.base.parallelGuardContextAt = .ok outcomes)
+      (error : CheckedIsolatedParallelNumericDirectRun.ExecutionError)
+      (covered : table.skippedTargets preliminary = .error error) :
       ParallelNumericRunFailureTransition plan preliminary state
         (.table table.targetField error)
 

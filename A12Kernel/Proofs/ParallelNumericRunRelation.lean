@@ -62,6 +62,8 @@ theorem parallelNumericRun_failureTransition_identity
   cases failure with
   | fail table member pending enabled error executed =>
       exact ⟨table, member, error, rfl⟩
+  | uncovered table member pending enabled outcomes executed error covered =>
+      exact ⟨table, member, error, rfl⟩
 
 /-- Successful supplied-order suffix execution is admitted by independently enabled whole-table transitions, including batches that emit no addressed outcomes. -/
 theorem parallelNumericRun_executeTables_trace
@@ -91,12 +93,17 @@ theorem parallelNumericRun_executeTables_trace
       | error fault =>
           simp [CheckedParallelNumericPlan.executeTables, tableResult] at executed
       | ok outcomes =>
-          simp [CheckedParallelNumericPlan.executeTables, tableResult] at executed
+        cases covered : table.skippedTargets preliminary with
+        | error fault =>
+            simp [CheckedParallelNumericPlan.executeTables, tableResult, covered] at executed
+        | ok skipped =>
+          simp [CheckedParallelNumericPlan.executeTables, tableResult, covered] at executed
           have ready := parallelNumericRun_table_ready
             plan earlier remaining table split state stateTargets
           let next : ParallelNumericTransitionState := {
             completedTargets := state.completedTargets ++ [table.targetField]
             outcomes := state.outcomes ++ outcomes
+            skipped := state.skipped ++ skipped
           }
           have nextTargets :
               next.completedTargets =
@@ -111,7 +118,7 @@ theorem parallelNumericRun_executeTables_trace
                 simpa [next, ParallelNumericTransitionState.runState]
                   using executed)
           refine ⟨(table.targetField, outcomes) :: batches, final,
-            .cons (.compute table ?_ ready.1 ready.2 outcomes tableResult) trace,
+            .cons (.compute table ?_ ready.1 ready.2 outcomes tableResult skipped covered) trace,
             finalTargets, finalState⟩
           rw [split]
           simp
@@ -184,16 +191,32 @@ theorem parallelNumericRun_executeTables_failureTrace
           rw [split]
           simp
       | ok outcomes =>
+        have ready := parallelNumericRun_table_ready
+          plan earlier remaining table split state stateTargets
+        cases covered : table.skippedTargets preliminary with
+        | error error =>
+          rw [CheckedParallelNumericPlan.executeTables, tableResult] at executed
+          simp only [covered] at executed
+          change Except.error (.table table.targetField error) =
+            Except.error fault at executed
+          cases executed
+          refine ⟨[], state,
+            .failed (.uncovered table ?_ ready.1 ready.2 outcomes tableResult error covered),
+            by simp, by simp⟩
+          rw [split]
+          simp
+        | ok skipped =>
           have remainingExecuted :
               plan.executeTables preliminary remaining
-                { completed := state.outcomes ++ outcomes } = .error fault := by
+                { completed := state.outcomes ++ outcomes
+                  skipped := state.skipped ++ skipped } = .error fault := by
             rw [CheckedParallelNumericPlan.executeTables, tableResult] at executed
+            simp only [covered] at executed
             exact executed
-          have ready := parallelNumericRun_table_ready
-            plan earlier remaining table split state stateTargets
           let next : ParallelNumericTransitionState := {
             completedTargets := state.completedTargets ++ [table.targetField]
             outcomes := state.outcomes ++ outcomes
+            skipped := state.skipped ++ skipped
           }
           have nextTargets :
               next.completedTargets =
@@ -209,7 +232,7 @@ theorem parallelNumericRun_executeTables_failureTrace
                 simpa [next, ParallelNumericTransitionState.runState]
                   using remainingExecuted)
           refine ⟨(table.targetField, outcomes) :: batches, final,
-            .cons (.compute table ?_ ready.1 ready.2 outcomes tableResult) trace,
+            .cons (.compute table ?_ ready.1 ready.2 outcomes tableResult skipped covered) trace,
             ?_, ?_⟩
           · rw [split]
             simp

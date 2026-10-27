@@ -89,7 +89,9 @@ def requiresProducer (step : CheckedParallelNumericStep model)
 
 /-- Select the same checked target coverage for execution and clearing. Reading an overlaid document
 keeps producer values fresh; source-relative change classification belongs to the caller's immutable
-input. An invalid-index or over-limit target clears without selecting a guard or observing an operand. -/
+input. A target skipped because an index column it reads is invalid is cleared and poisoned, so a later
+computation that reads it is cleared too (a12-dmkits `fecf8552`, `JoinedInstanceSkipDependentDiffTest`); a
+target over its group's capacity is a clean clear. Neither selects a guard or observes an operand. -/
 def execute (step : CheckedParallelNumericStep model) (document : CheckedDocument model) :
     Except ParallelNumericStepFault (List ParallelNumericDirectOutcome) := do
   let selected := model.fields.filterMap fun declaration =>
@@ -98,8 +100,10 @@ def execute (step : CheckedParallelNumericStep model) (document : CheckedDocumen
   let targets ← (CheckedIsolatedParallelNumericDirectRun.targetCoverage
     step.primary.join ((step.operandRoutes.drop 1).map (·.join)) preliminary).mapError .execution
   targets.mapM fun target => do
-    if target.indexInvalid || target.overLimit then
+    if target.overLimit then
       pure { address := target.address, outcome := .noValue }
+    else if target.indexInvalid then
+      pure { address := target.address, outcome := .inheritedPoison .computedDependency }
     else
       match step with
       | .single operation =>

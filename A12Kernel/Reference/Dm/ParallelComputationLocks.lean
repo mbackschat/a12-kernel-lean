@@ -17,6 +17,7 @@ private def number (id : FieldId) (group name : String) :=
 private def model : FlatModel := {
   fields := [field 1 "Demand" "Key" .string, number 2 "Demand" "Amount",
     field 3 "Supply" "Key" .string, number 4 "Supply" "Amount", number 5 "Supply" "Total",
+    field 7 "Supply" "Label" .string, field 8 "Supply" "Echo" .string,
     { id := 6, name := "Out", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } }]
   repeatableGroups := [
     { level := 10, path := ["Form", "Demand"], repeatability := some 2, indexField := some 1 },
@@ -74,17 +75,36 @@ example : run [downstream, total, definition "Demand" "Amount" [{ operation := "
     [demandRow "A" "100"] [row "A" "2"] = some [
       ("Form/Demand/Amount", "value 7"), ("Form/Supply/Total", "value 9"), ("Form/Out", "value 10")] := by native_decide
 
+-- The own-row empty key is not measured. It follows the measured shared-group skip below.
 example : run [downstream, total] [demandRow "A" "bad"] [row "A" "2"] =
     some [("Form/Supply/Total", "cleared"), ("Form/Out", "cleared")] ∧
     run [downstream, total] [demandRow "A" "10"] [row "" "2"] =
-    some [("Form/Supply/Total", "cleared"), ("Form/Out", "value 1")] := by native_decide
+    some [("Form/Supply/Total", "cleared"), ("Form/Out", "cleared")] := by native_decide
 
-
+-- A target skipped because a joined group's index column is invalid is cleared and poisoned, so a later
+-- computation that reads it is cleared too (a12-dmkits `fecf8552`, `JoinedInstanceSkipDependentDiffTest`:
+-- duplicated and malformed `Refs` keys). The duplicated `Demand` key has that witness's shape: a keyed
+-- group sharing no repeatable level with the target. A target skipped over capacity keeps its clean
+-- clear and its dependents are unmeasured: `Supply[3]`, beyond the capacity of two, is the control.
 example : run [downstream, total] [demandRow "A" "10", demandRow "A" "20"] [row "A" "2"] =
-    some [("Form/Supply/Total", "cleared"), ("Form/Out", "value 1")] ∧
+    some [("Form/Supply/Total", "cleared"), ("Form/Out", "cleared")] ∧
     run [downstream, total] [demandRow "A" "10"] [row "A" "1", row "B" "2", row "C" "bad"] =
     some [("Form/Supply/Total", "value 11"), ("Form/Supply[2]/Total", "value 2"),
       ("Form/Supply[3]/Total", "cleared"), ("Form/Out", "value 14")] := by native_decide
+
+-- The joined String carrier takes the same skip (unmeasured). `Echo` runs when `Label` reads as empty:
+-- it runs with no `Label` computation beside it, and a skipped `Label` clears it instead.
+private def label : DmComputation :=
+  definition "Supply" "Label" [{ operation := "[/Form/Demand/Key]", precondition := none }]
+private def echo : DmComputation :=
+  definition "Supply" "Echo" [{ operation := "\"seen\"", precondition := some "FieldNotFilled(Label)" }]
+private def textRow (key : String) : Json := Json.mkObj [("Key", Json.str key), ("Echo", "old")]
+
+example : run [echo] [demandRow "A" "10"] [textRow "A"] = some [("Form/Supply/Echo", "value seen")] ∧
+    run [echo, label] [demandRow "A" "10", demandRow "A" "20"] [textRow "A"] =
+    some [("Form/Supply/Echo", "cleared")] ∧
+    run [echo, label] [demandRow "A" "10"] [textRow ""] = some [("Form/Supply/Echo", "cleared")] := by
+  native_decide
 
 private def alternatives (common : Option String := none) : DmComputation :=
   definition "Supply" "Total" [

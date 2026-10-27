@@ -88,6 +88,11 @@ private def accepted (field : FieldId) (path : List Nat)
   outcome := .accepted { unscaled := value, scale := 0 }
 }
 
+private def poisoned (field : FieldId) (path : List Nat) : ParallelNumericDirectOutcome := {
+  address := { field, path }
+  outcome := .inheritedPoison .computedDependency
+}
+
 private def outcomes?
     (checked : Option (CheckedParallelNumericPlan model))
     (cells : List ClassifiedCellInput) :
@@ -330,15 +335,17 @@ example :
       ] := by
   native_decide
 
-/- An invalid producer index column suppresses and clears that producer while a later consumer reads the absent completion as clean numeric zero. Invalidity in the target group independently suppresses the first and last tables without aborting the middle table. -/
+/- A target skipped because an index column it reads is invalid is cleared and poisoned, so a later table that reads it is poisoned and cleared too (a12-dmkits `fecf8552`, `JoinedInstanceSkipDependentDiffTest`). An invalid producer index column skips the producer and the middle table, and both consumer rows read poison. Invalidity in the target group independently skips the first and last tables without aborting the middle table: its `Alpha` row reads the skipped producer row and is poisoned, while its `Beta` row matches no producer row and stays clean. -/
 example :
     let invalidOffset := invalidIndexCell 5 [2]
     let invalidTarget := invalidIndexCell 1 [2]
     (outcomes? finitePlan? invalidOffset,
       (result? finitePlan? invalidOffset).map (·.cleared)) =
       (some [
-        accepted 2 [1] 0, accepted 2 [2] 0
+        poisoned 2 [1], poisoned 2 [2]
       ], some [
+        { field := 2, path := [1] },
+        { field := 2, path := [2] },
         { field := 6, path := [1] },
         { field := 6, path := [2] },
         { field := 4, path := [1] },
@@ -347,13 +354,24 @@ example :
     (outcomes? finitePlan? invalidTarget,
       (result? finitePlan? invalidTarget).map (·.cleared)) =
       (some [
-        accepted 4 [1] 0, accepted 4 [2] 0
+        poisoned 4 [1], accepted 4 [2] 0
       ], some [
+        { field := 4, path := [1] },
         { field := 6, path := [1] },
         { field := 6, path := [2] },
         { field := 2, path := [1] },
         { field := 2, path := [2] }
       ]) := by
+  native_decide
+
+/- A target over its group's capacity keeps its clean clear: a read of it is absent, not poison. Its dependents are unmeasured. -/
+example :
+    (do
+      let plan ← finitePlan?
+      let preliminary ← overLimitPreliminary
+      let state ← (plan.executeTables preliminary plan.tables {}).toOption
+      (plan.readPolicy state preliminary.base { field := 2, path := [3] }).toOption.map
+        (observeCell .computation)) = some CellObservation.empty := by
   native_decide
 
 /- Plan-level route deduplication by operand group is unsound: equal operand groups still own different target clears. -/
@@ -437,8 +455,17 @@ private def relationSeedOutcomes : List ParallelNumericDirectOutcome :=
       ({} : ParallelNumericTransitionState).runState relationPreliminary.base) relationPreliminary.base.parallelGuardContextAt)
       |>.toOption |>.get (by native_decide)
 
+private def relationSeedSkippedTargets : List CellAddr :=
+  (relationSeedTable.skippedTargets relationPreliminary).toOption.get (by native_decide)
+
+/- The invalid index cell skips both seed target rows, so the batch records them for later poison
+reads while emitting no addressed outcome. -/
+example : relationSeedSkippedTargets =
+    [{ field := 6, path := [1] }, { field := 6, path := [2] }] := by
+  native_decide
+
 private def afterActionFreeSeed : ParallelNumericTransitionState :=
-  { completedTargets := [6], outcomes := relationSeedOutcomes }
+  { completedTargets := [6], outcomes := relationSeedOutcomes, skipped := relationSeedSkippedTargets }
 
 private theorem evaluated_to_get (evaluation : Except ε α)
     (available : evaluation.toOption.isSome = true) :
@@ -457,6 +484,10 @@ private theorem relationSeedExecuted :
       (relationPlan.readPolicy
         ({} : ParallelNumericTransitionState).runState relationPreliminary.base) relationPreliminary.base.parallelGuardContextAt)
     (by native_decide)
+
+private theorem relationSeedSkipped :
+    relationSeedTable.skippedTargets relationPreliminary = .ok relationSeedSkippedTargets :=
+  evaluated_to_get _ (by native_decide)
 
 private theorem relationEnabled
     (table : CheckedParallelNumericAlternativeTable model)
@@ -494,6 +525,7 @@ example :
       (by native_decide)
       (relationEnabled _ _ (by native_decide) (by native_decide)
         (by native_decide)) relationSeedOutcomes relationSeedExecuted
+      relationSeedSkippedTargets relationSeedSkipped
   constructor
   · native_decide
   · exact relationEnabled _ _ (by native_decide) (by native_decide)

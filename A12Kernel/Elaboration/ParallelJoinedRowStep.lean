@@ -20,6 +20,9 @@ An invalid-index or over-limit row clears without a guard or operand read, the j
 carrier's disposition, measured for String, Date and Enumeration targets on duplicated and empty
 keys and on a row beyond capacity
 ([joined-computation checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-joined-computations)).
+An invalid-index row is also poisoned for later readers, as the Number carrier's is (measured on Number
+targets, a12-dmkits `fecf8552`, `JoinedInstanceSkipDependentDiffTest`); no String, temporal or Enumeration
+dependent is measured. A row over capacity stays a clean clear.
 An Enumeration copy reads the partner's stored token as the fixed Enumeration carrier reads a field.
 
 Separate declarations into one joined target form one first-selected table in declaration order. A
@@ -206,8 +209,12 @@ def execute (step : CheckedParallelJoinedRowStep model) (world : World) (matcher
   let targets ← (CheckedIsolatedParallelNumericDirectRun.targetCoverage step.primary step.additional
     preliminary).mapError .execution
   targets.mapM fun target => do
-    if target.indexInvalid || target.overLimit then
+    if target.overLimit then
       return (target.address, step.family.noValue, DocumentComputationReadBack.empty)
+    -- An index-invalid skip poisons the target for later readers (a12-dmkits `fecf8552`,
+    -- `JoinedInstanceSkipDependentDiffTest`); an over-capacity skip stays a clean clear.
+    if target.indexInvalid then
+      return (target.address, step.family.poison .computedDependency, DocumentComputationReadBack.poison)
     let key ← (CheckedIsolatedParallelNumericDirectRun.joinTargetKeyFor step.primary preliminary
       target.environment target.address).mapError .execution
     let partners ← (CheckedIsolatedParallelNumericDirectRun.partnerEnvironments step.joins preliminary
