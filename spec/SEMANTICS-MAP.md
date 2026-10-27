@@ -113,7 +113,7 @@ The field's **type** decides which operators are legal on it and how an empty or
 
 ## 3. The taxonomy
 
-The chapters are listed in file order. The `§n` column is the taxonomy number that link labels use: it follows the language's areas, not the files, so §1 and §3 share spec/02 while §2 and §4 share spec/03, and spec/01, spec/12, spec/13 and spec/14 carry none. **Difficulty** rates how hard an area is to reimplement faithfully (★ easy … ★★★★★ where reimplementations fail).
+The chapters are listed in file order. The `§n` column is the taxonomy number that link labels use: it follows the language's areas, not the files, so §1 and §3 share spec/02 while §2 and §4 share spec/03, and spec/01, spec/12 and spec/14 carry none. **Difficulty** rates how hard an area is to reimplement faithfully (★ easy … ★★★★★ where reimplementations fail).
 
 | File | § | Area | In one line | Difficulty |
 |---|---|---|---|---|
@@ -133,7 +133,6 @@ The chapters are listed in file order. The `§n` column is the taxonomy number t
 | [`11-messages-and-custom.md`](11-messages-and-custom.md) | §13 | Error-message interpolation | producer-specific template grammars; parse order; rendering a rule-owned message; field-owned producers | ★★☆☆☆ |
 | [`11-messages-and-custom.md`](11-messages-and-custom.md) | §14 | CustomCondition — the escape hatch | a host-code predicate; refused in computations and filters | ★★☆☆☆ |
 | [`12-concrete-syntax.md`](12-concrete-syntax.md) | — | Concrete syntax | lexical structure, literals, a grammar sketch, the class a refused text draws, argument slots, directives and the English/German keyword catalog | ★★★☆☆ |
-| [`13-lean-encoding-guide.md`](13-lean-encoding-guide.md) | — | Lean encoding guide | a navigation stub pointing to [`docs/LEAN-ENCODING-GUIDE.md`](../docs/LEAN-ENCODING-GUIDE.md) | — |
 | [`14-operator-reference.md`](14-operator-reference.md) | — | Operator reference | which class every operator takes per mechanism: unavailable reads, classification, polarity, filter effect, partial extent, traversal, argument slots, keyed guard, temporal gate, empty read, content gate, static scale, raw String operand, keyed and category operands, fill-to-fix | — |
 
 ---
