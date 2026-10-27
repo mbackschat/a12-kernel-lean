@@ -86,7 +86,7 @@ Every kernel observation comes from a12-dmkits' `:adapter:kernelProbe`, and the 
 
 ### G7 — Charter and document scoping
 
-[`spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) lines 14 and 18 scope the whole spec to 30.8.1 in one place, with a few clauses scoped inline; that is fine. The goal in [`CLAUDE.md`](../CLAUDE.md) names 100% conformance with 30.8.1. **Recommendation:** once a12-dmkits runs 31, target the latest supported release and keep 30.8.1 as the release backed by its immutable evidence, with differences carried by the I1 selector. This is balanced; full dual support is warranted only if a consumer still runs the upstream-maintained 2025.06 line in production. Optionally, new [`sources/`](sources/) checkpoint headings could carry the kernel version: none of the current 477 do, so heading-first search cannot separate releases after an upgrade.
+The opening scope statement and claim vocabulary of [`spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) scope the whole spec to 30.8.1 in one place, with a few clauses scoped inline; that is fine. The goal in [`CLAUDE.md`](../CLAUDE.md) names 100% conformance with 30.8.1. **Recommendation:** once a12-dmkits runs 31, target the latest supported release and keep 30.8.1 as the release backed by its immutable evidence, with differences carried by the I1 selector. This is balanced; full dual support is warranted only if a consumer still runs the upstream-maintained 2025.06 line in production. Optionally, new [`sources/`](sources/) checkpoint headings could carry the kernel version: none of the current 477 do, so heading-first search cannot separate releases after an upgrade.
 
 ## Suggested order
 

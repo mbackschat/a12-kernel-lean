@@ -385,6 +385,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-30"></a>
+### SPEC-2026-10-26-30 — The semantics map becomes a non-normative summary, and empty DateFragment, DateRange and Custom reads move to spec/03
+
+- `status`: pending
+- `canonical`: [spec/SEMANTICS-MAP](../spec/SEMANTICS-MAP.md) and [spec/03 A.1](../spec/03-empty-and-required.md#a1-the-per-kind-default).
+- `delta`: The map no longer defines rules or terms: every rule it mentions is owned by the linked chapter, which wins on a difference. Its four map-only rules found owners: an empty DateFragment or DateRange operand leaves a comparison not evaluated and an empty Custom field reads as the String kind, so its comparison is not evaluated, all now in spec/03 A.1 and unmeasured; the host pointer API is in scope as data model §2.1 states it, not out of scope as the map said.
+- `basis`: this project's DateFragment, DateRange and String comparison operand reads for the three empty reads, external evidence pending, and data model §2.1 for the host pointer API.
+- `acceptance`: `[DF] == [DF2]`, `[DR] == [DR2]` and `[C] == "x"` over an empty DateFragment, DateRange and Custom field show whether each comparison is not evaluated.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 

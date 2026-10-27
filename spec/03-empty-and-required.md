@@ -21,7 +21,7 @@ The third cell state (formally invalid) is [§3](02-logic-and-formal-errors.md#p
 | **confirm** | treated as **`False`** |
 | **boolean, string, enumeration, date, time, date-time** | the comparison is **not evaluated** (no error, no fire) |
 
-Other model types — such as DateFragment, DateRange and Custom — belong to their own type-family or registered-validator clauses; the eight-kind header does not define them. An operator may override the default for its own operands: A.2 defines the override classes.
+Three further model types read as follows when empty, unmeasured: an empty DateFragment or DateRange operand leaves the comparison **not evaluated**, and an empty Custom field reads as the String kind, so its comparison is **not evaluated** too. Other model types belong to their own type-family or registered-validator clauses; the eight-kind header does not define them. An operator may override the default for its own operands: A.2 defines the override classes.
 
 ```
 [Amount] < 100          -- number: FIRES on an empty Amount, because 0 < 100

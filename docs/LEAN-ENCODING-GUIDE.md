@@ -20,6 +20,7 @@ The essential boundaries are:
 - `Document` represents instantiated rows independently of raw cell values, because an instantiated blank row is semantically observable.
 - `Env` binds enclosing repeatable levels to rows; `World` supplies clocks and other otherwise ambient inputs.
 - Surface rules remain extrinsic. A checked elaborator should reject illegal paths/types/scales/scopes or return a `WellFormed` core rule; successful host elaboration of an AST constructor is not that guarantee.
+- A `Rule` carries its condition as the *error* condition, with no polarity or assertion flag: the language fixes the polarity (condition true ⇒ invalid), so a flag would only be a way to get it wrong ([data model §3.1](../spec/01-data-model.md#31-rules-validation)). The message type VALUE/OMISSION is derived from the data, never stored on the rule.
 
 The conceptual public flow is:
 

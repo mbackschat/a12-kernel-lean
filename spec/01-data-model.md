@@ -2,7 +2,7 @@
 
 *Prerequisite reading for everything else.* This file fixes the vocabulary and the shapes the rest of the set evaluates over: what a model is and when a declaration is legal, what a document is, how repetition and addresses work, what "a cell" means precisely, and the two operations (validate, compute) with their call surface. It is deliberately mechanical; the *interesting* semantics start in [`02-logic-and-formal-errors.md`](02-logic-and-formal-errors.md).
 
-See [`SEMANTICS-MAP.md`](SEMANTICS-MAP.md) for the glossary and the taxonomy; terms like *cell*, *row*, *not-check-relevant* are defined there.
+[`SEMANTICS-MAP.md`](SEMANTICS-MAP.md) summarises the glossary and the taxonomy without defining them; *cell* and *row* are defined in [§2](#2-document--an-instance-of-the-tree) below, and *not-check-relevant* in [§3 B.2](02-logic-and-formal-errors.md#b2-the-three-cell-states--the-third-one-is-not-empty).
 
 ---
 
@@ -11,7 +11,7 @@ See [`SEMANTICS-MAP.md`](SEMANTICS-MAP.md) for the glossary and the taxonomy; te
 **A document model is a static declaration tree of groups and fields.** Groups are internal nodes and fields are leaves; the model's root is a single group. A group's direct children form an ordered declaration sequence. Groups nest arbitrarily; a repeatable group may contain repeatable subgroups, giving multi-dimensional arrays. Recursive expansion to descendant fields preserves model declaration order: a child field is visited when reached, while a child group's descendant fields are visited recursively before the next sibling.
 
 - **Groups** are **non-repeatable** (occurring at most once wherever their parent occurs) or **repeatable** (declaring an ordered 1-based row-address range `1 … repeatability`; a valid document may instantiate only a prefix `1 … rowCount`, where `rowCount ≤ repeatability`).
-- **Fields** are leaves. Each has a **type** and per-type configuration. (The type table is in [`SEMANTICS-MAP.md §2`](SEMANTICS-MAP.md#2-field-types-at-a-glance); per-type evaluation is in files 04–06.)
+- **Fields** are leaves. Each has a **type** and per-type configuration. (The map's [type table](SEMANTICS-MAP.md#2-field-types-at-a-glance) summarises them; per-type evaluation is in files 04–06.)
 
 ```
 Order                       group (root, non-repeatable)

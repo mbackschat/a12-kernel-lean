@@ -14,7 +14,7 @@ The packet is a directory with this layout, frozen at assembly and identified by
 | `MANIFEST.sha256` | SHA-256 of every other file, checkable with `shasum -a 256 -c MANIFEST.sha256` from the packet root |
 | `docs/IMPLEMENTER-KIT-EVALUATOR.md` | This kit |
 | `docs/IMPLEMENTER-GUIDE.md` | An extract holding only the host-input contract section |
-| `spec/SEMANTICS-MAP.md`, `spec/01-…` to `spec/12-…` | The normative semantics: the map first, then the numbered chapters |
+| `spec/SEMANTICS-MAP.md`, `spec/01-…` to `spec/12-…` | The semantics: the non-normative map as the entry point, then the normative numbered chapters |
 | `evidence/kernel-30.8.1/captures/<capture>/` | Each retained request, its observed artifact, and the model and document files they name |
 
 Allowed reads are the packet and the implementing repository, nothing else. Do not read sibling checkouts, other repositories, the A12 Kernel or its documentation, a12-dmkits or dmtool-release, any Lean source, or web material about A12. The specification links to many files outside the packet, mostly under `docs/` and into Lean sources; those links are provenance for the maintainers and their targets are deliberately absent. A clause's text is normative on its own. A link you cannot follow is never a reason to look elsewhere, and a clause that is unclear without its link is a question for the log.
