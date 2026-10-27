@@ -228,7 +228,7 @@ The request adopts this sequencing and the two consumer objectives. It does not 
 - `kit-changes`: the kit classifies each channel on its own and reports per-channel totals, because U01's whole-row classes hid `messages` divergences behind a refused `partialMessages` channel. The packet ships spec/14 and `docs/sources/`, so the chapters' provenance links resolve inside it.
 - `milestones`: M1–M4 as the kit states, from scratch. The M5 mutation set is designed against the rewritten spec after M4 and arrives as a separate instruction.
 - `comparison`: U01's close record is the baseline: questions decided from captures or by choice, rules read in another chapter than their owner, and passages that disagreed. U02 should log fewer of each; a repeated question names a clause the rewrite left unclear.
-- `packets`: v4 is cut by [`assemble-evaluator-packet.py`](../scripts/assemble-evaluator-packet.py) into the owner's Downloads folder, with its source revision and manifest digest recorded here once cut.
+- `packets`: v4 is cut by [`assemble-evaluator-packet.py`](../scripts/assemble-evaluator-packet.py) into the owner's Downloads folder as `a12-u02-packet-v4`, from `496d4a05e61dd5c3335fd33224beef795777d665` on 2026-10-27. It holds 2012 files, all 858 spec links into `docs/sources/` resolve inside it, and its `MANIFEST.sha256` has SHA-256 `deb0eb1dabc5700549b3801d5b7b78c8163bea1afb5ac3125d30062b97933187`.
 
 <a id="spec-rewrite-plan"></a>
 ### Spec rewrite plan
