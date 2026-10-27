@@ -409,6 +409,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-27-03"></a>
+### SPEC-2026-10-27-03 — Two spec/07 reachability claims become no-witness statements
+
+- `status`: pending
+- `canonical`: [spec/07 §3.1](../spec/07-repetition-and-iteration.md#31-the-filter-condition-and-its-static-gates) for the filter gate's discriminating shape and [spec/07 §6.1](../spec/07-repetition-and-iteration.md#61-admission) for the containment gate.
+- `delta`: The model that would separate the two filter-gate accounts was called unauthorable, and the containment check was called unreachable without index-keying. Both now say only that no witness is known. The measured `MVK_NO_WILDCARD` refusal of the operand and the index-keying selection stay unconditional.
+- `basis`: no measurement settles either negative existential, and the spec rule against unmeasured negative existentials requires the weaker statement.
+- `acceptance`: a model reaching the containment gate without index-keying, or a filter-gate model whose operand is admitted, would each be a defeating witness.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-26-30"></a>
 ### SPEC-2026-10-26-30 — The semantics map becomes a non-normative summary, and empty DateFragment, DateRange and Custom reads move to spec/03
 
