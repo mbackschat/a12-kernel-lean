@@ -361,6 +361,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-28"></a>
+### SPEC-2026-10-26-28 — Semantic-index reads state their column state, index group and star classes
+
+- `status`: pending
+- `canonical`: [spec/08 §4](../spec/08-paths-and-references.md#4-rows-are-addressed-by-semantic-key-never-by-position-), [§4.1](../spec/08-paths-and-references.md#41-what-a-semantic-index-read-yields), [§1](../spec/08-paths-and-references.md#1-absolute-relative-and-short-name-references) and the [spec/14 keyed and category operand column](../spec/14-operator-reference.md#keyed-and-category-operands).
+- `delta`: A column is compromised by any in-capacity index cell that is empty, duplicated or formally invalid; rows beyond capacity are excluded. In validation a no-match over a clean column reads empty and over a compromised column UNKNOWN, which suppresses only through the branch-scoped rule rather than the whole rule; computation poisons over a compromised column. A key addresses the nearest repeatable group declaring an index field, so an index declared only on the root or a fixed group draws `MVK_NO_INDEX_FIELD`. The star-position classes apply to every keyed operand, not only `NumberOfFilledGroups` and `RepetitionNotUnique`. In a condition a turning point naming another group than the one reached draws `MVK_INVALID_ENTITY`. Each operator's keyed and category operand handling becomes a spec/14 column, and the unmeasured items are marked.
+- `basis`: the semantic-index read, runtime-fill and K22 static checkpoints for the measured parts, and this project's semantic-index evaluation, index preliminary and reference resolution for the unmeasured ones, external evidence pending for those.
+- `acceptance`: A no-match over a column holding one empty index cell, in a branch beside an independent firing part, and a keyed `Sum` with a star at the index level settle the widest unmeasured items.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 
