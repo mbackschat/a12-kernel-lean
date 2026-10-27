@@ -1,6 +1,6 @@
-"""Assemble a U01 packet from one committed revision of a12-kernel-lean.
+"""Assemble an evaluator packet (U01, U02) from one committed revision of a12-kernel-lean.
 
-Usage: python3 -I scripts/assemble-u01-packet.py <repo> <revision> <version> <out-dir> [<changes>]
+Usage: python3 -I scripts/assemble-evaluator-packet.py <repo> <revision> <version> <out-dir> [<changes>]
 Every file is read from the revision with `git show`, never from the working tree.
 """
 import hashlib, json, os, re, subprocess, sys
@@ -33,6 +33,11 @@ spec = sorted(p for p in tree if re.fullmatch(r"spec/(SEMANTICS-MAP|\d\d-[a-z-]+
 for p in spec:
     put(p, show(p))
 put("docs/IMPLEMENTER-KIT-EVALUATOR.md", show("docs/IMPLEMENTER-KIT-EVALUATOR.md"))
+# The spec ends each section with provenance links into docs/sources/; shipping them keeps those links
+# resolvable inside the packet (PLAN.md spec-rewrite `self-contained`).
+sources = sorted(p for p in tree if re.fullmatch(r"docs/sources/[^/]+\.md", p))
+for p in sources:
+    put(p, show(p))
 guide = show("docs/IMPLEMENTER-GUIDE.md").decode()
 section = re.search(r"^## Host-input contract\n.*?(?=^## )", guide, re.S | re.M).group(0)
 put("docs/IMPLEMENTER-GUIDE.md", ("# Implementer guide (packet extract)\n\nThis file holds only the host-input contract section of the implementer guide. Links leaving the packet are provenance only.\n\n" + section).encode())
@@ -91,12 +96,13 @@ for p in sorted(t for t in tree if t.startswith(root) and t.endswith(".json")):
         counts[key] += 1
 
 change_line = f"- Changes from the previous version: {changes}\n" if changes else ""
-put("PACKET.md", f"""# U01 evaluator packet {version}
+put("PACKET.md", f"""# Evaluator packet {version}
 
 - Source: a12-kernel-lean revision `{full}`; every file below was read from that revision.
 - Start with [the evaluator kit](docs/IMPLEMENTER-KIT-EVALUATOR.md).
 {change_line}- `spec/`: {len(spec)} files, the semantics map and the numbered chapters.
 - `docs/IMPLEMENTER-GUIDE.md`: the host-input contract section only.
+- `docs/sources/`: {len(sources)} provenance files the spec's `Sources:` lines cite; the spec text stays normative on its own.
 - `evidence/kernel-30.8.1/captures/`: {counts['requests']} artifact-backed requests with their models and document files.
 
 Artifact rows by the kit's classification, cases 1 to 4 and the remainder (case 5, the clock exclusion, and the evaluator's own refusals are decided by the evaluator):

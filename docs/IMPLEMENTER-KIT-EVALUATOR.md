@@ -1,6 +1,6 @@
 # Independent implementer kit: Kernel evaluator
 
-This kit hands the A12 kernel 30.8.1 validation and computation semantics to an independent evaluator built in a fresh repository. It is the handover document of the U01 consumer experiment: a Rust interpreter that reads the Kernel's own model and document files, validates and computes, and is compared row by row against retained observations of the real Kernel. The reader is the implementing session. It sees this kit, the language-neutral specification and the captures, all inside a frozen packet, and nothing else.
+This kit hands the A12 kernel 30.8.1 validation and computation semantics to an independent evaluator built in a fresh repository. It is the handover document of the U-series consumer experiments, each a Rust interpreter that reads the Kernel's own model and document files, validates and computes, and is compared row by row against retained observations of the real Kernel. U02 starts from an empty repository on the rewritten specification; nothing from an earlier run is carried over. The reader is the implementing session. It sees this kit, the language-neutral specification and the captures, all inside a frozen packet, and nothing else.
 
 The evaluator is a consumer of the specification, not a port of any implementation. Where the specification decides a case, follow it. Where it leaves a case open, record the question and your chosen reading in the questions-and-guesses log described below; the answer returns only as a later packet version. The goal is an evaluator whose every in-profile capture row matches, reached by implementing the specification, never by recognizing fixtures.
 
@@ -14,10 +14,11 @@ The packet is a directory with this layout, frozen at assembly and identified by
 | `MANIFEST.sha256` | SHA-256 of every other file, checkable with `shasum -a 256 -c MANIFEST.sha256` from the packet root |
 | `docs/IMPLEMENTER-KIT-EVALUATOR.md` | This kit |
 | `docs/IMPLEMENTER-GUIDE.md` | An extract holding only the host-input contract section |
-| `spec/SEMANTICS-MAP.md`, `spec/01-…` to `spec/12-…` | The semantics: the non-normative map as the entry point, then the normative numbered chapters |
+| `spec/SEMANTICS-MAP.md`, `spec/01-…` to `spec/12-…`, `spec/14-operator-reference.md` | The semantics: the non-normative map as the entry point, the normative numbered chapters, and the operator reference that assigns each operator its class per mechanism |
+| `docs/sources/` | The provenance records the chapters' `Sources:` lines cite |
 | `evidence/kernel-30.8.1/captures/<capture>/` | Each retained request, its observed artifact, and the model and document files they name |
 
-Allowed reads are the packet and the implementing repository, nothing else. Do not read sibling checkouts, other repositories, the A12 Kernel or its documentation, a12-dmkits or dmtool-release, any Lean source, or web material about A12. The specification links to many files outside the packet, mostly under `docs/` and into Lean sources; those links are provenance for the maintainers and their targets are deliberately absent. A clause's text is normative on its own. A link you cannot follow is never a reason to look elsewhere, and a clause that is unclear without its link is a question for the log.
+Allowed reads are the packet and the implementing repository, nothing else. Do not read sibling checkouts, other repositories, the A12 Kernel or its documentation, a12-dmkits or dmtool-release, any Lean source, or web material about A12. The specification's `Sources:` links into `docs/sources/` resolve inside the packet and may be read as provenance: they record what was measured and how, never a rule the chapter does not state. Its other links leave the packet, mostly into `docs/` and Lean sources; those targets are deliberately absent. A clause's text is normative on its own. A link you cannot follow is never a reason to look elsewhere, and a clause that is unclear without its link is a question for the log.
 
 Place the packet at `packet/` in the implementing repository and list that path in `.gitignore`. Never edit it. A later version replaces the whole directory, and every report names the version it was built against.
 
@@ -39,9 +40,9 @@ Each artifact row is classified by the first matching case below, in this order:
 3. The request declares `customConditions` or `customFieldTypes`: **unsupported**, reason `host-feature`.
 4. The model declares a pattern outside the three supported ones: **unsupported**, reason `pattern`.
 5. The request has no `clock` and a rule or computation of the model names `Today` or `Now` (`Heute` or `Jetzt` in German): **excluded**. The Kernel read its real clock, which no row records.
-6. Otherwise the row is **in profile** and is compared channel by channel, unless the evaluator refuses something it reads (below).
+6. Otherwise the row is **in profile** and each of its channels is classified on its own, as the comparison contract below states.
 
-The evaluator fails closed. Anything in an in-profile row that it does not implement yet, whether a model element, field type, declaration key, operator, document shape or reachable construct, yields **unsupported** for that row with a reason naming the first unsupported construct and the spec chapter that owns it, such as `unsupported: Having (spec/07)`. It never evaluates around a gap or substitutes a guessed behaviour. An unsupported in-profile row is unfinished work, never an exclusion, and it counts against completion.
+The evaluator fails closed. Anything in an in-profile row that it does not implement yet, whether a model element, field type, declaration key, operator, document shape or reachable construct, yields **unsupported** for each channel whose call reaches it, with a reason naming the first unsupported construct and the spec chapter that owns it, such as `unsupported: Having (spec/07)`. A construct only one call reaches leaves the other channels compared: a refusal under partial validation never hides a full-validation result. A refusal while reading the model or the document applies to every channel. It never evaluates around a gap or substitutes a guessed behaviour. An unsupported in-profile channel is unfinished work, never an exclusion, and it counts against completion.
 
 ## Request and artifact format
 
@@ -83,7 +84,7 @@ A document is nested JSON: an object per group keyed by element name, a repeatab
 
 ## Comparison contract
 
-For each in-profile row, compare every channel present on the first engine entry among `messages`, `partialMessages` and `computations`. A row **matches** when every compared channel matches. It **diverges** when any channel differs, and the report then shows both sides of each differing channel. It is **unsupported** when the evaluator refused it.
+For each in-profile row, classify every channel present on the first engine entry among `messages`, `partialMessages` and `computations` on its own: **match**, **diverge** (the report then shows both projected sides), or **unsupported** (the evaluator refused that call). The row's class is derived: `diverge` when any channel diverges, otherwise `unsupported` when any channel is unsupported, otherwise `match`. The per-channel classes are what the totals count, so a refused channel never hides another channel's divergence or match.
 
 - **`messages` and `partialMessages`:** the whole call's messages as a multiset, built-in findings included, each message projected to `code`, `field`, `type`, `severity`, the `referenced` set and the `fillToFix` set. Order is not compared, and pointer lists are compared as sorted sets. The `message` text is ignored.
 - **`computations.outcomes`:** a set keyed by `field`, each outcome projected to `cleared`, `errored` with its value (empty when absent), or a stored `value`. Which target cells are listed is part of the comparison.
@@ -109,7 +110,7 @@ The work spans many sessions and is reviewed at milestones, not at every commit.
 
 Commit reports in the implementing repository under `reports/`:
 
-- `reports/differential/<milestone-or-slice>.tsv`: one line per artifact row with the columns `request` (the request path relative to the packet's captures directory), `row`, `class` (`match`, `diverge`, `unsupported` or `excluded`), `reason` (the exclusion case, the unsupported construct and chapter, or the divergent channels) and `detail` (for a divergence, both projected sides of each differing channel in compact JSON). The file ends with totals per class.
+- `reports/differential/<milestone-or-slice>.tsv`: one line per artifact row with the columns `request` (the request path relative to the packet's captures directory), `row`, `class` (`match`, `diverge`, `unsupported` or `excluded`, derived as the comparison contract states), `channels` (each compared channel with its own class, such as `messages=match;partialMessages=unsupported`), `reason` (the exclusion case, the unsupported construct and chapter per unsupported channel, or the divergent channels) and `detail` (for a divergence, both projected sides of each differing channel in compact JSON). The file ends with totals per row class and per channel class.
 - `reports/QUESTIONS.md`: one entry per question, numbered `Q-001` onward, naming the clause by file and anchor, the case (a capture row when one exists), the competing readings, the reading implemented, and its status: `open`, or `settled by packet <version>` with the resolution.
 - `reports/QUALIFICATION.md`: one section per milestone, naming the packet version and manifest digest, the implementing commit, the toolchain versions, the exact commands, the raw output files with their SHA-256, the `shasum -c` result for the packet, and the totals.
 
