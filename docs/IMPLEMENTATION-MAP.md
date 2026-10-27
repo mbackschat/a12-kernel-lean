@@ -98,6 +98,7 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 | N — empty read | no single owner: each operator's evaluator applies its class over [`CellObservation`](../A12Kernel/Cell.lean); the counts' fill state is `FilledFieldCount` in [`FieldFillQuantifier.lean`](../A12Kernel/Semantics/FieldFillQuantifier.lean) |
 | B — content gate | `ValidationConditionLeaf.canFireOnEmpty` and `ValidationCondition.canFireOnEmpty` in [`ValidationCondition/Core.lean`](../A12Kernel/Elaboration/ValidationCondition/Core.lean) |
 | R — static scale | `NumericScaleSummary` in [`NumericExpression.lean`](../A12Kernel/Semantics/NumericExpression.lean); aggregates through `ResolvedNumericAggregateFields.scaleSummary` in [`NumericSource.lean`](../A12Kernel/Elaboration/NumericSource.lean) |
+| W — raw String operand | no single owner: the bracketed-read refusal is `rawFieldValueRead` in [`Flat/FieldValueRead.lean`](../A12Kernel/Elaboration/Flat/FieldValueRead.lean), and operators with their own class check `isRawString` at their admission |
 
 ### Detailed capability shards
 

@@ -337,6 +337,30 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-26"></a>
+### SPEC-2026-10-26-26 — A raw String's treatment becomes a per-operator class
+
+- `status`: pending
+- `canonical`: [spec/06 A.1](../spec/06-strings-and-enumerations.md#a1-raw-type-strings-novaluevalidation) and the [spec/14 raw String operand column](../spec/14-operator-reference.md#raw-string-operand).
+- `delta`: Each operator takes a class for a String declared without value validation: refused as a raw read, refused by its own class, read for presence only, or read through its own placeholder or length shape. The earlier blanket refusal of every other value operation is withdrawn for entity-slot operators no chapter decides, whose cells are not stated. Group predicates, `NumberOfFilledGroups` and `CurrentRepetition` refuse a field operand by their own class, and `ValueNotConsistent` refuses a non-table subject, a raw String included.
+- `basis`: the measured rows A.1 names (`==`, `+`, `*`, computation `Abs`, the value-list quantifiers, the coercions, named-type validity, `Length`, `FirstFilledValue`, two presence counts), spec/08 §3 for bracketed reads, and this project's reader for the rest, external evidence pending.
+- `acceptance`: A raw String under `<`, `-` and `Sum` settles the three widest unmeasured classes.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-26-27"></a>
+### SPEC-2026-10-26-27 — String findings name their codes, and value-list admission states one gate order
+
+- `status`: pending
+- `canonical`: [spec/06 stored-value checking](../spec/06-strings-and-enumerations.md#stored-value-checking-and-normalization), [B.3](../spec/06-strings-and-enumerations.md#b3-the-value-list-quantifiers--per-cell-three-way-classification-) and [B.4](../spec/06-strings-and-enumerations.md#b4-scalar-membership-is-a-singleton-specialization-not-boolean-negation-).
+- `delta`: The String findings name their codes: a character outside the charset draws `ZeichenNichtImZeichensatz`, and the length, line-break and pattern findings their measured codes; a trailing blank draws `nachfolgendesBlank`, unmeasured. Value-list admission runs repeat, scope, base type, kind, value validation, then the values side. A Custom field counts as String in scalar membership and takes a literal values side, unmeasured. A formally unavailable member makes scalar `NotIncluded` UNKNOWN in validation while it still poisons in computation, and the pattern blacklist is stated as a character-level predicate.
+- `basis`: the string-expression, ingestion and K22 message-key captures for the measured codes, and this project's formal refusal, value-list and pattern checks for the unmeasured items, external evidence pending for those.
+- `acceptance`: A trailing blank in a String cell, a Custom field in `FieldValueIncludedInValueList` with a literal list, and a pattern containing an escaped backslash before `p` settle the unmeasured items.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 
