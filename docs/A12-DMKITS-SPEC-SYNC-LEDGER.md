@@ -385,6 +385,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-27-01"></a>
+### SPEC-2026-10-27-01 — Five unconditional build failures are not stated under a deleting variant filter
+
+- `status`: pending
+- `canonical`: the build table of [spec/01 §1.2](../spec/01-data-model.md#12-model-consistency-rules), its filtered `ONLY` column.
+- `delta`: An empty type-reference id, an empty computation target path, two categories of one name, two hint-list entries for one locale and an empty DateFragment `formatOfFragment` still fail the build. Where a variant filter `ONLY` deletes the declaration, their outcome is now not stated, where the old text failed the build unconditionally.
+- `basis`: no filtered case was measured for these five, and filters are measured to lift other build refusals, such as an Enumeration without values.
+- `acceptance`: each of the five on a field that an `ONLY` filter deletes shows whether the build still fails.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-26-30"></a>
 ### SPEC-2026-10-26-30 — The semantics map becomes a non-normative summary, and empty DateFragment, DateRange and Custom reads move to spec/03
 
