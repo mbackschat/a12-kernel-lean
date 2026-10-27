@@ -397,6 +397,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-27-02"></a>
+### SPEC-2026-10-27-02 — Two polarity rules are narrowed to their evidence: filtered value-count shrink and `CurrentRepetition`
+
+- `status`: pending
+- `canonical`: [spec/10 §4](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing) for the filtered value counts and [spec/10 §4.1](../spec/10-validation-and-polarity.md#41-the-same-rule-fires-either-type) for `CurrentRepetition`.
+- `delta`: A filtered value count still shrinks only through a counted match, but that condition now rests on source reading, and a filtered count whose filter counted no match is unmeasured on a comparison only a shrink would falsify. A fired comparison against `CurrentRepetition` is VALUE beside a partner no fill can change. The former "always VALUE" no longer covers a fillable partner, which is unmeasured, while the general dispatch would type it OMISSION.
+- `basis`: the measured filtered and unfiltered value-count rows of spec/10 §4, and the general fill-direction dispatch for the fillable partner, external evidence pending.
+- `acceptance`: a filtered `NumberOfValueInFields` whose filter counts no match, under a comparison only a shrink would falsify, and `CurrentRepetition` compared with an empty Number field, show each typing.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-26-30"></a>
 ### SPEC-2026-10-26-30 — The semantics map becomes a non-normative summary, and empty DateFragment, DateRange and Custom reads move to spec/03
 
