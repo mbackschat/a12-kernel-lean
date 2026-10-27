@@ -1,6 +1,6 @@
 # spec/08 rewrite — change notes
 
-Draft: [08-new.md](../../spec/08-new.md). Revised operator reference: [14-new08.md](14-new08.md) (column K). The draft keeps every `§n` number and every linked heading; the old §3 bullets became §3.1–§3.6 and §4's lead paragraphs became `####` blocks before the unchanged §4.1–§4.3.
+Draft: `08-new.md` (installed as [spec/08](../../spec/08-paths-and-references.md)). Revised operator reference: `14-new08.md` (installed as [spec/14](../../spec/14-operator-reference.md)) (column K). The draft keeps every `§n` number and every linked heading; the old §3 bullets became §3.1–§3.6 and §4's lead paragraphs became `####` blocks before the unchanged §4.1–§4.3.
 
 ## Findings
 
@@ -117,7 +117,7 @@ Restored after the preservation check (corrections of 2026-10-27):
 
 ## Other chapters
 
-- spec/14: replace with [14-new08.md](14-new08.md): legend row K, section `### Keyed and category operands` (classes, `n/a` basis, measured scope), a K cell on every row of every operator table (separator rows extended to 16 cells), checklist line. Cells come only from statements in spec/08 §3.4 and §4, spec/06 B.4 (singular value-list subject keyed) and spec/07 §3.5 (`FirstFilledValue` category projection); every other entity-slot cell is `not stated`.
+- spec/14: replace with `14-new08.md` (installed as [spec/14](../../spec/14-operator-reference.md)): legend row K, section `### Keyed and category operands` (classes, `n/a` basis, measured scope), a K cell on every row of every operator table (separator rows extended to 16 cells), checklist line. Cells come only from statements in spec/08 §3.4 and §4, spec/06 B.4 (singular value-list subject keyed) and spec/07 §3.5 (`FirstFilledValue` category projection); every other entity-slot cell is `not stated`.
 - spec/07 §2.3, "Selected targets below an indexed group" (ch08-2): now stated in spec/08 §4.3; replace the paragraph and its four bullets with a pointer to `08-paths-and-references.md#43-selected-references-in-validation-messages`, keeping only what is join-specific.
 - spec/07 §3.1 "A filter written after an entity key …" (ch07-26): no edit unless HIGH moves it (see Unresolved).
 - spec/09 §5.4 (09:458) (ch08-1, 09-notes): point "Any invalid cell in the index column — malformed, duplicated or empty —" to spec/08 §4.1's compromised-column definition (`#41-what-a-semantic-index-read-yields`), keeping the per-read-cell poison sentence.

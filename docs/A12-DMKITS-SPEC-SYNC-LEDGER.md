@@ -373,6 +373,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
 
+<a id="spec-2026-10-26-29"></a>
+### SPEC-2026-10-26-29 — The data model gathers declaration rules and states each operator's fill-to-fix entry
+
+- `status`: pending
+- `canonical`: [spec/01 §1.2](../spec/01-data-model.md#12-model-consistency-rules), [§1.3](../spec/01-data-model.md#13-declaration-generation-classes), [§1.4](../spec/01-data-model.md#14-variant-filters-and-where-a-filtered-declaration-is-seen), [§3.1](../spec/01-data-model.md#31-rules-validation) and the [spec/14 fill-to-fix column](../spec/14-operator-reference.md#fill-to-fix-contribution).
+- `delta`: Each operator states how its operands enter the fill-to-fix set: the measured presence-withheld and upward-count members as before, an own projection for `RepetitionNotUnique`, and every other operator ordinary, with a connective taking the union of its branches, unmeasured. A field reports its printed maximum bound before its minimum, and no other order among declaration notifications is claimed. A filtered declaration is still present where the Kernel reads the model as authored. Imported Enumeration block 6 compares its values as written, while the other blocks trim. Index nomination, Enumeration declaration checks, the declared-name table and document JSON reading now live here; the cross-reference, partial-dispatch, target self-read and no-match clauses adopt spec/07, spec/09 and spec/10.
+- `basis`: the K17 declaration checkpoint for the bound order, the inbound 2026-10-21 letter for block 6, and this project's omission inventory for the ordinary class and the connective union, external evidence pending for those.
+- `acceptance`: A firing rule `A Or B` whose two ordinary leaves read different fields shows whether fill-to-fix holds both fields, and a value comparison over a filled field shows whether the ordinary class lists it.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-10-25-03"></a>
 ### SPEC-2026-10-25-03 — Behind a joined lead, a declaration reading no partner field is passed over unread
 
