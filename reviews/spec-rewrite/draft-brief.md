@@ -32,6 +32,8 @@ You are rewriting one chapter of the language-neutral semantics in `spec/`. The 
 5. `## Other chapters`: edits other chapters need.
 6. `## Anchors`: every linked anchor and where it now lives.
 
+Before returning, list in the notes under "Rules not kept" every old sentence you removed or reworded that carries a scope or closing word (only, never, every, all, no, measured, unmeasured, no witness), each with where its content now lives; a sentence with no new home is a lost rule and must be restored.
+
 When corrections arrive after the preservation check, change only what the correction list names; any other cut needs the same check, so list it instead of making it.
 
 Return a five-line summary as your final message: output size in bytes and lines, counts for each notes section.
