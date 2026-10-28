@@ -283,20 +283,22 @@ theorem flatRuleAssemblyError_unboundLevel_precedes {model : FlatModel} {ruleGro
     | cases found
 
 /-- An unguarded repeatable condition is refused, possibly first by the error entity's scope,
-reference-binding or reference gate (spec/07 §1). -/
+reference-binding or reference gate (spec/07 §1). Legality is judged at the levels the rule
+iterates, so a level the error field's key selection fixes is left out. -/
 theorem assembleResolvedValidationRule_rejects_negativeIteration
     (model : FlatModel) (condition : CheckedValidationCondition model)
     (errorEntity : RuleErrorEntity) (errorCode : String)
     (severity : ValidationSeverity) (messagePlan : MessageRenderPlan)
     (level : RepeatableLevel)
     (invalid :
-      condition.core.iterationLegality = .ok (.invalid level)) :
+      condition.core.iterationLegality (errorEntity.selectionBound condition.core) =
+        .ok (.invalid level)) :
     ∃ error, assembleResolvedValidationRuleFor model condition errorEntity errorCode
         severity messagePlan = .error error ∧
       (error = .negativeConditionInIteration level ∨ error.precedesNegativeIteration = true) := by
   cases errorEntity <;>
     unfold assembleResolvedValidationRuleFor assembleResolvedValidationRuleFor.finish <;>
-    simp only [invalid] <;>
+    simp only [RuleErrorEntity.selectionBound] at invalid ⊢ <;> simp only [invalid] <;>
     repeat' split
   all_goals first
     | exact ⟨_, rfl, Or.inl rfl⟩

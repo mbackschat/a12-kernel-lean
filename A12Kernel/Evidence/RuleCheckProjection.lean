@@ -293,11 +293,7 @@ def deferred : List (String × String) := [
   ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus-abs", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs-review.json#pv-unique", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus", "host pattern compiler, SG7"),
-  ("below-key-selection-2026-10-28/obs-scope.json#n1", "error-field scope of a read below the key, SG9"),
-  ("below-key-selection-2026-10-28/obs-scope.json#n2", "error-field scope of a read below the key, SG9"),
-  ("below-key-selection-2026-10-28/obs-scope.json#e2", "error-field scope of a read below the key, SG9"),
-  ("below-key-routes-2026-10-28/obs-group.json#q6", "error-field scope of a read below the key, SG9")]
+  ("pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus", "host pattern compiler, SG7")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

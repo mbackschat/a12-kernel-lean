@@ -396,6 +396,35 @@ private def fullMessageReferenceInputs (preliminary : CheckedIndexPreliminary mo
     Except OrdinaryRepeatableRuleEvaluationError MessageReferenceInputs :=
   preliminary.messageReferenceInputs |>.mapError .messageCache
 
+/-- The error field's key selection that binds an iterated level (`levelBindingErrorSelection?`). -/
+def boundErrorSelection? (rule : CheckedResolvedValidationRule model) :
+    Option (SelectedErrorReference × RepeatableGroupDecl) := do
+  let field ← rule.errorField?
+  (rule.iterationScope.getD []).findSome? (rule.condition.core.levelBindingErrorSelection? field)
+
+/-- Whether the environment lies inside the row the error field's key selection names, resolved as
+its error address resolves (`reanchorSelectedError`). A rule whose selection binds no level has
+every row. A key resolving to no row leaves the rule without an instance. The measured rules fire
+nothing on a duplicated key whether it resolves to one of its rows or to none, so they do not
+settle which the Kernel does
+([below-key error scope](../../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-error-scope)). -/
+private def withinSelectedRow (rule : CheckedResolvedValidationRule model)
+    (inputs : MessageReferenceInputs) (environment : Env) :
+    Except OrdinaryRepeatableRuleEvaluationError Bool := do
+  let some (selection, group) := rule.boundErrorSelection? | return true
+  let (_, coordinate, _) ← inputs.resolveIndex group selection.indexDeclaration selection.key
+    environment |>.mapError .messageReference
+  pure ((environment.lookup group.level).any (coordinate == .concrete ·))
+
+/-- The environments inside the selected row, without building message inputs for a rule that
+needs none. -/
+private def selectedRowEnvironments (rule : CheckedResolvedValidationRule model)
+    (inputs : Unit → Except OrdinaryRepeatableRuleEvaluationError MessageReferenceInputs)
+    (environments : List Env) : Except OrdinaryRepeatableRuleEvaluationError (List Env) := do
+  if rule.boundErrorSelection?.isNone then return environments
+  let inputs ← inputs ()
+  environments.filterM (rule.withinSelectedRow inputs)
+
 /-- Full validation's authored reads see the index defaults it staged before authored rules run
 (spec/10 §5) and its generated index findings, through `computationInput`: an authored rule reads an
 empty or duplicated key as unknown (runtime-open-cells-2026-10-28, `q-*`). An indexed consumer derives
@@ -553,6 +582,10 @@ def evalOrdinaryRepeatablePartialAtPrepared
   if !preliminary.relevance.coversFieldAtBoundLevels model errorField
       rule.partialErrorBoundLevels environment then
     pure (environment, .skipped)
+  -- Outside the selected row the rule has no instance.
+  else if (← rule.selectedRowEnvironments
+      (fun _ => preliminary.messageReferenceInputs |>.mapError .messageCache) [environment]).isEmpty then
+    pure (environment, .skipped)
   else
     let repetitionNotUniqueResults ←
       rule.repetitionNotUniqueResults checked preliminary.relevance [environment]
@@ -621,14 +654,16 @@ def fullRowsAndRepetitionResults
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) :
     Except OrdinaryRepeatableRuleEvaluationError (List Env × List RepetitionNotUniqueResult) := do
-  let checked := (← fullPreliminary checked).computationInput
+  let preliminary ← fullPreliminary checked
+  let checked := preliminary.computationInput
   let scope ← match rule.iteratedScope with
     | some scope => pure scope
     | none => throw .missingIterationScope
   let environments ←
     checked.fullValidationRowEnvironments scope rule.condition.core.canFireOnEmpty
       |>.mapError toOrdinaryRowEnvironmentError
-  let environments := environments.map rule.pinUnindexed
+  let environments ← rule.selectedRowEnvironments (fun _ => fullMessageReferenceInputs preliminary)
+    (environments.map rule.pinUnindexed)
   pure (environments, ← rule.repetitionNotUniqueResults checked .full environments true)
 
 /-- Execute a checked ordinary nonparallel repeatable rule over the validation row domain. The root dispatcher and declared-capacity/occupied-prefix iterator own the domain (iteration grid, 2026-10-04). Repeated operands use the validation-only addressed view; the error address defaults its unbound suffix without reading or materializing that target. A runtime-aborted pair retains the failing environment, while its message points to the iterator’s first error address. -/
@@ -773,6 +808,8 @@ def evalOrdinaryRepeatablePartialPrepared
     let environments ←
       checked.fullValidationRowEnvironments iterationScope (ungated := true)
         |>.mapError toOrdinaryRowEnvironmentError
+    let environments ← rule.selectedRowEnvironments
+      (fun _ => preliminary.messageReferenceInputs |>.mapError .messageCache) environments
     let admittedEnvironments := environments.filter fun environment =>
       preliminary.relevance.coversFieldAtBoundLevels model errorField
         rule.partialErrorBoundLevels environment

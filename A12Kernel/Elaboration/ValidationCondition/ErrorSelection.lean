@@ -1,4 +1,5 @@
-import A12Kernel.Elaboration.ValidationCondition.Core
+import A12Kernel.Elaboration.ValidationCondition.ErrorReferences
+import A12Kernel.Elaboration.ValidationCondition.StaticIteration
 
 /-! Error-address selection retains authored key identity independently of selected values and
 message-cache coordinates (spec/08 §4.3; SemanticIndices4ErrorFieldVisitor). -/
@@ -169,6 +170,14 @@ def errorSelections (condition : ValidationCondition model) (field : FieldId) :
   | .leaf leaf => leafErrorSelections field leaf
   | .and left right | .or left right => errorSelections left field ++ errorSelections right field
 
+/-- The error field's selections when they all name one repeatable group by one key. -/
+private def soleErrorSelection? (condition : ValidationCondition model) (field : FieldId) :
+    Option (SelectedErrorReference × RepeatableGroupDecl) := do
+  let selections := condition.errorSelections field
+  let first ← selections.head?
+  let .repeatable group := first.group | none
+  if selections.all first.sameKey then some (first, group) else none
+
 /-- A unique authored selection reanchors only a repeatable level outside the rule's ordinary
 iteration, returned with the selection. A single instance has no level to reanchor, so its error
 address stays the rule's own
@@ -176,10 +185,36 @@ address stays the rule's own
 The parallel evaluator owns its separate iteration domain and never calls this ordinary selector. -/
 def uniqueErrorSelection? (condition : ValidationCondition model) (field : FieldId)
     (iterated : List RepeatableLevel) : Option (SelectedErrorReference × RepeatableGroupDecl) := do
-  let selections := condition.errorSelections field
-  let first ← selections.head?
-  let .repeatable group := first.group | none
-  if iterated.contains group.level || !selections.all first.sameKey then none else some (first, group)
+  let (first, group) ← condition.soleErrorSelection? field
+  if iterated.contains group.level then none else some (first, group)
+
+/-- Whether a leaf without any semantic-index selection iterates `level`. Its scope comes from
+unkeyed reads alone, so its derived iteration scope answers exactly, field-free reads such as a
+current-repetition coordinate included; an underivable scope counts as iterating. -/
+private def selectionFreeLeafIterates (level : RepeatableLevel) (leaf : ValidationConditionLeaf model) : Bool :=
+  model.fields.all (fun declaration => (leafErrorSelections declaration.id leaf).isEmpty) &&
+    match ordinaryIterationScope (.leaf leaf) with
+    | .ok scope => scope.any (·.contains level)
+    | .error _ => true
+
+/-- The error field's selection when it binds the iterated `level` itself: the field reaches the
+level only through that selection and nothing else iterates it, so the rule iterates inside the
+selected row rather than over the level. A read of another field at the level keeps the level
+iterated and the error field unbound there
+([below-key error scope](../../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-error-scope),
+`N2` and `E2` against `e3` and `e4`), and so does a leaf without a selection whose scope holds the
+level. A field-free read inside a leaf that also holds a selection is not seen, and a field-valued
+key is treated as another field's read; both are unmeasured. An unresolved reference answer keeps
+the level iterated. -/
+def levelBindingErrorSelection? (condition : ValidationCondition model) (field : FieldId)
+    (level : RepeatableLevel) : Option (SelectedErrorReference × RepeatableGroupDecl) := do
+  let (selection, group) ← condition.soleErrorSelection? field
+  let unbound (candidate : FieldId) := condition.errorReferenceAt? candidate level == some false
+  if group.level == level && unbound field && model.fields.all (fun declaration =>
+      declaration.id == field || !condition.referencesField declaration.id || unbound declaration.id) &&
+      !condition.anyLeaf (selectionFreeLeafIterates level) then
+    some (selection, group)
+  else none
 
 end ValidationCondition
 end A12Kernel

@@ -95,6 +95,13 @@ private def ValidationConditionLeaf.supportsGroupTarget : ValidationConditionLea
   | .customCondition _ => true
   | _ => false
 
+/-- The levels a rule does not iterate because the error field's key selection fixes them
+(`levelBindingErrorSelection?`). A group target has none. -/
+def RuleErrorEntity.selectionBound (condition : ValidationCondition model) :
+    RuleErrorEntity → RepeatableLevel → Bool
+  | .field id, level => (condition.levelBindingErrorSelection? id level).isSome
+  | .group _, _ => false
+
 /-- Assemble the existing message/error-entity boundary around a checked mixed condition. -/
 def assembleResolvedValidationRuleFor (model : FlatModel)
     (condition : CheckedValidationCondition model)
@@ -137,7 +144,7 @@ def assembleResolvedValidationRuleFor (model : FlatModel)
       | none, .groupErrorTarget _ .declaringGroup | none, .groupErrorTarget _ .unknown
       | none, .groupErrorTarget _ .unsupported => .error error
       | none, _ =>
-          match condition.core.iterationLegality with
+          match condition.core.iterationLegality (errorEntity.selectionBound condition.core) with
           | .ok (.invalid level) => .error (.negativeConditionInIteration level)
           | .ok .legal | .ok (.insufficient _) | .error _ => .error error
   | .ok rule =>
@@ -164,18 +171,21 @@ def assembleResolvedValidationRuleFor (model : FlatModel)
 where
   /-- A group target's own level is not checked: the Kernel judges only the levels above the
   entity ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join),
-  `group-level` row `t6`). -/
+  `group-level` row `t6`). A field target's level bound by its key selection is not iterated
+  (`levelBindingErrorSelection?`). -/
   finish (rule : CheckedResolvedValidationRule model) :
       Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
+          let selectionBound := errorEntity.selectionBound condition.core
           let unbound? : RepeatableLevel → Bool := match errorEntity with
-            | .field field => fun level => condition.core.errorReferenceAt? field level == some false
+            | .field field => fun level => condition.core.errorReferenceAt? field level == some false &&
+                !selectionBound level
             | .group path => fun level =>
                 !rule.errorPlacement.unindexed.contains level &&
                   !condition.core.groupTargetReferenceAt path level
           match (rule.iterationScope.getD []).find? unbound? with
           | some level => .error (.iterationInvalid errorEntity level)
           | none =>
-              match condition.core.iterationLegality with
+              match condition.core.iterationLegality selectionBound with
               | .ok (.invalid level) => .error (.negativeConditionInIteration level)
               | .ok .legal | .ok (.insufficient _) | .error _ => .ok rule
 

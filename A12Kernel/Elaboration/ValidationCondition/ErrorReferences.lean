@@ -76,6 +76,11 @@ private def selectedReferenceAt (field : FieldId) (query : ReferenceQuery)
   let path := match source with
     | .inl source => source.targetDeclaration.path
     | .inr source => source.entityPath
+  -- The levels below the selected row that the rule's iteration binds for the payload.
+  let lower := (match source with
+    | .inl source => source.targetDeclaration.repeatableScope
+    | .inr source => (model.repeatableScopeForGroupPath source.groupPath).take source.boundLevelCount).drop
+    selection.indexDeclaration.repeatableScope.length
   let target := query.acceptsPath path && declarations.any (·.id == field) && match query.kind with
     | .selected group key => selection.group.path == group &&
         key.all (sameMessageKey selection.key)
@@ -92,6 +97,10 @@ private def selectedReferenceAt (field : FieldId) (query : ReferenceQuery)
         | .inr source => match source.target with
             | .group _ => true
             | .starredGroup _ | .star _ => false
+    -- The key fixes the selected row, so the read iterates the enclosing levels and the rule-bound
+    -- levels below that row, never the selected level (rules `N2`, `E2`, `e4` in
+    -- docs/sources/model-structure-and-declaration-probes.md#src-below-key-error-scope).
+    | .iteration level => (selection.parentScope ++ lower).contains level
     | _ => query.binds selection.parentScope isForm
   let key := match selection.key with
     | .literal .. => false

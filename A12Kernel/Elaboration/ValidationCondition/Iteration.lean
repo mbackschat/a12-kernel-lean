@@ -488,12 +488,18 @@ private def iterationLegalityForLevels
       | .noReference | .unclassified => .insufficient level
 
 /-- Analyze the levels already derived from the complete checked condition, outermost first, except the
-ones the guard skips. Scope incompatibility remains the existing separate assembly error. -/
-def iterationLegality (condition : ValidationCondition model) :
+ones the guard skips and the ones `selectionBound` names, which a key selection fixes rather than the
+rule iterating: `FieldNotFilled(Qty For "b")` reporting on `Qty` and `GroupNotFilled(/Depot/Bins/Slots For "b")`
+reporting on `Note`, from `Slots` below the indexed `Bins`, are judged at `Slots` alone
+([below-key error scope](../../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-error-scope)
+rows `n1`, `q6`). Scope incompatibility remains the existing separate assembly error. -/
+def iterationLegality (condition : ValidationCondition model)
+    (selectionBound : RepeatableLevel → Bool := fun _ => false) :
     Except RuleIterationScopeError IterationLegality := do
   match ← condition.ordinaryIterationScope with
   | none => pure .legal
-  | some scope => pure (iterationLegalityForLevels condition (scope.filter (!model.iterationGuardSkips ·)))
+  | some scope => pure (iterationLegalityForLevels condition
+      (scope.filter fun level => !model.iterationGuardSkips level && !selectionBound level))
 
 /-- Ordinary repeatable Number declarations retained by one ordered expression in authored order. -/
 private def ordinaryNumericAtomRepeatableFields

@@ -46,19 +46,22 @@ private def rule (path name entity condition : String) : Json :=
   element "Rule" s!"{path}/{name}" name [("errorEntityRelPath", .str entity), ("errorCode", .str name),
     ("errorCondition", .str condition), ("severity", "ERROR"), ("errorMessage", message)]
 
-private def dm? : Option DmModel :=
-  let cells := group "/Depot/Bins/Slots" "Cells" 3 none [field "/Depot/Bins/Slots/Cells" "Q" number,
-    field "/Depot/Bins/Slots/Cells" "CNote" text,
-    rule "/Depot/Bins/Slots/Cells" "S4" "../CNote" "FieldFilled(CNote) And [Q For \"b\"] > 0"]
-  let slots := group "/Depot/Bins" "Slots" 3 none [field "/Depot/Bins/Slots" "Qty" number,
-    field "/Depot/Bins/Slots" "Note" text, cells,
+/-- The capture's model with its rules `S1`–`S4`, or with the given slot and cell rules instead. -/
+private def dmWith? (slotRules? cellRules? : Option (List Json) := none) : Option DmModel :=
+  let cells := group "/Depot/Bins/Slots" "Cells" 3 none ([field "/Depot/Bins/Slots/Cells" "Q" number,
+    field "/Depot/Bins/Slots/Cells" "CNote" text] ++ cellRules?.getD
+    [rule "/Depot/Bins/Slots/Cells" "S4" "../CNote" "FieldFilled(CNote) And [Q For \"b\"] > 0"])
+  let slots := group "/Depot/Bins" "Slots" 3 none ([field "/Depot/Bins/Slots" "Qty" number,
+    field "/Depot/Bins/Slots" "Note" text, cells] ++ slotRules?.getD [
     rule "/Depot/Bins/Slots" "S1" "../Note" "FieldFilled(Note) And [Qty For \"b\"] > 0",
     rule "/Depot/Bins/Slots" "S2" "../Note" "FieldFilled(Note) And FieldNotFilled(Qty For \"b\")",
-    rule "/Depot/Bins/Slots" "S3" "../Note" "FieldFilled(Note) And Sum(Cells*/Q For \"b\") > 0"]
+    rule "/Depot/Bins/Slots" "S3" "../Note" "FieldFilled(Note) And Sum(Cells*/Q For \"b\") > 0"])
   let bins := group "/Depot" "Bins" 4 (some "BinCode") [field "/Depot/Bins" "BinCode" text,
     field "/Depot/Bins" "BinNote" text, slots]
   (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     group "" "Depot" 1 none [field "/Depot" "Ref" text, bins]])])])])).toOption
+
+private def dm? : Option DmModel := dmWith?
 
 private def world : World := { now := { epochMillis := 0 } }
 
@@ -266,5 +269,69 @@ example : (routeFirings none extentsDm? (shortDocument true)).map (·.filter (·
       some ["N1@Depot/Bins/Slots/Note:VALUE_ERROR", "N1@Depot/Bins[2]/Slots/Note:VALUE_ERROR"] ∧
     (routeFirings (some routeRelevant) extentsDm? (shortDocument true)).map (·.filter (·.startsWith "N1@")) =
       some ["N1@Depot/Bins/Slots/Note:VALUE_ERROR", "N1@Depot/Bins[2]/Slots/Note:VALUE_ERROR"] := by native_decide
+
+/-! ## A level the key fixes is not iterated
+
+A rule that reads the error field only through the key iterates inside the selected bin: `N2` and
+`N2T` fire at `Bins[2]` alone, at each of its slots, and `E2` and `E2T` at each of its slot and cell
+rows, each reading its own row. A plain read of the field beside the key, as in `E5` and `E5T`,
+iterates every bin again. A key no bin carries, or two bins carry, fires none of them. The documents,
+rules and relevant set are those of the retained capture
+`evidence/kernel-30.8.1/captures/below-key-error-scope-2026-10-28/`, rows `bk-other`, `bk-missing`
+and `bk-duplicate`, and each expectation is the Kernel's firings of these six rules there, alike in
+full and partial validation. -/
+
+private def scopeDm? : Option DmModel :=
+  let slots := "/Depot/Bins/Slots"
+  let cells := s!"{slots}/Cells"
+  dmWith? [rule slots "N2" "../Qty" "[Qty For \"b\"] > 0", rule slots "N2T" "../Qty" "[Qty For \"b\"] > 3",
+      rule slots "E5" "../Qty" "[Qty For \"b\"] > 0 And [Qty] > 0",
+      rule slots "E5T" "../Qty" "[Qty For \"b\"] > 3 And [Qty] > 0"]
+    [rule cells "E2" "../Q" "[Q For \"b\"] > 0", rule cells "E2T" "../Q" "[Q For \"b\"] > 6"]
+
+private def scopeRelevant : List RelevantEntityPattern :=
+  [["Depot", "Bins", "BinCode"], ["Depot", "Bins", "BinNote"], ["Depot", "Bins", "Slots", "Qty"],
+    ["Depot", "Bins", "Slots", "Cells", "Q"], ["Depot", "Bins", "Slots"]].map RelevantEntityPattern.allInstances
+
+/-- Full and partial firings of the six rules, which must agree. -/
+private def scopeFirings (document : Json) : Option (List String) := do
+  let full ← routeFirings none scopeDm? document
+  let partialFired ← routeFirings (some scopeRelevant) scopeDm? document
+  if full == partialFired then some full else none
+
+example : scopeFirings (depot [bin "a" (notedSlots 2) true, bin "b" (plainSlots 3)]) = some [
+    "E2@Depot/Bins[2]/Slots/Cells/Q:VALUE_ERROR", "E2@Depot/Bins[2]/Slots/Cells[2]/Q:VALUE_ERROR",
+    "E2@Depot/Bins[2]/Slots/Cells[3]/Q:VALUE_ERROR", "E2@Depot/Bins[2]/Slots[2]/Cells/Q:VALUE_ERROR",
+    "E2@Depot/Bins[2]/Slots[2]/Cells[2]/Q:VALUE_ERROR", "E2@Depot/Bins[2]/Slots[2]/Cells[3]/Q:VALUE_ERROR",
+    "E2@Depot/Bins[2]/Slots[3]/Cells/Q:VALUE_ERROR", "E2@Depot/Bins[2]/Slots[3]/Cells[2]/Q:VALUE_ERROR",
+    "E2@Depot/Bins[2]/Slots[3]/Cells[3]/Q:VALUE_ERROR", "E2T@Depot/Bins[2]/Slots/Cells[3]/Q:VALUE_ERROR",
+    "E2T@Depot/Bins[2]/Slots[2]/Cells[2]/Q:VALUE_ERROR", "E2T@Depot/Bins[2]/Slots[2]/Cells[3]/Q:VALUE_ERROR",
+    "E2T@Depot/Bins[2]/Slots[3]/Cells/Q:VALUE_ERROR", "E2T@Depot/Bins[2]/Slots[3]/Cells[2]/Q:VALUE_ERROR",
+    "E2T@Depot/Bins[2]/Slots[3]/Cells[3]/Q:VALUE_ERROR", "E5@Depot/Bins/Slots/Qty:VALUE_ERROR",
+    "E5@Depot/Bins/Slots[2]/Qty:VALUE_ERROR", "E5@Depot/Bins[2]/Slots/Qty:VALUE_ERROR",
+    "E5@Depot/Bins[2]/Slots[2]/Qty:VALUE_ERROR", "E5@Depot/Bins[2]/Slots[3]/Qty:VALUE_ERROR",
+    "E5T@Depot/Bins/Slots[2]/Qty:VALUE_ERROR", "E5T@Depot/Bins[2]/Slots[2]/Qty:VALUE_ERROR",
+    "E5T@Depot/Bins[2]/Slots[3]/Qty:VALUE_ERROR", "N2@Depot/Bins[2]/Slots/Qty:VALUE_ERROR",
+    "N2@Depot/Bins[2]/Slots[2]/Qty:VALUE_ERROR", "N2@Depot/Bins[2]/Slots[3]/Qty:VALUE_ERROR",
+    "N2T@Depot/Bins[2]/Slots[2]/Qty:VALUE_ERROR", "N2T@Depot/Bins[2]/Slots[3]/Qty:VALUE_ERROR"] := by
+  native_decide
+
+/-- Whether the rule reporting on `Qty` from `Slots` with this condition is admitted. -/
+private def qtyRuleAdmitted (condition : String) : Option Bool := do
+  let dm ← dmWith? (some []) (some [])
+  pure (checkValidationRule dm .english
+    { group := ["Depot", "Bins", "Slots"], name := "P", severity := "ERROR", errorCode := "P",
+      errorEntityRelPath := "../Qty", condition }).isOk
+
+/- A leaf without a selection that iterates `Bins`, here a current-repetition coordinate that reads
+no field, keeps `Bins` iterated, so the keyed read leaves the error field unbound there. This is
+Lean's conservative account; the Kernel's answer is unmeasured
+([below-key error scope](../../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-error-scope) `limit`). -/
+example : qtyRuleAdmitted "[Qty For \"b\"] > 0 And CurrentRepetition(/Depot/Bins) > 1" = some false ∧
+    qtyRuleAdmitted "[Qty For \"b\"] > 0" = some true := by native_decide
+
+example : scopeFirings (depot [bin "a" (notedSlots 2) true, bin "c" (plainSlots 2)]) = some [] ∧
+    scopeFirings (depot [bin "a" (notedSlots 1) true, bin "b" (plainSlots 1), bin "b" (plainSlots 1)]) = some [] := by
+  native_decide
 
 end A12Kernel.Dm.BelowKeySelectionLocks
