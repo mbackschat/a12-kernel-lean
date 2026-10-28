@@ -168,6 +168,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 26a handback](sources/inbound-handbacks.md#src-inbound-2026-10-26a): a12-dmkits `eadcd1fedb32ad444049d07c1ae0205b154a3161`, `20e1c58431fe35f5135d000f12c5eef8ef124826` and `3217f21aa5d657527ab5e93fa385b1a701b9edd6`; `RuleGroup` in every operand gate, type-defined date-range value lists and group error targets.
 - [October 27 handback](sources/inbound-handbacks.md#src-inbound-2026-10-27): a12-dmkits `fecf855251c1245fd7048b2a509ddbb2b72989dd`; the dispositions of the thirty-three spec-rewrite entries, with corrections for the skipped joined target, the non-repeatable index field, the `-1` maximum's static scale, the root- or fixed-indexed key, the filtered build failures and a filtered empty name.
 - [October 28 handback](sources/inbound-handbacks.md#src-inbound-2026-10-28): a12-dmkits `aa2677f7dbc20f198f3b063947fb2da3d4f5cc04`; the dispositions of the six open-cell entries, a `$`-marked comparison side typed as its field, and the firing row named below a selected key.
+- [October 28b handback](sources/inbound-handbacks.md#src-inbound-2026-10-28b): a12-dmkits `61378d4563b260b8152a39203bfe04e633d66995`; the dispositions of the keyed read below a repeatable index and the key over a root or fixed-group index.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route
