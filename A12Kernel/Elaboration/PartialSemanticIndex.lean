@@ -40,11 +40,11 @@ def CheckedSemanticIndexSource.selectPartial (source : CheckedSemanticIndexSourc
   | .unknown cause => pure (some (.unknown cause))
   | .poison cause => pure (some (.poison cause))
   | .empty =>
-      let parent ← outer.pathForScope source.indexDeclaration.repeatableScope.dropLast |>.mapError .environment
+      let parent ← outer.pathForScope source.parentScope |>.mapError .environment
       let silentlyUnavailable := view.silentlyUnavailable.any fun address =>
-        address.field == source.indexDeclaration.id && address.path.dropLast == parent
+        address.field == source.indexDeclaration.id && address.path.take parent.length == parent
       if silentlyUnavailable || !view.relevance.coversValueListExtent model source.indexDeclaration.path
-          source.indexDeclaration.repeatableScope.dropLast [source.group.level] outer then
+          source.parentScope source.group.level?.toList outer then
         pure none
       else pure (some .empty)
 
@@ -67,7 +67,7 @@ def CheckedSemanticIndexSource.readPartialDocumentCell (source : CheckedSemantic
   | none => pure none
   | some .empty =>
       if view.relevance.coversValueListExtent model source.targetDeclaration.path
-          source.indexDeclaration.repeatableScope.dropLast [source.group.level] outer then
+          source.parentScope source.group.level?.toList outer then
         pure (some .empty)
       else pure none
   | some (.unknown cause) => pure (some (.unknown cause))
@@ -135,8 +135,7 @@ def resolvePartialSelectedExtent
   | some (.poison cause) => pure (some (.poison cause))
   | some .empty =>
       let declarations := match source with | .inl selected => [selected.targetDeclaration] | .inr selected => selected.declarations
-      let bound := selection.indexDeclaration.repeatableScope.dropLast
-      if !(← complete declarations bound outer (some selection.group.level)) then return none
+      if !(← complete declarations selection.parentScope outer selection.group.level?) then return none
       let omitted := match source with
         | .inl _ => false
         | .inr selected => match selected.target with | .group _ => true | _ => missingStarIsOmitted

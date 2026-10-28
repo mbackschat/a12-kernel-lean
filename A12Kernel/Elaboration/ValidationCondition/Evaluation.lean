@@ -266,11 +266,11 @@ private def partialKeyedStarStates (operator : StarredGroupFillQuantifier)
   | none | some (.unknown _) | some (.poison _) => pure [.unavailable]
   | some .empty =>
       if operator == .atLeastOneGroupFilled then return []
-      let bound := source.selection.indexDeclaration.repeatableScope.dropLast
+      let bound := source.selection.indexSource.parentScope
       let complete ← source.declarations.allM fun declaration =>
         view.relevance.coversDeclaredFieldExtent model declaration.path
           (declaration.repeatableScope.drop bound.length) outer
-          (some source.selection.indexSource.group.level) |>.mapError .addressing
+          source.selection.group.level? |>.mapError .addressing
       pure [if complete then .empty else .unavailable]
   | some (.value environment) =>
       let some axes := model.repeatableAxesForScope? (model.repeatableScopeForGroupPath source.groupPath)

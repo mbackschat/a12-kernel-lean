@@ -406,6 +406,39 @@ structure RepeatableGroupDecl where
   indexField : Option FieldId := none
   deriving Repr, DecidableEq
 
+/-- The group a semantic-index key selects within (`spec/08` §4): a repeatable group, among whose
+rows the key chooses, or the root or a fixed group, whose one instance the key accepts or rejects. -/
+inductive SemanticIndexGroup where
+  | repeatable (group : RepeatableGroupDecl)
+  | single (path : GroupPath) (indexField : FieldId)
+  deriving Repr, DecidableEq
+
+instance : Coe RepeatableGroupDecl SemanticIndexGroup := ⟨.repeatable⟩
+
+namespace SemanticIndexGroup
+
+def path : SemanticIndexGroup → GroupPath
+  | .repeatable group => group.path
+  | .single path _ => path
+
+def indexField : SemanticIndexGroup → Option FieldId
+  | .repeatable group => group.indexField
+  | .single _ field => some field
+
+/-- The level the key selects at. A single instance has none: the enclosing bindings name it. -/
+def level? : SemanticIndexGroup → Option RepeatableLevel
+  | .repeatable group => some group.level
+  | .single _ _ => none
+
+/-- The enclosing levels a selection keeps bound, given the index field's scope: all of it for a
+single instance, all but the selected level for a repeatable group. -/
+def parentScope (group : SemanticIndexGroup) (indexScope : List RepeatableLevel) : List RepeatableLevel :=
+  match group with
+  | .repeatable _ => indexScope.dropLast
+  | .single _ _ => indexScope
+
+end SemanticIndexGroup
+
 structure FlatModel where
   /-- Every field in the model's depth-first declaration order, so a subgroup's fields stand at the
   subgroup's declared position. A group operand's expansion is this list filtered to its subtree, and
@@ -438,6 +471,22 @@ structure FlatModel where
   deriving Repr, DecidableEq
 
 def FlatModel.hasBaseYear (model : FlatModel) : Bool := model.baseYear.isSome
+
+/-- The model declares the group with this index: a repeatable group carrying it, or the root or a
+fixed group nominating it. -/
+def FlatModel.declaresSemanticIndexGroup (model : FlatModel) : SemanticIndexGroup → Bool
+  | .repeatable group => model.repeatableGroups.contains group
+  | .single path field => model.nonrepeatableIndexFields.contains (path, field)
+
+/-- The indexed group declared at exactly this path, repeatable or not. -/
+def FlatModel.semanticIndexGroupAt? (model : FlatModel) (path : GroupPath) : Option SemanticIndexGroup :=
+  match model.repeatableGroups.find? fun group => group.path == path && group.indexField.isSome with
+  | some group => some (.repeatable group)
+  | none => (model.nonrepeatableIndexFields.find? (·.1 == path)).map fun (path, field) => .single path field
+
+/-- Every indexed group at or above `path`, outermost first, repeatable or not. -/
+def FlatModel.semanticIndexGroupsOnPath (model : FlatModel) (path : GroupPath) : List SemanticIndexGroup :=
+  (List.range path.length).filterMap fun depth => model.semanticIndexGroupAt? (path.take (depth + 1))
 
 /-- The year the Kernel completes a yearless date fragment with: the declared Base Year, else `2000`
 (read in the Kernel's runtime source, `getBaseYearOrDefault`). With no Base Year declared, a day

@@ -165,8 +165,9 @@ def checkRule (model : DmModel) (language : Language) (rule : DmRule)
             .error boundRefusal
           else .error refusal
 
-/-- The retained probe's message-address contract uses canonical text for exact pointers and its tool-owned fallback for partially known pointers (`KernelRuntimeProbe.address`, `A12Pointers.canonical`). A group entity renders its own path bare, its own first row included; a partially known one writes no coordinate for its own level, as the fallback writes none for a pointer's last segment (`formatPointer`). -/
-def renderPointer (model : FlatModel) (pointer : RulePointer) : String :=
+/-- The retained probe's message-address contract uses canonical text for exact pointers and its tool-owned fallback for partially known pointers (`KernelRuntimeProbe.address`, `A12Pointers.canonical`). A group entity renders its own path bare, its own first row included; a partially known one writes no coordinate for its own level, as the fallback writes none for a pointer's last segment (`formatPointer`). An unresolved root or fixed-group instance makes the pointer partial and writes `-5` at its group, `[1]` at every other nonrepeatable one. -/
+def renderPointer (model : FlatModel) (pointer : RulePointer) (unresolvedInstance : Option GroupPath := none) :
+    String :=
   match pointer.entity with
   | .group path => renderAt path []
   | .field field => match model.fields.find? (·.id == field) with
@@ -174,7 +175,7 @@ def renderPointer (model : FlatModel) (pointer : RulePointer) : String :=
     | some declaration => renderAt declaration.groupPath [declaration.name]
 where
   renderAt (groupPath : GroupPath) (leaf : List String) : String :=
-    let isPartial := pointer.coordinates.any fun coordinate => match coordinate with
+    let isPartial := unresolvedInstance.isSome || pointer.coordinates.any fun coordinate => match coordinate with
       | .concrete _ => false
       | .wildcard | .unknown | .parallelIteration => true
     let rec walk (prefix_ : GroupPath) (remaining : List String)
@@ -192,13 +193,14 @@ where
               | some .parallelIteration => s!"{name}[-6]"
               | none => s!"{name}[?]"
             label :: walk path rest coordinates.tail
+          else if unresolvedInstance == some path then s!"{name}[-5]" :: walk path rest coordinates
           else (if isPartial then s!"{name}[1]" else name) :: walk path rest coordinates
     (if isPartial then "/" else "") ++
       "/".intercalate (walk [] groupPath pointer.coordinates ++ leaf)
 
 /-- A field pointer's canonical text, as a message's reference channels carry it. -/
 def renderFieldPointer (model : FlatModel) (pointer : MessagePointer) : String :=
-  renderPointer model pointer
+  renderPointer model pointer pointer.unresolvedInstance
 
 def observe (model : FlatModel) (message : FlatRuleMessage) : ObservedMessage :=
   { code := message.errorCode, pointer := renderPointer model message.errorAddress

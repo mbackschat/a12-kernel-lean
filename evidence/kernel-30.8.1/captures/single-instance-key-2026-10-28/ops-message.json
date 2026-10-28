@@ -1,0 +1,70 @@
+[
+ {
+  "id": "m1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m1",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+   "--message",
+   "en_US=v $Cover/CAmt For \"X\"$"
+  ]
+ },
+ {
+  "id": "m2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m2",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+   "--message",
+   "en_US=v $Cover/CAmt$"
+  ]
+ },
+ {
+  "id": "m3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m3",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And [Cover/CAmt For KeyF] > 0",
+   "--message",
+   "en_US=v $Cover/CAmt For KeyF$"
+  ]
+ },
+ {
+  "id": "m4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m4",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+   "--message",
+   "en_US=v $Cover/CAmt For \"X\"$"
+  ]
+ }
+]

@@ -172,7 +172,7 @@ def partnerEnvironments (joins : List (CheckedParallelTargetJoin model))
     (preliminary : CheckedIndexPreliminary model) (targetEnvironment : Env) (key : SemanticIndexKey) :
     Except ExecutionError (List (GroupPath × Env)) := do
   let found ← joins.mapM fun join => do
-    let group := join.groups.rightGroup
+    let group : RepeatableGroupDecl := join.groups.rightGroup
     let column ← preliminary.resolveIndexColumn group targetEnvironment
       |>.mapError (ExecutionError.indexColumn .operand)
     pure <| (group.path, ·) <$> match column.entries.find? (·.key == key) with

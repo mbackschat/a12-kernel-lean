@@ -506,7 +506,7 @@ private def reducedSource (nested : Bool) (key : SurfaceSemanticIndexKey) : Surf
 private def reducedRefused (nested : Bool) (key : SurfaceSemanticIndexKey) : Bool :=
   match elaborateNumberSemanticIndexSource (if nested then numericIndexModel else oneLevelNumericModel)
       (group .parent) (reducedSource nested key) with
-  | .error .reducedRouteNeedsSingleGroup => true | _ => false
+  | .error .reducedRouteNeedsOneRepeatableLevel => true | _ => false
 
 private def reducedRead (fieldKey : Bool) : Option CellObservation := do
   let source ← (elaborateNumberSemanticIndexSource oneLevelNumericModel (group .root)

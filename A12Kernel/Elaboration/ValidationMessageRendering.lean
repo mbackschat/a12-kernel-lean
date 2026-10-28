@@ -95,23 +95,29 @@ levels, which a parallel caller extends with the joined partner row; a keyed one
 selects through the shared message cache
 ([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15)).
 Levels below the keyed group read like unkeyed ones. That is assumed, not measured: a keyed field of a
-deeper group refuses its value statically and renders its name without a row. -/
+deeper group refuses its value statically and renders its name without a row. A key over a root or
+fixed-group index selects no repetition, so its name form renders at the firing row as an unkeyed one
+does ([single-instance key](../../docs/sources/model-structure-and-declaration-probes.md#src-single-instance-key),
+rule `LM1`); its suffixed forms are refused at authoring. -/
 def referencePath (context : ValidationMessageRowContext model compilePattern)
     (reference : CheckedValidationMessageReference model condition) :
     Except ValidationMessageRenderingError (List Nat) := do
+  let unkeyed := reference.declaration.repeatableScope.mapM context.messageCoordinate
   match reference.key with
-  | none => reference.declaration.repeatableScope.mapM context.messageCoordinate
+  | none => unkeyed
   | some key =>
       let some inputs := context.references | throw (.reference .missingIndexContext)
-      let some group := model.semanticIndexGroupForPath? reference.declaration.groupPath
-        | throw .invalidGroupBinding
-      let some index := group.indexField | throw .invalidGroupBinding
-      let some indexDeclaration := model.fields.find? (·.id == index) | throw .invalidGroupBinding
-      match ← (inputs.resolveIndex group indexDeclaration key context.environment).mapError .reference with
-      | (parent, .concrete row, _) =>
-          let deeper := reference.declaration.repeatableScope.drop (parent.length + 1)
-          pure (parent ++ [row] ++ (← deeper.mapM context.messageCoordinate))
-      | _ => throw .unresolvedSelection
+      match model.semanticIndexGroupForPath? reference.declaration.groupPath with
+      | none => throw .invalidGroupBinding
+      | some (.single _ _) => unkeyed
+      | some (.repeatable group) =>
+          let some index := group.indexField | throw .invalidGroupBinding
+          let some indexDeclaration := model.fields.find? (·.id == index) | throw .invalidGroupBinding
+          match ← (inputs.resolveIndex group indexDeclaration key context.environment).mapError .reference with
+          | (parent, .concrete row, _) =>
+              let deeper := reference.declaration.repeatableScope.drop (parent.length + 1)
+              pure (parent ++ [row] ++ (← deeper.mapM context.messageCoordinate))
+          | _ => throw .unresolvedSelection
 
 end ValidationMessageRowContext
 

@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "08b0d6499c98b132257ec961eb214de73fa223e3",
+    "state" : "CLEAN"
+  },
+  "model" : "7bcb1ce7d0a138d56543a702320211487e7c6e8534c30819f70613e3b90e82d2",
+  "observations" : [ {
+    "id" : "m1",
+    "inputHash" : "c603235acc124e96bbed518dd7eb6ebeaa43fb2117a29cfbc17e6baff2283075",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "m2",
+    "inputHash" : "4e97cfd1f2ac34a92c7fdd82c2f3853cf71255d914bb7fcd57f632d1ca133ca7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD" ]
+  }, {
+    "id" : "m3",
+    "inputHash" : "c2f416ad381ea0e17825c890db1daa63bb99e2c60529f7562f2af64d6eb1a1f0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "m4",
+    "inputHash" : "c837dd8089c31a728d287f61c6b258b9f3f4e8ce064727ec81fabeb8abaebc9b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

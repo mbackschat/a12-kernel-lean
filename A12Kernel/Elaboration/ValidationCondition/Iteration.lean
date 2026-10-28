@@ -35,9 +35,9 @@ private def selectedEntityGuardScope
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
     List RepeatableLevel :=
   let (selected, scopes) := match source with
-    | .inl source => (source.group.level, source.bindingScopes)
-    | .inr source => (source.selection.group.level, source.bindingScopes)
-  scopes.flatten.filter (· != selected)
+    | .inl source => (source.group.level?, source.bindingScopes)
+    | .inr source => (source.selection.group.level?, source.bindingScopes)
+  scopes.flatten.filter (some · != selected)
 
 /-- A fully starred operand has a known empty binding scope. Keeping that empty entry is
 necessary for the mixed-reference refusal in the retained iteration-domain binding matrix. -/

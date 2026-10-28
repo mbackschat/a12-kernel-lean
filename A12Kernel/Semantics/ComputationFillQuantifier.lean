@@ -3,6 +3,7 @@ import A12Kernel.Semantics.Condition
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.StarAddressing
 import A12Kernel.Semantics.FieldFillQuantifier
+import A12Kernel.Semantics.GroupReference
 
 /-! # Resolved computation field-fill quantifiers
 
@@ -44,7 +45,7 @@ structure ComputationFillContext where
   numberText : Env → FieldId → Option String := fun _ _ => none
   /-- Prepared index entries are immutable because index fields cannot be computed (spec/09).
   Target payloads are projected through the current read channel after selecting a row. -/
-  indexColumn : RepeatableLevel → Env → Option ResolvedSemanticIndexColumn := fun _ _ => none
+  indexColumn : GroupPath → Env → Option ResolvedSemanticIndexColumn := fun _ _ => none
 
 inductive ComputationFillError where
   | indexedOperandNotSupported

@@ -7,7 +7,7 @@ namespace A12Kernel
 
 /-- One authored selection of the error field, before parent-local cache association. -/
 structure SelectedErrorReference where
-  group : RepeatableGroupDecl
+  group : SemanticIndexGroup
   indexDeclaration : FlatFieldDecl
   key : CheckedSemanticIndexKey
 
@@ -16,7 +16,7 @@ namespace SelectedErrorReference
 /-- Numeric lookup equivalence does not merge differently spelled authored keys. A typed literal
 without spelling uses its supplied token identity; field identity is its checked declaration. -/
 def sameKey (left right : SelectedErrorReference) : Bool :=
-  left.group.level == right.group.level && match left.key, right.key with
+  left.group == right.group && match left.key, right.key with
   | .literal a sa, .literal b sb => match sa, sb with
       | some a, some b => a == b
       | none, none => a == b
@@ -169,13 +169,17 @@ def errorSelections (condition : ValidationCondition model) (field : FieldId) :
   | .leaf leaf => leafErrorSelections field leaf
   | .and left right | .or left right => errorSelections left field ++ errorSelections right field
 
-/-- A unique authored selection reanchors only a level outside the rule's ordinary iteration.
+/-- A unique authored selection reanchors only a repeatable level outside the rule's ordinary
+iteration, returned with the selection. A single instance has no level to reanchor, so its error
+address stays the rule's own
+([single-instance key](../../../docs/sources/model-structure-and-declaration-probes.md#src-single-instance-key), rule `LG4`).
 The parallel evaluator owns its separate iteration domain and never calls this ordinary selector. -/
 def uniqueErrorSelection? (condition : ValidationCondition model) (field : FieldId)
-    (iterated : List RepeatableLevel) : Option SelectedErrorReference := do
+    (iterated : List RepeatableLevel) : Option (SelectedErrorReference × RepeatableGroupDecl) := do
   let selections := condition.errorSelections field
   let first ← selections.head?
-  if iterated.contains first.group.level || !selections.all first.sameKey then none else some first
+  let .repeatable group := first.group | none
+  if iterated.contains group.level || !selections.all first.sameKey then none else some (first, group)
 
 end ValidationCondition
 end A12Kernel

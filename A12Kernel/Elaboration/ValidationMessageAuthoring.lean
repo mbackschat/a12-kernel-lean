@@ -114,7 +114,7 @@ def FlatModel.messageNameModel (model : FlatModel) : FlatModel :=
 key gate compares spellings, and the decoded token is what selects the rendered row: on a Number index
 `"2"` selects the row keyed 2 ([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15),
 rule `RNum`). A spelling the column cannot read keeps its text and matches no condition key. -/
-def messageLiteralKey (model : FlatModel) (group : Option RepeatableGroupDecl) (text : String) :
+def messageLiteralKey (model : FlatModel) (group : Option SemanticIndexGroup) (text : String) :
     CheckedSemanticIndexKey :=
   let token := (do
     let index ← (← group).indexField
@@ -347,7 +347,7 @@ def checkMessageGroup {model : FlatModel} (condition : ValidationMessageConditio
           | .ok (some key) => do
               let key := match key with
                 | .literal _ (some text) =>
-                    messageLiteralKey model (model.repeatableGroups.find? (·.path == group)) text
+                    messageLiteralKey model ((model.repeatableGroups.find? (·.path == group)).map .repeatable) text
                 | key => key
               let access ← admitMessageGroup condition parameter group
               checkMessageGroupMode condition parameter group (some key)
@@ -560,7 +560,10 @@ private def checkMessageFieldSuffix (condition : ValidationMessageCondition mode
     (parameter : String) (suffix : MessageFieldSuffix)
     (reference : CheckedValidationMessageReference model condition) :
     Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition) :=
-  match suffix with
+  if reference.key.isSome && suffix != .none &&
+      (model.semanticIndexGroupForPath? reference.declaration.groupPath).any (·.level?.isNone) then
+    throw (.singleInstanceKeyedSuffix parameter)
+  else match suffix with
   | .none => pure (.fieldName reference)
   | .value => do
       let some unstarred := condition.messageUnstarred? reference.declaration.id

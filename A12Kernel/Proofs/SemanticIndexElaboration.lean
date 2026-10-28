@@ -97,7 +97,7 @@ theorem checkedStarredNumberSemanticIndexRefusal_identity
     checked.starred.declaration = checked.selection.targetDeclaration ∧
       checked.starred.declaration.toNumberField? = some checked.field ∧
       checked.selection.group.path = checked.starred.declaration.groupPath ∧
-      checked.starred.path.axes.map (·.level) = [checked.selection.group.level] ∧
+      checked.starred.path.axes.map (·.level) = checked.selection.group.level?.toList ∧
       checked.starred.path.firstStar = 0 ∧
       checked.selection.key = .literal (.text checked.token) := by
   constructor

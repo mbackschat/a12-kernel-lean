@@ -1,0 +1,949 @@
+{
+ "header": {
+  "id": "A29_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "A29_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/IxRoot",
+     "name": "IxRoot",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/IxRoot/Note",
+        "name": "Note",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxRoot/RootKey",
+        "name": "RootKey",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/IxRoot/Cover",
+        "name": "Cover",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/IxRoot/Cover/CAmt",
+           "name": "CAmt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/IxRoot/Cover/CNote",
+           "name": "CNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/IxRoot/Cover/Reps",
+           "name": "Reps",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/IxRoot/Cover/Reps/RAmt",
+              "name": "RAmt",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0,
+                 "positivesOnly": false
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/IxRoot/Cover/Reps/RLab",
+              "name": "RLab",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxRoot/Cover/Reps/IxRootK4",
+              "name": "IxRootK4",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxRootK4",
+               "errorCondition": "FieldFilled(RLab) And [RAmt For \"X\"] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxRoot/Cover/Reps/IxRootK4N",
+              "name": "IxRootK4N",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxRootK4N",
+               "errorCondition": "FieldFilled(RLab) And FieldNotFilled(RAmt For \"X\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxRoot/Cover/Reps/IxRootC4",
+              "name": "IxRootC4",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxRootC4",
+               "errorCondition": "FieldFilled(RLab) And [RAmt] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/IxRoot/Cover/Reps/ROut2",
+              "name": "ROut2",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0,
+                 "positivesOnly": false
+                }
+               }
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/IxRoot/Cover/Reps/IxRootQ5",
+              "name": "IxRootQ5",
+              "Computation": {
+               "computedFieldRelPath": "../ROut2",
+               "computationAlternatives": [
+                {
+                 "operation": "[RAmt For \"X\"]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootK1",
+        "name": "IxRootK1",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootK1",
+         "errorCondition": "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootK1N",
+        "name": "IxRootK1N",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootK1N",
+         "errorCondition": "FieldFilled(Note) And FieldNotFilled(Cover/CAmt For \"X\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootK2",
+        "name": "IxRootK2",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootK2",
+         "errorCondition": "FieldFilled(Note) And FieldFilled(Cover/CNote For \"X\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootK3",
+        "name": "IxRootK3",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootK3",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootK3N",
+        "name": "IxRootK3N",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootK3N",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootC1",
+        "name": "IxRootC1",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootC1",
+         "errorCondition": "FieldFilled(Note) And [Cover/CAmt] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootC3",
+        "name": "IxRootC3",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootC3",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxRoot/ROut",
+        "name": "ROut",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxRoot/RStr",
+        "name": "RStr",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxRoot/RSum",
+        "name": "RSum",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxRoot/RPre",
+        "name": "RPre",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/IxRoot/IxRootQ1",
+        "name": "IxRootQ1",
+        "Computation": {
+         "computedFieldRelPath": "../ROut",
+         "computationAlternatives": [
+          {
+           "operation": "[Cover/CAmt For \"X\"]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/IxRoot/IxRootQ2",
+        "name": "IxRootQ2",
+        "Computation": {
+         "computedFieldRelPath": "../RStr",
+         "computationAlternatives": [
+          {
+           "operation": "[Cover/CNote For \"X\"]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/IxRoot/IxRootQ3",
+        "name": "IxRootQ3",
+        "Computation": {
+         "computedFieldRelPath": "../RSum",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Cover/Reps*/RAmt For \"X\")"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/IxRoot/IxRootQ4",
+        "name": "IxRootQ4",
+        "Computation": {
+         "computedFieldRelPath": "../RPre",
+         "computationAlternatives": [
+          {
+           "precondition": "FieldFilled(Cover/CAmt For \"X\")",
+           "operation": "1"
+          },
+          {
+           "precondition": "FieldNotFilled(Cover/CAmt For \"X\")",
+           "operation": "2"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "indexFieldName": "RootKey"
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/IxFix",
+     "name": "IxFix",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/IxFix/Note",
+        "name": "Note",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/IxFix/Cover",
+        "name": "Cover",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/IxFix/Cover/CAmt",
+           "name": "CAmt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/IxFix/Cover/CNote",
+           "name": "CNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/IxFix/Cover/CoverKey",
+           "name": "CoverKey",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/IxFix/Cover/Reps",
+           "name": "Reps",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/IxFix/Cover/Reps/RAmt",
+              "name": "RAmt",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0,
+                 "positivesOnly": false
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/IxFix/Cover/Reps/RLab",
+              "name": "RLab",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxFix/Cover/Reps/IxFixK4",
+              "name": "IxFixK4",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxFixK4",
+               "errorCondition": "FieldFilled(RLab) And [RAmt For \"X\"] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxFix/Cover/Reps/IxFixK4N",
+              "name": "IxFixK4N",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxFixK4N",
+               "errorCondition": "FieldFilled(RLab) And FieldNotFilled(RAmt For \"X\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxFix/Cover/Reps/IxFixC4",
+              "name": "IxFixC4",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxFixC4",
+               "errorCondition": "FieldFilled(RLab) And [RAmt] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/IxFix/Cover/Reps/ROut2",
+              "name": "ROut2",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0,
+                 "positivesOnly": false
+                }
+               }
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/IxFix/Cover/Reps/IxFixQ5",
+              "name": "IxFixQ5",
+              "Computation": {
+               "computedFieldRelPath": "../ROut2",
+               "computationAlternatives": [
+                {
+                 "operation": "[RAmt For \"X\"]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "CoverKey"
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixK1",
+        "name": "IxFixK1",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixK1",
+         "errorCondition": "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixK1N",
+        "name": "IxFixK1N",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixK1N",
+         "errorCondition": "FieldFilled(Note) And FieldNotFilled(Cover/CAmt For \"X\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixK2",
+        "name": "IxFixK2",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixK2",
+         "errorCondition": "FieldFilled(Note) And FieldFilled(Cover/CNote For \"X\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixK3",
+        "name": "IxFixK3",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixK3",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixK3N",
+        "name": "IxFixK3N",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixK3N",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixC1",
+        "name": "IxFixC1",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixC1",
+         "errorCondition": "FieldFilled(Note) And [Cover/CAmt] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixC3",
+        "name": "IxFixC3",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixC3",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxFix/ROut",
+        "name": "ROut",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxFix/RStr",
+        "name": "RStr",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxFix/RSum",
+        "name": "RSum",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxFix/RPre",
+        "name": "RPre",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/IxFix/IxFixQ1",
+        "name": "IxFixQ1",
+        "Computation": {
+         "computedFieldRelPath": "../ROut",
+         "computationAlternatives": [
+          {
+           "operation": "[Cover/CAmt For \"X\"]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/IxFix/IxFixQ2",
+        "name": "IxFixQ2",
+        "Computation": {
+         "computedFieldRelPath": "../RStr",
+         "computationAlternatives": [
+          {
+           "operation": "[Cover/CNote For \"X\"]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/IxFix/IxFixQ3",
+        "name": "IxFixQ3",
+        "Computation": {
+         "computedFieldRelPath": "../RSum",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Cover/Reps*/RAmt For \"X\")"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/IxFix/IxFixQ4",
+        "name": "IxFixQ4",
+        "Computation": {
+         "computedFieldRelPath": "../RPre",
+         "computationAlternatives": [
+          {
+           "precondition": "FieldFilled(Cover/CAmt For \"X\")",
+           "operation": "1"
+          },
+          {
+           "precondition": "FieldNotFilled(Cover/CAmt For \"X\")",
+           "operation": "2"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxFix/KeyF",
+        "name": "KeyF",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixKD",
+        "name": "IxFixKD",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixKD",
+         "errorCondition": "FieldFilled(Note) And [Cover/CAmt For KeyF] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixKDN",
+        "name": "IxFixKDN",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixKDN",
+         "errorCondition": "FieldFilled(Note) And FieldNotFilled(Cover/CAmt For KeyF)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

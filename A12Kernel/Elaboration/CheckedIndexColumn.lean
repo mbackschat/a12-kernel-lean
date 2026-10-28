@@ -39,13 +39,13 @@ structure ResolvedCheckedIndexEntry where
 
 structure ResolvedCheckedIndexColumn (model : FlatModel) where
   private mk ::
-  group : RepeatableGroupDecl
+  group : SemanticIndexGroup
   indexDeclaration : FlatFieldDecl
   entries : List ResolvedCheckedIndexEntry
   duplicateKeys : List SemanticIndexKey
   unavailableKey : Option FormalCause
   modelWellFormed : model.validate.isOk = true
-  groupOwned : model.repeatableGroups.contains group = true
+  groupOwned : model.declaresSemanticIndexGroup group = true
   indexDeclared : group.indexField = some indexDeclaration.id
 
 structure ResolvedParallelIndexSide where
@@ -165,7 +165,7 @@ namespace ResolvedCheckedIndexColumn
 /-- The public certificate boundary: the column belongs to one validated model and its declaration is the group's exact index field. -/
 def WellFormed (column : ResolvedCheckedIndexColumn model) : Prop :=
   model.validate.isOk = true ∧
-    model.repeatableGroups.contains column.group = true ∧
+    model.declaresSemanticIndexGroup column.group = true ∧
     column.group.indexField = some column.indexDeclaration.id
 
 /-- A key is selectable exactly when generated uniqueness did not classify it as duplicated. Every consumer keeps its own lookup and missing-side policy after this common admission relation. -/
@@ -273,9 +273,20 @@ private def IndexColumnState.add
     unavailableKey := state.unavailableKey.orElse fun _ => cause
   }
 
+private def CheckedIndexPreliminary.addIndexCell
+    (preliminary : CheckedIndexPreliminary model) (declaration : FlatFieldDecl)
+    (scope : List RepeatableLevel) (path : List Nat) (state : IndexColumnState) :
+    Except CheckedIndexColumnError IndexColumnState := do
+  let address : CellAddr := { field := declaration.id, path }
+  let cell ← preliminary.readAuthoredValidation address |>.mapError .document
+  let key ← preliminary.indexKey? declaration address cell
+  let entry := key.map fun resolved => { key := resolved, environment := scope.zip path }
+  let duplicate := preliminary.findingKindAt? address == some .unique
+  pure (state.add entry duplicate cell.findings.head?)
+
 private def CheckedIndexPreliminary.scanIndexRows
     (preliminary : CheckedIndexPreliminary model)
-    (group : RepeatableGroupDecl) (declaration : FlatFieldDecl)
+    (groupPath : GroupPath) (declaration : FlatFieldDecl)
     (scope : List RepeatableLevel) :
     List RowAddr → IndexColumnState →
       Except CheckedIndexColumnError IndexColumnState
@@ -285,19 +296,12 @@ private def CheckedIndexPreliminary.scanIndexRows
         throw (.incoherentRow row scope.length)
       let overLimit ← match model.addressOverLimit? scope row.path with
         | some result => pure result
-        | none => throw (.incoherentScope group.path)
+        | none => throw (.incoherentScope groupPath)
       if overLimit then
-        preliminary.scanIndexRows group declaration scope rows state
+        preliminary.scanIndexRows groupPath declaration scope rows state
       else
-        let address : CellAddr := { field := declaration.id, path := row.path }
-        let cell ← preliminary.readAuthoredValidation address |>.mapError .document
-        let key ← preliminary.indexKey? declaration address cell
-        let entry := key.map fun resolved =>
-          { key := resolved, environment := scope.zip row.path }
-        let duplicate :=
-          preliminary.findingKindAt? address == some .unique
-        preliminary.scanIndexRows group declaration scope rows
-          (state.add entry duplicate cell.findings.head?)
+        preliminary.scanIndexRows groupPath declaration scope rows
+          (← preliminary.addIndexCell declaration scope row.path state)
 
 /-- Check the document-independent parallel group profile once. The indexed groups may share their complete outer repeatable scope or one may add a non-indexed frame suffix; divergent frames are incompatible. Differing nonrepeatable path segments remain transparent. -/
 def checkParallelIndexGroups (model : FlatModel)
@@ -385,25 +389,41 @@ def checkParallelIndexGroups (model : FlatModel)
 
 namespace CheckedIndexPreliminary
 
+/-- A repeatable group's column holds its rows under the enclosing parent row. A root or fixed group
+has one instance, at the enclosing rows, so its column holds at most that instance's index cell
+([runtime open cells](../../docs/sources/model-structure-and-declaration-probes.md#src-runtime-open-cells), `ix*`; below a
+repeatable row, [single-instance key](../../docs/sources/model-structure-and-declaration-probes.md#src-single-instance-key),
+`RW1`). An enclosing row over its capacity contributes no cell, as a repeatable row does; that is
+assumed, not measured. -/
 def resolveIndexColumn (preliminary : CheckedIndexPreliminary model)
-    (group : RepeatableGroupDecl) (outer : Env := [])
+    (group : SemanticIndexGroup) (outer : Env := [])
     (includeAddress : CellAddr → Bool := fun _ => true) :
     Except CheckedIndexColumnError (ResolvedCheckedIndexColumn model) := do
-  if hGroup : model.repeatableGroups.contains group = true then
+  if hGroup : model.declaresSemanticIndexGroup group = true then
     let indexId ← match group.indexField with
       | some indexId => pure indexId
       | none => throw (.missingIndexField group.path)
     let declaration ← model.lookupUniqueId indexId |>.mapError .model
     if hDeclared : group.indexField = some declaration.id then
       let scope := model.repeatableScopeForGroupPath group.path
-      if scope.getLast? != some group.level then
-        throw (.incoherentScope group.path)
-      let parentPath ←
-        outer.pathForScope scope.dropLast |>.mapError .environment
-      let rows := preliminary.base.source.instantiatedRows.filter fun row =>
-        row.group == group.level && row.path.dropLast == parentPath &&
-          includeAddress { field := declaration.id, path := row.path }
-      let state ← preliminary.scanIndexRows group declaration scope rows {}
+      let state ← match group.level? with
+        | some level => do
+            if scope.getLast? != some level then
+              throw (.incoherentScope group.path)
+            let parentPath ←
+              outer.pathForScope scope.dropLast |>.mapError .environment
+            let rows := preliminary.base.source.instantiatedRows.filter fun row =>
+              row.group == level && row.path.dropLast == parentPath &&
+                includeAddress { field := declaration.id, path := row.path }
+            preliminary.scanIndexRows group.path declaration scope rows {}
+        | none => do
+            let path ← outer.pathForScope scope |>.mapError .environment
+            let overLimit ← match model.addressOverLimit? scope path with
+              | some result => pure result
+              | none => throw (.incoherentScope group.path)
+            if !overLimit && includeAddress { field := declaration.id, path } then
+              preliminary.addIndexCell declaration scope path {}
+            else pure {}
       pure {
         group
         indexDeclaration := declaration
@@ -464,9 +484,9 @@ private def parallelKeys (preliminary : CheckedIndexPreliminary model)
       | .number _ => preliminary.parallelNumberToken column entry
     pure (token, entry.key)
 
-private def parallelSide (column : ResolvedCheckedIndexColumn model)
+private def parallelSide (group : RepeatableGroupDecl) (column : ResolvedCheckedIndexColumn model)
     (key : SemanticIndexKey) : ResolvedParallelIndexSide := {
-  group := column.group
+  group
   environment := (column.selectableEntryFor? key).map (·.environment)
   unavailableKey := column.unavailableKey
   duplicatePointer := column.duplicateKeys.contains key
@@ -491,8 +511,8 @@ private def resolveCheckedParallelIndexJoinAt
     rows := keys.map fun (iterationToken, key) => {
       iterationToken
       key
-      left := parallelSide leftColumn key
-      right := parallelSide rightColumn key
+      left := parallelSide groups.leftGroup leftColumn key
+      right := parallelSide groups.rightGroup rightColumn key
     }
   }
 

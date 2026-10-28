@@ -164,7 +164,7 @@ private def partialSelectedProductSide (source : CheckedKeyedNumberProductOperan
   | none => pure none
   | some (.unknown cause) | some (.poison cause) => pure (some { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false })
   | some .empty =>
-      if !(← source.star.productExtentRelevant scope outer (some selection.group.level) |>.mapError .addressing) then
+      if !(← source.star.productExtentRelevant scope outer selection.group.level? |>.mapError .addressing) then
         return none
       pure (some { cells := [], hasUninstantiatedTail := true, hasHaving := false })
   | some (.value environment) =>

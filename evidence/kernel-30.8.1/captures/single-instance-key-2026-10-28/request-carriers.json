@@ -1,0 +1,538 @@
+{
+ "model": "A30_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "a-match",
+   "documentInline": {
+    "IxRoot": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CFlag": "true"
+     },
+     "RootKey": "X",
+     "BFlag": "false"
+    },
+    "IxFix": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CoverKey": "X",
+      "CFlag": "true"
+     },
+     "KeyF": "X",
+     "BFlag": "false",
+     "Rows": [
+      {
+       "RL": "a",
+       "Fix": {
+        "FKey": "X",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "b",
+       "Fix": {
+        "FKey": "Y",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "c",
+       "Fix": {
+        "FAmt": "5"
+       }
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/IxRoot/Note"
+    },
+    {
+     "path": "/IxRoot/RootKey"
+    },
+    {
+     "path": "/IxRoot/Cover"
+    },
+    {
+     "path": "/IxRoot/Cover/Reps"
+    },
+    {
+     "path": "/IxFix/Note"
+    },
+    {
+     "path": "/IxFix/KeyF"
+    },
+    {
+     "path": "/IxFix/Cover"
+    },
+    {
+     "path": "/IxFix/Cover/CoverKey"
+    },
+    {
+     "path": "/IxFix/Cover/Reps"
+    },
+    {
+     "path": "/IxRoot/BFlag"
+    },
+    {
+     "path": "/IxFix/BFlag"
+    },
+    {
+     "path": "/IxFix/Rows"
+    }
+   ]
+  },
+  {
+   "name": "a-other",
+   "documentInline": {
+    "IxRoot": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CFlag": "true"
+     },
+     "RootKey": "Y",
+     "BFlag": "false"
+    },
+    "IxFix": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CoverKey": "Y",
+      "CFlag": "true"
+     },
+     "KeyF": "X",
+     "BFlag": "false",
+     "Rows": [
+      {
+       "RL": "a",
+       "Fix": {
+        "FKey": "X",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "b",
+       "Fix": {
+        "FKey": "Y",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "c",
+       "Fix": {
+        "FAmt": "5"
+       }
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/IxRoot/Note"
+    },
+    {
+     "path": "/IxRoot/RootKey"
+    },
+    {
+     "path": "/IxRoot/Cover"
+    },
+    {
+     "path": "/IxRoot/Cover/Reps"
+    },
+    {
+     "path": "/IxFix/Note"
+    },
+    {
+     "path": "/IxFix/KeyF"
+    },
+    {
+     "path": "/IxFix/Cover"
+    },
+    {
+     "path": "/IxFix/Cover/CoverKey"
+    },
+    {
+     "path": "/IxFix/Cover/Reps"
+    },
+    {
+     "path": "/IxRoot/BFlag"
+    },
+    {
+     "path": "/IxFix/BFlag"
+    },
+    {
+     "path": "/IxFix/Rows"
+    }
+   ]
+  },
+  {
+   "name": "a-absent",
+   "documentInline": {
+    "IxRoot": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CFlag": "true"
+     },
+     "BFlag": "false"
+    },
+    "IxFix": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CFlag": "true"
+     },
+     "KeyF": "X",
+     "BFlag": "false",
+     "Rows": [
+      {
+       "RL": "a",
+       "Fix": {
+        "FKey": "X",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "b",
+       "Fix": {
+        "FKey": "Y",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "c",
+       "Fix": {
+        "FAmt": "5"
+       }
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/IxRoot/Note"
+    },
+    {
+     "path": "/IxRoot/RootKey"
+    },
+    {
+     "path": "/IxRoot/Cover"
+    },
+    {
+     "path": "/IxRoot/Cover/Reps"
+    },
+    {
+     "path": "/IxFix/Note"
+    },
+    {
+     "path": "/IxFix/KeyF"
+    },
+    {
+     "path": "/IxFix/Cover"
+    },
+    {
+     "path": "/IxFix/Cover/CoverKey"
+    },
+    {
+     "path": "/IxFix/Cover/Reps"
+    },
+    {
+     "path": "/IxRoot/BFlag"
+    },
+    {
+     "path": "/IxFix/BFlag"
+    },
+    {
+     "path": "/IxFix/Rows"
+    }
+   ]
+  },
+  {
+   "name": "a-keyother",
+   "documentInline": {
+    "IxRoot": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CFlag": "true"
+     },
+     "RootKey": "X",
+     "BFlag": "false"
+    },
+    "IxFix": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CoverKey": "X",
+      "CFlag": "true"
+     },
+     "KeyF": "Y",
+     "BFlag": "false",
+     "Rows": [
+      {
+       "RL": "a",
+       "Fix": {
+        "FKey": "X",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "b",
+       "Fix": {
+        "FKey": "Y",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "c",
+       "Fix": {
+        "FAmt": "5"
+       }
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/IxRoot/Note"
+    },
+    {
+     "path": "/IxRoot/RootKey"
+    },
+    {
+     "path": "/IxRoot/Cover"
+    },
+    {
+     "path": "/IxRoot/Cover/Reps"
+    },
+    {
+     "path": "/IxFix/Note"
+    },
+    {
+     "path": "/IxFix/KeyF"
+    },
+    {
+     "path": "/IxFix/Cover"
+    },
+    {
+     "path": "/IxFix/Cover/CoverKey"
+    },
+    {
+     "path": "/IxFix/Cover/Reps"
+    },
+    {
+     "path": "/IxRoot/BFlag"
+    },
+    {
+     "path": "/IxFix/BFlag"
+    },
+    {
+     "path": "/IxFix/Rows"
+    }
+   ]
+  },
+  {
+   "name": "a-keyempty",
+   "documentInline": {
+    "IxRoot": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CFlag": "true"
+     },
+     "RootKey": "X",
+     "BFlag": "false"
+    },
+    "IxFix": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CoverKey": "X",
+      "CFlag": "true"
+     },
+     "BFlag": "false",
+     "Rows": [
+      {
+       "RL": "a",
+       "Fix": {
+        "FKey": "X",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "b",
+       "Fix": {
+        "FKey": "Y",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "c",
+       "Fix": {
+        "FAmt": "5"
+       }
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/IxRoot/Note"
+    },
+    {
+     "path": "/IxRoot/RootKey"
+    },
+    {
+     "path": "/IxRoot/Cover"
+    },
+    {
+     "path": "/IxRoot/Cover/Reps"
+    },
+    {
+     "path": "/IxFix/Note"
+    },
+    {
+     "path": "/IxFix/KeyF"
+    },
+    {
+     "path": "/IxFix/Cover"
+    },
+    {
+     "path": "/IxFix/Cover/CoverKey"
+    },
+    {
+     "path": "/IxFix/Cover/Reps"
+    },
+    {
+     "path": "/IxRoot/BFlag"
+    },
+    {
+     "path": "/IxFix/BFlag"
+    },
+    {
+     "path": "/IxFix/Rows"
+    }
+   ]
+  }
+ ]
+}

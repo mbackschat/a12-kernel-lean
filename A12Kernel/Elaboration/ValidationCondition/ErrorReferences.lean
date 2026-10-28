@@ -79,9 +79,9 @@ private def selectedReferenceAt (field : FieldId) (query : ReferenceQuery)
   let target := query.acceptsPath path && declarations.any (·.id == field) && match query.kind with
     | .selected group key => selection.group.path == group &&
         key.all (sameMessageKey selection.key)
-    | .unkeyed level => selection.group.level != level
-    | .nonWildcard level => selection.group.level == level ||
-        selection.indexDeclaration.repeatableScope.dropLast.contains level
+    | .unkeyed level => selection.group.level? != some level
+    | .nonWildcard level => selection.group.level? == some level ||
+        selection.parentScope.contains level
     | .unselected => false
     -- A selection replaces the selected level's wildcard; only a star written below it remains, and a
     -- deeper group inside a selected extent keeps its own (rows `s01`, `v02` in
@@ -92,7 +92,7 @@ private def selectedReferenceAt (field : FieldId) (query : ReferenceQuery)
         | .inr source => match source.target with
             | .group _ => true
             | .starredGroup _ | .star _ => false
-    | _ => query.binds selection.indexDeclaration.repeatableScope.dropLast isForm
+    | _ => query.binds selection.parentScope isForm
   let key := match selection.key with
     | .literal .. => false
     | .field declaration => declaration.id == field && query.atPath declaration.path declaration.repeatableScope

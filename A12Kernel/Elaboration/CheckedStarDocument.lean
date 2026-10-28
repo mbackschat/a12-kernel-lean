@@ -94,7 +94,7 @@ def CheckedAddressingError.isFilterValueFailure : CheckedAddressingError → Boo
 
 /-- A model-independent computation context asks its checked document to resolve a column;
 the document retains index preparation and exact selected addresses. -/
-abbrev SemanticIndexColumnReader := RepeatableGroupDecl → FieldId → Env →
+abbrev SemanticIndexColumnReader := SemanticIndexGroup → FieldId → Env →
   Except CheckedAddressingError ResolvedSemanticIndexColumn
 
 /-- Read a certified key and target through one phase-aware selection path. The column reader
@@ -316,8 +316,8 @@ def resolveSemanticIndexColumnWith (checked : CheckedDocument model)
 /-- Supply prepared columns without binding selected target reads to the immutable document. -/
 def indexedComputationFillContext (checked : CheckedDocument model) : ComputationFillContext :=
   { checked.computationFillContext with
-    indexColumn := fun level outer => do
-      let group ← model.repeatableGroupAtLevel? level
+    indexColumn := fun path outer => do
+      let group ← model.semanticIndexGroupAt? path
       let index ← group.indexField
       (checked.resolveSemanticIndexColumnWith checked.read group index outer).toOption }
 
@@ -752,7 +752,7 @@ Missing preparation or row identity is structural failure, never an empty select
 def ScalarComputationContext.semanticIndexColumnReader (context : ScalarComputationContext) : SemanticIndexColumnReader :=
   fun group target outer => do
     let some addressed := context.addressed | throw (.checkedDocumentRequired group.path)
-    let some column := addressed.indexColumn group.level outer | throw (.checkedDocumentRequired group.path)
+    let some column := addressed.indexColumn group.path outer | throw (.checkedDocumentRequired group.path)
     if group.indexField == some target then return column
     let entries ← column.entries.mapM fun entry => do
       let some environment := entry.environment | throw (.checkedDocumentRequired group.path)
@@ -766,8 +766,8 @@ entries in the addressed context so nested temporal reads share the current payl
 def ScalarComputationContext.withIndexColumnReader (context : ScalarComputationContext) (model : FlatModel)
     (column : SemanticIndexColumnReader) : ScalarComputationContext :=
   { context with addressed := context.addressed.map fun addressed =>
-      { addressed with indexColumn := fun level outer => do
-          let group ← model.repeatableGroupAtLevel? level
+      { addressed with indexColumn := fun path outer => do
+          let group ← model.semanticIndexGroupAt? path
           let index ← group.indexField
           (column group index outer).toOption } }
 

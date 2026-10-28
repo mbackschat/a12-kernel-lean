@@ -204,31 +204,38 @@ private def policyModel (rootIndexed coverIndexed : Bool) : DmModel := {
       (if rootIndexed then [(["Policy"], 3)] else []) ++ (if coverIndexed then [(["Policy", "Cover"], 4)] else []) }
   rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
 
-private def policyClass (rootIndexed coverIndexed : Bool) (operand : String) : String :=
+private def ruleClass (rootIndexed coverIndexed : Bool) (condition : String) : String :=
   match checkValidationRule (policyModel rootIndexed coverIndexed) .english {
     group := ["Policy"], name := "R", errorCode := "R", errorEntityRelPath := "../Total"
-    condition := s!"Sum({operand} For \"X\") > 0", severity := "ERROR" } with
+    condition, severity := "ERROR" } with
   | .ok _ => "admitted"
   | .error refusal => refusal.kernelClass?.getD s!"unclassed {refusal.construct}"
+
+private def policyClass (rootIndexed coverIndexed : Bool) (operand : String) : String :=
+  ruleClass rootIndexed coverIndexed s!"Sum({operand} For \"X\") > 0"
 
 example : (policyModel true true).flat.validate.isOk = true := by native_decide
 
 /- An index on the root, or on the fixed group, lies above the unbound repetition, so the ordinary walk's
-missing-wildcard class answers; with no index anywhere the missing-index class stands. -/
+missing-wildcard class answers; with no index anywhere the missing-index class stands. Both indexes on
+the chain answer the multiple-index class ahead of the walk (single-instance-key `t5`, beside the
+unkeyed `t6`'s missing wildcard). -/
 example :
     policyClass false false "Cover/Items/Amount" = "MVK_NO_INDEX_FIELD" ∧
       policyClass true false "Cover/Items/Amount" = "MVK_NO_WILDCARD" ∧
       policyClass false true "Cover/Items/Amount" = "MVK_NO_WILDCARD" ∧
-      policyClass true true "Cover/Items/Amount" = "MVK_NO_WILDCARD" := by
+      policyClass true true "Cover/Items/Amount" = "MVK_MULTIPLE_INDEX_FIELDS" := by
   native_decide
 
-/- Unmeasured, so today's missing-index class stands: a chain that crosses no repetition, and a starred
-operand, whose ordinary walk admits. No selection is made on the root or the fixed group in either. -/
+/- Where the walk admits the read the key is admitted too, selecting the one instance: a chain that
+crosses no repetition and a starred operand, as the Kernel admits them (`ug2`, `ug4`, `ug9`, `ug11` of
+unknown-scale-and-root-index-2026-10-28). Without an index the missing-index class stands. -/
 example :
-    policyClass true false "Cover/Plain" = "MVK_NO_INDEX_FIELD" ∧
-      policyClass false true "Cover/Plain" = "MVK_NO_INDEX_FIELD" ∧
-      policyClass true false "Cover/Items*/Amount" = "MVK_NO_INDEX_FIELD" ∧
-      policyClass false true "Cover/Items*/Amount" = "MVK_NO_INDEX_FIELD" := by
+    ruleClass true false "FieldFilled(Total) And [Cover/Plain For \"X\"] > 0" = "admitted" ∧
+      ruleClass false true "FieldFilled(Total) And [Cover/Plain For \"X\"] > 0" = "admitted" ∧
+      ruleClass true false "FieldFilled(Total) And Sum(Cover/Items*/Amount For \"X\") > 0" = "admitted" ∧
+      ruleClass false true "FieldFilled(Total) And Sum(Cover/Items*/Amount For \"X\") > 0" = "admitted" ∧
+      ruleClass false false "FieldFilled(Total) And [Cover/Plain For \"X\"] > 0" = "MVK_NO_INDEX_FIELD" := by
   native_decide
 
 end A12Kernel.Dm.SemanticIndexLocks

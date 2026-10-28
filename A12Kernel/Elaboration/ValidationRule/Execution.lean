@@ -383,10 +383,10 @@ private def reanchorSelectedError (rule : CheckedResolvedValidationRule model)
   let .fired message := outcome | return outcome
   if message.origin == .runtimeFailure then return outcome
   let some errorField := rule.errorField? | return outcome
-  let some selection := rule.condition.core.uniqueErrorSelection? errorField
+  let some (selection, group) := rule.condition.core.uniqueErrorSelection? errorField
       (rule.iterationScope.getD []) | return outcome
   let inputs ← inputs ()
-  let (_, coordinate, _) ← inputs.resolveIndex selection.group selection.indexDeclaration
+  let (_, coordinate, _) ← inputs.resolveIndex group selection.indexDeclaration
     selection.key environment |>.mapError .messageReference
   let position := selection.indexDeclaration.repeatableScope.length - 1
   pure (.fired { message with errorAddress := { message.errorAddress with

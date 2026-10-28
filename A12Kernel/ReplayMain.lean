@@ -49,6 +49,7 @@ import A12Kernel.Reference.Dm.ParallelJoinedLimitsLocks
 import A12Kernel.Reference.Dm.ParallelJoinedRowLocks
 import A12Kernel.Reference.Dm.IndexFindingReadLocks
 import A12Kernel.Reference.Dm.BelowKeySelectionLocks
+import A12Kernel.Reference.Dm.SingleInstanceKeyLocks
 import A12Kernel.Reference.Dm.GeneratedTableLocks
 import A12Kernel.Reference.Dm.AncestorErrorScopeLocks
 import A12Kernel.Reference.Dm.HavingComparisonLocks

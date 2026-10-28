@@ -1,4 +1,5 @@
 import A12Kernel.Document
+import A12Kernel.Semantics.GroupReference
 
 /-! # Shared formal-message pointers
 
@@ -23,6 +24,11 @@ inductive MessageRepetitionCoordinate where
 structure MessagePointer where
   field : FieldId
   coordinates : List MessageRepetitionCoordinate
+  /-- The root or fixed group whose one instance a key failed to select. The Kernel names that
+  group's level `-5`, as it names an unresolved repeatable row
+  ([runtime open cells](../../docs/sources/model-structure-and-declaration-probes.md#src-runtime-open-cells),
+  `ixroot-other`, `ixfix-other`). -/
+  unresolvedInstance : Option GroupPath := none
   deriving Repr, DecidableEq
 
 namespace MessagePointer
@@ -40,8 +46,10 @@ def toConcretePath? : List MessageRepetitionCoordinate → Option (List Nat)
       (toConcretePath? remaining).map (index :: ·)
   | .wildcard :: _ | .unknown :: _ | .parallelIteration :: _ => none
 
-/-- Recover an exact document address only when every repetition coordinate is concrete. -/
+/-- Recover an exact document address only when every repetition coordinate is concrete and every
+instance is resolved. -/
 def toCellAddr? (pointer : MessagePointer) : Option CellAddr := do
+  if pointer.unresolvedInstance.isSome then none
   let path ← toConcretePath? pointer.coordinates
   pure { field := pointer.field, path }
 

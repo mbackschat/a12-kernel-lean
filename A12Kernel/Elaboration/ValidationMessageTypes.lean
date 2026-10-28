@@ -103,6 +103,11 @@ inductive ValidationMessageTemplateError where
   entity or a field's key. The Kernel fails there with `MVK_INTERNAL_ERROR`, a defect this fragment
   refuses on its own arm and does not model. -/
   | ruleGroupUnresolved (parameter : String)
+  /-- A value or category suffix on a key over a root or fixed-group index. Its name form renders the
+  field's name as an unkeyed one does
+  ([single-instance key](../../docs/sources/model-structure-and-declaration-probes.md#src-single-instance-key), rule `LM1`);
+  what a suffixed form renders after a no-match is unmeasured, so it is refused rather than given an account. -/
+  | singleInstanceKeyedSuffix (parameter : String)
   deriving Repr, DecidableEq
 
 private def isLineSeparator (character : Char) : Bool :=

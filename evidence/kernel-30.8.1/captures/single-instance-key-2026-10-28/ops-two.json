@@ -1,0 +1,104 @@
+[
+ {
+  "id": "t1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t1",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t2",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And [Cover/CAmt] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t3",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And FieldNotFilled(Cover/CAmt For KeyF)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t4",
+   "--field",
+   "/IxFix/Cover/Reps/RLab",
+   "--group",
+   "/IxFix/Cover/Reps",
+   "--condition",
+   "FieldFilled(RLab) And [RAmt For \"X\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t5",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps/RAmt For \"X\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t6",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps/RAmt) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

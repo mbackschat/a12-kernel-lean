@@ -2,12 +2,20 @@ import A12Kernel.Elaboration.PartialSemanticIndex
 
 namespace A12Kernel
 
+/-- What a missing selection leaves unselected: the absent row of the selected repeatable level, or
+the one instance of a root or fixed-group index whose stored key differs
+([single-instance key](../../docs/sources/model-structure-and-declaration-probes.md#src-single-instance-key)). -/
+inductive DeclaredPartialMissing where
+  | row (level : RepeatableLevel)
+  | singleInstance
+
 /-- Declared coordinates preserve missing-slot relevance without creating document rows (KF527,
-spec/10 §5). An absent selected parent remains unbound: its placeholder coordinates serve only
-the coverage test and must never be used to read a physical payload. -/
+spec/10 §5). Under a missing selection the coordinates serve only the coverage test and must never
+be used to read a physical payload: a single instance exists in the document even when its key
+differs. -/
 structure DeclaredPartialFields where
   addresses : List (FlatFieldDecl × Env)
-  unboundParent : Option RepeatableLevel := none
+  missing : Option DeclaredPartialMissing := none
 
 /-- Expand each field's finite declared suffix in declaration-major order. Missing capacity
 retains an unsupported extent rather than inventing an iteration limit. -/
@@ -40,11 +48,12 @@ def resolveDeclaredPartialSelected
   | some (.unknown cause) => pure (some (.unknown cause))
   | some (.poison cause) => pure (some (.poison cause))
   | some .empty =>
-      let level := selection.group.level
-      let placeholder := outer.filter (fun entry => entry.1 != level) ++ [(level, 1)]
+      let (placeholder, missing) : Env × DeclaredPartialMissing := match selection.group.level? with
+        | some level => (outer.filter (fun entry => entry.1 != level) ++ [(level, 1)], .row level)
+        | none => (outer, .singleInstance)
       let fields ← declaredPartialFields? model declarations
         selection.indexDeclaration.repeatableScope.length placeholder
-      pure (fields.map fun fields => .value { fields with unboundParent := some level })
+      pure (fields.map fun fields => .value { fields with missing := some missing })
   | some (.value row) =>
       pure ((← declaredPartialFields? model declarations
         selection.indexDeclaration.repeatableScope.length row).map CellObservation.value)
@@ -56,12 +65,14 @@ def DeclaredPartialFields.readCell? (fields : DeclaredPartialFields) (model : Fl
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
     (declaration : FlatFieldDecl) (row : Env) :
     Except CheckedAddressingError (Option CheckedCell) := do
-  match fields.unboundParent with
-  | some level =>
+  match fields.missing with
+  | some (.row level) =>
       if scope.coversValueListExtent model declaration.path
           (declaration.repeatableScope.filter (· != level)) [level] row then
         pure (some (checkAdmittedRawCell .empty))
       else pure none
+  | some .singleInstance =>
+      pure (if scope.coversCell model declaration.path row then some (checkAdmittedRawCell .empty) else none)
   | none =>
       if scope.coversCell model declaration.path row then read row declaration.id
       else pure none

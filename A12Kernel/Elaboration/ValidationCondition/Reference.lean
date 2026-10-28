@@ -53,6 +53,17 @@ def concreteFieldPointer (declaration : FlatFieldDecl) (environment : Env) :
   | .error error => .error (.binding error)
   | .ok path => .ok (MessagePointer.ofCellAddr { field := declaration.id, path })
 
+/-- The query key a reference resolves, with the dynamic key field's own pointer. -/
+private def MessageReferenceInputs.queryKey (inputs : MessageReferenceInputs)
+    (key : CheckedSemanticIndexKey) (environment : Env) :
+    Except ReferenceProjectionError (Option SemanticIndexKey × List MessagePointer) :=
+  match key with
+  | .literal token _ => pure (some token, [])
+  | .field declaration => do
+      let path ← (environment.pathForScope declaration.repeatableScope).mapError .binding
+      let address : CellAddr := { field := declaration.id, path }
+      pure (inputs.keyAt address, [MessagePointer.ofCellAddr address])
+
 /-- Resolve the shared message-cache coordinate together with its parent and dynamic-key pointer.
 Structural references and keyed row parameters use the same admitted association and host boundary. -/
 def MessageReferenceInputs.resolveIndex (inputs : MessageReferenceInputs)
@@ -60,14 +71,20 @@ def MessageReferenceInputs.resolveIndex (inputs : MessageReferenceInputs)
     (key : CheckedSemanticIndexKey) (environment : Env) :
     Except ReferenceProjectionError (List Nat × MessageRepetitionCoordinate × List MessagePointer) := do
   let parent ← (environment.pathForScope indexDeclaration.repeatableScope.dropLast).mapError .binding
-  let (key, keyPointers) ← match key with
-    | .literal token _ => pure (some token, [])
-    | .field declaration => do
-        let path ← (environment.pathForScope declaration.repeatableScope).mapError .binding
-        let address : CellAddr := { field := declaration.id, path }
-        pure (inputs.keyAt address, [MessagePointer.ofCellAddr address])
+  let (key, keyPointers) ← inputs.queryKey key environment
   let coordinate ← inputs.cache.lookup group.level parent key |>.mapError .hostOrder
   pure (parent, coordinate, keyPointers)
+
+/-- A single instance is named when its stored index equals the query key and is otherwise
+unresolved, the empty key included ([runtime open cells](../../../docs/sources/model-structure-and-declaration-probes.md#src-runtime-open-cells),
+`ixroot-match`, `ixroot-other`). -/
+private def MessageReferenceInputs.resolveSingleIndex (inputs : MessageReferenceInputs)
+    (indexDeclaration : FlatFieldDecl) (key : CheckedSemanticIndexKey) (environment : Env) :
+    Except ReferenceProjectionError (List Nat × Bool × List MessagePointer) := do
+  let path ← (environment.pathForScope indexDeclaration.repeatableScope).mapError .binding
+  let (key, keyPointers) ← inputs.queryKey key environment
+  let stored := inputs.keyAt { field := indexDeclaration.id, path }
+  pure (path, key.isSome && key != some (.text "") && key == stored, keyPointers)
 
 /-- Index selection owns one coordinate. Below it, the first `boundCount` levels of a payload's
 scope keep the firing row, as the rule's iteration binds them, and every deeper level is the
@@ -75,21 +92,26 @@ wildcard its star reopens: the selected bin at the firing slot's row, `Bins[2]/S
 `Bins[2]/Slots[1]/Cells[0]/Q` below a star (spec/08 §4.3,
 [below-key selection](../../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-selection)). Dynamic
 key scopes must be fully bound, even when cache lookup has no association. -/
-private def selectedReferencePointers (group : RepeatableGroupDecl)
+private def selectedReferencePointers (group : SemanticIndexGroup)
     (indexDeclaration : FlatFieldDecl) (key : CheckedSemanticIndexKey)
     (payloads : List FlatFieldDecl) (boundCount : Nat) (environment : Env)
     (inputs : Option MessageReferenceInputs := none) :
     Except ReferenceProjectionError (List MessagePointer) := do
   let some inputs := inputs | throw .missingIndexContext
-  let (parent, coordinate, keyPointers) ← inputs.resolveIndex group indexDeclaration key environment
-  let selectedPrefix := parent.map MessageRepetitionCoordinate.concrete ++ [coordinate]
+  let (selectedPrefix, unresolvedInstance, keyPointers) ← match group with
+    | .repeatable repeatable => do
+        let (parent, coordinate, keyPointers) ← inputs.resolveIndex repeatable indexDeclaration key environment
+        pure (parent.map MessageRepetitionCoordinate.concrete ++ [coordinate], none, keyPointers)
+    | .single path _ => do
+        let (parent, named, keyPointers) ← inputs.resolveSingleIndex indexDeclaration key environment
+        pure (parent.map MessageRepetitionCoordinate.concrete, if named then none else some path, keyPointers)
   let depth := indexDeclaration.repeatableScope.length
-  let index := { field := indexDeclaration.id, coordinates := selectedPrefix }
+  let index := { field := indexDeclaration.id, coordinates := selectedPrefix, unresolvedInstance }
   let payloadPointers ← payloads.mapM fun declaration => do
     let lower := declaration.repeatableScope.drop depth
     let bound := lower.take (boundCount - depth)
     let rows ← (environment.pathForScope bound).mapError .binding
-    pure { field := declaration.id
+    pure { field := declaration.id, unresolvedInstance
            coordinates := selectedPrefix ++ rows.map .concrete ++
              List.replicate (lower.length - bound.length) .wildcard }
   pure (keyPointers ++ index :: payloadPointers)
@@ -101,10 +123,11 @@ def CheckedSemanticIndexSource.referencePointers (source : CheckedSemanticIndexS
     [source.targetDeclaration] source.targetDeclaration.repeatableScope.length environment inputs
 
 def CheckedKeyedEntityExtent.referencePointers (source : CheckedKeyedEntityExtent model)
-    (environment : Env) (inputs : Option MessageReferenceInputs := none) :
+    (environment : Env) (inputs : Option MessageReferenceInputs := none)
+    (payloads : List FlatFieldDecl := source.declarations) :
     Except ReferenceProjectionError (List MessagePointer) :=
   selectedReferencePointers source.selection.group source.selection.indexDeclaration
-    source.selection.key source.declarations source.boundLevelCount environment inputs
+    source.selection.key payloads source.boundLevelCount environment inputs
 
 private def selectedEntityPointers
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))
@@ -717,7 +740,13 @@ def ValidationConditionLeaf.referencePointers (environment : Env)
               if reference.path.length == 1 then pure []
               else operand.referencePointers environment inputs
           | _, _ => operand.referencePointers environment inputs)
-  | .keyedGroupPresence _ source => source.referencePointers environment inputs
+  | .keyedGroupPresence operator source =>
+      -- A filled root group contributes none of its fields, keyed as unkeyed, while the selection's key
+      -- and index pointers remain (single-instance key `LG2`).
+      let rootFilled := operator == .filled && match source.target with
+        | .group path => path.length == 1
+        | _ => false
+      source.referencePointers environment inputs (if rootFilled then [] else source.declarations)
   | .indexedFieldPresence _ source => source.referencePointers environment inputs
   | .repeatableFieldPresence _ declaration =>
       (concreteFieldPointer declaration environment).map ([·])

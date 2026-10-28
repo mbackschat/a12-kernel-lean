@@ -1,0 +1,87 @@
+[
+ {
+  "id": "x1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x1",
+   "--field",
+   "/IxRoot/Cover/Reps/RLab",
+   "--group",
+   "/IxRoot/Cover/Reps",
+   "--condition",
+   "FieldFilled(RLab) And [RAmt For \"a\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "x2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x2",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "x3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x3",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And [Cover/Reps/RAmt For \"a\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "x4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x4",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "x5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "x5",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps*/RAmt) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

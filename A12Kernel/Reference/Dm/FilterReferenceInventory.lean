@@ -22,7 +22,8 @@ private def referenceLevels (model : FlatModel) (declaringGroup : GroupPath)
         | none => elaborated "HavingWalk" (.error error : Except ResolveError GroupPath)
   let indexedLevel ← if reference.index.isSome then do
       let some group := model.semanticIndexGroupForPath? path | refuse "HavingWalk" "unresolved index group"
-      pure (some group.level)
+      let some level := group.level? | refuse "HavingWalk" "key over a root or fixed-group index"
+      pure (some level)
     else pure none
   -- Lexical resolution may supply an implicit prefix; authored stars still belong to their
   -- original named suffix. Index metadata remains separate throughout this phase (spec/07 §3).
