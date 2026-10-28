@@ -594,7 +594,7 @@ FieldFilled(id) And CustomCondition NotReverse
 - **It does not exempt the rule from the error-field rule** ([§9](07-repetition-and-iteration.md)): in the example the `FieldFilled(id)` conjunct references the error field, while a **bare** `CustomCondition X` referencing no field is rejected, `MVK_ERROR_FIELD_NOT_REFERENCED`.
 - **In a parallel rule a `CustomCondition` leaf guards no iteration.** Beside a field pair it is admitted under `And`, in either order, while `pair Or CustomCondition X` draws `MVK_PARALLEL_ITERATION_INVALID`, as two negative presence leaves and `pair Or FieldFilled(Note)` do; an `Or` arm pairing a joined read with the leaf, `pair Or ([Supply/Headcount] > 0 And CustomCondition X)`, is admitted.
 
-Sources: [parallel custom condition checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-parallel-custom-condition), [parallel reach checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-k22-parallel-custom-reach).
+Sources: [parallel custom condition checkpoint](../docs/sources/key-join-and-parallel-probes.md#src-parallel-custom-condition), [parallel reach checkpoint](../docs/sources/key-join-and-parallel-probes.md#src-k22-parallel-custom-reach).
 
 ### B.3 The invocation
 
@@ -606,7 +606,7 @@ Sources: [parallel custom condition checkpoint](../docs/sources/model-structure-
 - **The result:** `true` contributes a **VALUE** firing leaf and `false` a `notFired` leaf, after which normal `And`/`Or` composition and rule emission apply ([§12 §3](10-validation-and-polarity.md#3-every-fired-message-is-typed--value-vs-omission-)).
 - **Empty-row eligibility belongs to the complete condition, not to a callback-internal read set the Kernel cannot see.** A `CustomCondition` leaf is structurally classified as able to fire on empty ([§2](03-empty-and-required.md)); the common `FieldFilled(id) And CustomCondition X` form is blocked on an empty row by its `FieldFilled` conjunct, while `CustomCondition X Or FieldFilled(id)` may reach the callback on that row.
 
-Sources: [k22 static s6 checkpoint](../docs/sources/group-count-topology.md#src-k22-static-s6) (`when-filled`), [k22 runtime r7 checkpoint](../docs/sources/group-count-topology.md#src-k22-runtime-r7) (`rB`), [parallel reach checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-k22-parallel-custom-reach).
+Sources: [k22 static s6 checkpoint](../docs/sources/group-count-topology.md#src-k22-static-s6) (`when-filled`), [k22 runtime r7 checkpoint](../docs/sources/group-count-topology.md#src-k22-runtime-r7) (`rB`), [parallel reach checkpoint](../docs/sources/key-join-and-parallel-probes.md#src-k22-parallel-custom-reach).
 
 ### B.4 Registration and reach
 
@@ -615,13 +615,13 @@ Sources: [k22 static s6 checkpoint](../docs/sources/group-count-topology.md#src-
 - **Whether the name is reached follows the two passes of rule evaluation** ([§12 §3.1](10-validation-and-polarity.md#31-truth-testing-and-message-classification)), as a callback's call count does. In a parallel rule, a field pair whose fill quantifier does not fire on a joined row also ends the `And` there.
 - A callback may also throw through the documented host failure route, which is outside this account. Neither a missing registration nor a throw is silently converted into "did not fire".
 
-Sources: [custom-condition call checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-custom-condition-calls), [inbound KF52](../docs/sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation), [parallel reach checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-k22-parallel-custom-reach).
+Sources: [custom-condition call checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-custom-condition-calls), [inbound KF52](../docs/sources/inbound-handbacks.md#inbound-2026-10-09-reconciliation), [parallel reach checkpoint](../docs/sources/key-join-and-parallel-probes.md#src-k22-parallel-custom-reach).
 
 ### B.5 A rule reporting on a group
 
 **On a rule whose error target is a group, every reached `CustomCondition` fails the rule the same way, whatever its name resolves to.** The rule reports its own code once, as a VALUE message with empty referenced and fill-to-fix sets, at the group's first address, whatever the name answers and whether or not it is registered; the callback is never invoked, and the name is never looked up: a factory recording its queries in order sees a field-target rule's name looked up and then called, and the group-target rule's name not at all. This holds on a once and a repeatable rule, with the leaf first or behind a guard, on the branch of an `Or` reached when the other operand does not fire, and beside a join, while a leaf the condition never reaches raises nothing and a field target's leaf is called per row as B.3 says. Partial validation reports no group-target rule ([§12 §5.2](10-validation-and-polarity.md#52-which-rules-run-and-where)).
 
-Sources: [group-target custom abort checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-k22-group-target-custom-abort), [inbound 2026-10-25](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-25).
+Sources: [group-target custom abort checkpoint](../docs/sources/key-join-and-parallel-probes.md#src-k22-group-target-custom-abort), [inbound 2026-10-25](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-25).
 
 ### B.6 The extensibility surface
 

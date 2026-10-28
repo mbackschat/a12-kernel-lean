@@ -37,4 +37,74 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-No entry is pending, answered or rejected; every earlier receipt is retired to the revisions named above.
+<a id="spec-2026-10-28-01"></a>
+### SPEC-2026-10-28-01 — A `−1` maximum leaves the static scale unknown on every carrier measured
+
+- `status`: pending
+- `canonical`: [spec/04 §1.1](../spec/04-numbers-and-decimals.md#11-static-scale-and-the-multiplicative-constant-capability).
+- `delta`: Extends the measured refusal of a `−1`-maximum field at `==` and as a computation source or target from fixed-group rules to minimum 0, `BaseYear`, repeatable rows, `Having`, `$`-correlated and key-joined reads, `MaxValue`, `Sum`, `Min`, `FirstFilledValue` and repeatable targets fed a copy, a constant, `Length` or `NumberOfFilledGroups`, with ordering admitted and the waiver admitting a row copy. `Sum` and one-operand `MaxValue` over a scale-2 field are admitted against `1.00`.
+- `basis`: the [unknown-scale and root-index batch](sources/static-admission-and-class-probes.md#src-unknown-scale-and-root-index), 91 rows measured locally 2026-10-28, Kernel 30.8.1, at the measurement pin `08b0d6499`, each family with a known-scale control.
+- `acceptance`: Reconcile the carrier list; a `−1` maximum with no declared minimum stays unmeasured, so do not claim it.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-28-02"></a>
+### SPEC-2026-10-28-02 — A key over an index nominated on the root or a fixed group is admitted and selects that group's one instance
+
+- `status`: pending
+- `canonical`: [spec/08 §4](../spec/08-paths-and-references.md#4-rows-are-addressed-by-semantic-key-never-by-position-), the key-and-index-group paragraph.
+- `delta`: Replaces "a root- or fixed-indexed chain that crosses no repetition is unmeasured" with its admission on a direct read, a presence read, a starred `Sum` and a row-bound read, and with the runtime selection: an equal stored index reads as unkeyed, a different one reads empty, an empty one fires neither the condition nor its negation and draws `mandatoryField`.
+- `basis`: the [unknown-scale and root-index batch](sources/static-admission-and-class-probes.md#src-unknown-scale-and-root-index) (`ug` rows) and the [runtime open-cells probe](sources/model-structure-and-declaration-probes.md#src-runtime-open-cells) (`ixroot-*`, `ixfix-*`), measured locally 2026-10-28, Kernel 30.8.1, at the measurement pin `08b0d6499`, both engines agreeing.
+- `acceptance`: Reconcile the static and runtime rows; reads through a further keyed level and message parameters over such an index are unmeasured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-28-03"></a>
+### SPEC-2026-10-28-03 — A nominated non-repeatable index field reaches the computation prepass and draws nothing without content
+
+- `status`: pending
+- `canonical`: [spec/03 B.4](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique).
+- `delta`: Adds that a present group holding nothing, or only the nominated field as `null`, draws no `mandatoryField`, and that a computation reading the empty nominated field of a group holding other content reports `mandatoryField` among its operand errors and stores nothing.
+- `basis`: the [runtime open-cells probe](sources/model-structure-and-declaration-probes.md#src-runtime-open-cells) (`hold-*` rows), measured locally 2026-10-28, Kernel 30.8.1, at the measurement pin `08b0d6499`.
+- `acceptance`: Reconcile the `hold-*` rows; the third state the finding then puts the cell in is SPEC-2026-10-28-06's.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-28-04"></a>
+### SPEC-2026-10-28-04 — An arithmetic dependent of an instance skipped at its own row's key is cleared
+
+- `status`: pending
+- `canonical`: [spec/09 §5.4](../spec/09-computations.md#54-parallel-joins).
+- `delta`: Moves the dependents of an instance skipped at its own row's duplicated key from unmeasured to cleared on an arithmetic dependent, and records that String and Enumeration copies and a Date shift of a skipped target clear without separating poison from emptiness.
+- `basis`: the [runtime open-cells probe](sources/model-structure-and-declaration-probes.md#src-runtime-open-cells) (`join-*` rows), measured locally 2026-10-28, Kernel 30.8.1, at the measurement pin `08b0d6499`.
+- `acceptance`: Reconcile the `join-own-duplicate` row; dependents of an over-capacity skip stay unmeasured, since the probe's over-capacity row also duplicates keys.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-28-05"></a>
+### SPEC-2026-10-28-05 — Operand-list `Min`/`Max`, `Abs`, the value field forms, `Length` and a filtered count are typed as their polarity rows state
+
+- `status`: pending
+- `canonical`: [spec/10 §4](../spec/10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing).
+- `delta`: Moves the operand-list `Min`/`Max` and `Abs` rows, the `AbsValue` and `RoundAccountingValue` field forms, the `Length` seed and the headroom arm of `filled shrink` from unmeasured to measured, with the separating `Max` row firing VALUE where an either-operand shrink would fire OMISSION.
+- `basis`: the [runtime open-cells probe](sources/model-structure-and-declaration-probes.md#src-runtime-open-cells) (`fill-*` rows), measured locally 2026-10-28, Kernel 30.8.1, at the measurement pin `08b0d6499`.
+- `acceptance`: Reconcile the `fill-*` rows against the table; more than two operand-list operands stay unmeasured.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-28-06"></a>
+### SPEC-2026-10-28-06 — An empty or duplicated index cell is unknown to authored rules and poisons computation
+
+- `status`: pending
+- `canonical`: [spec/03 B.4](../spec/03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique), with its consequences in [spec/02 B.3](../spec/02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state), the [spec/03 B.2](../spec/03-empty-and-required.md#b2-required-manifests-as-a-formal-error) asymmetry and the prepass clause of [spec/09 §3.3](../spec/09-computations.md#33-what-compute-reports).
+- `delta`: Adds the index field's generated mandatory finding as a third-state producer that, unlike the required checkbox's, is not validation-scoped: an authored rule reads an empty nominated or repeatable key and both participants of a duplicated key as unknown, and a computation reading the empty key clears its target while its generated rule stays silent.
+- `basis`: the [runtime open-cells probe](sources/model-structure-and-declaration-probes.md#src-runtime-open-cells) (`q-*` rows of `request-rules.json`, `hold-key-empty-seeded` of `request-prepass.json`), measured locally 2026-10-28, Kernel 30.8.1, at the measurement pin `08b0d6499`.
+- `acceptance`: Reconcile the `q-*` and `hold-key-empty-seeded` rows; partial validation's reads of these cells are not covered.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.

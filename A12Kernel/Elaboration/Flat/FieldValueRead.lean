@@ -4,7 +4,7 @@ import A12Kernel.Elaboration.Flat.ComputationBinding
 
 The field-value read `[…]` is one grammar production, and the Kernel asks its gates as the bracket
 closes, whatever construct stands around it
-([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-grid)).
 This module owns them once, so a bracket site asks them after its own resolution instead of carrying
 a copy. A starred bracket is not spelled by `SurfaceFieldPath`, so the star gate
 has no surface here.
@@ -14,7 +14,7 @@ namespace A12Kernel
 
 /-- The value gates of the field-value read `[…]`, asked of the declaration it resolved to: a raw
     String and a partially known Date are each refused a value read
-    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)). -/
+    ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-grid)). -/
 def FlatFieldDecl.fieldValueReadRefusal? (declaration : FlatFieldDecl) : Option ResolveError :=
   if declaration.isRawString then some (.rawFieldValueRead declaration.path)
   else if declaration.isPartiallyKnownDate then some (.partialDateFieldValueRead declaration.path)
@@ -54,7 +54,7 @@ def displaceGroupRead (resolved : Except ResolveError FlatFieldDecl)
 
 /-- The gates the field-value read `[…]` asks of the entity it names once its bracket closes, after
     the reader's own classes ([`kf473`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf473),
-    [checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)):
+    [checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-grid)):
     the group gate, then the two value gates. A caller reading two operands checks the first before
     resolving the second, which is why the Kernel names the left read's class. -/
 def checkFieldValueRead (resolved : Except ResolveError FlatFieldDecl)
@@ -102,7 +102,7 @@ def FlatModel.resolveFieldValueRead (model : FlatModel) (declaringGroup : GroupP
     parameters taking it by the same gate. A raw String and a partially known Date meet each
     operator's own gates: `Length` has a raw class of its own, the two conversions refuse both with
     their own classes, and a Date meets the membership's kind gate before any date gate
-    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 def FlatModel.resolveEntityRead (model : FlatModel) (declaringGroup : GroupPath)
     (reference : SurfaceFieldPath) (writtenGroup : GroupPath := declaringGroup) :
     Except ResolveError FlatFieldDecl :=
@@ -112,7 +112,7 @@ def FlatModel.resolveEntityRead (model : FlatModel) (declaringGroup : GroupPath)
 /-- A rule's category read `[F -> C]`: the group gate, then a field declaring no Enumeration draws
     the non-Enumeration class ahead of the category's own lookup and of the field's value gates
     ([`kf359`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf359),
-    [checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+    [checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
     A raw String, a partially known Date and a full Date all draw that class, so no value gate is
     asked of a category read. -/
 def FlatModel.resolveCategoryRead (model : FlatModel) (declaringGroup : GroupPath)
@@ -135,7 +135,7 @@ def FlatModel.resolveProjectedFieldValueRead (model : FlatModel) (declaringGroup
 /-- Class a computation's read whose path names a group: its target's scope binds the read, so a
     group meets the walk from there before the group class. A level the walk passes, such as the
     target's own group, falls through to the group class, as a rule's does at `refusedReadLevel?`
-    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 def FlatModel.computationGroupRead (model : FlatModel) (declaringGroup targetGroup : GroupPath)
     (reference : SurfaceFieldPath) : Unit → Option (GroupPath × Option UnboundOperandLevel) :=
   fun _ => (model.groupNamedBy? declaringGroup reference).map fun group =>
@@ -144,10 +144,10 @@ def FlatModel.computationGroupRead (model : FlatModel) (declaringGroup targetGro
 
 /-- A computation's field-value read, bound by its target's scope, whose gates are measured on a String, an
     Enumeration, a Time and a Number target
-    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-carriers)).
+    ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-carriers)).
     Its target's scope binds its reads, so a group read meets the walk from there before the group
     class: an unstarred repeatable group draws the missing-star class on a Number and a String target
-    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)). -/
+    ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites)). -/
 def FlatModel.resolveComputationFieldValueRead (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl :=
@@ -160,7 +160,7 @@ def FlatModel.resolveComputationFieldValueRead (model : FlatModel)
     `Length`, `FieldValueAsNumber`, `RangeAsNumber` and a DateRange bound's field into a Number target
     and inside `FieldValueAsString` into a String target, and an unstarred repeatable group the
     missing-star class inside `FieldValueAsNumber` and `FieldValueAsString`
-    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 def FlatModel.resolveComputationEntityRead (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except ResolveError FlatFieldDecl :=

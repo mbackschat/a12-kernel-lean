@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Rows/RTZ",
+ "alternatives": [
+  {
+   "operation": "[RQty]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

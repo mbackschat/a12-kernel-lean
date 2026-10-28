@@ -401,7 +401,7 @@ def resolveFieldEntityOperandIn (model : FlatModel)
   -- A category read of a field declaring no Enumeration draws the read's own class, after the walk
   -- as a bracketed category read does. It is measured inside `Sum`, the two DateRange overlaps,
   -- `FieldValuesNotUnique` and the value list, and every other list sharing this shape asks it on
-  -- that account ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+  -- that account ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
   -- A category its Enumeration does not declare draws `MVK_CATEGORY_UNKOWN` at the same read, ahead of every list
   -- gate: it is the second gate of the category check the non-Enumeration class opens
   -- ([`kf359`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf359)), and beside a Number in a value

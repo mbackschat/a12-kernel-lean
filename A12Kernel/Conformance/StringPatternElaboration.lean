@@ -174,7 +174,7 @@ example :
 
 /- Pattern-source stages share one exact Kernel class, the measured wrong-left-kind class stays
 distinct, and a raw field is the field-value read's raw refusal
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)). -/
+([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites)). -/
 example :
     diagnosticOf (elaborateStringPatternCondition compilePattern model ["Claim"]
       (condition)) = none ∧

@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Rows/RTU",
+ "alternatives": [
+  {
+   "operation": "RoundAccounting([RNK], 2)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

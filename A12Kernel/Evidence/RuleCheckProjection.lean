@@ -81,6 +81,7 @@ def captures : List (String × String × String) := [
   ("captures/k22-static-s5-2026-10-24/slots/obs.json", "captures/k22-static-s4-2026-10-24/K22u_DM.json", "captures/k22-static-s5-2026-10-24/slots/ops.json"),
   ("captures/k22-static-s6-2026-10-24/obs.json", "captures/k22-static-s4-2026-10-24/K22u_DM.json", "captures/k22-static-s6-2026-10-24/ops.json"),
   ("captures/k22-static-s7-2026-10-24/obs.json", "captures/k22-static-s4-2026-10-24/K22u_DM.json", "captures/k22-static-s7-2026-10-24/ops.json"),
+  ("captures/unknown-scale-and-root-index-2026-10-28/obs.json", "captures/unknown-scale-and-root-index-2026-10-28/U28_DM.json", "captures/unknown-scale-and-root-index-2026-10-28/ops.json"),
   ("captures/field-value-read-remaining-sites/observations-grid.json", "captures/field-value-read-remaining-sites/Grid25h_DM.json", "captures/field-value-read-remaining-sites/ops-grid.json"),
   ("captures/field-value-read-predictions/observations-grid2.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid2.json"),
   ("captures/field-value-read-predictions/observations-grid3.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid3.json"),
@@ -285,7 +286,15 @@ def deferred : List (String × String) := [
   ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus-abs", "host pattern compiler, SG7"),
   ("pattern-and-key-resolver-classes/obs-review.json#pv-unique", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus", "host pattern compiler, SG7")]
+  ("pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus", "host pattern compiler, SG7"),
+  ("unknown-scale-and-root-index-2026-10-28/obs.json#ug2", "key over a root or fixed-group index, SG9"),
+  ("unknown-scale-and-root-index-2026-10-28/obs.json#ug3", "key over a root or fixed-group index, SG9"),
+  ("unknown-scale-and-root-index-2026-10-28/obs.json#ug4", "key over a root or fixed-group index, SG9"),
+  ("unknown-scale-and-root-index-2026-10-28/obs.json#ug6", "key over a root or fixed-group index, SG9"),
+  ("unknown-scale-and-root-index-2026-10-28/obs.json#ug9", "key over a root or fixed-group index, SG9"),
+  ("unknown-scale-and-root-index-2026-10-28/obs.json#ug10", "key over a root or fixed-group index, SG9"),
+  ("unknown-scale-and-root-index-2026-10-28/obs.json#ug11", "key over a root or fixed-group index, SG9"),
+  ("unknown-scale-and-root-index-2026-10-28/obs.json#ug13", "key over a root or fixed-group index, SG9")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with
@@ -369,7 +378,8 @@ private def requestedComputation (spec : Json) : DmComputation :=
       precondition := (alternative.getObjValAs? String "precondition").toOption
       operation := (alternative.getObjValAs? String "operation").toOption.getD ""
       toleranceRangeOp := (alternative.getObjValAs? String "toleranceRangeOp").toOption }
-  { group, name := "Probe", alternatives, errorCodesToSuppress := []
+  { group, name := "Probe", alternatives
+    errorCodesToSuppress := ((spec.getObjValAs? (Array String) "errorCodesToSuppress").toOption.getD #[]).toList
     targetRelPath := String.intercalate "/" (List.replicate ups ".." ++ field.drop shared)
     commonPrecondition := (spec.getObjValAs? String "commonPrecondition").toOption }
 

@@ -86,10 +86,10 @@ def assembleResolvedFlatRule (model : FlatModel)
           (Option (List RepeatableLevel))))
     condition (.field errorField) errorCode severity messagePlan
 
-/-- The condition leaves a rule reporting on a group admits. The [group-target checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
+/-- The condition leaves a rule reporting on a group admits. The [group-target checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join)
 measures field and group presence and a starred `Sum`; the other flat and ordered numeric leaves
 reuse its first-row read of the unindexed level unmeasured. A custom condition is admitted and fails
-when reached ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-group-target-custom-abort)). -/
+when reached ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-k22-group-target-custom-abort)). -/
 private def ValidationConditionLeaf.supportsGroupTarget : ValidationConditionLeaf model → Bool
   | .flat _ | .repeatableFieldPresence _ _ | .groupPresence _ _ | .orderedNumeric _ _
   | .customCondition _ => true
@@ -163,7 +163,7 @@ def assembleResolvedValidationRuleFor (model : FlatModel)
           | .group _ => finish rule
 where
   /-- A group target's own level is not checked: the Kernel judges only the levels above the
-  entity ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+  entity ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join),
   `group-level` row `t6`). -/
   finish (rule : CheckedResolvedValidationRule model) :
       Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=

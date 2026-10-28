@@ -38,7 +38,7 @@ structure AddressedValidationEvaluationContext (model : FlatModel) where
   /-- Levels `outer` pins to their first row without iterating them: a repeating group error
   target's own level. A field read there takes the pinned row, while the presence of the group
   whose own level it is reads every row
-  ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+  ([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join),
   `group-target` and `group-level`). -/
   unindexed : List RepeatableLevel := []
 

@@ -1,0 +1,17 @@
+{
+ "computedField": "/Shop/Rows/RT2",
+ "alternatives": [
+  {
+   "operation": "[RNU]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ],
+ "errorCodesToSuppress": [
+  "MVK_INVALID_COMPARE_DEC_PLACES"
+ ]
+}

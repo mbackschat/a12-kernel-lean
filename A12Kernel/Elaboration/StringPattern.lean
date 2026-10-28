@@ -263,7 +263,7 @@ def elaborateStringPatternCondition (compilePattern : StringPatternCompiler)
   | .error error => .error (.model error)
   | .ok () => do
       -- The pattern's field is a field-value read, whose gates answer ahead of the kind gate below
-      -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
+      -- ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites)).
       let declaration ←
         (checkFieldValueRead (do
           let declaration ← model.resolveFieldDeclarationUnchecked rowGroup surface.field

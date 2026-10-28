@@ -12,7 +12,7 @@ namespace A12Kernel
 /-- Where a rule's error entity sits. A field keeps its declaration. A group sits at its own path with
 every repeatable level of that path; when the group itself repeats, its own level is not iterated: the
 pointer names its first row, a field read at that level reads that row, and the group's own presence
-reads every row ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+reads every row ([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join),
 `group-target` and `group-level`). -/
 inductive RuleErrorPlacement where
   | field (declaration : FlatFieldDecl)

@@ -262,7 +262,7 @@ def certifyDirectTokenOperand (model : FlatModel)
           throw (.enumerationOperand declaration.path (.unknownCategory name))
       -- The category read's own class, ahead of the slot's value and kind gates. The stored form's
       -- shape asks it first as each operand is read; the projected form reaches it here, after every
-      -- operand resolves ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+      -- operand resolves ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
       | _, .category _ =>
           throw (.shape (.resolve (.categoryReadOfNonEnumeration declaration.path)))
       | _, .stored =>

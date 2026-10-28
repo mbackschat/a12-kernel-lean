@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Rows/RCost",
+ "alternatives": [
+  {
+   "operation": "NumberOfFilledGroups(Fix, Fix2)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

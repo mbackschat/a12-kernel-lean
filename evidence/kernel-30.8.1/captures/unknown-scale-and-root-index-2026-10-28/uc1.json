@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Rows/RT2",
+ "alternatives": [
+  {
+   "operation": "[RNU]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

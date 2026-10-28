@@ -161,7 +161,7 @@ def checkAddressedNumericTarget
     source asks the group gate every read shares, from the target's scope, so a group draws the group
     class on a bracket read and on an operator's parameter alike; a bracket read's value gates are the
     direct source's, since an operator's parameter meets its operator's own
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 def checkAddressedNumericPlacement
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (sourceReference : SurfaceFieldPath) :

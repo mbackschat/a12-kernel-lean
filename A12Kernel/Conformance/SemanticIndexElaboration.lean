@@ -494,9 +494,9 @@ example :
       (fun _ => .presentEmpty)
       (fun _ => .parsed (.num 7))
     (checked.lookupValue context emptyKeyContext .validation).toOption =
-        some (.unknown .required) ∧
+        some (.unknown .indexRequired) ∧
       (checked.lookupValue context emptyKeyContext .computation).toOption =
-        some (.poison .required) := by
+        some (.poison .indexRequired) := by
   native_decide
 
 /- A checked clean no-match reaches the established signed Number empty projection and comparison polarity. -/

@@ -116,7 +116,7 @@ def admitNumberAsStringField
 
 /-- Resolve one legal Number field at its target scope for `FieldValueAsString`, a parameter asking the group
     gate alone: its raw String draws the conversion's Number class rather than the raw one
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 def elaborateNumberAsStringField (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (reference : SurfaceFieldPath) :
     Except StringComputationElabError FieldId := do

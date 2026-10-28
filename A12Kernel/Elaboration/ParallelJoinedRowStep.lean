@@ -7,7 +7,7 @@ A computation into a String, temporal or Enumeration field of an indexed repeata
 its key matches in a parallel group, as a joined Number computation does (spec/09 §5). Each target row
 is evaluated once with that partner row bound beside it: a copy of a partner field takes the partner's
 value, and an unmatched key or an empty partner field clears the target
-([joined-carrier checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-joined-carrier-admission),
+([joined-carrier checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-joined-carrier-admission),
 rows `t01`–`t03`).
 
 The operation is certified against the instance view of the target's joined groups, where each joined
@@ -19,11 +19,14 @@ their keys and their partner rows come from the same key joins.
 An invalid-index or over-limit row clears without a guard or operand read, the joined Number
 carrier's disposition, measured for String, Date and Enumeration targets on duplicated and empty
 keys and on a row beyond capacity
-([joined-computation checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-joined-computations)).
+([joined-computation checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-k22-joined-computations)).
 An invalid-index row is also poisoned for later readers, as the Number carrier's is (measured on Number
-targets, a12-dmkits `fecf8552`, `JoinedInstanceSkipDependentDiffTest`); no String, temporal or Enumeration
-dependent is measured. A row over capacity stays a clean clear.
-An Enumeration copy reads the partner's stored token as the fixed Enumeration carrier reads a field.
+targets, a12-dmkits `fecf8552`, `JoinedInstanceSkipDependentDiffTest`). A String or Enumeration copy
+and a Date shift of a skipped target clear, as an empty read would, so their poison is not separated
+(runtime-open-cells-2026-10-28). A row over capacity stays a clean clear.
+An Enumeration copy reads the partner's stored token as the fixed Enumeration carrier reads a field; into
+a target nested below an unjoined repeatable group it is the addressed carrier's source, read through the
+instance's context.
 
 Separate declarations into one joined target form one first-selected table in declaration order. A
 declaration that reads no partner field joins it as a `bound` operation and never stores a value:
@@ -49,6 +52,9 @@ inductive ParallelJoinedRowOperation (view : FlatModel) where
   | string (operation : CheckedRowStringExpression view)
   | temporal (operation : CheckedTemporalExpressionComputation view)
   | enumeration (operation : CheckedEnumerationComputationOperation view)
+  /-- An Enumeration copy into a target whose scope continues above its joined group, which the
+  instance view keeps repeatable. -/
+  | rowEnumeration (operation : CheckedAddressedEnumerationComputation view)
   | bound (target : FieldId) (family : DocumentTargetFamily) (reads : ComputationReadFootprint)
 
 namespace ParallelJoinedRowOperation
@@ -57,12 +63,13 @@ def target : ParallelJoinedRowOperation view → FieldId
   | .string operation => operation.targetField
   | .temporal operation => operation.target
   | .enumeration operation => operation.target.field
+  | .rowEnumeration operation => operation.target.field
   | .bound target _ _ => target
 
 def family : ParallelJoinedRowOperation view → DocumentTargetFamily
   | .string _ => .string
   | .temporal operation => operation.family
-  | .enumeration _ => .enumeration
+  | .enumeration _ | .rowEnumeration _ => .enumeration
   | .bound _ family _ => family
 
 /-- Field identities are the model's, since the instance view keeps every field. -/
@@ -71,6 +78,7 @@ def referencesWith (field : FieldId) (filterReads : CorrelatedHaving → Bool) :
   | .string operation => operation.expression.referencesField field
   | .temporal operation => operation.expression.referencesWith field filterReads
   | .enumeration operation => operation.source.referencesField field
+  | .rowEnumeration operation => operation.source.referencesField field
   | .bound _ _ reads => reads.references field
 
 def requiresProducer (target field : FieldId) (producerProtected : FieldId → ResolvedGroupReference → Bool) :
@@ -87,6 +95,9 @@ def evaluateIn (matchers : StringTargetMatchers) (context : ScalarComputationCon
   | .temporal operation => operation.run context |>.mapError .readBack
   | .enumeration operation =>
       let outcome := (operation.source.evaluate { read := context.read }).asExactStringTargetOutcome
+      pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
+  | .rowEnumeration operation =>
+      let outcome := (operation.evaluateIn context.read).asExactStringTargetOutcome
       pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
   -- Never selected: `execute` scans only the joined alternatives.
   | .bound _ family _ => pure (family.noValue, DocumentComputationReadBack.empty)

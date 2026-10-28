@@ -1,0 +1,1317 @@
+[
+ {
+  "id": "ua1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ua1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NU] == 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ua2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ua2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NK] == 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ua3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ua3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NU] > 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ua4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ua4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NZ] == 1",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ua5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ua5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NK] ^ [NZ] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ua6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ua6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NK] ^ [Amount] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ua7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "ua7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ua8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "ua8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ua9",
+  "verb": "computation",
+  "args": [
+   "add",
+   "ua9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ub1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ub1",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [RNU] == 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ub2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ub2",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [RNK] == 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ub3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ub3",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [RNU] > 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ub4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ub4",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [RNU] == [RNK]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ub5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ub5",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [RNK] == [RPrice]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ub6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ub6",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [RNK] ^ [RNZ] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ub7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ub7",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop/Rows",
+   "--condition",
+   "FieldFilled(RLabel) And [RNK] ^ [RQty] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uc1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc8",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc8.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc9",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc9.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc10",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc10.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc11",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc11.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc12",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc12.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc13",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc13.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc14",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc14.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc15",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc15.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc16",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc16.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc17",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc17.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc18",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc18.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "uc19",
+  "verb": "computation",
+  "args": [
+   "add",
+   "uc19.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ud1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "ud1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ud2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "ud2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ud3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "ud3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ud4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "ud4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ud5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "ud5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ud6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "ud6.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ud7",
+  "verb": "computation",
+  "args": [
+   "add",
+   "ud7.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "ue1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ue1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RNU] == 1.00) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ue2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ue2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RNK] == 1.00) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ue3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ue3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RNU] > 1.00) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ue4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ue4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RNU] == [Rows/RNK]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ue5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ue5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RNK] == [Rows/RPrice]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ue6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ue6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RQty Having [Rows/RNU] == [Rows/RNU]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ue7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ue7",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And MaxValue(Rows*/RQty Having [Rows/RNU] == [$Rows/RNU]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ue8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ue8",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And MaxValue(Rows*/RQty Having [Rows/RNK] == [$Rows/RNK]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ue9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ue9",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And MaxValue(Rows*/RQty Having [Rows/RNK] == [$Rows/RNU]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ue10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ue10",
+   "--field",
+   "/Shop/Rows/RLabel",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Rows/RLabel) And MaxValue(Rows*/RQty Having [Rows/RNU] > [$Rows/RNU]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf1",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RNU) == 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf2",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RNK) == 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf3",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And MaxValue(Rows*/RNU) > 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf4",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RNU) == 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf5",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And Sum(Rows*/RNK) == 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf6",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NZ] == BaseYear",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf7",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [Amount] == BaseYear",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf8",
+   "--field",
+   "/Shop/Title",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Title) And [NZ] > BaseYear",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf9",
+   "--field",
+   "/Shop/Lines/LNote",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Lines/LNote) And [Lines/LNU] == [Lines2/L2K]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf10",
+   "--field",
+   "/Shop/Lines/LNote",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Lines/LNote) And [Lines/LNK] == [Lines2/L2K]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf11",
+   "--field",
+   "/Shop/Lines/LNote",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Lines/LNote) And [Lines/LNU] > [Lines2/L2K]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uf12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uf12",
+   "--field",
+   "/Shop/Lines/LNote",
+   "--group",
+   "/Shop",
+   "--condition",
+   "FieldFilled(Lines/LNote) And [Lines/LNU] == 1.00",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug1",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps/RAmt For \"X\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug2",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug3",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And FieldFilled(Cover/CNote For \"X\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug4",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug5",
+   "--field",
+   "/IxRoot/Note",
+   "--group",
+   "/IxRoot",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps*/RAmt) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug6",
+   "--field",
+   "/IxRoot/Cover/Reps/RLab",
+   "--group",
+   "/IxRoot/Cover/Reps",
+   "--condition",
+   "FieldFilled(RLab) And [RAmt For \"X\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug7",
+   "--field",
+   "/IxRoot/Cover/Reps/RLab",
+   "--group",
+   "/IxRoot/Cover/Reps",
+   "--condition",
+   "FieldFilled(RLab) And [RAmt] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug8",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps/RAmt For \"X\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug9",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug10",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And FieldFilled(Cover/CNote For \"X\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug11",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug12",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug12",
+   "--field",
+   "/IxFix/Note",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps*/RAmt) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug13",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug13",
+   "--field",
+   "/IxFix/Cover/Reps/RLab",
+   "--group",
+   "/IxFix/Cover/Reps",
+   "--condition",
+   "FieldFilled(RLab) And [RAmt For \"X\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug14",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug14",
+   "--field",
+   "/IxFix/Cover/Reps/RLab",
+   "--group",
+   "/IxFix/Cover/Reps",
+   "--condition",
+   "FieldFilled(RLab) And [RAmt] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug15",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug15",
+   "--field",
+   "/IxNone/Note",
+   "--group",
+   "/IxNone",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps/RAmt For \"X\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug16",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug16",
+   "--field",
+   "/IxNone/Note",
+   "--group",
+   "/IxNone",
+   "--condition",
+   "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug17",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug17",
+   "--field",
+   "/IxNone/Note",
+   "--group",
+   "/IxNone",
+   "--condition",
+   "FieldFilled(Note) And FieldFilled(Cover/CNote For \"X\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug18",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug18",
+   "--field",
+   "/IxNone/Note",
+   "--group",
+   "/IxNone",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug19",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug19",
+   "--field",
+   "/IxNone/Note",
+   "--group",
+   "/IxNone",
+   "--condition",
+   "FieldFilled(Note) And Sum(Cover/Reps*/RAmt) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug20",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug20",
+   "--field",
+   "/IxNone/Cover/Reps/RLab",
+   "--group",
+   "/IxNone/Cover/Reps",
+   "--condition",
+   "FieldFilled(RLab) And [RAmt For \"X\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "ug21",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "ug21",
+   "--field",
+   "/IxNone/Cover/Reps/RLab",
+   "--group",
+   "/IxNone/Cover/Reps",
+   "--condition",
+   "FieldFilled(RLab) And [RAmt] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "uh1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uh1",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop/Items",
+   "--condition",
+   "FieldFilled(ILabel) And Sum(/Shop/Items*/IQty) > 0",
+   "--message",
+   "en_US=k $index(ItemNo)$"
+  ]
+ },
+ {
+  "id": "uh2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uh2",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop/Items",
+   "--condition",
+   "FieldFilled(ILabel) And Sum(/Shop/Items*/IQty) > 0",
+   "--message",
+   "en_US=k $index(ItemNo).value$"
+  ]
+ },
+ {
+  "id": "uh3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uh3",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop/Items",
+   "--condition",
+   "FieldFilled(ILabel) And [IQty] > 0",
+   "--message",
+   "en_US=k $index(ItemNo)$"
+  ]
+ },
+ {
+  "id": "uh4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uh4",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop/Items",
+   "--condition",
+   "FieldFilled(ILabel) And [IQty] > 0",
+   "--message",
+   "en_US=k $index(ItemNo).value$"
+  ]
+ },
+ {
+  "id": "uh5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uh5",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop/Items",
+   "--condition",
+   "FieldFilled(ILabel) And [/Shop/Items/IQty For \"a\"] > 0",
+   "--message",
+   "en_US=k $index(ItemNo)$"
+  ]
+ },
+ {
+  "id": "uh6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "uh6",
+   "--field",
+   "/Shop/Items/ILabel",
+   "--group",
+   "/Shop/Items",
+   "--condition",
+   "FieldFilled(ILabel) And [/Shop/Items/IQty For \"a\"] > 0",
+   "--message",
+   "en_US=k $index(ItemNo).value$"
+  ]
+ }
+]

@@ -58,7 +58,7 @@ inductive CustomConditionLookupError where
   /-- A rule reporting on a group: every reached call fails without invoking a callback, whatever the
   name or its registered answer. The measured outcomes do not separate a failure before the lookup
   from one after it, so the peer's account of the cause (KF615) is not adopted
-  ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-group-target-custom-abort)). -/
+  ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-k22-group-target-custom-abort)). -/
   | groupErrorEntity
   deriving Repr, DecidableEq
 

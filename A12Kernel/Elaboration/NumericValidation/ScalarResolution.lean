@@ -264,7 +264,7 @@ private def resolveAddressedNumericDeclaration (model : FlatModel)
 
 /-- The group gate a field read and an operator's field parameter ask first here: a bracket read's value gates follow it,
     while an operator parameter meets its operator's own gates instead
-    ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 private def addressedEntityResolution (model : FlatModel) (declaringGroup rowGroup : GroupPath)
     (reference : SurfaceFieldPath) : Except ResolveError FlatFieldDecl :=
   displaceGroupRead (model.resolveFieldDeclarationUnchecked declaringGroup reference)

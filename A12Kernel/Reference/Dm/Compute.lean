@@ -415,6 +415,7 @@ private def lowerJoinedRows (language : Language) (model : FlatModel) (computati
     | .stringExpression operation => pure (ParallelJoinedRowOperation.string operation)
     | .temporalExpression operation => pure (.temporal operation)
     | .fixedEnumeration operation => pure (.enumeration operation)
+    | .enumeration operation => pure (.rowEnumeration operation)
     | _ => refuse "ParallelRows" "operation"
   let alternatives := (guards.zip operations).map fun (precondition, operation) =>
     ({ precondition, operation } : ParallelJoinedRowAlternative model joined)

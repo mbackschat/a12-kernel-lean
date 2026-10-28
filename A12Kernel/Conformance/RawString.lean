@@ -175,7 +175,7 @@ example :
   native_decide
 
 /- **`Length`'s parameter asks the group gate on both routes**
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
    Nested beside a presence, as rows `b6`, `l2` and `l1` read it, a fixed group draws the group class
    on either side of the comparison and an unstarred repeatable group the missing-star class. The
    whole-condition max-length route asks the same gate before recognizing its shape, which no row

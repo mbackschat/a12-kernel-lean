@@ -131,7 +131,7 @@ end MessageRenderPlan
 
 /-- The entity a rule reports on. A rule may name a group as well as a field; its message then
 points at the group itself, at its first row when the group repeats
-([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)). -/
+([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join)). -/
 inductive RuleErrorEntity where
   | field (id : FieldId)
   | group (path : GroupPath)

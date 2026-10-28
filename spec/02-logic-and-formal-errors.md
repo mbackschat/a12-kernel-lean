@@ -369,7 +369,7 @@ Sources: [K21 consumer-readiness checkpoint](../docs/sources/consumer-readiness-
 
 **Rule.** A cell is in one of three states: **empty**, **filled**, or **not-check-relevant**. A cell is not-check-relevant while it carries a formal finding from one of the producers in [B.3](#b3-what-puts-a-cell-in-the-third-state); it need not hold a value, since requiredness annotates an empty cell and over-repetition stamps written cells whatever they hold. Two refinements:
 
-- The required finding is validation-scoped: computation reads a required-and-empty cell as plain empty.
+- The required checkbox's finding is validation-scoped: computation reads a required-and-empty cell as plain empty. The index field's generated mandatory finding is not (B.3).
 - Non-relevance under partial validation is not a cell state. The field-fill tally counts a non-relevant cell with the unavailable ones ([A.4.4](#a44-validation-the-unfiltered-field-fill-tally)); [§12 §5.3](10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set) owns how each other consumer treats it.
 
 The empty-value substitutions of [§2](03-empty-and-required.md) apply to the empty state only. A third-state cell answers UNKNOWN in validation and poison in computation, and each consumer class lands it differently:
@@ -406,6 +406,7 @@ Sources: [checked String ingestion checkpoint](../docs/sources/domain-ingestion-
 | **a declared-constraint violation** | range, length, pattern, digit counts, enumeration domain: a parseable but out-of-bounds value is exactly as invalid as an unparseable one |
 | **a registered custom field-validator rejection** | one project-coded formal observation reused by every consumer of that relevant concrete-valued cell ([§7](06-strings-and-enumerations.md#a3-custom-field-type-validation), which also owns the reserved report that admits its value) |
 | **the required checkbox on an empty field** ([§4](03-empty-and-required.md)) | after the generated mandatory rule has fired and its hit and message are retained, the empty target is annotated with a validation-scoped required finding; authored validation rules then see UNKNOWN, while computation sees plain empty ([§11](09-computations.md)) |
+| **an empty index field** ([§4](03-empty-and-required.md#b4-the-index-fields-auto-generated-checks--mandatory-and-unique)) | after the generated index mandatory check draws `mandatoryField`, the empty cell is annotated as the required checkbox annotates its target, but the finding is not validation-scoped: a computation reading the cell poisons |
 | **a duplicate index value** | a later model/instance check marks every participating cell, field-locally |
 | **an over-repetition row** | the address-formal check below |
 
@@ -439,7 +440,7 @@ A violated group is the last position of its own address and an interior positio
 
 **Partial validation does not narrow the set.** The check runs before relevance is consulted, so any nonempty relevant selection (the root, an unrelated root field, an unrelated repeatable field) reports the full set, while an empty selection ends the call and reports nothing. This is the exception to the coverage gate that [§12 §5.3](10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set) applies to the rest of the formal channel.
 
-Sources: [occurrence scope](../docs/sources/over-repetition-probes.md#src-over-repetition-occurrence-scope), [position classes](../docs/sources/over-repetition-probes.md#src-address-index-position-classes), [multiplicity](../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity), [attribution](../docs/sources/over-repetition-probes.md#src-nested-over-limit-attribution), [absorption depth](../docs/sources/over-repetition-probes.md#src-over-limit-absorption-depth).
+Sources: [occurrence scope](../docs/sources/over-repetition-probes.md#src-over-repetition-occurrence-scope), [position classes](../docs/sources/over-repetition-probes.md#src-address-index-position-classes), [multiplicity](../docs/sources/over-repetition-probes.md#src-over-limit-finding-multiplicity), [attribution](../docs/sources/over-repetition-probes.md#src-nested-over-limit-attribution), [absorption depth](../docs/sources/over-repetition-probes.md#src-over-limit-absorption-depth), [runtime open-cells probe](../docs/sources/model-structure-and-declaration-probes.md#src-runtime-open-cells).
 
 #### String ingestion boundary
 

@@ -4,7 +4,7 @@ namespace A12Kernel
 
 namespace CheckedParallelFieldPair
 
-/-- Partial dispatch compresses the error field's selectors before ordinary iteration bounds are checked. Concrete joined-row selectors conflict with a parallel bound beside an ordinary outer level or a nested level below the joined group; differing selectors compress to a wildcard. This is a dispatch envelope, not the leaf relevance set (Kernel partial-parallel gate capture, 2026-10-10; [nested-join partial capture](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-nested-join-partial), 2026-10-24). -/
+/-- Partial dispatch compresses the error field's selectors before ordinary iteration bounds are checked. Concrete joined-row selectors conflict with a parallel bound beside an ordinary outer level or a nested level below the joined group; differing selectors compress to a wildcard. This is a dispatch envelope, not the leaf relevance set (Kernel partial-parallel gate capture, 2026-10-10; [nested-join partial capture](../../docs/sources/key-join-and-parallel-probes.md#src-k22-nested-join-partial), 2026-10-24). -/
 def admitsPartialOuter (pair : CheckedParallelFieldPair model)
     (scope : ValidationRelevanceScope) (outer : Env) : Bool :=
   match scope with

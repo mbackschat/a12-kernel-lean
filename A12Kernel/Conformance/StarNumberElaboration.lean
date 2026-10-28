@@ -565,7 +565,7 @@ example :
 
 /- **A body's field-value read of a group draws the group class**, measured on the level the filter
    iterates, on a fixed group
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid))
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-grid))
    and on a repeatable group the filter does not iterate
    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-field-value-read)). A field resolver reports
    the group as a name resolving to nothing, and the reader's missing-star class that the same read
@@ -591,7 +591,7 @@ example :
   native_decide
 
 /- **A partner whose own read fails answers ahead of the ordering gate**, which is raised where the
-   comparison ends ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+   comparison ends ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-grid)).
    A String side against a name resolving to nothing draws the name's class in a filter body, from
    either side, as it does outside one. Asking the refused side's kind before its partner's read would
    name the orderability class for the first. -/

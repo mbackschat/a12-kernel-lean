@@ -1,0 +1,62 @@
+{
+ "model": "R28P_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "hold-key-empty-seeded",
+   "documentInline": {
+    "Hold": {
+     "Out": "9",
+     "Out2": "9",
+     "Sum1": "9",
+     "HAnchor": "h",
+     "Holder": {
+      "HAlt": "5",
+      "HText": "t"
+     },
+     "Plain": {
+      "PAlt": "5"
+     },
+     "Recs": [
+      {
+       "RAlt": "5",
+       "ROut": "9",
+       "RSum": "9"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "hold-key-filled-seeded",
+   "documentInline": {
+    "Hold": {
+     "Out": "9",
+     "Out2": "9",
+     "Sum1": "9",
+     "HAnchor": "h",
+     "Holder": {
+      "HKey": "1",
+      "HAlt": "5"
+     },
+     "Plain": {
+      "PKey": "1",
+      "PAlt": "5"
+     },
+     "Recs": [
+      {
+       "RKey": "1",
+       "RAlt": "5",
+       "ROut": "9",
+       "RSum": "9"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -232,7 +232,8 @@ repetition: the operand's unbound repeatable level answers, with the missing-wil
 operand binds no level of its own, in the rule check `SemanticIndexPinnedLevelLawsTest` at
 a12-dmkits `fecf8552`
 ([inbound](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)). A chain that crosses no
-repetition is not measured. -/
+repetition, a starred operand and a rule bound to the repetition are admitted by the Kernel
+(unknown-scale-and-root-index-2026-10-28, `ug2`–`ug13`); no selection here reads such an index. -/
 def FlatModel.nominatesNonrepeatableIndexOnChain (model : FlatModel) (path : GroupPath) : Bool :=
   model.nonrepeatableIndexFields.any fun (group, _) => group.isPrefixOf path
 
@@ -701,7 +702,7 @@ private def NumberIndexCandidate.resolved
 
 private def NumberIndexCandidate.directUnavailable? :
     NumberIndexCandidate → Option FormalCause
-  | { key := .empty, .. } => some .required
+  | { key := .empty, .. } => some .indexRequired
   | { key := .unknown cause, .. } => some cause
   | _ => none
 

@@ -621,7 +621,7 @@ example : errorOf (elaborate model ["Order"]
 /-! ### The field-value read's gates
 
 A bracketed field read asks the entity it names four gates once its bracket closes, after the
-reader's own classes ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+reader's own classes ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-grid)).
 This carrier has no Kernel projection of its own, so the locks read the resolution failure's class.
 -/
 
@@ -738,7 +738,7 @@ example :
   native_decide
 
 /- **A scalar membership against literals asks its subject's group gate first**, having no members to
-   wait for ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   wait for ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)):
    a fixed group, a bare name naming one while a field elsewhere shares the name, and a root draw the
    group class and an unstarred repeatable group the missing-star class. The Kernel's one construct
    covers the String, Number and Enumeration literal forms this surface splits by kind, and the bare
@@ -767,7 +767,7 @@ example :
   native_decide
 
 /- **`Length`'s parameter asks the group gate alone**
-   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)):
    an unstarred repeatable group draws the missing-star class and a fixed group the group class on
    either side of the comparison, and a name resolving to nothing its own class. A raw String meets
    `Length`'s own raw refusal, which `ElabError.rawStringDiagnostic?` projects rather than this view,
@@ -786,7 +786,7 @@ example :
 
 /- **A multi-field list's group operand is expanded by the Kernel**, which then reports the base-type
    class of the group's fields beside the String
-   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
    This route cannot expand a group and refuses without a class on its String and Number lists, where
    the group class would be the wrong claim; the flat multi-field Enumeration list is an open
    [SG8](../../../docs/gaps/strings-and-messages.md#gap-sg8) partition. An unstarred repeatable group meets the
@@ -804,12 +804,12 @@ example :
 
 /- **A bare name naming a group of the declaring group is a group read, whether one field elsewhere
    shares the name or two do.** The reader takes no short-name fallback for a name its declaring group
-   declares ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)),
+   declares ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites)),
    so the bracket read and the presence operand both draw the group class. Falling back binds the one
    String field, which the presence operand admits, and displacing only a name resolving to nothing
    leaves two fields on the ambiguity class. `Length`'s parameter asks the same group gate, so the
    bare name draws the group class there too, as an absolute path naming a group does
-   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+   ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 example :
     let unique : FlatModel := { readModel with
       fields := readModel.fields ++ [{ noteDecl with id := 30, groupPath := ["Reference"], name := "Ledger" }] }

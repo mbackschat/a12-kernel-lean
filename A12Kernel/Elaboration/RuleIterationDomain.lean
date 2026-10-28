@@ -88,7 +88,7 @@ ordinary capacity rule with the joined level counted once, and occupancy is docu
 joined coordinate merged, so a nested row of another joined row, or of another group at the same
 coordinate, counts; an unmatched joined side visits the same rows
 ([KF603](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf603);
-[checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-nested-join-capacity)).
+[checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-nested-join-capacity)).
 Each result is the coordinate suffix below the joined depth. `none` when a level declares no capacity. -/
 def joinedInnerCoordinates (checked : CheckedDocument model) (errorGroup : GroupPath)
     (joinedDepth : Nat) (stem : List Nat) : Option (List (List Nat)) := do

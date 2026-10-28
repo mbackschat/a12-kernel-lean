@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/TU",
+ "alternatives": [
+  {
+   "operation": "[NK]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

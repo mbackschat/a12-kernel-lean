@@ -5,7 +5,7 @@ namespace A12Kernel
 
 /-- Why a rule reporting on a group is refused. Only `notReferenced` carries a Kernel class, the
 field target's, measured for a field inside the group, above it and beside it
-([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
+([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join)
 rows `t3` and `t5`, [inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
 `declaringGroup` is the measured build failure of a rule reporting on its own group, which carries no
 class (the same inbound). The level and scope refusals mirror the field target's gates without its

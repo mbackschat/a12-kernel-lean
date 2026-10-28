@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/T2",
+ "alternatives": [
+  {
+   "operation": "[NU]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

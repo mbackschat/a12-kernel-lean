@@ -11,7 +11,7 @@ private theorem Except.map_after_mapError
   cases result <;> rfl
 
 @[simp] theorem indexPreliminary_mandatory_contract :
-    IndexPreliminaryKind.mandatory.cause = .required ∧
+    IndexPreliminaryKind.mandatory.cause = .indexRequired ∧
       IndexPreliminaryKind.mandatory.verdict = .fired .omission ∧
       IndexPreliminaryKind.mandatory.errorCode = "mandatoryField" := by
   simp [IndexPreliminaryKind.cause, IndexPreliminaryKind.verdict,

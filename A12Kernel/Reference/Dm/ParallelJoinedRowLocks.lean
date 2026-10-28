@@ -16,6 +16,9 @@ capture's own change or message.
 The documents separate a partner holding the copied field, a partner holding only the other one, and
 a target row without a partner. The capture's one failing guard meets a partner holding neither field,
 so no row separates the guard from the copy.
+
+The last section copies an Enumeration into a target nested below an unjoined repeatable group, a
+reduction of `evidence/kernel-30.8.1/captures/runtime-open-cells-2026-10-28/` (`join-*` rows).
 -/
 
 namespace A12Kernel.Dm.ParallelJoinedRowLocks
@@ -67,8 +70,8 @@ private def staffing (demand supply : List (List (String × String))) : Json :=
     ("Supply", Json.arr (supply.map fun entries => row (entries ++ outs)).toArray)])]
 
 /-- Every reported target change, as `pointer outcome`. -/
-private def computed (document : Json) : Option (List String) := do
-  let dm ← dm?
+private def computed (document : Json) (model? : Option DmModel := dm?) : Option (List String) := do
+  let dm ← model?
   let input ← (readDocument dm document).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
@@ -78,8 +81,8 @@ private def computed (document : Json) : Option (List String) := do
   pure (outcomes.map fun outcome => s!"{outcome.pointer} {outcome.outcome}")
 
 /-- Each generated rule's firings, as `code pointer type`. -/
-private def fired (document : Json) : Option (List String) := do
-  let dm ← dm?
+private def fired (document : Json) (model? : Option DmModel := dm?) : Option (List String) := do
+  let dm ← model?
   let input ← (readDocument dm document).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
@@ -122,5 +125,62 @@ example : fired matched = some [
     "Ct03 Staffing/Supply/OutD1 A12Kernel.Polarity.value",
     "Ct03 Staffing/Supply[2]/OutD1 A12Kernel.Polarity.value"] ∧
   fired sparse = some ["Ct03 Staffing/Supply[2]/OutD1 A12Kernel.Polarity.value"] := by native_decide
+
+/-! ### An Enumeration target nested below an unjoined repeatable group
+
+`Join/Lines/Slots/TKind` copies the `Kind` of the root-level `Refs` row its key matches, and
+`KindCopy` copies `TKind` within its own row. `Lines` repeats but joins nothing, so the instance view
+keeps the target repeatable. Each target is seeded `B`, which no partner holds. -/
+
+private def joinField (path name : String) (fieldType : Json) : Json :=
+  element "Field" s!"{path}/{name}" name [("fieldType", fieldType)]
+
+private def kind : Json := Json.mkObj [("type", "EnumerationType"), ("EnumerationType",
+  Json.mkObj [("values", Json.arr #[Json.mkObj [("value", "A")], Json.mkObj [("value", "B")]])])]
+
+private def slotComputation (name target operation : String) : Json :=
+  element "Computation" s!"/Join/Lines/Slots/{name}" name [("computedFieldRelPath", .str s!"../{target}"),
+    ("computationAlternatives", Json.arr #[Json.mkObj [("operation", .str operation)]]),
+    ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])]
+
+private def nestedDm? : Option DmModel :=
+  let slots := element "Group" "/Join/Lines/Slots" "Slots" [("repeatability", toJson 3),
+    ("indexFieldName", "Key"), ("elements", Json.arr #[joinField "/Join/Lines/Slots" "Key" text,
+      joinField "/Join/Lines/Slots" "TKind" kind, joinField "/Join/Lines/Slots" "KindCopy" kind,
+      slotComputation "CTKind" "TKind" "[../../Refs/Kind]",
+      slotComputation "CKindCopy" "KindCopy" "[TKind]"])]
+  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+    element "Group" "/Join" "Join" [("repeatability", toJson 1), ("elements", Json.arr #[
+      element "Group" "/Join/Refs" "Refs" [("repeatability", toJson 3), ("indexFieldName", "Key"),
+        ("elements", Json.arr #[joinField "/Join/Refs" "Key" text, joinField "/Join/Refs" "Kind" kind])],
+      element "Group" "/Join/Lines" "Lines" [("repeatability", toJson 2),
+        ("elements", Json.arr #[joinField "/Join/Lines" "LNote" text, slots])]])]])])])])).toOption
+
+private def joinDocument (refs : List String) (lines : List (List String)) : Json :=
+  Json.mkObj [("Join", Json.mkObj [
+    ("Refs", Json.arr (refs.map fun key => row [("Key", key), ("Kind", "A")]).toArray),
+    ("Lines", Json.arr (lines.map fun keys => Json.mkObj [("LNote", "l"), ("Slots", Json.arr (keys.map fun key =>
+      row [("Key", key), ("TKind", "B"), ("KindCopy", "B")]).toArray)]).toArray)])]
+
+-- Distinct keys copy the partner's token, and the row copy follows it (`join-distinct`).
+example : (computed (joinDocument ["a", "b"] [["a", "b"]]) nestedDm?).map (·.mergeSort) = some [
+    "Join/Lines/Slots/KindCopy value A", "Join/Lines/Slots/TKind value A",
+    "Join/Lines/Slots[2]/KindCopy value A", "Join/Lines/Slots[2]/TKind value A"] := by native_decide
+
+-- A key repeated within one line clears both of its rows and poisons their row copies, while the
+-- other line still copies (`join-own-duplicate`); an unmatched key clears its row
+-- (`join-own-unmatched`).
+example : (computed (joinDocument ["a", "b"] [["a", "a"], ["b"]]) nestedDm?).map (·.mergeSort) = some [
+    "Join/Lines/Slots/KindCopy cleared", "Join/Lines/Slots/TKind cleared",
+    "Join/Lines/Slots[2]/KindCopy cleared", "Join/Lines/Slots[2]/TKind cleared",
+    "Join/Lines[2]/Slots/KindCopy value A", "Join/Lines[2]/Slots/TKind value A"] ∧
+  (computed (joinDocument ["a", "b"] [["a", "z"]]) nestedDm?).map (·.mergeSort) = some [
+    "Join/Lines/Slots/KindCopy value A", "Join/Lines/Slots/TKind value A",
+    "Join/Lines/Slots[2]/KindCopy cleared", "Join/Lines/Slots[2]/TKind cleared"] := by native_decide
+
+-- The generated rule fires VALUE at each seeded row its copy changes.
+example : (fired (joinDocument ["a", "b"] [["a", "b"]]) nestedDm?).map (·.filter (·.startsWith "CTKind")) = some [
+    "CTKind Join/Lines/Slots/TKind A12Kernel.Polarity.value",
+    "CTKind Join/Lines/Slots[2]/TKind A12Kernel.Polarity.value"] := by native_decide
 
 end A12Kernel.Dm.ParallelJoinedRowLocks

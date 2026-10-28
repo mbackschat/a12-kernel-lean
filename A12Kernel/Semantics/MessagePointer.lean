@@ -10,7 +10,7 @@ namespace A12Kernel
 /-- One repetition coordinate in a partially-known message pointer. Wildcard, unknown and the
 parallel-iteration placeholder are values, not matching operators. The placeholder is the Kernel's
 `-6`, which a reference keeps at a keyed error group's own level beside a join
-([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join),
+([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-keyed-group-beside-join),
 `runtime-keyed`). -/
 inductive MessageRepetitionCoordinate where
   | concrete (index : Nat)

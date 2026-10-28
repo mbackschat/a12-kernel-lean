@@ -125,11 +125,11 @@ private def SurfaceCorrelatedHaving.readsGroupNumber (model : FlatModel) (declar
     second asks the route's placement requirement, as the star route asks its candidate environment
     only after the whole body
     ([`spec/07`](../../spec/07-repetition-and-iteration.md),
-    [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+    [checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-grid)).
     A String leaf, which this route does not represent, still asks its read's gates first. A leaf
     outside the group draws the missing-iteration class only when no leaf reads one of the group's
     Number fields; beside such a leaf the Kernel admits it as a constant
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 private def elaborateHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (group : RepeatableGroupDecl) (authored : SurfaceCorrelatedHaving) :
     Except CorrelationElabError CorrelatedHaving := do
@@ -236,7 +236,7 @@ private def requireOuterFieldAvailable (origin : HavingOrigin) (outerLevels : Li
 
 /-- A filter body's field-value read, with the gates its bracket asks as it closes. A path naming a
     group draws the group class, measured on the level the filter iterates, on a fixed group
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid))
+    ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-grid))
     and on a repeatable group the filter does not iterate
     ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-field-value-read)). The value gates are asked
     on the same production's account; no row reads a raw String or a partial Date in a body. A marked reference's captured

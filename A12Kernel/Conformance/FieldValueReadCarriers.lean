@@ -14,12 +14,12 @@ import A12Kernel.Elaboration.ValidationCondition.Assembly
 The Kernel asks the field-value read's gates as its bracket closes, ahead of the class of the
 operator standing around it, on an arithmetic operand, on a computation's operand writing a String,
 an Enumeration, a Time or a Number, and on a category read
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-carriers)), and on a pattern comparison's field and a DateRange
+([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-carriers)), and on a pattern comparison's field and a DateRange
 comparison's sides, while a scalar membership's group subject, an entity, waits for its members'
-reads ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
+reads ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites)).
 A field an operator names as a parameter asks the group gate alone and meets its operator's own value
 gates, and a category read of a field declaring no Enumeration draws its own class
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
 The fixture mirrors those grids' model. A carrier that projects no Kernel class of its own is read
 through its resolution failure's class, and a refusal of the carrier's own is kept apart from one
 that projects no class.
@@ -143,7 +143,7 @@ example :
 private def atom (operand : SurfaceNumericAtom) : AuthoredNumericExpr SurfaceNumericAtom := .atom operand
 
 /- **A rule in a repeatable group reads the same way**
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)):
    its addressed operands ask the gates, so a fixed group and a raw String read from the iterated
    level draw their classes, and a fixed group named as `Length`'s parameter draws the group class.
    The rows measure the root's `Amount` on the left (`r1`, `r2`), which this route's row boundary
@@ -164,7 +164,7 @@ example :
 
 /- **A field an operator names as a parameter asks the group gate alone and meets the operator's own
    value gates**
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
    A group draws the group class inside `RangeAsNumber`, `Length`, `FieldValueAsNumber` and a
    DateRange endpoint's component. A raw String meets `RangeAsNumber`'s and `Length`'s own gates, which
    this carrier refuses without projecting their classes. -/
@@ -187,7 +187,7 @@ private def numericComputationResolve? : NumericComputationElabError → Option 
    known Date draw their classes ahead of the operator's, while a field of the fixed group is admitted.
    A Date of full precision passes the read and meets the operand's Number gate, and a repeatable
    group draws the missing-star class
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)). -/
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites)). -/
 example :
     let computed (expression : AuthoredNumericExpr SurfaceNumericAtom) :=
       viewOf numericComputationResolve?
@@ -201,7 +201,7 @@ example :
   native_decide
 
 /- **A Number computation's operator parameter asks the group gate alone**
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)):
    a group draws the group class and a repeatable group the missing-star class, while a raw String
    and a partially known Date meet the operator's own gates rather than the read's. Asking the read's
    value gates would draw the raw class for `Length` and `FieldValueAsNumber` and the date class for
@@ -239,7 +239,7 @@ example :
   native_decide
 
 /- **`FieldValueAsString`'s parameter asks the group gate alone**
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)):
    a group and a repeatable group draw their classes, while a raw String meets the conversion's own
    Number gate rather than the read's raw class. -/
 example :
@@ -256,7 +256,7 @@ private def enumerationComputationResolve? : EnumerationComputationElabError →
 
 /- **An Enumeration computation's copied field is a field-value read**, and a category source asks
    the group gate
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)). A group draws the group class on both and
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites)). A group draws the group class on both and
    a raw String the raw class, while another field of the same domain is admitted. -/
 example :
     let computed (source : SurfaceTextFieldOperand) :=
@@ -293,7 +293,7 @@ private def stringOrigin (declaringGroup : GroupPath) : ReadView :=
     (elaborateStringComputationOperation originModel declaringGroup 24 (.field (bare "Other")))
 
 /- **A computation's relative name resolves from its declaring group, not from its target's**
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
    A target in `Ledger` declared at the root reads the root's field of that name, and declared in
    `Ledger` reads `Ledger`'s, on an Enumeration, a Number and a String target alike, so each pair
    admits one declaration and refuses the other. -/
@@ -310,7 +310,7 @@ private def conditionView (condition : SurfaceCondition) : ReadView :=
    of a text comparison: a group draws the group class ahead of the subject's kind and the category
    reader's own gates. Its value gates never answer: a raw String's category read draws the
    non-Enumeration class where its stored read draws the raw class
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 example :
     let ledgerBand : SurfaceTextFieldOperand := .category (grid "Ledger") "Band"
     [conditionView (.enumerationFieldValueMembership .included (.direct (grid "Other")) [ledgerBand]),
@@ -327,7 +327,7 @@ example :
 
 /- **The category read's non-Enumeration class answers ahead of the field's value gates and of the
    category's own lookup**, on a comparison and as a membership's member
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
    A String, a partially known Date and a full Date draw it alike, so no date gate answers first, and
    a category the String does not declare draws it rather than the unknown-category class. An
    unstarred repeatable group meets the walk before it. -/
@@ -347,7 +347,7 @@ example :
   native_decide
 
 /- **An entity list's category member asks the same class once the walk passes**
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)):
    a category read of a Number inside `Sum` draws the non-Enumeration class, and one of an unstarred
    repeatable field meets the walk first, as a bracketed category read of such a field does. A list
    that dropped the category would admit the first row and sum the Number. -/
@@ -385,8 +385,8 @@ example :
 
 /- **A scalar membership's plain subject is an entity whose group refusal waits for the members**,
    while a category subject's chain answers as it is read
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites),
-   [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites),
+   [checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
    A group or a root subject beside a raw member draws the raw class and beside a clean one the group
    class, while an unstarred repeatable group, a name resolving to nothing, a category read of a group
    and a category read of a String answer ahead of a raw member. A subject resolved ahead of the
@@ -415,7 +415,7 @@ private def patternDiagnostic? (name : String) : Option (Option KernelStaticDiag
       StringPatternConditionElabError.diagnostic?
 
 /- **The pattern comparison's field is a field-value read**, so its gates answer ahead of the
-   comparison's own kind class ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)): a group, a
+   comparison's own kind class ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites)): a group, a
    partially known Date and a raw String draw the read's classes, a Date of full precision the
    pattern's kind class, and a String is admitted. -/
 example :
@@ -430,7 +430,7 @@ private def rangeView (left right : String) : ReadView :=
       (grid right))
 
 /- **A DateRange comparison's sides are field-value reads**
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)). A group on either side draws the group
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites)). A group on either side draws the group
    class and a raw String partner the raw class, while two DateRanges are admitted. Resolving both
    sides without the gates reports the group as a name resolving to nothing and leaves the raw String
    to the comparison. -/
@@ -481,7 +481,7 @@ example :
 /- **A leaf reading a field outside the filtered group beside a leaf reading its iterated level is
    admitted**, so this route's refusal of it claims no class, and a partially known Date in the body
    draws the date class
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
    The kernel rows order their sides, which this route does not carry; an equality asks the same reads
    ahead of any comparison class. Claiming the iteration class for the first row is the wrong account. -/
 example :

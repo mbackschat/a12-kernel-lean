@@ -80,7 +80,7 @@ def elaborateEnumerationFieldOperand (model : FlatModel)
 
 /-- A multi-field list's operand, read through a field resolver. A path naming a group is an operand
     the Kernel expands, so `(Ledger, Other In "a")` draws the base-type class of the group's fields
-    beside the String ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions));
+    beside the String ([checkpoint](../../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions));
     this flat route cannot expand it and refuses without the entity class a field resolver reports. A group
     whose level the walk refuses meets the walk first and keeps the walk's class, the missing star for an
     unstarred repeatable group ([`spec/06`](../../../../spec/06-strings-and-enumerations.md)). A membership's subject and members
@@ -287,7 +287,7 @@ private def elaborateNumberFieldValueSides (model : FlatModel)
     as it is read, and a category subject the category read's gates. The construct's kind gate follows
     and then its value validation: a partially known Date draws the kind class a full Date draws, and
     a raw String the raw class, on both the literal and the field-valued form
-    ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    ([checkpoint](../../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 private def FlatModel.scalarSubjectRead (model : FlatModel) (declaringGroup writtenGroup : GroupPath) :
     SurfaceTextFieldOperand → Except ResolveError FlatFieldDecl
   | .category reference _ => model.resolveCategoryRead declaringGroup reference writtenGroup
@@ -303,8 +303,8 @@ private def FlatModel.scalarSubjectRead (model : FlatModel) (declaringGroup writ
     refused `MVK_NO_GROUPS_ALLOWED` only after them, by the construct's field check, while an unstarred
     repeatable group's missing-star class, a name resolving to nothing and a category subject's chain
     answer as the subject is read, ahead of them
-    ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites),
-    [checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    ([checkpoint](../../../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites),
+    [checkpoint](../../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 private def checkScalarMemberReads (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (subject : SurfaceTextFieldOperand) (members : List SurfaceTextFieldOperand) :
     Except ElabError Unit :=
@@ -315,7 +315,7 @@ private def checkScalarMemberReads (model : FlatModel) (declaringGroup writtenGr
 /-- A scalar membership against literals has no members to wait for, so its subject's group gate
     answers first: a fixed group or a root draws the group class and an unstarred repeatable group the
     missing-star class, on the String and the Number form alike
-    ([checkpoint](../../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    ([checkpoint](../../../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 private def checkScalarLiteralSubjectRead (model : FlatModel) (declaringGroup writtenGroup : GroupPath)
     (subject : SurfaceTextFieldOperand) : Except ElabError Unit :=
   discard <| (model.scalarSubjectRead declaringGroup writtenGroup subject).mapError .resolve

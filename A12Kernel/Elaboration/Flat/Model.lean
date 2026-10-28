@@ -711,7 +711,7 @@ def FlatModel.resolveNonrepeatableDeclarationById
    group, then (when enabled) require one model-wide short-name match. A name the declaring group
    declares as a group takes no fallback, so every field resolver reports it as a miss, however many
    fields elsewhere share the name
-   ([checkpoint](../../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-remaining-sites)).
+   ([checkpoint](../../../docs/sources/field-value-read-probes.md#src-field-value-read-remaining-sites)).
    A site that displaces a group miss classes it as the group; any other carrier keeps the miss's
    entity class, which no row measures on a bare name.
    There is deliberately no implicit ancestor walk; parent lookup requires `..`. -/

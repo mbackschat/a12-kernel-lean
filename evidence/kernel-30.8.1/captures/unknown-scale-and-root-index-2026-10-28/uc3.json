@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Rows/RTU",
+ "alternatives": [
+  {
+   "operation": "[RNK]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

@@ -376,7 +376,7 @@ example : (do
 
 /- A copied field is a field-value read, so a partially known Date is refused although its complete
    format passes the component gate
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid),
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-grid),
    row `c1`). -/
 example :
     let partialSource : FlatFieldDecl := {

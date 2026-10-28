@@ -397,9 +397,11 @@ private def fullMessageReferenceInputs (preliminary : CheckedIndexPreliminary mo
   preliminary.messageReferenceInputs |>.mapError .messageCache
 
 /-- Full validation's authored reads see the index defaults it staged before authored rules run
-(spec/10 §5), through `defaultedInput`, while each indexed consumer derives the generated findings
-from that view itself. The message cache stays with the preliminary of the original document, which
-appends the defaults after the original population (spec/08). -/
+(spec/10 §5) and its generated index findings, through `computationInput`: an authored rule reads an
+empty or duplicated key as unknown (runtime-open-cells-2026-10-28, `q-*`). An indexed consumer derives
+its own preliminary from that view, which ignores the findings it reads back. The message cache stays
+with the preliminary of the original document, which appends the defaults after the original
+population (spec/08). -/
 private def fullPreliminary (checked : CheckedDocument model) :
     Except OrdinaryRepeatableRuleEvaluationError (CheckedIndexPreliminary model) :=
   checked.applyFullIndexPreliminary |>.mapError .preliminary
@@ -585,7 +587,7 @@ private def evalOrdinaryRepeatableAt
     (world : Option World := none)
     (registry : CustomValidationRegistry model := {}) :
     Except OrdinaryRepeatableRuleEvaluationError OrdinaryRuleStep := do
-  let checked := preliminary.defaultedInput
+  let checked := preliminary.computationInput
   let _ ← rule.ordinaryRepeatableFieldIds.mapM fun field =>
     (checked.fullValidationAddressedCell environment field)
       |>.mapError .addressing
@@ -619,7 +621,7 @@ def fullRowsAndRepetitionResults
     (rule : CheckedResolvedValidationRule model)
     (checked : CheckedDocument model) :
     Except OrdinaryRepeatableRuleEvaluationError (List Env × List RepetitionNotUniqueResult) := do
-  let checked := (← fullPreliminary checked).defaultedInput
+  let checked := (← fullPreliminary checked).computationInput
   let scope ← match rule.iteratedScope with
     | some scope => pure scope
     | none => throw .missingIterationScope
@@ -669,7 +671,7 @@ def evalOrdinaryOnceFull
   if !rule.condition.core.supportsOrdinaryIteration then
     throw .unsupportedCondition
   let preliminary ← fullPreliminary checked
-  let checked := preliminary.defaultedInput
+  let checked := preliminary.computationInput
   let environment ← rule.onceEnvironment
   -- A once rule whose error field lies in a repeatable root group runs with no content gate: the
   -- Kernel fires `Sum(/Rep*/P) < 5` declared on a `max 3` root once, at its first row, over a blank

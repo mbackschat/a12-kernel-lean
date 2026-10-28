@@ -131,7 +131,7 @@ example :
 
 /- Wrong-kind sources fail explicitly instead of becoming empty operands, and a category read of a
 DateRange draws the category read's non-Enumeration class ahead of this route's own read-form refusal
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
 A yearless declaration beside a year-bearing one meets the earlier uniform-year gate, so this
 route's policy refusal is reachable only from a uniformly yearless list and is locked with its
 payload in `Conformance.DateRangeFragmentOverlap`. -/
@@ -343,7 +343,7 @@ example :
 
 /- A yearless declaration beside a year-bearing one meets the uniform-year gate on either side, and
 a category read of a DateRange draws the non-Enumeration class
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
 The measured row reads the category on the scalar side; the list-side row is the same read in the
 other slot, which no row measures. -/
 example :

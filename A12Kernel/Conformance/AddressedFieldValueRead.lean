@@ -13,7 +13,7 @@ import A12Kernel.Elaboration.ParallelComputationClearing
 /-! # The field-value read's gates on the addressed and parallel computation carriers
 
 A computation writing a repeatable target reads the same way as one writing a nonrepeatable target
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)):
+([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)):
 a bracket read asks the group gate and then the two value gates ahead of the carrier's kind check, an
 operator's parameter asks the group gate alone and meets its operator's own gates, and a category read
 of a field declaring no Enumeration draws its own class. The walk starts from the target's scope, so

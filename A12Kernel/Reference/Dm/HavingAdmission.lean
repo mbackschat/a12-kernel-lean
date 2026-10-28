@@ -114,7 +114,9 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
     -- missing-index class waits behind the ordinary level walk below, whose unbound level answers
     -- (`SemanticIndexLocks`, the rule check `SemanticIndexPinnedLevelLawsTest` at a12-dmkits
     -- `fecf8552`). No group is selected then, so no key is checked against an index. Where that walk
-    -- admits the read, which is unmeasured, the missing-index class stands as before.
+    -- admits the read the Kernel admits the key as well (unknown-scale-and-root-index-2026-10-28,
+    -- `ug2`–`ug13`), but no carrier here selects over a non-repeatable index, so the missing-index
+    -- class still answers (docs/gaps/paths-and-groups.md, SG9).
     let nominatedAbove := !groups.isEmpty && model.nominatesNonrepeatableIndexOnChain containingGroup
     match indexResolution indexPath with
     | .error diagnostic => do refuse "Having" diagnostic.kernelCode

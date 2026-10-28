@@ -468,7 +468,7 @@ def messageUnstarredReference? (condition : ValidationCondition model) (field : 
 
 /-- The group presence leaves that reference a group error target: the group itself or a group
 containing it. A field inside the group does not reference it, and neither does any other read
-([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join),
 `group-level` rows `t3`–`t6`). -/
 private def groupTargetReferences : ValidationCondition model → GroupPath → List ResolvedGroupReference
   | .leaf (.groupPresence _ reference), target =>

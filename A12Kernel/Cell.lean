@@ -43,7 +43,10 @@ inductive FormalCause where
                              -- not a declared length constraint, which keeps `declaredConstraint`
   | unsupportedCharacter     -- outside the legal charset (default BMP)
   | leadingOrTrailingSpace
-  | required                 -- required-and-empty
+  | required                 -- required-and-empty; a computation reads the cell as empty
+  | indexRequired            -- an empty index key's generated mandatory finding; unlike `required`,
+                             -- a computation reading it poisons (runtime-open-cells-2026-10-28,
+                             -- `hold-key-empty-seeded`: the Kernel stores nothing)
   | duplicateIndex           -- index field not unique across its column
   | overRepetition           -- rows beyond declared repeatability
   | customValidation         -- fixed declarative predefined-type fallback

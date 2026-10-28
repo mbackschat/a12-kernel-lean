@@ -116,7 +116,7 @@ private def emptyAndInvalidData : DocumentData :=
       cell [1, 3] "bad" (.rejected .malformed)
     ] }
 
-/- An empty key beside a filled key receives mandatory rather than uniqueness, while an earlier scalar failure is retained without another preliminary finding. -/
+/- An empty key beside a filled key receives mandatory rather than uniqueness, while an earlier scalar failure is retained without another preliminary finding. Unlike ordinary requiredness, the finding poisons a computation reading the key (runtime-open-cells-2026-10-28, `hold-key-empty-seeded`, `Recs/RKey`). -/
 example : ((preliminaryFor model emptyAndInvalidData).bind fun preliminary => do
     let empty ←
       (preliminary.readAuthoredValidation { field := 1, path := [1, 1] }).toOption
@@ -131,12 +131,27 @@ example : ((preliminaryFor model emptyAndInvalidData).bind fun preliminary => do
       preliminary.findingKindAt? { field := 1, path := [1, 1] } == some .mandatory &&
       preliminary.findingKindAt? { field := 1, path := [1, 2] } == none &&
       preliminary.findingKindAt? { field := 1, path := [1, 3] } == none &&
-      observeCell .validation empty == .unknown .required &&
+      observeCell .validation empty == .unknown .indexRequired &&
+      observeCell .computation empty == .poison .indexRequired &&
       observeCell .validation filled == .value (.num 7) &&
       observeCell .validation malformed == .unknown .malformed &&
       presence.derive ==
         { content := true, erroneous := true, relevance := .fullyRelevant })) =
     some true := by
+  native_decide
+
+/- Deriving either preliminary again from the full preliminary's prepared view reproduces the findings
+derived from the base document: an ordinary rule reads that view, and an indexed consumer derives its own
+preliminary from it, so a duplicate read back as unknown must not hide its collision, nor an empty key
+read back as unknown its emptiness. -/
+example : [duplicateData, emptyAndInvalidData].all (fun data =>
+    ((checkedFor model data).bind fun checked => do
+      let full ← checked.applyFullIndexPreliminary.toOption
+      let again ← full.computationInput.applyFullIndexPreliminary.toOption
+      let partialBase ← (checked.applyPartialGeneratedPreliminaryForScope .full).toOption
+      let partialAgain ← (full.computationInput.applyPartialGeneratedPreliminaryForScope .full).toOption
+      pure (!full.findings.isEmpty && again.findings == full.findings &&
+        partialAgain.index.findings == partialBase.index.findings)).getD false) = true := by
   native_decide
 
 /- An all-empty key scope produces one mandatory finding per row and never a duplicate cluster. -/
@@ -661,13 +676,26 @@ example :
       (preliminaryFor unnominatedModel detailNoteOnly).map (·.findings) = some [] := by
   native_decide
 
-/- The finding carries the annotation a repeatable index field's mandatory finding carries: the cell
-reads as required-unknown to authored validation. The Kernel rows above observe the generated
-message, not this cell annotation, so the annotation on this carrier is not measured. -/
+/- The finding carries the annotation a repeatable index field's mandatory finding carries: authored
+validation reads the cell as unknown, and a computation reading it poisons, so the Kernel clears its
+target (runtime-open-cells-2026-10-28, `hold-key-empty-seeded`, `Holder/HKey`). -/
 example :
     ((preliminaryFor nominatedModel holderOnly).bind fun preliminary => do
       let cell ← (preliminary.readAuthoredValidation { field := holderKey.id, path := [] }).toOption
-      pure (observeCell .validation cell == .unknown .required)) = some true := by
+      pure (observeCell .validation cell == .unknown .indexRequired &&
+        observeCell .computation cell == .poison .indexRequired)) = some true := by
+  native_decide
+
+/- The computation prepass runs the arm for a nominated key the computation selects, and only for it: a
+computation reading the empty `HolderKey` reports the finding among its operand errors and stores
+nothing (runtime-open-cells-2026-10-28, `hold-key-empty-seeded`). -/
+example :
+    ((checkedFor nominatedModel holderOnly).bind fun checked =>
+      (checked.applySelectedFullIndexPreliminary [holderKey.id]).toOption.map (·.findings)) =
+        some [mandatoryAt holderKey.id []] ∧
+      ((checkedFor nominatedModel holderOnly).bind fun checked =>
+        (checked.applySelectedFullIndexPreliminary [holderName.id]).toOption.map (·.findings)) =
+          some [] := by
   native_decide
 
 /- A partial call generates the finding only while the group and its key are relevant: the gate reads the

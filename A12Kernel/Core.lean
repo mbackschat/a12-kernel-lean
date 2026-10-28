@@ -121,7 +121,9 @@ structure NumField where
       such a field are refused, as is a power exponent, while ordering is admitted and an explicit
       rounding fixes the scale. A `-1` minimum is an ordinary exact scale. Measured by the rule and
       computation checks of `CheckerUnknownMaximumScaleAgreementTest` at a12-dmkits `fecf8552`
-      ([inbound](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)). -/
+      ([inbound](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)), and across row,
+      `Having`, correlated, joined, aggregate, base-year and repeatable-target carriers in
+      `evidence/kernel-30.8.1/captures/unknown-scale-and-root-index-2026-10-28/`. -/
   staticScaleUnknown : Bool := false
   deriving Repr, DecidableEq
 

@@ -1,0 +1,588 @@
+{
+ "model": "R28_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "fill-empty",
+   "documentInline": {
+    "Fill": {
+     "Anchor": "a",
+     "V5": "5",
+     "V7": "7",
+     "Str2": "ab",
+     "Slots": [
+      {
+       "SV": "1"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "fill-flagged",
+   "documentInline": {
+    "Fill": {
+     "Anchor": "a",
+     "V5": "5",
+     "V7": "7",
+     "Str2": "ab",
+     "Slots": [
+      {
+       "SV": "1",
+       "SF": "Y"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "fill-unflagged-full",
+   "documentInline": {
+    "Fill": {
+     "Anchor": "a",
+     "V5": "5",
+     "V7": "7",
+     "Str2": "ab",
+     "Slots": [
+      {
+       "SV": "1",
+       "SF": "N"
+      },
+      {
+       "SV": "2",
+       "SF": "N"
+      },
+      {
+       "SV": "3",
+       "SF": "N"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "fill-negative",
+   "documentInline": {
+    "Fill": {
+     "Anchor": "a",
+     "V5": "5",
+     "V7": "7",
+     "Str2": "ab",
+     "S1": "-3",
+     "Slots": [
+      {
+       "SV": "1",
+       "SG": "g"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "ixroot-match",
+   "documentInline": {
+    "IxRoot": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ]
+     },
+     "RootKey": "X"
+    }
+   }
+  },
+  {
+   "name": "ixroot-other",
+   "documentInline": {
+    "IxRoot": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ]
+     },
+     "RootKey": "Y"
+    }
+   }
+  },
+  {
+   "name": "ixroot-absent",
+   "documentInline": {
+    "IxRoot": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "ixfix-match",
+   "documentInline": {
+    "IxFix": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CoverKey": "X"
+     }
+    }
+   }
+  },
+  {
+   "name": "ixfix-other",
+   "documentInline": {
+    "IxFix": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CoverKey": "Y"
+     }
+    }
+   }
+  },
+  {
+   "name": "ixfix-absent",
+   "documentInline": {
+    "IxFix": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ]
+     }
+    }
+   }
+  },
+  {
+   "name": "join-distinct",
+   "documentInline": {
+    "Join": {
+     "Grand": "9",
+     "Refs": [
+      {
+       "Key": "a",
+       "Amount": "100",
+       "Name": "na",
+       "On": "2024-01-01",
+       "Kind": "A"
+      },
+      {
+       "Key": "b",
+       "Amount": "200",
+       "Name": "nb",
+       "On": "2024-02-01",
+       "Kind": "A"
+      }
+     ],
+     "Lines": [
+      {
+       "LNote": "l",
+       "Slots": [
+        {
+         "Key": "a",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        },
+        {
+         "Key": "b",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "join-refs-duplicate",
+   "documentInline": {
+    "Join": {
+     "Grand": "9",
+     "Refs": [
+      {
+       "Key": "a",
+       "Amount": "100",
+       "Name": "na",
+       "On": "2024-01-01",
+       "Kind": "A"
+      },
+      {
+       "Key": "a",
+       "Amount": "200",
+       "Name": "nb",
+       "On": "2024-02-01",
+       "Kind": "A"
+      }
+     ],
+     "Lines": [
+      {
+       "LNote": "l",
+       "Slots": [
+        {
+         "Key": "a",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        },
+        {
+         "Key": "b",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "join-own-duplicate",
+   "documentInline": {
+    "Join": {
+     "Grand": "9",
+     "Refs": [
+      {
+       "Key": "a",
+       "Amount": "100",
+       "Name": "na",
+       "On": "2024-01-01",
+       "Kind": "A"
+      },
+      {
+       "Key": "b",
+       "Amount": "200",
+       "Name": "nb",
+       "On": "2024-02-01",
+       "Kind": "A"
+      }
+     ],
+     "Lines": [
+      {
+       "LNote": "l",
+       "Slots": [
+        {
+         "Key": "a",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        },
+        {
+         "Key": "a",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        }
+       ]
+      },
+      {
+       "LNote": "m",
+       "Slots": [
+        {
+         "Key": "b",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "join-own-unmatched",
+   "documentInline": {
+    "Join": {
+     "Grand": "9",
+     "Refs": [
+      {
+       "Key": "a",
+       "Amount": "100",
+       "Name": "na",
+       "On": "2024-01-01",
+       "Kind": "A"
+      },
+      {
+       "Key": "b",
+       "Amount": "200",
+       "Name": "nb",
+       "On": "2024-02-01",
+       "Kind": "A"
+      }
+     ],
+     "Lines": [
+      {
+       "LNote": "l",
+       "Slots": [
+        {
+         "Key": "a",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        },
+        {
+         "Key": "z",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "join-over-capacity",
+   "documentInline": {
+    "Join": {
+     "Grand": "9",
+     "Refs": [
+      {
+       "Key": "a",
+       "Amount": "100",
+       "Name": "na",
+       "On": "2024-01-01",
+       "Kind": "A"
+      },
+      {
+       "Key": "b",
+       "Amount": "200",
+       "Name": "nb",
+       "On": "2024-02-01",
+       "Kind": "A"
+      }
+     ],
+     "Lines": [
+      {
+       "LNote": "l",
+       "Slots": [
+        {
+         "Key": "a",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        },
+        {
+         "Key": "b",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        },
+        {
+         "Key": "a",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        },
+        {
+         "Key": "b",
+         "Total": "9",
+         "Doubled": "9",
+         "TName": "seed",
+         "NameCopy": "seed",
+         "TOn": "2000-01-01",
+         "OnNext": "2000-01-01",
+         "TKind": "B",
+         "KindCopy": "B"
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "hold-key-empty-content",
+   "documentInline": {
+    "Hold": {
+     "HAnchor": "h",
+     "Holder": {
+      "HAlt": "5",
+      "HText": "t"
+     },
+     "Plain": {
+      "PAlt": "5"
+     }
+    }
+   }
+  },
+  {
+   "name": "hold-present-empty",
+   "documentInline": {
+    "Hold": {
+     "HAnchor": "h",
+     "Holder": {},
+     "Plain": {}
+    }
+   }
+  },
+  {
+   "name": "hold-key-null",
+   "documentInline": {
+    "Hold": {
+     "HAnchor": "h",
+     "Holder": {
+      "HKey": null
+     },
+     "Plain": {
+      "PKey": null
+     }
+    }
+   }
+  },
+  {
+   "name": "hold-key-filled",
+   "documentInline": {
+    "Hold": {
+     "HAnchor": "h",
+     "Holder": {
+      "HKey": "1",
+      "HAlt": "5"
+     },
+     "Plain": {
+      "PKey": "1",
+      "PAlt": "5"
+     }
+    }
+   }
+  },
+  {
+   "name": "hold-absent",
+   "documentInline": {
+    "Hold": {
+     "HAnchor": "h"
+    }
+   }
+  }
+ ]
+}

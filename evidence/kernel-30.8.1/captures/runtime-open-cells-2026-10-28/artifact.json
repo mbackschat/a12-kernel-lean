@@ -1,0 +1,7840 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R28_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "fill-empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "AB1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AB3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/S1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MX2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SG",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SG"
+       ]
+      },
+      {
+       "code": "NF2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV"
+       ]
+      },
+      {
+       "code": "RV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "RV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "RV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": [
+        "Fill/P1"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "AB1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AB3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/S1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MX2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SG",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SG"
+       ]
+      },
+      {
+       "code": "NF2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV"
+       ]
+      },
+      {
+       "code": "RV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "RV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "RV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": [
+        "Fill/P1"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "fill-flagged",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "AB1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AB3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/S1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MX2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SG",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SG"
+       ]
+      },
+      {
+       "code": "NF2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SF"
+       ]
+      },
+      {
+       "code": "RV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "RV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "RV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": [
+        "Fill/P1"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "AB1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AB3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/S1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MX2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SG",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SG"
+       ]
+      },
+      {
+       "code": "NF2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SF"
+       ]
+      },
+      {
+       "code": "RV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "RV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "RV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": [
+        "Fill/P1"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "fill-unflagged-full",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "AB1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AB3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/S1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MX2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SG",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SG"
+       ]
+      },
+      {
+       "code": "NF2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV"
+       ]
+      },
+      {
+       "code": "RV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "RV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "RV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": [
+        "Fill/P1"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "AB1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AB3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "AV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/S1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MX2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SG",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SG"
+       ]
+      },
+      {
+       "code": "NF2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV"
+       ]
+      },
+      {
+       "code": "RV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": [
+        "Fill/S1"
+       ]
+      },
+      {
+       "code": "RV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "RV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": [
+        "Fill/P1"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "fill-negative",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "AB1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MX1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MX2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV"
+       ]
+      },
+      {
+       "code": "RV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "RV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": [
+        "Fill/P1"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "AB1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AB4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "AV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": [
+        "Fill/Str"
+       ]
+      },
+      {
+       "code": "LN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "LN4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/Str"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MN2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MN3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MX1",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/S1",
+        "Fill/V5"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "MX2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1",
+        "Fill/V5"
+       ],
+       "fillToFix": [
+        "Fill/P1",
+        "Fill/V5"
+       ]
+      },
+      {
+       "code": "MX3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/V5",
+        "Fill/V7"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "NF4",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV",
+        "Fill/Anchor"
+       ],
+       "fillToFix": [
+        "/Fill[1]/Slots[0]/SF",
+        "/Fill[1]/Slots[0]/SV"
+       ]
+      },
+      {
+       "code": "RV2",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "RV3",
+       "field": "Fill/Anchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Fill/Anchor",
+        "Fill/P1"
+       ],
+       "fillToFix": [
+        "Fill/P1"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "ixroot-match",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "IxRootC1",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/CAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC3",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps/RAmt",
+        "IxRoot/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps[2]/RAmt",
+        "IxRoot/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootK1",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/CAmt",
+        "IxRoot/Note",
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootK2",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/CNote",
+        "IxRoot/Note",
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootK3",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt",
+        "IxRoot/Note",
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt",
+        "IxRoot/RootKey"
+       ]
+      },
+      {
+       "code": "IxRootK4",
+       "field": "IxRoot/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps/RAmt",
+        "IxRoot/Cover/Reps/RLab",
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootK4",
+       "field": "IxRoot/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps[2]/RAmt",
+        "IxRoot/Cover/Reps[2]/RLab",
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "IxRootC1",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/CAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC3",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps/RAmt",
+        "IxRoot/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps[2]/RAmt",
+        "IxRoot/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootK1",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/CAmt",
+        "IxRoot/Note",
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootK2",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/CNote",
+        "IxRoot/Note",
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootK3",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt",
+        "IxRoot/Note",
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt",
+        "IxRoot/RootKey"
+       ]
+      },
+      {
+       "code": "IxRootK4",
+       "field": "IxRoot/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps/RAmt",
+        "IxRoot/Cover/Reps/RLab",
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootK4",
+       "field": "IxRoot/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps[2]/RAmt",
+        "IxRoot/Cover/Reps[2]/RLab",
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "ixroot-other",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "IxRootC1",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/CAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC3",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps/RAmt",
+        "IxRoot/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps[2]/RAmt",
+        "IxRoot/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootK1N",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[-5]/Cover[1]/CAmt",
+        "/IxRoot[-5]/RootKey",
+        "IxRoot/Note"
+       ],
+       "fillToFix": [
+        "/IxRoot[-5]/Cover[1]/CAmt",
+        "/IxRoot[-5]/RootKey"
+       ]
+      },
+      {
+       "code": "IxRootK3N",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[-5]/Cover[1]/Reps[0]/RAmt",
+        "/IxRoot[-5]/RootKey",
+        "IxRoot/Note"
+       ],
+       "fillToFix": [
+        "/IxRoot[-5]/Cover[1]/Reps[0]/RAmt",
+        "/IxRoot[-5]/RootKey"
+       ]
+      },
+      {
+       "code": "IxRootK4N",
+       "field": "IxRoot/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[-5]/Cover[1]/Reps[1]/RAmt",
+        "/IxRoot[-5]/RootKey",
+        "IxRoot/Cover/Reps/RLab"
+       ],
+       "fillToFix": [
+        "/IxRoot[-5]/Cover[1]/Reps[1]/RAmt",
+        "/IxRoot[-5]/RootKey"
+       ]
+      },
+      {
+       "code": "IxRootK4N",
+       "field": "IxRoot/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[-5]/Cover[1]/Reps[2]/RAmt",
+        "/IxRoot[-5]/RootKey",
+        "IxRoot/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": [
+        "/IxRoot[-5]/Cover[1]/Reps[2]/RAmt",
+        "/IxRoot[-5]/RootKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "IxRootC1",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/CAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC3",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps/RAmt",
+        "IxRoot/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps[2]/RAmt",
+        "IxRoot/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootK1N",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[-5]/Cover[1]/CAmt",
+        "/IxRoot[-5]/RootKey",
+        "IxRoot/Note"
+       ],
+       "fillToFix": [
+        "/IxRoot[-5]/Cover[1]/CAmt",
+        "/IxRoot[-5]/RootKey"
+       ]
+      },
+      {
+       "code": "IxRootK3N",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[-5]/Cover[1]/Reps[0]/RAmt",
+        "/IxRoot[-5]/RootKey",
+        "IxRoot/Note"
+       ],
+       "fillToFix": [
+        "/IxRoot[-5]/Cover[1]/Reps[0]/RAmt",
+        "/IxRoot[-5]/RootKey"
+       ]
+      },
+      {
+       "code": "IxRootK4N",
+       "field": "IxRoot/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[-5]/Cover[1]/Reps[1]/RAmt",
+        "/IxRoot[-5]/RootKey",
+        "IxRoot/Cover/Reps/RLab"
+       ],
+       "fillToFix": [
+        "/IxRoot[-5]/Cover[1]/Reps[1]/RAmt",
+        "/IxRoot[-5]/RootKey"
+       ]
+      },
+      {
+       "code": "IxRootK4N",
+       "field": "IxRoot/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[-5]/Cover[1]/Reps[2]/RAmt",
+        "/IxRoot[-5]/RootKey",
+        "IxRoot/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": [
+        "/IxRoot[-5]/Cover[1]/Reps[2]/RAmt",
+        "/IxRoot[-5]/RootKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "ixroot-absent",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "IxRootC1",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/CAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC3",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps/RAmt",
+        "IxRoot/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps[2]/RAmt",
+        "IxRoot/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "IxRoot/RootKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": [
+        "IxRoot/RootKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "IxRootC1",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/CAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC3",
+       "field": "IxRoot/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt",
+        "IxRoot/Note"
+       ],
+       "fillToFix": [
+        "/IxRoot[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps/RAmt",
+        "IxRoot/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxRootC4",
+       "field": "IxRoot/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/Cover/Reps[2]/RAmt",
+        "IxRoot/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "IxRoot/RootKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "IxRoot/RootKey"
+       ],
+       "fillToFix": [
+        "IxRoot/RootKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "ixfix-match",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "IxFixC1",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC3",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps/RAmt",
+        "IxFix/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps[2]/RAmt",
+        "IxFix/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixK1",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CAmt",
+        "IxFix/Cover/CoverKey",
+        "IxFix/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixK2",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CNote",
+        "IxFix/Cover/CoverKey",
+        "IxFix/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixK3",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt",
+        "IxFix/Cover/CoverKey",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt",
+        "IxFix/Cover/CoverKey"
+       ]
+      },
+      {
+       "code": "IxFixK4",
+       "field": "IxFix/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CoverKey",
+        "IxFix/Cover/Reps/RAmt",
+        "IxFix/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixK4",
+       "field": "IxFix/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CoverKey",
+        "IxFix/Cover/Reps[2]/RAmt",
+        "IxFix/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "IxFixC1",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC3",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps/RAmt",
+        "IxFix/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps[2]/RAmt",
+        "IxFix/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixK1",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CAmt",
+        "IxFix/Cover/CoverKey",
+        "IxFix/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixK2",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CNote",
+        "IxFix/Cover/CoverKey",
+        "IxFix/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixK3",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt",
+        "IxFix/Cover/CoverKey",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt",
+        "IxFix/Cover/CoverKey"
+       ]
+      },
+      {
+       "code": "IxFixK4",
+       "field": "IxFix/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CoverKey",
+        "IxFix/Cover/Reps/RAmt",
+        "IxFix/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixK4",
+       "field": "IxFix/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CoverKey",
+        "IxFix/Cover/Reps[2]/RAmt",
+        "IxFix/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "ixfix-other",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "IxFixC1",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC3",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps/RAmt",
+        "IxFix/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps[2]/RAmt",
+        "IxFix/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixK1N",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[-5]/CAmt",
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[-5]/CAmt",
+        "/IxFix[1]/Cover[-5]/CoverKey"
+       ]
+      },
+      {
+       "code": "IxFixK3N",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[0]/RAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxFixK4N",
+       "field": "IxFix/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[1]/RAmt",
+        "IxFix/Cover/Reps/RLab"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[1]/RAmt"
+       ]
+      },
+      {
+       "code": "IxFixK4N",
+       "field": "IxFix/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[2]/RAmt",
+        "IxFix/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[2]/RAmt"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "IxFixC1",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC3",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps/RAmt",
+        "IxFix/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps[2]/RAmt",
+        "IxFix/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixK1N",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[-5]/CAmt",
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[-5]/CAmt",
+        "/IxFix[1]/Cover[-5]/CoverKey"
+       ]
+      },
+      {
+       "code": "IxFixK3N",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[0]/RAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxFixK4N",
+       "field": "IxFix/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[1]/RAmt",
+        "IxFix/Cover/Reps/RLab"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[1]/RAmt"
+       ]
+      },
+      {
+       "code": "IxFixK4N",
+       "field": "IxFix/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[2]/RAmt",
+        "IxFix/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[-5]/CoverKey",
+        "/IxFix[1]/Cover[-5]/Reps[2]/RAmt"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "ixfix-absent",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "IxFixC1",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC3",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps/RAmt",
+        "IxFix/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps[2]/RAmt",
+        "IxFix/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "IxFix/Cover/CoverKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CoverKey"
+       ],
+       "fillToFix": [
+        "IxFix/Cover/CoverKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "IxFixC1",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC3",
+       "field": "IxFix/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt",
+        "IxFix/Note"
+       ],
+       "fillToFix": [
+        "/IxFix[1]/Cover[1]/Reps[0]/RAmt"
+       ]
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps/RAmt",
+        "IxFix/Cover/Reps/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "IxFixC4",
+       "field": "IxFix/Cover/Reps[2]/RLab",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/Reps[2]/RAmt",
+        "IxFix/Cover/Reps[2]/RLab"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "IxFix/Cover/CoverKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "IxFix/Cover/CoverKey"
+       ],
+       "fillToFix": [
+        "IxFix/Cover/CoverKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "join-distinct",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Doubled",
+        "Join/Lines/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[2]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Doubled",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CGrand",
+       "field": "Join/Grand",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ],
+       "fillToFix": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ]
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/OnNext",
+        "Join/Lines/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[2]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/OnNext",
+        "Join/Lines/Slots[2]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTKind",
+       "field": "Join/Lines/Slots/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TKind",
+        "Join/Refs/Key",
+        "Join/Refs/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTKind",
+       "field": "Join/Lines/Slots[2]/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TKind",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTName",
+       "field": "Join/Lines/Slots/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TName",
+        "Join/Refs/Key",
+        "Join/Refs/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTName",
+       "field": "Join/Lines/Slots[2]/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TName",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTOn",
+       "field": "Join/Lines/Slots/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TOn",
+        "Join/Refs/Key",
+        "Join/Refs/On"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTOn",
+       "field": "Join/Lines/Slots[2]/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TOn",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/On"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines/Slots/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/Total",
+        "Join/Refs/Amount",
+        "Join/Refs/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines/Slots[2]/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/Total",
+        "Join/Refs[2]/Amount",
+        "Join/Refs[2]/Key"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "300"
+       },
+       {
+        "field": "Join/Lines/Slots/Doubled",
+        "cleared": false,
+        "errored": false,
+        "value": "200"
+       },
+       {
+        "field": "Join/Lines/Slots/KindCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots/NameCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "na"
+       },
+       {
+        "field": "Join/Lines/Slots/OnNext",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-02"
+       },
+       {
+        "field": "Join/Lines/Slots/TKind",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots/TName",
+        "cleared": false,
+        "errored": false,
+        "value": "na"
+       },
+       {
+        "field": "Join/Lines/Slots/TOn",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-01"
+       },
+       {
+        "field": "Join/Lines/Slots/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "100"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Doubled",
+        "cleared": false,
+        "errored": false,
+        "value": "400"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/KindCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/NameCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "nb"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/OnNext",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-02"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TKind",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TName",
+        "cleared": false,
+        "errored": false,
+        "value": "nb"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TOn",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-01"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "200"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Doubled",
+        "Join/Lines/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[2]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Doubled",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CGrand",
+       "field": "Join/Grand",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ],
+       "fillToFix": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ]
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/OnNext",
+        "Join/Lines/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[2]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/OnNext",
+        "Join/Lines/Slots[2]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTKind",
+       "field": "Join/Lines/Slots/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TKind",
+        "Join/Refs/Key",
+        "Join/Refs/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTKind",
+       "field": "Join/Lines/Slots[2]/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TKind",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTName",
+       "field": "Join/Lines/Slots/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TName",
+        "Join/Refs/Key",
+        "Join/Refs/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTName",
+       "field": "Join/Lines/Slots[2]/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TName",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTOn",
+       "field": "Join/Lines/Slots/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TOn",
+        "Join/Refs/Key",
+        "Join/Refs/On"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTOn",
+       "field": "Join/Lines/Slots[2]/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TOn",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/On"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines/Slots/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/Total",
+        "Join/Refs/Amount",
+        "Join/Refs/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines/Slots[2]/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/Total",
+        "Join/Refs[2]/Amount",
+        "Join/Refs[2]/Key"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "300"
+       },
+       {
+        "field": "Join/Lines/Slots/Doubled",
+        "cleared": false,
+        "errored": false,
+        "value": "200"
+       },
+       {
+        "field": "Join/Lines/Slots/KindCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots/NameCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "na"
+       },
+       {
+        "field": "Join/Lines/Slots/OnNext",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-02"
+       },
+       {
+        "field": "Join/Lines/Slots/TKind",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots/TName",
+        "cleared": false,
+        "errored": false,
+        "value": "na"
+       },
+       {
+        "field": "Join/Lines/Slots/TOn",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-01"
+       },
+       {
+        "field": "Join/Lines/Slots/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "100"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Doubled",
+        "cleared": false,
+        "errored": false,
+        "value": "400"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/KindCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/NameCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "nb"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/OnNext",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-02"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TKind",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TName",
+        "cleared": false,
+        "errored": false,
+        "value": "nb"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TOn",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-01"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "200"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "join-refs-duplicate",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Doubled",
+        "Join/Lines/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[2]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Doubled",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CGrand",
+       "field": "Join/Grand",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ],
+       "fillToFix": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ]
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/OnNext",
+        "Join/Lines/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[2]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/OnNext",
+        "Join/Lines/Slots[2]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Refs/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Refs/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Refs[2]/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Refs[2]/Key"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Total",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Refs/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Refs/Key"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Refs[2]/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Refs[2]/Key"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Doubled",
+        "Join/Lines/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[2]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Doubled",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CGrand",
+       "field": "Join/Grand",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ],
+       "fillToFix": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ]
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/OnNext",
+        "Join/Lines/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[2]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/OnNext",
+        "Join/Lines/Slots[2]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Refs/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Refs/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Refs[2]/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Refs[2]/Key"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Total",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Refs/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Refs/Key"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Refs[2]/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Refs[2]/Key"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "join-own-duplicate",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Doubled",
+        "Join/Lines/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[2]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Doubled",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines[2]/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/Doubled",
+        "Join/Lines[2]/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CGrand",
+       "field": "Join/Grand",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ],
+       "fillToFix": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ]
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/OnNext",
+        "Join/Lines/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[2]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/OnNext",
+        "Join/Lines/Slots[2]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines[2]/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/OnNext",
+        "Join/Lines[2]/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTKind",
+       "field": "Join/Lines[2]/Slots/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/Key",
+        "Join/Lines[2]/Slots/TKind",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTName",
+       "field": "Join/Lines[2]/Slots/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/Key",
+        "Join/Lines[2]/Slots/TName",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTOn",
+       "field": "Join/Lines[2]/Slots/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/Key",
+        "Join/Lines[2]/Slots/TOn",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/On"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines[2]/Slots/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/Key",
+        "Join/Lines[2]/Slots/Total",
+        "Join/Refs[2]/Amount",
+        "Join/Refs[2]/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Lines/Slots/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Lines/Slots[2]/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines[2]/Slots/Doubled",
+        "cleared": false,
+        "errored": false,
+        "value": "400"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/KindCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/NameCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "nb"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/OnNext",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-02"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/TKind",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/TName",
+        "cleared": false,
+        "errored": false,
+        "value": "nb"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/TOn",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-01"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "200"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Lines/Slots/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots/Key"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Lines/Slots[2]/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots[2]/Key"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Doubled",
+        "Join/Lines/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[2]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Doubled",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines[2]/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/Doubled",
+        "Join/Lines[2]/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CGrand",
+       "field": "Join/Grand",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ],
+       "fillToFix": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ]
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/OnNext",
+        "Join/Lines/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[2]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/OnNext",
+        "Join/Lines/Slots[2]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines[2]/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/OnNext",
+        "Join/Lines[2]/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTKind",
+       "field": "Join/Lines[2]/Slots/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/Key",
+        "Join/Lines[2]/Slots/TKind",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTName",
+       "field": "Join/Lines[2]/Slots/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/Key",
+        "Join/Lines[2]/Slots/TName",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTOn",
+       "field": "Join/Lines[2]/Slots/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/Key",
+        "Join/Lines[2]/Slots/TOn",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/On"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines[2]/Slots/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines[2]/Slots/Key",
+        "Join/Lines[2]/Slots/Total",
+        "Join/Refs[2]/Amount",
+        "Join/Refs[2]/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Lines/Slots/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Lines/Slots[2]/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines[2]/Slots/Doubled",
+        "cleared": false,
+        "errored": false,
+        "value": "400"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/KindCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/NameCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "nb"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/OnNext",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-02"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/TKind",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/TName",
+        "cleared": false,
+        "errored": false,
+        "value": "nb"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/TOn",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-02-01"
+       },
+       {
+        "field": "Join/Lines[2]/Slots/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "200"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Lines/Slots/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots/Key"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Lines/Slots[2]/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots[2]/Key"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "join-own-unmatched",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Doubled",
+        "Join/Lines/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[2]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Doubled",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CGrand",
+       "field": "Join/Grand",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ],
+       "fillToFix": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ]
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/OnNext",
+        "Join/Lines/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[2]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/OnNext",
+        "Join/Lines/Slots[2]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTKind",
+       "field": "Join/Lines/Slots/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TKind",
+        "Join/Refs/Key",
+        "Join/Refs/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTName",
+       "field": "Join/Lines/Slots/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TName",
+        "Join/Refs/Key",
+        "Join/Refs/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTOn",
+       "field": "Join/Lines/Slots/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TOn",
+        "Join/Refs/Key",
+        "Join/Refs/On"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines/Slots/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/Total",
+        "Join/Refs/Amount",
+        "Join/Refs/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines/Slots[2]/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Refs[-5]/Amount",
+        "/Join[1]/Refs[-5]/Key",
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": [
+        "/Join[1]/Refs[-5]/Amount",
+        "/Join[1]/Refs[-5]/Key",
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/Total"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "100"
+       },
+       {
+        "field": "Join/Lines/Slots/Doubled",
+        "cleared": false,
+        "errored": false,
+        "value": "200"
+       },
+       {
+        "field": "Join/Lines/Slots/KindCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots/NameCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "na"
+       },
+       {
+        "field": "Join/Lines/Slots/OnNext",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-02"
+       },
+       {
+        "field": "Join/Lines/Slots/TKind",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots/TName",
+        "cleared": false,
+        "errored": false,
+        "value": "na"
+       },
+       {
+        "field": "Join/Lines/Slots/TOn",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-01"
+       },
+       {
+        "field": "Join/Lines/Slots/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "100"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Doubled",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Doubled",
+        "Join/Lines/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[2]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Doubled",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CGrand",
+       "field": "Join/Grand",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ],
+       "fillToFix": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ]
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/OnNext",
+        "Join/Lines/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[2]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/OnNext",
+        "Join/Lines/Slots[2]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTKind",
+       "field": "Join/Lines/Slots/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TKind",
+        "Join/Refs/Key",
+        "Join/Refs/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTName",
+       "field": "Join/Lines/Slots/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TName",
+        "Join/Refs/Key",
+        "Join/Refs/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTOn",
+       "field": "Join/Lines/Slots/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/TOn",
+        "Join/Refs/Key",
+        "Join/Refs/On"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines/Slots/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key",
+        "Join/Lines/Slots/Total",
+        "Join/Refs/Amount",
+        "Join/Refs/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines/Slots[2]/Total",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Refs[-5]/Amount",
+        "/Join[1]/Refs[-5]/Key",
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": [
+        "/Join[1]/Refs[-5]/Amount",
+        "/Join[1]/Refs[-5]/Key",
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/Total"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "100"
+       },
+       {
+        "field": "Join/Lines/Slots/Doubled",
+        "cleared": false,
+        "errored": false,
+        "value": "200"
+       },
+       {
+        "field": "Join/Lines/Slots/KindCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots/NameCopy",
+        "cleared": false,
+        "errored": false,
+        "value": "na"
+       },
+       {
+        "field": "Join/Lines/Slots/OnNext",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-02"
+       },
+       {
+        "field": "Join/Lines/Slots/TKind",
+        "cleared": false,
+        "errored": false,
+        "value": "A"
+       },
+       {
+        "field": "Join/Lines/Slots/TName",
+        "cleared": false,
+        "errored": false,
+        "value": "na"
+       },
+       {
+        "field": "Join/Lines/Slots/TOn",
+        "cleared": false,
+        "errored": false,
+        "value": "2024-01-01"
+       },
+       {
+        "field": "Join/Lines/Slots/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "100"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Doubled",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Lines/Slots[2]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Total",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "join-over-capacity",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Doubled",
+        "Join/Lines/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[2]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Doubled",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[3]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[3]/Doubled",
+        "Join/Lines/Slots[3]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CGrand",
+       "field": "Join/Grand",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ],
+       "fillToFix": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ]
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/OnNext",
+        "Join/Lines/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[2]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/OnNext",
+        "Join/Lines/Slots[2]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[3]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[3]/OnNext",
+        "Join/Lines/Slots[3]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTKind",
+       "field": "Join/Lines/Slots[2]/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TKind",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTName",
+       "field": "Join/Lines/Slots[2]/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TName",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTOn",
+       "field": "Join/Lines/Slots[2]/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TOn",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/On"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines/Slots[2]/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/Total",
+        "Join/Refs[2]/Amount",
+        "Join/Refs[2]/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Lines/Slots/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Lines/Slots[3]/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[3]/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/Doubled"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/KindCopy",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/KindCopy"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/NameCopy",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/NameCopy"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/OnNext"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/TKind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/TName"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Join/Lines/Slots[4]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/Total",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Lines/Slots/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots/Key"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Lines/Slots[3]/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots[3]/Key"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Join/Lines/Slots[4]/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots[4]/Key"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Join/Lines/Slots[4]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots[4]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Doubled",
+        "Join/Lines/Slots/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[2]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Doubled",
+        "Join/Lines/Slots[2]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CDoubled",
+       "field": "Join/Lines/Slots[3]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[3]/Doubled",
+        "Join/Lines/Slots[3]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CGrand",
+       "field": "Join/Grand",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ],
+       "fillToFix": [
+        "/Join[1]/Lines[0]/Slots[0]/Total",
+        "Join/Grand"
+       ]
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/OnNext",
+        "Join/Lines/Slots/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[2]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/OnNext",
+        "Join/Lines/Slots[2]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COnNext",
+       "field": "Join/Lines/Slots[3]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[3]/OnNext",
+        "Join/Lines/Slots[3]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTKind",
+       "field": "Join/Lines/Slots[2]/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TKind",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Kind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTName",
+       "field": "Join/Lines/Slots[2]/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TName",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/Name"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTOn",
+       "field": "Join/Lines/Slots[2]/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/TOn",
+        "Join/Refs[2]/Key",
+        "Join/Refs[2]/On"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CTotal",
+       "field": "Join/Lines/Slots[2]/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[2]/Key",
+        "Join/Lines/Slots[2]/Total",
+        "Join/Refs[2]/Amount",
+        "Join/Refs[2]/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Lines/Slots/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Join/Lines/Slots[3]/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[3]/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/Doubled",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/Doubled"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/Key",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/Key"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/KindCopy",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/KindCopy"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/NameCopy",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/NameCopy"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/OnNext",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/OnNext"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/TKind",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/TKind"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/TName",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/TName"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/TOn",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/TOn"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseKontextnummer",
+       "field": "Join/Lines/Slots[4]/Total",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]/Total"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zuGrosseZeile",
+       "field": "Join/Lines/Slots[4]",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Join/Lines/Slots[4]"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[2]/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[3]/Total",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/Doubled",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/KindCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/NameCopy",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/OnNext",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/TKind",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/TName",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/TOn",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Lines/Slots[4]/Total",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Lines/Slots/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots/Key"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Join/Lines/Slots[3]/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots[3]/Key"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseKontextnummer",
+        "field": "Join/Lines/Slots[4]/Key",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots[4]/Key"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "zuGrosseZeile",
+        "field": "Join/Lines/Slots[4]",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Join/Lines/Slots[4]"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "hold-key-empty-content",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Hold/Holder/HKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Holder/HKey"
+       ],
+       "fillToFix": [
+        "Hold/Holder/HKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "mandatoryField",
+        "field": "Hold/Holder/HKey",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Holder/HKey"
+        ],
+        "fillToFix": [
+         "Hold/Holder/HKey"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "mandatoryField",
+       "field": "Hold/Holder/HKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Holder/HKey"
+       ],
+       "fillToFix": [
+        "Hold/Holder/HKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "mandatoryField",
+        "field": "Hold/Holder/HKey",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Holder/HKey"
+        ],
+        "fillToFix": [
+         "Hold/Holder/HKey"
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "hold-present-empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "hold-key-null",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "hold-key-filled",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "hold-absent",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  }
+ ]
+}

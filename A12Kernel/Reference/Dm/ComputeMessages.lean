@@ -63,7 +63,7 @@ private def findingMessage (model : FlatModel) (patterns : PreparedFlatStringPat
     (checked : CheckedDocument model) (finding : ComputationFormalInputFinding) : Option ComputedMessage :=
   let code? := match finding.cause with
     | .overRepetition => none
-    | .required => some IndexPreliminaryKind.mandatory.errorCode
+    | .indexRequired => some IndexPreliminaryKind.mandatory.errorCode
     | .duplicateIndex => some IndexPreliminaryKind.unique.errorCode
     | .unsupportedCharacter => some UniversalFormalRefusal.characterNotInCharset.errorCode
     | cause =>

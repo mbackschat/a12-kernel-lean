@@ -182,7 +182,7 @@ private def checkAddressedEnumerationSource
           target.declaration.repeatableScope = true then
         -- The read's own gates answer ahead of the kind: a stored read's value gates, and a category
         -- read's non-Enumeration class
-        -- ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+        -- ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
         if let some refusal := declaration.projectedReadRefusal? projectionRef then
           throw (.ordinary (.source (.resolve refusal)))
         match hKind : declaration.policy.kind,
@@ -293,6 +293,14 @@ private def fieldResult (operand : FlatEnumerationOperand) (cell : CheckedCell) 
   | .empty => .noValue
   | .present token => .value token
   | .unknown cause => .poison cause
+
+/-- The operation over a read context that has already placed every field, as a joined instance
+supplies it: the source field is read where the context places it, not at the target's row. -/
+def evaluateIn (operation : CheckedAddressedEnumerationComputation model)
+    (read : FieldId → CheckedCell) : TokenComputationResult :=
+  match operation.source with
+  | .literal token => .value token
+  | .field _ _ declaration operand _ _ _ _ _ _ _ _ _ => fieldResult operand (read declaration.id)
 
 /-- The exact row operation shared by the standalone walk and lazy alternative selection. -/
 def evaluateAtWithRead

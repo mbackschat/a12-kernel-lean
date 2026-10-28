@@ -315,7 +315,7 @@ private def pairAnchors (model : FlatModel) (group : GroupPath) (errorField : Fi
   let far := declarations.filter fun field =>
     !errorGroup.path.isPrefixOf field.groupPath && !(model.indexedAncestorGroups field).isEmpty
   -- A keyed group target inside the error side is read beside the join, never joined to it
-  -- ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join), `admission`).
+  -- ([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-keyed-group-beside-join), `admission`).
   let candidates := model.repeatableGroups.filter fun candidate =>
     candidate.path != errorGroup.path && some candidate.path != errorGroupTarget && candidate.indexField.isSome &&
       (far.any (candidate.path.isPrefixOf ·.groupPath) ||

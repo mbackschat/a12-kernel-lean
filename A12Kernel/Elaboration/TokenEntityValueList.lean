@@ -404,7 +404,7 @@ private def FieldEntityShapeElabError.isOperandRead : FieldEntityShapeElabError 
     ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25g-value-list-order)). Every operand of both
     lists is read before those gates, so a name resolving to nothing in the value list answers ahead
     of the field list's gates: opposite a raw String it draws the entity class
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+    ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
     A missing member also preempts duplicate subject operands in the retained computation matrix
     ([checkpoint](../../docs/sources/domain-ingestion-probes.md#src-membership-read-order-k13)).
     Wider value-side star/group competing gates remain outside that matrix.

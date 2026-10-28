@@ -6,7 +6,7 @@ import A12Kernel.Reference.Dm.Validate
 /-! # Rules reporting on a group against the retained group-target capture
 
 Each row is one rule of the
-[group-target capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+[group-target capture](../../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join),
 checked through the DM reader on a model with the capture's shape; the expected class is the
 Kernel's `rule add --dry-run` verdict, or its admission of a rule `model check` confirmed. The rows
 separate a group's own or a containing group's presence, which references the target, from a field
@@ -154,7 +154,7 @@ the ordinary carrier's gates, so a field inside the group does not reference it 
 presence of the group leaves its own level unguarded (`g03`), while a field inside it is read at its
 first row (`t2`). A field-fill list across the join is admitted (`q5`), and so is a custom condition,
 as `model check` admits `g4` of the
-[joined group-target checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-k22-joined-group-target-leaves). -/
+[joined group-target checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-k22-joined-group-target-leaves). -/
 example :
     verdict "Lines/Parts" "FieldFilled(Lines/Parts/Count) And FieldFilled(Picks/Ref)" = UNREFERENCED ∧
     verdict "Lines/Parts" "GroupNotFilled(Lines/Parts) And FieldFilled(Picks/Ref)" =
@@ -304,7 +304,7 @@ open Lean in
 /- The nested-capacity batch's rows: beside the `Lines`–`Picks` join, the error field's `Parts` rows
 follow the ordinary capacity rule with the joined level counted once, so five declared parts are all
 visited and six only where some line's parts or slots occupy them, and an unmatched line visits them
-too ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-nested-join-capacity)). -/
+too ([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-nested-join-capacity)). -/
 example :
     let six : DmModel := { dm with flat := { model with repeatableGroups := model.repeatableGroups.map fun group =>
       if group.path == L ++ ["Parts"] then { group with repeatability := some 6 } else group } }
@@ -336,7 +336,7 @@ open Lean in
 /-- Each message the unmatched `Picks` row fires names its own visited part in its references and
 fill-to-fix, as `/Order[1]/Lines[-5]/Parts[2]/Count` beside `Order/Picks[2]/Ref`, not the wildcard
 row: the channels the Kernel gives the `D` pick of `oneEach`
-([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-nested-join-capacity),
+([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-nested-join-capacity),
 `capacity-five`), with this document's pick at row 2. -/
 example :
     (do
@@ -483,7 +483,7 @@ private def slotsModel : DmModel :=
 open Lean in
 /- An enclosing joined group's expansion keeps only its own repeatable level bound: the error group's
    `Slots` inside it is a wildcard, as `Parts` is, even though the rule reports on `Slots`
-   ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join),
+   ([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-keyed-group-beside-join),
    `unkeyed`). -/
 example :
     referenced "GroupFilled(Lines) And FieldFilled(Picks/Ref)" slotsModel "Lines/Slots"
@@ -501,7 +501,7 @@ private def countDm : DmModel :=
 
 open Lean in
 /- A filled count over the joined pair is the ordinary count, at every constant the guard admits
-   ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-joined-filled-count),
+   ([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-joined-filled-count),
    `runtime`): a malformed `Qty` makes `> 0` silent where the at-least-one quantifier would fire on the
    filled `Ref` (`badQty`), `== 0` fires where neither is filled, and `== 1` counts an unmatched
    partner as empty on both sides of the join (`unmatched`). -/
@@ -525,7 +525,7 @@ example :
 
 open Lean in
 /- A keyed error group beside the join holds the Kernel's parallel-iteration placeholder
-   ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join),
+   ([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-keyed-group-beside-join),
    `runtime-keyed`): its presence is silent on a filled slot, an enclosing group's presence names
    `Lines[1]` for line `B` (`mixed`) with UNKNOWN at the group's own level, and its absence fires on
    a line without slots, referencing the group's fields at `[-6]` and the partner's index field but

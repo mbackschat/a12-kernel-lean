@@ -1,0 +1,1860 @@
+{
+ "header": {
+  "id": "R28P_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "R28P_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Fill",
+     "name": "Fill",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Fill/Anchor",
+        "name": "Anchor",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fill/S1",
+        "name": "S1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fill/P1",
+        "name": "P1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fill/V5",
+        "name": "V5",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fill/V7",
+        "name": "V7",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fill/Str",
+        "name": "Str",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Fill/Str2",
+        "name": "Str2",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Fill/Slots",
+        "name": "Slots",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Fill/Slots/SV",
+           "name": "SV",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Fill/Slots/SF",
+           "name": "SF",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Fill/Slots/SG",
+           "name": "SG",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/MN1",
+        "name": "MN1",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "MN1",
+         "errorCondition": "FieldFilled(Anchor) And Min([P1], [V5]) < 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/MN2",
+        "name": "MN2",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "MN2",
+         "errorCondition": "FieldFilled(Anchor) And Min([V5], [V7]) < 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/MN3",
+        "name": "MN3",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "MN3",
+         "errorCondition": "FieldFilled(Anchor) And Min([S1], [V5]) > -10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/MX1",
+        "name": "MX1",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "MX1",
+         "errorCondition": "FieldFilled(Anchor) And Max([S1], [V5]) > 3",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/MX2",
+        "name": "MX2",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "MX2",
+         "errorCondition": "FieldFilled(Anchor) And Max([P1], [V5]) < 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/MX3",
+        "name": "MX3",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "MX3",
+         "errorCondition": "FieldFilled(Anchor) And Max([V5], [V7]) > 3",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/AB1",
+        "name": "AB1",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "AB1",
+         "errorCondition": "FieldFilled(Anchor) And Abs([S1]) > -1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/AB2",
+        "name": "AB2",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "AB2",
+         "errorCondition": "FieldFilled(Anchor) And Abs([S1]) < 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/AB3",
+        "name": "AB3",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "AB3",
+         "errorCondition": "FieldFilled(Anchor) And Abs([V5]) < 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/AB4",
+        "name": "AB4",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "AB4",
+         "errorCondition": "FieldFilled(Anchor) And Abs([P1]) > -1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/AV1",
+        "name": "AV1",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "AV1",
+         "errorCondition": "FieldFilled(Anchor) And AbsValue(S1) > -1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/AV2",
+        "name": "AV2",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "AV2",
+         "errorCondition": "FieldFilled(Anchor) And AbsValue(S1) < 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/AV3",
+        "name": "AV3",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "AV3",
+         "errorCondition": "FieldFilled(Anchor) And AbsValue(V5) < 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/RV1",
+        "name": "RV1",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RV1",
+         "errorCondition": "FieldFilled(Anchor) And RoundAccountingValue(S1, 0) > -1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/RV2",
+        "name": "RV2",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RV2",
+         "errorCondition": "FieldFilled(Anchor) And RoundAccountingValue(P1, 0) > -1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/RV3",
+        "name": "RV3",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "RV3",
+         "errorCondition": "FieldFilled(Anchor) And RoundAccountingValue(P1, 0) < 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/LN1",
+        "name": "LN1",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "LN1",
+         "errorCondition": "FieldFilled(Anchor) And Length(Str) < 3",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/LN2",
+        "name": "LN2",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "LN2",
+         "errorCondition": "FieldFilled(Anchor) And Length(Str) == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/LN3",
+        "name": "LN3",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "LN3",
+         "errorCondition": "FieldFilled(Anchor) And Length(Str2) < 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/LN4",
+        "name": "LN4",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "LN4",
+         "errorCondition": "FieldFilled(Anchor) And Length(Str) > -1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/NF1",
+        "name": "NF1",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "NF1",
+         "errorCondition": "FieldFilled(Anchor) And NumberOfFilledFields(Slots*/SV Having FieldNotFilled(Slots/SG)) >= 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/NF2",
+        "name": "NF2",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "NF2",
+         "errorCondition": "FieldFilled(Anchor) And NumberOfFilledFields(Slots*/SV) >= 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/NF3",
+        "name": "NF3",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "NF3",
+         "errorCondition": "FieldFilled(Anchor) And NumberOfFilledFields(Slots*/SV Having [Slots/SF] == \"Y\") >= 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Fill/NF4",
+        "name": "NF4",
+        "Rule": {
+         "errorEntityRelPath": "../Anchor",
+         "errorCode": "NF4",
+         "errorCondition": "FieldFilled(Anchor) And NumberOfFilledFields(Slots*/SV Having [Slots/SF] == \"Y\") < 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/IxRoot",
+     "name": "IxRoot",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/IxRoot/Note",
+        "name": "Note",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/IxRoot/RootKey",
+        "name": "RootKey",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/IxRoot/Cover",
+        "name": "Cover",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/IxRoot/Cover/CAmt",
+           "name": "CAmt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/IxRoot/Cover/CNote",
+           "name": "CNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/IxRoot/Cover/Reps",
+           "name": "Reps",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/IxRoot/Cover/Reps/RAmt",
+              "name": "RAmt",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0,
+                 "positivesOnly": false
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/IxRoot/Cover/Reps/RLab",
+              "name": "RLab",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxRoot/Cover/Reps/IxRootK4",
+              "name": "IxRootK4",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxRootK4",
+               "errorCondition": "FieldFilled(RLab) And [RAmt For \"X\"] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxRoot/Cover/Reps/IxRootK4N",
+              "name": "IxRootK4N",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxRootK4N",
+               "errorCondition": "FieldFilled(RLab) And FieldNotFilled(RAmt For \"X\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxRoot/Cover/Reps/IxRootC4",
+              "name": "IxRootC4",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxRootC4",
+               "errorCondition": "FieldFilled(RLab) And [RAmt] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootK1",
+        "name": "IxRootK1",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootK1",
+         "errorCondition": "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootK1N",
+        "name": "IxRootK1N",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootK1N",
+         "errorCondition": "FieldFilled(Note) And FieldNotFilled(Cover/CAmt For \"X\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootK2",
+        "name": "IxRootK2",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootK2",
+         "errorCondition": "FieldFilled(Note) And FieldFilled(Cover/CNote For \"X\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootK3",
+        "name": "IxRootK3",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootK3",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootK3N",
+        "name": "IxRootK3N",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootK3N",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootC1",
+        "name": "IxRootC1",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootC1",
+         "errorCondition": "FieldFilled(Note) And [Cover/CAmt] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxRoot/IxRootC3",
+        "name": "IxRootC3",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxRootC3",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ],
+      "indexFieldName": "RootKey"
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/IxFix",
+     "name": "IxFix",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/IxFix/Note",
+        "name": "Note",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/IxFix/Cover",
+        "name": "Cover",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/IxFix/Cover/CAmt",
+           "name": "CAmt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/IxFix/Cover/CNote",
+           "name": "CNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/IxFix/Cover/CoverKey",
+           "name": "CoverKey",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/IxFix/Cover/Reps",
+           "name": "Reps",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/IxFix/Cover/Reps/RAmt",
+              "name": "RAmt",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0,
+                 "positivesOnly": false
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/IxFix/Cover/Reps/RLab",
+              "name": "RLab",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxFix/Cover/Reps/IxFixK4",
+              "name": "IxFixK4",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxFixK4",
+               "errorCondition": "FieldFilled(RLab) And [RAmt For \"X\"] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxFix/Cover/Reps/IxFixK4N",
+              "name": "IxFixK4N",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxFixK4N",
+               "errorCondition": "FieldFilled(RLab) And FieldNotFilled(RAmt For \"X\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/IxFix/Cover/Reps/IxFixC4",
+              "name": "IxFixC4",
+              "Rule": {
+               "errorEntityRelPath": "../RLab",
+               "errorCode": "IxFixC4",
+               "errorCondition": "FieldFilled(RLab) And [RAmt] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "CoverKey"
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixK1",
+        "name": "IxFixK1",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixK1",
+         "errorCondition": "FieldFilled(Note) And [Cover/CAmt For \"X\"] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixK1N",
+        "name": "IxFixK1N",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixK1N",
+         "errorCondition": "FieldFilled(Note) And FieldNotFilled(Cover/CAmt For \"X\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixK2",
+        "name": "IxFixK2",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixK2",
+         "errorCondition": "FieldFilled(Note) And FieldFilled(Cover/CNote For \"X\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixK3",
+        "name": "IxFixK3",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixK3",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixK3N",
+        "name": "IxFixK3N",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixK3N",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt For \"X\") == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixC1",
+        "name": "IxFixC1",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixC1",
+         "errorCondition": "FieldFilled(Note) And [Cover/CAmt] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/IxFix/IxFixC3",
+        "name": "IxFixC3",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "IxFixC3",
+         "errorCondition": "FieldFilled(Note) And Sum(Cover/Reps*/RAmt) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Join",
+     "name": "Join",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Join/Grand",
+        "name": "Grand",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Join/Refs",
+        "name": "Refs",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Join/Refs/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Join/Refs/Amount",
+           "name": "Amount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Join/Refs/Name",
+           "name": "Name",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Join/Refs/On",
+           "name": "On",
+           "Field": {
+            "fieldType": {
+             "type": "DateType",
+             "DateType": {
+              "format": "yyyy-MM-dd"
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Join/Refs/Kind",
+           "name": "Kind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ]
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Key"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Join/Lines",
+        "name": "Lines",
+        "Group": {
+         "repeatability": 2,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Join/Lines/LNote",
+           "name": "LNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Join/Lines/Slots",
+           "name": "Slots",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Join/Lines/Slots/Key",
+              "name": "Key",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Join/Lines/Slots/Total",
+              "name": "Total",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0,
+                 "positivesOnly": false
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Join/Lines/Slots/Doubled",
+              "name": "Doubled",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0,
+                 "positivesOnly": false
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Join/Lines/Slots/TName",
+              "name": "TName",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Join/Lines/Slots/NameCopy",
+              "name": "NameCopy",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Join/Lines/Slots/TOn",
+              "name": "TOn",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Join/Lines/Slots/OnNext",
+              "name": "OnNext",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Join/Lines/Slots/TKind",
+              "name": "TKind",
+              "Field": {
+               "fieldType": {
+                "type": "EnumerationType",
+                "EnumerationType": {
+                 "values": [
+                  {
+                   "value": "A"
+                  },
+                  {
+                   "value": "B"
+                  }
+                 ]
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Join/Lines/Slots/KindCopy",
+              "name": "KindCopy",
+              "Field": {
+               "fieldType": {
+                "type": "EnumerationType",
+                "EnumerationType": {
+                 "values": [
+                  {
+                   "value": "A"
+                  },
+                  {
+                   "value": "B"
+                  }
+                 ]
+                }
+               }
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Join/Lines/Slots/CTotal",
+              "name": "CTotal",
+              "Computation": {
+               "computedFieldRelPath": "../Total",
+               "computationAlternatives": [
+                {
+                 "operation": "[../../Refs/Amount]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Join/Lines/Slots/CDoubled",
+              "name": "CDoubled",
+              "Computation": {
+               "computedFieldRelPath": "../Doubled",
+               "computationAlternatives": [
+                {
+                 "operation": "[Total] * 2"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Join/Lines/Slots/CTName",
+              "name": "CTName",
+              "Computation": {
+               "computedFieldRelPath": "../TName",
+               "computationAlternatives": [
+                {
+                 "operation": "[../../Refs/Name]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Join/Lines/Slots/CNameCopy",
+              "name": "CNameCopy",
+              "Computation": {
+               "computedFieldRelPath": "../NameCopy",
+               "computationAlternatives": [
+                {
+                 "operation": "[TName]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Join/Lines/Slots/CTOn",
+              "name": "CTOn",
+              "Computation": {
+               "computedFieldRelPath": "../TOn",
+               "computationAlternatives": [
+                {
+                 "operation": "[../../Refs/On]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Join/Lines/Slots/COnNext",
+              "name": "COnNext",
+              "Computation": {
+               "computedFieldRelPath": "../OnNext",
+               "computationAlternatives": [
+                {
+                 "operation": "AddDays(TOn, 1)"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Join/Lines/Slots/CTKind",
+              "name": "CTKind",
+              "Computation": {
+               "computedFieldRelPath": "../TKind",
+               "computationAlternatives": [
+                {
+                 "operation": "[../../Refs/Kind]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Join/Lines/Slots/CKindCopy",
+              "name": "CKindCopy",
+              "Computation": {
+               "computedFieldRelPath": "../KindCopy",
+               "computationAlternatives": [
+                {
+                 "operation": "[TKind]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ],
+            "indexFieldName": "Key"
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Join/CGrand",
+        "name": "CGrand",
+        "Computation": {
+         "computedFieldRelPath": "../Grand",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Lines*/Slots*/Total)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Hold",
+     "name": "Hold",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Hold/HAnchor",
+        "name": "HAnchor",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Hold/Out",
+        "name": "Out",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Hold/Out2",
+        "name": "Out2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Hold/Holder",
+        "name": "Holder",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Hold/Holder/HKey",
+           "name": "HKey",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Hold/Holder/HAlt",
+           "name": "HAlt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Hold/Holder/HText",
+           "name": "HText",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "HKey"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Hold/Plain",
+        "name": "Plain",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Hold/Plain/PKey",
+           "name": "PKey",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Hold/Plain/PAlt",
+           "name": "PAlt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Hold/COut",
+        "name": "COut",
+        "Computation": {
+         "computedFieldRelPath": "../Out",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Holder/HKey, Holder/HAlt)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Hold/COut2",
+        "name": "COut2",
+        "Computation": {
+         "computedFieldRelPath": "../Out2",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Plain/PKey, Plain/PAlt)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Hold/Sum1",
+        "name": "Sum1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "positivesOnly": false
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Hold/Recs",
+        "name": "Recs",
+        "Group": {
+         "repeatability": 3,
+         "indexFieldName": "RKey",
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Hold/Recs/RKey",
+           "name": "RKey",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Hold/Recs/RAlt",
+           "name": "RAlt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Hold/Recs/ROut",
+           "name": "ROut",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Hold/Recs/RSum",
+           "name": "RSum",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "positivesOnly": false
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Hold/Recs/CROut",
+           "name": "CROut",
+           "Computation": {
+            "computedFieldRelPath": "../ROut",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(RKey, RAlt)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Hold/Recs/CRSum",
+           "name": "CRSum",
+           "Computation": {
+            "computedFieldRelPath": "../RSum",
+            "computationAlternatives": [
+             {
+              "operation": "[RKey] + [RAlt]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Hold/CSum1",
+        "name": "CSum1",
+        "Computation": {
+         "computedFieldRelPath": "../Sum1",
+         "computationAlternatives": [
+          {
+           "operation": "[Holder/HKey] + [Holder/HAlt]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

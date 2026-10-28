@@ -1,0 +1,746 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R28Q_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "q-key-empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "QLive",
+       "field": "Hold/HAnchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/HAnchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QN2",
+       "field": "Hold/HAnchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/HAnchor",
+        "Hold/Plain/PKey"
+       ],
+       "fillToFix": [
+        "Hold/Plain/PKey"
+       ]
+      },
+      {
+       "code": "QN4",
+       "field": "Hold/HAnchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/HAnchor",
+        "Hold/Plain/PAlt",
+        "Hold/Plain/PKey"
+       ],
+       "fillToFix": [
+        "Hold/Plain/PAlt",
+        "Hold/Plain/PKey"
+       ]
+      },
+      {
+       "code": "QR0",
+       "field": "Hold/Recs/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Hold/Holder/HKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Holder/HKey"
+       ],
+       "fillToFix": [
+        "Hold/Holder/HKey"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Hold/Recs/RKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RKey"
+       ],
+       "fillToFix": [
+        "Hold/Recs/RKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "mandatoryField",
+        "field": "Hold/Holder/HKey",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Holder/HKey"
+        ],
+        "fillToFix": [
+         "Hold/Holder/HKey"
+        ]
+       },
+       {
+        "code": "mandatoryField",
+        "field": "Hold/Recs/RKey",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Recs/RKey"
+        ],
+        "fillToFix": [
+         "Hold/Recs/RKey"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "QLive",
+       "field": "Hold/HAnchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/HAnchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QN2",
+       "field": "Hold/HAnchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/HAnchor",
+        "Hold/Plain/PKey"
+       ],
+       "fillToFix": [
+        "Hold/Plain/PKey"
+       ]
+      },
+      {
+       "code": "QN4",
+       "field": "Hold/HAnchor",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/HAnchor",
+        "Hold/Plain/PAlt",
+        "Hold/Plain/PKey"
+       ],
+       "fillToFix": [
+        "Hold/Plain/PAlt",
+        "Hold/Plain/PKey"
+       ]
+      },
+      {
+       "code": "QR0",
+       "field": "Hold/Recs/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Hold/Holder/HKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Holder/HKey"
+       ],
+       "fillToFix": [
+        "Hold/Holder/HKey"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Hold/Recs/RKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RKey"
+       ],
+       "fillToFix": [
+        "Hold/Recs/RKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "mandatoryField",
+        "field": "Hold/Holder/HKey",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Holder/HKey"
+        ],
+        "fillToFix": [
+         "Hold/Holder/HKey"
+        ]
+       },
+       {
+        "code": "mandatoryField",
+        "field": "Hold/Recs/RKey",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Recs/RKey"
+        ],
+        "fillToFix": [
+         "Hold/Recs/RKey"
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "q-key-filled",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "QLive",
+       "field": "Hold/HAnchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/HAnchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR0",
+       "field": "Hold/Recs/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR2",
+       "field": "Hold/Recs/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt",
+        "Hold/Recs/RKey"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Recs/ROut",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Hold/Recs/RSum",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       },
+       {
+        "field": "Hold/Sum1",
+        "cleared": false,
+        "errored": false,
+        "value": "6"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "QLive",
+       "field": "Hold/HAnchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/HAnchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR0",
+       "field": "Hold/Recs/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR2",
+       "field": "Hold/Recs/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt",
+        "Hold/Recs/RKey"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Recs/ROut",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Hold/Recs/RSum",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       },
+       {
+        "field": "Hold/Sum1",
+        "cleared": false,
+        "errored": false,
+        "value": "6"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "q-key-duplicate",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "QLive",
+       "field": "Hold/HAnchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/HAnchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR0",
+       "field": "Hold/Recs/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR0",
+       "field": "Hold/Recs[2]/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs[2]/RAlt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR0",
+       "field": "Hold/Recs[3]/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs[3]/RAlt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR2",
+       "field": "Hold/Recs[3]/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs[3]/RAlt",
+        "Hold/Recs[3]/RKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Hold/Recs/RKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Hold/Recs[2]/RKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs[2]/RKey"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Recs[3]/ROut",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Hold/Recs[3]/RSum",
+        "cleared": false,
+        "errored": false,
+        "value": "9"
+       },
+       {
+        "field": "Hold/Sum1",
+        "cleared": false,
+        "errored": false,
+        "value": "6"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "Hold/Recs/RKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Recs/RKey"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Hold/Recs[2]/RKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Recs[2]/RKey"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "QLive",
+       "field": "Hold/HAnchor",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/HAnchor"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR0",
+       "field": "Hold/Recs/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR0",
+       "field": "Hold/Recs[2]/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs[2]/RAlt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR0",
+       "field": "Hold/Recs[3]/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs[3]/RAlt"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "QR2",
+       "field": "Hold/Recs[3]/RAlt",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs[3]/RAlt",
+        "Hold/Recs[3]/RKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Hold/Recs/RKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Hold/Recs[2]/RKey",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs[2]/RKey"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Recs[3]/ROut",
+        "cleared": false,
+        "errored": false,
+        "value": "2"
+       },
+       {
+        "field": "Hold/Recs[3]/RSum",
+        "cleared": false,
+        "errored": false,
+        "value": "9"
+       },
+       {
+        "field": "Hold/Sum1",
+        "cleared": false,
+        "errored": false,
+        "value": "6"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "uniqueIndex",
+        "field": "Hold/Recs/RKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Recs/RKey"
+        ],
+        "fillToFix": []
+       },
+       {
+        "code": "uniqueIndex",
+        "field": "Hold/Recs[2]/RKey",
+        "severity": "ERROR",
+        "type": "VALUE_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Recs[2]/RKey"
+        ],
+        "fillToFix": []
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ]
+}

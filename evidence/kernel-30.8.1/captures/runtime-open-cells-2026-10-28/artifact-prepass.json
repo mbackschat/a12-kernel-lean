@@ -1,0 +1,478 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "R28P_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "hold-key-empty-seeded",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "COut2",
+       "field": "Hold/Out2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Out2",
+        "Hold/Plain/PAlt",
+        "Hold/Plain/PKey"
+       ],
+       "fillToFix": [
+        "Hold/Out2",
+        "Hold/Plain/PAlt",
+        "Hold/Plain/PKey"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Hold/Holder/HKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Holder/HKey"
+       ],
+       "fillToFix": [
+        "Hold/Holder/HKey"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Hold/Recs/RKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RKey"
+       ],
+       "fillToFix": [
+        "Hold/Recs/RKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Hold/Recs/ROut",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Hold/Recs/RSum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Hold/Sum1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "mandatoryField",
+        "field": "Hold/Holder/HKey",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Holder/HKey"
+        ],
+        "fillToFix": [
+         "Hold/Holder/HKey"
+        ]
+       },
+       {
+        "code": "mandatoryField",
+        "field": "Hold/Recs/RKey",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Recs/RKey"
+        ],
+        "fillToFix": [
+         "Hold/Recs/RKey"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "COut2",
+       "field": "Hold/Out2",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Out2",
+        "Hold/Plain/PAlt",
+        "Hold/Plain/PKey"
+       ],
+       "fillToFix": [
+        "Hold/Out2",
+        "Hold/Plain/PAlt",
+        "Hold/Plain/PKey"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Hold/Holder/HKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Holder/HKey"
+       ],
+       "fillToFix": [
+        "Hold/Holder/HKey"
+       ]
+      },
+      {
+       "code": "mandatoryField",
+       "field": "Hold/Recs/RKey",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RKey"
+       ],
+       "fillToFix": [
+        "Hold/Recs/RKey"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "5"
+       },
+       {
+        "field": "Hold/Recs/ROut",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Hold/Recs/RSum",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Hold/Sum1",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": [
+       {
+        "code": "mandatoryField",
+        "field": "Hold/Holder/HKey",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Holder/HKey"
+        ],
+        "fillToFix": [
+         "Hold/Holder/HKey"
+        ]
+       },
+       {
+        "code": "mandatoryField",
+        "field": "Hold/Recs/RKey",
+        "severity": "ERROR",
+        "type": "OMISSION_ERROR",
+        "message": "",
+        "referenced": [
+         "Hold/Recs/RKey"
+        ],
+        "fillToFix": [
+         "Hold/Recs/RKey"
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "hold-key-filled-seeded",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "COut",
+       "field": "Hold/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Holder/HAlt",
+        "Hold/Holder/HKey",
+        "Hold/Out"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COut2",
+       "field": "Hold/Out2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Out2",
+        "Hold/Plain/PAlt",
+        "Hold/Plain/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CROut",
+       "field": "Hold/Recs/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt",
+        "Hold/Recs/RKey",
+        "Hold/Recs/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CRSum",
+       "field": "Hold/Recs/RSum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt",
+        "Hold/Recs/RKey",
+        "Hold/Recs/RSum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSum1",
+       "field": "Hold/Sum1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Holder/HAlt",
+        "Hold/Holder/HKey",
+        "Hold/Sum1"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Recs/ROut",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Recs/RSum",
+        "cleared": false,
+        "errored": false,
+        "value": "6"
+       },
+       {
+        "field": "Hold/Sum1",
+        "cleared": false,
+        "errored": false,
+        "value": "6"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "COut",
+       "field": "Hold/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Holder/HAlt",
+        "Hold/Holder/HKey",
+        "Hold/Out"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "COut2",
+       "field": "Hold/Out2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Out2",
+        "Hold/Plain/PAlt",
+        "Hold/Plain/PKey"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CROut",
+       "field": "Hold/Recs/ROut",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt",
+        "Hold/Recs/RKey",
+        "Hold/Recs/ROut"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CRSum",
+       "field": "Hold/Recs/RSum",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Recs/RAlt",
+        "Hold/Recs/RKey",
+        "Hold/Recs/RSum"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "CSum1",
+       "field": "Hold/Sum1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Hold/Holder/HAlt",
+        "Hold/Holder/HKey",
+        "Hold/Sum1"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Hold/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Out2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Recs/ROut",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Hold/Recs/RSum",
+        "cleared": false,
+        "errored": false,
+        "value": "6"
+       },
+       {
+        "field": "Hold/Sum1",
+        "cleared": false,
+        "errored": false,
+        "value": "6"
+       },
+       {
+        "field": "Join/Grand",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  }
+ ]
+}

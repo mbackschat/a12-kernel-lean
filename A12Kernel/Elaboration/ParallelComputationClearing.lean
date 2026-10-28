@@ -441,7 +441,7 @@ private def indexedGroupForParallelComputation (model : FlatModel)
       .error (.multipleIndexedAncestors declaration.id
         (groups.map (·.path)))
 
-/-- Check one observed field's key join to a repeatable target of any kind. The target is never an index field; each side's single indexed group must form a checked parallel pair. The source's scope must be exactly its group's; the target's may continue below its joined group, each of its rows then joining its joined row's key ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join), `computations`). -/
+/-- Check one observed field's key join to a repeatable target of any kind. The target is never an index field; each side's single indexed group must form a checked parallel pair. The source's scope must be exactly its group's; the target's may continue below its joined group, each of its rows then joining its joined row's key ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join), `computations`). -/
 def checkParallelTargetJoin (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId)
     (sourceReference : SurfaceFieldPath) :
@@ -549,7 +549,7 @@ def checkParallelNumericTargetRoute (model : FlatModel)
 
     The operand is a field-value read, so a group draws the group class and a raw String and a
     partially known Date their value classes, ahead of the Number check
-    ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+    ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
     A group meets the computation reader's walk from the target's scope, which passes the operand's
     own keyed level as a legal parallel iteration, so that group and a fixed group inside it draw the
     group class, measured, while a repeatable group the join does not bind keeps the walk's class.

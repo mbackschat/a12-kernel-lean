@@ -1,0 +1,14 @@
+{
+ "computedField": "/Shop/Rows/RCost",
+ "alternatives": [
+  {
+   "operation": "[RNZ]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

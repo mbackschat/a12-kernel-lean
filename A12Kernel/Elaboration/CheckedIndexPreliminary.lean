@@ -5,7 +5,7 @@ import A12Kernel.Semantics.RepetitionNotUnique
 
 /-! # Checked full and partial generated-preliminary findings
 
-This boundary derives generated index mandatory and uniqueness findings from one immutable checked document. One declaration/row/cell eligibility projection stages an Enumeration S-value only in the full validation view and turns the same address into cause-free silent unavailability in partial validation. The partial view selects index candidates before duplicate construction and combines the generated required evaluator without merging their roles. An empty ordinary required field remains computation-ignored while an empty index remains a distinct later formal-operand fact.
+This boundary derives generated index mandatory and uniqueness findings from one immutable checked document. One declaration/row/cell eligibility projection stages an Enumeration S-value only in the full validation view and turns the same address into cause-free silent unavailability in partial validation. The partial view selects index candidates before duplicate construction and combines the generated required evaluator without merging their roles. An empty ordinary required field remains computation-ignored, while an empty index key carries `indexRequired`, which a computation reading it treats as poison and reports among its formal operand errors.
 -/
 
 namespace A12Kernel
@@ -18,7 +18,7 @@ inductive IndexPreliminaryKind where
 namespace IndexPreliminaryKind
 
 def cause : IndexPreliminaryKind → FormalCause
-  | .mandatory => .required
+  | .mandatory => .indexRequired
   | .unique => .duplicateIndex
 
 def verdict : IndexPreliminaryKind → Verdict
@@ -234,14 +234,16 @@ uniqueness arm exists there. Measured on the three-engine
 `NonRepeatableIndexFieldGeneratedChecksDiffTest` rows at a12-dmkits `fecf8552`
 ([inbound](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)): a present `Holder` or
 `Detail` with an empty key fires, a repeated `DetailKey` and an absent `Detail` do not. A present group
-holding no admitted content and the `.required` cell annotation the finding gives on this carrier are
-not measured: the annotation is the repeatable index arm's, applied here unchanged. `rows` and `cells`
-are the call's group-presence slice, as `requiredEvaluations` takes them. -/
+holding nothing, or only the key as `null`, fires nothing either, and a computation reading the empty key
+of a group holding other content reports the finding among its operand errors and stores nothing
+(runtime-open-cells-2026-10-28, `hold-*`). The `.indexRequired` cell annotation is the repeatable index
+arm's, applied here unchanged. `rows` and `cells` are the call's group-presence slice, as
+`requiredEvaluations` takes them; `selected` names the index fields the call checks. -/
 private def CheckedDocument.nonrepeatableIndexFindings (checked : CheckedDocument model)
     (relevance : ValidationRelevanceScope) (rows : List RowAddr)
-    (cells : List CheckedCellPlacement) :
+    (cells : List CheckedCellPlacement) (selected : FieldId → Bool := fun _ => true) :
     Except CheckedIndexPreliminaryError (List IndexPreliminaryFinding) :=
-  model.nonrepeatableIndexFields.flatMapM fun (groupPath, field) => do
+  (model.nonrepeatableIndexFields.filter (selected ·.2)).flatMapM fun (groupPath, field) => do
     let declaration ← model.lookupUniqueId field |>.mapError .model
     let evaluations ← checked.requiredEvaluationsFor relevance rows cells declaration
       (.relativeTo groupPath) |>.mapError .required
@@ -290,7 +292,7 @@ def readAuthoredValidation (preliminary : CheckedIndexPreliminary model)
     (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
   preliminary.readPreparedCell address
 
-/-- Read the same prepared cell for a computation-phase observer. Generated requiredness remains ignorable only because `observeCell .computation` owns that phase rule. -/
+/-- Read the same prepared cell for a computation-phase observer. `observeCell .computation` owns the phase rule: it ignores generated ordinary requiredness and poisons on an index finding. -/
 def readComputation (preliminary : CheckedIndexPreliminary model)
     (address : CellAddr) : Except CheckedDocumentError CheckedCell :=
   preliminary.readPreparedCell address
@@ -323,23 +325,9 @@ private def placements (preliminary : CheckedIndexPreliminary model) :
       }
   staged ++ absent
 
-/-- Reuse the prepared cells and their staged spellings for computation without changing source placement or ingesting values again. -/
+/-- Reuse the prepared cells and their staged spellings, as full validation's authored rules and computation read them, without changing source placement or ingesting values again. -/
 def computationInput (preliminary : CheckedIndexPreliminary model) : CheckedDocument model :=
   preliminary.base.overlayCells [] preliminary.placements
-
-/-- The base document with only the staged index defaults placed, as authored full-validation rules
-read it (spec/10 §5). Generated findings stay out of its cells, because a consumer deriving its own
-preliminary from this view, as an indexed selection does, keys every cell through its observation:
-a duplicate already marked unknown would hide the collision, and its colliding rows would stay
-selectable (spec/08 §4.1). -/
-def defaultedInput (preliminary : CheckedIndexPreliminary model) : CheckedDocument model :=
-  let placed := preliminary.base.checkedCells.filterMap fun placement =>
-    (preliminary.defaulted.find? (·.address == placement.address)).map fun defaulted =>
-      { placement with cell := defaulted.cell, storedText := some defaulted.stored }
-  let injected := preliminary.defaulted.filterMap fun defaulted =>
-    if preliminary.base.checkedCells.any (·.address == defaulted.address) then none
-    else some { address := defaulted.address, cell := defaulted.cell, storedText := some defaulted.stored }
-  preliminary.base.overlayCells [] (placed ++ injected)
 
 /-- Reuse the sole resolved group-scope owner with the addressed preliminary cell view, including required findings on physically absent index cells. -/
 def groupPresenceInput (preliminary : CheckedIndexPreliminary model)
@@ -353,36 +341,43 @@ end CheckedIndexPreliminary
 
 namespace CheckedDocument
 
+/-- The document without the generated index findings an earlier preliminary placed on it, which only
+`IndexPreliminaryKind.cause` produces. Both preliminaries derive from this view, so one derived from a
+prepared view reproduces the findings of its base: read back as unknown, a duplicate would hide its
+collision from an indexed selection (spec/07 §4) and an empty key would no longer draw its mandatory
+finding. -/
+private def withoutIndexFindings (checked : CheckedDocument model) : CheckedDocument model :=
+  let generated (cause : FormalCause) :=
+    [IndexPreliminaryKind.mandatory, .unique].any (·.cause == cause)
+  checked.overlayCells [] (checked.checkedCells.map fun placement =>
+    { placement with cell := { placement.cell with
+        findings := placement.cell.findings.filter (!generated ·) } })
+
 private def applyIndexPreliminaryForGroups
     (checked : CheckedDocument model)
-    (groups : List RepeatableGroupDecl) (withNonrepeatable : Bool) :
+    (selected : FieldId → Bool) :
     Except CheckedIndexPreliminaryError (CheckedIndexPreliminary model) := do
+  let checked := checked.withoutIndexFindings
   let defaulted := checked.indexDefaults model.repeatableGroups
+  let groups := model.repeatableGroups.filter fun group => group.indexField.any selected
   pure {
     base := checked
     defaulted
     findings := (← checked.indexFindings defaulted [] .full groups) ++
-      (← if withNonrepeatable then
-        checked.nonrepeatableIndexFindings .full checked.source.instantiatedRows checked.checkedCells
-      else pure [])
+      (← checked.nonrepeatableIndexFindings .full checked.source.instantiatedRows checked.checkedCells
+        selected)
   }
 
 /-- Run every model-declared index mandatory/uniqueness preliminary rule over the immutable base checked document without mutating it. -/
 def applyFullIndexPreliminary (checked : CheckedDocument model) :
     Except CheckedIndexPreliminaryError (CheckedIndexPreliminary model) :=
-  checked.applyIndexPreliminaryForGroups model.repeatableGroups true
+  checked.applyIndexPreliminaryForGroups fun _ => true
 
 /-- Stage the full-call index defaults while deriving preliminary findings only for groups whose index field is selected. This is the computation prepass boundary: unused indexes keep their transient defaults but do not run mandatory or uniqueness checks. -/
 def applySelectedFullIndexPreliminary (checked : CheckedDocument model)
     (selectedIndexFields : List FieldId) :
     Except CheckedIndexPreliminaryError (CheckedIndexPreliminary model) :=
-  -- The computation prepass runs no non-repeatable arm: the check is measured only on validation,
-  -- and a computation ignores its `.required` cause.
-  checked.applyIndexPreliminaryForGroups
-    (model.repeatableGroups.filter fun group =>
-      match group.indexField with
-      | some field => selectedIndexFields.contains field
-      | none => false) false
+  checked.applyIndexPreliminaryForGroups selectedIndexFields.contains
 
 end CheckedDocument
 
@@ -530,6 +525,7 @@ private def applyPartialGeneratedPreliminaryNormalized
     (checked : CheckedDocument model)
     (relevance : ValidationRelevanceScope) :
     Except CheckedIndexPreliminaryError (CheckedPartialPreliminary model) := do
+  let checked := checked.withoutIndexFindings
   let silentlyUnavailable :=
     checked.indexDefaults model.repeatableGroups
       |>.map (·.address)

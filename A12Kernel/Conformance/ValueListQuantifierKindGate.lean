@@ -499,7 +499,7 @@ example :
    cross-list repeat and draws the duplicate class, on the String and Date rows' account: no row
    repeats a Number across the lists. A value-side name resolving to nothing answers ahead
    of the field list's value validation
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)),
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)),
    where asking the field list's gates first draws the raw class. -/
 example :
     [entityAdmissionIn validationModel [field "AVal"] [field "AVal"],
@@ -525,7 +525,7 @@ private def readGateModel : FlatModel :=
     repeatableGroups := [{ level := 10, path := ["Probe", "Items"] }] }
 
 /- **A group operand is expanded and a category read is an Enumeration, both ahead of the base-type
-   gate** ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   gate** ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
    A group holding a String and a Date, on either side, and a group holding a Number opposite a String
    draw the base-type class. A category read of an Enumeration opposite a String draws it too, while a
    raw String ahead of that category draws the raw class, the field list's value validation answering
@@ -550,7 +550,7 @@ example :
 
 /- **A category read of a field declaring no Enumeration draws its own class**, on the stored form
    and on a starred operand of the projected form
-   ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)).
+   ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)).
    The starred row is measured against a literal, which the projected form does not carry, and each
    measured row's value side is clean, so no row orders the category read against a failing value.
    The projected form's direct category arm answers the same class. A token list reading the field

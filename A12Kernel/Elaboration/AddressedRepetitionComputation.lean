@@ -188,7 +188,7 @@ private def resolveSubdayEndpoint (target : CheckedAddressedNumericTarget model)
   | .baseYear _ | .now | .today | .literal _ => throw .unsupportedExpression
 
 /-- Resolve a field the target's declaring group names, asking the field read's group gate from the
-    target's scope, for a bracket read and an operator's field parameter ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)). -/
+    target's scope, for a bracket read and an operator's field parameter ([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)). -/
 private def resolveRepetitionEntity (target : CheckedAddressedNumericTarget model)
     (reference : SurfaceFieldPath) :
     Except AddressedRepetitionComputationElabError FlatFieldDecl :=

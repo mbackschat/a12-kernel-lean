@@ -125,7 +125,7 @@ end ParallelOuterScopePlan
     Kernel admits a Number join across maximum scales (k22-static-classes-2026-10-24, `s5-j-n0n2`),
     and its lookup re-normalizes a key under the destination declaration without rounding, so equal
     numbers meet as equal kinds' do
-    ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens)). -/
+    ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-parallel-number-index-tokens)). -/
 def FieldKind.joinsAsIndex : FieldKind → FieldKind → Bool
   | .number _, .number _ => true
   | left, right => left == right

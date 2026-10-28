@@ -236,7 +236,7 @@ example :
         findings.contains
           (generatedFinding selectedIndex.id [2] .duplicateIndex) &&
         findings.contains
-          (generatedFinding selectedEmptyIndex.id [1] .required))) =
+          (generatedFinding selectedEmptyIndex.id [1] .indexRequired))) =
       some true := by
   native_decide
 

@@ -64,7 +64,7 @@ inductive CorrelationElabError where
       (fieldPath expectedGroup : List String)
   /-- A leaf outside the filtered group beside a leaf reading one of its Number fields. The Kernel
       admits it as a constant ([`spec/07`](../../spec/07-repetition-and-iteration.md),
-      [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions)),
+      [checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions)),
       which the legacy one-group route does not represent, so it refuses without a class. -/
   | constantLeafBesideIteratedLeaf (origin : HavingOrigin)
       (fieldPath expectedGroup : List String)
@@ -114,7 +114,7 @@ off the other is wrong for six kinds of eight; the two temporal families are the
 
 A partner whose own read fails answers ahead of both kind gates, which are raised where the
 comparison ends, so an ordering side is judged only against a partner that was read
-([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-grid)).
+([checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-grid)).
 
 The scope classes separate cleanly: a filter with no unmarked reference into a reopened level
 reports `noIterationForWildcard`, a **different repeatable group's** unmarked field reference

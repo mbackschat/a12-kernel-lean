@@ -47,7 +47,7 @@ structure ParallelRuleRowOutcome where
 
 /-- Whether a rule's error group sits directly inside the error side's joined row: below the joined
 group, its parent's levels the joined group's, with the anchor at the joined group's level. The
-[checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
+[checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join)
 measures a repeatable child of the joined group (`group-level`, `t8`). -/
 def errorGroupPlacement (model : FlatModel) (groups : CheckedParallelIndexGroups model)
     (leftDeclaration rightDeclaration : FlatFieldDecl) (errorField : FieldId) :
@@ -138,7 +138,7 @@ def pinnedLevel? (pair : CheckedParallelFieldPair model) : Option RepeatableLeve
 /-- A keyed error group's own level. Beside the join the Kernel leaves it at its parallel-iteration
 placeholder rather than binding a row, so the group's own presence holds of no row and its message
 names UNKNOWN there
-([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-keyed-group-beside-join),
+([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-keyed-group-beside-join),
 `runtime-keyed`). -/
 def placeholderLevel? (pair : CheckedParallelFieldPair model) : Option RepeatableLevel :=
   pair.ownLevel?.bind fun (level, keyed) => if keyed then some level else none
@@ -164,7 +164,7 @@ def innerEnvironments (pair : CheckedParallelFieldPair model) (preliminary : Che
 group's level, otherwise one row per nested row the rule visits inside it, matched or unmatched alike,
 with the error side bound there (`joinedInnerCoordinates`). The Kernel iterates a nested level within
 each joined row for a rule and for a computation precondition
-([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join),
+([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join),
 `nested-join`). A model declaring no capacity keeps the full-validation rows `environments` inside a
 matched joined row. -/
 def innerRows (pair : CheckedParallelFieldPair model) (preliminary : CheckedIndexPreliminary model)

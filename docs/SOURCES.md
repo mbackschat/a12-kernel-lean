@@ -126,15 +126,17 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Temporal constants and BaseYear](sources/temporal-constant-and-base-year-probes.md)
 - [Repeatable temporal computations](sources/repeatable-temporal-computation-probes.md)
 - [Having filters](sources/having-filter-probes.md), including [captured predicate compositions](sources/having-filter-probes.md#src-captured-filter-compositions)
-- [Groups and iteration](sources/group-and-iteration-probes.md), including [sparse filter traversal](sources/group-and-iteration-probes.md#src-sparse-filter-traversal) and [Number parallel tokens](sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens)
+- [Groups and iteration](sources/group-and-iteration-probes.md), including [sparse filter traversal](sources/group-and-iteration-probes.md#src-sparse-filter-traversal) and [Number parallel tokens](sources/key-join-and-parallel-probes.md#src-parallel-number-index-tokens)
 - [Group lists and capacity](sources/group-list-and-capacity-probes.md)
 - [Group-count topology and declared extent](sources/group-count-topology.md), including [reviewed inbound fixed-suffix coverage](sources/group-count-topology.md#src-group-fixed-suffix-coverage) and the [Enumeration literal gate](sources/group-count-topology.md#src-group-value-count-literal-domain).
 - [Group-operand inbound evidence](sources/inbound-group-operand-batches.md)
 - [Over-repetition](sources/over-repetition-probes.md)
 - [Path resolution and literal index-key fitting](sources/path-resolution-class-probes.md), including the [reviewed one-pass and custom-bound controls](sources/path-resolution-class-probes.md#src-index-key-literal-fitting).
 - [Static admission and classes](sources/static-admission-and-class-probes.md)
+- [Field-value read gates](sources/field-value-read-probes.md)
 - [Diagnostic vocabulary and sweeps](sources/diagnostic-class-vocabulary-and-sweeps.md)
 - [Model structure and declarations](sources/model-structure-and-declaration-probes.md), including [executable declaration phases](sources/model-structure-and-declaration-probes.md#src-executable-declaration-admission) (peer reconciliation at `6bc5e75337a6b2caea5b563e26d346cf53e163c8`)
+- [Key joins and parallel rules](sources/key-join-and-parallel-probes.md)
 - [Rule-set metadata](sources/rule-set-meta-information.md)
 - [Computation placement and constants](sources/computation-placement-and-constant-probes.md), including [String/Enumeration crossings](sources/computation-placement-and-constant-probes.md#src-string-enumeration-crossings), [tolerance calibration](sources/computation-placement-and-constant-probes.md#src-tolerance-family-calibration) and [C21 independent controls](sources/computation-placement-and-constant-probes.md#src-peer-independent-controls-c21)
 - [Computation scheduling and guards](sources/computation-scheduling-probes.md), including [guard-derived operand scope](sources/computation-scheduling-probes.md#src-computation-guard-operand-scope) and [nested String first-filled sources](sources/computation-scheduling-probes.md#src-nested-string-first-filled); [empty-prefix provenance](sources/computation-scheduling-probes.md#src-first-filled-empty-prefix) covers the validation follow-up

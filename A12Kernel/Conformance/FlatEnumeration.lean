@@ -273,7 +273,7 @@ example : errorOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
 
 /- A category read of a String meets the read's non-Enumeration class ahead of the comparison's kind
    gate. The rows measure it against a literal (`k2` in the
-   [checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-value-read-predictions));
+   [checkpoint](../../docs/sources/field-value-read-probes.md#src-field-value-read-predictions));
    this field-pair comparison asks the same read first. -/
 example : errorOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
     (.category (fieldPath "Text") "Kind") directCategoryPeer)) = some

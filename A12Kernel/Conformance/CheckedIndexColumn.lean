@@ -129,7 +129,7 @@ example : (
       let engSupply ← (eng.right.readValidation preliminary 4).toOption
       let salesSupply ← (sales.right.readValidation preliminary 4).toOption
       pure (engSupply, salesSupply)) ==
-    some (.unknown .required, .value (.num 8))) = true := by
+    some (.unknown .indexRequired, .value (.num 8))) = true := by
   native_decide
 
 private def duplicateSupplyData : DocumentData := {
@@ -161,7 +161,7 @@ example : ((currentColumn data).map fun column =>
 example : ((currentColumn invalidSupplyData).map fun column =>
     [column.lookupValue .validation "Sales", column.lookupValue .computation "Sales",
       column.lookupValue .validation "Absent"]) =
-    some [.value (.num 41), .poison .required, .unknown .required] := by
+    some [.value (.num 41), .poison .indexRequired, .unknown .indexRequired] := by
   native_decide
 
 example : ((currentColumn duplicateSupplyData).map fun column =>
@@ -218,7 +218,7 @@ example : [currentKeyLookup data (.value (.str "Sales")) .computation,
     currentKeyLookup invalidSupplyData .empty .computation] =
     [some (.value (.num 41)), some (.value (.num 52)), some .empty,
       some (.poison .computedDependency), some (.value (.num 41)),
-      some (.poison .required), some (.poison .required)] := by
+      some (.poison .indexRequired), some (.poison .indexRequired)] := by
   native_decide
 
 private def duplicateBothData : DocumentData := {

@@ -16,7 +16,7 @@ The current typed replay estate contains exactly three immutable compact bundles
 
 This is a deliberate assurance trade. The migrations ran the complete historical binders and compact lanes together before deleting the raw estates. Routine tests now check the accepted semantic meaning and exact compact bytes instead of repeatedly re-proving filesystem, model, runner, packet, qualification, or receipt relations. Git history is the audit archive; restoring that machinery to current `main` is not part of ordinary replay.
 
-The [Number parallel-token capture](sources/model-structure-and-declaration-probes.md#src-parallel-number-index-tokens) retains seven agreeing full-validation documents with message multiplicity preserved and catalog text removed. Its source checkpoint owns hashes and profile limits; it is raw calibration, not an additional compact replay bundle.
+The [Number parallel-token capture](sources/key-join-and-parallel-probes.md#src-parallel-number-index-tokens) retains seven agreeing full-validation documents with message multiplicity preserved and catalog text removed. Its source checkpoint owns hashes and profile limits; it is raw calibration, not an additional compact replay bundle.
 
 The [parallel numeric operation capture](sources/computation-scheduling-probes.md#src-parallel-numeric-operations) retains six agreeing computation documents with redacted message text. Its source checkpoint owns exact identities and limits; it remains raw calibration rather than another typed compact bundle.
 

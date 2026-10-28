@@ -36,7 +36,7 @@ inductive ParallelNumericAtomOf (Field Ordinary : Type) where
   | aggregate (op : NumericAggregateOp) (operands : List Field)
   /-- `NumberOfFilledFields` over fields of the joined row, an unmatched partner's read as empty and
   any invalid operand making the count unavailable, as the ordinary validation count does
-  ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-joined-filled-count), `runtime`). -/
+  ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-joined-filled-count), `runtime`). -/
   | filledCount (operands : List Field)
   | ordinary (atom : Ordinary)
   deriving Repr, DecidableEq
@@ -302,11 +302,11 @@ def uses (pair : CheckedParallelFieldPair model) (side : ParallelFieldSide)
       leaf.atomLeaves.any (pair.ordinaryBinding? · == some (.side side))
 
 /-- The leaves a rule reporting on a group admits beside a join: every leaf but a custom condition.
-The [nested-join checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-group-target-nested-join)
+The [nested-join checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join)
 measures group and field presence (`t8`), the
 [blank-root checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-blank-root-dispatch-k06)
 a field-fill list across the join (`q5`) and the
-[joined group-target checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-k22-joined-group-target-leaves)
+[joined group-target checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-k22-joined-group-target-leaves)
 uniqueness over the pair, over a starred group and over the error side's own fields (`g1`, `g3`,
 `g6`), each firing as its field twin does; the value leaves reuse them unmeasured. A custom condition
 is admitted and fails when reached, as on an ordinary group target (`g4`, `g5`). -/

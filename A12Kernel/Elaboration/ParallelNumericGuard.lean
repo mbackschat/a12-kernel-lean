@@ -41,7 +41,7 @@ inductive ParallelNumericGuardPart (model : FlatModel) (joined : List GroupPath)
   | view (condition : CheckedComputationCondition (model.parallelInstanceView joined))
   /-- Certified against the model at the target row. A starred, keyed or filtered leaf, which the
   view cannot certify, keeps its ordinary meaning there and reads the whole document
-  ([joined-carrier checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-joined-carrier-admission)). -/
+  ([joined-carrier checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-joined-carrier-admission)). -/
   | ordinary (condition : CheckedComputationCondition model)
   /-- Certified against the model at a row of the joined partner `group`, as a leaf keyed by a
   partner field is; it evaluates at the partner row the target's key matches (joined-carrier-limits
