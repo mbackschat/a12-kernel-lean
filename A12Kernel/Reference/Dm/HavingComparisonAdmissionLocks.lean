@@ -133,4 +133,25 @@ example : scopeCases.all (fun (body, root, row) =>
     HavingFixture.readerResults ("Sum(Rows*/N Having " ++ body ++ ")") scopeModel false == (root, root) &&
     HavingFixture.readerResults ("Sum(Rows*/N Having " ++ body ++ ")") scopeModel true == (row, row)) = true := by native_decide
 
+private def markedModel : FlatModel := { scopeModel with
+  fields := scopeModel.fields ++ [
+    { id := 19, name := "Open", groupPath := ["Form", "Rows"], repeatableScope := [10],
+      policy := { kind := .number { scale := 2, signed := true, staticScaleUnknown := true } } }] }
+
+/- A `$`-marked side is typed as its field, so its comparison gates answer ahead of the scope class
+   even in a body reading only marked fields, while a marked-only body passing its gates draws the
+   scope class. Oracle: KF487's 2026-10-28 extension at a12-dmkits `aa2677f7`, measured on the peer's
+   own carrier from a rule iterating the filtered rows
+   ([inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-28)). -/
+example : [
+    ("[Rows/Scaled] == [$Rows/Open]", "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("[$Rows/Open] == 1.00", "MVK_INVALID_COMPARE_DEC_PLACES"),
+    ("[$Rows/Open] > 1.00", "MVK_NO_ITERATION_FOR_WILDCARD"),
+    ("[$Rows/Scaled] == 1.00", "MVK_NO_ITERATION_FOR_WILDCARD"),
+    ("[$Rows/Scaled] == [Rows/Scaled]", "admitted"),
+    ("[Rows/N] > 0 And [$Rows/Choice] == \"missing\"", "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON"),
+    ("[Rows/N] > 0 And [$Rows/Choice] > 1", "MVK_INVALID_TYPE_FOR_COMPARISON")].all (fun (body, row) =>
+      HavingFixture.readerResults ("Sum(Rows*/N Having " ++ body ++ ")") markedModel true == (row, row)) = true := by
+  native_decide
+
 end A12Kernel.Dm.HavingComparisonAdmissionLocks
