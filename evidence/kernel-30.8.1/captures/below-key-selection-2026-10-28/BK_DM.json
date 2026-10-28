@@ -1,0 +1,461 @@
+{
+ "header": {
+  "id": "BK_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "BK_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Depot",
+     "name": "Depot",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Depot/Ref",
+        "name": "Ref",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Depot/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Depot/Bins",
+        "name": "Bins",
+        "Group": {
+         "repeatability": 4,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Depot/Bins/BinCode",
+           "name": "BinCode",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Depot/Bins/BinNote",
+           "name": "BinNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Depot/Bins/Slots",
+           "name": "Slots",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/Qty",
+              "name": "Qty",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/Note",
+              "name": "Note",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/Out",
+              "name": "Out",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/Depot/Bins/Slots/Cells",
+              "name": "Cells",
+              "Group": {
+               "repeatability": 3,
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/Depot/Bins/Slots/Cells/Q",
+                 "name": "Q",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                },
+                {
+                 "type": "Field",
+                 "id": "/Depot/Bins/Slots/Cells/CNote",
+                 "name": "CNote",
+                 "Field": {
+                  "fieldType": {
+                   "type": "StringType"
+                  }
+                 }
+                },
+                {
+                 "type": "Rule",
+                 "id": "/Depot/Bins/Slots/Cells/S4",
+                 "name": "S4",
+                 "Rule": {
+                  "errorEntityRelPath": "../CNote",
+                  "errorCode": "S4",
+                  "errorCondition": "FieldFilled(CNote) And [Q For \"b\"] > 0",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                   {
+                    "locale": "en_US",
+                    "text": "m"
+                   }
+                  ]
+                 }
+                },
+                {
+                 "type": "Rule",
+                 "id": "/Depot/Bins/Slots/Cells/S4N",
+                 "name": "S4N",
+                 "Rule": {
+                  "errorEntityRelPath": "../CNote",
+                  "errorCode": "S4N",
+                  "errorCondition": "FieldFilled(CNote) And FieldNotFilled(Q For \"b\")",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                   {
+                    "locale": "en_US",
+                    "text": "m"
+                   }
+                  ]
+                 }
+                },
+                {
+                 "type": "Rule",
+                 "id": "/Depot/Bins/Slots/Cells/S8",
+                 "name": "S8",
+                 "Rule": {
+                  "errorEntityRelPath": "../CNote",
+                  "errorCode": "S8",
+                  "errorCondition": "FieldFilled(CNote) And [/Depot/Bins/Slots/Qty For \"b\"] > 0",
+                  "severity": "ERROR",
+                  "errorMessage": [
+                   {
+                    "locale": "en_US",
+                    "text": "m"
+                   }
+                  ]
+                 }
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/S0",
+              "name": "S0",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "S0",
+               "errorCondition": "FieldFilled(Note) And [Qty] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/S1",
+              "name": "S1",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "S1",
+               "errorCondition": "FieldFilled(Note) And [Qty For \"b\"] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/S2",
+              "name": "S2",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "S2",
+               "errorCondition": "FieldFilled(Note) And FieldNotFilled(Qty For \"b\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/S3",
+              "name": "S3",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "S3",
+               "errorCondition": "FieldFilled(Note) And Sum(Cells*/Q For \"b\") > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/S3N",
+              "name": "S3N",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "S3N",
+               "errorCondition": "FieldFilled(Note) And Sum(Cells*/Q For \"b\") == 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/S7",
+              "name": "S7",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "S7",
+               "errorCondition": "FieldFilled(Note) And [Qty For /Depot/Ref] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Depot/Bins/S5",
+           "name": "S5",
+           "Rule": {
+            "errorEntityRelPath": "../BinNote",
+            "errorCode": "S5",
+            "errorCondition": "FieldFilled(BinNote) And Sum(Slots*/Qty For \"b\") > 0",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "BinCode"
+        }
+       }
+      ]
+     }
+    },
+    {
+     "type": "Group",
+     "id": "/Pol",
+     "name": "Pol",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Pol/PolKey",
+        "name": "PolKey",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pol/Note",
+        "name": "Note",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Pol/PTotal",
+        "name": "PTotal",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Pol/Cover",
+        "name": "Cover",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Pol/Cover/CAmt",
+           "name": "CAmt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Pol/Cover/Reps",
+           "name": "Reps",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Pol/Cover/Reps/RAmt",
+              "name": "RAmt",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Pol/Cover/Reps/RLab",
+              "name": "RLab",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Pol/Cover/Reps/ROut",
+              "name": "ROut",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      ],
+      "indexFieldName": "PolKey"
+     }
+    }
+   ]
+  }
+ }
+}

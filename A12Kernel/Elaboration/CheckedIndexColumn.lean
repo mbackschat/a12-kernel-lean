@@ -605,27 +605,42 @@ end ResolvedParallelIndexRow
 
 namespace ResolvedCheckedIndexColumn
 
+/-- The selected row's environment as a read below the selected group sees it: the entry's own
+bindings replace the selected group's coordinate and its parents, and `outer`, the reading rule's
+row, supplies every level below. A target at the group's own level projects the same address either
+way ([below-key selection](../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-selection)). -/
+private def selectedEnvironment (selected outer : Env) : Env :=
+  selected ++ outer.filter fun binding => !selected.any (·.1 == binding.1)
+
 /-- Project the shared checked column to semantic-index's clean-entry contract. Every duplicate participant is removed, while the column cause remains available to the phase-specific evaluator. -/
 def toSemanticIndexColumnWith (column : ResolvedCheckedIndexColumn model)
-    (read : CellAddr → Except CheckedDocumentError CheckedCell) (target : FieldId) :
+    (read : CellAddr → Except CheckedDocumentError CheckedCell) (target : FieldId) (outer : Env) :
     Except CheckedIndexColumnError ResolvedSemanticIndexColumn := do
   let declaration ← model.lookupUniqueId target |>.mapError .model
   if !column.group.path.isPrefixOf declaration.groupPath then
     throw (.fieldOutsideGroup target column.group.path)
   let entries ← (column.entries.filter fun entry =>
     column.admitsSemanticKey entry.key).mapM fun entry => do
-      let path ← entry.environment.pathForScope declaration.repeatableScope
+      let environment := selectedEnvironment entry.environment outer
+      let path ← environment.pathForScope declaration.repeatableScope
         |>.mapError .environment
-      let target ← read { field := target, path }
-        |>.mapError .document
-      pure { token := entry.key, target, environment := some entry.environment }
+      -- The selected row exists, so a missing row is one below it: the firing row's coordinate in
+      -- a selected group with fewer rows, which reads empty (`bk-short` of the below-key capture).
+      let target ← match read { field := target, path } with
+        | .error (.missingRow row) =>
+            if column.indexDeclaration.repeatableScope.length < declaration.repeatableScope.length then
+              pure (checkAdmittedRawCell .empty)
+            else throw (.document (.missingRow row))
+        | .error error => throw (.document error)
+        | .ok cell => pure cell
+      pure { token := entry.key, target, environment := some environment }
   pure { entries, unavailableKey := column.unavailableKey }
 
 /-- The immutable validation view is the current-reader projection specialized to preliminary cells. -/
 def toSemanticIndexColumn (column : ResolvedCheckedIndexColumn model)
-    (preliminary : CheckedIndexPreliminary model) (target : FieldId) :
+    (preliminary : CheckedIndexPreliminary model) (target : FieldId) (outer : Env) :
     Except CheckedIndexColumnError ResolvedSemanticIndexColumn :=
-  column.toSemanticIndexColumnWith preliminary.readAuthoredValidation target
+  column.toSemanticIndexColumnWith preliminary.readAuthoredValidation target outer
 
 end ResolvedCheckedIndexColumn
 

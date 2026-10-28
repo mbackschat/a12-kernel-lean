@@ -1,0 +1,14 @@
+{
+ "computedField": "/Depot/Total",
+ "alternatives": [
+  {
+   "operation": "Sum(Bins*/Qty)"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

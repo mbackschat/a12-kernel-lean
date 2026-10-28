@@ -26,7 +26,7 @@ def CheckedSemanticIndexSource.selectPartial (source : CheckedSemanticIndexSourc
   let column ← view.index.resolveIndexColumn source.group outer
     (includeAddress := fun address => view.isAddressRelevant address && !view.silentlyUnavailable.contains address)
       |>.mapError (CheckedAddressingError.semanticIndex ∘ SemanticIndexContextError.checkedColumn)
-  let selected ← column.toSemanticIndexColumn view.index source.indexDeclaration.id
+  let selected ← column.toSemanticIndexColumn view.index source.indexDeclaration.id outer
     |>.mapError (CheckedAddressingError.semanticIndex ∘ SemanticIndexContextError.checkedColumn)
   match selected.lookupEnvironment .validation source.numericIndex key with
   | .value (some environment) => pure (some (.value environment))

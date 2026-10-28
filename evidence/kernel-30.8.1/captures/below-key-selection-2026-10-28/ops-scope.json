@@ -1,0 +1,607 @@
+[
+ {
+  "id": "g1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g1",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "AtLeastOneFieldFilled(Note, Qty For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "g2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g2",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "MoreThanOneFieldFilled(Note, Qty For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "g8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g8",
+   "--field",
+   "/Depot/Bins/Slots/Cells/CNote",
+   "--group",
+   "/Depot/Bins/Slots/Cells",
+   "--condition",
+   "FieldNotFilled(Q For \"b\") And FieldFilled(CNote)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "g9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g9",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldNotFilled(Note)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "g10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g10",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "AtLeastOneFieldFilled(Note, Qty)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "g11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "g11",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "MoreThanOneFieldFilled(Note, Qty)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "h1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h1",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And NumberOfFilledFields(Cells*/Q For \"b\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "h2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h2",
+   "--field",
+   "/Depot/Bins/Slots/Cells/CNote",
+   "--group",
+   "/Depot/Bins/Slots/Cells",
+   "--condition",
+   "FieldFilled(CNote) And [CNote For \"b\"] == \"x\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "h3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h3",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And GroupFilled(Slots For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "h4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h4",
+   "--field",
+   "/Depot/Bins/Slots/Cells/CNote",
+   "--group",
+   "/Depot/Bins/Slots/Cells",
+   "--condition",
+   "FieldFilled(CNote) And GroupFilled(Cells For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "h5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h5",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And FirstFilledValue(Qty For \"b\", Qty) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "h6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h6",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And MaxValue(Cells*/Q For \"b\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "h7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h7",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And Length(Note For \"b\") > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "h8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h8",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And FieldNotFilled(Note For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "h9",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h9",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And NoFieldFilled(Cells*/Q For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "k1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "k3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "k3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "m1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m1",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(../BinNote) And AtLeastOneFieldFilled(Note, Qty For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "m2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m2",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(../BinNote) And AtLeastOneFieldFilled(Note, ../BinNote For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "m3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m3",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(../BinNote) And AtLeastOneFieldFilled(Note, Qty)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "m4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m4",
+   "--field",
+   "/Depot/Bins/Slots/Cells/CNote",
+   "--group",
+   "/Depot/Bins/Slots/Cells",
+   "--condition",
+   "FieldFilled(/Depot/Bins/BinNote) And FieldFilled(../Note) And AtLeastOneFieldFilled(CNote, Q For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "m5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m5",
+   "--field",
+   "/Depot/Bins/Slots/Cells/CNote",
+   "--group",
+   "/Depot/Bins/Slots/Cells",
+   "--condition",
+   "FieldFilled(/Depot/Bins/BinNote) And AtLeastOneFieldFilled(CNote, Q For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "m6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m6",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(../BinNote) And AtLeastOneFieldFilled(Note, Cells*/Q For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "m7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m7",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "AtLeastOneFieldFilled(Note, Qty For \"b\") And FieldFilled(Note)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "m8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m8",
+   "--field",
+   "/Depot/Bins/BinNote",
+   "--group",
+   "/Depot/Bins",
+   "--condition",
+   "AtLeastOneFieldFilled(BinNote, BinNote For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "n1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n1",
+   "--field",
+   "/Depot/Bins/Slots/Qty",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldNotFilled(Qty For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "n2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n2",
+   "--field",
+   "/Depot/Bins/Slots/Qty",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "[Qty For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "n3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n3",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And GroupFilled(/Depot/Bins/Slots For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "n4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n4",
+   "--field",
+   "/Depot/Bins/Slots/Cells/CNote",
+   "--group",
+   "/Depot/Bins/Slots/Cells",
+   "--condition",
+   "FieldFilled(CNote) And GroupFilled(/Depot/Bins/Slots/Cells For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "n5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "n5",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And FieldValuesNotUnique(Note, Note For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "e1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e1",
+   "--field",
+   "/Depot/Bins/BinNote",
+   "--group",
+   "/Depot/Bins",
+   "--condition",
+   "[BinNote For \"b\"] == \"x\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "e2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e2",
+   "--field",
+   "/Depot/Bins/Slots/Cells/Q",
+   "--group",
+   "/Depot/Bins/Slots/Cells",
+   "--condition",
+   "[Q For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "e3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e3",
+   "--field",
+   "/Depot/Bins/Slots/Cells/Q",
+   "--group",
+   "/Depot/Bins/Slots/Cells",
+   "--condition",
+   "FieldFilled(../Note) And [Q For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "e4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e4",
+   "--field",
+   "/Depot/Bins/Slots/Qty",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And [Qty For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "e5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e5",
+   "--field",
+   "/Depot/Bins/Slots/Qty",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "[Qty For \"b\"] > 0 And [Qty] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "e6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "e6",
+   "--field",
+   "/Depot/Bins/BinNote",
+   "--group",
+   "/Depot/Bins",
+   "--condition",
+   "FieldNotFilled(BinNote For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

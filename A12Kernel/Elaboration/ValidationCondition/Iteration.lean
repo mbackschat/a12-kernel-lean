@@ -23,11 +23,21 @@ def FlatModel.iterationGuardSkips (model : FlatModel) (level : RepeatableLevel) 
 
 namespace ValidationCondition
 
-/-- A selected entity still references its enclosing parent and dynamic key scopes. The selected level itself is supplied by lookup (`SemanticIndex.bindingScopes`); the Kernel's `IterationNotValidVisitor.isIteration(IEntityId)` also follows the key's iteration. -/
+/-- A selected entity still references its enclosing parent and dynamic key scopes, and the rule's
+rows at the levels below the selection it reads at them. The selected level itself is supplied by
+lookup and never referenced, although `SemanticIndex.bindingScopes` lists it as the prefix of a lower
+level: `AtLeastOneFieldFilled(Note, Qty For "b")` from a rule in `Slots` below the indexed `Bins` is
+refused `MVK_NEG_CONDITION_IN_ITERATION`, while the twin guarding `Bins` with `FieldFilled(../BinNote)`
+is admitted ([below-key selection](../../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-selection)
+rows `g1`, `m1`, `m5`). The Kernel's `IterationNotValidVisitor.isIteration(IEntityId)` also follows
+the key's iteration. -/
 private def selectedEntityGuardScope
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
     List RepeatableLevel :=
-  (match source with | .inl source => source.bindingScopes | .inr source => source.bindingScopes).flatten
+  let (selected, scopes) := match source with
+    | .inl source => (source.group.level, source.bindingScopes)
+    | .inr source => (source.selection.group.level, source.bindingScopes)
+  scopes.flatten.filter (· != selected)
 
 /-- A fully starred operand has a known empty binding scope. Keeping that empty entry is
 necessary for the mixed-reference refusal in the retained iteration-domain binding matrix. -/
@@ -279,21 +289,21 @@ private def groupIterationExtents? (model : FlatModel) (source : CheckedEntityGr
     (model.declarationSlots? source.boundLevelCount declaration).map (declaration.repeatableScope, ·)
 
 /-- A semantic-index selection reads one row of its keyed level; each selected field supplies the
-row combinations of its repeatable levels below that row. Its scope is the parent and key levels it
-reads at the rule's row plus those lower levels, never the selected level, so a constant selection
-of the iterated group's own field is an independent slot too
+row combinations of its repeatable levels below the rows it reads fixed: the selected row and the
+rule's rows at the levels it binds below it. Its scope is the parent, key and rule-bound lower levels
+plus the levels below those, never the selected level, so a constant selection of the iterated
+group's own field is an independent slot too
 ([capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04)
 rows `v4`–`v6`, `v15`, `v16`). -/
 private def selectedIterationExtents?
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model)) :
     Option (List (List RepeatableLevel × Nat)) :=
-  let (enclosing, declarations) := match source with
-    | .inl source => ((model.repeatableScopeForGroupPath source.group.path).length, [source.targetDeclaration])
-    | .inr source =>
-        ((model.repeatableScopeForGroupPath source.selection.group.path).length, source.declarations)
+  let (bound, declarations) := match source with
+    | .inl source => (source.targetDeclaration.repeatableScope.length, [source.targetDeclaration])
+    | .inr source => (source.boundLevelCount, source.declarations)
   declarations.mapM fun declaration =>
-    (model.declarationSlots? enclosing declaration).map
-      (selectedEntityGuardScope source ++ declaration.repeatableScope.drop enclosing, ·)
+    (model.declarationSlots? bound declaration).map
+      (selectedEntityGuardScope source ++ declaration.repeatableScope.drop bound, ·)
 
 /-- A selection weighs as in the uniqueness guard, one slot per row below its selected row, so a
 constant selection of a row's own field is one independent slot
@@ -425,8 +435,8 @@ private def ValidationConditionLeaf.iterationGuardAt
         | .notFilled => .unguarded
       else
         .noReference
-  -- A selection references its parent's and its key's rows, not the row it selects, with a
-  -- presence leaf's polarity, for a field and a group alike
+  -- A selection references its parent's and its key's rows, and the rule's rows below it, not the
+  -- row it selects, with a presence leaf's polarity, for a field and a group alike
   -- ([capture](../../../docs/sources/model-structure-and-declaration-probes.md#src-iteration-binding-k04)
   -- rows `s1`, `s6`, `d6`, `v1`–`v3`, `v7`–`v11`, `v17`, `v18`).
   | .indexedFieldPresence operator source =>

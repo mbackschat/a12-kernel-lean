@@ -1,0 +1,14 @@
+{
+ "computedField": "/Pol/Cover/Reps/ROut",
+ "alternatives": [
+  {
+   "operation": "[RAmt For \"X\"]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

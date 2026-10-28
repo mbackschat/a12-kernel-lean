@@ -310,7 +310,7 @@ private def evaluateEndpoint (endpoint : CheckedIndexedDateRangeEndpoint model)
     (preliminary : CheckedIndexPreliminary model) :
     Except IndexedDateRangeConstructionComputationFault
       IndexedDateRangeEndpointObservation := do
-  let resolved ← column.toSemanticIndexColumn preliminary endpoint.target.id
+  let resolved ← column.toSemanticIndexColumn preliminary endpoint.target.id []
     |>.mapError .column
   let key ← observeKey endpoint.key preliminary.base
     |>.mapError (fun error => .column (.document error))

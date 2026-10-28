@@ -1,0 +1,192 @@
+[
+ {
+  "id": "t1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t1",
+   "--field",
+   "/Depot/Bins/BinNote",
+   "--group",
+   "/Depot/Bins",
+   "--condition",
+   "FieldFilled(BinNote) And [Slots/Qty For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t2",
+   "--field",
+   "/Depot/Ref",
+   "--group",
+   "/Depot",
+   "--condition",
+   "FieldFilled(Ref) And [Bins/Slots/Qty For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t3",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And [Qty For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t4",
+   "--field",
+   "/Depot/Bins/Slots/Cells/CNote",
+   "--group",
+   "/Depot/Bins/Slots/Cells",
+   "--condition",
+   "FieldFilled(CNote) And [/Depot/Bins/Slots/Qty For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t5",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And [Cells/Q For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t6",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t6",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And [Qty] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t7",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t7",
+   "--field",
+   "/Depot/Bins/BinNote",
+   "--group",
+   "/Depot/Bins",
+   "--condition",
+   "FieldFilled(BinNote) And FieldFilled(Slots/Qty For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "t8",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "t8",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And [Qty For \"b\"] == [Qty]",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "c1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c3",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c3.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c4",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c4.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c5",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c5.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "c6",
+  "verb": "computation",
+  "args": [
+   "add",
+   "c6.json",
+   "--dry-run"
+  ]
+ }
+]

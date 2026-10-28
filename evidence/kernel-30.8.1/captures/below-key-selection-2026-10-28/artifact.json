@@ -1,0 +1,2280 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "BK_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "bk-other",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells[2]/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S5",
+       "field": "Depot/Bins/BinNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins/BinNote",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S7",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty",
+        "Depot/Ref"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S7",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty",
+        "Depot/Ref"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells[2]/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S5",
+       "field": "Depot/Bins/BinNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins/BinNote",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S7",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty",
+        "Depot/Ref"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S7",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty",
+        "Depot/Ref"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bk-short",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots[3]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[3]/Note",
+        "Depot/Bins/Slots[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S2",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ]
+      },
+      {
+       "code": "S2",
+       "field": "Depot/Bins/Slots[3]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[3]/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Qty"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Qty"
+       ]
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S3N",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S3N",
+       "field": "Depot/Bins/Slots[3]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[3]/Cells[0]/Q",
+        "Depot/Bins/Slots[3]/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[3]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells[2]/Q"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells[2]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/Q"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/Q"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[3]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[3]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Cells/Q"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Cells/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[3]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[3]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Cells[2]/Q"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Cells[2]/Q"
+       ]
+      },
+      {
+       "code": "S5",
+       "field": "Depot/Bins/BinNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins/BinNote",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S7",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty",
+        "Depot/Ref"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots[3]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[3]/Note",
+        "Depot/Bins/Slots[3]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S2",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ]
+      },
+      {
+       "code": "S2",
+       "field": "Depot/Bins/Slots[3]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[3]/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Qty"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Qty"
+       ]
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S3N",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S3N",
+       "field": "Depot/Bins/Slots[3]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[3]/Cells[0]/Q",
+        "Depot/Bins/Slots[3]/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[3]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells[2]/Q"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells[2]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/Q"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/Q"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[3]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[3]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Cells/Q"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Cells/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[3]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[3]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Cells[2]/Q"
+       ],
+       "fillToFix": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[3]/Cells[2]/Q"
+       ]
+      },
+      {
+       "code": "S5",
+       "field": "Depot/Bins/BinNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins/BinNote",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S7",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty",
+        "Depot/Ref"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bk-missing",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S2",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Qty",
+        "Depot/Bins/Slots/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Qty"
+       ]
+      },
+      {
+       "code": "S2",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Qty",
+        "Depot/Bins/Slots[2]/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Qty"
+       ]
+      },
+      {
+       "code": "S3N",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins/Slots/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[0]/Q"
+       ]
+      },
+      {
+       "code": "S3N",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins/Slots[2]/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[0]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[1]/Q",
+        "Depot/Bins/Slots/Cells/CNote"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[1]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[2]/Q",
+        "Depot/Bins/Slots/Cells[2]/CNote"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[2]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[1]/Q",
+        "Depot/Bins/Slots[2]/Cells/CNote"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[1]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[2]/Q",
+        "Depot/Bins/Slots[2]/Cells[2]/CNote"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[2]/Q"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S2",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Qty",
+        "Depot/Bins/Slots/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Qty"
+       ]
+      },
+      {
+       "code": "S2",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Qty",
+        "Depot/Bins/Slots[2]/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Qty"
+       ]
+      },
+      {
+       "code": "S3N",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins/Slots/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[0]/Q"
+       ]
+      },
+      {
+       "code": "S3N",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins/Slots[2]/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[0]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[1]/Q",
+        "Depot/Bins/Slots/Cells/CNote"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[1]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[2]/Q",
+        "Depot/Bins/Slots/Cells[2]/CNote"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[1]/Cells[2]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[1]/Q",
+        "Depot/Bins/Slots[2]/Cells/CNote"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[1]/Q"
+       ]
+      },
+      {
+       "code": "S4N",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[2]/Q",
+        "Depot/Bins/Slots[2]/Cells[2]/CNote"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[-5]/BinCode",
+        "/Depot[1]/Bins[-5]/Slots[2]/Cells[2]/Q"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bk-own",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins[2]/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/Slots/Note",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins[2]/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/Slots[2]/Note",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins[2]/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Note",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins[2]/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Note",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins[2]/Slots/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins[2]/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins[2]/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells/CNote",
+        "Depot/Bins[2]/Slots/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins[2]/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/Slots[2]/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins[2]/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S5",
+       "field": "Depot/Bins[2]/BinNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/BinNote"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S7",
+       "field": "Depot/Bins[2]/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Note",
+        "Depot/Bins[2]/Slots/Qty",
+        "Depot/Ref"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S7",
+       "field": "Depot/Bins[2]/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Note",
+        "Depot/Bins[2]/Slots[2]/Qty",
+        "Depot/Ref"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins[2]/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells/CNote",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins[2]/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins[2]/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins[2]/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/Slots/Note",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins[2]/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/Slots[2]/Note",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins[2]/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Note",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins[2]/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Note",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins[2]/Slots/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins[2]/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Note"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins[2]/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells/CNote",
+        "Depot/Bins[2]/Slots/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins[2]/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/Slots[2]/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins[2]/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S5",
+       "field": "Depot/Bins[2]/BinNote",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/BinNote"
+       ],
+       "fillToFix": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins[2]/BinCode"
+       ]
+      },
+      {
+       "code": "S7",
+       "field": "Depot/Bins[2]/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Note",
+        "Depot/Bins[2]/Slots/Qty",
+        "Depot/Ref"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S7",
+       "field": "Depot/Bins[2]/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Note",
+        "Depot/Bins[2]/Slots[2]/Qty",
+        "Depot/Ref"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins[2]/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells/CNote",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins[2]/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins[2]/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bk-duplicate",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Depot/Bins[2]/BinCode",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Depot/Bins[3]/BinCode",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[3]/BinCode"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Depot/Bins[2]/BinCode",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "uniqueIndex",
+       "field": "Depot/Bins[3]/BinCode",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins[3]/BinCode"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "bk-ref-other",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells[2]/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S5",
+       "field": "Depot/Bins/BinNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins/BinNote",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S0",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S1",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins/Slots/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[1]/Cells[0]/Q",
+        "Depot/Bins/Slots/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S3",
+       "field": "Depot/Bins/Slots[2]/Note",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[2]/Cells[0]/Q",
+        "Depot/Bins/Slots[2]/Note",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Cells[2]/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S4",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Cells[2]/Q"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S5",
+       "field": "Depot/Bins/BinNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "/Depot[1]/Bins[2]/Slots[0]/Qty",
+        "Depot/Bins/BinNote",
+        "Depot/Bins[2]/BinCode"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots[2]/Cells/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "S8",
+       "field": "Depot/Bins/Slots[2]/Cells[2]/CNote",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "Depot/Bins/Slots[2]/Cells[2]/CNote",
+        "Depot/Bins[2]/BinCode",
+        "Depot/Bins[2]/Slots[2]/Qty"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

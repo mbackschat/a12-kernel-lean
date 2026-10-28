@@ -1,0 +1,466 @@
+{
+ "model": "BK_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "bk-other",
+   "documentInline": {
+    "Depot": {
+     "Ref": "b",
+     "Bins": [
+      {
+       "BinCode": "a",
+       "BinNote": "x",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Note": "n1",
+         "Cells": [
+          {
+           "Q": "10",
+           "CNote": "c1"
+          },
+          {
+           "Q": "20",
+           "CNote": "c2"
+          }
+         ]
+        },
+        {
+         "Qty": "2",
+         "Note": "n2",
+         "Cells": [
+          {
+           "Q": "11",
+           "CNote": "c1"
+          },
+          {
+           "Q": "21",
+           "CNote": "c2"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "BinCode": "b",
+       "Slots": [
+        {
+         "Qty": "3",
+         "Cells": [
+          {
+           "Q": "5"
+          },
+          {
+           "Q": "6"
+          },
+          {
+           "Q": "7"
+          }
+         ]
+        },
+        {
+         "Qty": "4",
+         "Cells": [
+          {
+           "Q": "6"
+          },
+          {
+           "Q": "7"
+          },
+          {
+           "Q": "8"
+          }
+         ]
+        },
+        {
+         "Qty": "5",
+         "Cells": [
+          {
+           "Q": "7"
+          },
+          {
+           "Q": "8"
+          },
+          {
+           "Q": "9"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "bk-short",
+   "documentInline": {
+    "Depot": {
+     "Ref": "b",
+     "Bins": [
+      {
+       "BinCode": "a",
+       "BinNote": "x",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Note": "n1",
+         "Cells": [
+          {
+           "Q": "10",
+           "CNote": "c1"
+          },
+          {
+           "Q": "20",
+           "CNote": "c2"
+          }
+         ]
+        },
+        {
+         "Qty": "2",
+         "Note": "n2",
+         "Cells": [
+          {
+           "Q": "11",
+           "CNote": "c1"
+          },
+          {
+           "Q": "21",
+           "CNote": "c2"
+          }
+         ]
+        },
+        {
+         "Qty": "3",
+         "Note": "n3",
+         "Cells": [
+          {
+           "Q": "12",
+           "CNote": "c1"
+          },
+          {
+           "Q": "22",
+           "CNote": "c2"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "BinCode": "b",
+       "Slots": [
+        {
+         "Qty": "3",
+         "Cells": [
+          {
+           "Q": "5"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "bk-missing",
+   "documentInline": {
+    "Depot": {
+     "Ref": "b",
+     "Bins": [
+      {
+       "BinCode": "a",
+       "BinNote": "x",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Note": "n1",
+         "Cells": [
+          {
+           "Q": "10",
+           "CNote": "c1"
+          },
+          {
+           "Q": "20",
+           "CNote": "c2"
+          }
+         ]
+        },
+        {
+         "Qty": "2",
+         "Note": "n2",
+         "Cells": [
+          {
+           "Q": "11",
+           "CNote": "c1"
+          },
+          {
+           "Q": "21",
+           "CNote": "c2"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "BinCode": "c",
+       "Slots": [
+        {
+         "Qty": "3",
+         "Cells": [
+          {
+           "Q": "5"
+          },
+          {
+           "Q": "6"
+          },
+          {
+           "Q": "7"
+          }
+         ]
+        },
+        {
+         "Qty": "4",
+         "Cells": [
+          {
+           "Q": "6"
+          },
+          {
+           "Q": "7"
+          },
+          {
+           "Q": "8"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "bk-own",
+   "documentInline": {
+    "Depot": {
+     "Ref": "b",
+     "Bins": [
+      {
+       "BinCode": "a",
+       "Slots": [
+        {
+         "Qty": "3",
+         "Cells": [
+          {
+           "Q": "5"
+          },
+          {
+           "Q": "6"
+          },
+          {
+           "Q": "7"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "BinCode": "b",
+       "BinNote": "x",
+       "Slots": [
+        {
+         "Qty": "3",
+         "Note": "n1",
+         "Cells": [
+          {
+           "Q": "5",
+           "CNote": "c1"
+          }
+         ]
+        },
+        {
+         "Qty": "4",
+         "Note": "n2",
+         "Cells": [
+          {
+           "Q": "6",
+           "CNote": "c1"
+          },
+          {
+           "Q": "7",
+           "CNote": "c2"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "bk-duplicate",
+   "documentInline": {
+    "Depot": {
+     "Ref": "b",
+     "Bins": [
+      {
+       "BinCode": "a",
+       "BinNote": "x",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Note": "n1",
+         "Cells": [
+          {
+           "Q": "10",
+           "CNote": "c1"
+          },
+          {
+           "Q": "20",
+           "CNote": "c2"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "BinCode": "b",
+       "Slots": [
+        {
+         "Qty": "3",
+         "Cells": [
+          {
+           "Q": "5"
+          },
+          {
+           "Q": "6"
+          },
+          {
+           "Q": "7"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "BinCode": "b",
+       "Slots": [
+        {
+         "Qty": "3",
+         "Cells": [
+          {
+           "Q": "5"
+          },
+          {
+           "Q": "6"
+          },
+          {
+           "Q": "7"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "bk-ref-other",
+   "documentInline": {
+    "Depot": {
+     "Ref": "z",
+     "Bins": [
+      {
+       "BinCode": "a",
+       "BinNote": "x",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Note": "n1",
+         "Cells": [
+          {
+           "Q": "10",
+           "CNote": "c1"
+          },
+          {
+           "Q": "20",
+           "CNote": "c2"
+          }
+         ]
+        },
+        {
+         "Qty": "2",
+         "Note": "n2",
+         "Cells": [
+          {
+           "Q": "11",
+           "CNote": "c1"
+          },
+          {
+           "Q": "21",
+           "CNote": "c2"
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "BinCode": "b",
+       "Slots": [
+        {
+         "Qty": "3",
+         "Cells": [
+          {
+           "Q": "5"
+          },
+          {
+           "Q": "6"
+          },
+          {
+           "Q": "7"
+          }
+         ]
+        },
+        {
+         "Qty": "4",
+         "Cells": [
+          {
+           "Q": "6"
+          },
+          {
+           "Q": "7"
+          },
+          {
+           "Q": "8"
+          }
+         ]
+        },
+        {
+         "Qty": "5",
+         "Cells": [
+          {
+           "Q": "7"
+          },
+          {
+           "Q": "8"
+          },
+          {
+           "Q": "9"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -86,7 +86,7 @@ def evaluateValidation (checked : CheckedKeyedStarNumberSource model)
     (op : NumericAggregateOp) (preliminary : CheckedIndexPreliminary model) (outer : Env := []) :
     Except KeyedStarNumberContextError NumericOperand := do
   let column ← preliminary.resolveIndexColumn checked.indexGroup outer |>.mapError .column
-  let resolved ← column.toSemanticIndexColumn preliminary column.indexDeclaration.id |>.mapError .column
+  let resolved ← column.toSemanticIndexColumn preliminary column.indexDeclaration.id outer |>.mapError .column
   match resolved.lookupEnvironment .validation false (.value (.str checked.token)) with
   | .value (some environment) =>
       checked.star.evaluateCheckedDocumentValidationAggregate op preliminary.base

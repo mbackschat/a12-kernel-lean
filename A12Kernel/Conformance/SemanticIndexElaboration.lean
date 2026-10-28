@@ -605,6 +605,30 @@ example :
       (elaborateNumberSemanticIndexSource nestedModel ["Order"] nestedAuthored).isOk = false := by
   native_decide
 
+/- A target in a repeatable level below the indexed group certifies as a general source, read at the
+rule's own lower row, while the reduced route, which reads the selected row alone, refuses it. -/
+example :
+    let lines : RepeatableGroupDecl := {
+      level := 20, path := ["Order", "Items", "Lines"], repeatability := some 3
+    }
+    let lowerTarget := {
+      targetDecl with groupPath := lines.path, repeatableScope := [10, 20]
+    }
+    let lowerModel : FlatModel := {
+      fields := [keyDecl, lowerTarget]
+      repeatableGroups := [items, lines]
+    }
+    let lowerAuthored : SurfaceSemanticIndex := {
+      target := { base := .absolute, groups := lines.path, field := "Amount" }
+      key := .literal (.number 5)
+    }
+    lowerModel.validate.isOk = true ∧
+      (elaborateSemanticIndexSource lowerModel lines.path lowerAuthored).isOk = true ∧
+      (match elaborateNumberSemanticIndexSource lowerModel lines.path lowerAuthored with
+        | .error .reducedRouteNeedsSingleGroup => true
+        | _ => false) = true := by
+  native_decide
+
 /- The same checked source admits a nonrepeatable Number field as the semantic-index key. -/
 example :
     (elaborateNumberSemanticIndexSource model ["Order"] fieldAuthored).isOk = true := by

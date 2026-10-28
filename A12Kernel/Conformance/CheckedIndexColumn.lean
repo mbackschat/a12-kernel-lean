@@ -150,7 +150,7 @@ private def currentTarget (address : CellAddr) : Except CheckedDocumentError Che
 private def currentColumn (source : DocumentData) : Option ResolvedSemanticIndexColumn := do
   let preliminary ← preliminaryFor model source
   let column ← (preliminary.resolveIndexColumn supply).toOption
-  (column.toSemanticIndexColumnWith currentTarget 4).toOption
+  (column.toSemanticIndexColumnWith currentTarget 4 []).toOption
 
 example : ((currentColumn data).map fun column =>
     [column.lookupValue .computation "Sales", column.lookupValue .computation "Ops",
@@ -172,7 +172,7 @@ example : ((currentColumn duplicateSupplyData).map fun column =>
 private def replacedTargetLookup (target : CheckedCell) (phase : Phase) : Option CellObservation := do
   let preliminary ← preliminaryFor model data
   let column ← (preliminary.resolveIndexColumn supply).toOption
-  let semantic ← (column.toSemanticIndexColumnWith (fun _ => pure target) 4).toOption
+  let semantic ← (column.toSemanticIndexColumnWith (fun _ => pure target) 4 []).toOption
   pure (semantic.lookupValue phase "Sales")
 
 example : [
@@ -239,7 +239,7 @@ example : (
       let engSupply ← (eng.right.readValidation preliminary 4).toOption
       let salesSupply ← (sales.right.readValidation preliminary 4).toOption
       let column ← (preliminary.resolveIndexColumn supply).toOption
-      let semantic ← (column.toSemanticIndexColumn preliminary 4).toOption
+      let semantic ← (column.toSemanticIndexColumn preliminary 4 []).toOption
       pure (column.entries.map (·.environment), sales.right.environment,
         salesSupply, engSupply,
         semantic.lookupValue .validation "Sales")) ==

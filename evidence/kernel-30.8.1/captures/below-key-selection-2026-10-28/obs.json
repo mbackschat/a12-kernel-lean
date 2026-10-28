@@ -1,0 +1,121 @@
+{
+ "schemaVersion": 2,
+ "dmtool": "0.13.0",
+ "kernelBuilt": "30.8.1",
+ "kernelRuntime": "30.8.1",
+ "source": {
+  "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "state": "CLEAN"
+ },
+ "model": "033aac5583e24bb000b0ddadc850aaf6dab1ec1dfde01232730dbde33d3744bf",
+ "observations": [
+  {
+   "id": "t1",
+   "inputHash": "fbe89bceaf6c21d225f0db158c3fcb8057e8d0b256a15a0edf2290c1497adb4c",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  {
+   "id": "t2",
+   "inputHash": "ee7256c0df87944e53f06923f95bd7ab5d98a75751b4f90f986c5dceb43cd374",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  {
+   "id": "t3",
+   "inputHash": "0fa2d7613cac50fa360110e5422cfbb9a0fe7479cbcf7f7127c6f648533ca73e",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "t4",
+   "inputHash": "d3ffc74aaca871d7f7efecd794f15842eedcbfe41617655a9b454848f85bedb4",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "t5",
+   "inputHash": "224611bbb09e0a0becf5781e41f631f6f424c10193b752251fd8edd5343c40aa",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  {
+   "id": "t6",
+   "inputHash": "5aea9abefdebf6d8dba31496e97b4552b76b7da519720d2fe446699fa27bba9a",
+   "ok": true,
+   "valid": true,
+   "codes": []
+  },
+  {
+   "id": "t7",
+   "inputHash": "e8ed81ad4b06573b43f95c5f882a2eb8e321a68896cb34a07a11d55e99c3bc3f",
+   "ok": true,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  {
+   "id": "t8",
+   "inputHash": "b2cae23f5bc9377d82a2fca70b8e7ea64dd3f4cd055a4231ae6ba21405f62f55",
+   "ok": true,
+   "valid": true,
+   "codes": [
+    "RK_UNGUARDED_NUMBER_COMPARISON"
+   ]
+  },
+  {
+   "id": "c1",
+   "inputHash": "e4c472aa2f915cd68601d0e930c4df3e6f02f936e6fae36c1949e94fa624115d",
+   "ok": true,
+   "codes": []
+  },
+  {
+   "id": "c2",
+   "inputHash": "76133f463910770be17f18bc7bfeafa29d66f50e7819a492c282299e4f292780",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_NO_WILDCARD"
+   ]
+  },
+  {
+   "id": "c3",
+   "inputHash": "f8cf55847e1125e7230f6b37bccfa333458fc9ced7ae5cb75b9a916c318a3b03",
+   "ok": false,
+   "valid": false,
+   "codes": [
+    "MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "id": "c4",
+   "inputHash": "21301f41e772530ef6eca555c3f371ef4943115e003db8fede814df2500be359",
+   "ok": true,
+   "codes": []
+  },
+  {
+   "id": "c5",
+   "inputHash": "c269d8e23db72d39205363a27353f1a4e1111e17d3bff5fefe75a2ef32fd06a4",
+   "ok": true,
+   "codes": []
+  },
+  {
+   "id": "c6",
+   "inputHash": "8569f4150abbc00579e7991ec640feca3ef95ea503ff38dad07bd0d4111aab80",
+   "ok": true,
+   "codes": []
+  }
+ ]
+}

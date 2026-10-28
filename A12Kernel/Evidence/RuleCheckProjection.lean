@@ -82,6 +82,8 @@ def captures : List (String × String × String) := [
   ("captures/k22-static-s6-2026-10-24/obs.json", "captures/k22-static-s4-2026-10-24/K22u_DM.json", "captures/k22-static-s6-2026-10-24/ops.json"),
   ("captures/k22-static-s7-2026-10-24/obs.json", "captures/k22-static-s4-2026-10-24/K22u_DM.json", "captures/k22-static-s7-2026-10-24/ops.json"),
   ("captures/unknown-scale-and-root-index-2026-10-28/obs.json", "captures/unknown-scale-and-root-index-2026-10-28/U28_DM.json", "captures/unknown-scale-and-root-index-2026-10-28/ops.json"),
+  ("captures/below-key-selection-2026-10-28/obs.json", "captures/below-key-selection-2026-10-28/BK_DM.json", "captures/below-key-selection-2026-10-28/ops.json"),
+  ("captures/below-key-selection-2026-10-28/obs-scope.json", "captures/below-key-selection-2026-10-28/BK_DM.json", "captures/below-key-selection-2026-10-28/ops-scope.json"),
   ("captures/field-value-read-remaining-sites/observations-grid.json", "captures/field-value-read-remaining-sites/Grid25h_DM.json", "captures/field-value-read-remaining-sites/ops-grid.json"),
   ("captures/field-value-read-predictions/observations-grid2.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid2.json"),
   ("captures/field-value-read-predictions/observations-grid3.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid3.json"),
@@ -294,7 +296,14 @@ def deferred : List (String × String) := [
   ("unknown-scale-and-root-index-2026-10-28/obs.json#ug9", "key over a root or fixed-group index, SG9"),
   ("unknown-scale-and-root-index-2026-10-28/obs.json#ug10", "key over a root or fixed-group index, SG9"),
   ("unknown-scale-and-root-index-2026-10-28/obs.json#ug11", "key over a root or fixed-group index, SG9"),
-  ("unknown-scale-and-root-index-2026-10-28/obs.json#ug13", "key over a root or fixed-group index, SG9")]
+  ("unknown-scale-and-root-index-2026-10-28/obs.json#ug13", "key over a root or fixed-group index, SG9"),
+  ("below-key-selection-2026-10-28/obs.json#c4", "key over a root or fixed-group index, SG9"),
+  ("below-key-selection-2026-10-28/obs.json#c5", "key over a root or fixed-group index, SG9"),
+  ("below-key-selection-2026-10-28/obs-scope.json#n1", "error-field scope of a read below the key, SG9"),
+  ("below-key-selection-2026-10-28/obs-scope.json#n2", "error-field scope of a read below the key, SG9"),
+  ("below-key-selection-2026-10-28/obs-scope.json#e2", "error-field scope of a read below the key, SG9"),
+  ("below-key-selection-2026-10-28/obs-scope.json#n3", "keyed group below the key, SG9"),
+  ("below-key-selection-2026-10-28/obs-scope.json#n4", "keyed group below the key, SG9")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

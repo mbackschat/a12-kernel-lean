@@ -69,31 +69,42 @@ def MessageReferenceInputs.resolveIndex (inputs : MessageReferenceInputs)
   let coordinate ← inputs.cache.lookup group.level parent key |>.mapError .hostOrder
   pure (parent, coordinate, keyPointers)
 
-/-- Index selection owns one coordinate; every deeper repeatable payload level remains wildcard. Dynamic key scopes must be fully bound, even when cache lookup has no association. -/
+/-- Index selection owns one coordinate. Below it, the first `boundCount` levels of a payload's
+scope keep the firing row, as the rule's iteration binds them, and every deeper level is the
+wildcard its star reopens: the selected bin at the firing slot's row, `Bins[2]/Slots[1]/Qty`, and
+`Bins[2]/Slots[1]/Cells[0]/Q` below a star (spec/08 §4.3,
+[below-key selection](../../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-selection)). Dynamic
+key scopes must be fully bound, even when cache lookup has no association. -/
 private def selectedReferencePointers (group : RepeatableGroupDecl)
     (indexDeclaration : FlatFieldDecl) (key : CheckedSemanticIndexKey)
-    (payloads : List FlatFieldDecl) (environment : Env)
+    (payloads : List FlatFieldDecl) (boundCount : Nat) (environment : Env)
     (inputs : Option MessageReferenceInputs := none) :
     Except ReferenceProjectionError (List MessagePointer) := do
   let some inputs := inputs | throw .missingIndexContext
   let (parent, coordinate, keyPointers) ← inputs.resolveIndex group indexDeclaration key environment
   let selectedPrefix := parent.map MessageRepetitionCoordinate.concrete ++ [coordinate]
-  pure (keyPointers ++ (indexDeclaration :: payloads).map fun declaration => {
-    field := declaration.id
-    coordinates := selectedPrefix ++ List.replicate
-      (declaration.repeatableScope.length - indexDeclaration.repeatableScope.length) .wildcard })
+  let depth := indexDeclaration.repeatableScope.length
+  let index := { field := indexDeclaration.id, coordinates := selectedPrefix }
+  let payloadPointers ← payloads.mapM fun declaration => do
+    let lower := declaration.repeatableScope.drop depth
+    let bound := lower.take (boundCount - depth)
+    let rows ← (environment.pathForScope bound).mapError .binding
+    pure { field := declaration.id
+           coordinates := selectedPrefix ++ rows.map .concrete ++
+             List.replicate (lower.length - bound.length) .wildcard }
+  pure (keyPointers ++ index :: payloadPointers)
 
 def CheckedSemanticIndexSource.referencePointers (source : CheckedSemanticIndexSource model)
     (environment : Env) (inputs : Option MessageReferenceInputs := none) :
     Except ReferenceProjectionError (List MessagePointer) :=
   selectedReferencePointers source.group source.indexDeclaration source.key
-    [source.targetDeclaration] environment inputs
+    [source.targetDeclaration] source.targetDeclaration.repeatableScope.length environment inputs
 
 def CheckedKeyedEntityExtent.referencePointers (source : CheckedKeyedEntityExtent model)
     (environment : Env) (inputs : Option MessageReferenceInputs := none) :
     Except ReferenceProjectionError (List MessagePointer) :=
   selectedReferencePointers source.selection.group source.selection.indexDeclaration
-    source.selection.key source.declarations environment inputs
+    source.selection.key source.declarations source.boundLevelCount environment inputs
 
 private def selectedEntityPointers
     (source : Sum (CheckedSemanticIndexSource model) (CheckedKeyedEntityExtent model))

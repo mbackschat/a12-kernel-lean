@@ -1,0 +1,14 @@
+{
+ "computedField": "/Pol/PTotal",
+ "alternatives": [
+  {
+   "operation": "[Cover/CAmt]"
+  }
+ ],
+ "messages": [
+  {
+   "locale": "en_US",
+   "text": "m"
+  }
+ ]
+}

@@ -309,7 +309,7 @@ def resolveSemanticIndexColumnWith (checked : CheckedDocument model)
     let column ← preliminary.resolveIndexColumn group outer
       |>.mapError (CheckedAddressingError.semanticIndex ∘ SemanticIndexContextError.checkedColumn)
     column.toSemanticIndexColumnWith
-      (if group.indexField == some target then preliminary.readComputation else read) target
+      (if group.indexField == some target then preliminary.readComputation else read) target outer
       |>.mapError (CheckedAddressingError.semanticIndex ∘ SemanticIndexContextError.checkedColumn)
 
 /-- Supply prepared columns without binding selected target reads to the immutable document. -/

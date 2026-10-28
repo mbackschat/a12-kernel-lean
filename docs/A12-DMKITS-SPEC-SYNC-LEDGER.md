@@ -108,3 +108,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: `aa2677f7dbc20f198f3b063947fb2da3d4f5cc04`.
 - `disposition`: Reconciles the `q-*` rows and `hold-key-empty-seeded` three-engine; the peer interpreter already agreed (KF638). Partial validation of these cells stays unclaimed. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-28).
+
+<a id="spec-2026-10-28-07"></a>
+### SPEC-2026-10-28-07 — A key over a repeatable index reads and references a lower level the rule iterates at the rule's own row
+
+- `status`: pending
+- `canonical`: [spec/08 §4.1](../spec/08-paths-and-references.md#41-what-a-semantic-index-read-yields), the paragraph on a repeatable level below the index group, and [spec/07 §1.8](../spec/07-repetition-and-iteration.md#18-the-negative-condition-guard), the paragraph on a selection read below the selected row.
+- `delta`: Adds the value and static scope to KF522's references and KF475's starred-level class: from `Slots` below the repeatable `Bins` index, `[Qty For "b"]` reads the selected bin at the firing slot, from `Cells` at its slot and cell rows, a slot the selected bin lacks reads empty, an unstarred unbound lower level draws `MVK_NO_WILDCARD`, and the read guards and references the error field at the rule's lower rows but never at the selected level.
+- `basis`: the [below-key selection probe](sources/model-structure-and-declaration-probes.md#src-below-key-selection), 6 runtime documents and 51 static rows measured locally 2026-10-28, Kernel 30.8.1, at the measurement pin `08b0d6499`, both strategies agreeing.
+- `acceptance`: Reconcile the `bk-*` runtime rows and the `t`, `g`, `m`, `n` and `e` static rows; a computation or partial read below the key at runtime, and a missing lower row of a non-Number kind, are unmeasured, so do not claim them.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

@@ -52,11 +52,20 @@ def entityPath (source : CheckedKeyedEntityExtent model) : List String :=
 def groupPath (source : CheckedKeyedEntityExtent model) : GroupPath :=
   match source.target with | .group path | .starredGroup path => path | .star path => path.declaration.groupPath
 
-def bindingScopes (source : CheckedKeyedEntityExtent model) : List (List RepeatableLevel) :=
-  source.selection.indexSource.bindingScopes
-
+/-- The levels the extent reads at fixed rows: the selected group's scope, then, for a star below
+rule-bound levels, those levels too. Every level from the first star down is reopened. -/
 def boundLevelCount (source : CheckedKeyedEntityExtent model) : Nat :=
-  source.selection.indexDeclaration.repeatableScope.length
+  match source.target with
+  | .star path => path.path.firstStar
+  | .group _ | .starredGroup _ => source.selection.indexDeclaration.repeatableScope.length
+
+/-- The parent and key scopes of the selection, plus the rule-bound levels between the selected
+group and the extent's star. -/
+def bindingScopes (source : CheckedKeyedEntityExtent model) : List (List RepeatableLevel) :=
+  source.selection.indexSource.bindingScopes ++
+    if source.selection.indexDeclaration.repeatableScope.length < source.boundLevelCount then
+      [(model.repeatableScopeForGroupPath source.groupPath).take source.boundLevelCount]
+    else []
 
 def capacity? (source : CheckedKeyedEntityExtent model) : Option Nat :=
   model.declarationsSlotCapacity? source.boundLevelCount source.declarations
@@ -174,7 +183,10 @@ def selectedValueListSideWith {kind : ValueListKind}
   (·.side) <$> selectedValueListCellsWith source phase document outer direct stored read column classify missingStarIsOmitted
 
 /-- Bind the innermost declared index before checking the remaining unbound extent. A group
-without its own star may retain only nonrepeatable steps below the selected level (`spec/08` §4). -/
+without its own star may retain only nonrepeatable steps below the selected level (`spec/08` §4). A
+star field may sit below repeatable levels the rule binds, which keep the rule's row, as
+`Sum(Cells*/Q For "b")` from a rule in `Slots` below the indexed `Bins` does
+([below-key selection](../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-selection)). -/
 def elaborateKeyedEntityExtent (model : FlatModel) (declaringGroup : GroupPath)
     (authored : SurfaceKeyedEntityExtent) (boundScope? : Option (List RepeatableLevel) := none) : Except KeyedEntityExtentError (CheckedKeyedEntityExtent model) := do
   if !GroupPath.isValid declaringGroup then
@@ -202,7 +214,10 @@ def elaborateKeyedEntityExtent (model : FlatModel) (declaringGroup : GroupPath)
     -- [inbound](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27)); a star above it has the
     -- `MVK_SEMANTIC_INDEX_BELOW_WILDCARD` class (spec/08 §4), which no constructor of this error
     -- carries, so every other mismatch stays unsupported.
-    if firstStar != depth then
+    let belowRuleBoundLevels := match target with
+      | .star _ => depth < firstStar
+      | .group _ | .starredGroup _ => false
+    if firstStar != depth && !belowRuleBoundLevels then
       throw (if firstStar + 1 == depth then .index (.keyAdmission .semanticIndexAndWildcard)
         else .unsupportedExtent)
   else if (model.repeatableScopeForGroupPath targetGroup).length != depth then
