@@ -72,7 +72,8 @@ private partial def readElement (variant : Option String) (definitions : List (S
         ((← members body "sortFields").map (text · "name"))
         (← (← members body "elements").mapM (readElement variant definitions)))
   | "Field" => .field <$> readField variant definitions id name body
-  | "Rule" => pure (.rule id name (text body "errorCondition") (text body "errorEntityRelPath"))
+  | "Rule" => pure (.rule id name (text body "errorCondition") (text body "errorEntityRelPath")
+      (← acceptedByVariant variant body))
   | "Computation" =>
       pure (.computation id name (text body "computedFieldRelPath")
         ((← members body "computationAlternatives").map (text · "operation"))

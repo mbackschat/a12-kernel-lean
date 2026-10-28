@@ -138,7 +138,8 @@ Sources: [inbound 2026-09-26m model texts](../docs/sources/inbound-handbacks.md#
 | an empty message entry | load or build refusal | kept |
 | `datePrecision` on a temporal kind other than Date; any member a type body does not declare | unreadable | not stated |
 | a Number bound written as text outside the reader's decimal grammar ([§1.3](#13-declaration-generation-classes)) | unreadable | not stated |
-| an element with an empty name; a Java-blank name of a root, group, field, rule or computation (a no-break space is an ordinary name) | build fails | admitted for a field, rule or computation the filter deletes |
+| an element with an empty name | build fails | a codeless refusal for a field, rule or computation the filter deletes |
+| a Java-blank name of a root, group, field, rule or computation (a no-break space is an ordinary name) | build fails | admitted for a field, rule or computation the filter deletes |
 | an object-valued name | build fails | a codeless refusal |
 | a type reference with an empty id | build fails | a codeless refusal |
 | a type-definition reference without its id | build fails | a codeless refusal |

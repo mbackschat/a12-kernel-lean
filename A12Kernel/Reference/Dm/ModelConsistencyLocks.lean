@@ -85,10 +85,12 @@ private def element (kind id name : String) (body : List (String × Json)) : Jso
 private def fieldEl (id name : String) (fieldType : Json) (extra : List (String × Json) := []) : Json :=
   element "Field" id name (("fieldType", fieldType) :: extra)
 
-private def ruleEl (id name errorEntityRelPath errorCondition : String) : Json :=
-  element "Rule" id name [("errorEntityRelPath", .str errorEntityRelPath), ("errorCode", "C"),
+private def ruleEl (id name errorEntityRelPath errorCondition : String)
+    (extra : List (String × Json) := []) : Json :=
+  element "Rule" id name (([("errorEntityRelPath", .str errorEntityRelPath), ("errorCode", "C"),
     ("errorCondition", .str errorCondition), ("severity", "ERROR"),
-    ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])]
+    ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])] :
+      List (String × Json)) ++ extra)
 
 private def computationEl (id name computedFieldRelPath : String) (operations : List String)
     (extra : List (String × Json) := []) : Json :=
@@ -195,6 +197,7 @@ private def conditionEmpty : String := "codeless:error-condition-empty"
 private def entityNotSet : String := "codeless:error-entity-not-set"
 private def operationEmpty : String := "codeless:computation-operation-empty"
 private def typedefNameEmpty : String := "codeless:typedef-name-empty"
+private def elementNameEmpty : String := "codeless:element-name-empty"
 private def typedefRefEmpty : String := "codeless:typedef-reference-empty"
 private def computedFieldEmpty : String := "codeless:computed-field-empty"
 private def enumCategoryDuplicate : String := "codeless:enum-category-duplicate"
@@ -340,7 +343,22 @@ private def liftedBuildFailureRows : List (String × Row) := [
   ("o-typedef-ref-empty-only", { append := [fieldEl "/Form/T" "T" (typedefType "") [onlyV1]], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [typedefRefEmpty] }),
   ("o-typedef-ref-absent-kept", { append := [fieldEl "/Form/T" "T" typedefTypeWithoutId], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [notBuilt] }),
   ("o-typedef-ref-absent-only", { append := [fieldEl "/Form/T" "T" typedefTypeWithoutId [onlyV1]], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [typedefRefEmpty] }),
-  ("o-typedef-ref-resolved-only", { append := [fieldEl "/Form/T" "T" (typedefType "Td") [onlyV1]], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [] })]
+  ("o-typedef-ref-resolved-only", { append := [fieldEl "/Form/T" "T" (typedefType "Td") [onlyV1]], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [] }),
+  -- An empty name is `isEmpty`, a one-space name only blank: a deleted declaration with an empty name
+  -- draws one codeless notification, one with a one-space name draws nothing, and either name on a
+  -- kept declaration leaves the model unbuilt (KF626).
+  ("o-field-name-empty-kept", { append := [fieldEl "/Form/N" "" (stringType)], observed := [notBuilt] }),
+  ("o-field-name-empty-only", { append := [fieldEl "/Form/N" "" (stringType) [onlyV1]], observed := [elementNameEmpty] }),
+  ("o-field-name-blank-kept", { append := [fieldEl "/Form/N" " " (stringType)], observed := [notBuilt] }),
+  ("o-field-name-blank-only", { append := [fieldEl "/Form/N" " " (stringType) [onlyV1]], observed := [] }),
+  ("o-rule-name-empty-kept", { append := [ruleEl "/Form/R" "" "../Value" "FieldFilled(Value)"], observed := [notBuilt] }),
+  ("o-rule-name-empty-only", { append := [ruleEl "/Form/R" "" "../Value" "FieldFilled(Value)" [onlyV1]], observed := [elementNameEmpty] }),
+  ("o-rule-name-blank-kept", { append := [ruleEl "/Form/R" " " "../Value" "FieldFilled(Value)"], observed := [notBuilt] }),
+  ("o-rule-name-blank-only", { append := [ruleEl "/Form/R" " " "../Value" "FieldFilled(Value)" [onlyV1]], observed := [] }),
+  ("o-computation-name-empty-kept", { append := [computationEl "/Form/C" "" "../Total" ["1"]], observed := [notBuilt] }),
+  ("o-computation-name-empty-only", { append := [computationEl "/Form/C" "" "../Total" ["1"] [onlyV1]], observed := [elementNameEmpty] }),
+  ("o-computation-name-blank-kept", { append := [computationEl "/Form/C" " " "../Total" ["1"]], observed := [notBuilt] }),
+  ("o-computation-name-blank-only", { append := [computationEl "/Form/C" " " "../Total" ["1"] [onlyV1]], observed := [] })]
 
 example : disagreeing liftedBuildFailureRows = [] := by native_decide
 
