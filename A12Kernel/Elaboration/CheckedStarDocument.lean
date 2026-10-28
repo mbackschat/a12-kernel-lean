@@ -108,12 +108,13 @@ def CheckedSemanticIndexSource.observeColumnWith (source : CheckedSemanticIndexS
   pure (column.lookupObservationForIndex phase source.numericIndex key)
 
 /-- Select a concrete row through the phase-aware index column without reading its target.
-A scalar-only column cannot supply a row and is a structural failure, not an absent key. -/
+A scalar-only column cannot supply a row and is a structural failure, not an absent key. The column
+is resolved for the target, so a selected row lacking the target's lower row selects as empty. -/
 def CheckedSemanticIndexSource.selectEnvironmentWith (source : CheckedSemanticIndexSource model)
     (phase : Phase) (readColumn : SemanticIndexColumnReader) (outer : Env)
     (read : FieldId → CheckedCell) (stored : FieldId → Option String) :
     Except CheckedAddressingError (CellObservation Env) := do
-  let column ← readColumn source.group source.indexDeclaration.id outer
+  let column ← readColumn source.group source.targetDeclaration.id outer
   let key ← source.observeCurrentKey phase read stored |>.mapError .semanticIndex
   match column.lookupEnvironment phase source.numericIndex key with
   | .value (some environment) => pure (.value environment)
@@ -755,7 +756,9 @@ def ScalarComputationContext.semanticIndexColumnReader (context : ScalarComputat
     if group.indexField == some target then return column
     let entries ← column.entries.mapM fun entry => do
       let some environment := entry.environment | throw (.checkedDocumentRequired group.path)
-      pure { entry with target := addressed.read environment target }
+      if addressed.rowsPresent environment target then
+        pure { entry with target := addressed.read environment target }
+      else pure { entry with target := checkAdmittedRawCell .empty, targetRowAbsent := true }
     pure { column with entries }
 
 /-- Existing checked evaluators may already own the prepared-column resolver. Retain its index

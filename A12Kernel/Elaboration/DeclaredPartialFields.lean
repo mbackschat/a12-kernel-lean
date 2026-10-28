@@ -33,7 +33,9 @@ def resolveDeclaredPartialSelected
   let selection := match source with | .inl s => s | .inr s => s.selection.indexSource
   let declarations := match source with | .inl s => [s.targetDeclaration] | .inr s => s.declarations
   let view ← document.applyPartialGeneratedPreliminaryForScope scope |>.mapError .indexPreliminary
-  match ← selection.selectPartial view outer read with
+  match ← (match source with
+    | .inl s => s.selectPartial view outer read
+    | .inr s => s.selectPartial view outer read) with
   | none => pure none
   | some (.unknown cause) => pure (some (.unknown cause))
   | some (.poison cause) => pure (some (.poison cause))

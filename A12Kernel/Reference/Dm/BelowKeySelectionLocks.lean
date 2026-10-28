@@ -1,6 +1,8 @@
 import Lean.Data.Json
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.Validate
+import A12Kernel.Reference.Dm.Replay
+import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Elaboration.ValidationCondition.Omission
 
 /-! # Keyed reads below a selected repeatable group
@@ -11,7 +13,13 @@ below it the rule binds keeps the firing row, in the read and in `referenced`, a
 reopens its level, and a row the selected group lacks reads empty. The documents are those of the
 retained Kernel 30.8.1 capture `evidence/kernel-30.8.1/captures/below-key-selection-2026-10-28/`,
 and the model keeps its rules `S1`–`S4`; each expectation is the capture's codes, error fields and
-references for those rules, without message types or fill-to-fix lists. -/
+references for those rules, without message types or fill-to-fix lists.
+
+The routes section keeps a row the selected bin lacks below the key, which yields the values and
+verdicts of a clean no-match: each rule's firings as `code@pointer:type`, alike in full and partial
+validation, and the computed outcomes. References are left to the replay of the retained capture
+`evidence/kernel-30.8.1/captures/below-key-routes-2026-10-28/`, whose documents these are.
+-/
 
 namespace A12Kernel.Dm.BelowKeySelectionLocks
 
@@ -127,5 +135,136 @@ example : fired (depot [bin "a" (notedSlots 2) true, bin "c" (plainSlots 2)]) = 
 /- `bk-duplicate`: two rows carry the key, so every keyed read is unknown and no rule fires. -/
 example : fired (depot [bin "a" (notedSlots 1) true, bin "b" (plainSlots 1), bin "b" (plainSlots 1)]) = some []
   := by native_decide
+
+/-! ## Every reading route reads a missing lower row as empty
+
+The model is the routes capture's `BK4_DM` reduced to the rules and computation these locks read. -/
+
+private def date : Json :=
+  Json.mkObj [("type", "DateType"), ("DateType", Json.mkObj [("format", "yyyy-MM-dd")])]
+
+private def computationWith (path name target : String) (alternatives : List (Option String × String)) : Json :=
+  element "Computation" s!"{path}/{name}" name [("computedFieldRelPath", .str target),
+    ("computationAlternatives", Json.arr (alternatives.map fun (precondition, operation) => Json.mkObj
+      ((precondition.map fun condition => [("precondition", Json.str condition)]).getD [] ++
+        [("operation", .str operation)])).toArray), ("errorMessage", message)]
+
+private def computation (path name target operation : String) : Json :=
+  computationWith path name target [(none, operation)]
+
+private def routesDm? (slotExtra cellExtra : List Json := []) : Option DmModel :=
+  let path := "/Depot/Bins/Slots"
+  let guarded (name condition : String) := rule path name "../Note" s!"FieldFilled(Note) And {condition}"
+  let slots := group "/Depot/Bins" "Slots" 3 none ([field path "Qty" number, field path "Note" text,
+    field path "When" date, field path "OutD" number,
+    group path "Cells" 2 none (field s!"{path}/Cells" "Q" number :: cellExtra),
+    guarded "F1" "FirstFilledValue(Qty For \"b\", Qty) > 0",
+    guarded "D4" "DayFromDate(When For \"b\") == 0",
+    guarded "G1" "GroupFilled(/Depot/Bins/Slots For \"b\")",
+    guarded "G2" "GroupNotFilled(/Depot/Bins/Slots For \"b\")",
+    computation path "C5" "../OutD" "DayFromDate(When For \"b\")"] ++ slotExtra)
+  let bins := group "/Depot" "Bins" 4 (some "BinCode") [field "/Depot/Bins" "BinCode" text,
+    field "/Depot/Bins" "BinNote" text, slots]
+  (readModel (Json.mkObj [
+    ("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+    ("content", Json.mkObj [("modelConfig", Json.mkObj [("timeZone", "Europe/Berlin"),
+        ("conditionLanguage", Json.mkObj [("code", "en_US")])]),
+      ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group "" "Depot" 1 none [bins]])])])])).toOption
+
+private def zonedWorld : World := { now := { epochMillis := 0 }, modelZoneRules := ModelZone.concreteRules }
+
+/-- The extents capture adds keyed group presence and fill below the key and a Date
+`FirstFilledValue` to the routes model. -/
+private def extentsDm? : Option DmModel :=
+  let path := "/Depot/Bins/Slots"
+  let cells := s!"{path}/Cells"
+  let both (operator negated group : String) := [(some s!"{operator}({group} For \"b\")", "1"),
+    (some s!"{negated}({group} For \"b\")", "2")]
+  routesDm?
+    [field path "OutG2" number, field path "OutW2" date, group path "Info" 1 none [field s!"{path}/Info" "Tag" text],
+      computationWith path "K1" "../OutG2" (both "GroupFilled" "GroupNotFilled" s!"{path}/Info"),
+      computation path "K3" "../OutW2" "FirstFilledValue(When For \"b\", When)",
+      rule path "N1" "../Note" s!"FieldFilled(Note) And NumberOfFilledFields({path} For \"b\") > 0"]
+    [field cells "OutC" number, group cells "Data" 1 none [field s!"{cells}/Data" "Q2" number],
+      computationWith cells "K2" "../OutC" (both "AllFieldsFilled" "NotAllFieldsFilled" s!"{cells}/Data")]
+
+/-- The capture's slot `i`: `Qty` `i`, a note, the date `2026-01-0i` and one cell; the extents
+documents also fill `Info/Tag` and the cell's `Data/Q2`. -/
+private def routeSlot (extents : Bool) (i : Nat) : Json :=
+  let cell := [("Q", Json.str (toString (10 + i)))] ++
+    if extents then [("Data", Json.mkObj [("Q2", Json.str (toString (20 + i)))])] else []
+  Json.mkObj ([("Qty", Json.str (toString i)), ("Cells", Json.arr #[Json.mkObj cell]),
+    ("Note", Json.str s!"n{i}"), ("When", Json.str s!"2026-01-0{i}")] ++
+    if extents then [("Info", Json.mkObj [("Tag", Json.str s!"t{i}")])] else [])
+
+/-- `p3-short`: bin `a` holds three noted slots and the selected bin `b` only the first. -/
+private def shortDocument (extents := false) : Json :=
+  Json.mkObj [("Depot", Json.mkObj [("Bins", Json.arr #[
+    Json.mkObj [("BinCode", "a"), ("BinNote", "x"), ("Slots", Json.arr ((List.range 3).map (routeSlot extents ·.succ)).toArray)],
+    Json.mkObj [("BinCode", "b"), ("Slots", Json.arr #[routeSlot extents 1])]])])]
+
+private def routeRelevant : List RelevantEntityPattern :=
+  [["Depot", "Bins", "BinCode"], ["Depot", "Bins", "Slots", "Note"], ["Depot", "Bins", "Slots", "Qty"],
+    ["Depot", "Bins", "Slots", "When"], ["Depot", "Bins", "Slots"]].map RelevantEntityPattern.allInstances
+
+/-- Every rule's firings as `code@pointer:type`, sorted: full validation without `relevant`,
+otherwise one partial call over it. -/
+private def routeFirings (relevant : Option (List RelevantEntityPattern) := none)
+    (dm? := routesDm?) (document := shortDocument) : Option (List String) := do
+  let dm ← dm?
+  let input ← (readDocument dm document).toOption
+  if !input.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext zonedWorld builtinStringPatternCompiler dm.flat).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let validated ← checked.fullValidationDocument.toOption
+  let fired ← (validationRules dm .english).mapM fun dmRule => do
+    let checkedRule ← (checkValidationRule dm .english dmRule zonedWorld).toOption
+    let messages ← (match relevant with
+      | none => runValidationRule zonedWorld validated checkedRule
+      | some relevant => runRulePartial zonedWorld checked relevant checkedRule).toOption
+    pure (messages.map fun message => let observed := observe dm.flat message
+      s!"{observed.code}@{observed.pointer}:{observed.messageType}")
+  pure (fired.flatten.mergeSort (· ≤ ·))
+
+private def routeOutcomes (dm? := routesDm?) (document := shortDocument) : Option (List String) := do
+  let dm ← dm?
+  let input ← (readDocument dm document).toOption
+  let prepared ← (prepareFlatStringContext zonedWorld builtinStringPatternCompiler dm.flat).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let lowered ← dm.computations.mapM fun definition => (lowerComputation dm.flat .english definition).toOption
+  let reported ← (runComputations zonedWorld prepared checked (lowered.map (·.2))).toOption
+  pure ((reported.map toString).mergeSort (· ≤ ·))
+
+/- Slots 2 and 3 of bin `a` meet a selected bin without them: `DayFromDate` reads its empty
+date, `FirstFilledValue` falls through to the slot's own `Qty`, and the keyed group is not filled,
+each as an omission, alike in full and partial validation. -/
+example : routeFirings = some ["D4@Depot/Bins/Slots[2]/Note:OMISSION_ERROR", "D4@Depot/Bins/Slots[3]/Note:OMISSION_ERROR",
+    "F1@Depot/Bins/Slots/Note:VALUE_ERROR", "F1@Depot/Bins/Slots[2]/Note:OMISSION_ERROR",
+    "F1@Depot/Bins/Slots[3]/Note:OMISSION_ERROR", "F1@Depot/Bins[2]/Slots/Note:VALUE_ERROR",
+    "G1@Depot/Bins/Slots/Note:VALUE_ERROR", "G1@Depot/Bins[2]/Slots/Note:VALUE_ERROR",
+    "G2@Depot/Bins/Slots[2]/Note:OMISSION_ERROR", "G2@Depot/Bins/Slots[3]/Note:OMISSION_ERROR"] ∧
+    routeFirings (some routeRelevant) = routeFirings := by native_decide
+
+/- The computation reads the same missing row as `0`, not as a poisoned operand. -/
+example : routeOutcomes = some ["Depot/Bins/Slots/OutD=value 1", "Depot/Bins/Slots[2]/OutD=value 0",
+    "Depot/Bins/Slots[3]/OutD=value 0", "Depot/Bins[2]/Slots/OutD=value 1"] := by native_decide
+
+/- Below the key, a keyed group the selected bin lacks is not filled, its fields are not all
+filled, and a Date `FirstFilledValue` falls through to the slot's own date: `2` and the own date
+at slots 2 and 3 of bin `a`, as the Kernel computes them. -/
+example : (routeOutcomes extentsDm? (shortDocument true)).map (·.filter fun outcome =>
+      ["OutC=", "OutG2=", "OutW2="].any fun field => (outcome.splitOn field).length > 1) = some [
+    "Depot/Bins/Slots/Cells/OutC=value 1", "Depot/Bins/Slots/OutG2=value 1", "Depot/Bins/Slots/OutW2=value 2026-01-01",
+    "Depot/Bins/Slots[2]/Cells/OutC=value 2", "Depot/Bins/Slots[2]/OutG2=value 2", "Depot/Bins/Slots[2]/OutW2=value 2026-01-02",
+    "Depot/Bins/Slots[3]/Cells/OutC=value 2", "Depot/Bins/Slots[3]/OutG2=value 2", "Depot/Bins/Slots[3]/OutW2=value 2026-01-03",
+    "Depot/Bins[2]/Slots/Cells/OutC=value 1", "Depot/Bins[2]/Slots/OutG2=value 1", "Depot/Bins[2]/Slots/OutW2=value 2026-01-01"] := by
+  native_decide
+
+/- The fill count below the key counts nothing at the slots the selected bin lacks, so `N1`
+fires only at the two present first slots, alike in full and partial validation. -/
+example : (routeFirings none extentsDm? (shortDocument true)).map (·.filter (·.startsWith "N1@")) =
+      some ["N1@Depot/Bins/Slots/Note:VALUE_ERROR", "N1@Depot/Bins[2]/Slots/Note:VALUE_ERROR"] ∧
+    (routeFirings (some routeRelevant) extentsDm? (shortDocument true)).map (·.filter (·.startsWith "N1@")) =
+      some ["N1@Depot/Bins/Slots/Note:VALUE_ERROR", "N1@Depot/Bins[2]/Slots/Note:VALUE_ERROR"] := by native_decide
 
 end A12Kernel.Dm.BelowKeySelectionLocks

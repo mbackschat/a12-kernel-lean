@@ -1,0 +1,6 @@
+[{"id":"q1","verb":"rule","args":["check","--code","q1","--field","/Depot/Bins/BinNote","--group","/Depot/Bins","--condition","FieldFilled(BinNote) And GroupFilled(/Depot/Bins/Slots For \"b\")","--message","en_US=probe"]},
+ {"id":"q2","verb":"rule","args":["check","--code","q2","--field","/Depot/Bins/Slots/Note","--group","/Depot/Bins/Slots","--condition","FieldFilled(Note) And GroupFilled(/Depot/Bins/Slots For \"b\")","--message","en_US=probe"]},
+ {"id":"q3","verb":"rule","args":["check","--code","q3","--field","/Depot/Bins/Slots/Note","--group","/Depot/Bins/Slots","--condition","FieldFilled(Note) And GroupFilled(/Depot/Bins/Slots/Cells For \"b\")","--message","en_US=probe"]},
+ {"id":"q4","verb":"rule","args":["check","--code","q4","--field","/Depot/Bins/Slots/Note","--group","/Depot/Bins/Slots","--condition","FieldFilled(Note) And GroupFilled(/Depot/Bins/Slots/Cells* For \"b\")","--message","en_US=probe"]},
+ {"id":"q5","verb":"rule","args":["check","--code","q5","--field","/Depot/Bins/Slots/Note","--group","/Depot/Bins/Slots","--condition","FieldFilled(Note) And NumberOfFilledFields(/Depot/Bins/Slots For \"b\") > 0","--message","en_US=probe"]},
+ {"id":"q6","verb":"rule","args":["check","--code","q6","--field","/Depot/Bins/Slots/Note","--group","/Depot/Bins/Slots","--condition","GroupNotFilled(/Depot/Bins/Slots For \"b\")","--message","en_US=probe"]}]

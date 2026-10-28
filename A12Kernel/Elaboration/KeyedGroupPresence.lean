@@ -28,7 +28,7 @@ def groupEnvironments (source : CheckedKeyedEntityExtent model) (document : Docu
 is cleanly empty, while a missing starred selection contributes no group instances. -/
 def validationGroupStates (source : CheckedKeyedEntityExtent model) (document : CheckedDocument model)
     (outer : Env) : Except CheckedAddressingError (Option (List GroupPresenceState)) := do
-  let selected ← source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read)
+  let selected ← source.selectWith document.source.toDocument .validation (document.resolveSemanticIndexColumnWith document.read)
     outer (document.computationContextAt outer).read (document.computationContextAt outer).storedText
   match selected with
   | .unknown _ | .poison _ => pure none
@@ -54,7 +54,7 @@ def partialGroupState (source : CheckedKeyedEntityExtent model)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
     Except CheckedAddressingError (Option GroupPresenceState) := do
   let view ← document.applyPartialGeneratedPreliminaryForScope scope |>.mapError .indexPreliminary
-  match ← source.selection.indexSource.selectPartial view outer read with
+  match ← source.selectPartial view outer read with
   | none | some (.unknown _) | some (.poison _) => pure none
   | some .empty =>
       let bound := source.selection.indexDeclaration.repeatableScope.dropLast
@@ -81,7 +81,7 @@ def computationGroupPresence (source : CheckedKeyedEntityExtent model) (operator
     (context : ScalarComputationContext) (column : SemanticIndexColumnReader) :
     Except CheckedAddressingError ComputationConditionResult := do
   let some addressed := context.addressed | throw (.checkedDocumentRequired source.groupPath)
-  let selected ← source.selectWith .computation column context.row context.read context.storedText
+  let selected ← source.selectWith addressed.document .computation column context.row context.read context.storedText
   match selected with
   | .unknown cause | .poison cause => pure (.poison cause)
   | .empty => pure (operator.evalComputation [] false)

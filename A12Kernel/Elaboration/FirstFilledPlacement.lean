@@ -125,11 +125,12 @@ private def scanCells (input : CheckedDocument model)
       | _ => pure (some cell)
 
 /-- A callback failure on the current key is structural, just like a reached payload read; the
-pure key-classification callback must not collapse it to a malformed cell. -/
+pure key-classification callback must not collapse it to a malformed cell. The column is resolved
+for the target, so a selected row lacking the target's lower row selects as empty. -/
 private def selectedEnvironment (source : CheckedSemanticIndexSource model)
     (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
     (outer : Env) : Except CheckedAddressingError (CellObservation Env) := do
-  let column ← input.resolveSemanticIndexColumnWith read source.group source.indexDeclaration.id outer
+  let column ← input.resolveSemanticIndexColumnWith read source.group source.targetDeclaration.id outer
   let (cell, stored) ← match source.key with
     | .literal _ _ => pure (malformedCheckedCell, none)
     | .field declaration => do
@@ -182,7 +183,8 @@ def resolveOperandAt (input : CheckedDocument model)
       | .unknown cause | .poison cause => pure (.error cause)
       | .value environment => Except.ok <$> scanCells input read source.targetDeclaration.id [environment]
   | .keyed source => do
-      let selected ← selectedEnvironment source.selection.indexSource input read outer
+      let selected ← source.presentSelection input.source.toDocument
+        (← selectedEnvironment source.selection.indexSource input read outer)
       match selected with
       | .empty => pure (.ok none)
       | .unknown cause | .poison cause => pure (.error cause)

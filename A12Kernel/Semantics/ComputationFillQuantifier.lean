@@ -33,6 +33,11 @@ def ComputationFillSource.field : ComputationFillSource → FieldId
 structure ComputationFillContext where
   document : Document
   read : Env → FieldId → CheckedCell
+  /-- Whether `document` instantiates every repeatable row of the field's address at the
+  environment; `read` cannot tell an absent row from a malformed cell. A context that is not built
+  from a checked document treats every row as present, so it must not address a row an index's
+  selected group lacks. -/
+  rowsPresent : Env → FieldId → Bool := fun _ _ => true
   /-- Exact current storage paired with checked reads; temporal uniqueness compares this identity. -/
   storedText : Env → FieldId → Option String := fun _ _ => none
   /-- Number-to-String consumes regime-selected formal text, not raw storage or a rendered rational (spec/04). -/

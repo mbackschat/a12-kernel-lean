@@ -1,0 +1,48 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "08b0d6499c98b132257ec961eb214de73fa223e3",
+    "state" : "CLEAN"
+  },
+  "model" : "85d0e8a94eb91431c14a6f922a0c3960bae0809e258a848ad84dd5a4a22a59d3",
+  "observations" : [ {
+    "id" : "q1",
+    "inputHash" : "099de5c67f0a321e626d10a733629f5efc2af58d4e9d63c0240e8ac363b2cd1f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "q2",
+    "inputHash" : "1af616b5e1909d109918cf2962142b2836be08d8f5a7850c31a62f5dae10fede",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "q3",
+    "inputHash" : "b3d06dacb91995083a77a8f9a0e0b138573192d2e972e865b25c2dece32dd19d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "q4",
+    "inputHash" : "b47348fed5a9eafc3503f758e83dee6f4b35b96944241e9b4a6f6fd4b43ace51",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "q5",
+    "inputHash" : "a3f892505e74953c1ff1dbc5a633b8b7e8dd2bd91bce5683dfee0ebad69d420c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "q6",
+    "inputHash" : "7c4bb9be20a43f1b907a2ab095efc0cc785c273988612dc0f7d34ba67a242e55",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NEG_CONDITION_IN_ITERATION" ]
+  } ]
+}

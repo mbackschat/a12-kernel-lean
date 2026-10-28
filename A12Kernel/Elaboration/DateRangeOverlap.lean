@@ -71,7 +71,7 @@ def resolveKeyedOverlapCore (source : CheckedKeyedEntityExtent model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError ResolvedDateRangeOverlapCore := do
   let context := document.computationContextAt outer
-  let selected ← source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read)
+  let selected ← source.selectWith document.source.toDocument .validation (document.resolveSemanticIndexColumnWith document.read)
     outer context.read context.storedText
   match selected with
   | .empty => pure (.selected .empty)

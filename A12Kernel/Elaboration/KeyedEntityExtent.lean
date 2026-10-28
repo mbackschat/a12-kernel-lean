@@ -52,12 +52,15 @@ def entityPath (source : CheckedKeyedEntityExtent model) : List String :=
 def groupPath (source : CheckedKeyedEntityExtent model) : GroupPath :=
   match source.target with | .group path | .starredGroup path => path | .star path => path.declaration.groupPath
 
-/-- The levels the extent reads at fixed rows: the selected group's scope, then, for a star below
-rule-bound levels, those levels too. Every level from the first star down is reopened. -/
+/-- The levels the extent reads at fixed rows: the selected group's scope, then, for a star or an
+unstarred group below rule-bound levels, those levels too. Every level from the first star down is
+reopened. -/
 def boundLevelCount (source : CheckedKeyedEntityExtent model) : Nat :=
   match source.target with
   | .star path => path.path.firstStar
-  | .group _ | .starredGroup _ => source.selection.indexDeclaration.repeatableScope.length
+  | .group path => max source.selection.indexDeclaration.repeatableScope.length
+      (model.repeatableScopeForGroupPath path).length
+  | .starredGroup _ => source.selection.indexDeclaration.repeatableScope.length
 
 /-- The parent and key scopes of the selection, plus the rule-bound levels between the selected
 group and the extent's star. -/
@@ -73,12 +76,27 @@ def capacity? (source : CheckedKeyedEntityExtent model) : Option Nat :=
 def referencesField (source : CheckedKeyedEntityExtent model) (field : FieldId) : Bool :=
   source.declarations.any (·.id == field) || source.selection.indexSource.referencesField field
 
+/-- A selected row whose group lacks a rule-bound lower row selects as empty, as a clean no-match
+does ([below-key routes](../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-routes)).
+The index column cannot see that row, because the selection reads it at the index field. -/
+def boundRowsPresent (source : CheckedKeyedEntityExtent model) (document : Document) (selected : Env) :
+    Except CheckedAddressingError Bool := do
+  let scope := (model.repeatableScopeForGroupPath source.groupPath).take source.boundLevelCount
+  let path ← selected.pathForScope scope |>.mapError .environment
+  pure ((repeatableAncestorRowsFor scope path).all document.instantiatedRows.contains)
+
+def presentSelection (source : CheckedKeyedEntityExtent model) (document : Document) :
+    CellObservation Env → Except CheckedAddressingError (CellObservation Env)
+  | .value selected => do
+      pure (if ← source.boundRowsPresent document selected then .value selected else .empty)
+  | selection => pure selection
+
 /-- A selected entry without an environment is a scalar-only column, never an absent row. -/
-def selectWith (source : CheckedKeyedEntityExtent model) (phase : Phase)
+def selectWith (source : CheckedKeyedEntityExtent model) (document : Document) (phase : Phase)
     (readColumn : SemanticIndexColumnReader) (outer : Env)
     (read : FieldId → CheckedCell) (stored : FieldId → Option String) :
     Except CheckedAddressingError (CellObservation Env) := do
-  source.selection.indexSource.selectEnvironmentWith phase readColumn outer read stored
+  source.presentSelection document (← source.selection.indexSource.selectEnvironmentWith phase readColumn outer read stored)
 
 /-- Physical rows and omitted declared tails stay separate for each declaration, preserving
 field-fill order when a group contains several independently repeatable descendants. -/
@@ -123,7 +141,7 @@ def computationSlotsWith (source : CheckedKeyedEntityExtent model)
 def computationSlotsIn (source : CheckedKeyedEntityExtent model) (context : ScalarComputationContext)
     (readColumn : SemanticIndexColumnReader) : Except CheckedAddressingError (List ComputationFillSlot) := do
   let some addressed := context.addressed | throw (.checkedDocumentRequired source.groupPath)
-  let selected ← source.selectWith .computation readColumn context.row context.read context.storedText
+  let selected ← source.selectWith addressed.document .computation readColumn context.row context.read context.storedText
   source.computationSlotsWith addressed.document selected addressed.read
 
 end CheckedKeyedEntityExtent
@@ -153,7 +171,7 @@ def selectedValueListCellsWith {kind : ValueListKind}
       pure { side := { cells := [← classify selected.targetDeclaration value], hasUninstantiatedTail := false, hasHaving := false }
              declarations := [selected.targetDeclaration], omitted := [] }
   | .inr selected =>
-      match ← selected.selectWith phase column outer direct stored with
+      match ← selected.selectWith document phase column outer direct stored with
       | .empty =>
           let omitted := match selected.target with
             | .group _ => true | .star _ | .starredGroup _ => missingStarIsOmitted
@@ -184,9 +202,13 @@ def selectedValueListSideWith {kind : ValueListKind}
 
 /-- Bind the innermost declared index before checking the remaining unbound extent. A group
 without its own star may retain only nonrepeatable steps below the selected level (`spec/08` §4). A
-star field may sit below repeatable levels the rule binds, which keep the rule's row, as
-`Sum(Cells*/Q For "b")` from a rule in `Slots` below the indexed `Bins` does
-([below-key selection](../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-selection)). -/
+star field or an unstarred group may sit below repeatable levels the rule binds, which keep the
+rule's row, as `Sum(Cells*/Q For "b")` and `GroupFilled(/Depot/Bins/Slots For "b")` from a rule in
+`Slots` below the indexed `Bins` do
+([below-key selection](../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-selection),
+[below-key routes](../../docs/sources/model-structure-and-declaration-probes.md#src-below-key-routes)).
+An unbound lower level draws the walk's `MVK_NO_WILDCARD` before this elaborator runs, in rules and
+computations alike (`q1`, `q3`, `s1`–`s3` of the routes capture). -/
 def elaborateKeyedEntityExtent (model : FlatModel) (declaringGroup : GroupPath)
     (authored : SurfaceKeyedEntityExtent) (boundScope? : Option (List RepeatableLevel) := none) : Except KeyedEntityExtentError (CheckedKeyedEntityExtent model) := do
   if !GroupPath.isValid declaringGroup then
@@ -220,7 +242,7 @@ def elaborateKeyedEntityExtent (model : FlatModel) (declaringGroup : GroupPath)
     if firstStar != depth && !belowRuleBoundLevels then
       throw (if firstStar + 1 == depth then .index (.keyAdmission .semanticIndexAndWildcard)
         else .unsupportedExtent)
-  else if (model.repeatableScopeForGroupPath targetGroup).length != depth then
+  else if (model.repeatableScopeForGroupPath targetGroup).length < depth then
     throw .unsupportedExtent
   pure { selection, target }
 

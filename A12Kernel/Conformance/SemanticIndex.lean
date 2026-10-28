@@ -59,6 +59,23 @@ example :
           .fired .omission := by
   native_decide
 
+/- A matched row lacking the target's lower row selects no row, in either phase, exactly as a clean
+no-match does; a present matched row selects its environment. Computation still checks the column
+first, so the absent row cannot hide an unavailable key. -/
+example :
+    let row : Env := [(1, 2)]
+    let entry : ResolvedSemanticIndexEntry := { token := "wanted", target := emptyCell, environment := some row }
+    let absent := indexColumn [{ entry with targetRowAbsent := true }]
+    let noMatch := indexColumn [{ entry with token := "other" }]
+    let key : CellObservation := .value (.str "wanted")
+    absent.lookupEnvironment .validation false key = .empty ∧
+      absent.lookupEnvironment .computation false key = .empty ∧
+      noMatch.lookupEnvironment .validation false key = .empty ∧
+      (indexColumn [entry]).lookupEnvironment .validation false key = .value (some row) ∧
+      (indexColumn [{ entry with targetRowAbsent := true }] (some .malformed)).lookupEnvironment
+        .computation false key = .poison .malformed := by
+  native_decide
+
 /- Without a clean match, an unavailable key makes validation unknown and computation poison. -/
 example :
     let duplicateColumn := indexColumn [] (some .duplicateIndex)

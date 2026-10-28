@@ -205,7 +205,7 @@ private def scanTypedFirstFilled (document : CheckedDocument model) (outer : Env
             pure (scanFirstFilledObservations cells (state.enterSelection (cells.isEmpty || emptyPrefix) false false))
         | .keyed source => do
             let context := document.computationContextAt outer
-            let selected ← source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read)
+            let selected ← source.selectWith document.source.toDocument .validation (document.resolveSemanticIndexColumnWith document.read)
               outer context.read context.storedText
             let cells ← source.observationsWith .validation document.source.toDocument selected document.computationFillContext.read
             let emptyPrefix ← (match selected with

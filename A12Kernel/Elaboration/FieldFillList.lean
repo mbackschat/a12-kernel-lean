@@ -106,7 +106,7 @@ def referencesField (operand : CheckedFieldFillOperand model) (field : FieldId)
 private def keyedValidationSelection (source : CheckedKeyedEntityExtent model)
     (document : CheckedDocument model) (outer : Env) :
     Except CheckedAddressingError (CellObservation Env) :=
-  source.selectWith .validation (document.resolveSemanticIndexColumnWith document.read) outer
+  source.selectWith document.source.toDocument .validation (document.resolveSemanticIndexColumnWith document.read) outer
     (document.computationContextAt outer).read (document.computationContextAt outer).storedText
 
 def observations (document : CheckedDocument model) (outer : Env)
@@ -168,7 +168,7 @@ def computationSlots (document : CheckedDocument model) (outer : Env) :
   | .indexed source => do
       pure [(← source.observeDocument document outer .computation).asComputationFillSlot]
   | .keyed source => do
-      let selected ← source.selectWith .computation (document.resolveSemanticIndexColumnWith document.read) outer
+      let selected ← source.selectWith document.source.toDocument .computation (document.resolveSemanticIndexColumnWith document.read) outer
         (document.computationContextAt outer).read (document.computationContextAt outer).storedText
       source.computationSlotsWith document.source.toDocument selected document.computationFillContext.read
   | .field declaration =>

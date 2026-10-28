@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "08b0d6499c98b132257ec961eb214de73fa223e3",
+    "state" : "CLEAN"
+  },
+  "model" : "10b80267561e6d7dd1fe2aa36d835350605c47778408365337dd5ef5afb1a466",
+  "observations" : [ {
+    "id" : "s1",
+    "inputHash" : "92565ba031a9a1fed5152076edf037d2dab3b7ec69c2ecbb8dda0e65fc3c3055",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "s2",
+    "inputHash" : "c7615107b0701324307f9c94a1d3ee78ac8cbca3039c8c139b58f3bee7390e60",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "s3",
+    "inputHash" : "d73a1bac51eb4920857c6ef3e379ac9ed45866e4d3f1e75d97c61a32ae32039c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  } ]
+}

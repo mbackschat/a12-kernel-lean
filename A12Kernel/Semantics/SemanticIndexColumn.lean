@@ -35,6 +35,9 @@ structure ResolvedSemanticIndexEntry where
   target : CheckedCell
   /-- Checked columns preserve the physical row; scalar-only legacy columns have no address. -/
   environment : Option Env := none
+  /-- The selected row lacks the target's row below it, at a lower level the reading rule binds.
+  `target` is then the declared empty slot and the entry selects no row (`spec/08` §4.1). -/
+  targetRowAbsent : Bool := false
   deriving Repr, DecidableEq
 
 /-- A resolved index column. `entries` omits every unavailable key row and every participant in a duplicate key; `unavailableKey` records one such cause when one exists. -/

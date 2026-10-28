@@ -1,0 +1,37 @@
+[
+ {
+  "id": "s1",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s1.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "s2",
+  "verb": "computation",
+  "args": [
+   "add",
+   "s2.json",
+   "--dry-run"
+  ]
+ },
+ {
+  "id": "s3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "s3",
+   "--field",
+   "/Depot/Bins/BinNote",
+   "--group",
+   "/Depot/Bins",
+   "--condition",
+   "FieldFilled(BinNote) And AllFieldsFilled(/Depot/Bins/Slots For \"b\")",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

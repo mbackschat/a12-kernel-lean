@@ -160,7 +160,7 @@ private def partialSelectedProductSide (source : CheckedKeyedNumberProductOperan
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell)) :
     Except CheckedAddressingError (Option (ResolvedValueListSide .number)) := do
   let selection := source.source.selection.indexSource
-  match ← selection.selectPartial view outer read with
+  match ← source.source.selectPartial view outer read with
   | none => pure none
   | some (.unknown cause) | some (.poison cause) => pure (some { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false })
   | some .empty =>

@@ -262,7 +262,7 @@ private def partialKeyedStarStates (operator : StarredGroupFillQuantifier)
     (read : Env → FieldId → Except CheckedAddressingError (Option CheckedCell))
     (resolveGroup : PartialGroupResolver) : Except CheckedAddressingError (List GroupListPresenceState) := do
   let view ← document.applyPartialGeneratedPreliminaryForScope scope |>.mapError .indexPreliminary
-  match ← source.selection.indexSource.selectPartial view outer read with
+  match ← source.selectPartial view outer read with
   | none | some (.unknown _) | some (.poison _) => pure [.unavailable]
   | some .empty =>
       if operator == .atLeastOneGroupFilled then return []

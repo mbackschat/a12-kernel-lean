@@ -1,0 +1,808 @@
+{
+ "header": {
+  "id": "BK5_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "BK5_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Depot",
+     "name": "Depot",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Depot/Bins",
+        "name": "Bins",
+        "Group": {
+         "repeatability": 4,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Depot/Bins/BinCode",
+           "name": "BinCode",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Depot/Bins/BinNote",
+           "name": "BinNote",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Depot/Bins/BinOut",
+           "name": "BinOut",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Depot/Bins/Slots",
+           "name": "Slots",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/Qty",
+              "name": "Qty",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/Note",
+              "name": "Note",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/When",
+              "name": "When",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/Out",
+              "name": "Out",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/OutF",
+              "name": "OutF",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/OutG",
+              "name": "OutG",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/OutS",
+              "name": "OutS",
+              "Field": {
+               "fieldType": {
+                "type": "StringType"
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/OutD",
+              "name": "OutD",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/OutW",
+              "name": "OutW",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/OutL",
+              "name": "OutL",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/OutP",
+              "name": "OutP",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/OutG2",
+              "name": "OutG2",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             },
+             {
+              "type": "Field",
+              "id": "/Depot/Bins/Slots/OutW2",
+              "name": "OutW2",
+              "Field": {
+               "fieldType": {
+                "type": "DateType",
+                "DateType": {
+                 "format": "yyyy-MM-dd"
+                }
+               }
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/Depot/Bins/Slots/Info",
+              "name": "Info",
+              "Group": {
+               "repeatability": 1,
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/Depot/Bins/Slots/Info/Tag",
+                 "name": "Tag",
+                 "Field": {
+                  "fieldType": {
+                   "type": "StringType"
+                  }
+                 }
+                }
+               ]
+              }
+             },
+             {
+              "type": "Group",
+              "id": "/Depot/Bins/Slots/Cells",
+              "name": "Cells",
+              "Group": {
+               "repeatability": 2,
+               "elements": [
+                {
+                 "type": "Field",
+                 "id": "/Depot/Bins/Slots/Cells/Q",
+                 "name": "Q",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                },
+                {
+                 "type": "Field",
+                 "id": "/Depot/Bins/Slots/Cells/OutC",
+                 "name": "OutC",
+                 "Field": {
+                  "fieldType": {
+                   "type": "NumberType",
+                   "NumberType": {
+                    "maxFractionalDigits": 0
+                   }
+                  }
+                 }
+                },
+                {
+                 "type": "Group",
+                 "id": "/Depot/Bins/Slots/Cells/Data",
+                 "name": "Data",
+                 "Group": {
+                  "repeatability": 1,
+                  "elements": [
+                   {
+                    "type": "Field",
+                    "id": "/Depot/Bins/Slots/Cells/Data/Q2",
+                    "name": "Q2",
+                    "Field": {
+                     "fieldType": {
+                      "type": "NumberType",
+                      "NumberType": {
+                       "maxFractionalDigits": 0
+                      }
+                     }
+                    }
+                   }
+                  ]
+                 }
+                },
+                {
+                 "type": "Computation",
+                 "id": "/Depot/Bins/Slots/Cells/K2",
+                 "name": "K2",
+                 "Computation": {
+                  "computedFieldRelPath": "../OutC",
+                  "computationAlternatives": [
+                   {
+                    "precondition": "AllFieldsFilled(/Depot/Bins/Slots/Cells/Data For \"b\")",
+                    "operation": "1"
+                   },
+                   {
+                    "precondition": "NotAllFieldsFilled(/Depot/Bins/Slots/Cells/Data For \"b\")",
+                    "operation": "2"
+                   }
+                  ],
+                  "errorMessage": [
+                   {
+                    "locale": "en_US",
+                    "text": "m"
+                   }
+                  ]
+                 }
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Depot/Bins/Slots/K1",
+              "name": "K1",
+              "Computation": {
+               "computedFieldRelPath": "../OutG2",
+               "computationAlternatives": [
+                {
+                 "precondition": "GroupFilled(/Depot/Bins/Slots/Info For \"b\")",
+                 "operation": "1"
+                },
+                {
+                 "precondition": "GroupNotFilled(/Depot/Bins/Slots/Info For \"b\")",
+                 "operation": "2"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Depot/Bins/Slots/K3",
+              "name": "K3",
+              "Computation": {
+               "computedFieldRelPath": "../OutW2",
+               "computationAlternatives": [
+                {
+                 "operation": "FirstFilledValue(When For \"b\", When)"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/N1",
+              "name": "N1",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "N1",
+               "errorCondition": "FieldFilled(Note) And NumberOfFilledFields(/Depot/Bins/Slots For \"b\") > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/L0",
+              "name": "L0",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "L0",
+               "errorCondition": "FieldFilled(Note) And [Qty] > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/L1",
+              "name": "L1",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "L1",
+               "errorCondition": "FieldFilled(Note) And FieldNotFilled(Qty For \"b\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/F1",
+              "name": "F1",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "F1",
+               "errorCondition": "FieldFilled(Note) And FirstFilledValue(Qty For \"b\", Qty) > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/T1",
+              "name": "T1",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "T1",
+               "errorCondition": "FieldFilled(Note) And FieldNotFilled(Note For \"b\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/T2",
+              "name": "T2",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "T2",
+               "errorCondition": "FieldFilled(Note) And Length(Note For \"b\") == 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/T3",
+              "name": "T3",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "T3",
+               "errorCondition": "FieldFilled(Note) And FieldValuesNotUnique(Note, Note For \"b\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/D1",
+              "name": "D1",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "D1",
+               "errorCondition": "FieldFilled(Note) And FieldNotFilled(When For \"b\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/D2",
+              "name": "D2",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "D2",
+               "errorCondition": "FieldFilled(Note) And DayFromDate(When For \"b\") > 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/D3",
+              "name": "D3",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "D3",
+               "errorCondition": "FieldFilled(Note) And [When For \"b\"] == [When]",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/G1",
+              "name": "G1",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "G1",
+               "errorCondition": "FieldFilled(Note) And GroupFilled(/Depot/Bins/Slots For \"b\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/G2",
+              "name": "G2",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "G2",
+               "errorCondition": "FieldFilled(Note) And GroupNotFilled(/Depot/Bins/Slots For \"b\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Depot/Bins/Slots/C1",
+              "name": "C1",
+              "Computation": {
+               "computedFieldRelPath": "../Out",
+               "computationAlternatives": [
+                {
+                 "operation": "[Qty For \"b\"]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Depot/Bins/Slots/C2",
+              "name": "C2",
+              "Computation": {
+               "computedFieldRelPath": "../OutF",
+               "computationAlternatives": [
+                {
+                 "operation": "FirstFilledValue(Qty For \"b\", Qty)"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Depot/Bins/Slots/C3",
+              "name": "C3",
+              "Computation": {
+               "computedFieldRelPath": "../OutG",
+               "computationAlternatives": [
+                {
+                 "precondition": "FieldFilled(Qty For \"b\")",
+                 "operation": "1"
+                },
+                {
+                 "precondition": "FieldNotFilled(Qty For \"b\")",
+                 "operation": "2"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Depot/Bins/Slots/C4",
+              "name": "C4",
+              "Computation": {
+               "computedFieldRelPath": "../OutS",
+               "computationAlternatives": [
+                {
+                 "operation": "[Note For \"b\"]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Depot/Bins/Slots/C5",
+              "name": "C5",
+              "Computation": {
+               "computedFieldRelPath": "../OutD",
+               "computationAlternatives": [
+                {
+                 "operation": "DayFromDate(When For \"b\")"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Depot/Bins/Slots/C6",
+              "name": "C6",
+              "Computation": {
+               "computedFieldRelPath": "../OutW",
+               "computationAlternatives": [
+                {
+                 "operation": "[When For \"b\"]"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Depot/Bins/Slots/C7",
+              "name": "C7",
+              "Computation": {
+               "computedFieldRelPath": "../OutL",
+               "computationAlternatives": [
+                {
+                 "operation": "Length(Note For \"b\")"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Computation",
+              "id": "/Depot/Bins/Slots/C8",
+              "name": "C8",
+              "Computation": {
+               "computedFieldRelPath": "../OutP",
+               "computationAlternatives": [
+                {
+                 "precondition": "FieldFilled(When For \"b\")",
+                 "operation": "1"
+                },
+                {
+                 "precondition": "FieldNotFilled(When For \"b\")",
+                 "operation": "2"
+                }
+               ],
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/D4",
+              "name": "D4",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "D4",
+               "errorCondition": "FieldFilled(Note) And DayFromDate(When For \"b\") == 0",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             },
+             {
+              "type": "Rule",
+              "id": "/Depot/Bins/Slots/D5",
+              "name": "D5",
+              "Rule": {
+               "errorEntityRelPath": "../Note",
+               "errorCode": "D5",
+               "errorCondition": "FieldFilled(Note) And FieldValuesNotUnique(When, When For \"b\")",
+               "severity": "ERROR",
+               "errorMessage": [
+                {
+                 "locale": "en_US",
+                 "text": "m"
+                }
+               ]
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "BinCode"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

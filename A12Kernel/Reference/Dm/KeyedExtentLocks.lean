@@ -132,7 +132,7 @@ private def missingEnvironmentRefused : Option Bool := do
   let readColumn : SemanticIndexColumnReader := fun group target outer => do
     let column ← checked.resolveSemanticIndexColumnWith checked.read group target outer
     pure { column with entries := column.entries.map fun entry => { entry with environment := none } }
-  pure (!(source.selectWith .validation readColumn [] checked.flatContext.read checked.flatContext.storedText).isOk)
+  pure (!(source.selectWith checked.source.toDocument .validation readColumn [] checked.flatContext.read checked.flatContext.storedText).isOk)
 
 example : missingEnvironmentRefused = some true := by native_decide
 

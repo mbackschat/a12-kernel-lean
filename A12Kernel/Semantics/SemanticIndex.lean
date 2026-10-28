@@ -117,11 +117,13 @@ def lookupObservationForIndex (column : ResolvedSemanticIndexColumn)
   semanticIndexObserved phase numericIndex key (column.lookupKey phase) (column.noMatch phase)
 
 /-- Select a certified row while retaining the same missing and failure outcomes as a cell lookup.
-Scalar-only columns carry no environments and are not an addressed selection source. -/
+Scalar-only columns carry no environments and are not an addressed selection source. A selected
+row lacking the target's lower row selects nothing to read, so it is empty as a no-match is. -/
 def lookupEnvironment (column : ResolvedSemanticIndexColumn) (phase : Phase)
     (numericIndex : Bool) (key : CellObservation) : CellObservation (Option Env) :=
   let lookup token := semanticIndexSelected phase column.unavailableKey
-    (column.entries.find? (fun entry => entry.token == token)) (fun entry => .value entry.environment)
+    (column.entries.find? (fun entry => entry.token == token))
+    (fun entry => if entry.targetRowAbsent then .empty else .value entry.environment)
   semanticIndexObserved phase numericIndex key lookup
     (semanticIndexSelected phase column.unavailableKey (none : Option ResolvedSemanticIndexEntry) (fun entry => .value entry.environment))
 

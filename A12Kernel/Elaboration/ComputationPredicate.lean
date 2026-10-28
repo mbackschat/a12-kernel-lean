@@ -320,7 +320,7 @@ private def selectedComparisonCells (context : ScalarComputationContext) :
         context.read context.storedText).mapError .indexSelection
   | .keyed source => do
       let addressed ← addressed context
-      let selected ← (source.selectWith .computation context.semanticIndexColumnReader context.row
+      let selected ← (source.selectWith addressed.document .computation context.semanticIndexColumnReader context.row
         context.read context.storedText).mapError .indexSelection
       (source.observationsWith .computation addressed.document selected addressed.read).mapError .indexSelection
   | .star source => do

@@ -151,7 +151,7 @@ private def scanKeyed (project : Value → Option α) (overlaps : α → α → 
     (state : ComputationOverlapSearch α) : Except ComputationOverlapError
       (ComputationHavingScanResult (ComputationOverlapSearch α) ComputationConditionResult) := do
   let current ← addressed context
-  let selected ← source.selectWith .computation context.semanticIndexColumnReader
+  let selected ← source.selectWith current.document .computation context.semanticIndexColumnReader
     context.row context.read context.storedText |>.mapError .selection
   match selected with
   | .empty => pure (.exhausted state)

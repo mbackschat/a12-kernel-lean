@@ -311,7 +311,7 @@ def selectedSide (source : ResolvedFieldEntityOperand model)
       let observation ← selected.observeColumnWith phase context.semanticIndexColumnReader context.row context.read context.storedText
       pure { operands := [← project selected.targetDeclaration observation], hasUninstantiatedTail := false, hasHaving := false }
   | .keyed selected _ =>
-      match ← selected.selectWith phase context.semanticIndexColumnReader context.row context.read context.storedText with
+      match ← selected.selectWith addressed.document phase context.semanticIndexColumnReader context.row context.read context.storedText with
       | .unknown cause | .poison cause => pure { operands := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
       | .empty =>
           let tail := match selected.target with | .group _ => true | .star _ | .starredGroup _ => false

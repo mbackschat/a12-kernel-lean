@@ -84,6 +84,8 @@ def captures : List (String × String × String) := [
   ("captures/unknown-scale-and-root-index-2026-10-28/obs.json", "captures/unknown-scale-and-root-index-2026-10-28/U28_DM.json", "captures/unknown-scale-and-root-index-2026-10-28/ops.json"),
   ("captures/below-key-selection-2026-10-28/obs.json", "captures/below-key-selection-2026-10-28/BK_DM.json", "captures/below-key-selection-2026-10-28/ops.json"),
   ("captures/below-key-selection-2026-10-28/obs-scope.json", "captures/below-key-selection-2026-10-28/BK_DM.json", "captures/below-key-selection-2026-10-28/ops-scope.json"),
+  ("captures/below-key-routes-2026-10-28/obs-group.json", "captures/below-key-routes-2026-10-28/BK3_DM.json", "captures/below-key-routes-2026-10-28/ops-group.json"),
+  ("captures/below-key-routes-2026-10-28/obs-unbound.json", "captures/below-key-routes-2026-10-28/BK5_DM.json", "captures/below-key-routes-2026-10-28/ops-unbound.json"),
   ("captures/field-value-read-remaining-sites/observations-grid.json", "captures/field-value-read-remaining-sites/Grid25h_DM.json", "captures/field-value-read-remaining-sites/ops-grid.json"),
   ("captures/field-value-read-predictions/observations-grid2.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid2.json"),
   ("captures/field-value-read-predictions/observations-grid3.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid3.json"),
@@ -302,8 +304,7 @@ def deferred : List (String × String) := [
   ("below-key-selection-2026-10-28/obs-scope.json#n1", "error-field scope of a read below the key, SG9"),
   ("below-key-selection-2026-10-28/obs-scope.json#n2", "error-field scope of a read below the key, SG9"),
   ("below-key-selection-2026-10-28/obs-scope.json#e2", "error-field scope of a read below the key, SG9"),
-  ("below-key-selection-2026-10-28/obs-scope.json#n3", "keyed group below the key, SG9"),
-  ("below-key-selection-2026-10-28/obs-scope.json#n4", "keyed group below the key, SG9")]
+  ("below-key-routes-2026-10-28/obs-group.json#q6", "error-field scope of a read below the key, SG9")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

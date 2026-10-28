@@ -1,0 +1,1 @@
+{"computedField": "/Depot/Bins/BinOut", "alternatives": [{"precondition": "GroupFilled(/Depot/Bins/Slots For \"b\")", "operation": "1"}], "messages": [{"locale": "en_US", "text": "m"}]}

@@ -626,14 +626,14 @@ def toSemanticIndexColumnWith (column : ResolvedCheckedIndexColumn model)
         |>.mapError .environment
       -- The selected row exists, so a missing row is one below it: the firing row's coordinate in
       -- a selected group with fewer rows, which reads empty (`bk-short` of the below-key capture).
-      let target ← match read { field := target, path } with
+      let (target, targetRowAbsent) ← match read { field := target, path } with
         | .error (.missingRow row) =>
             if column.indexDeclaration.repeatableScope.length < declaration.repeatableScope.length then
-              pure (checkAdmittedRawCell .empty)
+              pure (checkAdmittedRawCell .empty, true)
             else throw (.document (.missingRow row))
         | .error error => throw (.document error)
-        | .ok cell => pure cell
-      pure { token := entry.key, target, environment := some environment }
+        | .ok cell => pure (cell, false)
+      pure { token := entry.key, target, environment := some environment, targetRowAbsent }
   pure { entries, unavailableKey := column.unavailableKey }
 
 /-- The immutable validation view is the current-reader projection specialized to preliminary cells. -/

@@ -664,6 +664,14 @@ def flatContext (checked : CheckedDocument model) : FlatContext where
 /-- Expose immutable topology with the checked document's current overlay to addressed guards. -/
 def computationFillContext (checked : CheckedDocument model) : ComputationFillContext where
   document := checked.readDocument
+  rowsPresent environment field :=
+    let rows := do
+      let declaration ← (model.lookupUniqueId field).toOption
+      let path ← (environment.pathForScope declaration.repeatableScope).toOption
+      pure (checked.read { field, path })
+    match rows with
+    | some (.error (.missingRow _)) => false
+    | _ => true
   storedText := checked.storedTextIn
   numberText environment field := do
     let declaration ← (model.lookupUniqueId field).toOption

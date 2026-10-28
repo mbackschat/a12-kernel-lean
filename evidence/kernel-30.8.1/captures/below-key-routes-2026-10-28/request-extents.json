@@ -1,0 +1,346 @@
+{
+ "model": "BK5_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "p3-full",
+   "documentInline": {
+    "Depot": {
+     "Bins": [
+      {
+       "BinCode": "a",
+       "BinNote": "x",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Info": {
+          "Tag": "t1"
+         },
+         "Cells": [
+          {
+           "Q": "11",
+           "Data": {
+            "Q2": "21"
+           }
+          }
+         ],
+         "Note": "n1",
+         "When": "2026-01-01"
+        },
+        {
+         "Qty": "2",
+         "Info": {
+          "Tag": "t2"
+         },
+         "Cells": [
+          {
+           "Q": "12",
+           "Data": {
+            "Q2": "22"
+           }
+          }
+         ],
+         "Note": "n2",
+         "When": "2026-01-02"
+        },
+        {
+         "Qty": "3",
+         "Info": {
+          "Tag": "t3"
+         },
+         "Cells": [
+          {
+           "Q": "13",
+           "Data": {
+            "Q2": "23"
+           }
+          }
+         ],
+         "Note": "n3",
+         "When": "2026-01-03"
+        }
+       ]
+      },
+      {
+       "BinCode": "b",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Info": {
+          "Tag": "t1"
+         },
+         "Cells": [
+          {
+           "Q": "11",
+           "Data": {
+            "Q2": "21"
+           }
+          }
+         ],
+         "Note": "n1",
+         "When": "2026-01-01"
+        },
+        {
+         "Qty": "2",
+         "Info": {
+          "Tag": "t2"
+         },
+         "Cells": [
+          {
+           "Q": "12",
+           "Data": {
+            "Q2": "22"
+           }
+          }
+         ],
+         "Note": "n2",
+         "When": "2026-01-02"
+        },
+        {
+         "Qty": "3",
+         "Info": {
+          "Tag": "t3"
+         },
+         "Cells": [
+          {
+           "Q": "13",
+           "Data": {
+            "Q2": "23"
+           }
+          }
+         ],
+         "Note": "n3",
+         "When": "2026-01-03"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Depot/Bins/BinCode"
+    },
+    {
+     "path": "/Depot/Bins/Slots/Note"
+    },
+    {
+     "path": "/Depot/Bins/Slots/Qty"
+    },
+    {
+     "path": "/Depot/Bins/Slots/When"
+    },
+    {
+     "path": "/Depot/Bins/Slots"
+    }
+   ]
+  },
+  {
+   "name": "p3-short",
+   "documentInline": {
+    "Depot": {
+     "Bins": [
+      {
+       "BinCode": "a",
+       "BinNote": "x",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Info": {
+          "Tag": "t1"
+         },
+         "Cells": [
+          {
+           "Q": "11",
+           "Data": {
+            "Q2": "21"
+           }
+          }
+         ],
+         "Note": "n1",
+         "When": "2026-01-01"
+        },
+        {
+         "Qty": "2",
+         "Info": {
+          "Tag": "t2"
+         },
+         "Cells": [
+          {
+           "Q": "12",
+           "Data": {
+            "Q2": "22"
+           }
+          }
+         ],
+         "Note": "n2",
+         "When": "2026-01-02"
+        },
+        {
+         "Qty": "3",
+         "Info": {
+          "Tag": "t3"
+         },
+         "Cells": [
+          {
+           "Q": "13",
+           "Data": {
+            "Q2": "23"
+           }
+          }
+         ],
+         "Note": "n3",
+         "When": "2026-01-03"
+        }
+       ]
+      },
+      {
+       "BinCode": "b",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Info": {
+          "Tag": "t1"
+         },
+         "Cells": [
+          {
+           "Q": "11",
+           "Data": {
+            "Q2": "21"
+           }
+          }
+         ],
+         "Note": "n1",
+         "When": "2026-01-01"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Depot/Bins/BinCode"
+    },
+    {
+     "path": "/Depot/Bins/Slots/Note"
+    },
+    {
+     "path": "/Depot/Bins/Slots/Qty"
+    },
+    {
+     "path": "/Depot/Bins/Slots/When"
+    },
+    {
+     "path": "/Depot/Bins/Slots"
+    }
+   ]
+  },
+  {
+   "name": "p3-missing",
+   "documentInline": {
+    "Depot": {
+     "Bins": [
+      {
+       "BinCode": "a",
+       "BinNote": "x",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Info": {
+          "Tag": "t1"
+         },
+         "Cells": [
+          {
+           "Q": "11",
+           "Data": {
+            "Q2": "21"
+           }
+          }
+         ],
+         "Note": "n1",
+         "When": "2026-01-01"
+        },
+        {
+         "Qty": "2",
+         "Info": {
+          "Tag": "t2"
+         },
+         "Cells": [
+          {
+           "Q": "12",
+           "Data": {
+            "Q2": "22"
+           }
+          }
+         ],
+         "Note": "n2",
+         "When": "2026-01-02"
+        },
+        {
+         "Qty": "3",
+         "Info": {
+          "Tag": "t3"
+         },
+         "Cells": [
+          {
+           "Q": "13",
+           "Data": {
+            "Q2": "23"
+           }
+          }
+         ],
+         "Note": "n3",
+         "When": "2026-01-03"
+        }
+       ]
+      },
+      {
+       "BinCode": "c",
+       "Slots": [
+        {
+         "Qty": "1",
+         "Info": {
+          "Tag": "t1"
+         },
+         "Cells": [
+          {
+           "Q": "11",
+           "Data": {
+            "Q2": "21"
+           }
+          }
+         ],
+         "Note": "n1",
+         "When": "2026-01-01"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Depot/Bins/BinCode"
+    },
+    {
+     "path": "/Depot/Bins/Slots/Note"
+    },
+    {
+     "path": "/Depot/Bins/Slots/Qty"
+    },
+    {
+     "path": "/Depot/Bins/Slots/When"
+    },
+    {
+     "path": "/Depot/Bins/Slots"
+    }
+   ]
+  }
+ ]
+}

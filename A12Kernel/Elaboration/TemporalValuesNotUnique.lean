@@ -120,8 +120,10 @@ def sideWith {kind : ValueListKind} (source : CheckedSelectedTemporalEntity mode
     (storedAt : Env → FieldId → Option String) (column : SemanticIndexColumnReader)
     (project : CheckedTemporalUniquenessField → CheckedCell → Option String → Except CheckedAddressingError (ValueListCell kind)) :
     Except CheckedAddressingError (ResolvedValueListSide kind) := do
-  let index := match source.source with | .inl source => source | .inr source => source.selection.indexSource
-  match ← index.selectEnvironmentWith phase column outer direct stored with
+  let selected ← match source.source with
+    | .inl source => source.selectEnvironmentWith phase column outer direct stored
+    | .inr source => source.selectWith document phase column outer direct stored
+  match selected with
   | .unknown cause | .poison cause => pure { cells := [.unknown cause], hasUninstantiatedTail := false, hasHaving := false }
   | .empty =>
       pure {
