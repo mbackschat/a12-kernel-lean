@@ -3,6 +3,7 @@ import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Replay
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Keys over a root or fixed-group index
 
@@ -58,7 +59,7 @@ private def dm? : Option DmModel :=
   let fixed := group "" "IxFix" none [field "/IxFix" "Note" text, field "/IxFix" "KeyF" text,
     group "/IxFix" "Cover" (some "CoverKey") [field "/IxFix/Cover" "CAmt" number, field "/IxFix/Cover" "CoverKey" text],
     rule "/IxFix" "KD" "[Cover/CAmt For KeyF] > 0", rule "/IxFix" "KDN" "FieldNotFilled(Cover/CAmt For KeyF)"]
-  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [
     ("rootGroups", Json.arr #[root, fixed])])])])).toOption
 
 private def world : World := { now := { epochMillis := 0 } }

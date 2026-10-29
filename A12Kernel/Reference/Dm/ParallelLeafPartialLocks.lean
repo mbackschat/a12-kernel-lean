@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Ordinary parallel leaves under a partial call, through the reader
 
@@ -46,7 +47,7 @@ private def rules : List (String × String × String) := [
   ("v9", "Headcount", "FieldFilled(Supply/Headcount) And [Supply/Headcount] < [Demand/Base]")]
 
 private def staffing : Json :=
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [("type", "Group"), ("name", "Staffing"),
         ("Group", Json.mkObj [("repeatability", toJson (1 : Nat)), ("elements", Json.arr (

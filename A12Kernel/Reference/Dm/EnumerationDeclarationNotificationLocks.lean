@@ -1,5 +1,6 @@
 import Lean.Data.Json
 import A12Kernel.Reference.Dm.Model
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Reader integration for ordinary Enumeration declaration notifications
 
@@ -48,7 +49,7 @@ private def field (name typeName : String) (body : Json := Json.mkObj []) : Json
     ("Field", Json.mkObj [("fieldType", Json.mkObj [("type", .str typeName), (typeName, body)])])]
 
 private def source (row : Row) : Json :=
-  Json.mkObj [("content", Json.mkObj [
+  checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [
     ("modelConfig", Json.mkObj (if row.restricted then
       [("supportedCharacters", toJson row.charset)] else [])),
     ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [

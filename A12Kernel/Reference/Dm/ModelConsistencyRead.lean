@@ -1,5 +1,6 @@
 import Lean.Data.Json
 import A12Kernel.Elaboration.ModelConsistency
+import A12Kernel.Reference.Dm.ModelFrame
 import A12Kernel.Reference.Dm.Model
 
 /-! # Reading a DM-JSON model for the consistency check
@@ -84,21 +85,19 @@ private partial def readElement (variant : Option String) (definitions : List (S
 absent condition language is en_US. -/
 def readConsistencyModel (json : Json) (variant : Option String := none) :
     Except String ConsistencyModel := do
-  let content ← json.getObjVal? "content"
+  let frame ← bindModelFrame json
+  let content := frame.content
   bindLocalizedTextMembers content
-  let definitions ← members content "typeDefinitions"
-  let rootGroups ← match content.getObjVal? "modelRoot" with
-    | .error _ | .ok .null => pure []
-    | .ok root => members root "rootGroups"
+  let definitions := frame.typeDefinitions.toList
+  let rootGroups := frame.rootGroups.toList
   pure {
     typeDefinitions := definitions.map fun definition =>
       { id := text definition "id", name := text definition "name" }
     rootGroups := ← rootGroups.mapM (readElement variant (definitions.map fun definition =>
       (text definition "id", definition)))
-    conditionLanguage := ((content.getObjVal? "modelConfig").toOption.bind fun config =>
-      (config.getObjVal? "conditionLanguage").toOption.bind fun language =>
-        (language.getObjValAs? String "code").toOption).getD "en_US"
-    declaredLocales := ← headerLocales json }
+    conditionLanguage := frame.conditionLanguage.getD "en_US"
+    declaredLocales := ← headerLocales json
+    frameCheckFailure? := frame.checkFailure? }
 
 /-- Read the model for `variant` and run the consistency check. -/
 def checkModelConsistency (json : Json) (variant : Option String := none) :

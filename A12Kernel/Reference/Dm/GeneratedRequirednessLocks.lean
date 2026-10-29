@@ -3,6 +3,7 @@ import A12Kernel.Reference.Dm.ModelComputation
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Reader-to-finding locks for generated requiredness
 
@@ -548,7 +549,7 @@ private def linesModel : Json :=
     ("name", Json.str name), ("Group", Json.mkObj [("repeatability", toJson count), ("elements", Json.arr elements.toArray)])]
   let required := ("requirednessConfig", Json.mkObj [("mode", "absoluteOrRelativeToNextRepAncestor")])
   let root := group "Order" 1 [group "Lines" 4 [field "Sku" [required], field "Note" []]]
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[root])])])]
 

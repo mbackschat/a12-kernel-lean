@@ -1,6 +1,7 @@
 import Lean.Data.Json
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Reads below a joined group in a parallel rule
 
@@ -89,7 +90,7 @@ private def supplyRules : List Json := [
     "FieldFilled(/Staffing/Demand/Base) And FieldNotFilled(Note) And NumberOfFilledFields(Items*/Q) > 0"]
 
 private def dmWith (rules : List Json) (inSupply : List Json := []) : Option DmModel :=
-  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     element "Group" "/Staffing" "Staffing" [("repeatability", toJson 1), ("elements", Json.arr (#[
       keyed "Demand" [field "/Staffing/Demand" "Base",
         group "/Staffing/Demand" "DItems" [field "/Staffing/Demand/DItems" "P"] (some 2),

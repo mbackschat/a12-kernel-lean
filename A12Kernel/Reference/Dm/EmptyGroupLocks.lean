@@ -1,6 +1,7 @@
 import Lean.Data.Json
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Elaboration.ValidationMessageDiagnostic
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Declared groups without a field
 
@@ -40,7 +41,7 @@ private def ruleElement (id name errorEntityRelPath errorCondition : String) : J
 /-- The capture's base model, reduced to the root `Form` and its field `Value`, with the row's
 elements appended to it and its further root groups added. -/
 private def modelJson (appended : List Json) (roots : List Json := []) : Json :=
-  Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups",
+  checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups",
     Json.arr (#[group "/Form" "Form" 1 (stringField "/Form/Value" "Value" :: appended)] ++
       roots.toArray))])])]
 

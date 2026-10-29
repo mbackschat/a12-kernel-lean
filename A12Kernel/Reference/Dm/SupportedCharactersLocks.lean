@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.ModelComputation
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.Validate
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Reader integration for model-supported characters
 
@@ -19,7 +20,7 @@ private def field (name typeName : String) (body : List (String × Json) := []) 
       ("type", .str typeName), (typeName, Json.mkObj body)])])]
 
 private def source (definition : Option Json) : Json :=
-  Json.mkObj [("content", Json.mkObj [
+  checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [
     ("modelConfig", Json.mkObj (definition.toList.map ("supportedCharacters", ·))),
     ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [
       ("type", "Group"), ("name", "Form"),
@@ -90,7 +91,7 @@ private def compatibilityFailure? (definition : Option Json)
   | .ok _ => none
 
 example :
-    [none, some .null, some (toJson ([] : List String))].all (fun definition =>
+    [none, some (toJson ([] : List String))].all (fun definition =>
       storedFindings definition "S" "café" == some [] &&
       storedFindings definition "S" "x😀" == some [.unsupportedCharacter]) := by
   native_decide
@@ -134,11 +135,18 @@ example :
       compatibilityFailure? definition == inputFailure? definition) := by
   native_decide
 
+/-- A `null` list and a list that is no array leave no model, and a `null` entry costs the model its
+check, which the evaluation reader refuses (peer KF650). -/
 example :
-    [some (.str "A-Z"), some (toJson (7 : Nat)), some (Json.mkObj []),
-     some (Json.arr #[.str "A", toJson (7 : Nat)]), some (Json.arr #[.null])].all
+    [some .null, some (.str "A-Z"), some (toJson (7 : Nat)), some (Json.mkObj []), some (Json.arr #[.null])].all
       (fun definition => (inputFailure? definition).isSome &&
         compatibilityFailure? definition == inputFailure? definition) := by
+  native_decide
+
+/-- A number entry binds as its text, as a text entry does (peer KF650). -/
+example :
+    let definition := some (Json.arr #[.str "A", toJson (7 : Nat)])
+    [storedFindings definition "S" "A7" == some [], storedFindings definition "S" "B" == some [.unsupportedCharacter]].all id := by
   native_decide
 
 example :
@@ -162,7 +170,7 @@ example :
 private def ingestionNames : List String := ["Raw", "Plain", "Pattern", "Custom", "Reported"]
 
 private def ingestionSource : Json :=
-  Json.mkObj [("content", Json.mkObj [
+  checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [
     ("modelConfig", Json.mkObj [("fieldRefByShortNameAllowed", .bool true),
       ("supportedCharacters", toJson (["A-Z", "0-9", "\r", "\n", " "] : List String))]),
     ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [

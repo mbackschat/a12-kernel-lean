@@ -2,6 +2,7 @@ import A12Kernel.Reference.Dm.Model
 import A12Kernel.Reference.Dm.LoneSurrogate
 import A12Kernel.Reference.Dm.ModelConsistencyRead
 import A12Kernel.Reference.Dm.FieldTypeDeclarationRead
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # How the DM-JSON readers bind a localized-text member
 
@@ -63,7 +64,7 @@ private def model (carrier : Carrier) (value : Json) (filtered : Bool) : Json :=
       #[Json.mkObj [("id", "RefType"), ("name", "RefType"), ("revision", "1"), ("internalDescription", value),
         ("fieldType", Json.mkObj [("type", "StringType"), ("StringType", Json.mkObj [])])]]
     else #[]
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelInfo", Json.mkObj []), ("modelConfig", Json.mkObj []),
     ("typeDefinitions", Json.arr definitions),
     ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [("type", "Group"), ("id", "/Policy"),
@@ -82,7 +83,8 @@ private def written (value : String) : Option Json := some (Json.str value)
 
 /-- Whether model text parses and builds; `none` when the text itself is no JSON, so a malformed fixture
 cannot pass as a model that does not build. -/
-private def parsedBuilds (written : String) : Option Bool := (parseModelJson written).toOption.map builds
+private def parsedBuilds (written : String) : Option Bool :=
+  (parseModelJson written).toOption.map (builds ∘ checkedEntryFrame)
 
 /-- Whether the consistency reader and the declaration reader read the model. Both fail on a member
 that does not bind, as `readModel` does. -/

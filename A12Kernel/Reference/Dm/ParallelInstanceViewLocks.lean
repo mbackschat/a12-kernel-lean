@@ -2,6 +2,7 @@ import Lean.Data.Json
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Ordinary leaves over one joined parallel instance
 
@@ -75,7 +76,7 @@ private def rules : List (String × String) := [
   ("length", "FieldFilled(Demand/Base) And Length(Supply/Note) > 1")]
 
 private def dm? (extra : List Json := []) : Option DmModel :=
-  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     element "Group" "/Staffing" "Staffing" [("repeatability", toJson 1), ("elements", Json.arr (#[
       element "Field" "/Staffing/PlanName" "PlanName" [("fieldType", text)],
       keyed "Demand" [field "Demand" "Base" number, field "Demand" "Stamp" date, field "Demand" "Kind" kind,

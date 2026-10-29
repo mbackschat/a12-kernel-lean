@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Partial dispatch of ordinary rules over two repeatable levels, through the reader
 
@@ -33,7 +34,7 @@ private def rule (code condition : String) : Json :=
 
 /-- The capture's rules `O1`–`O4` and `O6`, in its declaration order. -/
 private def order : Json :=
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group "Order" 1 [
         field "Email", group "Lines" 50 [field "Code", group "Parts" 5 [field "Count" true, field "Tag"]],

@@ -1,11 +1,12 @@
 import A12Kernel.Reference.Dm.ModelComputation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 namespace A12Kernel.Dm.DeclarationAdmissionLocks
 
 open Lean
 
 private def input (name : String) (code : Option Json) (extra : List (String × Json) := []) : Json :=
-  Json.mkObj [("content", Json.mkObj [
+  checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [
     ("modelRoot", Json.mkObj [("rootGroups", toJson #[Json.mkObj [
       ("type", toJson "Group"), ("name", toJson "Form"),
       ("Group", Json.mkObj [("elements", toJson #[

@@ -3,6 +3,7 @@ import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.GeneratedComputationRule
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # String and Date targets beside a key join
 
@@ -48,7 +49,7 @@ private def computation (name target operation : String) (guard : Option String)
     ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])]
 
 private def dm? : Option DmModel :=
-  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     element "Group" "/Staffing" "Staffing" [("repeatability", toJson 1), ("elements", Json.arr #[
       keyed "Demand" "Department" [field "Demand" "Label" text, field "Demand" "Stamp" date],
       keyed "Supply" "Department" [field "Supply" "Headcount" number, field "Supply" "OutS1" text,
@@ -149,7 +150,7 @@ private def nestedDm? : Option DmModel :=
       joinField "/Join/Lines/Slots" "TKind" kind, joinField "/Join/Lines/Slots" "KindCopy" kind,
       slotComputation "CTKind" "TKind" "[../../Refs/Kind]",
       slotComputation "CKindCopy" "KindCopy" "[TKind]"])]
-  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     element "Group" "/Join" "Join" [("repeatability", toJson 1), ("elements", Json.arr #[
       element "Group" "/Join/Refs" "Refs" [("repeatability", toJson 3), ("indexFieldName", "Key"),
         ("elements", Json.arr #[joinField "/Join/Refs" "Key" text, joinField "/Join/Refs" "Kind" kind])],

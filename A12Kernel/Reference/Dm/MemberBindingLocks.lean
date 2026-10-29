@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.LowerCore
 import A12Kernel.Reference.Dm.LoneSurrogate
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # How the DM-JSON readers bind non-text members, and how a date constant is typed
 
@@ -18,7 +19,7 @@ open Lean A12Kernel
 private def model (fieldMembers typeBody : String) (typeName : String := "StringType")
     (groupMembers : String := "") (info : String := "{}") (config : String := "{}")
     (definitions : String := "[]") : Json :=
-  (parseModelJson s!"\{\"content\":\{\"modelInfo\":{info},\"modelConfig\":{config},\"typeDefinitions\":{definitions},\"modelRoot\":\{\"rootGroups\":[\{\"type\":\"Group\",\"name\":\"Form\",\"Group\":\{\"elements\":[\{\"type\":\"Group\",\"name\":\"Rows\",\"Group\":\{{groupMembers}\"elements\":[\{\"type\":\"Field\",\"name\":\"Value\",\"Field\":\{{fieldMembers}\"fieldType\":\{\"type\":\"{typeName}\",\"{typeName}\":{typeBody}}}}]}}]}}]}}}").toOption.getD .null
+  ((parseModelJson s!"\{\"content\":\{\"modelInfo\":{info},\"modelConfig\":{config},\"typeDefinitions\":{definitions},\"modelRoot\":\{\"rootGroups\":[\{\"type\":\"Group\",\"name\":\"Form\",\"Group\":\{\"elements\":[\{\"type\":\"Group\",\"name\":\"Rows\",\"Group\":\{{groupMembers}\"elements\":[\{\"type\":\"Field\",\"name\":\"Value\",\"Field\":\{{fieldMembers}\"fieldType\":\{\"type\":\"{typeName}\",\"{typeName}\":{typeBody}}}}]}}]}}]}}}").map checkedEntryFrame).toOption.getD .null
 
 /-- The read model, or `none` when the read fails or refuses a declaration. -/
 private def built? (json : Json) : Option DmModel :=

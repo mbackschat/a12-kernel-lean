@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.Replay
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Count shift amounts under partial validation and typed direct lists at the rule's row
 
@@ -34,7 +35,7 @@ private def group (name : String) (repeatability : Nat) (elements : List Json) :
     ("Group", Json.mkObj [("repeatability", toJson repeatability), ("elements", Json.arr elements.toArray)])]
 
 private def modelOf (form : List Json) : Json :=
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("timeZone", "Europe/Berlin"),
         ("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group "Form" 1 form])])])]

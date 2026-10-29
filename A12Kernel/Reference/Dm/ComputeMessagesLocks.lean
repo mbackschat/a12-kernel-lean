@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.ComputeMessages
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # A computation call's formal-error channel and the reached temporal failure, through the reader
 
@@ -40,7 +41,7 @@ private def modelJson : Json :=
     computation "LeftComp" "Left" s!"{gap}+HoursFromTime(/Form/Clock)",
     computation "RightComp" "Right" s!"HoursFromTime(/Form/Clock)+{gap}",
     computation "HitComp" "Hit" "1" (some "[Kind] == \"A\"")]
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("timeZone", "Europe/Berlin"),
         ("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [("type", "Group"), ("name", "Form"),

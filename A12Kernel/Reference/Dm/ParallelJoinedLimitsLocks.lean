@@ -2,6 +2,7 @@ import Lean.Data.Json
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Partner-row keys, unmatched sides and pair counts beside a key join
 
@@ -59,7 +60,7 @@ private def rules : List Json := [
   rule "d01b" "Note" "NumberOfDifferentValues(Supply/Note, Demand/Label) > 1"]
 
 private def dmWith (capacity : Nat) : Option DmModel :=
-  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     element "Group" "/Staffing" "Staffing" [("repeatability", toJson 1), ("elements", Json.arr (#[
       keyed capacity "Demand" "Department" [field "Demand" "Base" number, field "Demand" "Label" text],
       keyed capacity "Supply" "Department" [field "Supply" "Headcount" number, field "Supply" "Note" text,

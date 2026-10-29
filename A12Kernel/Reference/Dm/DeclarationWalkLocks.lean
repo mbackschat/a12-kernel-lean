@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.FieldTypeDeclarationRead
 import A12Kernel.Reference.Dm.ComputationCheck
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Whole-model rows of the October 21 letter
 
@@ -32,7 +33,7 @@ private def rule (name : String) (deleted := false) : Json :=
     ("severity", "ERROR")] : List (String × Json)) ++ if deleted then [("variantFilter", only)] else []))]
 
 private def model (roots : List Json) : Json :=
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr roots.toArray)])])]
 

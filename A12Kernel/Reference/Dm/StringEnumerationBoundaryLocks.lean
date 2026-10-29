@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.ModelComputation
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 namespace A12Kernel.Dm.StringEnumerationBoundaryLocks
 
@@ -23,7 +24,7 @@ private def modelSource : String := r#"{"content":{"modelConfig":{"conditionLang
 
 private def model (identityLabels : Bool := false) : Option DmModel := do
   let source := if identityLabels then modelSource.replace "Alpha" "A" |>.replace "Nine" "9" else modelSource
-  (readModel (← (Json.parse source).toOption)).toOption
+  (readModel (checkedEntryFrame (← (Json.parse source).toOption))).toOption
 
 private def run (token : String) : Option (List String × Bool) := do
   let dm ← model

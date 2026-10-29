@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.LoneSurrogate
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Clock and constant rows on the hybrid calendar
 
@@ -31,7 +32,7 @@ private def policy (zone : String) (baseYear : Int) (conditions : List String) :
     "},\"modelConfig\":{\"conditionLanguage\":{\"code\":\"en_US\"},\"timeZone\":\"" ++ zone ++
     "\"},\"modelRoot\":{\"rootGroups\":[{\"type\":\"Group\",\"name\":\"Policy\",\"Group\":{\"elements\":[" ++
     ",".intercalate elements ++ "]}}]}}}"
-  let model ← ((parseModelJson text).bind readModel).toOption
+  let model ← (((parseModelJson text).map checkedEntryFrame).bind readModel).toOption
   if model.refusals.isEmpty then some model else none
 
 /-- Each condition's outcome under the model zone, Base Year and pinned clock. -/

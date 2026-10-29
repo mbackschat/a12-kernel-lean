@@ -4,6 +4,7 @@ import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Elaboration.ValidationCondition.Omission
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Keyed reads below a selected repeatable group
 
@@ -58,7 +59,7 @@ private def dmWith? (slotRules? cellRules? : Option (List Json) := none) : Optio
     rule "/Depot/Bins/Slots" "S3" "../Note" "FieldFilled(Note) And Sum(Cells*/Q For \"b\") > 0"])
   let bins := group "/Depot" "Bins" 4 (some "BinCode") [field "/Depot/Bins" "BinCode" text,
     field "/Depot/Bins" "BinNote" text, slots]
-  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     group "" "Depot" 1 none [field "/Depot" "Ref" text, bins]])])])])).toOption
 
 private def dm? : Option DmModel := dmWith?
@@ -168,7 +169,7 @@ private def routesDm? (slotExtra cellExtra : List Json := []) : Option DmModel :
     computation path "C5" "../OutD" "DayFromDate(When For \"b\")"] ++ slotExtra)
   let bins := group "/Depot" "Bins" 4 (some "BinCode") [field "/Depot/Bins" "BinCode" text,
     field "/Depot/Bins" "BinNote" text, slots]
-  (readModel (Json.mkObj [
+  (readModel (checkedEntryFrame <| Json.mkObj [
     ("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("timeZone", "Europe/Berlin"),
         ("conditionLanguage", Json.mkObj [("code", "en_US")])]),

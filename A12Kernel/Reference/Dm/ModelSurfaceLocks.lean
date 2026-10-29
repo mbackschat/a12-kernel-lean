@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.Model
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Locks for the model reader's declaration surface
 
@@ -14,7 +15,7 @@ open Lean A12Kernel A12Kernel.Dm
 /-- A model whose root group `Form` holds the given elements, with optional extra content members. -/
 private def model (elements : String) (content : String := "") : Option Json :=
   (Json.parse ("{\"content\":{" ++ content ++ "\"modelRoot\":{\"rootGroups\":[{\"type\":\"Group\"," ++
-    "\"name\":\"Form\",\"Group\":{\"elements\":[" ++ elements ++ "]}}]}}}")).toOption
+    "\"name\":\"Form\",\"Group\":{\"elements\":[" ++ elements ++ "]}}]}}}")).toOption.map checkedEntryFrame
 
 private def field (name body : String) (extra : String := "") : String :=
   "{\"type\":\"Field\",\"name\":\"" ++ name ++ "\",\"Field\":{" ++ extra ++ "\"fieldType\":" ++ body ++ "}}"

@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Partial calls on a parallel rule whose error field lies below its joined group, through the reader
 
@@ -28,7 +29,7 @@ private def group (name : String) (count : Nat) (key : Option String) (elements 
     key.toList.map fun key => ("indexFieldName", Json.str key)))]
 
 private def order (code condition : String) : Json :=
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group "Order" 1 none [
         group "Lines" 50 (some "LineNo") [field "LineNo", group "Parts" 5 none [field "PartNo", field "Count", field "Tag"]],

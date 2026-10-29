@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.Model
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Locks for the DM-JSON document reader
 
@@ -104,7 +105,7 @@ example :
 /- The model file writes its Base Year as a string; an integer-only read silently dropped it, and a
 yearless list beside a dated one then failed the component-set gate the Base Year supplements. -/
 example :
-    let read (info : Json) := (readModel (Json.mkObj [("content", Json.mkObj [("modelInfo", info),
+    let read (info : Json) := (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelInfo", info),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[])])])])).toOption.map (·.flat.baseYear)
     [read (Json.mkObj [("baseYear", "2024")]) == some (some 2024),
      read (Json.mkObj []) == some none,
@@ -315,7 +316,7 @@ private def numberBodyRefusals (body : List (String × Json)) : Option (List Str
     Json.mkObj [("type", "NumberType"), ("NumberType", Json.mkObj body)])])]
   let group := Json.mkObj [("type", "Group"), ("name", "G"),
     ("Group", Json.mkObj [("repeatability", (1 : Nat)), ("elements", Json.arr #[field])])]
-  let json := Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group])])])]
+  let json := checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group])])])]
   (readModel json).toOption.map fun model => model.refusals.map (·.2)
 
 /-- The one field of a model whose Number body is `body`. -/
@@ -324,7 +325,7 @@ private def numberBodyDeclaration (body : List (String × Json)) : Option FlatFi
     Json.mkObj [("type", "NumberType"), ("NumberType", Json.mkObj body)])])]
   let group := Json.mkObj [("type", "Group"), ("name", "G"),
     ("Group", Json.mkObj [("repeatability", (1 : Nat)), ("elements", Json.arr #[field])])]
-  let json := Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group])])])]
+  let json := checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group])])])]
   let model ← (readModel json).toOption
   model.flat.fields.head?
 

@@ -97,6 +97,16 @@ structure ConsistencyTypeDefinition where
   name : String
   deriving Repr, DecidableEq
 
+/-- A frame shape the Kernel builds a model from but whose entry consistency check then fails without a
+class (peer KF650): no `header.modelVersion`, no `content.modelInfo`, `header.locales` absent or `null`,
+or a `null` supported character. -/
+inductive FrameCheckFailure where
+  | versionMissing
+  | modelInfoMissing
+  | localesMissing
+  | supportedCharacterNull
+  deriving Repr, DecidableEq
+
 structure ConsistencyModel where
   typeDefinitions : List ConsistencyTypeDefinition
   rootGroups : List ConsistencyElement
@@ -104,6 +114,8 @@ structure ConsistencyModel where
   conditionLanguage : String
   /-- The locales the header declares, in declaration order. -/
   declaredLocales : List ParsedLocale := []
+  /-- The check-only frame shape the model is written with, if any. -/
+  frameCheckFailure? : Option FrameCheckFailure := none
 
 /-- A notification class of the consistency check. Every class is an ERROR. -/
 inductive ModelConsistencyClass where
@@ -183,7 +195,8 @@ def observedLabel : ModelConsistencyClass → String
 
 end ModelConsistencyClass
 
-/-- A defect that stops the Kernel from building the model at all. -/
+/-- A defect after which the Kernel's check reports no class: the model is not built at all, or, for a
+check-only frame shape, built and then unchecked. -/
 inductive ModelBuildFailure where
   | elementNameEmpty
   | computedFieldPathEmpty
@@ -195,6 +208,7 @@ inductive ModelBuildFailure where
   | typeDefinitionIdRepeated
   /-- A declared locale with an empty language, or two codes naming one locale. -/
   | declaredLocale (failure : DeclaredLocaleFailure)
+  | frameCheck (failure : FrameCheckFailure)
   deriving Repr, DecidableEq
 
 namespace ModelBuildFailure
@@ -206,7 +220,7 @@ def liftedClass? : ModelBuildFailure → Option ModelConsistencyClass
   | .computedFieldPathEmpty => some .computedFieldEmpty
   | .enumerationCategoryNameDuplicated => some .enumerationCategoryDuplicate
   | .elementNameEmpty | .indexFieldNameEmpty | .sortFieldNameEmpty | .typeDefinitionIdRepeated
-    | .declaredLocale _ => none
+    | .declaredLocale _ | .frameCheck _ => none
 
 end ModelBuildFailure
 
@@ -219,7 +233,8 @@ structure ModelConsistencyNotification where
   deriving Repr, DecidableEq
 
 inductive ModelConsistencyOutcome where
-  /-- The model cannot be built and no check ran; `path` names the first offending element. -/
+  /-- The check reports no class: the model cannot be built, or a check-only frame shape fails its check;
+  `path` names the first offending element. -/
   | notBuilt (path : List String) (failure : ModelBuildFailure)
   | checked (notifications : List ModelConsistencyNotification)
   deriving Repr, DecidableEq
@@ -335,12 +350,13 @@ def repeatedTypeDefinitionId? (ids : List String) : Option String :=
 def typeDefinitionPath (definition : ConsistencyTypeDefinition) : List String :=
   [if definition.id.isEmpty then definition.name else definition.id]
 
-/-- The first build failure, with the path of the offending element or type definition: a declared
-locale's, with no path, then a repeated type-definition id, which the Kernel meets while expanding the
+/-- The first build failure, with the path of the offending element or type definition: a check-only
+frame shape's, then a declared locale's, both with no path, then a repeated type-definition id, which the Kernel meets while expanding the
 definitions, and then each element's in walk order. Which of two such failures the Kernel names is
 unmeasured; either leaves the one unbuilt label. -/
 def firstBuildFailure? (model : ConsistencyModel) : Option (List String × ModelBuildFailure) :=
-  if let some failure := declaredLocaleFailure? model.declaredLocales then some ([], .declaredLocale failure)
+  if let some failure := model.frameCheckFailure? then some ([], .frameCheck failure)
+  else if let some failure := declaredLocaleFailure? model.declaredLocales then some ([], .declaredLocale failure)
   else match repeatedTypeDefinitionId? (model.typeDefinitions.map (·.id)) with
   | some id => some ([id], .typeDefinitionIdRepeated)
   | none => model.entries.findSome? fun (path, element) => (buildFailure? element).map (path, ·)

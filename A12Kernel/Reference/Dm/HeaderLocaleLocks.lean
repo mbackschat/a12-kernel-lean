@@ -2,6 +2,7 @@ import A12Kernel.Reference.Dm.Model
 import A12Kernel.Reference.Dm.ModelConsistencyRead
 import A12Kernel.Reference.Dm.FieldTypeDeclarationRead
 import A12Kernel.Elaboration.DeclarationReport
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # How the DM-JSON readers read a header's declared locales
 
@@ -16,7 +17,7 @@ namespace A12Kernel.Dm.HeaderLocaleLocks
 open Lean A12Kernel
 
 private def model (locales : Json) (elements : List Json := []) : Json :=
-  Json.mkObj [("header", Json.mkObj [("locales", locales)]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", locales)]),
     ("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [("type", "Group"),
       ("id", "/P"), ("name", "P"), ("Group", Json.mkObj [("elements", Json.arr elements.toArray)])]])])])]
 
@@ -88,13 +89,13 @@ example :
     verdict (declaring ["de_CH", "de_CH_abcdefghi"]) = some .builds := by
   native_decide
 
-/-- A `locales` member that is no list and an entry with no string code are outside the represented
-profile, beside an absent member, which declares nothing. -/
+/-- A `locales` member that is no list leaves no model and a `null` one costs the model its check (peer
+KF650), while an entry with no string code is outside the represented profile. -/
 example :
-    verdict (model (Json.str "en_US")) = some .outsideProfile ∧
+    verdict (model (Json.str "en_US")) = some .unreadable ∧
     verdict (model (Json.arr #[Json.mkObj [("code", toJson (5 : Nat))]])) = some .outsideProfile ∧
     verdict (model (Json.arr #[Json.mkObj []])) = some .outsideProfile ∧
-    verdict (model Json.null) = some .builds := by
+    verdict (model Json.null) = some .notBuilt := by
   native_decide
 
 /-- A rule's message answers the declared locale its parsed locale equals: "en_US" answers a declared

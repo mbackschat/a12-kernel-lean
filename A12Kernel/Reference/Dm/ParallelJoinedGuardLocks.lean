@@ -3,6 +3,7 @@ import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.GeneratedComputationRule
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Ordinary leaves beside a key join
 
@@ -76,7 +77,7 @@ private def rules : List (String × String) := [
   ("k09", "FieldFilled(/Staffing/Demand/Base For \"A\")")]
 
 private def dm? : Option DmModel :=
-  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     element "Group" "/Staffing" "Staffing" [("repeatability", toJson 1), ("elements", Json.arr (#[
       element "Field" "/Staffing/PlanName" "PlanName" [("fieldType", text)],
       keyed "Demand" "Department" [field "Demand" "Headcount" number, field "Demand" "Base" number,

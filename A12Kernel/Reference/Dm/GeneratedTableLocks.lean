@@ -2,6 +2,7 @@ import Lean.Data.Json
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.GeneratedComputationRule
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Generated validation of Boolean alternative tables and keyed field-fill guards
 
@@ -49,7 +50,7 @@ private def root : Json :=
     computation "/P" "CN" "Out2" [("2", "FieldNotFilled(Rows/RGate For \"b\")")]])]
 
 private def dm? : Option DmModel :=
-  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot",
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot",
     Json.mkObj [("rootGroups", Json.arr #[root])])])])).toOption
 
 private def row (entries : List (String × String)) : Json :=

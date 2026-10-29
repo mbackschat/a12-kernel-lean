@@ -9,6 +9,7 @@ import A12Kernel.Elaboration.ModelConsistency
 import A12Kernel.Semantics.NumberBound
 import A12Kernel.Reference.Dm.MemberBinding
 import A12Kernel.Reference.Dm.LocalizedTextBinding
+import A12Kernel.Reference.Dm.ModelFrame
 
 /-! # Reading a DM-JSON document model
 
@@ -545,12 +546,8 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         errorCodesToSuppress := ((body.getObjValAs? (Array String) "errorCodesToSuppress").toOption.getD #[]).toList } }
   | other => modify fun state => { state with refusals := state.refusals.push (path ++ [name], s!"element {other}") }
 
-private def readSupportedCharacters (config : Json)
+private def readSupportedCharacters (entries : List String)
     (graphemeClusters? : Option (String → List String)) : Except String LegalCharset := do
-  let entries ← match config.getObjVal? "supportedCharacters" with
-    | .error _ | .ok .null => pure []
-    | .ok (.arr entries) => entries.toList.mapM Json.getStr?
-    | .ok _ => throw "supportedCharacters is not an array"
   let clustersOf ← match graphemeClusters? with
     | some clustersOf => pure clustersOf
     | none =>
@@ -617,14 +614,18 @@ declaration is refused alone. -/
 private def readModelCore (json : Json)
     (graphemeClusters? : Option (String → List String)) (variant : Option String) :
     Except String (DmModel × List ExecutableDeclaration) := do
-  let content ← json.getObjVal? "content"
+  let frame ← bindModelFrame json
+  let content := frame.content
   bindLocalizedTextMembers content
   discard <| builtHeaderLocales json
-  let config := (content.getObjVal? "modelConfig").toOption.getD (Json.mkObj [])
-  let info := (content.getObjVal? "modelInfo").toOption.getD (Json.mkObj [])
-  let roots ← (← content.getObjVal? "modelRoot").getObjValAs? (Array Json) "rootGroups"
-  let legalCharset ← readSupportedCharacters config graphemeClusters?
-  let typeDefinitions ← ((content.getObjValAs? (Array Json) "typeDefinitions").toOption.getD #[]).toList.mapM
+  -- A check-only frame shape builds a model whose check fails, and the runtime route refuses such a
+  -- model before evaluating it (model frame check route checkpoint, 2026-10-29).
+  if let some failure := frame.checkFailure? then throw s!"model frame {repr failure} fails the consistency check"
+  let config := frame.config
+  let info := frame.info
+  let roots := frame.rootGroups
+  let legalCharset ← readSupportedCharacters (frame.supportedCharacters.filterMap id) graphemeClusters?
+  let typeDefinitions ← frame.typeDefinitions.toList.mapM
     fun definition => do pure (← definition.getObjValAs? String "id", definition)
   -- The Kernel refuses a repeated type-definition id while expanding the definitions (peer KF647).
   if let some id := ModelConsistency.repeatedTypeDefinitionId? (typeDefinitions.map (·.1)) then
@@ -655,13 +656,13 @@ private def readModelCore (json : Json)
     legalCharset
     fieldRefByShortNameAllowed := ← booleanMember? config "fieldRefByShortNameAllowed"
     baseYear
-    timeZoneId := (str? config "timeZone").getD "UTC" }
+    timeZoneId := frame.timeZone.getD "UTC" }
   refusals := refusals ++ nominationRefusals flat state
   pure ({
     flat
     rules := state.rules.toList
     computations := state.computations.toList
-    conditionLanguage := ((config.getObjVal? "conditionLanguage").toOption.bind (str? · "code")).getD "en_US"
+    conditionLanguage := frame.conditionLanguage.getD "en_US"
     refusals
     enumerationNotifications := state.enumerationNotifications.toList }, state.declarations.toList)
 

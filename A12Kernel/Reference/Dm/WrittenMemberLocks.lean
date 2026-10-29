@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.LoneSurrogate
 import A12Kernel.Reference.Dm.Compute
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Members a law reads trimmed or in range, and a reader takes as written
 
@@ -23,7 +24,7 @@ private def rule (name code condition : String) : String :=
   s!"\{\"type\":\"Rule\",\"name\":\"{name}\",\"Rule\":\{\"errorEntityRelPath\":\"../Qty\",\"errorCode\":\"{code}\",\"errorCondition\":{(toJson condition).compress},\"severity\":\"ERROR\",\"errorMessage\":[\{\"locale\":\"en_US\",\"text\":\"m\"}]}}"
 
 private def built? (text : String) : Option DmModel := do
-  let dm ← ((parseModelJson text).bind readModel).toOption
+  let dm ← (((parseModelJson text).map checkedEntryFrame).bind readModel).toOption
   if dm.refusals.isEmpty then some dm else none
 
 /-- KF574's order: a keyed `Lines` whose Enumeration index `ServiceLevel` {`STD`, `EXPRESS`} declares

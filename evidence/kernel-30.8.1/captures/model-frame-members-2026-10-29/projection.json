@@ -1,0 +1,4444 @@
+{
+ "producer": {
+  "dmtool": "0.13.0",
+  "kernel": "30.8.1",
+  "source": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "jdk": "OpenJDK 21.0.13.0.3 (Homebrew)",
+  "route": "dmtool model check -m",
+  "date": "2026-10-29"
+ },
+ "bases": {
+  "sound": "base-sound_DM.json",
+  "broken": "base-broken_DM.json"
+ },
+ "edits": "each row's model is its base with every edit applied in order: a JSON pointer and either its new value or its removal",
+ "rows": [
+  {
+   "row": "g000",
+   "label": "base sound",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g001",
+   "label": "base broken",
+   "base": "broken",
+   "edits": [],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "row": "g002",
+   "label": "/header absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/header",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 70,
+   "outcome": "error",
+   "diagnostics": [
+    "INTERNAL:RK_INTERNAL_ERROR"
+   ],
+   "exception": "NullPointerException",
+   "innermostKernelFrame": "DocumentModelExpandService.<init>",
+   "kernelGate": true
+  },
+  {
+   "row": "g003",
+   "label": "/header null",
+   "base": "sound",
+   "edits": [
+    [
+     "/header",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g004",
+   "label": "/header {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/annotations",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/id",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/labels",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/locales",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelReferences",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 70,
+   "outcome": "error",
+   "diagnostics": [
+    "INTERNAL:RK_INTERNAL_ERROR"
+   ],
+   "exception": "NullPointerException",
+   "innermostKernelFrame": "DocumentModelExpandService$IncludeExpandVisitor.extractSupportedLocalizedTextMap",
+   "kernelGate": true
+  },
+  {
+   "row": "g005",
+   "label": "/header []",
+   "base": "sound",
+   "edits": [
+    [
+     "/header",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g006",
+   "label": "/header \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/header",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g007",
+   "label": "/header 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/header",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g008",
+   "label": "/header true",
+   "base": "sound",
+   "edits": [
+    [
+     "/header",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g009",
+   "label": "/header/id absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/id",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g010",
+   "label": "/header/id null",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/id",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g011",
+   "label": "/header/id {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/id",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g012",
+   "label": "/header/id []",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/id",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g013",
+   "label": "/header/id \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/id",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g014",
+   "label": "/header/id 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/id",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g015",
+   "label": "/header/id true",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/id",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g016",
+   "label": "/header/modelType absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g017",
+   "label": "/header/modelType null",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g018",
+   "label": "/header/modelType {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g019",
+   "label": "/header/modelType []",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g020",
+   "label": "/header/modelType \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g021",
+   "label": "/header/modelType 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g022",
+   "label": "/header/modelType true",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g023",
+   "label": "/header/modelVersion absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g024",
+   "label": "/header/modelVersion null",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelVersion",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g025",
+   "label": "/header/modelVersion {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelVersion",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g026",
+   "label": "/header/modelVersion []",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelVersion",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g027",
+   "label": "/header/modelVersion \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelVersion",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:RK_MODEL_VERSION_INCOMPATIBLE",
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g028",
+   "label": "/header/modelVersion 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelVersion",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:RK_MODEL_VERSION_INCOMPATIBLE",
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g029",
+   "label": "/header/modelVersion true",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelVersion",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:RK_MODEL_VERSION_INCOMPATIBLE",
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g030",
+   "label": "/header/description absent",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g031",
+   "label": "/header/description null",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/description",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g032",
+   "label": "/header/description {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/description",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g033",
+   "label": "/header/description []",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/description",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g034",
+   "label": "/header/description \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/description",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g035",
+   "label": "/header/description 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/description",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g036",
+   "label": "/header/description true",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/description",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g037",
+   "label": "/header/locales absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/locales",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 70,
+   "outcome": "error",
+   "diagnostics": [
+    "INTERNAL:RK_INTERNAL_ERROR"
+   ],
+   "exception": "NullPointerException",
+   "innermostKernelFrame": "DocumentModelExpandService$IncludeExpandVisitor.extractSupportedLocalizedTextMap",
+   "kernelGate": true
+  },
+  {
+   "row": "g038",
+   "label": "/header/locales null",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/locales",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 70,
+   "outcome": "error",
+   "diagnostics": [
+    "INTERNAL:RK_INTERNAL_ERROR"
+   ],
+   "exception": "NullPointerException",
+   "innermostKernelFrame": "DocumentModelExpandService$IncludeExpandVisitor.extractSupportedLocalizedTextMap",
+   "kernelGate": true
+  },
+  {
+   "row": "g039",
+   "label": "/header/locales {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/locales",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g040",
+   "label": "/header/locales []",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/locales",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_ERROR_MESSAGE_AND_PATTERN_INVALID",
+    "KERNEL:MVK_ERROR_MESSAGE_MISSING",
+    "KERNEL:MVK_SUPP_LANGUAGES_MISSING"
+   ]
+  },
+  {
+   "row": "g041",
+   "label": "/header/locales \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/locales",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g042",
+   "label": "/header/locales 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/locales",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g043",
+   "label": "/header/locales true",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/locales",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g044",
+   "label": "/header/labels absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/labels",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g045",
+   "label": "/header/labels null",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/labels",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g046",
+   "label": "/header/labels {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/labels",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g047",
+   "label": "/header/labels []",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g048",
+   "label": "/header/labels \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/labels",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g049",
+   "label": "/header/labels 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/labels",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g050",
+   "label": "/header/labels true",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/labels",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g051",
+   "label": "/header/annotations absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/annotations",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g052",
+   "label": "/header/annotations null",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/annotations",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g053",
+   "label": "/header/annotations {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/annotations",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g054",
+   "label": "/header/annotations []",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g055",
+   "label": "/header/annotations \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/annotations",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g056",
+   "label": "/header/annotations 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/annotations",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g057",
+   "label": "/header/annotations true",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/annotations",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g058",
+   "label": "/header/modelReferences absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelReferences",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g059",
+   "label": "/header/modelReferences null",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelReferences",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g060",
+   "label": "/header/modelReferences {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelReferences",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g061",
+   "label": "/header/modelReferences []",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g062",
+   "label": "/header/modelReferences \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelReferences",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g063",
+   "label": "/header/modelReferences 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelReferences",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g064",
+   "label": "/header/modelReferences true",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelReferences",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g065",
+   "label": "/content absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g066",
+   "label": "/content null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g067",
+   "label": "/content {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelRoot",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g068",
+   "label": "/content []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g069",
+   "label": "/content \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g070",
+   "label": "/content 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g071",
+   "label": "/content true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g072",
+   "label": "/content/modelInfo absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g073",
+   "label": "/content/modelInfo null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g074",
+   "label": "/content/modelInfo {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/immutable",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo/name",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo/revision",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo/variant",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_INVALID_NAME_4_GENERATED_CODE"
+   ]
+  },
+  {
+   "row": "g075",
+   "label": "/content/modelInfo []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g076",
+   "label": "/content/modelInfo \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g077",
+   "label": "/content/modelInfo 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g078",
+   "label": "/content/modelInfo true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g079",
+   "label": "/content/modelInfo/name absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/name",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_INVALID_NAME_4_GENERATED_CODE"
+   ]
+  },
+  {
+   "row": "g080",
+   "label": "/content/modelInfo/name null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/name",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g081",
+   "label": "/content/modelInfo/name {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/name",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g082",
+   "label": "/content/modelInfo/name []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/name",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g083",
+   "label": "/content/modelInfo/name \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/name",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g084",
+   "label": "/content/modelInfo/name 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/name",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g085",
+   "label": "/content/modelInfo/name true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/name",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g086",
+   "label": "/content/modelInfo/variant absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/variant",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g087",
+   "label": "/content/modelInfo/variant null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/variant",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g088",
+   "label": "/content/modelInfo/variant {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/variant",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g089",
+   "label": "/content/modelInfo/variant []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/variant",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g090",
+   "label": "/content/modelInfo/variant \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/variant",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g091",
+   "label": "/content/modelInfo/variant 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/variant",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g092",
+   "label": "/content/modelInfo/variant true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/variant",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g093",
+   "label": "/content/modelInfo/branch absent",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g094",
+   "label": "/content/modelInfo/branch null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/branch",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g095",
+   "label": "/content/modelInfo/branch {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/branch",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g096",
+   "label": "/content/modelInfo/branch []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/branch",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g097",
+   "label": "/content/modelInfo/branch \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/branch",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g098",
+   "label": "/content/modelInfo/branch 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/branch",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g099",
+   "label": "/content/modelInfo/branch true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/branch",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g100",
+   "label": "/content/modelInfo/revision absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/revision",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g101",
+   "label": "/content/modelInfo/revision null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/revision",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g102",
+   "label": "/content/modelInfo/revision {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/revision",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g103",
+   "label": "/content/modelInfo/revision []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/revision",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g104",
+   "label": "/content/modelInfo/revision \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/revision",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g105",
+   "label": "/content/modelInfo/revision 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/revision",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g106",
+   "label": "/content/modelInfo/revision true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/revision",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g107",
+   "label": "/content/modelInfo/comment absent",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g108",
+   "label": "/content/modelInfo/comment null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/comment",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g109",
+   "label": "/content/modelInfo/comment {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/comment",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g110",
+   "label": "/content/modelInfo/comment []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/comment",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g111",
+   "label": "/content/modelInfo/comment \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/comment",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g112",
+   "label": "/content/modelInfo/comment 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/comment",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g113",
+   "label": "/content/modelInfo/comment true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/comment",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g114",
+   "label": "/content/modelInfo/joinedModelsInfo absent",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g115",
+   "label": "/content/modelInfo/joinedModelsInfo null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/joinedModelsInfo",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g116",
+   "label": "/content/modelInfo/joinedModelsInfo {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/joinedModelsInfo",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g117",
+   "label": "/content/modelInfo/joinedModelsInfo []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/joinedModelsInfo",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g118",
+   "label": "/content/modelInfo/joinedModelsInfo \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/joinedModelsInfo",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g119",
+   "label": "/content/modelInfo/joinedModelsInfo 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/joinedModelsInfo",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g120",
+   "label": "/content/modelInfo/joinedModelsInfo true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo/joinedModelsInfo",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g121",
+   "label": "/content/modelConfig absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g122",
+   "label": "/content/modelConfig null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g123",
+   "label": "/content/modelConfig {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelConfig/decimalSeparator",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelConfig/fieldRefByShortNameAllowed",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelConfig/timeZone",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g124",
+   "label": "/content/modelConfig []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g125",
+   "label": "/content/modelConfig \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g126",
+   "label": "/content/modelConfig 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g127",
+   "label": "/content/modelConfig true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g128",
+   "label": "/content/modelConfig/supportedCharacters absent",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g129",
+   "label": "/content/modelConfig/supportedCharacters null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g130",
+   "label": "/content/modelConfig/supportedCharacters {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g131",
+   "label": "/content/modelConfig/supportedCharacters []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g132",
+   "label": "/content/modelConfig/supportedCharacters \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g133",
+   "label": "/content/modelConfig/supportedCharacters 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g134",
+   "label": "/content/modelConfig/supportedCharacters true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g135",
+   "label": "/content/modelConfig/decimalSeparator absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/decimalSeparator",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g136",
+   "label": "/content/modelConfig/decimalSeparator null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/decimalSeparator",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g137",
+   "label": "/content/modelConfig/decimalSeparator {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/decimalSeparator",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g138",
+   "label": "/content/modelConfig/decimalSeparator []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/decimalSeparator",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g139",
+   "label": "/content/modelConfig/decimalSeparator \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/decimalSeparator",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g140",
+   "label": "/content/modelConfig/decimalSeparator 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/decimalSeparator",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g141",
+   "label": "/content/modelConfig/decimalSeparator true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/decimalSeparator",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g142",
+   "label": "/content/modelConfig/timeZone absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/timeZone",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g143",
+   "label": "/content/modelConfig/timeZone null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/timeZone",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g144",
+   "label": "/content/modelConfig/timeZone {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/timeZone",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g145",
+   "label": "/content/modelConfig/timeZone []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/timeZone",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g146",
+   "label": "/content/modelConfig/timeZone \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/timeZone",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_INVALID_TIME_ZONE"
+   ]
+  },
+  {
+   "row": "g147",
+   "label": "/content/modelConfig/timeZone 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/timeZone",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_INVALID_TIME_ZONE"
+   ]
+  },
+  {
+   "row": "g148",
+   "label": "/content/modelConfig/timeZone true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/timeZone",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_INVALID_TIME_ZONE"
+   ]
+  },
+  {
+   "row": "g149",
+   "label": "/content/modelConfig/conditionLanguage absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g150",
+   "label": "/content/modelConfig/conditionLanguage null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g151",
+   "label": "/content/modelConfig/conditionLanguage {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage/code",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g152",
+   "label": "/content/modelConfig/conditionLanguage []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g153",
+   "label": "/content/modelConfig/conditionLanguage \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g154",
+   "label": "/content/modelConfig/conditionLanguage 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g155",
+   "label": "/content/modelConfig/conditionLanguage true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g156",
+   "label": "/content/typeDefinitions absent",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g157",
+   "label": "/content/typeDefinitions null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/typeDefinitions",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g158",
+   "label": "/content/typeDefinitions {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/typeDefinitions",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g159",
+   "label": "/content/typeDefinitions []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/typeDefinitions",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g160",
+   "label": "/content/typeDefinitions \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/typeDefinitions",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g161",
+   "label": "/content/typeDefinitions 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/typeDefinitions",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g162",
+   "label": "/content/typeDefinitions true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/typeDefinitions",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g163",
+   "label": "/content/modelRoot absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g164",
+   "label": "/content/modelRoot null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g165",
+   "label": "/content/modelRoot {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g166",
+   "label": "/content/modelRoot []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g167",
+   "label": "/content/modelRoot \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g168",
+   "label": "/content/modelRoot 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g169",
+   "label": "/content/modelRoot true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g170",
+   "label": "/content/modelRoot/rootGroups absent",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g171",
+   "label": "/content/modelRoot/rootGroups null",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g172",
+   "label": "/content/modelRoot/rootGroups {}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g173",
+   "label": "/content/modelRoot/rootGroups []",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "value": []
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g174",
+   "label": "/content/modelRoot/rootGroups \"x\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "value": "x"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g175",
+   "label": "/content/modelRoot/rootGroups 5",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g176",
+   "label": "/content/modelRoot/rootGroups true",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "value": true
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g177",
+   "label": "conditionLanguage \"en_US\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "value": "en_US"
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g178",
+   "label": "conditionLanguage \"de_DE\"",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "value": "de_DE"
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "row": "g179",
+   "label": "conditionLanguage {\"code\":\"de_DE\"}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage/code",
+     {
+      "value": "de_DE"
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "row": "g180",
+   "label": "conditionLanguage {\"code\":\"zz\"}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage/code",
+     {
+      "value": "zz"
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g181",
+   "label": "conditionLanguage {\"code\":\"en_us\"}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage/code",
+     {
+      "value": "en_us"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g182",
+   "label": "conditionLanguage {\"code\":5}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage/code",
+     {
+      "value": 5
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g183",
+   "label": "conditionLanguage {\"code\":\"\"}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage/code",
+     {
+      "value": ""
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g184",
+   "label": "conditionLanguage {\"code\":null}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage/code",
+     {
+      "value": null
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g185",
+   "label": "conditionLanguage {\"code\":{}}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage/code",
+     {
+      "value": {}
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g186",
+   "label": "conditionLanguage {\"x\":\"en_US\"}",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage/code",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelConfig/conditionLanguage/x",
+     {
+      "value": "en_US"
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g187",
+   "label": "conditionLanguage \"de_DE\" german-rule",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "value": "de_DE"
+     }
+    ],
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "value": [
+       {
+        "type": "Group",
+        "id": "/Form",
+        "name": "Form",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Gate",
+           "name": "Gate",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Text",
+           "name": "Text",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {
+              "errorMessage": [
+               {
+                "locale": "en_US",
+                "text": "Uppercase probe."
+               }
+              ],
+              "pattern": "[A-Z]+"
+             }
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Form/R1",
+           "name": "R1",
+           "Rule": {
+            "errorEntityRelPath": "../Gate",
+            "errorCode": "R1",
+            "errorCondition": "FeldAngegeben(Gate)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "Probe observation."
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g188",
+   "label": "conditionLanguage {\"code\":\"de_DE\"} german-rule",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage/code",
+     {
+      "value": "de_DE"
+     }
+    ],
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "value": [
+       {
+        "type": "Group",
+        "id": "/Form",
+        "name": "Form",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Gate",
+           "name": "Gate",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Text",
+           "name": "Text",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {
+              "errorMessage": [
+               {
+                "locale": "en_US",
+                "text": "Uppercase probe."
+               }
+              ],
+              "pattern": "[A-Z]+"
+             }
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Form/R1",
+           "name": "R1",
+           "Rule": {
+            "errorEntityRelPath": "../Gate",
+            "errorCode": "R1",
+            "errorCondition": "FeldAngegeben(Gate)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "Probe observation."
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g189",
+   "label": "conditionLanguage \"en_US\" german-rule",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/conditionLanguage",
+     {
+      "value": "en_US"
+     }
+    ],
+    [
+     "/content/modelRoot/rootGroups",
+     {
+      "value": [
+       {
+        "type": "Group",
+        "id": "/Form",
+        "name": "Form",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Gate",
+           "name": "Gate",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Text",
+           "name": "Text",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {
+              "errorMessage": [
+               {
+                "locale": "en_US",
+                "text": "Uppercase probe."
+               }
+              ],
+              "pattern": "[A-Z]+"
+             }
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Form/R1",
+           "name": "R1",
+           "Rule": {
+            "errorEntityRelPath": "../Gate",
+            "errorCode": "R1",
+            "errorCondition": "FeldAngegeben(Gate)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "Probe observation."
+             }
+            ]
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_UNEXPECTED_TOKEN"
+   ]
+  },
+  {
+   "row": "g190",
+   "label": "supportedCharacters [\"a\"]",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": [
+       "a"
+      ]
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g191",
+   "label": "supportedCharacters [\"a-z\"]",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": [
+       "a-z"
+      ]
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g192",
+   "label": "supportedCharacters [5]",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": [
+       5
+      ]
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g193",
+   "label": "supportedCharacters [{}]",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": [
+       {}
+      ]
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g194",
+   "label": "supportedCharacters [[]]",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": [
+       []
+      ]
+     }
+    ]
+   ],
+   "exit": 2,
+   "outcome": "refused",
+   "diagnostics": [
+    "PRECHECK:RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "row": "g195",
+   "label": "supportedCharacters [null]",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": [
+       null
+      ]
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g196",
+   "label": "supportedCharacters [\"ab\"]",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": [
+       "ab"
+      ]
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g197",
+   "label": "supportedCharacters [\"\"]",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": [
+       ""
+      ]
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g198",
+   "label": "supportedCharacters [true]",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig/supportedCharacters",
+     {
+      "value": [
+       true
+      ]
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g199",
+   "label": "presence sound without modelVersion,modelInfo,modelConfig,modelType",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g200",
+   "label": "presence sound without modelInfo,modelConfig,modelType",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g201",
+   "label": "presence sound without modelVersion,modelConfig,modelType",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g202",
+   "label": "presence sound without modelConfig,modelType",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g203",
+   "label": "presence sound without modelVersion,modelInfo,modelType",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g204",
+   "label": "presence sound without modelInfo,modelType",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g205",
+   "label": "presence sound without modelVersion,modelType",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g206",
+   "label": "presence sound without modelType",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g207",
+   "label": "presence sound without modelVersion,modelInfo,modelConfig",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g208",
+   "label": "presence sound without modelInfo,modelConfig",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g209",
+   "label": "presence sound without modelVersion,modelConfig",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g210",
+   "label": "presence sound without modelConfig",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g211",
+   "label": "presence sound without modelVersion,modelInfo",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g212",
+   "label": "presence sound without modelInfo",
+   "base": "sound",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g213",
+   "label": "presence sound without modelVersion",
+   "base": "sound",
+   "edits": [
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g214",
+   "label": "presence sound without -",
+   "base": "sound",
+   "edits": [],
+   "exit": 0,
+   "outcome": "read",
+   "diagnostics": []
+  },
+  {
+   "row": "g215",
+   "label": "presence broken without modelVersion,modelInfo,modelConfig,modelType",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g216",
+   "label": "presence broken without modelInfo,modelConfig,modelType",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g217",
+   "label": "presence broken without modelVersion,modelConfig,modelType",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g218",
+   "label": "presence broken without modelConfig,modelType",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "row": "g219",
+   "label": "presence broken without modelVersion,modelInfo,modelType",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g220",
+   "label": "presence broken without modelInfo,modelType",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g221",
+   "label": "presence broken without modelVersion,modelType",
+   "base": "broken",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g222",
+   "label": "presence broken without modelType",
+   "base": "broken",
+   "edits": [
+    [
+     "/header/modelType",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "row": "g223",
+   "label": "presence broken without modelVersion,modelInfo,modelConfig",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g224",
+   "label": "presence broken without modelInfo,modelConfig",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g225",
+   "label": "presence broken without modelVersion,modelConfig",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g226",
+   "label": "presence broken without modelConfig",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelConfig",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_INVALID_ENTITY"
+   ]
+  },
+  {
+   "row": "g227",
+   "label": "presence broken without modelVersion,modelInfo",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ],
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g228",
+   "label": "presence broken without modelInfo",
+   "base": "broken",
+   "edits": [
+    [
+     "/content/modelInfo",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g229",
+   "label": "presence broken without modelVersion",
+   "base": "broken",
+   "edits": [
+    [
+     "/header/modelVersion",
+     {
+      "absent": true
+     }
+    ]
+   ],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:codeless"
+   ]
+  },
+  {
+   "row": "g230",
+   "label": "presence broken without -",
+   "base": "broken",
+   "edits": [],
+   "exit": 1,
+   "outcome": "read",
+   "diagnostics": [
+    "KERNEL:MVK_INVALID_ENTITY"
+   ]
+  }
+ ]
+}

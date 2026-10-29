@@ -1,5 +1,6 @@
 import Lean.Data.Json
 import A12Kernel.Elaboration.DeclaredLocale
+import A12Kernel.Reference.Dm.ModelFrame
 
 /-! # How the Kernel's DM-JSON reader binds a localized-text member
 
@@ -165,16 +166,13 @@ def bindLocalizedTextMembers (content : Json) : Except String Unit := do
 /-- The locales a model's header declares, in declaration order: each `locales` entry an object's string
 `code` or a bare text, judged alike (header locale codes checkpoint,
 `docs/sources/model-structure-and-declaration-probes.md#src-header-locale-codes`). A code the parser
-refuses leaves the model unreadable; `declaredLocaleFailure?` judges what the build then refuses. An
-absent or `null` member declares nothing. A `locales` member that is no list, and an entry that is
-neither a text nor an object with a string `code`, are outside the represented profile, since no row
-measures them. -/
+refuses leaves the model unreadable; `declaredLocaleFailure?` judges what the build then refuses. A
+`locales` member that is no list leaves no model, while an absent or `null` one declares nothing here
+and costs the model its check (`bindModelFrame`, peer KF650). An entry that is neither a text nor an
+object with a string `code` is outside the represented profile, since no row measures it. -/
 def headerLocales (json : Json) : Except String (List ParsedLocale) := do
   let header := (json.getObjVal? "header").toOption.getD (Json.mkObj [])
-  let entries ← match header.getObjVal? "locales" with
-    | .error _ | .ok .null => pure []
-    | .ok (.arr entries) => pure entries.toList
-    | .ok other => throw s!"header locales {other.compress} are no list, outside the represented profile"
+  let entries := ((← frameList header "locales").getD #[]).toList
   let codes ← entries.mapM fun entry => match entry with
     | .str code => pure code
     | _ => match entry.getObjVal? "code" with

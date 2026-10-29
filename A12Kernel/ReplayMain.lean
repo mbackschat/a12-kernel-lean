@@ -178,6 +178,7 @@ import A12Kernel.Reference.Dm.FieldMessageTextLocks
 import A12Kernel.Reference.Dm.MemberBindingLocks
 import A12Kernel.Reference.Dm.LocalizedTextBindingLocks
 import A12Kernel.Reference.Dm.HeaderLocaleLocks
+import A12Kernel.Reference.Dm.ModelFrameLocks
 import A12Kernel.Reference.Dm.HybridCalendarLocks
 import A12Kernel.Reference.Dm.RefusalClassLocks
 import A12Kernel.Reference.Dm.FieldOwnedRequirednessLocks

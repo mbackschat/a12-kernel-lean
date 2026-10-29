@@ -911,6 +911,15 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `agrees`: The letter's search of its own record found no statement of the exception, a phrasing search it marks as limited in recall, and confirms `b5aba1ec` and `bbbbf48e` do not resolve there. Its mechanism section offers no hypothesis.
 - `sync`: The entry is terminal in the [ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue). No new entry is created.
 
+<a id="src-inbound-2026-10-29d"></a>
+## Reviewed KF650 account of how a model's frame binds and which shapes cost only the check
+
+- `source`: a12-dmkits finding [KF650](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf650), committed 2026-10-29. It answers no ledger entry and extends [spec/12](../../spec/12-concrete-syntax.md) and [spec/01](../../spec/01-data-model.md).
+- `revision`: a12-dmkits `413880f4b0a57f0a9c464653cd691a65deb42a01`, read with `git` only. Its locks `CheckerModelFrameAgreementTest`, `ModelFrameTest` and `ModelLevelMemberLoadTest` exist there; the first compares the checker against the Kernel gate on every grid row.
+- `review`: A HIGH reconciliation on 2026-10-29. The local [model frame members](model-structure-and-declaration-probes.md#src-model-frame-members) grid reproduces every row `dmtool` admits, and the [check route](model-structure-and-declaration-probes.md#src-model-frame-check-route) probe reproduces all four check-only shapes; the rows the precheck refuses rest on the finding's Kernel-gate rows alone.
+- `differs`: `header` absent or `{}` and `locales` absent or `null` end locally in a Kernel `NullPointerException` rather than a completed check, which the finding's harness folds into the same unbuilt verdict; both leave no class.
+- `sync`: No new ledger entry is created.
+
 <a id="src-inbound-2026-10-29e"></a>
 ## Reviewed October 29c letter reconciling the implicit message's fillToFix and the message cache derivation
 

@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # `RuleGroup` over a group that declares no field, through the reader
 
@@ -21,7 +22,7 @@ private def model (condition : String) : Json :=
     ("errorCondition", Json.str condition)])]
   let hollow := Json.mkObj [("type", "Group"), ("name", "Hollow"), ("Group", Json.mkObj [
     ("repeatability", toJson (1 : Nat)), ("elements", Json.arr #[rule])])]
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [("type", "Group"), ("name", "Shop"),
         ("Group", Json.mkObj [("repeatability", toJson (1 : Nat)), ("elements", Json.arr #[title, hollow])])]])])])]

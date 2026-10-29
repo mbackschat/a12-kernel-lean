@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # The group-capacity grid's partial scope over rows 1 and 2, through the reader
 
@@ -43,7 +44,7 @@ private def rules : List (String × String) := [
   ("CTRL", "FieldFilled(W)")]
 
 private def gcap : Json :=
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[group "Rg" 1 (
         [field "W" "StringType", field "X" "StringType", number "Y", number "F9"] ++

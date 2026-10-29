@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # A reached custom condition on a group target, through the reader
 
@@ -24,7 +25,7 @@ private def group (name : String) (repeatability : Nat) (elements : List Json) :
 private def modelJson : Json :=
   let items := group "Items" 3 [text "ItemNo"]
   let claims := group "Claims" 4 [text "ClaimNo", text "Status", items]
-  Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+  checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
     ("content", Json.mkObj [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
         group "Policy" 1 [text "Holder", group "Contact" 1 [text "Phone"], claims]])])])]

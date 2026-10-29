@@ -352,19 +352,15 @@ check would report as invalid patterns. -/
 def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatternCompiler)
     (variant : Option String := none)
     (charset : LegalCharset := .defaultBmp) : Except String (List (String × String)) := do
-  let content ← json.getObjVal? "content"
+  let frame ← bindModelFrame json
+  let content := frame.content
   bindLocalizedTextMembers content
   let locales ← headerLocales json
-  let language := ((content.getObjVal? "modelConfig").toOption.bind fun config =>
-    (config.getObjVal? "conditionLanguage").toOption.bind fun language =>
-      (language.getObjValAs? String "code").toOption).getD "en_US"
-  let (messageTokens, valueWord) ← languageProfile language
-  let roots ← match content.getObjVal? "modelRoot" with
-    | .error _ | .ok .null => pure []
-    | .ok root => arrayMembers root "rootGroups"
+  let (messageTokens, valueWord) ← languageProfile (frame.conditionLanguage.getD "en_US")
+  let roots := frame.rootGroups.toList
   let environment : WalkEnvironment := {
     variant
-    definitions := (← arrayMembers content "typeDefinitions").map fun definition =>
+    definitions := frame.typeDefinitions.toList.map fun definition =>
       ((definition.getObjValAs? String "id").toOption.getD "", definition)
     compilePattern
     context := {
@@ -373,13 +369,12 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
       charset }
     valueWord
     roots
-    shortNamesAllowed := ← booleanMember? ((content.getObjVal? "modelConfig").toOption.getD (Json.mkObj []))
-      "fieldRefByShortNameAllowed" }
+    shortNamesAllowed := ← booleanMember? frame.config "fieldRefByShortNameAllowed" }
   let walked := (← roots.mapM (judgeElement environment {} [])).flatten
-  -- A failing declared locale or a repeated type-definition id leaves no model, after the walk's read
-  -- errors, since the Kernel reads a model before it builds one (spec/01 §1.2; header locale codes
-  -- checkpoint, peer KF647).
-  if (declaredLocaleFailure? locales).isSome ||
+  -- A check-only frame shape, a failing declared locale or a repeated type-definition id leaves no
+  -- class, after the walk's read errors, since the Kernel reads a model before it builds or checks one
+  -- (spec/01 §1.2; header locale codes checkpoint, peers KF647 and KF650).
+  if frame.checkFailure?.isSome || (declaredLocaleFailure? locales).isSome ||
       (ModelConsistency.repeatedTypeDefinitionId? (environment.definitions.map (·.1))).isSome then
     return [(modelNotBuiltLabel, "")]
   -- The index and sort checks run only after an entity walk that refused nothing (2026-10-21 §2.16).
@@ -453,7 +448,8 @@ private def groupElement (name : String) (repeatability : Nat) (sorts : List Str
 
 /-- A model with one root group `Form`, the short-name reference flag as given. -/
 private def nominationModel (shortNames : Bool) (elements : List String) : Json :=
-  (Json.parse ("{\"header\":{\"locales\":[{\"code\":\"en_US\"}]},\"content\":{\"modelConfig\":" ++
+  (Json.parse ("{\"header\":{\"modelVersion\":\"28.4.0\",\"locales\":[{\"code\":\"en_US\"}]}," ++
+    "\"content\":{\"modelInfo\":{\"name\":\"Form\"},\"modelConfig\":" ++
     "{\"fieldRefByShortNameAllowed\":" ++ (if shortNames then "true" else "false") ++
     "},\"modelRoot\":{\"rootGroups\":[" ++ groupElement "Form" 1 [] elements ++ "]}}}")).toOption.getD .null
 

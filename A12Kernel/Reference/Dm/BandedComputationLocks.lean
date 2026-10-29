@@ -2,6 +2,7 @@ import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.LowerValidation
 import A12Kernel.Elaboration.GeneratedComputationValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 namespace A12Kernel.Dm.BandedComputationLocks
 open A12Kernel
@@ -91,7 +92,7 @@ private def readMetadata (mode band : Option Lean.Json) : Option (String × Opti
     ("Computation", Lean.Json.mkObj (mode.toList.map ("roundingMode", ·) ++ [
       ("computationAlternatives", Lean.Json.arr #[Lean.Json.mkObj
         ([("operation", Lean.Json.str "1")] ++ band.toList.map ("toleranceRangeOp", ·))])]))]
-  let json := Lean.Json.mkObj [("content", Lean.Json.mkObj [("modelRoot", Lean.Json.mkObj [
+  let json := checkedEntryFrame <| Lean.Json.mkObj [("content", Lean.Json.mkObj [("modelRoot", Lean.Json.mkObj [
     ("rootGroups", Lean.Json.arr #[Lean.Json.mkObj [("type", "Group"), ("name", "Form"),
       ("Group", Lean.Json.mkObj [("elements", Lean.Json.arr #[computation])])]])])])]
   let computation ← (← (readModel json).toOption).computations.head?

@@ -3,6 +3,7 @@ import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.GeneratedComputationRule
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # Rule and computation reads of a generated index finding
 
@@ -44,7 +45,7 @@ private def rule (path name entity condition : String) : Json :=
     ("errorCondition", .str condition), ("severity", "ERROR"), ("errorMessage", message)]
 
 private def dm? : Option DmModel :=
-  (readModel (Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     group "" "Hold" 1 none [
       field "/Hold" "HAnchor" text, field "/Hold" "Out" number,
       group "/Hold" "Holder" 1 (some "HKey")
