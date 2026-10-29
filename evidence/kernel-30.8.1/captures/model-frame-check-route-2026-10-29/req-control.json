@@ -1,0 +1,29 @@
+{
+ "model": "control_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "reached-filled",
+   "documentInline": {
+    "Form": {
+     "Gate": "ON",
+     "Out": "99",
+     "Independent": "99",
+     "Text": "ABC",
+     "Tail": "",
+     "Alternative": "99",
+     "Filtered": "99",
+     "Rows": [
+      {
+       "N": "1",
+       "Text": "ABC"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

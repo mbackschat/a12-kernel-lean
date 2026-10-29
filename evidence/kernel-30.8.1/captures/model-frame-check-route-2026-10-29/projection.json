@@ -1,0 +1,62 @@
+{
+ "producer": {
+  "dmtool": "0.13.0",
+  "kernel": "30.8.1",
+  "source": "08b0d6499c98b132257ec961eb214de73fa223e3",
+  "jdk": "OpenJDK 21.0.13",
+  "route": ":adapter:kernelProbe",
+  "date": "2026-10-29"
+ },
+ "base": "empty-pattern-2026-10-10/PatternMatched-control/Pattern_DM.json, row reached-filled, observe validateFull",
+ "rows": [
+  {
+   "variant": "control",
+   "edit": "none",
+   "exit": 0,
+   "outcome": "evaluated: 8 messages on each engine"
+  },
+  {
+   "variant": "noversion",
+   "edit": "header.modelVersion removed",
+   "exit": 1,
+   "exceptions": [
+    "ConsistencyCheckFailedException",
+    "NullPointerException"
+   ],
+   "innermostKernelFrame": "VersionChecker.matchesVersionPattern",
+   "probeGate": "KernelRuntimeProbe.refuseInconsistentModel"
+  },
+  {
+   "variant": "noinfo",
+   "edit": "content.modelInfo removed",
+   "exit": 1,
+   "exceptions": [
+    "ConsistencyCheckFailedException",
+    "NullPointerException"
+   ],
+   "innermostKernelFrame": "DocumentModelInfoWrapper.<init>",
+   "probeGate": "KernelRuntimeProbe.refuseInconsistentModel"
+  },
+  {
+   "variant": "nulllocales",
+   "edit": "header.locales set to null",
+   "exit": 1,
+   "exceptions": [
+    "NullPointerException"
+   ],
+   "innermostKernelFrame": "DocumentModelExpandService$IncludeExpandVisitor.extractSupportedLocalizedTextMap",
+   "probeGate": "KernelRuntimeProbe.refuseInconsistentModel"
+  },
+  {
+   "variant": "nullchar",
+   "edit": "content.modelConfig.supportedCharacters set to [null]",
+   "exit": 1,
+   "exceptions": [
+    "ConsistencyCheckFailedException",
+    "NullPointerException"
+   ],
+   "innermostKernelFrame": "CharsetUtil.isRangeDefinition",
+   "probeGate": "KernelRuntimeProbe.refuseInconsistentModel"
+  }
+ ]
+}

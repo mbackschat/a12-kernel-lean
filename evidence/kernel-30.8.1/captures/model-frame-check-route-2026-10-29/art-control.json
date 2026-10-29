@@ -1,0 +1,250 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.13.0",
+    "kernel" : {
+      "builtAgainst" : "30.8.1",
+      "runtime" : "30.8.1"
+    },
+    "source" : {
+      "revision" : "08b0d6499c98b132257ec961eb214de73fa223e3",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "control_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "reached-filled",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "AlternativeComp",
+              "field" : "Form/Alternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Alternative",
+                "Form/Gate",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FILTER",
+              "field" : "Form/Gate",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/Text",
+                "Form/Gate"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/Text"
+              ]
+            },
+            {
+              "code" : "FilteredComp",
+              "field" : "Form/Filtered",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/Text",
+                "Form/Filtered",
+                "Form/Gate"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/Text",
+                "Form/Filtered"
+              ]
+            },
+            {
+              "code" : "IndependentComp",
+              "field" : "Form/Independent",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Independent"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Gate",
+                "Form/Out",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PATTERN",
+              "field" : "Form/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Gate",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PATTERN_GATE",
+              "field" : "Form/Gate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Gate",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TRUE_OR_PATTERN",
+              "field" : "Form/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Gate",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "AlternativeComp",
+              "field" : "Form/Alternative",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Alternative",
+                "Form/Gate",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "FILTER",
+              "field" : "Form/Gate",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/Text",
+                "Form/Gate"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/Text"
+              ]
+            },
+            {
+              "code" : "FilteredComp",
+              "field" : "Form/Filtered",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/Text",
+                "Form/Filtered",
+                "Form/Gate"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Rows[0]/N",
+                "/Form[1]/Rows[0]/Text",
+                "Form/Filtered"
+              ]
+            },
+            {
+              "code" : "IndependentComp",
+              "field" : "Form/Independent",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Independent"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "OutComp",
+              "field" : "Form/Out",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Gate",
+                "Form/Out",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PATTERN",
+              "field" : "Form/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Gate",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PATTERN_GATE",
+              "field" : "Form/Gate",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Gate",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "TRUE_OR_PATTERN",
+              "field" : "Form/Text",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "Probe observation.",
+              "referenced" : [
+                "Form/Gate",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
