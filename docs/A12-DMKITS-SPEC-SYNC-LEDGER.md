@@ -206,11 +206,11 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `disposition`: Reconciled on the checked route, with a divergence of the peer's recorded: its interpreter evaluates all four shapes, an open decision on its side. Its runtime measured with no check in front evaluates only the model lacking its version and throws before any rule on the other three, which spec/01 now states as inbound provenance. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-30).
 
 <a id="spec-2026-10-30-01"></a>
-### SPEC-2026-10-30-01 — An unsupported condition-language code leaves no model and draws no class
+### SPEC-2026-10-30-01 — An unsupported condition-language code is refused with no class
 
 - `status`: pending
 - `canonical`: [concrete syntax §12](../spec/12-concrete-syntax.md), the bullet on a model's `conditionLanguage`.
-- `delta`: Replaces the statement that a model declaring a code other than `en_US` or `de_DE` is refused by a class no chapter states with its refusal drawing no class.
+- `delta`: Replaces the statement that a model declaring a code other than `en_US` or `de_DE` is refused by a class no chapter states with its refusal drawing no class for the two measured codes, the class of every other code left unmeasured. Whether the refusal leaves no model or builds and fails the check is not separated by the capture.
 - `basis`: the retained [model frame members](sources/model-structure-and-declaration-probes.md#src-model-frame-members) capture, Kernel 30.8.1, measured locally 2026-10-29: `{"code":"zz"}` and `{"code":""}` each draw one codeless error and no class, while `de_DE` and `en_US` parse their own rules. The other unsupported spellings of that grid stop at `dmtool`'s precheck and measure nothing of the Kernel.
 - `acceptance`: Reconcile the refusal's class in a12-dmkits' own record. Codes other than the two measured are unmeasured, so do not claim them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

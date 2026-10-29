@@ -78,9 +78,11 @@ def frameObject (parent : Json) (key : String) : Except String (Option Json) :=
   | .ok _ => throw s!"model member {key} is no object"
 
 /-- A condition language is a text, or an object whose `code` binds as a text member does; `null`, another
-scalar, an array, and an object whose `code` is absent, `null` or a container leave no model. A `code`
-written as a number binds as its text here, which no row measures. A bound code other than "en_US" and
-"de_DE" leaves no model too, measured for "zz" and the empty code (model frame members checkpoint). -/
+scalar, an array, and an object whose `code` is absent, `null` or a container leave no model. A bound
+code other than "en_US" and "de_DE" is a read failure here too, so it answers ahead of a check-only frame
+shape. The Kernel answers "zz" and the empty code with a codeless error and no class (model frame
+members checkpoint), which the capture does not separate from a check-only failure, so that placement and
+its precedence are this reader's choice. -/
 private def conditionLanguageCode (config : Json) : Except String (Option String) :=
   match config.getObjVal? "conditionLanguage" with
   | .error _ => pure none
