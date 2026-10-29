@@ -124,24 +124,4 @@ example :
       typeOf 9 3 (starCount 3) = .fired .omission := by
   native_decide
 
-/-! ## `fillToFix` -/
-
-private def referenced : List MessagePointer :=
-  [{ field := 0, coordinates := [] }, { field := 1, coordinates := [] }]
-
-/- The projection is the whole referenced set or nothing. **The trap:** in the witness document
-   every referenced cell is filled, and the mixed target's OMISSION still lists them all — so a
-   listed pointer is not a claim that this cell is empty. The two counts differ in that same
-   document only through the target's own headroom. -/
-example :
-    selfValidationFillToFix referenced (typeOf 9 3 (mixedCount true 2)) = referenced ∧
-      selfValidationFillToFix referenced (typeOf 9 2 (fixedPair true true)) = [] := by
-  native_decide
-
-/- No message carries a proper subset, and the no-message case carries none either. -/
-example :
-    selfValidationFillToFix referenced (typeOf 2 2 (starCount 2)) = [] ∧
-      selfValidationFillToFix referenced (typeOf 99 0 (starSum 5 false)) = referenced := by
-  native_decide
-
 end A12Kernel.Conformance.ComputationSelfValidation

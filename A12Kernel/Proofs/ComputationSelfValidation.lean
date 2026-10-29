@@ -129,19 +129,6 @@ theorem computedNumberSelfValidationIfDecided_unknown_iff
         simp only [fires, if_pos]
         split <;> simp
 
-/-- `fillToFix` is never a proper subset of the referenced set.
-
-    It carries all of it or none of it, so a consumer reading a listed pointer as "this cell is
-    empty" is reading a decision that was made once for the whole message. -/
-theorem selfValidationFillToFix_all_or_nothing
-    (referenced : List MessagePointer) (verdict : Verdict) :
-    selfValidationFillToFix referenced verdict = referenced ∨
-      selfValidationFillToFix referenced verdict = [] := by
-  cases verdict with
-  | fired polarity => cases polarity <;> simp [selfValidationFillToFix]
-  | notFired => exact Or.inr rfl
-  | unknown => exact Or.inr rfl
-
 /-! ## The producer -/
 
 /-- A fixed operand can grow exactly when it currently contributes nothing.

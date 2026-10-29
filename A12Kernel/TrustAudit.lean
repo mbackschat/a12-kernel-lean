@@ -980,7 +980,6 @@ run_cmd do
 #print axioms A12Kernel.computedNumberSelfValidation_below_omission_iff
 #print axioms A12Kernel.computedNumberSelfValidation_above_value
 #print axioms A12Kernel.starredChannels_separate_at_capacity
-#print axioms A12Kernel.selfValidationFillToFix_all_or_nothing
 #print axioms A12Kernel.starredGroupCount_canGrow_eq_declared_extent_movement
 #print axioms A12Kernel.computedNumberSelfValidationIfDecided_unknown_iff
 #print axioms A12Kernel.fixedGroup_canGrow_iff_contributes_zero

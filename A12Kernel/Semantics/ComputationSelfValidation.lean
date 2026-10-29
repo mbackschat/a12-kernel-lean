@@ -4,8 +4,9 @@ import A12Kernel.Semantics.NumericComparison
 /-! # A computed Number target's implicit self-validation message
 
 A computed target that disagrees with its stored cell carries a formal message of its own, with no
-authored condition behind it. This module derives that message's **type** and its `fillToFix`
-projection; it constructs no text, no pointer, and no referenced set.
+authored condition behind it. This module derives that message's **type**; it constructs no text, no
+pointer, no referenced set and no `fillToFix`, which the generated rule's ordinary omission projection
+supplies (spec/09 §6).
 
 The type is not a new rule. The fired condition is the computed value differing from the stored
 one, and `NumericComparisonOp.notEqual` already types exactly that firing from directional
@@ -91,19 +92,5 @@ def computedNumberSelfValidation (stored computed : Rat)
 def computedNumberSelfValidationIfDecided (decided : Bool) (stored computed : Rat)
     (operands : List ComputationOperandGrowth) : Verdict :=
   if decided then computedNumberSelfValidation stored computed operands else .unknown
-
-/-- The message's `fillToFix` projection.
-
-    **It is one decision spelled as a list, not a per-cell analysis.** An OMISSION message carries
-    its whole referenced set — including cells that are already filled, whenever some *other*
-    channel is open — and a VALUE message carries none. Across every retained observation the set
-    is exactly `referenced` or exactly empty, never a proper subset, so a consumer must not read a
-    listed pointer as a claim that this cell is empty. -/
-def selfValidationFillToFix (referenced : List MessagePointer) :
-    Verdict → List MessagePointer
-  | .fired .omission => referenced
-  | .fired .value => []
-  | .notFired => []
-  | .unknown => []
 
 end A12Kernel
