@@ -224,7 +224,7 @@ The request adopts this sequencing and the two consumer objectives. It does not 
 <a id="u02-plan"></a>
 ### U02 plan
 
-- `state`: packet v5 is cut and waits for the owner to start the worker session cold on it; nothing has run, and v4 is superseded unrun.
+- `state`: running on packet v5 since 2026-10-29 in `../a12-rust-interpreter-u02`, whose first commit is `8cb07d6`; v4 is superseded unrun.
 - `decisions`: U01's settled decisions carry over unchanged: the profile, MIT licensing, the three approved crates, the isolation boundary, the report transport and the never-wait rules. The worker starts in an empty sibling repository, recommended as `../a12-rust-interpreter-u02`, so that U01's code stays the comparator and nothing is carried over.
 - `kit-changes`: the kit classifies each channel on its own and reports per-channel totals, because U01's whole-row classes hid `messages` divergences behind a refused `partialMessages` channel. The packet ships spec/14 and `docs/sources/`, so the chapters' provenance links resolve inside it.
 - `milestones`: M1–M4 as the kit states, from scratch. The M5 mutation set is designed against the rewritten spec after M4 and arrives as a separate instruction.
