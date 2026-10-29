@@ -196,9 +196,11 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-29-06"></a>
 ### SPEC-2026-10-29-06 — A model written with a check-only frame shape is not evaluated on the runtime route, so an evaluator refuses it
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/01 §1.1](../spec/01-data-model.md#member-binding), the frame-binding paragraph's evaluation bullet.
 - `delta`: Adds that a model lacking `header.modelVersion` or `content.modelInfo`, with `header.locales` absent or `null`, or with a `null` supported character, which builds and fails its consistency check without a class, is not evaluated on the measured runtime route, because that route checks a model before evaluating it; an evaluator refuses such a model rather than evaluating the built one. The spec states the Kernel's validation entry points as unmeasured.
 - `basis`: the retained [model frame check route](sources/model-structure-and-declaration-probes.md#src-model-frame-check-route) capture, Kernel 30.8.1, measured locally 2026-10-29: each of the four shapes exits before any engine evaluates, at the probe's consistency gate, while the unchanged control evaluates. The frame table itself is a12-dmkits' KF650, adopted as [inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-29d).
 - `acceptance`: Reconcile how the a12-dmkits interpreter treats those four shapes. Whether the Kernel's validation entry points evaluate such a model when called without the check is unobservable on the retained route, so do not claim it.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `7b6623d6898ea5e4fb8830eec8414510d96a367d`.
+- `disposition`: Reconciled on the checked route, with a divergence of the peer's recorded: its interpreter evaluates all four shapes, an open decision on its side. Its runtime measured with no check in front evaluates only the model lacking its version and throws before any rule on the other three, which spec/01 now states as inbound provenance. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-30).
