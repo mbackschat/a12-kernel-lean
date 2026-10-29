@@ -604,3 +604,18 @@ The task, profile, comparison contract and milestones are the [evaluator kit](..
 - `result`: all 4148 rows classified and none evaluated yet, as M1 requires; 4094 rows read, the 54 refusals all outside the profile (32 `CustomFieldType`, 22 patterns), no in-profile row refused.
 - `questions-and-guesses`: Q-001, `modelConfig.decimalSeparator`, which no chapter names, read as display-only for `.` with any other value refused. Q-002, whether an unbracketed part of the partially-known pointer spelling carries coordinate 1, read as yes in the harness only. Both stay open for the batched triage; neither is a packet file the worker lacked, unlike U01's Q-001 and Q-003 at M1.
 - `kit-lessons`: the session ended its turn after the M1 report, offering to resume in a new session or continue, because the never-wait rules cover open questions but not a milestone boundary; the kit's resumption prompt restarted it. The next packet's kit says to continue with `PLAN.md`'s next action after a milestone report.
+
+<a id="run-u02-m2"></a>
+### U02 M2 — full validation
+
+- `task`: [U01 evaluator](#task-u01-evaluator), rerun cold as U02, milestone M2
+- `status`: green
+- `started-at`: 2026-10-29T20:20:42+01:00, after the M1 qualification commit `5c1da8f`
+- `finished-at`: 2026-10-29T23:28:34+01:00, qualification commit `73a88ac`
+- `semantic-basis`: packet v5, cut from `db49b29332775a5d716e72381b428a5affea1ce9`
+- `oracle`: HIGH recomputed the four raw-output digests and the row and channel class counts from the committed reports at `73a88ac`, read the questions log, and scanned the evaluator crate for file or environment access and capture names outside comments, finding none.
+- `consumer-access`: the packet and its own repository; the packet v6 notice was sent after the last M2 slice, nothing else received or sent during M2.
+- `cost`: about 3 h 8 min in slices M2.0 to M2.38 and 82 commits; 10304 nonblank Rust lines with 126 tests; dependencies unchanged; token usage unavailable.
+- `result`: of the 4023 in-profile `messages` channels, 3579 match, none diverge and 444 are refused with a named construct; 1113 of the 4148 rows match whole, while 3013 keep at least one unsupported channel and 22 are excluded. The largest refusal is the 126 message pointers selected by a duplicated key, Q-005's gap.
+- `questions-and-guesses`: none beyond Q-001 to Q-005, all answered by packet v6.
+- `exclusions`: computation and partial validation wait for M3 and M4.
