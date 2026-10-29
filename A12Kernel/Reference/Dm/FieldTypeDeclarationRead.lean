@@ -64,7 +64,7 @@ private def readString (body : Json) : Except String StringTypeDeclaration := do
     lineBreaksPermitted := ← booleanMember? body "lineBreaksPermitted"
     pattern := ← optionalString body "pattern"
     hintList := ← (← arrayMembers body "hintList").mapM fun entry => do
-      pure { locale := localeKey (← entry.getObjValAs? String "locale")
+      pure { locale := ← localeKey (← entry.getObjValAs? String "locale")
              values := ← (← arrayMembers entry "values").mapM Json.getStr? }
     messages := ← readMessages body }
 
@@ -375,12 +375,13 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
     roots
     shortNamesAllowed := ← booleanMember? ((content.getObjVal? "modelConfig").toOption.getD (Json.mkObj []))
       "fieldRefByShortNameAllowed" }
-  -- A failing declared locale or a repeated type-definition id leaves no model before any element is
-  -- judged (header locale codes checkpoint, peer KF647).
+  let walked := (← roots.mapM (judgeElement environment {} [])).flatten
+  -- A failing declared locale or a repeated type-definition id leaves no model, after the walk's read
+  -- errors, since the Kernel reads a model before it builds one (spec/01 §1.2; header locale codes
+  -- checkpoint, peer KF647).
   if (declaredLocaleFailure? locales).isSome ||
       (ModelConsistency.repeatedTypeDefinitionId? (environment.definitions.map (·.1))).isSome then
     return [(modelNotBuiltLabel, "")]
-  let walked := (← roots.mapM (judgeElement environment {} [])).flatten
   -- The index and sort checks run only after an entity walk that refused nothing (2026-10-21 §2.16).
   let walkRefused := walked.any fun report => report.walkRefused || report.labels.any fun label =>
     [ElementNameKind.pathInvalid, .pathsInconsistent, .maxValuesInvalid].any (·.label == label)

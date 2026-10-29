@@ -337,11 +337,15 @@ private def specRule (spec : Json) : DmRule :=
   ruleAt (segments ((spec.getObjValAs? String "field").toOption.getD "")) (spec.getObjValAs? String "group").toOption
     ((spec.getObjValAs? String "code").toOption.getD "") ((spec.getObjValAs? String "condition").toOption.getD "")
 
+/-- A written message locale keyed as the declared locales are; the corpus writes only spellings inside
+the represented profile. -/
+private def writtenLocale (spelling : String) : String := (localeKey spelling).toOption.getD spelling
+
 /-- The written texts, and for each declared locale the request leaves out the instrument's own
 parameter-free placeholder, which it supplies rather than leave the locale without a text. -/
 private def messageEntries (locales : List String) (args : List String) : List (String × String) :=
   let written := (argsOf args "--message").map fun entry => match entry.splitOn "=" with
-    | locale :: text => (locale, String.intercalate "=" text)
+    | locale :: text => (writtenLocale locale, String.intercalate "=" text)
     | [] => ("", "")
   (locales.filter (fun locale => !written.any (·.1 == locale))).map (·, "placeholder") ++ written
 
@@ -385,7 +389,7 @@ private def requestedComputation (spec : Json) : DmComputation :=
 /-- A computation spec's written texts, with the instrument's placeholder for each omitted locale. -/
 private def specEntries (locales : List String) (spec : Json) : List (String × String) :=
   let written := ((spec.getObjValAs? (Array Json) "messages").toOption.getD #[]).toList.map fun entry =>
-    ((entry.getObjValAs? String "locale").toOption.getD "", (entry.getObjValAs? String "text").toOption.getD "")
+    (writtenLocale ((entry.getObjValAs? String "locale").toOption.getD ""), (entry.getObjValAs? String "text").toOption.getD "")
   (locales.filter (fun locale => !written.any (·.1 == locale))).map (·, "placeholder") ++ written
 
 /-- How one refusal meets the Kernel's verdict and codes, `none` when they agree. -/

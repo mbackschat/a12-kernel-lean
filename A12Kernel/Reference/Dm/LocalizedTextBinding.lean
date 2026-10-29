@@ -84,17 +84,13 @@ def parseLocale? (spelling : String) : Except String (Option ParsedLocale) := do
                   built head middle variant
                 else return none
 
-/-- Whether the Kernel's locale parser takes `spelling`, as `parseLocale?` decides it. -/
-def localeSpellingParses (spelling : String) : Except String Bool := do
-  return (← parseLocale? spelling).isSome
-
-/-- A locale spelling keyed by its parsed form, or kept as written where the parser refuses it or the
-spelling is outside the represented profile. For a carrier whose refused spelling is unmeasured, such as
-a hint list's locale. -/
-def localeKey (spelling : String) : String :=
-  match parseLocale? spelling with
-  | .ok (some locale) => locale.key
-  | _ => spelling
+/-- A locale spelling keyed by its parsed form, or kept as written where the parser refuses it, for a
+carrier whose refused spelling is unmeasured, such as a hint list's locale. A spelling outside the
+represented profile stays an error. -/
+def localeKey (spelling : String) : Except String String := do
+  return match ← parseLocale? spelling with
+    | some locale => locale.key
+    | none => spelling
 
 private def localizedTextEntry (entry : Json) : Except String (String × String) := do
   let .ok (.str locale) := entry.getObjVal? "locale"
@@ -170,16 +166,20 @@ def bindLocalizedTextMembers (content : Json) : Except String Unit := do
 `code` or a bare text, judged alike (header locale codes checkpoint,
 `docs/sources/model-structure-and-declaration-probes.md#src-header-locale-codes`). A code the parser
 refuses leaves the model unreadable; `declaredLocaleFailure?` judges what the build then refuses. An
-object without a string `code`, an entry of another kind, and a `locales` member that is no list are
-skipped, which no row measures. -/
+absent or `null` member declares nothing. A `locales` member that is no list, and an entry that is
+neither a text nor an object with a string `code`, are outside the represented profile, since no row
+measures them. -/
 def headerLocales (json : Json) : Except String (List ParsedLocale) := do
   let header := (json.getObjVal? "header").toOption.getD (Json.mkObj [])
-  let entries := match header.getObjVal? "locales" with
-    | .ok (.arr entries) => entries.toList
-    | _ => []
-  let codes := entries.filterMap fun entry => match entry with
-    | .str code => some code
-    | _ => (entry.getObjValAs? String "code").toOption
+  let entries ← match header.getObjVal? "locales" with
+    | .error _ | .ok .null => pure []
+    | .ok (.arr entries) => pure entries.toList
+    | .ok other => throw s!"header locales {other.compress} are no list, outside the represented profile"
+  let codes ← entries.mapM fun entry => match entry with
+    | .str code => pure code
+    | _ => match entry.getObjVal? "code" with
+      | .ok (.str code) => pure code
+      | _ => throw s!"header locale {entry.compress} carries no string code, outside the represented profile"
   codes.mapM fun code => do
     let some locale ← parseLocale? code | throw s!"header locale {code} does not parse"
     pure locale

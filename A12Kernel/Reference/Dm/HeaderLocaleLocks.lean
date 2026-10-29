@@ -8,8 +8,8 @@ import A12Kernel.Elaboration.DeclarationReport
 Each expectation is a Kernel row of the
 [header locale codes](../../../docs/sources/model-structure-and-declaration-probes.md#src-header-locale-codes)
 probe (`dmtool model check`, Kernel 30.8.1, 2026-10-29), declared beside "en_US" as the probe declares
-it, or of peer KF290's message rows. The probe's `MVK_SUPP_LANGUAGES_DUPLICATE` rows are not locked: that
-model-level class is not produced, so those models read as built. -/
+it, or of peer KF290's message rows. The probe's `MVK_SUPP_LANGUAGES_DUPLICATE` rows are a deliberate
+non-law: that model-level class is not produced, so those models read as built. -/
 
 namespace A12Kernel.Dm.HeaderLocaleLocks
 
@@ -20,8 +20,8 @@ private def model (locales : Json) (elements : List Json := []) : Json :=
     ("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [("type", "Group"),
       ("id", "/P"), ("name", "P"), ("Group", Json.mkObj [("elements", Json.arr elements.toArray)])]])])])]
 
-private def declaring (codes : List String) : Json :=
-  model (Json.arr (("en_US" :: codes).map fun code => Json.mkObj [("code", Json.str code)]).toArray)
+private def declaring (codes : List String) (elements : List Json := []) : Json :=
+  model (Json.arr (("en_US" :: codes).map fun code => Json.mkObj [("code", Json.str code)]).toArray) elements
 
 private def bare (codes : List String) : Json := model (Json.arr (codes.map Json.str).toArray)
 
@@ -53,7 +53,8 @@ private def verdict (json : Json) : Option Verdict :=
   if consistency == declaration && modelAgrees then some consistency else none
 
 /-- A tag-refused code, a private-use tail and a case variant build, as do `iw` beside `de` and a bare
-text the dmtool index never parses (rows `s00`–`s13`, `s20`–`s27`, `s42`, `s49`, `p05`, `p08`, `t03`). -/
+text the dmtool index never parses (rows `s00`, `s13`, `s10`, `s20`, `s21`, `s26`, `s49`, `s42`, `p05`, `p08`,
+`t03`). -/
 example :
     [["de"], ["und"], ["DE_419"], ["de__1996"], ["de_CH_x"], ["1_419"], ["de_CH_x_abc"], ["en_US_POSIX_x"],
       ["iw", "de"], ["de_CH_POSIX", "de_CH_posix"]].all (fun codes => verdict (declaring codes) == some .builds) ∧
@@ -80,6 +81,22 @@ example :
     [["US"], ["CH"], ["ée"], ["ja_JP_JP"]].all (fun codes => verdict (declaring codes) == some .outsideProfile) := by
   native_decide
 
+/-- The non-law: two distinct locales sharing one JDK language tag read as built, where the Kernel draws
+`MVK_SUPP_LANGUAGES_DUPLICATE` (rows `s36`, `g02`). -/
+example :
+    verdict (declaring ["en_US_abcdefghi"]) = some .builds ∧
+    verdict (declaring ["de_CH", "de_CH_abcdefghi"]) = some .builds := by
+  native_decide
+
+/-- A `locales` member that is no list and an entry with no string code are outside the represented
+profile, beside an absent member, which declares nothing. -/
+example :
+    verdict (model (Json.str "en_US")) = some .outsideProfile ∧
+    verdict (model (Json.arr #[Json.mkObj [("code", toJson (5 : Nat))]])) = some .outsideProfile ∧
+    verdict (model (Json.arr #[Json.mkObj []])) = some .outsideProfile ∧
+    verdict (model Json.null) = some .builds := by
+  native_decide
+
 /-- A rule's message answers the declared locale its parsed locale equals: "en_US" answers a declared
 `en-US` and the reverse, while it does not answer a declared `en` (peer KF290 and KF158). -/
 example :
@@ -96,12 +113,27 @@ private def hintField (locales : List String) : Json :=
       Json.mkObj [("locale", Json.str locale), ("values", Json.arr #["a"])]).toArray)])])])]
 
 /-- Two hint-list entries for one locale fail the build, "en_US" beside `en-US` included (spec/01 §1.2),
-while entries for two locales do not. -/
+while entries for two locales do not; a hint-list locale outside the represented profile is an error. -/
 example :
-    let labels (locales : List String) :=
-      ((fieldTypeDeclarationNotifications (model (Json.arr #[Json.mkObj [("code", "en_US")]]) [hintField locales])
-        fun _ => .compiled fun _ => true).toOption.getD []).map (·.1)
-    labels ["en_US", "en-US"] = [modelNotBuiltLabel] ∧ !(labels ["en_US", "de_DE"]).contains modelNotBuiltLabel := by
+    let read (locales : List String) :=
+      fieldTypeDeclarationNotifications (declaring [] [hintField locales]) fun _ => .compiled fun _ => true
+    let labels (locales : List String) := ((read locales).toOption.getD []).map (·.1)
+    labels ["en_US", "en-US"] = [modelNotBuiltLabel] ∧ !(labels ["en_US", "de_DE"]).contains modelNotBuiltLabel ∧
+    (read ["US", "_US"]).isOk = false := by
+  native_decide
+
+private def unreadableField : Json :=
+  Json.mkObj [("type", "Field"), ("id", "/P/S"), ("name", "S"), ("Field", Json.mkObj [("fieldType", Json.mkObj [
+    ("type", "StringType"), ("StringType", Json.mkObj [("minLength", "x")])])])]
+
+/-- A read error answers ahead of a declared locale's build failure, the Kernel reading a model before it
+builds one (spec/01 §1.2): the declaration reader refuses a repeated declared locale beside an unreadable
+member as it refuses the member alone, while the repeat alone is an unbuilt model. -/
+example :
+    let read (codes : List String) (elements : List Json) :=
+      fieldTypeDeclarationNotifications (declaring codes elements) fun _ => .compiled fun _ => true
+    (read ["en_US"] [unreadableField]).isOk = false ∧ (read [] [unreadableField]).isOk = false ∧
+    ((read ["en_US"] []).toOption.getD []).map (·.1) = [modelNotBuiltLabel] := by
   native_decide
 
 end A12Kernel.Dm.HeaderLocaleLocks

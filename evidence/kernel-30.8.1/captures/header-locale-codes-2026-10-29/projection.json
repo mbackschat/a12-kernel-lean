@@ -1,5 +1,5 @@
 {
- "producer": "a12-dmkits 08b0d6499c98b132257ec961eb214de73fa223e3, dmtool 0.13.0, Kernel 30.8.1, dmtool model check -m under OpenJDK 21.0.13, 2026-10-29; rows b1, b2, f*, g* and t* run the same day after review; rows k* run the same day to separate the language-tag identity",
+ "producer": "a12-dmkits 08b0d6499c98b132257ec961eb214de73fa223e3, dmtool 0.13.0, Kernel 30.8.1, dmtool model check -m under OpenJDK 21.0.13, 2026-10-29; rows b1, b2, f*, g* and t* run the same day after review; rows k* run the same day to separate the language-tag identity; rows m* run the same day after the second review",
  "base": "evidence/kernel-30.8.1/captures/model-consistency-2026-10-13/Wh_DM.json with header.locales replaced: rows with `declared` by objects carrying en_US and each listed code, rows with `locales` by that list as written",
  "layer": "a thrown exception is classified by its stack: frames under ModelIndex.of follow BoundModel.ofJson's completed Kernel gate ModelLoader.loadAndCheck; no Kernel sentence is retained",
  "rows": [
@@ -503,13 +503,11 @@
    "locales": [
     "en_US"
    ],
-   "shape": "bare texts",
    "verdict": "valid"
   },
   {
    "id": "b3",
    "locales": [],
-   "shape": "empty list",
    "verdict": "invalid: MVK_SUPP_LANGUAGES_MISSING"
   },
   {
@@ -1010,6 +1008,42 @@
     }
    ],
    "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "m00",
+   "locales": [
+    {
+     "code": "und__abcd"
+    },
+    {
+     "code": "ée__abcd"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "m01",
+   "locales": [
+    {
+     "code": "1__abcd"
+    },
+    {
+     "code": "ée__abcd"
+    }
+   ],
+   "verdict": "unreadable (RK_MODEL_INPUT_INVALID)"
+  },
+  {
+   "id": "m02",
+   "locales": [
+    {
+     "code": "und_419"
+    },
+    {
+     "code": "1_419_abcd"
+    }
+   ],
+   "verdict": "unreadable (RK_MODEL_INPUT_INVALID)"
   }
  ]
 }

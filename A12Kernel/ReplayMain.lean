@@ -557,7 +557,9 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
   let registry ← match declaredConditions model.flat request with
     | .ok registry => pure registry
     | .error reason => do line "-" "-" "-" "tier2" s!"Request\tcustomConditions: {reason}"; return
-  let locale := (request.getObjValAs? String "locale").toOption.getD "en_US"
+  let locale ← match Dm.localeKey ((request.getObjValAs? String "locale").toOption.getD "en_US") with
+    | .ok locale => pure locale
+    | .error reason => do line "-" "-" "-" "tier2" s!"Request\tlocale: {reason}"; return
   let clock? := (request.getObjValAs? String "clock").toOption.bind clockMillis?
   let world : World := { now := { epochMillis := clock?.getD 0 }, modelZoneRules := ModelZone.concreteRules }
   let artifactFile := artifactPath requestPath

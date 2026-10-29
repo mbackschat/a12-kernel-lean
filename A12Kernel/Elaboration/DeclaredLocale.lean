@@ -39,7 +39,7 @@ inductive DeclaredLocaleFailure where
   deriving Repr, DecidableEq
 
 /-- The first declared locale, in declaration order, that fails the build: one with an empty language, or
-one an earlier code already declared. Which of two failing codes is named is not observable, since both
+one an earlier code already declared. Which of two failing codes the Kernel names is unmeasured; both
 leave no model and no class. -/
 def declaredLocaleFailure? (locales : List ParsedLocale) : Option DeclaredLocaleFailure :=
   go locales []
