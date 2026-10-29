@@ -148,9 +148,11 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-29-02"></a>
 ### SPEC-2026-10-29-02 — A header locale code needs no well-formed language tag; an empty language and a repeated locale fail the build
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/01 §1.1](../spec/01-data-model.md#member-binding), the header locale code paragraph and its six bullets, and the two header rows of [spec/01 §1.2](../spec/01-data-model.md#defects-that-leave-no-model)'s no-model table.
 - `delta`: Corrects the header part `SPEC-2026-10-29-01`'s disposition took from KF649, its demand of a well-formed language tag: beside `fr_CH` the Kernel admits all 21 tag-refused codes of the October 29a letter, beside `en_US` the 20 other than `en_US_abcdefghi`, which it admits beside `de_DE` too, and the refusal those rows record is thrown by dmtool's own model index after the Kernel's gate has passed. An empty language and two codes naming one locale fail the build, two distinct locales with one JDK language tag draw `MVK_SUPP_LANGUAGES_DUPLICATE`, as `und` beside `ée` and `en_US` beside `en_US_abcdefghi` do where `en_US` beside `en_US_abcd` does not, and a bare-text `locales` entry is judged as an object entry is.
 - `basis`: the [header locale codes](sources/model-structure-and-declaration-probes.md#src-header-locale-codes) probe, 109 `model check` runs measured locally 2026-10-29, Kernel 30.8.1, at the measurement pin `08b0d6499`, each thrown exception classified by its stack.
 - `acceptance`: Reconcile every row of the projection through a route whose Kernel verdict no tool reader after the gate can replace. The rule stating `MVK_SUPP_LANGUAGES_DUPLICATE`, the order of two such tags and the locales the JDK tags specially are unmeasured, so do not claim them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `22c198c3a4186486446acbeea0eade6c7fdb3c07`.
+- `disposition`: Reconciled through the Kernel gate alone, with no dmtool reader after it: the letter reports all 109 projection rows unchanged, and its committed lock's 38 header rows and duplicate-tag row agree with the retained projection. The header half of the October 29a letter is withdrawn, and the peer's checker stays silent on `MVK_SUPP_LANGUAGES_DUPLICATE` (DG163). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-29b).
