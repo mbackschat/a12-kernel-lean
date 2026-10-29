@@ -160,7 +160,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-29-03"></a>
 ### SPEC-2026-10-29-03 — A non-repeatable group context beneath a starred group's star carries 1, not the wildcard
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/01 §3.1](../spec/01-data-model.md#address-coordinates), the paragraph on one rule deciding a level's coordinate.
 - `delta`: Removes the exception, adopted 2026-08-04 from a12-dmkits `b5aba1ec`, that beneath a starred group's star every reopened group-context part is wildcarded including a non-repeatable descendant group context. Over a repeatable `Left` holding the fixed group `Seal`, `NoGroupFilled(Left*/Seal)` and `NoGroupFilled(Left*, Left*)` reference `/Form[1]/Left[0]/Seal[1]/M`, so such a part follows the general rule and carries `1`; measured on both presence predicates one fixed level beneath the star, deeper nesting and other operators unmeasured.
 - `basis`: the retained [mixed group predicates](sources/group-count-topology.md#src-mixed-group-predicates) capture, Kernel 30.8.1, measured locally 2026-10-10 and read for this coordinate 2026-10-29, with no `Seal[0]` among its pointers; the Lean replay agrees on all 2,178 of its reference comparisons. The disagreement was found as question Q-003 of the U02 cold evaluator, in `reports/QUESTIONS.md` of `../a12-rust-interpreter-u02` at its commit `0cb1469`. a12-dmkits' `GroupStarValueAggregateDiffTest` at `f73341971` expands a starred group over `Extras`, a repeatable descendant, which does not separate the non-repeatable case.
