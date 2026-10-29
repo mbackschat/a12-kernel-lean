@@ -172,6 +172,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 29 findings](sources/inbound-handbacks.md#src-inbound-2026-10-29): a12-dmkits `ceabf65576ab76d6993f2614085e5e82f67eb8eb`; localized-text binding on twelve carriers, the basic sentences' type-definition order and repeated id, and the refused temporal format's scope.
 - [October 29a handback](sources/inbound-handbacks.md#src-inbound-2026-10-29a): a12-dmkits `3dd931e4db5b63ac08c1a0a927989bb3b6b4b21e`; the disposition of the type-definition order and locale grammar entry, a Latin-1 id row, the header locale code's entry shapes and locale identity, its tag demands refuted locally, and a rule message's parsed-locale match with peer KF290 and KF158.
 - [October 29b handback](sources/inbound-handbacks.md#src-inbound-2026-10-29b): a12-dmkits `22c198c3a4186486446acbeea0eade6c7fdb3c07`; the disposition of the header locale code correction, the withdrawal of the October 29a letter's header column, and the post-gate reader defect fixed upstream.
+- [October 29c handback](sources/inbound-handbacks.md#src-inbound-2026-10-29c): a12-dmkits `eaa6faf0c6619e8aa61b2de16cb4c5af6648b42d`; the disposition of the starred group's non-repeatable descendant coordinate, with a second-domain lock.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route
