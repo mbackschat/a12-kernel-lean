@@ -463,12 +463,15 @@ example : (checkModelConsistency (modelOf peerDefinitionRow)).toOption = some (.
       { path := ["Gamma"], kind := .typeDefinitionNameEmpty }, { path := ["Form", ""], kind := .elementNameEmpty }]) := by
   native_decide
 
-/-- The walk sorts the ids, uppercase before lowercase as Java's string order puts them (local probe:
-`Beta`, `Zeta`, `alpha` from `Zeta`, `alpha`, `Beta`), whatever the declaration order (peer probes). -/
+/-- The walk sorts the ids by UTF-16 code unit (local probe: `Beta`, `Zeta`, `alpha` from `Zeta`,
+`alpha`, `Beta`; peer KF647's lock: a Latin-1 capital after every ASCII letter), whatever the declaration
+order (peer probes). -/
 example :
     namedDefinitions ["Zeta", "alpha", "Beta"] = some ["Beta", "Zeta", "alpha"] ∧
     namedDefinitions ["Beta", "Gamma", "Alpha"] = some ["Alpha", "Beta", "Gamma"] ∧
-    namedDefinitions ["Gamma", "Alpha", "Beta"] = some ["Alpha", "Beta", "Gamma"] := by
+    namedDefinitions ["Gamma", "Alpha", "Beta"] = some ["Alpha", "Beta", "Gamma"] ∧
+    namedDefinitions ["deductible", "Prämie", "Coverage", "Überschuss"] =
+      some ["Coverage", "Prämie", "deductible", "Überschuss"] := by
   native_decide
 
 /-- Two definitions sharing an id, the empty one or `Beta`, leave no model in both readers (peer rows). -/

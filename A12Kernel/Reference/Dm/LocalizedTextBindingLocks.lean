@@ -149,16 +149,19 @@ example :
     parsedBuilds "{\"content\":{\"modelRoot\":{\"rootGroups\":[{\"type\":\"Group\",\"name\":\"P\",\"Group\":{\"label\":[],\"elements\":[]}}]}}}" = some true := by
   native_decide
 
-/-- The locale spellings peer KF290 measured on the Kernel, then the parser's quirks the retained jar
-verdicts show: a three-digit area after any first segment of a two-segment spelling only, a variant
+/-- The locale spellings peer KF290 measured on the Kernel, the entry rows of peer KF649's lock, which
+the Kernel reads on all 2,410 retained spellings exactly where the jar parses, then the parser's quirks
+the retained jar verdicts show: a three-digit area after any first segment of a two-segment spelling only, a variant
 keeping its separators, and an opening separator before a country. A bare uppercase pair and a non-ASCII
 character are outside the represented profile. -/
 example :
     ["en_US", "en-US", "en", "eng", "fr_CA", "en_US_POSIX", "en_123", "", "XX_123", "1_123", "en_US_POSIX_x",
-      "en__POSIX", "_US", "-US-x"].all (fun spelling => (Dm.localeSpellingParses spelling).toOption == some true) ∧
+      "en__POSIX", "_US", "-US-x", "de", "deu", "de_CH", "de-CH", "es_419", "de_CH_1996", "de_CH_1996_x",
+      "de_CH_POSIX-x", "de-CH-1996", "de__1996", "_CH", "-CH", "_CH_x", "DE_419", "1_419"].all (fun spelling => (Dm.localeSpellingParses spelling).toOption == some true) ∧
     ["en_us", "EN_US", "e", "en_U", "en_USA", "klingon", " ", "en_", "en_US_", "en_US-x", "_US-x", "en#US",
-      "zh_Hans_CN", "XX_123_x", "1_123_x", "e_123_x", "-US-"].all (fun spelling => (Dm.localeSpellingParses spelling).toOption == some false) ∧
-    ["US", "EN", "ée"].all (fun spelling => (Dm.localeSpellingParses spelling).toOption.isNone) := by
+      "zh_Hans_CN", "XX_123_x", "1_123_x", "e_123_x", "-US-", "de_ch", "DE_CH", "d", "de_C", "de_CHE", "de_CH_",
+      "de_CH-x", "de-CH_x", "de-CH-x_y", "_CH_", "DE_419_x", " de", "de "].all (fun spelling => (Dm.localeSpellingParses spelling).toOption == some false) ∧
+    ["US", "EN", "CH", "QQ", "ée", "de_ÄÖ", "de_٣٣٣"].all (fun spelling => (Dm.localeSpellingParses spelling).toOption.isNone) := by
   native_decide
 
 end A12Kernel.Dm.LocalizedTextBindingLocks

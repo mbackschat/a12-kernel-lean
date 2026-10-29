@@ -338,9 +338,8 @@ def firstBuildFailure? (model : ConsistencyModel) : Option (List String × Model
   | some id => some ([id], .typeDefinitionIdRepeated)
   | none => model.entries.findSome? fun (path, element) => (buildFailure? element).map (path, ·)
 
-/-- The type definitions in the order the checks walk them: by id, uppercase before lowercase (local
-probe of 2026-10-29). Lean compares by UTF-16 code unit, Java's string order; only ASCII ids are
-measured. -/
+/-- The type definitions in the order the checks walk them: by id, compared by UTF-16 code unit (a
+local probe of 2026-10-29 and peer KF647's Latin-1 row). Supplementary-plane ids are unmeasured. -/
 def orderedTypeDefinitions (model : ConsistencyModel) : List ConsistencyTypeDefinition :=
   model.typeDefinitions.mergeSort fun first second => !(utf16Units second.id < utf16Units first.id)
 
