@@ -1,5 +1,5 @@
 {
- "producer": "a12-dmkits 08b0d6499c98b132257ec961eb214de73fa223e3, dmtool 0.13.0, Kernel 30.8.1, dmtool model check -m under OpenJDK 21.0.13, 2026-10-29; rows b1, b2, f*, g* and t* run the same day after review",
+ "producer": "a12-dmkits 08b0d6499c98b132257ec961eb214de73fa223e3, dmtool 0.13.0, Kernel 30.8.1, dmtool model check -m under OpenJDK 21.0.13, 2026-10-29; rows b1, b2, f*, g* and t* run the same day after review; rows k* run the same day to separate the language-tag identity",
  "base": "evidence/kernel-30.8.1/captures/model-consistency-2026-10-13/Wh_DM.json with header.locales replaced: rows with `declared` by objects carrying en_US and each listed code, rows with `locales` by that list as written",
  "layer": "a thrown exception is classified by its stack: frames under ModelIndex.of follow BoundModel.ofJson's completed Kernel gate ModelLoader.loadAndCheck; no Kernel sentence is retained",
  "rows": [
@@ -863,6 +863,153 @@
     }
    ],
    "verdict": "valid"
+  },
+  {
+   "id": "k00",
+   "locales": [
+    {
+     "code": "und"
+    },
+    {
+     "code": "ée"
+    }
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "k01",
+   "locales": [
+    {
+     "code": "und_419"
+    },
+    {
+     "code": "1_419"
+    }
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "k02",
+   "locales": [
+    {
+     "code": "1_419"
+    },
+    {
+     "code": "d_419"
+    }
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "k03",
+   "locales": [
+    {
+     "code": "en_US_1996"
+    },
+    {
+     "code": "en_US_1996_abcdefghi"
+    }
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "k04",
+   "locales": [
+    {
+     "code": "en_US"
+    },
+    {
+     "code": "en_US_abcdefghi_x"
+    }
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "k05",
+   "locales": [
+    {
+     "code": "de"
+    },
+    {
+     "code": "de_ÄÖ"
+    }
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "k06",
+   "locales": [
+    {
+     "code": "en_US"
+    },
+    {
+     "code": "en_US_x"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "k07",
+   "locales": [
+    {
+     "code": "de"
+    },
+    {
+     "code": "de__1996"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "k08",
+   "locales": [
+    {
+     "code": "und"
+    },
+    {
+     "code": "de_CH"
+    }
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "k09",
+   "locales": [
+    {
+     "code": "en_US"
+    },
+    {
+     "code": "en_US_abcdefghi"
+    }
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "k10",
+   "locales": [
+    {
+     "code": "und_419"
+    },
+    {
+     "code": "abcdefghi_419"
+    }
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "k11",
+   "locales": [
+    {
+     "code": "en_US"
+    },
+    {
+     "code": "en_US_abcdefghi"
+    },
+    {
+     "code": "en_US_abcdefghij"
+    }
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
   }
  ]
 }
