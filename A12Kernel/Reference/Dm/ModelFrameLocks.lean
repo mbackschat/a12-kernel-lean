@@ -17,8 +17,7 @@ does ([check route](../../../docs/sources/model-structure-and-declaration-probes
 Three kinds of row are deliberately absent. Rows the Kernel answers with a class of its own: an absent
 `modelInfo.name`, a time zone it does not know and a version it refuses. A `modelVersion` written as an
 object or an array, which neither source separates from a check-only shape. And a supported character
-that is neither one character nor a range, or a condition-language code the Kernel does not support, on
-which the three readers do not agree. -/
+that is neither one character nor a range, on which the three readers do not agree. -/
 
 namespace A12Kernel.Dm.ModelFrameLocks
 
@@ -124,13 +123,15 @@ private def language (value : Json) (condition : String := "FieldFilled(Gate)") 
   edited ["content", "modelConfig", "conditionLanguage"] (some value) (base condition)
 
 /-- A condition language is a text or an object whose `code` is a text, and a bare "de_DE" declares
-German conditions exactly as `{"code":"de_DE"}` does; every other shape leaves no model. -/
+German conditions exactly as `{"code":"de_DE"}` does; an unsupported code and every other shape leave no
+model. -/
 example :
     verdict (language (Json.str "en_US")) = some .builds ∧
     verdict (language (Json.mkObj [("code", "en_US")])) = some .builds ∧
     verdict (language (Json.str "de_DE") "FeldAngegeben(Gate)") = some .builds ∧
     verdict (language (Json.mkObj [("code", "de_DE")]) "FeldAngegeben(Gate)") = some .builds ∧
     ((readModel (language (Json.str "de_DE") "FeldAngegeben(Gate)")).toOption.map (·.conditionLanguage)) = some "de_DE" ∧
+    [Json.mkObj [("code", "zz")], Json.mkObj [("code", "")]].all (fun value => verdict (language value) == some .noModel) ∧
     [Json.null, Json.mkObj [], Json.arr #[], toJson (5 : Nat), Json.bool true, Json.mkObj [("code", Json.null)],
       Json.mkObj [("code", Json.mkObj [])], Json.mkObj [("x", "en_US")]].all
       (fun value => verdict (language value) == some .noModel) := by
