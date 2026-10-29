@@ -196,7 +196,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-29-06"></a>
 ### SPEC-2026-10-29-06 — A model written with a check-only frame shape is not evaluated on the runtime route, so an evaluator refuses it
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/01 §1.1](../spec/01-data-model.md#member-binding), the frame-binding paragraph's evaluation bullet.
 - `delta`: Adds that a model lacking `header.modelVersion` or `content.modelInfo`, with `header.locales` absent or `null`, or with a `null` supported character, which builds and fails its consistency check without a class, is not evaluated on the measured runtime route, because that route checks a model before evaluating it; an evaluator refuses such a model rather than evaluating the built one. The spec states the Kernel's validation entry points as unmeasured.
 - `basis`: the retained [model frame check route](sources/model-structure-and-declaration-probes.md#src-model-frame-check-route) capture, Kernel 30.8.1, measured locally 2026-10-29: each of the four shapes exits before any engine evaluates, at the probe's consistency gate, while the unchanged control evaluates. The frame table itself is a12-dmkits' KF650, adopted as [inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-29d).
