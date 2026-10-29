@@ -119,7 +119,10 @@ def internalDuplicateNotifications (declaration : EnumerationDeclaration) :
   (declaration.duplicatedTrimmedTokens.filter fun value => !hasSupplementaryScalar value).map
     .internalValuesDuplicate
 
-/-- Block 6. -/
+/-- Block 6, one per repeated stored value in first-occurrence order. The order is this account's
+choice, not a claim: the Kernel's order matches neither declaration nor second-occurrence order on the
+five rows measured, and alphabetical order on only one (peer KF647 and a local probe of 2026-10-29,
+`docs/sources/inbound-handbacks.md#src-inbound-2026-10-29`). -/
 def repeatedValueNotifications (declaration : EnumerationDeclaration) :
     List EnumerationDeclarationNotification :=
   declaration.duplicatedStoredTokens.map .repeatedValue

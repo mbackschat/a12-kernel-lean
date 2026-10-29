@@ -85,6 +85,7 @@ absent condition language is en_US. -/
 def readConsistencyModel (json : Json) (variant : Option String := none) :
     Except String ConsistencyModel := do
   let content ← json.getObjVal? "content"
+  bindLocalizedTextMembers content
   let definitions ← members content "typeDefinitions"
   let rootGroups ← match content.getObjVal? "modelRoot" with
     | .error _ | .ok .null => pure []

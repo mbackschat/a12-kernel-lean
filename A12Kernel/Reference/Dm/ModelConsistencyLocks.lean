@@ -12,13 +12,15 @@ condition language. The assertion is the retained observation: the ordered notif
 reports, or the one unbuilt-model label. A capture also records codes other owners carry
 (`MVK_*`, rule and Enumeration declarations); only the labels of `ModelConsistencyClass` are compared, and
 the unbuilt-model label. Row `b-localized-null` is not replayed: the capture recorded an instrument
-fault (`admitted: null`), not an observation of the Kernel.
+fault (`admitted: null`), not an observation of the Kernel. Peer KF646 has since measured that shape,
+which the [text-binding locks](LocalizedTextBindingLocks.lean) fix for this reader too.
 
-The one exception is `liftedBuildFailureRows`, which replays a peer measurement of the build failures a
-variant filter lifts rather than a capture.
+Two parts replay other measurements: `liftedBuildFailureRows`, a peer measurement of the build failures
+a variant filter lifts, and the type-definition section at the end, peer and local rows of 2026-10-29.
 
 The captures record labels, not payloads, so the paths the check attaches are checked only by the
-examples at the end, which pin this module's choice and no observation.
+examples at the end. Those pin this module's choice and no observation, except in the type-definition
+section, whose oracles compare which definition each notification names.
 -/
 
 namespace A12Kernel.Dm.ModelConsistencyLocks
@@ -434,6 +436,47 @@ example : outcomeOf "b-typedef-id-empty" = some (.checked [
 
 example : outcomeOf "o-computed-field-empty-only" = some (.checked [
     { path := ["Form", "C"], kind := .computedFieldEmpty }]) := by
+  native_decide
+
+/-! ## Type definitions in id order, and a repeated id
+
+Peer KF647 (a12-dmkits `ceabf655`, `CheckerBasicSentenceOrderAgreementTest`) and a local `model check`
+probe of 2026-10-29 ([inbound 2026-10-29](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-29)),
+which compare the Kernel's sentences in order, each naming its definition. -/
+
+/-- The definitions each name-empty notification names, in order, for definitions with empty names. -/
+private def namedDefinitions (ids : List String) : Option (List String) :=
+  (checkModelConsistency (modelOf { typeDefinitions := some (ids.map (typedefEl · "" stringType)), observed := [] })).toOption.bind
+    fun | .checked notifications => some (notifications.filterMap fun notification =>
+            if notification.kind == .typeDefinitionNameEmpty then notification.path.head? else none)
+        | .notBuilt _ _ => none
+
+/-- Declared `Beta`, `""` named `Alpha` and `Gamma`, beside a deleted field with an empty name: the
+id-empty sentence of `Alpha` first, then the two name sentences, then the field's (peer row). -/
+private def peerDefinitionRow : Row where
+  append := [fieldEl "/Form/X" "" stringType [onlyV1]]
+  typeDefinitions := [typedefEl "Beta" "" stringType, typedefEl "" "Alpha" stringType, typedefEl "Gamma" "" stringType]
+  observed := []
+
+example : (checkModelConsistency (modelOf peerDefinitionRow)).toOption = some (.checked [
+      { path := ["Alpha"], kind := .idEmpty }, { path := ["Beta"], kind := .typeDefinitionNameEmpty },
+      { path := ["Gamma"], kind := .typeDefinitionNameEmpty }, { path := ["Form", ""], kind := .elementNameEmpty }]) := by
+  native_decide
+
+/-- The walk sorts the ids, uppercase before lowercase as Java's string order puts them (local probe:
+`Beta`, `Zeta`, `alpha` from `Zeta`, `alpha`, `Beta`), whatever the declaration order (peer probes). -/
+example :
+    namedDefinitions ["Zeta", "alpha", "Beta"] = some ["Beta", "Zeta", "alpha"] ∧
+    namedDefinitions ["Beta", "Gamma", "Alpha"] = some ["Alpha", "Beta", "Gamma"] ∧
+    namedDefinitions ["Gamma", "Alpha", "Beta"] = some ["Alpha", "Beta", "Gamma"] := by
+  native_decide
+
+/-- Two definitions sharing an id, the empty one or `Beta`, leave no model in both readers (peer rows). -/
+example :
+    ["", "Beta"].all fun id =>
+      let json := modelOf { typeDefinitions := some [typedefEl id "A" stringType, typedefEl id "B" stringType], observed := [] }
+      (checkModelConsistency json).toOption == some (.notBuilt [id] .typeDefinitionIdRepeated) &&
+        (readModel json).toOption.isNone := by
   native_decide
 
 end A12Kernel.Dm.ModelConsistencyLocks

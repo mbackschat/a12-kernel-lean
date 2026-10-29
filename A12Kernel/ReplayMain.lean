@@ -176,6 +176,7 @@ import A12Kernel.Reference.Dm.PartialCarrierLocks
 import A12Kernel.Reference.Dm.FilteredShiftAmountLocks
 import A12Kernel.Reference.Dm.FieldMessageTextLocks
 import A12Kernel.Reference.Dm.MemberBindingLocks
+import A12Kernel.Reference.Dm.LocalizedTextBindingLocks
 import A12Kernel.Reference.Dm.HybridCalendarLocks
 import A12Kernel.Reference.Dm.RefusalClassLocks
 import A12Kernel.Reference.Dm.FieldOwnedRequirednessLocks

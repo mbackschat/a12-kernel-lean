@@ -366,4 +366,49 @@ example :
     computed "Part" "La\u00A0bel" = "MVK_LEXER_STANDARD_ERROR" := by
   native_decide
 
+private def formatMember : String → String
+  | "DateFragmentType" => "formatOfFragment"
+  | _ => "format"
+
+private def refusedFormats : List String :=
+  ["HH:mm", "MM.yyyy", "yyyy/MM", "dd.MM", "YYYY-MM-DD", "DD.MM.YYYY", "yy", "HH.mm.ss", "hh:mm:ss a",
+    "yyyy-MM-dd HH:mm", "yyyy-MM-dd'T'HH:mm:ss.SSS", "QQQ"]
+
+private def admittedFormats : List String :=
+  ["yyyy-MM-dd", "dd.MM.yyyy", "yyyyMMdd", "yyyy", "yyyy-MM", "yyyyMM", "MM", "MM-dd", "MMdd", "ddMM", "dd.MM.",
+    "HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss"]
+
+private def timeDefinition (id : String) : Json :=
+  Json.mkObj [("id", Json.str id), ("name", Json.str id), ("fieldType", Json.mkObj [("type", "TimeType"),
+    ("TimeType", Json.mkObj [("format", "HH:mm")])])]
+
+private def definedField (deleted : Bool) : Json :=
+  Json.mkObj [("type", "Field"), ("name", "F"), ("Field", Json.mkObj ([("fieldType", Json.mkObj [
+    ("type", "TypeDefType"), ("TypeDefType", Json.mkObj [("typeDefinitionId", "T")])])] ++
+    if deleted then [("variantFilter", only)] else []))]
+
+private def defined (fields definitions : List Json) : List String :=
+  let json := model [group "Policy" fields]
+  report "/Policy/" (json.setObjVal! "content"
+    ((json.getObjValD "content").setObjVal! "typeDefinitions" (Json.arr definitions.toArray)))
+
+/- A refused format draws the codeless date-format class on a kept Date, Time, DateTime or fragment
+   field and nothing on a deleted one, `QQQ` included; an admitted format draws nothing either way. A type definition is judged only through a kept field that
+   uses it, and two definitions sharing an id leave no model (peer KF648 and KF647,
+   [inbound 2026-10-29](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-29)). -/
+example :
+    ["DateType", "TimeType", "DateTimeType", "DateFragmentType"].all (fun kind =>
+      refusedFormats.all (fun format =>
+        typed kind [(formatMember kind, Json.str format)] == ["codeless:date-format-invalid"] &&
+        typed kind [(formatMember kind, Json.str format)] (deleted := true) == []) &&
+      admittedFormats.all fun format =>
+        typed kind [(formatMember kind, Json.str format)] == [] &&
+        typed kind [(formatMember kind, Json.str format)] (deleted := true) == []) ∧
+    defined [field "Other"] [timeDefinition "T"] = [] ∧
+    defined [definedField false] [timeDefinition "T"] = ["codeless:date-format-invalid@F"] ∧
+    defined [definedField true] [timeDefinition "T"] = [] ∧
+    defined [field "Other"] [timeDefinition "T", timeDefinition "T"] = unbuilt ∧
+    defined [field "Other"] [timeDefinition "", timeDefinition ""] = unbuilt := by
+  native_decide
+
 end A12Kernel.Dm.DeclarationWalkLocks

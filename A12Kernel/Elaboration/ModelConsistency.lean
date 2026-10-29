@@ -1,3 +1,4 @@
+import A12Kernel.Elaboration.CharsetSpec
 import A12Kernel.Elaboration.DeclarationAdmission
 import A12Kernel.Semantics.NumberBound
 
@@ -33,8 +34,10 @@ order and their notifications concatenate in it, so a class is never interleaved
    definition names, and the lifted conversion defects of deleted declarations.
 
 Every check except the fifth walks the authored model, fields removed by the variant filter included.
-The walk visits type definitions first, then elements depth-first, a group before its children. Within
-one check the notifications follow the walk.
+The walk visits type definitions first, sorted by id case-sensitively, then elements depth-first, a
+group before its children. Within one check the notifications follow the walk. Two type definitions
+sharing an id leave the model unbuilt before any element is judged (peer KF647 and a local probe,
+`docs/sources/inbound-handbacks.md#src-inbound-2026-10-29`).
 
 The captures fix identifier uniqueness before emptiness and value limits before the bound check; the
 remaining registration order, the raw (possibly `-1`) maximum fraction digits as the limit input, a
@@ -185,6 +188,8 @@ inductive ModelBuildFailure where
   | indexFieldNameEmpty
   | sortFieldNameEmpty
   | typeDefinitionReferenceEmpty
+  /-- Two type definitions carry one id, the empty id included. -/
+  | typeDefinitionIdRepeated
   deriving Repr, DecidableEq
 
 namespace ModelBuildFailure
@@ -195,12 +200,14 @@ def liftedClass? : ModelBuildFailure → Option ModelConsistencyClass
   | .typeDefinitionReferenceEmpty => some .typeDefinitionReferenceEmpty
   | .computedFieldPathEmpty => some .computedFieldEmpty
   | .enumerationCategoryNameDuplicated => some .enumerationCategoryDuplicate
-  | .elementNameEmpty | .indexFieldNameEmpty | .sortFieldNameEmpty => none
+  | .elementNameEmpty | .indexFieldNameEmpty | .sortFieldNameEmpty | .typeDefinitionIdRepeated => none
 
 end ModelBuildFailure
 
 structure ModelConsistencyNotification where
-  /-- Names from the root group to the element the class concerns; a type definition is its own name. -/
+  /-- Names from the root group to the element the class concerns. A type definition is named by its id,
+  or by its name when the id is empty, as the Kernel's sentence names it (peer KF647's lock compares
+  which definition each sentence names). -/
   path : List String
   kind : ModelConsistencyClass
   deriving Repr, DecidableEq
@@ -314,9 +321,28 @@ def buildFailure? : ConsistencyElement → Option ModelBuildFailure
       else if ExecutableDeclaration.blank element.name then some .elementNameEmpty
       else element.conversionFailure?
 
-/-- The first build failure in walk order, with the path of the offending element. -/
+/-- The first id two type definitions share, which every model reader refuses before building. -/
+def repeatedTypeDefinitionId? (ids : List String) : Option String :=
+  ids.find? fun id => 1 < ids.count id
+
+/-- The path a type definition's notification names. -/
+def typeDefinitionPath (definition : ConsistencyTypeDefinition) : List String :=
+  [if definition.id.isEmpty then definition.name else definition.id]
+
+/-- The first build failure, with the path of the offending element or type definition: a repeated
+type-definition id, which the Kernel meets while expanding the definitions, and then each element's in
+walk order. Which of two such failures the Kernel names is unmeasured; either leaves the one unbuilt
+label. -/
 def firstBuildFailure? (model : ConsistencyModel) : Option (List String × ModelBuildFailure) :=
-  model.entries.findSome? fun (path, element) => (buildFailure? element).map (path, ·)
+  match repeatedTypeDefinitionId? (model.typeDefinitions.map (·.id)) with
+  | some id => some ([id], .typeDefinitionIdRepeated)
+  | none => model.entries.findSome? fun (path, element) => (buildFailure? element).map (path, ·)
+
+/-- The type definitions in the order the checks walk them: by id, uppercase before lowercase (local
+probe of 2026-10-29). Lean compares by UTF-16 code unit, Java's string order; only ASCII ids are
+measured. -/
+def orderedTypeDefinitions (model : ConsistencyModel) : List ConsistencyTypeDefinition :=
+  model.typeDefinitions.mergeSort fun first second => !(utf16Units second.id < utf16Units first.id)
 
 /-- Check 1. Every occurrence of an identifier shared with another element is reported. -/
 def idUniquenessNotifications (model : ConsistencyModel) : List ModelConsistencyNotification :=
@@ -459,14 +485,14 @@ def liftedNotifications (path : List String) (element : ConsistencyElement) :
   | some kind => raiseIf element.deletedByFilter path kind
   | none => []
 
-/-- Check 6: type definitions first, then each element's empty identifier and empty name followed by
+/-- Check 6: type definitions first, in id order, then each element's empty identifier and empty name followed by
 the class its kind adds. A rule's missing error code and an Enumeration's duplicated values belong to
 other owners. Emptiness is `isEmpty`, so a one-space name draws nothing (KF626). A deleted
 declaration's lifted build failure follows the name; the order of one element's classes is not measured. -/
 def emptinessNotifications (model : ConsistencyModel) : List ModelConsistencyNotification :=
-  model.typeDefinitions.flatMap (fun definition =>
-    raiseIf definition.id.isEmpty [definition.name] .idEmpty ++
-      raiseIf definition.name.isEmpty [definition.name] .typeDefinitionNameEmpty) ++
+  (orderedTypeDefinitions model).flatMap (fun definition =>
+    raiseIf definition.id.isEmpty (typeDefinitionPath definition) .idEmpty ++
+      raiseIf definition.name.isEmpty (typeDefinitionPath definition) .typeDefinitionNameEmpty) ++
     model.entries.flatMap fun (path, element) =>
       raiseIf element.id.isEmpty path .idEmpty ++ raiseIf element.name.isEmpty path .elementNameEmpty ++
         liftedNotifications path element ++

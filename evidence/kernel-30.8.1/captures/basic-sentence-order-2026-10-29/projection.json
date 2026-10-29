@@ -1,0 +1,109 @@
+{
+ "producer": "a12-dmkits 08b0d6499c98b132257ec961eb214de73fa223e3, dmtool 0.13.0, Kernel 30.8.1, dmtool model check, 2026-10-29",
+ "models": {
+  "order_DM": {
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "typeDefinitionsNamedInOrder": [
+    "Beta",
+    "Zeta",
+    "alpha"
+   ],
+   "repeatedValuesInOrder": {
+    "E1": [
+     "Red",
+     "Olive",
+     "Maroon",
+     "Gray",
+     "Navy",
+     "Cyan",
+     "White",
+     "Blue",
+     "Yellow",
+     "Magenta",
+     "Black",
+     "Teal",
+     "Green"
+    ],
+    "E2": [
+     "Aa",
+     "BB",
+     "Zed"
+    ]
+   },
+   "internalValuesDuplicateInOrder": {
+    "E1": [
+     "Red",
+     "Green",
+     "Blue",
+     "Cyan",
+     "Magenta",
+     "Yellow",
+     "Black",
+     "White",
+     "Gray",
+     "Olive",
+     "Navy",
+     "Teal",
+     "Maroon"
+    ],
+    "E2": [
+     "Aa",
+     "Zed",
+     "BB"
+    ]
+   }
+  },
+  "order2_DM": {
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "typeDefinitionsNamedInOrder": [],
+   "repeatedValuesInOrder": {
+    "E3": [
+     "C#",
+     "Aa",
+     "BB"
+    ],
+    "E4": [
+     "Maroon",
+     "Gray",
+     "Cyan",
+     "Blue",
+     "Magenta",
+     "Black",
+     "Olive",
+     "Red",
+     "Navy",
+     "White",
+     "Coral",
+     "Yellow",
+     "Teal",
+     "Green"
+    ]
+   },
+   "internalValuesDuplicateInOrder": {
+    "E3": [
+     "Aa",
+     "BB",
+     "C#"
+    ],
+    "E4": [
+     "Red",
+     "Green",
+     "Blue",
+     "Cyan",
+     "Magenta",
+     "Yellow",
+     "Black",
+     "White",
+     "Gray",
+     "Olive",
+     "Navy",
+     "Teal",
+     "Maroon",
+     "Coral"
+    ]
+   }
+  }
+ }
+}

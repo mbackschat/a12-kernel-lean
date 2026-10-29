@@ -7,7 +7,8 @@ import A12Kernel.Reference.Dm.FieldTypeDeclarationRead
 The authored text a field reports for its own findings, rendered as the Kernel's full validation
 renders it without a display provider: a required field's `requirednessConfig.errorMessage` and an
 Enumeration's `errorMessage` for a value outside its domain. A locale's text is the last entry written
-for it, as the field-message check asks it; whether rendering asks the same entry is unmeasured. A
+for it in a list-valued member, as the field-message check asks it; an object-valued member's winner is not
+stated; whether rendering asks the same entry is unmeasured. A
 field without an authored text takes the catalog's default, a host input, so these return `none`
 there. -/
 
@@ -16,7 +17,7 @@ namespace A12Kernel.Dm
 open Lean A12Kernel
 
 private def askedText? (json : Json) (key locale : String) : Except String (Option String) := do
-  let entries := (← localizedTexts json key).map fun (locale, text) => ({ locale, text } : FieldMessageEntry)
+  let entries := (← localizedTextMember json key).map fun (locale, text) => ({ locale, text } : FieldMessageEntry)
   pure (FieldMessageEntry.askedFor? entries locale)
 
 /-- The owning field's display at `locale` in its own messages. -/

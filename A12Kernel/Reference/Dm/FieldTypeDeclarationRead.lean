@@ -20,10 +20,11 @@ group-path codeless notification to everything below it and withholds the path c
 class and the field messages there, and a field carrying a path class of its own reports no type body.
 The result is a list of `(label, element path)` pairs. A model the Kernel cannot build, by an empty
 element name, a blank rule or computation name, a repeated hint-list locale, an Enumeration declaring
-no values or a row-key nomination that binds to no field, yields the one unbuilt-model label and no path. The report is a multiset, so the walk order is not an observation.
+no values, a repeated type-definition id or a row-key nomination that binds to no field, yields the one unbuilt-model label and no path. The report is a multiset, so the walk order is not an observation.
 
 It is an input adapter, differentially tested by the field-declaration capture rather than proved. A
-condition language other than the two whose tokens are measured, a member of the wrong shape, an
+condition language other than the two whose tokens are measured, a member of the wrong shape, a
+localized-text member that does not bind (`bindLocalizedTextMembers`), an
 unresolvable type definition, a repeatability past a signed 32-bit count (which the Kernel does not
 read) and a row-key nomination in a model the flat validation refuses are read errors, never an empty
 report. A row-key nomination that binds to no declared field is not an error: the Kernel builds no
@@ -51,14 +52,8 @@ private def arrayMembers (json : Json) (key : String) : Except String (List Json
   | .error _ | .ok .null => pure []
   | .ok value => (value.getArr?).map Array.toList
 
-/-- Locale-keyed entries, `[{locale, text}]`, as a field's messages and an Enumeration value's labels
-write them. -/
-def localizedTexts (json : Json) (key : String) : Except String (List (String × String)) := do
-  (← arrayMembers json key).mapM fun entry => do
-    pure (← entry.getObjValAs? String "locale", ← entry.getObjValAs? String "text")
-
 private def readMessages (json : Json) : Except String (List FieldMessageEntry) := do
-  pure ((← localizedTexts json "errorMessage").map fun (locale, text) => { locale, text })
+  pure ((← localizedTextMember json "errorMessage").map fun (locale, text) => { locale, text })
 
 private def readString (body : Json) : Except String StringTypeDeclaration := do
   pure {
@@ -99,7 +94,7 @@ private def readEnumeration (body : Json) : Except String EnumerationTypeDeclara
   pure {
     values := ← (← arrayMembers body "values").mapM fun entry => do
       pure { token := ← entry.getObjValAs? String "value"
-             labels := (← localizedTexts entry "label").map fun (locale, text) => { locale, text } }
+             labels := (← localizedTextMember entry "label").map fun (locale, text) => { locale, text } }
     categories := ← (← arrayMembers body "categories").mapM fun category => do
       pure { name := ← category.getObjValAs? String "name"
              tokens := ((category.getObjValAs? (Array String) "values").toOption.getD #[]).toList }
@@ -358,6 +353,7 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
     (charset : LegalCharset := .defaultBmp) : Except String (List (String × String)) := do
   let header := (json.getObjVal? "header").toOption.getD (Json.mkObj [])
   let content ← json.getObjVal? "content"
+  bindLocalizedTextMembers content
   let language := ((content.getObjVal? "modelConfig").toOption.bind fun config =>
     (config.getObjVal? "conditionLanguage").toOption.bind fun language =>
       (language.getObjValAs? String "code").toOption).getD "en_US"
@@ -379,6 +375,9 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
     roots
     shortNamesAllowed := ← booleanMember? ((content.getObjVal? "modelConfig").toOption.getD (Json.mkObj []))
       "fieldRefByShortNameAllowed" }
+  -- A repeated type-definition id leaves no model before any element is judged (peer KF647).
+  if (ModelConsistency.repeatedTypeDefinitionId? (environment.definitions.map (·.1))).isSome then
+    return [(modelNotBuiltLabel, "")]
   let walked := (← roots.mapM (judgeElement environment {} [])).flatten
   -- The index and sort checks run only after an entity walk that refused nothing (2026-10-21 §2.16).
   let walkRefused := walked.any fun report => report.walkRefused || report.labels.any fun label =>

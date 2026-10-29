@@ -1,0 +1,266 @@
+{
+ "header": {
+  "id": "Wh_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Wh_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Value",
+        "name": "Value",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Other",
+        "name": "Other",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Items",
+        "name": "Items",
+        "Group": {
+         "repeatability": 4,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Items/K",
+           "name": "K",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Items/V",
+           "name": "V",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Items/NVV",
+           "name": "NVV",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {
+              "lineBreaksPermitted": true,
+              "noValueValidation": true
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Items/NVV2",
+           "name": "NVV2",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {
+              "lineBreaksPermitted": true,
+              "noValueValidation": true
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/E3",
+        "name": "E3",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "Aa"
+            },
+            {
+             "value": "BB"
+            },
+            {
+             "value": "C#"
+            },
+            {
+             "value": "BB"
+            },
+            {
+             "value": "Aa"
+            },
+            {
+             "value": "C#"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/E4",
+        "name": "E4",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "Red"
+            },
+            {
+             "value": "Green"
+            },
+            {
+             "value": "Blue"
+            },
+            {
+             "value": "Cyan"
+            },
+            {
+             "value": "Magenta"
+            },
+            {
+             "value": "Yellow"
+            },
+            {
+             "value": "Black"
+            },
+            {
+             "value": "White"
+            },
+            {
+             "value": "Gray"
+            },
+            {
+             "value": "Olive"
+            },
+            {
+             "value": "Navy"
+            },
+            {
+             "value": "Teal"
+            },
+            {
+             "value": "Maroon"
+            },
+            {
+             "value": "Coral"
+            },
+            {
+             "value": "Red"
+            },
+            {
+             "value": "Green"
+            },
+            {
+             "value": "Blue"
+            },
+            {
+             "value": "Cyan"
+            },
+            {
+             "value": "Magenta"
+            },
+            {
+             "value": "Yellow"
+            },
+            {
+             "value": "Black"
+            },
+            {
+             "value": "White"
+            },
+            {
+             "value": "Gray"
+            },
+            {
+             "value": "Olive"
+            },
+            {
+             "value": "Navy"
+            },
+            {
+             "value": "Teal"
+            },
+            {
+             "value": "Maroon"
+            },
+            {
+             "value": "Coral"
+            }
+           ]
+          }
+         }
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -169,6 +169,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 27 handback](sources/inbound-handbacks.md#src-inbound-2026-10-27): a12-dmkits `fecf855251c1245fd7048b2a509ddbb2b72989dd`; the dispositions of the thirty-three spec-rewrite entries, with corrections for the skipped joined target, the non-repeatable index field, the `-1` maximum's static scale, the root- or fixed-indexed key, the filtered build failures and a filtered empty name.
 - [October 28 handback](sources/inbound-handbacks.md#src-inbound-2026-10-28): a12-dmkits `aa2677f7dbc20f198f3b063947fb2da3d4f5cc04`; the dispositions of the six open-cell entries, a `$`-marked comparison side typed as its field, and the firing row named below a selected key.
 - [October 28b handback](sources/inbound-handbacks.md#src-inbound-2026-10-28b): a12-dmkits `61378d4563b260b8152a39203bfe04e633d66995`; the dispositions of the keyed read below a repeatable index and the key over a root or fixed-group index.
+- [October 29 findings](sources/inbound-handbacks.md#src-inbound-2026-10-29): a12-dmkits `ceabf65576ab76d6993f2614085e5e82f67eb8eb`; localized-text binding on twelve carriers, the basic sentences' type-definition order and repeated id, and the refused temporal format's scope.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route

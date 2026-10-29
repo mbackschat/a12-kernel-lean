@@ -132,3 +132,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: `61378d4563b260b8152a39203bfe04e633d66995`.
 - `disposition`: Reconciles the `a-*` documents, rows `t1`–`t6`, `m1`–`m4` and `x1`–`x5`, and the `ix*` references: the 15 static rows rerun with the same verdict, and both runtime requests and the open-cells `ix*` rows with no difference. The peer interpreter now references only the index field for a keyed root and lists an empty single-instance index field among a computation's operand errors (KF478, IF447, IF448). The listed unmeasured cases stay unclaimed. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-28b).
+
+<a id="spec-2026-10-29-01"></a>
+### SPEC-2026-10-29-01 — Type definitions are walked in case-sensitive id order, repeated Enumeration values follow no stated order, and the locale grammar has two quirks
+
+- `status`: pending
+- `canonical`: [spec/01 §1.1](../spec/01-data-model.md#member-binding), the locale-parser bullets, [spec/01 §1.2](../spec/01-data-model.md#the-six-rules), the sentence on the walk's id order, and [spec/01 §1.3](../spec/01-data-model.md#enumeration-declarations), the bullet on block 6's order.
+- `delta`: Refines KF647's id order as case-sensitive, `Beta`, `Zeta`, `alpha`. Records that block 6's repeated values follow neither declaration nor second-occurrence order on five rows, and alphabetical order on one, so no order is stated. States the locale grammar beyond KF290's spellings: `-` separating only without `_`, a variant after a second separator with the country optional, a spelling opening with its separator, a three-digit area after any first segment of a two-segment spelling, a bare uppercase pair parsing only when the JDK lists it as a country, and `zh_Hans_CN` and a padded spelling refused.
+- `basis`: the [basic sentence order](sources/model-structure-and-declaration-probes.md#src-basic-sentence-order) probe, two `model check` runs measured locally 2026-10-29, Kernel 30.8.1, at the measurement pin `08b0d6499`, and the [locale grammar](sources/model-structure-and-declaration-probes.md#src-locale-spelling-grammar), the commons-lang3 3.20.0 jar the measurement launcher ships, run on 2,410 spellings under JDK 21 and 25 the same day.
+- `acceptance`: Reconcile the `order_DM` and `order2_DM` rows and the locale grammar; ids beyond ASCII and the country table of another JDK are unmeasured, so do not claim them.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

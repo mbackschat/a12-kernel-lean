@@ -5,8 +5,10 @@ import A12Kernel.Elaboration.EnumerationDeclarationNotification
 import A12Kernel.Elaboration.DeclarationAdmission
 import A12Kernel.Elaboration.LegalCharset
 import A12Kernel.Elaboration.IndexAndSortDeclaration
+import A12Kernel.Elaboration.ModelConsistency
 import A12Kernel.Semantics.NumberBound
 import A12Kernel.Reference.Dm.MemberBinding
+import A12Kernel.Reference.Dm.LocalizedTextBinding
 
 /-! # Reading a DM-JSON document model
 
@@ -43,7 +45,8 @@ structure DmRule where
   errorCode : String
   condition : String
   severity : String
-  /-- The authored message template per locale, in declaration order. -/
+  /-- The authored message template per locale, in the member's order: a list's as written, an object's
+  by key. -/
   messages : List (String × String) := []
   deriving Repr, Inhabited
 
@@ -161,13 +164,8 @@ def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclarat
   -- here would turn a remapped Enumeration into an unlabelled one before that check.
   let displayFacts ← entries.mapM fun entry => do
     let stored ← entry.getObjValAs? String "value"
-    let labels ← match (entry.getObjVal? "label").toOption with
-      | none => pure #[]
-      | some labels => labels.getArr?
-    labels.toList.mapM fun label => do
-      let locale ← label.getObjValAs? String "locale"
-      let display ← label.getObjValAs? String "text"
-      pure ({ stored, locale, display } : EnumerationDisplayFact)
+    pure ((← localizedTextMember entry "label").map fun (locale, display) =>
+      ({ stored, locale, display } : EnumerationDisplayFact))
   let categories ← ((body.getObjValAs? (Array Json) "categories").toOption.getD #[]).toList.mapM
     fun category => do
       let name ← category.getObjValAs? String "name"
@@ -522,6 +520,7 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         modify fun state => { state with
           declarations := state.declarations.push { group := path, name, kind := .rule code, deleted := true } }
         return
+      let messages ← StateT.lift (localizedTextMember body "errorMessage")
       modify fun state => { state with
         declarations := state.declarations.push { group := path, name, kind := .rule code }
         rules := state.rules.push {
@@ -530,8 +529,7 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         errorCode := match code with | .text value => value | .unreadable => ""
         condition := (str? body "errorCondition").getD ""
         severity := (str? body "severity").getD "ERROR"
-        messages := ((body.getObjValAs? (Array Json) "errorMessage").toOption.getD #[]).toList.filterMap
-          fun entry => do pure (← str? entry "locale", ← str? entry "text") } }
+        messages } }
   | "Computation" =>
       if !(← StateT.lift (acceptedByVariant (← get).variant body)) then return
       let roundingMode ← StateT.lift (computationString? body "roundingMode")
@@ -620,12 +618,16 @@ private def readModelCore (json : Json)
     (graphemeClusters? : Option (String → List String)) (variant : Option String) :
     Except String (DmModel × List ExecutableDeclaration) := do
   let content ← json.getObjVal? "content"
+  bindLocalizedTextMembers content
   let config := (content.getObjVal? "modelConfig").toOption.getD (Json.mkObj [])
   let info := (content.getObjVal? "modelInfo").toOption.getD (Json.mkObj [])
   let roots ← (← content.getObjVal? "modelRoot").getObjValAs? (Array Json) "rootGroups"
   let legalCharset ← readSupportedCharacters config graphemeClusters?
   let typeDefinitions ← ((content.getObjValAs? (Array Json) "typeDefinitions").toOption.getD #[]).toList.mapM
     fun definition => do pure (← definition.getObjValAs? String "id", definition)
+  -- The Kernel refuses a repeated type-definition id while expanding the definitions (peer KF647).
+  if let some id := ModelConsistency.repeatedTypeDefinitionId? (typeDefinitions.map (·.1)) then
+    throw s!"type definition id {id} is repeated"
   let ((), state) ← (roots.toList.forM (readElement [] [])).run { legalCharset, typeDefinitions, variant }
   let fieldId (group : GroupPath) (name : String) : Option FieldId :=
     (state.fields.find? fun field => field.groupPath == group && field.name == name).map (·.id)
