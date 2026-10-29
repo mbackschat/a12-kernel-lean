@@ -156,3 +156,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: `22c198c3a4186486446acbeea0eade6c7fdb3c07`.
 - `disposition`: Reconciled through the Kernel gate alone, with no dmtool reader after it: the letter reports all 109 projection rows unchanged, and its committed lock's 38 header rows and duplicate-tag row agree with the retained projection. The header half of the October 29a letter is withdrawn, and the peer's checker stays silent on `MVK_SUPP_LANGUAGES_DUPLICATE` (DG163). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-29b).
+
+<a id="spec-2026-10-29-03"></a>
+### SPEC-2026-10-29-03 — A non-repeatable group context beneath a starred group's star carries 1, not the wildcard
+
+- `status`: pending
+- `canonical`: [spec/01 §3.1](../spec/01-data-model.md#address-coordinates), the paragraph on one rule deciding a level's coordinate.
+- `delta`: Removes the exception, adopted 2026-08-04 from a12-dmkits `b5aba1ec`, that beneath a starred group's star every reopened group-context part is wildcarded including a non-repeatable descendant group context. Over a repeatable `Left` holding the fixed group `Seal`, `NoGroupFilled(Left*/Seal)` and `NoGroupFilled(Left*, Left*)` reference `/Form[1]/Left[0]/Seal[1]/M`, so such a part follows the general rule and carries `1`.
+- `basis`: the retained [mixed group predicates](sources/group-count-topology.md#src-mixed-group-predicates) capture, Kernel 30.8.1, measured locally 2026-10-10 and read for this coordinate 2026-10-29, with no `Seal[0]` among its pointers; the Lean replay agrees on all 2,178 of its reference comparisons. The U02 cold evaluator's question Q-003 found the disagreement.
+- `acceptance`: Reconcile the `LNone` and `TNone` rows of that capture and any statement of the exception in a12-dmkits' own record; `b5aba1ec` no longer resolves there, so a witness for the exception on another operand form, if one exists, is the evidence that would reopen it.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
