@@ -589,3 +589,17 @@ The task, profile, comparison contract and milestones are the [evaluator kit](..
 - `debrief`: one owner-approved closing message asked for `reports/SPEC-FEEDBACK.md`, committed at Rust `49e24fe` with no code change. It lists 15 rules decided from captures or by choice, 4 disagreeing passages, 4 rules extracted from case lists, 6 rules found in another chapter than the one consulted, and packet costs led by 370 `spec/` links into `docs/sources/` the packet does not carry.
 - `independence`: the worker wrote it without seeing the 2026-10-26 spec audit; it confirms the audit's partial-relevance, enumeration and contradiction classes, adds two contradictions and four gaps the audit missed, and supplies capture evidence for cross-chapter finding xc-1.
 - `kit-lessons`: a whole-row classification hid `messages` divergences behind a refused `partialMessages` channel until the worker added a messages-only run, and captures carry no statement of what they probe.
+
+<a id="run-u02-m1"></a>
+### U02 M1 — reading
+
+- `task`: [U01 evaluator](#task-u01-evaluator), rerun cold as U02 on the rewritten spec, milestone M1
+- `status`: green
+- `started-at`: 2026-10-29T20:06:24+01:00, when the session received its start message
+- `finished-at`: 2026-10-29T20:20:42+01:00, qualification commit `5c1da8f`
+- `semantic-basis`: packet v5, cut from `db49b29332775a5d716e72381b428a5affea1ce9`
+- `oracle`: HIGH read the reports, evaluator and harness source at `5c1da8f`. The row classification reproduces the packet's counts, the per-row report and its totals agree, the model reader refuses members outside the kit's shape, and the evaluator crate does no file I/O and receives no request, row, path or artifact.
+- `consumer-access`: fresh session limited to the packet and its own repository; one start message carrying the packet path and the kit's first-session prompt, no exchange during the run.
+- `cost`: about 14 minutes; 2212 nonblank Rust lines with 10 tests, `serde_json` the only direct dependency; token usage unavailable.
+- `result`: all 4148 rows classified and none evaluated yet, as M1 requires; 4094 rows read, the 54 refusals all outside the profile (32 `CustomFieldType`, 22 patterns), no in-profile row refused.
+- `questions-and-guesses`: Q-001, `modelConfig.decimalSeparator`, which no chapter names, read as display-only for `.` with any other value refused. Q-002, whether an unbracketed part of the partially-known pointer spelling carries coordinate 1, read as yes in the harness only. Both stay open for the batched triage; neither is a packet file the worker lacked, unlike U01's Q-001 and Q-003 at M1.
