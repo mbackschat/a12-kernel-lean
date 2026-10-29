@@ -379,7 +379,7 @@ Measured scope: full validation covers String keys, Number payloads, selected gr
 
 **The population and its hashes.** The temporary cache receives one entry per admitted identifier, and each entry's bucket follows from its identifier's hash alone.
 
-- **Group entries.** Every instantiated row of a repeatable group whose repeatability exceeds one and which lies within capacity contributes one entry, named by the group's full path with a leading `/` (`/Form/Items`).
+- **Group entries.** Every instantiated row ([the document's JSON reading](01-data-model.md#23-reading-a-document-from-json) numbers rows after dropping non-object entries) of a repeatable group whose repeatability exceeds one and which lies within capacity contributes one entry, named by the group's full path with a leading `/` (`/Form/Items`).
 - **Field entries.** Every cell that is present, holds non-empty stored text and draws no formal finding contributes one entry, named by the field's internal name. Only an index field's entry also carries an association: its group, its parent's coordinates at the repeatable levels above it, its row and its key, a Number key by value and any other by its normalized text.
 - **Internal names.** A field whose short name no other field of the model shares keeps it. Otherwise, visiting fields in the lexical order of their `/`-joined full paths compared as UTF-16 units, each takes `name_k` for the smallest `k ≥ 0` such that `name_k` is neither any field's short name nor already assigned.
 - **Coordinates.** An identifier carries one coordinate per part of its full path, `1` for every non-repeatable part, the field's own part included, and the bound row for every repeatable level; a coordinate above 2³¹−1 is refused.
