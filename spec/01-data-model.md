@@ -123,11 +123,11 @@ Sources: [repeatability checkpoint](../docs/sources/group-list-and-capacity-prob
 
 **A header's locale code meets the same parser, and a code it refuses leaves no model; the build then fails on a locale with no language and on two codes naming one locale, and demands no well-formed language tag.**
 
-- A `locales` entry is an object carrying the code as `code`, or the code itself as a text, which declares the locale alike.
+- A `locales` entry is an object carrying the code as `code`, or the code itself as a text, which the same parser and the checks below judge alike: a bare `EN` is unreadable, a bare `US` and a bare `de_CH` beside `de-CH` fail the build, and a bare `de__1996` builds.
 - A parsed locale with an empty language fails the build, as `_CH`, `-CH`, `_CH_x`, `CH`, `US` and the empty code do.
 - Two codes the parser reads as one locale fail the build: the language's case and `-` against `_` are normalized, and the withdrawn `iw`, `ji` and `in` are read as `he`, `yi` and `id`. So `iw` beside `he`, `de_CH` beside `de-CH`, `DE_419` beside `de_419` and a code written twice fail, while `iw` beside `de` and `de_CH_POSIX` beside `de_CH_posix` build.
 - A locale that is no well-formed language tag still builds: `de__1996`, `de_CH_x`, `de_CH_1996_x`, `de_CH_abcd`, `1_419`, `d_419`, `abcdefghi_419`, `ée`, `de_ÄÖ` and `en_US_POSIX_x` build, as do `de`, `und`, `es_419`, `DE_419`, `de_CH_POSIX_WIN32`, `de_CH_x_abc` and `de_CH_a_bcd`.
-- `en_US_abcdefghi` beside `en_US` draws `MVK_SUPP_LANGUAGES_DUPLICATE`, while `en_US_abcd` beside it does not; which other distinct locales that class reads as one is unmeasured.
+- `en_US_abcdefghi` beside `en_US` and `de_CH_abcdefghi` beside `de_CH` draw `MVK_SUPP_LANGUAGES_DUPLICATE`, while `en_US_abcd` beside `en_US` does not; which other distinct locales that class reads as one, and which consistency rule states it, is unmeasured.
 
 Sources: [header locale codes](../docs/sources/model-structure-and-declaration-probes.md#src-header-locale-codes), [inbound 2026-10-29a](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-29a), [inbound 2026-10-29](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-29), [locale grammar](../docs/sources/model-structure-and-declaration-probes.md#src-locale-spelling-grammar), [inbound 2026-09-26m model texts](../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-model-texts), [inbound 2026-09-26n field message gates](../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates), [inbound 2026-10-18](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [inbound 2026-10-22](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-22).
 

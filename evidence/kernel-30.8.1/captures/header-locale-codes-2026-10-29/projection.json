@@ -1,6 +1,6 @@
 {
- "producer": "a12-dmkits 08b0d6499c98b132257ec961eb214de73fa223e3, dmtool 0.13.0, Kernel 30.8.1, dmtool model check -m under OpenJDK 21.0.13, 2026-10-29",
- "base": "evidence/kernel-30.8.1/captures/model-consistency-2026-10-13/Wh_DM.json with header.locales replaced by objects carrying each declared code, or by the listed locales",
+ "producer": "a12-dmkits 08b0d6499c98b132257ec961eb214de73fa223e3, dmtool 0.13.0, Kernel 30.8.1, dmtool model check -m under OpenJDK 21.0.13, 2026-10-29; rows b1, b2, f*, g* and t* run the same day after review",
+ "base": "evidence/kernel-30.8.1/captures/model-consistency-2026-10-13/Wh_DM.json with header.locales replaced: rows with `declared` by objects carrying en_US and each listed code, rows with `locales` by that list as written",
  "layer": "a thrown exception is classified by its stack: frames under ModelIndex.of follow BoundModel.ofJson's completed Kernel gate ModelLoader.loadAndCheck; no Kernel sentence is retained",
  "rows": [
   {
@@ -511,6 +511,358 @@
    "locales": [],
    "shape": "empty list",
    "verdict": "invalid: MVK_SUPP_LANGUAGES_MISSING"
+  },
+  {
+   "id": "b1",
+   "locales": [
+    "en_US",
+    "de_DE"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "b2",
+   "locales": [
+    {
+     "code": "en_US"
+    },
+    {
+     "code": "de_DE"
+    }
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "f00",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "de__1996"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f01",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "de_CH_x"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f02",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "de_CH_1996_x"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f03",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "de_CH_abcd"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f04",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "de_CH_abcdefghi"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f05",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "abcdefghi_419"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f06",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "1_419"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f07",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "d_419"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f08",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "ée"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f09",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "de_ÄÖ"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f10",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "de_٣٣٣"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f11",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "en__1901"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f12",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "en__POSIX"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f13",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "en_US_abcd"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f14",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "abcdefghi_123"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f15",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "e_123"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f16",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "1_123"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f17",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "en_ÄÖ"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f18",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "en_٣٣٣"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "f19",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "en_US_POSIX_x"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "g00",
+   "locales": [
+    {
+     "code": "de_DE"
+    },
+    {
+     "code": "en_US_abcdefghi"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "g01",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "en_US_abcdefghi"
+    }
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "g02",
+   "locales": [
+    {
+     "code": "fr_CH"
+    },
+    {
+     "code": "de_CH"
+    },
+    {
+     "code": "de_CH_abcdefghi"
+    }
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "t00",
+   "locales": [
+    "en_US",
+    "EN"
+   ],
+   "verdict": "unreadable (RK_MODEL_INPUT_INVALID)"
+  },
+  {
+   "id": "t01",
+   "locales": [
+    "en_US",
+    "de_CH",
+    "de-CH"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "t02",
+   "locales": [
+    "en_US",
+    "US"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "t03",
+   "locales": [
+    "en_US",
+    "de__1996"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "t04",
+   "locales": [
+    "en_US",
+    "de_DE"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "t05",
+   "locales": [
+    {
+     "code": "en_US"
+    },
+    {
+     "code": "de_DE"
+    }
+   ],
+   "verdict": "valid"
   }
  ]
 }
