@@ -14,9 +14,11 @@ check-only shapes build a model whose consistency check fails without a class: t
 declaration readers report the unbuilt model, and the evaluation reader refuses it as the runtime route
 does ([check route](../../../docs/sources/model-structure-and-declaration-probes.md#src-model-frame-check-route)).
 
-Rows the Kernel answers with a class of its own are deliberately absent: an absent `modelInfo.name`, a
-time zone the Kernel does not know, a version it refuses and a supported character that is neither one
-character nor a range. -/
+Three kinds of row are deliberately absent. Rows the Kernel answers with a class of its own: an absent
+`modelInfo.name`, a time zone it does not know and a version it refuses. A `modelVersion` written as an
+object or an array, which neither source separates from a check-only shape. And a supported character
+that is neither one character nor a range, or a condition-language code the Kernel does not support, on
+which the three readers do not agree. -/
 
 namespace A12Kernel.Dm.ModelFrameLocks
 
@@ -100,7 +102,7 @@ private def rows : List (String × Json × Option Verdict) :=
   member ["content", "modelConfig", "decimalSeparator"] (some <| text true ·) ++
   member ["content", "modelConfig", "timeZone"] (fun shape => if scalar shape then none else some (text true shape)) ++
   member ["header", "modelVersion"] (fun shape =>
-    if scalar shape then none else some (if shape == "absent" || shape == "null" then .checkOnly else .noModel)) ++
+    if shape == "absent" || shape == "null" then some .checkOnly else none) ++
   (["labels", "annotations", "modelReferences"].flatMap fun key => member ["header", key] (some <| list false ·)) ++
   member ["header", "locales"] (fun shape =>
     some (if shape == "absent" || shape == "null" then .checkOnly else list false shape)) ++
@@ -128,7 +130,7 @@ example :
     verdict (language (Json.mkObj [("code", "en_US")])) = some .builds ∧
     verdict (language (Json.str "de_DE") "FeldAngegeben(Gate)") = some .builds ∧
     verdict (language (Json.mkObj [("code", "de_DE")]) "FeldAngegeben(Gate)") = some .builds ∧
-    verdict (language (Json.str "de_DE")) = verdict (language (Json.mkObj [("code", "de_DE")])) ∧
+    ((readModel (language (Json.str "de_DE") "FeldAngegeben(Gate)")).toOption.map (·.conditionLanguage)) = some "de_DE" ∧
     [Json.null, Json.mkObj [], Json.arr #[], toJson (5 : Nat), Json.bool true, Json.mkObj [("code", Json.null)],
       Json.mkObj [("code", Json.mkObj [])], Json.mkObj [("x", "en_US")]].all
       (fun value => verdict (language value) == some .noModel) := by
@@ -147,7 +149,8 @@ example :
 
 /-- Over the sixteen presence combinations of the version, the model info, the configuration and the
 model type, the check runs exactly when the version and the model info are both present; the last two
-are the control that the rows do not merely count removals. -/
+are the control that the rows do not merely count removals. The grid's broken-rule twin is not locked:
+these readers do not judge a rule's condition, so it draws the sound rule's verdicts. -/
 example :
     let members := [["header", "modelVersion"], ["content", "modelInfo"], ["content", "modelConfig"], ["header", "modelType"]]
     (List.range 16).all fun kept =>

@@ -18,8 +18,9 @@ Four shapes cost only the entry's consistency check: no `modelVersion`, no `mode
 absent or `null`, and a `null` supported character. The model builds and its check fails without a
 class, so they are a `FrameCheckFailure`, never a read failure.
 
-A number binds as text only as an integer token, the one spelling measured; a fraction or an exponent is
-outside the represented profile, since the Kernel keeps the token as written and this reader does not. -/
+An integer number binds as its value's decimal text, measured for `5`; a token with a fraction or an
+exponent is outside the represented profile, since the Kernel keeps the token as written and Lean's
+parser does not. -/
 
 namespace A12Kernel.Dm
 
@@ -76,8 +77,9 @@ def frameObject (parent : Json) (key : String) : Except String (Option Json) :=
   | .ok value@(.obj _) => pure (some value)
   | .ok _ => throw s!"model member {key} is no object"
 
-/-- A condition language is a text or an object whose `code` binds as a text; `null`, a scalar other
-than text, an array and an object without a text `code` leave no model. -/
+/-- A condition language is a text, or an object whose `code` binds as a text member does; `null`, another
+scalar, an array, and an object whose `code` is absent, `null` or a container leave no model. A `code`
+written as a number binds as its text here, which no row measures. -/
 private def conditionLanguageCode (config : Json) : Except String (Option String) :=
   match config.getObjVal? "conditionLanguage" with
   | .error _ => pure none
