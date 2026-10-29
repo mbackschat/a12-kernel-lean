@@ -144,3 +144,13 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: `3dd931e4db5b63ac08c1a0a927989bb3b6b4b21e`.
 - `disposition`: Reconciles both parts: `order_DM` and `order2_DM` rerun through the Kernel's own reader and builder give the type-definition order and all four repeated-value orders unchanged, and all 2,410 spellings as a label entry build a model exactly where the jar parses. Two inbound extensions, a Latin-1 id row and the header locale code's tag demands and locale identity, enter spec/01 without a new entry. The mechanism wording is corrected to a fill at every occurrence after the first (KF647, KF649, KF290). [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-29a).
+
+<a id="spec-2026-10-29-02"></a>
+### SPEC-2026-10-29-02 — A header locale code needs no well-formed language tag; an empty language and a repeated locale fail the build
+
+- `status`: pending
+- `canonical`: [spec/01 §1.1](../spec/01-data-model.md#member-binding), the header locale code paragraph and its five bullets, and the two header rows of [spec/01 §1.2](../spec/01-data-model.md#defects-that-leave-no-model)'s no-model table.
+- `delta`: Replaces KF649's header demand of a well-formed language tag: the Kernel builds `de__1996`, `de_CH_x`, `de_CH_abcd`, `1_419`, `abcdefghi_419`, `ée`, `en_US_POSIX_x` and the other tag-refused codes of the October 29a letter, and the tag refusal those rows record is thrown by dmtool's own model index after the Kernel's gate has passed. An empty language and two codes naming one locale fail the build, `en_US_abcdefghi` beside `en_US` draws `MVK_SUPP_LANGUAGES_DUPLICATE` where `en_US_abcd` does not, and bare-text `locales` entries declare their locales.
+- `basis`: the [header locale codes](sources/model-structure-and-declaration-probes.md#src-header-locale-codes) probe, 63 `model check` runs measured locally 2026-10-29, Kernel 30.8.1, at the measurement pin `08b0d6499`, each thrown exception classified by its stack.
+- `acceptance`: Reconcile every row of the projection through a route whose Kernel verdict no tool reader after the gate can replace. Which other distinct locales `MVK_SUPP_LANGUAGES_DUPLICATE` reads as one is unmeasured, so do not claim it.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

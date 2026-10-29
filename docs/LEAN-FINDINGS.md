@@ -2791,3 +2791,11 @@ The Kernel collects an Enumeration's repeated values into a `java.util.HashMap`,
 Lean treatment: none. The owner chose to state no order for these notifications, and Lean keeps first-occurrence order as its own choice ([`EnumerationDeclarationNotification.lean`](../A12Kernel/Elaboration/EnumerationDeclarationNotification.lean), block 6).
 
 **Before emulating a host collection's order, run the real collection filled by the same call, and take the emulation's predictions from it rather than from the collection's documentation.** A collision row and a row just past a resize threshold separate the fill semantics.
+
+## LF224 — a tool reader that runs after the oracle's gate can turn the oracle's admission into a refusal
+
+The October 29a letter recorded a header demand of a well-formed language tag, measured through `BoundModel.ofJson`, whose lock counted any runtime exception as the Kernel's refusal. `BoundModel.ofJson` runs the Kernel's gate first and then dmtool's own model index, which parses each header code as a language tag; on all 20 tag-refused codes the gate had passed and the index threw ([checkpoint](sources/model-structure-and-declaration-probes.md#src-header-locale-codes)). Only the stack separated the two: the exception class and the missing model were identical.
+
+Lean treatment: none in Lean; [spec/01 §1.1](../spec/01-data-model.md#member-binding) states the Kernel's account and [SPEC-2026-10-29-02](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-29-02) carries it back.
+
+**Before adopting an oracle refusal that arrives as an exception, locate the throwing frame relative to the oracle's gate.** A refusal thrown after the gate returned is the instrument's, whatever the route is called.

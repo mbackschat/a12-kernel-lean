@@ -1,0 +1,516 @@
+{
+ "producer": "a12-dmkits 08b0d6499c98b132257ec961eb214de73fa223e3, dmtool 0.13.0, Kernel 30.8.1, dmtool model check -m under OpenJDK 21.0.13, 2026-10-29",
+ "base": "evidence/kernel-30.8.1/captures/model-consistency-2026-10-13/Wh_DM.json with header.locales replaced by objects carrying each declared code, or by the listed locales",
+ "layer": "a thrown exception is classified by its stack: frames under ModelIndex.of follow BoundModel.ofJson's completed Kernel gate ModelLoader.loadAndCheck; no Kernel sentence is retained",
+ "rows": [
+  {
+   "id": "s00",
+   "declared": [
+    "en_US",
+    "de"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s01",
+   "declared": [
+    "en_US",
+    "deu"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s02",
+   "declared": [
+    "en_US",
+    "de-CH"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s03",
+   "declared": [
+    "en_US",
+    "es_419"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s04",
+   "declared": [
+    "en_US",
+    "de_CH_1996"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s05",
+   "declared": [
+    "en_US",
+    "de-CH-1996"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s06",
+   "declared": [
+    "en_US",
+    "de_CH_POSIX"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s07",
+   "declared": [
+    "en_US",
+    "de_CH_1abc"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s08",
+   "declared": [
+    "en_US",
+    "de_CH_abcdefgh"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s09",
+   "declared": [
+    "en_US",
+    "de_CH_POSIX_WIN32"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s10",
+   "declared": [
+    "en_US",
+    "DE_419"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s11",
+   "declared": [
+    "en_US",
+    "abcd_419"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s12",
+   "declared": [
+    "en_US",
+    "abcdefgh_419"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s13",
+   "declared": [
+    "en_US",
+    "und"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s14",
+   "declared": [
+    "en_US",
+    "_CH"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "s15",
+   "declared": [
+    "en_US",
+    "-CH"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "s16",
+   "declared": [
+    "en_US",
+    "_CH_x"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "s17",
+   "declared": [
+    "en_US",
+    "CH"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "s18",
+   "declared": [
+    "en_US",
+    "US"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "s19",
+   "declared": [
+    "en_US",
+    "EN"
+   ],
+   "verdict": "unreadable (RK_MODEL_INPUT_INVALID)"
+  },
+  {
+   "id": "s20",
+   "declared": [
+    "en_US",
+    "de__1996"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s21",
+   "declared": [
+    "en_US",
+    "de_CH_x"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s22",
+   "declared": [
+    "en_US",
+    "de_CH_1996_x"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s23",
+   "declared": [
+    "en_US",
+    "de_CH_abcd"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s24",
+   "declared": [
+    "en_US",
+    "de_CH_abcdefghi"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s25",
+   "declared": [
+    "en_US",
+    "abcdefghi_419"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s26",
+   "declared": [
+    "en_US",
+    "1_419"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s27",
+   "declared": [
+    "en_US",
+    "d_419"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s28",
+   "declared": [
+    "en_US",
+    "ée"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s29",
+   "declared": [
+    "en_US",
+    "de_ÄÖ"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s30",
+   "declared": [
+    "en_US",
+    "de_٣٣٣"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s31",
+   "declared": [
+    "en_US",
+    "zh_Hans_CN"
+   ],
+   "verdict": "unreadable (RK_MODEL_INPUT_INVALID)"
+  },
+  {
+   "id": "s32",
+   "declared": [
+    "en_US",
+    "de_CH-x"
+   ],
+   "verdict": "unreadable (RK_MODEL_INPUT_INVALID)"
+  },
+  {
+   "id": "s33",
+   "declared": [
+    "en_US",
+    "en__1901"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s34",
+   "declared": [
+    "en_US",
+    "en__POSIX"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s35",
+   "declared": [
+    "en_US",
+    "en_US_abcd"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s36",
+   "declared": [
+    "en_US",
+    "en_US_abcdefghi"
+   ],
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_DUPLICATE"
+  },
+  {
+   "id": "s37",
+   "declared": [
+    "en_US",
+    "abcdefghi_123"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s38",
+   "declared": [
+    "en_US",
+    "e_123"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s39",
+   "declared": [
+    "en_US",
+    "1_123"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s40",
+   "declared": [
+    "en_US",
+    "en_ÄÖ"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s41",
+   "declared": [
+    "en_US",
+    "en_٣٣٣"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s42",
+   "declared": [
+    "en_US",
+    "en_US_POSIX_x"
+   ],
+   "verdict": "kernel-admitted; dmtool index then threw IllformedLocaleException"
+  },
+  {
+   "id": "s43",
+   "declared": [
+    "en_US",
+    "en_US-POSIX"
+   ],
+   "verdict": "unreadable (RK_MODEL_INPUT_INVALID)"
+  },
+  {
+   "id": "s44",
+   "declared": [
+    "en_US",
+    "_US"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "s45",
+   "declared": [
+    "en_US",
+    "-US"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "s46",
+   "declared": [
+    "en_US",
+    "_US_x"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "s47",
+   "declared": [
+    "en_US",
+    ""
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "s48",
+   "declared": [
+    "en_US",
+    "en_us"
+   ],
+   "verdict": "unreadable (RK_MODEL_INPUT_INVALID)"
+  },
+  {
+   "id": "s49",
+   "declared": [
+    "en_US",
+    "de_CH_x_abc"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "s50",
+   "declared": [
+    "en_US",
+    "de_CH_a_bcd"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "p00",
+   "declared": [
+    "en_US",
+    "iw",
+    "he"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "p01",
+   "declared": [
+    "en_US",
+    "in",
+    "id"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "p02",
+   "declared": [
+    "en_US",
+    "ji",
+    "yi"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "p03",
+   "declared": [
+    "en_US",
+    "de_CH",
+    "de-CH"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "p04",
+   "declared": [
+    "en_US",
+    "DE_419",
+    "de_419"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "p05",
+   "declared": [
+    "en_US",
+    "iw",
+    "de"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "p06",
+   "declared": [
+    "en_US",
+    "en_US"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "p07",
+   "declared": [
+    "en_US",
+    "xx_123",
+    "xx_123"
+   ],
+   "verdict": "build failure (one codeless notification)"
+  },
+  {
+   "id": "p08",
+   "declared": [
+    "en_US",
+    "de_CH_POSIX",
+    "de_CH_posix"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "base",
+   "declared": [
+    "en_US"
+   ],
+   "verdict": "valid"
+  },
+  {
+   "id": "b0",
+   "locales": [
+    "en_US"
+   ],
+   "shape": "bare texts",
+   "verdict": "valid"
+  },
+  {
+   "id": "b3",
+   "locales": [],
+   "shape": "empty list",
+   "verdict": "invalid: MVK_SUPP_LANGUAGES_MISSING"
+  }
+ ]
+}

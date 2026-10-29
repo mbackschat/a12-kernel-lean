@@ -121,14 +121,15 @@ Sources: [repeatability checkpoint](../docs/sources/group-list-and-capacity-prob
 - Two quirks widen it: in a two-segment spelling a three-digit area is taken after any first segment, so `XX_123` parses while `XX_123_x` does not, and a bare uppercase pair parses exactly when the runtime's JDK lists it as a country, so `US` parses and `EN` does not. Letter case and digits follow Unicode's classes.
 - So `en_US`, `en-US`, `en`, `eng`, `fr_CA`, `en_US_POSIX` and `en_123` parse, while `en_us`, `EN_US`, `e`, `en_U`, `en_USA`, `klingon`, a padded spelling and `zh_Hans_CN` leave no model.
 
-**A header's locale code meets the same parser and then demands a well-formed language tag of the parsed locale; a code that fails either leaves no model.**
+**A header's locale code meets the same parser, and a code it refuses leaves no model; the build then fails on a locale with no language and on two codes naming one locale, and demands no well-formed language tag.**
 
 - A `locales` entry is an object carrying the code as `code`, or the code itself as a text, which declares the locale alike.
-- The language must be 2–8 ASCII letters and the country, when present, two ASCII letters or three ASCII digits. A variant is admitted only beside a country, and each of its subtags, split at `_` or `-`, must be 5–8 ASCII letters or digits, or four ASCII letters or digits opening with a digit (measured: `1abc`).
-- So `de`, `deu`, `und`, `de-CH`, `es_419`, `de_CH_1996`, `de-CH-1996`, `de_CH_POSIX_WIN32`, `de_CH_1abc`, `DE_419` and `abcdefgh_419` build, while `_CH`, `CH`, `US`, `de__1996`, `de_CH_x`, `de_CH_abcd`, `de_CH_abcdefghi`, `1_419`, `d_419`, `abcdefghi_419`, `ée` and `zh_Hans_CN` leave no model.
-- Two codes the parser reads as one locale are one declaration twice, which leaves no model: the language's case and `-` against `_` are normalized, and the withdrawn `iw`, `ji` and `in` are read as `he`, `yi` and `id`. So `iw` beside `he`, `de_CH` beside `de-CH` and `DE_419` beside `de_419` leave no model, while `iw` beside `de` builds.
+- A parsed locale with an empty language fails the build, as `_CH`, `-CH`, `_CH_x`, `CH`, `US` and the empty code do.
+- Two codes the parser reads as one locale fail the build: the language's case and `-` against `_` are normalized, and the withdrawn `iw`, `ji` and `in` are read as `he`, `yi` and `id`. So `iw` beside `he`, `de_CH` beside `de-CH`, `DE_419` beside `de_419` and a code written twice fail, while `iw` beside `de` and `de_CH_POSIX` beside `de_CH_posix` build.
+- A locale that is no well-formed language tag still builds: `de__1996`, `de_CH_x`, `de_CH_1996_x`, `de_CH_abcd`, `1_419`, `d_419`, `abcdefghi_419`, `ée`, `de_ÄÖ` and `en_US_POSIX_x` build, as do `de`, `und`, `es_419`, `DE_419`, `de_CH_POSIX_WIN32`, `de_CH_x_abc` and `de_CH_a_bcd`.
+- `en_US_abcdefghi` beside `en_US` draws `MVK_SUPP_LANGUAGES_DUPLICATE`, while `en_US_abcd` beside it does not; which other distinct locales that class reads as one is unmeasured.
 
-Sources: [inbound 2026-10-29a](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-29a), [inbound 2026-10-29](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-29), [locale grammar](../docs/sources/model-structure-and-declaration-probes.md#src-locale-spelling-grammar), [inbound 2026-09-26m model texts](../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-model-texts), [inbound 2026-09-26n field message gates](../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates), [inbound 2026-10-18](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [inbound 2026-10-22](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-22).
+Sources: [header locale codes](../docs/sources/model-structure-and-declaration-probes.md#src-header-locale-codes), [inbound 2026-10-29a](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-29a), [inbound 2026-10-29](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-29), [locale grammar](../docs/sources/model-structure-and-declaration-probes.md#src-locale-spelling-grammar), [inbound 2026-09-26m model texts](../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-model-texts), [inbound 2026-09-26n field message gates](../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates), [inbound 2026-10-18](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-18), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [inbound 2026-10-22](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-22).
 
 ### 1.2 Model consistency rules
 
@@ -150,7 +151,8 @@ Sources: [inbound 2026-10-29a](../docs/sources/inbound-handbacks.md#src-inbound-
 | a primitive member that cannot bind ([§1.1](#member-binding)) | no model | no model: binding precedes the filter |
 | a localized-text member that cannot bind ([§1.1](#member-binding)) | no model | no model: binding precedes the filter |
 | two type definitions sharing an id, the empty id included | no model | — |
-| a header locale code the parser or the language-tag demands refuse, or two codes naming one locale ([§1.1](#member-binding)) | no model | — |
+| a header locale code the parser refuses ([§1.1](#member-binding)) | unreadable | — |
+| a header locale with an empty language, or two header codes naming one locale ([§1.1](#member-binding)) | build fails | — |
 | an unknown, absent or null field type | load or build refusal | kept |
 | a Date type without its body object; a Time, DateTime or DateFragment without one (a String or Boolean without one is read) | unreadable | kept for a Date; not stated for the others |
 | `datePrecision` on a temporal kind other than Date; any member a type body does not declare | unreadable | not stated |
