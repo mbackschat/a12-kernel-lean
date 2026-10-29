@@ -172,7 +172,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-29-04"></a>
 ### SPEC-2026-10-29-04 — A computation's implicit message lists fillToFix by the ordinary omission projection, withholding positive presence
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/09 §6](../spec/09-computations.md#6-the-implicit-validation-rule-precisely), the `fillToFix` bullet of the message's type and channels.
 - `delta`: Replaces the rule that an implicit message's `fillToFix` is all of `referenced` or none of it with the ordinary rule arm's omission projection of the generated condition: empty on VALUE, and on OMISSION the pointers its ordinary operands contribute, the computed target always among them. A field read only through positive presence is referenced but not listed: a common precondition `FieldFilled(Gate)`, a positive field-fill quantifier's field operands and a `GroupFilled` precondition's group fields are withheld, while a field the condition also reads ordinarily, such as a `Having` filter's field, an operation operand or a parallel index key, stays listed, so the set is a proper subset of `referenced`.
 - `basis`: the retained [empty pattern execution](sources/computation-scheduling-probes.md#src-empty-pattern-execution) (`FilteredComp`, row `reached-filled`), [field-fill computation guards](sources/computation-scheduling-probes.md#src-field-fill-computation-guards) (`AF2Comp`) and [parallel instance leaves](sources/key-join-and-parallel-probes.md#src-parallel-instance-leaves) (`Cg02`) captures, Kernel 30.8.1, each OMISSION message's `fillToFix` a proper subset of its `referenced` set as read 2026-10-29; the Lean replay, which lowers the computation to its generated rule, matches them. The U02 cold evaluator's question Q-004, in `reports/QUESTIONS.md` of `../a12-rust-interpreter-u02` at its commit `d2dbe1a`, found the disagreement; it was introduced at `774f375` and is present at `d2dbe1a`.
@@ -182,7 +182,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-29-05"></a>
 ### SPEC-2026-10-29-05 — The message cache's population, identifier hash, bucket and capacity decide a duplicated key's winner
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/08 §4.3](../spec/08-paths-and-references.md#43-selected-references-in-validation-messages), the population and hash paragraph after the OpenJDK 21 profile.
 - `delta`: States the derivation the clause left to its source account: which group rows and cells enter the temporary cache, the model-wide internal names with their numeric suffixes, the coordinate vector, the identifier hash as a 31-polynomial over the coordinates and the name's UTF-16 units, the bucket `(h xor (h >>> 16)) mod capacity`, the load capacity with its early collision growth, and the winner rule that leaves a query undecided unless every possible capacity agrees.
 - `basis`: the [cache population order](sources/message-and-pointer-probes.md#src-message-cache-population-order) checkpoint's identifier and host source reading with its independent prediction of four observed winners, and the Lean replay of the retained `message-cache-topology-2026-10-10` capture, matching all 1,122 comparisons, and of `message-cache-collision-2026-10-10`, matching 60, leaving 54 host-order comparisons undecided and 10 rows with no single Kernel observation, 2026-10-29. The U02 cold evaluator's question Q-005, at its commit `73d8b84`, found the gap.
