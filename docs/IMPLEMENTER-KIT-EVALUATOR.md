@@ -65,7 +65,7 @@ An artifact is a JSON object whose `rows` carry the row `name`, `enginesAgree`, 
 - `computations`: `outcomes`, one entry per computed target cell with `field`, `cleared`, `errored` and an optional `value`, and `formalErrorsInOperands`, the formal findings the call reported on operands.
 - `computeResults`, `customConditionCalls`, `fault`: not compared.
 
-Each channel is an independent call on the row's document as read: validation does not see computed values, as [spec/01 §4.3](../spec/01-data-model.md#43-the-compute--apply--validate-flow) states. A message carries `code`, `field` (an exact pointer), `severity` (default `ERROR` when absent), `type`, a placeholder `message`, and the pointer lists `referenced` and `fillToFix`. Pointer spelling is canonical as [spec/01](../spec/01-data-model.md) defines: no leading slash, 1-based repetitions, and a repetition of `1` left unwritten, so `Order/Lines[2]/Parts/Count` is the first part of the second line.
+Each channel is an independent call on the row's document as read: validation does not see computed values, as [spec/01 §4.3](../spec/01-data-model.md#43-the-compute--apply--validate-flow) states. A message carries `code`, `field` (an exact pointer), `severity` (default `ERROR` when absent), `type`, a placeholder `message`, and the pointer lists `referenced` and `fillToFix`. Pointer spelling is canonical as [spec/01](../spec/01-data-model.md) defines: no leading slash, 1-based repetitions, and a repetition of `1` left unwritten, so `Order/Lines[2]/Parts/Count` is the first part of the second line. An address any of whose coordinates is not a concrete row is written in the second, partially known form instead: it opens with `/`, every group part carries its coordinate in brackets, `[1]` for a non-repeatable part, `[0]` for an unbound iterated level, `[-5]` for an UNKNOWN one and `[-6]` for a parallel iteration, and the field part stays unbracketed, its coordinate always `1`. So `/Order[1]/Lines[0]/Produced` is `Produced` in every line of the first order. Compare an address by its coordinates, not its text.
 
 ## DM-JSON model shape
 
@@ -131,6 +131,7 @@ Work never waits for a person or another session. Every uncertainty has a way fo
 - A question the specification leaves open, even one that affects a whole family slice, gets a chosen reading in the questions log, and work continues on that reading. Rework after a later packet settles it is the accepted cost.
 - Information that would need a read outside the packet and the repository is never fetched. Record what was missing in the questions log and continue with the rows it does not affect.
 - A divergence that two successive attempts neither narrow nor move to another first divergent boundary is recorded in `PLAN.md` with both attempts, and work moves on to the next slice.
+- A finished milestone or slice is no stopping point: after committing its report, continue with `PLAN.md`'s next action in the same session rather than ending it to offer a choice.
 - A failed packet manifest check is the one condition that halts work: record it in `PLAN.md` and end the session until a new packet version arrives.
 
 ## Session prompts

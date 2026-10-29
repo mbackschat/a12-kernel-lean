@@ -80,6 +80,7 @@ Sources: [repeatability checkpoint](../docs/sources/group-list-and-capacity-prob
 - **Time zone** — the DM-JSON key `content.modelConfig.timeZone`. Absent means `UTC`, and an explicit id outside the host's legal set is refused `MVK_INVALID_TIME_ZONE`. [§6 §5](05-dates-and-time.md#5-time-zones-and-the-sub-day-difference) owns the legal set, the internal `TimeZone` key and how the zone resolves every temporal value.
 - **Supported characters** — an optional legal charset. An absent or empty list uses the default Basic Multilingual Plane policy; a list containing an empty entry is malformed. The configured definition is runtime-enforced according to the exact entry and atomic-matching rules in [§7](06-strings-and-enumerations.md#a2-legal-charset-definitions-and-atomic-matching).
 - **`fieldRefByShortNameAllowed`** — enables model-wide unique short-name field references. ([§10](08-paths-and-references.md))
+- **`decimalSeparator`** — the DM-JSON key `content.modelConfig.decimalSeparator`. Every retained model declares `.`, and the literal grammar ([§12](12-concrete-syntax.md)) and the document's stored Number text use `.` throughout; what a model declaring any other value evaluates differently is unmeasured.
 
 #### The model's own texts meet the default charset
 
