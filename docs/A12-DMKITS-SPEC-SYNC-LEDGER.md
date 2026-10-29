@@ -148,7 +148,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-29-02"></a>
 ### SPEC-2026-10-29-02 — A header locale code needs no well-formed language tag; an empty language and a repeated locale fail the build
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/01 §1.1](../spec/01-data-model.md#member-binding), the header locale code paragraph and its six bullets, and the two header rows of [spec/01 §1.2](../spec/01-data-model.md#defects-that-leave-no-model)'s no-model table.
 - `delta`: Corrects the header part `SPEC-2026-10-29-01`'s disposition took from KF649, its demand of a well-formed language tag: beside `fr_CH` the Kernel admits all 21 tag-refused codes of the October 29a letter, beside `en_US` the 20 other than `en_US_abcdefghi`, which it admits beside `de_DE` too, and the refusal those rows record is thrown by dmtool's own model index after the Kernel's gate has passed. An empty language and two codes naming one locale fail the build, two distinct locales with one JDK language tag draw `MVK_SUPP_LANGUAGES_DUPLICATE`, as `und` beside `ée` and `en_US` beside `en_US_abcdefghi` do where `en_US` beside `en_US_abcd` does not, and a bare-text `locales` entry is judged as an object entry is.
 - `basis`: the [header locale codes](sources/model-structure-and-declaration-probes.md#src-header-locale-codes) probe, 109 `model check` runs measured locally 2026-10-29, Kernel 30.8.1, at the measurement pin `08b0d6499`, each thrown exception classified by its stack.
