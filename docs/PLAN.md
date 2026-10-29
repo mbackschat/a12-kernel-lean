@@ -11,7 +11,7 @@
 - `baseline`: K22 passed one integrated build, `lake test` (5924 rule-check rows agree), the trust audit (3051 theorem roots) and the population replay after its last disposition. 171 rows have no matching retained observation and 8 cannot be read or prepared as a whole, four requests needing the host pattern compiler or registered custom validators; matching is calibration over this population only.
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
-- `sequence`: K21 checks semantic transport, K22 accepts conformance, then U01 implements the Rust interpreter and U02 the SMT consumer. Concrete repository, dependency and public-contract choices retain their existing decision boundaries.
+- `sequence`: K21 checks semantic transport, K22 accepts conformance, then U01 implements the Rust interpreter, U02 repeats it cold on the rewritten spec, and U03 builds the SMT consumer. Concrete repository, dependency and public-contract choices retain their existing decision boundaries.
 - `stop`: Stop the conformance phase at K22 and select U01. A genuine blocker keeps its task unchecked. Do not append an automatic conformance-tail programme or require the consumer products before K22.
 
 <a id="single-track-breadth-queue"></a>
@@ -183,7 +183,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 
 - [x] Run bounded independent Execute and Analyze/Synthesize readbacks against the material a Rust interpreter and SMT consumer will receive. [Use cases](USE-CASES.md), [implementer contract](IMPLEMENTER-GUIDE.md), [SMT proposal](SMT-SOLVER-SUPPORT-PROPOSAL.md). Closed 2026-10-24 by [`k21-execute-02`](consumer-probes/EXECUTE.md#run-k21-execute-02) and [`k21-analyze-synthesize-01`](consumer-probes/ANALYZE.md#run-k21-analyze-synthesize-01) on the [K21 capture](sources/consumer-readiness-probes.md#src-consumer-readiness-k21); the three outputs the packet left unstated entered `spec/` as [SPEC-2026-10-24-01](https://github.com/mbackschat/a12-kernel-lean/blob/255d971f369efe847a4b39d5127b8a290e4f37ff/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-24-01).
 - Matrix: fresh producer/clear/poison; partial selected rows and duplicate host context; formal versus generated versus authored validity; error-condition reachability versus model acceptance; a finite witness with UNKNOWN/empty input and a computation before validation.
-- Done: an isolated consumer can reconstruct these decisions and identify host/bound assumptions without Kernel archaeology. Any missing semantic distinction returns to K01–K19; a missing consumer adapter or shipment is work for U01/U02. Readback success is not Rust or SMT implementation qualification.
+- Done: an isolated consumer can reconstruct these decisions and identify host/bound assumptions without Kernel archaeology. Any missing semantic distinction returns to K01–K19; a missing consumer adapter or shipment is work for U01/U03. Readback success is not Rust or SMT implementation qualification.
 
 ### K22 — final conformance acceptance and transition
 
@@ -198,7 +198,7 @@ An implementation task is done when its named reader-to-evaluator/output cases a
 This phase is owner-requested work, not an optional aspiration or another prerequisite for declaring K01–K22 complete. Rust first is the recommended order because an independent evaluator exercises the complete transport contract before SMT adds encoding and solver-trust obligations. Existing [Rust correlation work](IMPLEMENTER-KIT-CORRELATION.md#fresh-rust-runtime-consumer-probe) is a bounded prior asset, not a general interpreter; inspect and reuse it where its contract fits.
 
 - [ ] **U01 — Rust interpreter.** Freeze the evaluator shipment and implementation profile, then implement and qualify the agreed validation/computation surface in Rust, including exact numbers, row identity, partial relevance, computation state and host interfaces. Completion requires an actual runnable consumer and differential/property evidence, not another readback. Prepare concrete repository/session and dependency choices at entry under the [consumer handoff rules](IMPLEMENTER-GUIDE.md#lessons-from-the-first-cold-implementation); no downstream checkout is created by this planning change. Lean replays rules and computations one at a time and owns built-in findings per family, so the whole-call message inventory, carrying the built-in channel shape of [spec/02 §B.1](../spec/02-logic-and-formal-errors.md#b1-what-a-formal-error-is), is assembled and differentially checked by this consumer ([K21](consumer-probes/EXECUTE.md#run-k21-execute-01)).
-- [ ] **U02 — SMT-backed analysis and synthesis.** Use the [existing proposal](SMT-SOLVER-SUPPORT-PROPOSAL.md) to settle a finite initial query profile, then implement its translation, solver interaction and checked results. Distinguish condition/rule reachability from model inhabitance and computation-alternative coverage. Replay decoded SAT witnesses through the accepted evaluator semantics; bound UNSAT claims by encoding completeness and solver/certificate trust. Resolve relevant mandatory-information and transformation needs here, instead of using them to defer consumer work indefinitely.
+- [ ] **U03 — SMT-backed analysis and synthesis.** Use the [existing proposal](SMT-SOLVER-SUPPORT-PROPOSAL.md) to settle a finite initial query profile, then implement its translation, solver interaction and checked results. Distinguish condition/rule reachability from model inhabitance and computation-alternative coverage. Replay decoded SAT witnesses through the accepted evaluator semantics; bound UNSAT claims by encoding completeness and solver/certificate trust. Resolve relevant mandatory-information and transformation needs here, instead of using them to defer consumer work indefinitely.
 
 The request adopts this sequencing and the two consumer objectives. It does not silently adopt every optional feature in the SMT proposal or choose new dependencies, repository creation, releases or public compatibility claims. Those concrete choices belong to the implementation boundary, with existing approval rules applied only where needed.
 
@@ -219,7 +219,7 @@ The request adopts this sequencing and the two consumer objectives. It does not 
 - `triage`: each divergence follows the [disagreement protocol](IMPLEMENTER-GUIDE.md#disagreement-and-missing-semantics-protocol) from its first divergent boundary. A case the spec decides is a Rust defect fixed there, and repeated misreadings of one clause are rewritten here. A case the spec leaves open is a spec defect: the clause, a Lean lock where behavior is involved, a ledger entry when a12-dmkits must reconcile, and a new packet. Rust following the spec against a capture Lean matches is spec prose drifted from Lean, corrected in `spec/`. A case no retained capture separates gets a local Kernel probe before any account is chosen. The [evaluator kit](IMPLEMENTER-KIT-EVALUATOR.md#comparison-contract) compares whole-call message sets with built-in findings, partial-call references and the full outcome pointer set, none of which the Lean replay compares, so a divergence there is first checked against Lean's own output before any account is chosen.
 - `acceptance`: HIGH reviews the Rust source and tests at the reported commit before accepting a milestone, since a report alone hides fixture branching. Each milestone leaves a run record under the [Execute category](consumer-probes/EXECUTE.md); process lessons go to the implementer guide's lessons and durable Lean lessons to `LEAN-FINDINGS.md`.
 - `completion`: U01 closes when every in-profile capture row matches or carries an explained profile exclusion, the questions log holds no open semantic question, the mutation gate passes, and the qualification record names the final packet.
-- `deferred`: a Lean-reference differential over generated inputs, which needs a DM-JSON reference operation and its own approval; host features beyond fail-closed; and U02, which waits until U01's first profile qualifies.
+- `deferred`: a Lean-reference differential over generated inputs, which needs a DM-JSON reference operation and its own approval; host features beyond fail-closed; and U03, which waits until U01's first profile qualifies.
 
 <a id="u02-plan"></a>
 ### U02 plan
@@ -257,16 +257,16 @@ The old D identifiers explain the C01–C22 boundary only. They no longer exclud
 |---|---|---|
 | SG4, SG18, SG16 | K02, K08–K12, K20 | U01 |
 | SG5, SG27 | K04, K06, K16 | U01 |
-| SG6, SG21, SG23 | K03, K11–K12, K19 | U01/U02 |
+| SG6, SG21, SG23 | K03, K11–K12, K19 | U01/U03 |
 | SG7, SG8 | K01, K09, K13–K14, K17 | U01 |
 | SG25, SG10 | K07, K14–K15 | U01 |
-| SG11 | K18 | U01/U02 |
+| SG11 | K18 | U01/U03 |
 | SG9, SG29, SG19 | K04–K07, K17, K19 | U01 |
-| SG13, SG17, SG20 | K03, K06, K19 | U02 transformation/analysis only |
+| SG13, SG17, SG20 | K03, K06, K19 | U03 transformation/analysis only |
 | SG15 | K10–K12 | U01 |
-| SG14 | K19 service boundary | U02 mandatory-information analysis |
-| SG28 | K17, K19 | U01/U02 |
-| SG12 | K18, K20 | U01/U02 qualification |
+| SG14 | K19 service boundary | U03 mandatory-information analysis |
+| SG28 | K17, K19 | U01/U03 |
+| SG12 | K18, K20 | U01/U03 qualification |
 
 | Former exclusion | Current disposition |
 |---|---|
@@ -280,11 +280,11 @@ The old D identifiers explain the C01–C22 boundary only. They no longer exclud
 | D10 regex/Unicode | K13 semantics and K19 compiler/host contract |
 | D11 callbacks/codecs | K01, K13, K18 local work; [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) supplies the expanded-A12 boundary |
 | D12 Number display ingress | K16 |
-| D13 mandatory-information service | K19 boundary, then U02 when its query profile needs the service |
+| D13 mandatory-information service | K19 boundary, then U03 when its query profile needs the service |
 | D14 partial plans | K08 enforcement and K19 contract; no silent stale-field execution |
 | D15 application/explanation | K10; K19 distinguishes observability limits from evaluator state |
 | D16 declarations/importing | K11, K17; a general importer is a separate consumer |
-| D17 transformation theorem | Evaluator effects in K03; transformation-specific theorem/probe in U02 when adopted |
+| D17 transformation theorem | Evaluator effects in K03; transformation-specific theorem/probe in U03 when adopted |
 | D18 legacy/public API breadth | K04–K07 and K14–K15 semantic distinctions; U01 owns needed transport, legacy API parity is not implied |
 | D19 declaration catalog | K17 |
 | D20 extra carriers/chains | K08–K12 and K20: material policy distinctions, not arbitrary extra lengths |

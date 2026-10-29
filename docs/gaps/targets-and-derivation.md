@@ -22,7 +22,7 @@
 - `consumer-gated`: other recognized rule families and count collector sites; longer, branching, seed-interleaved/reordered or reused count dependencies; and mixed-edge cycle calibration beyond the retained closure matrices.
 - `consumer-gated`: arbitrary Boolean formulas, wider repetition/parallel iteration, concrete and wider semantic indices, filter internals, and contributing cross-root forms. Exact excluded-rule identities must remain distinct from supported contributing shapes.
 - `consumer-gated`: declaration interactions beyond unconditional/direct field/root seeds, other generated index/computation-validation identities, and wider generated closure. Explanation references must not become returned members or count-shape mentions.
-- `consumer-gated`: under U02, use the existing model-level mandatory-information observation. Separate field-set changes, root-only changes and no contribution with positive controls; document firing cannot settle this service.
+- `consumer-gated`: under U03, use the existing model-level mandatory-information observation. Separate field-set changes, root-only changes and no contribution with positive controls; document firing cannot settle this service.
 - `consumer`: Analyze/Explain need authored shape, literal identity, narrowed bounds and all three result sets. Preserve the distinction between an absent threshold and the literal that narrows to the sentinel.
 - `reopen-when`: an adopted analysis consumer needs a specifically excluded rule family. No public general collector contract is implied by the checked subset.
 - `route-state`: discovery-required
