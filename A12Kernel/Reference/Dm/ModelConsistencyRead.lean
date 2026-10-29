@@ -97,7 +97,8 @@ def readConsistencyModel (json : Json) (variant : Option String := none) :
       (text definition "id", definition)))
     conditionLanguage := ((content.getObjVal? "modelConfig").toOption.bind fun config =>
       (config.getObjVal? "conditionLanguage").toOption.bind fun language =>
-        (language.getObjValAs? String "code").toOption).getD "en_US" }
+        (language.getObjValAs? String "code").toOption).getD "en_US"
+    declaredLocales := ← headerLocales json }
 
 /-- Read the model for `variant` and run the consistency check. -/
 def checkModelConsistency (json : Json) (variant : Option String := none) :

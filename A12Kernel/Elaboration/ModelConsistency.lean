@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.CharsetSpec
+import A12Kernel.Elaboration.DeclaredLocale
 import A12Kernel.Elaboration.DeclarationAdmission
 import A12Kernel.Semantics.NumberBound
 
@@ -101,6 +102,8 @@ structure ConsistencyModel where
   rootGroups : List ConsistencyElement
   /-- The model's condition language code, which selects the attachment rules' required texts. -/
   conditionLanguage : String
+  /-- The locales the header declares, in declaration order. -/
+  declaredLocales : List ParsedLocale := []
 
 /-- A notification class of the consistency check. Every class is an ERROR. -/
 inductive ModelConsistencyClass where
@@ -190,6 +193,8 @@ inductive ModelBuildFailure where
   | typeDefinitionReferenceEmpty
   /-- Two type definitions carry one id, the empty id included. -/
   | typeDefinitionIdRepeated
+  /-- A declared locale with an empty language, or two codes naming one locale. -/
+  | declaredLocale (failure : DeclaredLocaleFailure)
   deriving Repr, DecidableEq
 
 namespace ModelBuildFailure
@@ -200,7 +205,8 @@ def liftedClass? : ModelBuildFailure → Option ModelConsistencyClass
   | .typeDefinitionReferenceEmpty => some .typeDefinitionReferenceEmpty
   | .computedFieldPathEmpty => some .computedFieldEmpty
   | .enumerationCategoryNameDuplicated => some .enumerationCategoryDuplicate
-  | .elementNameEmpty | .indexFieldNameEmpty | .sortFieldNameEmpty | .typeDefinitionIdRepeated => none
+  | .elementNameEmpty | .indexFieldNameEmpty | .sortFieldNameEmpty | .typeDefinitionIdRepeated
+    | .declaredLocale _ => none
 
 end ModelBuildFailure
 
@@ -329,12 +335,13 @@ def repeatedTypeDefinitionId? (ids : List String) : Option String :=
 def typeDefinitionPath (definition : ConsistencyTypeDefinition) : List String :=
   [if definition.id.isEmpty then definition.name else definition.id]
 
-/-- The first build failure, with the path of the offending element or type definition: a repeated
-type-definition id, which the Kernel meets while expanding the definitions, and then each element's in
-walk order. Which of two such failures the Kernel names is unmeasured; either leaves the one unbuilt
-label. -/
+/-- The first build failure, with the path of the offending element or type definition: a declared
+locale's, with no path, then a repeated type-definition id, which the Kernel meets while expanding the
+definitions, and then each element's in walk order. Which of two such failures the Kernel names is
+unmeasured; either leaves the one unbuilt label. -/
 def firstBuildFailure? (model : ConsistencyModel) : Option (List String × ModelBuildFailure) :=
-  match repeatedTypeDefinitionId? (model.typeDefinitions.map (·.id)) with
+  if let some failure := declaredLocaleFailure? model.declaredLocales then some ([], .declaredLocale failure)
+  else match repeatedTypeDefinitionId? (model.typeDefinitions.map (·.id)) with
   | some id => some ([id], .typeDefinitionIdRepeated)
   | none => model.entries.findSome? fun (path, element) => (buildFailure? element).map (path, ·)
 

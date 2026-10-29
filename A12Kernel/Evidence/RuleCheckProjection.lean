@@ -508,8 +508,9 @@ private def loadModel (path : System.FilePath) (added : List (String × Json) :=
     | .error message => throw (IO.userError s!"{path}: {message}")
   let some dm := (readModel modelJson).toOption
     | throw (IO.userError s!"{path}: unreadable model")
-  pure (dm, (((modelJson.getObjValD "header").getObjValAs? (Array Json) "locales").toOption.getD #[]).toList.filterMap
-    fun locale => (locale.getObjValAs? String "code").toOption)
+  match headerLocales modelJson with
+  | .ok locales => pure (dm, locales.map (·.key))
+  | .error message => throw (IO.userError s!"{path}: {message}")
 
 /-- Replay every batch and return the agreeing and skipped row counts. -/
 def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do

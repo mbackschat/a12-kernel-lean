@@ -619,6 +619,7 @@ private def readModelCore (json : Json)
     Except String (DmModel × List ExecutableDeclaration) := do
   let content ← json.getObjVal? "content"
   bindLocalizedTextMembers content
+  discard <| builtHeaderLocales json
   let config := (content.getObjVal? "modelConfig").toOption.getD (Json.mkObj [])
   let info := (content.getObjVal? "modelInfo").toOption.getD (Json.mkObj [])
   let roots ← (← content.getObjVal? "modelRoot").getObjValAs? (Array Json) "rootGroups"
