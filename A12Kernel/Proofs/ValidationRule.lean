@@ -504,13 +504,13 @@ theorem checkedValidationRule_fired_message_exact
         simp [CheckedResolvedValidationRule.evalFull, ResolvedValidationRule.evalFull,
           CheckedResolvedValidationRule.core, ResolvedValidationRule.emitEvaluationResult,
           ResolvedRule.emit, ResolvedRule.emitAt, ResolvedRule.emitAtCoordinates,
-          MessagePointer.ofCellAddr, scalar, h, fires, content]
+          scalar, h, fires, content]
     | error fault =>
         simp [ValidationCondition.evalSelected, h, Except.toOption] at fires
         simp [CheckedResolvedValidationRule.evalFull, ResolvedValidationRule.evalFull,
           CheckedResolvedValidationRule.core, ResolvedValidationRule.emitEvaluationResult,
           ResolvedRule.emitRuntimeFailureAt, ResolvedRule.emitAt,
-          ResolvedRule.emitAtCoordinates, MessagePointer.ofCellAddr, scalar, h, ← fires, content]
+          ResolvedRule.emitAtCoordinates, scalar, h, ← fires, content]
   · contradiction
 
 end A12Kernel
