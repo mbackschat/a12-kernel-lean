@@ -702,3 +702,13 @@ The task, profile, comparison contract and milestones are the [evaluator kit](..
 - `result`: `strictNoMessages` and the four admitted queries are Lean relations over the theory's evaluation, and the executable check is proved equal to the witness relation. The exhaustive oracle is proved sound for a returned witness and complete within its candidate domains. 75 checks pass after failing red; the polarity table separates a dead rule from an uninhabited model and `conditionTruthReachable` from `ruleFiringReachable` on a model whose empty root gates its rule.
 - `questions`: Q-002 found the pre-gate verdict unexposed, so U03 assembled the scalar context from public functions. The theory now exposes `scalarConditionVerdict` and `scalarFullValidationContext`, which `runRuleAt` itself uses, with gate theorems and a [separating lock](../../A12Kernel/Reference/Dm/ScalarVerdictLocks.lean); it reaches U03 with the batched re-pin.
 - `oracle`: HIGH read the qualification section and both questions at `9282dbf`; U03's checks were not rerun.
+
+<a id="run-u03-s3"></a>
+### U03 S3 — constraints, SMT-LIB2 and the solver
+
+- `task`: [U03 SMT-backed analysis](../PLAN.md), milestone S3
+- `status`: accepted
+- `pin`: theory `32f47b0ca2295894db519f6c562f9801d8209a67`, where the session re-pinned and replaced its own scalar-context assembly with the exposed `scalarConditionVerdict`; qualification commit `82f3286`
+- `result`: a solver-neutral constraint language with its denotation and named, origin-tagged assertions; a lowering whose finite leaf cases are tabulated by the theory's leaf evaluator, only a present Number comparison staying symbolic against the theory's normalized literal, and each authored rule encoded as silent through its gate and verdict, not as its negated surface condition; canonical QF_LIA SMT-LIB2 with a source map; Z3 through the theory's bounded relay, strict decoding and mandatory replay. 157 checks pass after red runs, among them 24 real Z3 runs agreeing with the exhaustive oracle on SAT and UNSAT.
+- `unproved`: both lowering directions are stated and unproved, which the kit permits when recorded; soundness is bounded by replay of every SAT result, and completeness, on which a solver UNSAT rests, by an executable check over every fixture's candidate documents, which S4's A6 extends to generated models. `unknown`, `timeout` and `solverProtocolError` have no controlled case yet, which is A5.
+- `oracle`: HIGH read the qualification section and the settled questions at `82f3286`; U03's checks were not rerun.
