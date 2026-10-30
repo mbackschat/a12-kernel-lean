@@ -173,6 +173,11 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 29a handback](sources/inbound-handbacks.md#src-inbound-2026-10-29a): a12-dmkits `3dd931e4db5b63ac08c1a0a927989bb3b6b4b21e`; the disposition of the type-definition order and locale grammar entry, a Latin-1 id row, the header locale code's entry shapes and locale identity, its tag demands refuted locally, and a rule message's parsed-locale match with peer KF290 and KF158.
 - [October 29b handback](sources/inbound-handbacks.md#src-inbound-2026-10-29b): a12-dmkits `22c198c3a4186486446acbeea0eade6c7fdb3c07`; the disposition of the header locale code correction, the withdrawal of the October 29a letter's header column, and the post-gate reader defect fixed upstream.
 - [October 29c handback](sources/inbound-handbacks.md#src-inbound-2026-10-29c): a12-dmkits `eaa6faf0c6619e8aa61b2de16cb4c5af6648b42d`; the disposition of the starred group's non-repeatable descendant coordinate, with a second-domain lock.
+- [KF650 frame binding](sources/inbound-handbacks.md#src-inbound-2026-10-29d): a12-dmkits `413880f4b0a57f0a9c464653cd691a65deb42a01`; how a model's frame binds member by member and which shapes cost only the check.
+- [October 29e reconciliation](sources/inbound-handbacks.md#src-inbound-2026-10-29e): a12-dmkits `510e60321018c917bb4b507d0ca5dd23b937991e`; the implicit message's fillToFix and the message cache derivation.
+- [October 30 handback](sources/inbound-handbacks.md#src-inbound-2026-10-30): a12-dmkits `7b6623d6898ea5e4fb8830eec8414510d96a367d`; the check-only frame refusal and the unchecked runtime.
+- [October 30a handback](sources/inbound-handbacks.md#src-inbound-2026-10-30a): a12-dmkits `f22972e27b7f376b450ed8b50ea527d05611f525`; the unsupported condition language and its reading as a locale.
+- [October 30b handback](sources/inbound-handbacks.md#src-inbound-2026-10-30b): a12-dmkits `48ec4bcc5a4117600070be144704869cfc9d5b95`; the yearless direct copy's reconciliation and the frame values judged by their text.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route
