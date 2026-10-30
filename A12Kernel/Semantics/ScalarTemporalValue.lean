@@ -15,9 +15,9 @@ inductive ScalarTemporalValue where
   | noValue
   | nonRelevant
   | date (value : DateValue)
-  /-- A yearless read keeps its month/day `key` and the whole years `carry` a day shift has moved it
-  past its anchor year: a shift keeps the year it reaches, so `12-31` plus one day is not the stored
-  `01-01` ([yearless shift anchor](../../docs/sources/temporal-constant-and-base-year-probes.md#src-yearless-shift-anchor)). -/
+  /-- A yearless read keeps its month/day `key` and the whole years `carry` a calendar shift has moved it
+  past its anchor year: a day shift keeps the year it reaches, so `12-31` plus one day is not the stored
+  `01-01`; a month shift carries its year the same way by assumption, unmeasured ([yearless shift anchor](../../docs/sources/temporal-constant-and-base-year-probes.md#src-yearless-shift-anchor)). -/
   | yearless (value : DateValue) (key : MonthDayValue) (carry : Int)
   | time (value : TimeOfDay)
   | instant (value : Instant)
