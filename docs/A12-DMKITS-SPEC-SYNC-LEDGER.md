@@ -256,7 +256,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-30-06"></a>
 ### SPEC-2026-10-30-06 — A component-omitting Date argument of `DateTime(date, time)` completes to its earliest day
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/05 §3.3](../spec/05-dates-and-time.md#33-datetimedate-time-and-the-datetime-projections), the paragraph on the Date argument's completion, and its row in [the carrier table](../spec/05-dates-and-time.md#where-a-yearless-value-gets-its-year).
 - `delta`: Adds the completion the construction clause left unstated: a `yyyy` argument completes to January 1 and `yyyy-MM` to the first of its month with or without a Base Year, and a yearless `MM-dd` or `MM` argument is refused `MVK_WRONG_DATE_FORMAT_FOR_OP` without a Base Year, measured in a rule condition, and otherwise completes in the Base Year, `MM` to the first. The completed label resolves as any other, a Berlin spring-gap label clearing.
 - `basis`: the retained [DateTime component completion](sources/temporal-constant-and-base-year-probes.md#src-datetime-component-completion) rows of the 2026-10-04 stamp-construction capture, Kernel 30.8.1, both engines, re-read 2026-10-30 for U02's debrief, Lean replay matching every row.
@@ -268,7 +268,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-30-07"></a>
 ### SPEC-2026-10-30-07 — A starred read of a joined group brings no index field into a joined message's references
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/07 §2.4](../spec/07-repetition-and-iteration.md#24-reading-the-joined-row), the paragraph on joined message references retaining index fields.
 - `delta`: Narrows the index-field rule to a payload field read at the joined row. A read that stars a joined group itself adds only its own fields at coordinate `0` and no index field, filtered or not in a generated rule, while the row-bound read beside it still brings the group's index field; a starred child below a side stays the read-below case.
 - `basis`: the retained [joined-carrier admission](sources/key-join-and-parallel-probes.md#src-joined-carrier-admission) capture, Kernel 30.8.1, measured 2026-10-14 on both strategies: in all thirteen firings of the generated rules `Cj03` and `Cj04` on `matched` and `sparse` and `Cj05` on `matched`, the starred reads add `/Staffing[1]/Demand[0]/Base`, `/Staffing[1]/Supply[0]/Headcount`, and the filtered `/Staffing[1]/Demand[0]/Base` and `/Staffing[1]/Demand[0]/Headcount`, with no index field, beside the row-bound read's own `Department`, `Staffing/Demand[2]/Department` at the matched partner row; Lean replays the whole request, references included. In the parallel rule `v6` of the [K22 cross-declaration](sources/model-structure-and-declaration-probes.md#src-k22-cross-declaration) batch, measured at a12-dmkits `08b0d6499`, `FieldValuesNotUnique(/Staffing/Demand*/Label)` adds `/Staffing[1]/Demand[0]/Label` with no index field beside `Staffing/Demand[2]/Department`. U02's debrief found the unqualified rule misleading.
