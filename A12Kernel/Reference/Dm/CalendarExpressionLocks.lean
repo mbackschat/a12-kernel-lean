@@ -364,14 +364,14 @@ private def stampModel (format : String) (baseYear : Option Int) (zone : String)
   timeZoneId := zone, baseYear }
 
 /-- `DateTime(D, T)` over a `format`-declared `D`, as the outcome on a target seeded as the capture
-seeds it, at the capture's clock `2024-03-30T23:00:00Z`. -/
+seeds it, by default at the capture's clock `2024-03-30T23:00:00Z`. -/
 private def completedStamp (format source clock : String) (baseYear : Option Int := some 2024)
-    (zone := "UTC") : Option String := do
+    (zone := "UTC") (epochMillis : Nat := 1711839600000) : Option String := do
   let fixture := stampModel format baseYear zone
   let dm : DmModel := { flat := fixture, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let input ← (readDocument dm (Lean.Json.mkObj [("Form", Lean.Json.mkObj [
     ("D", .str source), ("T", .str clock), ("Result", "2001-12-25T12:30:00")])])).toOption
-  let world : World := { now := { epochMillis := 1711839600000 }, modelZoneRules := ModelZone.concreteRules }
+  let world : World := { now := { epochMillis }, modelZoneRules := ModelZone.concreteRules }
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler fixture).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
   let step ← (lowerComputation fixture .english {
@@ -405,5 +405,15 @@ example :
     ["yyyy", "yyyy-MM", "MM", "MM-dd"].map (stampRuleRefusal · none) =
       [none, none, some "MVK_WRONG_DATE_FORMAT_FOR_OP", some "MVK_WRONG_DATE_FORMAT_FOR_OP"] ∧
     ["MM", "MM-dd"].map (stampRuleRefusal · (some 2024)) = [none, none] := by native_decide
+
+-- The yearless argument's year is the Base Year, not the clock's: under Base Year 2023 at a 2026 clock,
+-- Berlin clears `03-26`, 2023's spring-gap day, and stores `03-29`, 2026's (peer letter of
+-- [2026-10-30e](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-30e)).
+example :
+    let stamp := fun (format source : String) =>
+      completedStamp format source "02:30:00" (some 2023) "Europe/Berlin" 1791108000000
+    stamp "MM-dd" "03-26" = some "cleared" ∧ stamp "MM-dd" "03-29" = some "value 2023-03-29T02:30:00" ∧
+      stamp "MM" "03" = some "value 2023-03-01T02:30:00" ∧ stamp "yyyy" "2022" = some "value 2022-01-01T02:30:00" := by
+  native_decide
 
 end A12Kernel.Dm.CalendarExpressionLocks
