@@ -1,0 +1,556 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "AnchorConst2001_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "year-end",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "c_DConst",
+              "field": "Form/DConst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DConst"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DSame",
+              "field": "Form/DSame",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DSame"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DStored",
+              "field": "Form/DStored",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DStored",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TC160000",
+              "field": "Form/TC160000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/TC160000"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TC200000",
+              "field": "Form/TC200000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/TC200000"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DConst",
+                "cleared": false,
+                "errored": false,
+                "value": "-364"
+              },
+              {
+                "field": "Form/DSame",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/DStored",
+                "cleared": false,
+                "errored": false,
+                "value": "364"
+              },
+              {
+                "field": "Form/TC160000",
+                "cleared": false,
+                "errored": false,
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TC200000",
+                "cleared": false,
+                "errored": false,
+                "value": "11-06"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DConst",
+                "value": "-364"
+              },
+              {
+                "field": "Form/DSame",
+                "value": "1"
+              },
+              {
+                "field": "Form/DStored",
+                "value": "364"
+              },
+              {
+                "field": "Form/TC160000",
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TC200000",
+                "value": "11-06"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "DConst": -364,
+                "DSame": 1,
+                "DStored": 364,
+                "MD": "12-31",
+                "TC160000": "05-13",
+                "TC200000": "11-06"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "c_DConst",
+              "field": "Form/DConst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DConst"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DSame",
+              "field": "Form/DSame",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DSame"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DStored",
+              "field": "Form/DStored",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DStored",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TC160000",
+              "field": "Form/TC160000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/TC160000"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TC200000",
+              "field": "Form/TC200000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/TC200000"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DConst",
+                "cleared": false,
+                "errored": false,
+                "value": "-364"
+              },
+              {
+                "field": "Form/DSame",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/DStored",
+                "cleared": false,
+                "errored": false,
+                "value": "364"
+              },
+              {
+                "field": "Form/TC160000",
+                "cleared": false,
+                "errored": false,
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TC200000",
+                "cleared": false,
+                "errored": false,
+                "value": "11-06"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DConst",
+                "value": "-364"
+              },
+              {
+                "field": "Form/DSame",
+                "value": "1"
+              },
+              {
+                "field": "Form/DStored",
+                "value": "364"
+              },
+              {
+                "field": "Form/TC160000",
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TC200000",
+                "value": "11-06"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "DConst": -364,
+                "DSame": 1,
+                "DStored": 364,
+                "MD": "12-31",
+                "TC160000": "05-13",
+                "TC200000": "11-06"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "leap",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "c_DConst",
+              "field": "Form/DConst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DConst"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DSame",
+              "field": "Form/DSame",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DSame"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DStored",
+              "field": "Form/DStored",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DStored",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TC160000",
+              "field": "Form/TC160000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/TC160000"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TC200000",
+              "field": "Form/TC200000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/TC200000"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DConst",
+                "cleared": false,
+                "errored": false,
+                "value": "-364"
+              },
+              {
+                "field": "Form/DSame",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/DStored",
+                "cleared": false,
+                "errored": false,
+                "value": "59"
+              },
+              {
+                "field": "Form/TC160000",
+                "cleared": false,
+                "errored": false,
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TC200000",
+                "cleared": false,
+                "errored": false,
+                "value": "11-06"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DConst",
+                "value": "-364"
+              },
+              {
+                "field": "Form/DSame",
+                "value": "1"
+              },
+              {
+                "field": "Form/DStored",
+                "value": "59"
+              },
+              {
+                "field": "Form/TC160000",
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TC200000",
+                "value": "11-06"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "DConst": -364,
+                "DSame": 1,
+                "DStored": 59,
+                "MD": "03-01",
+                "TC160000": "05-13",
+                "TC200000": "11-06"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "c_DConst",
+              "field": "Form/DConst",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DConst"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DSame",
+              "field": "Form/DSame",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DSame"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DStored",
+              "field": "Form/DStored",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DStored",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TC160000",
+              "field": "Form/TC160000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/TC160000"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TC200000",
+              "field": "Form/TC200000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/TC200000"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DConst",
+                "cleared": false,
+                "errored": false,
+                "value": "-364"
+              },
+              {
+                "field": "Form/DSame",
+                "cleared": false,
+                "errored": false,
+                "value": "1"
+              },
+              {
+                "field": "Form/DStored",
+                "cleared": false,
+                "errored": false,
+                "value": "59"
+              },
+              {
+                "field": "Form/TC160000",
+                "cleared": false,
+                "errored": false,
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TC200000",
+                "cleared": false,
+                "errored": false,
+                "value": "11-06"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DConst",
+                "value": "-364"
+              },
+              {
+                "field": "Form/DSame",
+                "value": "1"
+              },
+              {
+                "field": "Form/DStored",
+                "value": "59"
+              },
+              {
+                "field": "Form/TC160000",
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TC200000",
+                "value": "11-06"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "DConst": -364,
+                "DSame": 1,
+                "DStored": 59,
+                "MD": "03-01",
+                "TC160000": "05-13",
+                "TC200000": "11-06"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+ "header": {
+  "id": "AnchorConst_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "AnchorConst_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "typeDefinitions": [],
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/MD",
+        "name": "MD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TC160000",
+        "name": "TC160000",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TC200000",
+        "name": "TC200000",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DConst",
+        "name": "DConst",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "minValue": "-999999",
+           "maxValue": "999999"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DStored",
+        "name": "DStored",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "minValue": "-999999",
+           "maxValue": "999999"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DSame",
+        "name": "DSame",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "minValue": "-999999",
+           "maxValue": "999999"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_TC160000",
+        "name": "c_TC160000",
+        "Computation": {
+         "computedFieldRelPath": "../TC160000",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(\"15.06.\", 0 - 160000)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_TC200000",
+        "name": "c_TC200000",
+        "Computation": {
+         "computedFieldRelPath": "../TC200000",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(\"15.06.\", 0 - 200000)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_DConst",
+        "name": "c_DConst",
+        "Computation": {
+         "computedFieldRelPath": "../DConst",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(\"31.12.\", \"01.01.\")"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_DStored",
+        "name": "c_DStored",
+        "Computation": {
+         "computedFieldRelPath": "../DStored",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(\"01.01.\", MD)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_DSame",
+        "name": "c_DSame",
+        "Computation": {
+         "computedFieldRelPath": "../DSame",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(\"28.02.\", \"01.03.\")"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

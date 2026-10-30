@@ -246,9 +246,21 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 - `status`: pending
 - `canonical`: [spec/05 §1](../spec/05-dates-and-time.md#the-omitted-year-constant-and-the-base-year), the default-anchor paragraph, and its row in [the carrier table](../spec/05-dates-and-time.md#where-a-yearless-value-gets-its-year).
-- `delta`: Pins the default anchor of a stored `MM-dd` field's day shift to the year 2000 on the legacy hybrid calendar, and adds that the shifted value keeps the year it reaches while the stored value it meets is read in the anchor year, so `12-31` plus one day is not the stored `01-01`. Other carriers' default year stays measured only as leap.
-- `basis`: the retained [yearless shift anchor](sources/temporal-constant-and-base-year-probes.md#src-yearless-shift-anchor) capture, Kernel 30.8.1, measured locally 2026-10-30 on both codegen strategies: with no Base Year `AddDays` over `MM-dd` `02-28` by 1, 36890, 73049 and `0 - 36160` days stores `02-29`, `02-28`, `02-28` and `02-27`, and `06-15` by `0 - 160000` and `0 - 200000` days `05-13` and `11-06`, which of the years 1600 to 8999 on the hybrid calendar only 2000 reproduces; under Base Year 2001 the first four store `03-01`, `03-01`, `03-01` and `02-28`. `AddDays(MD, 1) == [N]` holds for `12-30` beside `12-31` and not for `12-31` beside `01-01` under both.
-- `acceptance`: Reconcile the anchor year and the year-keeping comparison in a12-dmkits' own record, where `kf93` states a default of 2000. `AddMonths`, an `MM` or constant source, ordering comparisons, extrema and comparisons beside a year-bearing operand are unmeasured, so do not claim them.
+- `delta`: Pins the default anchor of a stored `MM-dd` field's day shift to the year 2000 on the legacy hybrid calendar, and adds that the shifted value keeps the year it reaches while the stored value it meets is read in the anchor year, so `12-31` plus one day is not the stored `01-01`. Every yearless operand of one operation completes in that one anchor year, and a yearless constant's anchor is a leap year from 1904 to 2020, consistent with 2000.
+- `basis`: the retained [yearless shift anchor](sources/temporal-constant-and-base-year-probes.md#src-yearless-shift-anchor) capture, Kernel 30.8.1, measured locally 2026-10-30 on both codegen strategies: with no Base Year `AddDays` over `MM-dd` `02-28` by 1, 36890, 73049 and `0 - 36160` days stores `02-29`, `02-28`, `02-28` and `02-27`, and `06-15` by `0 - 160000` and `0 - 200000` days `05-13` and `11-06`, which of the years 1600 to 8999 on the hybrid calendar only 2000 reproduces; under Base Year 2001 the first four store `03-01`, `03-01`, `03-01` and `02-28`. `AddDays(MD, 1) == [N]` holds for `12-30` beside `12-31` and not for `12-31` beside `01-01` under both, and `DifferenceInDays("31.12.", "01.01.")` is `-365` with no Base Year and `-364` under 2001.
+- `acceptance`: Reconcile the anchor year and the year-keeping comparison in a12-dmkits' own record, where `kf93` states a default of 2000. `AddMonths`, an `MM` source, the constants' exact anchor year, ordering comparisons, extrema and comparisons beside a year-bearing operand are unmeasured, so do not claim them.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
+<a id="spec-2026-10-30-05"></a>
+### SPEC-2026-10-30-05 — A Time component of missing provenance leaves the construction without a payload, as an empty one does
+
+- `status`: pending
+- `canonical`: [spec/05 §3.5](../spec/05-dates-and-time.md#35-reasons-and-their-composition), the Time construction bullet.
+- `delta`: States what a construction does with a component that is present but carries missing provenance, which the bullet named only for an empty component: it counts as empty, so the construction has no payload with missing provenance, not the concrete component value.
+- `basis`: the [Time component provenance](sources/temporal-runtime-fold-probes.md#src-time-component-missing-provenance) reading of a retained effects artifact, Kernel 30.8.1, both codegen strategies: `HoursFromTime(Time(HoursFromTime(AddSeconds(Stamp, HoursFromTime(Clock)))))` with `Clock` empty is `0` with `== 0` firing as OMISSION and stores `0`, where a filled `Clock` gives 23.
+- `acceptance`: Reconcile the bullet in a12-dmkits' own record. Minute and second components and `Date(...)` constructions are unmeasured, so do not claim them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.

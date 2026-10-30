@@ -371,3 +371,12 @@ How temporal operands actually fold at run time: the declared-format text parser
 - `local`: `lake exe a12-kernel-replay` matches all 108 rule, reference and computation instances with no Lean change.
 - `limit`: one repeatable level and the Europe/Berlin zone; extractors inside filters and aggregates belong to their own checkpoints.
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/temporal-row-placements-2026-10-24/) with the model, request, artifact and `MANIFEST.sha256`.
+
+<a id="src-time-component-missing-provenance"></a>
+#### A Time component that is present but carries missing provenance leaves the construction without a payload, as an empty one does, read from a retained artifact 2026-10-30
+
+- `basis`: the effects artifact of the [recursive temporal expression](temporal-and-message-probes.md#src-recursive-temporal-numeric-expression) capture, Kernel 30.8.1, both codegen strategies agreeing, read for U02's Q-011 with no new run.
+- `claim`: `nestedMissing`, `HoursFromTime(Time(HoursFromTime(AddSeconds(Stamp, HoursFromTime(Clock)))))`, stores `23` in rows `filled` and `highHour` and `0` in `empty` and `amountOnlyEmpty`, where `Stamp` is present and `Clock` empty. There its `== 0` and `< 1` rules fire as OMISSION and its computation's own message is OMISSION, so the construction did not keep the concrete hour 23.
+- `lean-replay`: `a12-kernel-replay` matches all 97 instances of row `amountOnlyEmpty` with no Lean change.
+- `limit`: the hour component of `Time(...)` only; minute and second components and `Date(...)` are unmeasured.
+- `sync`: behavioral and new: the [spec/05 §3.5](../../spec/05-dates-and-time.md#35-reasons-and-their-composition) bullet goes outbound as `SPEC-2026-10-30-05`.

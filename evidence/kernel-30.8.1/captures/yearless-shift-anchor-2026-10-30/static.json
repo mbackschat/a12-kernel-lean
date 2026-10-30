@@ -25,6 +25,16 @@
       "valid": true,
       "verification": "KERNEL_CONFIRMED",
       "codes": []
+    },
+    "AnchorConst_DM.json": {
+      "valid": true,
+      "verification": "KERNEL_CONFIRMED",
+      "codes": []
+    },
+    "AnchorConst2001_DM.json": {
+      "valid": true,
+      "verification": "KERNEL_CONFIRMED",
+      "codes": []
     }
   }
 }
