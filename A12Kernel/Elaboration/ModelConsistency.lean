@@ -98,13 +98,15 @@ structure ConsistencyTypeDefinition where
   deriving Repr, DecidableEq
 
 /-- A frame shape the Kernel builds a model from but whose entry consistency check then fails without a
-class (peer KF650): no `header.modelVersion`, no `content.modelInfo`, `header.locales` absent or `null`,
-or a `null` supported character. -/
+class: no `header.modelVersion`, no `content.modelInfo`, `header.locales` absent or `null`, or a `null`
+supported character (peer KF650), and a condition language that parses as a locale other than "en_US"
+and "de_DE" (peer letter of 2026-10-30a). -/
 inductive FrameCheckFailure where
   | versionMissing
   | modelInfoMissing
   | localesMissing
   | supportedCharacterNull
+  | conditionLanguageUnsupported
   deriving Repr, DecidableEq
 
 structure ConsistencyModel where

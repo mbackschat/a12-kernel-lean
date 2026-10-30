@@ -1,5 +1,6 @@
 import Lean.Data.Json
 import A12Kernel.Elaboration.ModelConsistency
+import A12Kernel.Reference.Dm.LocaleSpelling
 
 /-! # How the Kernel binds a DM-JSON model's frame
 
@@ -14,9 +15,10 @@ checkpoint). A member it cannot bind leaves no model, a read failure here:
   the member is non-null.
 * An object member binds an object, and its absence where the member is optional.
 
-Four shapes cost only the entry's consistency check: no `modelVersion`, no `modelInfo`, `locales`
-absent or `null`, and a `null` supported character. The model builds and its check fails without a
-class, so they are a `FrameCheckFailure`, never a read failure.
+Five shapes cost only the entry's consistency check: no `modelVersion`, no `modelInfo`, `locales`
+absent or `null`, a `null` supported character, and a condition language naming an unsupported locale.
+The model builds and its check fails without a class, so they are a `FrameCheckFailure`, never a read
+failure.
 
 An integer number binds as its value's decimal text, measured for `5`; a token with a fraction or an
 exponent is outside the represented profile, since the Kernel keeps the token as written and Lean's
@@ -41,7 +43,8 @@ structure ModelFrame where
   /-- The supported-character entries, a `null` entry as `none`. -/
   supportedCharacters : List (Option String)
   timeZone : Option String
-  /-- The condition language's code, as a bare text or an object's `code`. -/
+  /-- The supported condition language's locale key, "en_US" or "de_DE"; `none` when the model declares
+  none or an unsupported one, which `checkFailure?` then names. -/
   conditionLanguage : Option String
   checkFailure? : Option FrameCheckFailure
 
@@ -77,24 +80,29 @@ def frameObject (parent : Json) (key : String) : Except String (Option Json) :=
   | .ok value@(.obj _) => pure (some value)
   | .ok _ => throw s!"model member {key} is no object"
 
-/-- A condition language is a text, or an object whose `code` binds as a text member does; `null`, another
-scalar, an array, and an object whose `code` is absent, `null` or a container leave no model. A bound
-code other than "en_US" and "de_DE" is a read failure here too, so it answers ahead of a check-only frame
-shape. The Kernel answers "zz" and the empty code with a codeless error and no class (model frame
-members checkpoint), which the capture does not separate from a check-only failure, so that placement and
-its precedence are this reader's choice. -/
-private def conditionLanguageCode (config : Json) : Except String (Option String) :=
+/-- The condition language, as a text or an object whose `code` binds as a text member does: `null`,
+another scalar, an array, and an object whose `code` is absent, `null` or a container leave no model.
+The code is read as a locale, so one the locale parser refuses leaves no model too, while a parsed locale
+is the language its key names, "de-DE" selecting German as "de_DE" does (peer letter of 2026-10-30a). -/
+private def conditionLanguageLocale (config : Json) : Except String (Option ParsedLocale) :=
   match config.getObjVal? "conditionLanguage" with
   | .error _ => pure none
-  | .ok (.str code) => supported code
+  | .ok (.str code) => parsed code
   | .ok language@(.obj _) => do
       let some code ← frameText language "code" (nonNull := true) | throw "condition language has no code"
-      supported code
+      parsed code
   | .ok _ => throw "condition language is neither a text nor an object"
 where
-  supported (code : String) : Except String (Option String) :=
-    if code == "en_US" || code == "de_DE" then pure (some code)
-    else throw s!"condition language {code} is not supported"
+  parsed (code : String) : Except String (Option ParsedLocale) := do
+    let some locale ← parseLocale? code | throw s!"condition language {code} does not parse as a locale"
+    pure (some locale)
+
+/-- The two locales whose condition languages the Kernel supports. A model declaring another parsed
+locale is read and expanded, and its check then fails without a class, measured for "zz", the empty
+code, "de", "en", "fr_FR" and "de_DE_x" (peer letter of 2026-10-30a; the
+[model frame members](../../../docs/sources/model-structure-and-declaration-probes.md#src-model-frame-members)
+checkpoint for "zz" and the empty code). -/
+private def supportedConditionLanguages : List String := ["en_US", "de_DE"]
 
 /-- Bind a model's frame, failing on the first member the Kernel cannot bind. -/
 def bindModelFrame (json : Json) : Except String ModelFrame := do
@@ -111,7 +119,9 @@ def bindModelFrame (json : Json) : Except String ModelFrame := do
   let config := (← frameObject content "modelConfig").getD (Json.mkObj [])
   discard <| frameText config "decimalSeparator" (nonNull := true)
   let timeZone ← frameText config "timeZone" (nonNull := true)
-  let conditionLanguage ← conditionLanguageCode config
+  let language ← conditionLanguageLocale config
+  let conditionLanguage := language.bind fun locale =>
+    if supportedConditionLanguages.contains locale.key then some locale.key else none
   let supportedCharacters ← ((← frameList config "supportedCharacters" (nonNull := true)).getD #[]).toList.mapM
     fun entry => match entry with
       | .null => pure none
@@ -127,6 +137,7 @@ def bindModelFrame (json : Json) : Except String ModelFrame := do
     else if info?.isNone then some .modelInfoMissing
     else if locales.isNone then some .localesMissing
     else if supportedCharacters.contains none then some .supportedCharacterNull
+    else if language.isSome && conditionLanguage.isNone then some .conditionLanguageUnsupported
     else none
   pure {
     header := header, content := content, info := info, config := config, locales := locales.getD #[]
