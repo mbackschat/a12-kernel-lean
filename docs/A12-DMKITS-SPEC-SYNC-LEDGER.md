@@ -240,3 +240,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: none yet.
 - `disposition`: none yet.
+
+<a id="spec-2026-10-30-04"></a>
+### SPEC-2026-10-30-04 — With no Base Year a yearless day shift resolves in the 400-year class of 2000 and compares by month and day
+
+- `status`: pending
+- `canonical`: [spec/05 §1](../spec/05-dates-and-time.md#the-omitted-year-constant-and-the-base-year), the default-anchor paragraph, and its row in [the carrier table](../spec/05-dates-and-time.md#where-a-yearless-value-gets-its-year).
+- `delta`: Narrows the default anchor from a leap year of unknown year to the 400-year Gregorian class of 2000, observed through day shifts, and adds that a shifted yearless value compares with a stored yearless one by month and day. The exact year beyond that class keeps no witness.
+- `basis`: the retained [yearless shift anchor](sources/temporal-constant-and-base-year-probes.md#src-yearless-shift-anchor) capture, Kernel 30.8.1, measured locally 2026-10-30 on both codegen strategies: with no Base Year `AddDays` over `MM-dd` `02-28` by 1, 36890, 73049 and `0 - 36160` days stores `02-29`, `02-28`, `02-28` and `02-27`, and under Base Year 2001 `03-01`, `03-01`, `03-01` and `02-28`; `AddDays(MD, 1) == [N]` holds for `02-28` beside `02-29` with no Base Year and beside `03-01` under 2001.
+- `acceptance`: Reconcile the anchor's class and the comparison in a12-dmkits' own record, where `kf93` states a default of 2000. `AddMonths`, an `MM` or constant source and shifts across the 1582 calendar change are unmeasured, so do not claim them.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.

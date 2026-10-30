@@ -1,0 +1,218 @@
+{
+ "header": {
+  "id": "Anchor2001_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Anchor2001_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false,
+   "baseYear": "2001"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "typeDefinitions": [],
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/MD",
+        "name": "MD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/N",
+        "name": "N",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TP1",
+        "name": "TP1",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TP36890",
+        "name": "TP36890",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TP73049",
+        "name": "TP73049",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TM36160",
+        "name": "TM36160",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_TP1",
+        "name": "c_TP1",
+        "Computation": {
+         "computedFieldRelPath": "../TP1",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(MD, 1)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_TP36890",
+        "name": "c_TP36890",
+        "Computation": {
+         "computedFieldRelPath": "../TP36890",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(MD, 36890)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_TP73049",
+        "name": "c_TP73049",
+        "Computation": {
+         "computedFieldRelPath": "../TP73049",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(MD, 73049)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_TM36160",
+        "name": "c_TM36160",
+        "Computation": {
+         "computedFieldRelPath": "../TM36160",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(MD, 0 - 36160)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/EQSHIFT",
+        "name": "EQSHIFT",
+        "Rule": {
+         "errorEntityRelPath": "../N",
+         "errorCode": "EQSHIFT",
+         "errorCondition": "AddDays(MD, 1) == [N]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "EQSHIFT"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,764 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Anchor_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "leap-eve",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "EQSHIFT",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM36160",
+              "field": "Form/TM36160",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM36160"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP1",
+              "field": "Form/TP1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP36890",
+              "field": "Form/TP36890",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP36890"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP73049",
+              "field": "Form/TP73049",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP73049"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM36160",
+                "cleared": false,
+                "errored": false,
+                "value": "02-27"
+              },
+              {
+                "field": "Form/TP1",
+                "cleared": false,
+                "errored": false,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/TP36890",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              },
+              {
+                "field": "Form/TP73049",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM36160",
+                "value": "02-27"
+              },
+              {
+                "field": "Form/TP1",
+                "value": "02-29"
+              },
+              {
+                "field": "Form/TP36890",
+                "value": "02-28"
+              },
+              {
+                "field": "Form/TP73049",
+                "value": "02-28"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "02-28",
+                "N": "02-29",
+                "TM36160": "02-27",
+                "TP1": "02-29",
+                "TP36890": "02-28",
+                "TP73049": "02-28"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "EQSHIFT",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM36160",
+              "field": "Form/TM36160",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM36160"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP1",
+              "field": "Form/TP1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP36890",
+              "field": "Form/TP36890",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP36890"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP73049",
+              "field": "Form/TP73049",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP73049"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM36160",
+                "cleared": false,
+                "errored": false,
+                "value": "02-27"
+              },
+              {
+                "field": "Form/TP1",
+                "cleared": false,
+                "errored": false,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/TP36890",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              },
+              {
+                "field": "Form/TP73049",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM36160",
+                "value": "02-27"
+              },
+              {
+                "field": "Form/TP1",
+                "value": "02-29"
+              },
+              {
+                "field": "Form/TP36890",
+                "value": "02-28"
+              },
+              {
+                "field": "Form/TP73049",
+                "value": "02-28"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "02-28",
+                "N": "02-29",
+                "TM36160": "02-27",
+                "TP1": "02-29",
+                "TP36890": "02-28",
+                "TP73049": "02-28"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "march-first",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "c_TM36160",
+              "field": "Form/TM36160",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM36160"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP1",
+              "field": "Form/TP1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP36890",
+              "field": "Form/TP36890",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP36890"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP73049",
+              "field": "Form/TP73049",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP73049"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM36160",
+                "cleared": false,
+                "errored": false,
+                "value": "02-27"
+              },
+              {
+                "field": "Form/TP1",
+                "cleared": false,
+                "errored": false,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/TP36890",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              },
+              {
+                "field": "Form/TP73049",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM36160",
+                "value": "02-27"
+              },
+              {
+                "field": "Form/TP1",
+                "value": "02-29"
+              },
+              {
+                "field": "Form/TP36890",
+                "value": "02-28"
+              },
+              {
+                "field": "Form/TP73049",
+                "value": "02-28"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "02-28",
+                "N": "03-01",
+                "TM36160": "02-27",
+                "TP1": "02-29",
+                "TP36890": "02-28",
+                "TP73049": "02-28"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "c_TM36160",
+              "field": "Form/TM36160",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM36160"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP1",
+              "field": "Form/TP1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP36890",
+              "field": "Form/TP36890",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP36890"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP73049",
+              "field": "Form/TP73049",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP73049"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM36160",
+                "cleared": false,
+                "errored": false,
+                "value": "02-27"
+              },
+              {
+                "field": "Form/TP1",
+                "cleared": false,
+                "errored": false,
+                "value": "02-29"
+              },
+              {
+                "field": "Form/TP36890",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              },
+              {
+                "field": "Form/TP73049",
+                "cleared": false,
+                "errored": false,
+                "value": "02-28"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM36160",
+                "value": "02-27"
+              },
+              {
+                "field": "Form/TP1",
+                "value": "02-29"
+              },
+              {
+                "field": "Form/TP36890",
+                "value": "02-28"
+              },
+              {
+                "field": "Form/TP73049",
+                "value": "02-28"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "02-28",
+                "N": "03-01",
+                "TM36160": "02-27",
+                "TP1": "02-29",
+                "TP36890": "02-28",
+                "TP73049": "02-28"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "mid-year",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "EQSHIFT",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM36160",
+              "field": "Form/TM36160",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM36160"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP1",
+              "field": "Form/TP1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP36890",
+              "field": "Form/TP36890",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP36890"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP73049",
+              "field": "Form/TP73049",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP73049"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM36160",
+                "cleared": false,
+                "errored": false,
+                "value": "06-15"
+              },
+              {
+                "field": "Form/TP1",
+                "cleared": false,
+                "errored": false,
+                "value": "06-16"
+              },
+              {
+                "field": "Form/TP36890",
+                "cleared": false,
+                "errored": false,
+                "value": "06-16"
+              },
+              {
+                "field": "Form/TP73049",
+                "cleared": false,
+                "errored": false,
+                "value": "06-16"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM36160",
+                "value": "06-15"
+              },
+              {
+                "field": "Form/TP1",
+                "value": "06-16"
+              },
+              {
+                "field": "Form/TP36890",
+                "value": "06-16"
+              },
+              {
+                "field": "Form/TP73049",
+                "value": "06-16"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "06-15",
+                "N": "06-16",
+                "TM36160": "06-15",
+                "TP1": "06-16",
+                "TP36890": "06-16",
+                "TP73049": "06-16"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "EQSHIFT",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM36160",
+              "field": "Form/TM36160",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM36160"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP1",
+              "field": "Form/TP1",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP1"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP36890",
+              "field": "Form/TP36890",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP36890"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TP73049",
+              "field": "Form/TP73049",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TP73049"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM36160",
+                "cleared": false,
+                "errored": false,
+                "value": "06-15"
+              },
+              {
+                "field": "Form/TP1",
+                "cleared": false,
+                "errored": false,
+                "value": "06-16"
+              },
+              {
+                "field": "Form/TP36890",
+                "cleared": false,
+                "errored": false,
+                "value": "06-16"
+              },
+              {
+                "field": "Form/TP73049",
+                "cleared": false,
+                "errored": false,
+                "value": "06-16"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM36160",
+                "value": "06-15"
+              },
+              {
+                "field": "Form/TP1",
+                "value": "06-16"
+              },
+              {
+                "field": "Form/TP36890",
+                "value": "06-16"
+              },
+              {
+                "field": "Form/TP73049",
+                "value": "06-16"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "06-15",
+                "N": "06-16",
+                "TM36160": "06-15",
+                "TP1": "06-16",
+                "TP36890": "06-16",
+                "TP73049": "06-16"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

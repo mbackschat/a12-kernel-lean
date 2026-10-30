@@ -1,0 +1,50 @@
+{
+  "model": "Anchor_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "leap-eve",
+      "documentInline": {
+        "Form": {
+          "MD": "02-28",
+          "N": "02-29",
+          "TP1": "07-07",
+          "TP36890": "07-07",
+          "TP73049": "07-07",
+          "TM36160": "07-07"
+        }
+      }
+    },
+    {
+      "name": "march-first",
+      "documentInline": {
+        "Form": {
+          "MD": "02-28",
+          "N": "03-01",
+          "TP1": "07-07",
+          "TP36890": "07-07",
+          "TP73049": "07-07",
+          "TM36160": "07-07"
+        }
+      }
+    },
+    {
+      "name": "mid-year",
+      "documentInline": {
+        "Form": {
+          "MD": "06-15",
+          "N": "06-16",
+          "TP1": "07-07",
+          "TP36890": "07-07",
+          "TP73049": "07-07",
+          "TM36160": "07-07"
+        }
+      }
+    }
+  ]
+}
