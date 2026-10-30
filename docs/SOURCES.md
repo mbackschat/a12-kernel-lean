@@ -179,6 +179,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 30a handback](sources/inbound-handbacks.md#src-inbound-2026-10-30a): a12-dmkits `f22972e27b7f376b450ed8b50ea527d05611f525`; the unsupported condition language and its reading as a locale.
 - [October 30b handback](sources/inbound-handbacks.md#src-inbound-2026-10-30b): a12-dmkits `48ec4bcc5a4117600070be144704869cfc9d5b95`; the yearless direct copy's reconciliation and the frame values judged by their text.
 - [October 30c lock rows](sources/inbound-handbacks.md#src-inbound-2026-10-30c): a12-dmkits `a0a2a667854bad1bf651b12a833d7aea0bf4bc7e`; the version's order beside a cycle on `x` and a refused name beside a missing entity.
+- [October 30d handback](sources/inbound-handbacks.md#src-inbound-2026-10-30d): a12-dmkits `0ff5672ca393f98bb0284f2739d034ac4a1fc703`; the component-omitting date pair and the yearless shift anchor reconciled.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route

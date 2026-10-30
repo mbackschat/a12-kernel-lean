@@ -970,3 +970,12 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `extends`: [src-inbound-2026-10-30b](#src-inbound-2026-10-30b), whose record followed the lock where the letter's prose was wider: the version's order is now measured on `x` as well as `29.0.0`, and a refused name withholds a cycle's class but not a missing entity's, as the time zone does.
 - `adopted`: The beside-another-defect bullet of [spec/01 §1.1](../../spec/01-data-model.md#member-binding).
 - `sync`: Inbound from a committed peer revision, so no ledger entry is created.
+
+<a id="src-inbound-2026-10-30d"></a>
+## Reviewed October 30d letter reconciling the component-omitting date pair and the yearless shift anchor
+
+- `source`: Peer-session letter of 2026-10-30, `a12-kernel-lean-spec-corrections-2026-10-30c.md`, SHA-256 `5f130c6fb319cd4c24a218b2572d546c40bc0b930b09b19ef37d0df40427af3f`, delivered by the a12-dmkits session. It answers `SPEC-2026-10-30-03` and `-04` as handed-off at `d7da3a70`, and replaces nothing.
+- `revision`: a12-dmkits `0ff5672ca393f98bb0284f2739d034ac4a1fc703`, read with `git` only. The locks `ComponentOmittingDatePairDiffTest` and `YearlessShiftAnchorDiffTest` exist there, and both locks' expected outcomes were checked against the [fragment pair comparison](temporal-constant-and-base-year-probes.md#src-fragment-pair-comparison) and [yearless shift anchor](temporal-constant-and-base-year-probes.md#src-yearless-shift-anchor) checkpoints; peer KF93 carries both entries' rows with their unmeasured lists. The locks were read, not run.
+- `review`: A HIGH reconciliation on 2026-10-30. Every row the letter re-expressed agrees with those two captures, including `DifferenceInDays("01.01.", MD)` at 365 over `12-31` and 60 over `03-01`, 364 and 59 under Base Year 2001, which the local capture already holds and spec/05 §1 already states as one anchor year for both operands.
+- `not-adopted`: The peer's KF239 extension reads the shared year as the field's and puts it at 2000 by the shift rows. A difference within one year shows only that both operands share a leap year, the letter's §3 disclaims which side supplies it, and the field's year under `DifferenceInDays` is inferred from the `AddDays` carrier rather than measured; spec/05 keeps the constants' exact anchor year open.
+- `sync`: Both entries are terminal in the [ledger](../A12-DMKITS-SPEC-SYNC-LEDGER.md#current-queue). No new entry is created.
