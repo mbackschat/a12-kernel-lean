@@ -1,0 +1,73 @@
+{
+ "note": "dmtool model check over the base model with its rules and computations removed and this one rule added; diagnostics projected to codes, texts dropped.",
+ "rows": [
+  {
+   "row": "sf",
+   "baseModel": "Groot_DM.json",
+   "declaredIn": "/Order/Meta",
+   "errorEntityRelPath": "../..",
+   "errorCondition": "FieldNotFilled(../Note)",
+   "engineExecuted": "A12_KERNEL",
+   "engineVersion": "30.8.1",
+   "valid": false,
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ],
+   "classlessKernelDiagnostics": 0
+  },
+  {
+   "row": "sg",
+   "baseModel": "Groot_DM.json",
+   "declaredIn": "/Order",
+   "errorEntityRelPath": "..",
+   "errorCondition": "GroupNotFilled(/Order)",
+   "engineExecuted": "A12_KERNEL",
+   "engineVersion": "30.8.1",
+   "valid": false,
+   "codes": [],
+   "classlessKernelDiagnostics": 1
+  },
+  {
+   "row": "q4",
+   "baseModel": "Gd_DM.json",
+   "declaredIn": "/Form",
+   "errorEntityRelPath": "../Amt",
+   "errorCondition": "[Amt] > 1,5",
+   "engineExecuted": "A12_KERNEL",
+   "engineVersion": "30.8.1",
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ],
+   "classlessKernelDiagnostics": 0
+  },
+  {
+   "row": "q4p",
+   "baseModel": "Gp_DM.json",
+   "declaredIn": "/Form",
+   "errorEntityRelPath": "../Amt",
+   "errorCondition": "[Amt] > 1,5",
+   "engineExecuted": "A12_KERNEL",
+   "engineVersion": "30.8.1",
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ],
+   "classlessKernelDiagnostics": 0
+  },
+  {
+   "row": "v2",
+   "baseModel": "Gt_DM.json",
+   "declaredIn": "/Mix",
+   "errorEntityRelPath": "../DTX",
+   "errorCondition": "AddHours([DT0], 1) == [DTX]",
+   "engineExecuted": "A12_KERNEL",
+   "engineVersion": "30.8.1",
+   "valid": false,
+   "codes": [
+    "MVK_UNEXPECTED_TOKEN"
+   ],
+   "classlessKernelDiagnostics": 0
+  }
+ ]
+}

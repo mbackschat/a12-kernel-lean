@@ -100,11 +100,11 @@
 <a id="src-declared-comma-separator"></a>
 #### A declared `,` decimal separator is admitted and changes neither stored Number reads nor condition literals, measured 2026-10-30
 
-- `producer`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`, measurement checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1` built and runtime, JDK 21; `enginesAgree: true` on every row. Two `:adapter:kernelProbe` requests, `request-comma.json` and `request-dot.json`, observing `validateFull` over the same five documents.
+- `producer`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`, measurement checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1` built and runtime, JDK 21; `enginesAgree: true` on every row. Two `:adapter:kernelProbe` requests, `request-comma.json` and `request-dot.json`, observing `validateFull` over the same five documents, and one `model check` per twin over a single-rule variant (`q4`, `q4p`).
 - `model`: the twins `Gd_DM` (`decimalSeparator` `,`) and `Gp_DM` (`.`), each a root `Form` with the Number `Amt` of scale 1 and the rules `[Amt] > 1.5`, `[Amt] == 2` and `FieldFilled(Amt)`; `model check` admits both.
 - `runtime`: both twins give identical messages: the stored `1,5` and `2,5` draw `zahlHatUngueltigeZeichen`, while `1.5`, `2` and `2.5` read as Numbers and fire the rules their values satisfy.
-- `static`: the literal `1,5` in `[Amt] > 1,5` draws `MVK_UNEXPECTED_TOKEN` under both separators.
+- `static`: the literal `1,5` in `[Amt] > 1,5` draws `MVK_UNEXPECTED_TOKEN` under both separators (`q4` under `,`, `q4p` under `.`).
 - `lean`: `lake exe a12-kernel-replay` matches every rule of both requests.
-- `limit`: a computed Number's rendering under a declared `,` and message interpolation beyond the earlier display row are not observed.
+- `limit`: a computed Number's rendering under a declared `,`, the stored text's other consumers (Number `minLength`/`maxLength`, `FieldValueAsString`) and message interpolation beyond the earlier display row are not observed.
 - `sync`: [SPEC-2026-10-30-09](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-30-09).
-- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/) retains the four models, the four requests and their artifacts with rendered messages redacted. [Manifest](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/MANIFEST.sha256), SHA-256 `206ac4fef2ed7204bb4da34c945273983b3e146b7ac00f397645d1ec6958efd7`.
+- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/) retains the four models, the four requests and their artifacts with rendered messages redacted, and `static-checks.json`, the single-rule `model check` verdicts projected to their codes. [Manifest](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/MANIFEST.sha256), SHA-256 `2d308aeeb48592f96b71ac08c5a222a3a9db907f043040662e907b3c36b7c21a`.

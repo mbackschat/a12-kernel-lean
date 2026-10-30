@@ -616,4 +616,19 @@ example :
       some [(["Order/Note"], ["Order/Note"])] := by
   native_decide
 
+/-- `rootDm` with a repeating root. -/
+private def repeatingRootDm : DmModel :=
+  { rootDm with
+    flat := { fields := [text 1 O "Note" [1], text 2 O "Email" [1], text 3 (O ++ ["Meta"]) "Ref" [1]]
+              repeatableGroups := [{ level := 1, path := O, repeatability := some 3 }] } }
+
+example : repeatingRootDm.flat.validate.isOk = true := by native_decide
+
+/- The root target is admitted only where it was measured: a lower group referenced only through
+   the root, and a root that repeats, keep the refusal without a class (checkpoint `limit`). -/
+example :
+    meets rootDm O "../Meta" "GroupFilled(/Order) And FieldFilled(Note)" (.noClass "unsupported") ∧
+    meets repeatingRootDm (O ++ ["Meta"]) "../.." "GroupNotFilled(..)" (.noClass "unsupported") := by
+  native_decide
+
 end A12Kernel.Dm.GroupTargetLocks

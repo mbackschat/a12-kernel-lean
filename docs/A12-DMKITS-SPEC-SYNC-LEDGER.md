@@ -284,7 +284,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `canonical`: [spec/07 §1.7](../spec/07-repetition-and-iteration.md#17-a-group-as-error-entity), the bullet on a rule reporting on the root, and [spec/01 §3.1](../spec/01-data-model.md#fill-to-fix-classes), the root-group presence bullet.
 - `delta`: Replaces "its firing is unmeasured". A rule reporting on the root is admitted only from a group below it with a condition naming the root group, and fires once at `Order`: the root's absence on an empty root as an OMISSION, its presence as a VALUE once anything below it is filled. Widens the root-group bullet from the positive form to both polarities: `GroupNotFilled` over the root contributes no fields either, on a root target and beside a field target.
 - `basis`: the [root-target checkpoint](sources/key-join-and-parallel-probes.md#src-root-error-target), Kernel 30.8.1 on both strategies at a12-dmkits `08b0d6499`, measured 2026-10-30; Lean replays the whole request, references included.
-- `acceptance`: Reconcile a12-dmkits' record of a group error target and of KF522's root rule with the negated form. dmtool's `rule add` refuses a group path as `field`, so these rules were written into DM-JSON directly; whether to open that verb is a12-dmkits' choice. Partial validation of a root target has no witness here, so do not claim it.
+- `acceptance`: Reconcile a12-dmkits' record of a group error target and of KF522's root rule with the negated form. These rules were written into DM-JSON directly because a root target lies outside the group declaring it, the narrowing a12-dmkits keeps by decision ([FEATURE-GAPS §4](../../a12-rulekit/docs/FEATURE-GAPS.md#4-deferred--out-of-scope--wont-build), [KF212](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf212)); nothing is asked of it. Partial validation, a repeating root and `AtLeastOneGroupFilled` on a root target have no witness here, so do not claim them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-30-09"></a>
@@ -292,9 +292,9 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 - `status`: pending
 - `canonical`: [spec/01 §1.1](../spec/01-data-model.md#11-the-two-special-model-level-configurations), the `decimalSeparator` bullet.
-- `delta`: Replaces "any other effect of a declared `,` on evaluation is unmeasured". A declared `,` is admitted; stored `1,5` stays a formal error, stored `1.5` reads as a Number, and the literal `1,5` is refused `MVK_UNEXPECTED_TOKEN`, exactly as under `.`.
+- `delta`: Narrows "any other effect of a declared `,` on evaluation is unmeasured". A declared `,` is admitted; stored `1,5` stays a formal error, stored `1.5` reads as a Number under `>`, `==` and `FieldFilled`, and the literal `1,5` is refused `MVK_UNEXPECTED_TOKEN`, exactly as under `.`.
 - `basis`: the [declared-comma checkpoint](sources/domain-ingestion-probes.md#src-declared-comma-separator), twin models differing in the separator alone, Kernel 30.8.1 on both strategies at a12-dmkits `08b0d6499`, measured 2026-10-30; Lean replays both requests.
-- `acceptance`: Reconcile a12-dmkits' account of `decimalSeparator`. A computed Number's rendering under `,` has no witness here, so do not claim it.
+- `acceptance`: Reconcile a12-dmkits' account of `decimalSeparator`. A computed Number's rendering and the stored text's other consumers (Number `minLength`/`maxLength`, `FieldValueAsString`) under `,` have no witness here, so do not claim them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 
 <a id="spec-2026-10-30-10"></a>
@@ -302,7 +302,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 - `status`: pending
 - `canonical`: [spec/05 §5](../spec/05-dates-and-time.md#5-time-zones-and-the-sub-day-difference), the bullet on instant-based comparison and chained shifts.
-- `delta`: Extends the kept-instant rule from validation to a computation's precondition and operation: on `2024-10-27` from `01:30`, `AddHours(DT0, 1) < AddHours(DT0, 2)` holds although both render `02:30`, `AddHours(DT0, 1) == [DTX]` is false against a stored `02:30`, and their `DifferenceInMinutes` is `60`.
+- `delta`: Extends the kept instant inside one computation, measured on a chained shift by peer [KF504](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf504) row `l1`, to a precondition comparison and a sub-day difference of `AddHours`: on `2024-10-27` from `01:30`, `AddHours(DT0, 1) < AddHours(DT0, 2)` holds although both render `02:30`, `AddHours(DT0, 1) == [DTX]` is false against a stored `02:30`, and their `DifferenceInMinutes` is `60`.
 - `basis`: the [overlap-instant checkpoint](sources/repeatable-temporal-computation-probes.md#src-overlap-instant-in-computation), Kernel 30.8.1 on both strategies at a12-dmkits `08b0d6499`, measured 2026-10-30; Lean replays the whole request.
-- `acceptance`: Reconcile a12-dmkits' account of a computation's DateTime comparison. `DifferenceInDays` over a kept overlap instant was measured only on rows that do not separate a kept instant from a re-read rendering, so do not claim it.
+- `acceptance`: Reconcile a12-dmkits' account of a computation's DateTime comparison. In this batch `DifferenceInDays` over a kept overlap instant was measured only on rows that do not separate a kept instant from a re-read rendering, so do not claim it.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
