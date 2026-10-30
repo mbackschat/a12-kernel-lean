@@ -634,3 +634,18 @@ The task, profile, comparison contract and milestones are the [evaluator kit](..
 - `result`: of the 1606 in-profile `computations` channels, 1524 match, none diverge and 82 are refused with a named construct, every refusal but one a gate shared with validation; the 4023 `messages` channels rose to 3659 matching, none diverging.
 - `questions-and-guesses`: Q-006, a filled `RangeAsNumber` source's fill directions, was already decided by packet v6's leaf-seed table in spec/10 §4, and U02 implemented that reading; the question shows the table is found from the operator's chapter only with difficulty. Q-007, a yearless field copied into a year-bearing target, was unstated in the spec; the [yearless direct copy](../sources/temporal-constant-and-base-year-probes.md#src-yearless-direct-copy-base-year) measurement settled it as U02's reading (a). Its log also records a yearless constant into a year-bearing target as refused, which spec/09 §4.1 admits under a Base Year; no capture row exercises it.
 - `exclusions`: partial validation waits for M4.
+
+<a id="run-u02-m4"></a>
+### U02 M4 — partial validation
+
+- `task`: [U01 evaluator](#task-u01-evaluator), rerun cold as U02, milestone M4
+- `status`: green
+- `started-at`: 2026-10-30T02:18:14+01:00, after the M3 qualification commit `3d0e39d`
+- `finished-at`: 2026-10-30T03:09:12+01:00, qualification commit `c8d99a0`
+- `semantic-basis`: packet v6, cut from `0d13acf1e49ecc1dd2691058ea599dd3386505d0`
+- `oracle`: HIGH recomputed the four raw-output digests, the test totals and the in-profile row and channel class counts from the committed reports at `c8d99a0`, read the questions log, and scanned the evaluator crate for file, environment, process or network access and capture names outside comments, finding none; dependencies are unchanged.
+- `consumer-access`: the packet and its own repository; nothing received or sent during M4.
+- `cost`: about 51 min in slices M4.0 to M4.11 and 13 commits; 15929 nonblank Rust lines with 222 tests; token usage unavailable.
+- `result`: of the 1522 in-profile `partialMessages` channels, 1520 match, none diverge and 2 are refused, both a duplicated key whose winner spec/08 §4.3 leaves to host order. The `messages` channels rose to 3749 matching of 4023 through the shared join and duplicated-key work, and `computations` stayed at 1524 of 1606; no channel diverges.
+- `questions-and-guesses`: none new; Q-005's derivation is now implemented, leaving only the host-order winner refused.
+- `exclusions`: M5 waits for its instruction with a later packet.
