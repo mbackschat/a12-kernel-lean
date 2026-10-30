@@ -425,6 +425,13 @@ private def kernelVerdict? (observation : Json) (preview : Bool) : Option Bool :
       | some false => if (kernelCodes observation).isEmpty then none else some false
       | none => none
 
+/-- Run `compare` under the model's condition language, by the same exact code mapping the replay
+uses; a code without a keyword map is reported as a divergence rather than read as either language. -/
+private def withLanguage (dm : DmModel) (compare : Language → Outcome) : Outcome :=
+  match Language.ofCode? dm.conditionLanguage with
+  | some language => compare language
+  | none => .diverges s!"condition language {dm.conditionLanguage} has no keyword map"
+
 /-- Compare one declaration with its Kernel verdict: a `rule check` row's own rule, or the rule a
 `computation add` row's computation generates, whose message is the computation's. -/
 private def compare (dm : DmModel) (locales : List String) (rule : DmRule)
@@ -433,7 +440,7 @@ private def compare (dm : DmModel) (locales : List String) (rule : DmRule)
   | none => .skipped
   | some valid =>
   let kernel := kernelCodes observation
-  let language := if dm.conditionLanguage.startsWith "de" then Language.german else .english
+  withLanguage dm fun language =>
   let profile := language.messageKeywordProfile
   let outcome := match checkValidationRule dm language rule with
     | .error refusal => refusedAgainst refusal valid kernel
@@ -459,7 +466,7 @@ private def compareComputation (dm : DmModel) (locales : List String) (computati
   | none => .skipped
   | some valid =>
   let kernel := kernelCodes observation
-  let language := if dm.conditionLanguage.startsWith "de" then Language.german else .english
+  withLanguage dm fun language =>
   match checkComputation dm language computation with
   | .error refusal => match refusedAgainst refusal valid kernel with
     | some detail => .diverges detail
