@@ -1,0 +1,282 @@
+{
+ "header": {
+  "id": "FragCmp_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "FragCmp_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false,
+   "baseYear": "2023"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "typeDefinitions": [],
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/YM",
+        "name": "YM",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/MD",
+        "name": "MD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/M",
+        "name": "M",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Y",
+        "name": "Y",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Iso",
+        "name": "Iso",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/EQYMMD",
+        "name": "EQYMMD",
+        "Rule": {
+         "errorEntityRelPath": "../YM",
+         "errorCode": "EQYMMD",
+         "errorCondition": "[YM] == [MD]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "EQYMMD"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/LTYMMD",
+        "name": "LTYMMD",
+        "Rule": {
+         "errorEntityRelPath": "../YM",
+         "errorCode": "LTYMMD",
+         "errorCondition": "[YM] < [MD]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "LTYMMD"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/GTYMMD",
+        "name": "GTYMMD",
+        "Rule": {
+         "errorEntityRelPath": "../YM",
+         "errorCode": "GTYMMD",
+         "errorCondition": "[YM] > [MD]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "GTYMMD"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/EQMMD",
+        "name": "EQMMD",
+        "Rule": {
+         "errorEntityRelPath": "../M",
+         "errorCode": "EQMMD",
+         "errorCondition": "[M] == [MD]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "EQMMD"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/LTMMD",
+        "name": "LTMMD",
+        "Rule": {
+         "errorEntityRelPath": "../M",
+         "errorCode": "LTMMD",
+         "errorCondition": "[M] < [MD]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "LTMMD"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/EQYYM",
+        "name": "EQYYM",
+        "Rule": {
+         "errorEntityRelPath": "../Y",
+         "errorCode": "EQYYM",
+         "errorCondition": "[Y] == [YM]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "EQYYM"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/LTYYM",
+        "name": "LTYYM",
+        "Rule": {
+         "errorEntityRelPath": "../Y",
+         "errorCode": "LTYYM",
+         "errorCondition": "[Y] < [YM]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "LTYYM"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/EQYMD",
+        "name": "EQYMD",
+        "Rule": {
+         "errorEntityRelPath": "../Y",
+         "errorCode": "EQYMD",
+         "errorCondition": "[Y] == [MD]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "EQYMD"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/LTYMD",
+        "name": "LTYMD",
+        "Rule": {
+         "errorEntityRelPath": "../Y",
+         "errorCode": "LTYMD",
+         "errorCondition": "[Y] < [MD]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "LTYMD"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/EQYMISO",
+        "name": "EQYMISO",
+        "Rule": {
+         "errorEntityRelPath": "../YM",
+         "errorCode": "EQYMISO",
+         "errorCondition": "[YM] == [Iso]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "EQYMISO"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

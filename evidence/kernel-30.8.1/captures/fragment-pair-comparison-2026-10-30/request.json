@@ -1,0 +1,69 @@
+{
+  "model": "FragCmp_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull"
+  ],
+  "rows": [
+    {
+      "name": "june",
+      "documentInline": {
+        "Form": {
+          "YM": "2023-06",
+          "MD": "06-11",
+          "M": "06",
+          "Y": "2023",
+          "Iso": "2023-06-11"
+        }
+      }
+    },
+    {
+      "name": "firsts",
+      "documentInline": {
+        "Form": {
+          "YM": "2023-01",
+          "MD": "01-01",
+          "M": "01",
+          "Y": "2023",
+          "Iso": "2023-01-01"
+        }
+      }
+    },
+    {
+      "name": "year-ahead",
+      "documentInline": {
+        "Form": {
+          "YM": "2024-06",
+          "MD": "06-11",
+          "M": "06",
+          "Y": "2024",
+          "Iso": "2024-06-11"
+        }
+      }
+    },
+    {
+      "name": "months-apart",
+      "documentInline": {
+        "Form": {
+          "YM": "2023-07",
+          "MD": "06-11",
+          "M": "05",
+          "Y": "2022",
+          "Iso": "2023-07-01"
+        }
+      }
+    },
+    {
+      "name": "month-after",
+      "documentInline": {
+        "Form": {
+          "YM": "2023-06",
+          "MD": "06-11",
+          "M": "07",
+          "Y": "2023",
+          "Iso": "2023-06-11"
+        }
+      }
+    }
+  ]
+}

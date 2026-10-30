@@ -1,0 +1,580 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "FragCmp_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "june",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "LTMMD",
+              "field": "Form/M",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/M",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYMD",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYMMD",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYYM",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "LTMMD",
+              "field": "Form/M",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/M",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYMD",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYMMD",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYYM",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "firsts",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "EQMMD",
+              "field": "Form/M",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/M",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EQYMD",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EQYMISO",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Iso",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EQYMMD",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EQYYM",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "EQMMD",
+              "field": "Form/M",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/M",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EQYMD",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EQYMISO",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Iso",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EQYMMD",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "EQYYM",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "year-ahead",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "GTYMMD",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTMMD",
+              "field": "Form/M",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/M",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYYM",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "GTYMMD",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTMMD",
+              "field": "Form/M",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/M",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYYM",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "months-apart",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "EQYMISO",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Iso",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GTYMMD",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTMMD",
+              "field": "Form/M",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/M",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYMD",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYYM",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "EQYMISO",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Iso",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "GTYMMD",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTMMD",
+              "field": "Form/M",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/M",
+                "Form/MD"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYMD",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYYM",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "month-after",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "LTYMD",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYMMD",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYYM",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "LTYMD",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/Y"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYMMD",
+              "field": "Form/YM",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "LTYYM",
+              "field": "Form/Y",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Y",
+                "Form/YM"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

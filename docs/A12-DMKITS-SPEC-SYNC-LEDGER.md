@@ -228,3 +228,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: `48ec4bcc5a4117600070be144704869cfc9d5b95`.
 - `disposition`: Reconciled with no correction: the peer re-measured all twenty pairs under both Base Years on both strategies and its checker names the refusal on all twenty, agreeing on every row. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-30b).
+
+<a id="spec-2026-10-30-03"></a>
+### SPEC-2026-10-30-03 — Two component-omitting Dates of different component sets compare as their own earliest completions
+
+- `status`: pending
+- `canonical`: [spec/05 §1](../spec/05-dates-and-time.md#the-temporal-pair-gate), the paragraph after the pair gate on how an admitted pair compares.
+- `delta`: Adds the evaluation the pair gate left unstated: each operand completes on its own, a missing month or day to `01` and a missing year from the declared Base Year, an `MM` operand's included, and the completed dates compare; neither operand's component set narrows the other's.
+- `basis`: the retained [fragment pair comparison](sources/temporal-constant-and-base-year-probes.md#src-fragment-pair-comparison) capture, Kernel 30.8.1, measured locally 2026-10-30 on both codegen strategies under Base Year 2023: `yyyy-MM` `2023-06` before `MM-dd` `06-11`, `yyyy` `2023` before `2023-06`, `MM` `06` before `06-11` and `07` after it, `2024-06` after `06-11`, and `2023-01`, `01-01`, `01` and `2023` equal. The shared-component reading predicts equality on the first four and is refuted. `kf176` measures the decode against a full-format sibling.
+- `acceptance`: Reconcile the clause in a12-dmkits' own record. DATE_FRAGMENT declarations, partial precision, yearless pairs without a Base Year and compact or dotted spellings are unmeasured, so do not claim them.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
