@@ -104,7 +104,28 @@ The work spans many sessions and is reviewed at milestones, not at every commit.
 2. **M2 — full validation.** Rules and built-in findings on the `messages` channel, landed as family slices in the spec's chapter order. Each slice states which constructs it adds and reports the change in matched and unsupported rows.
 3. **M3 — computation.** The `computations` channel, also by family slices.
 4. **M4 — partial validation.** The `partialMessages` channel.
-5. **M5 — seeded mutations and qualification.** The mutation set arrives with a later packet version as a separate instruction. Do not design it yourself.
+5. **M5 — seeded mutations and qualification.** The [mutation set](#m5-mutation-set) below is fixed; start it only when the M5 instruction message arrives, and do not add to it.
+
+## M5 mutation set
+
+M5 asks whether this implementation's tests and differential detect a seeded semantic defect. Each mutation is a behavior to introduce, not a patch: write the smallest change to the evaluator that produces exactly that behavior and nothing else, wherever the code makes it.
+
+| id | the defect |
+|---|---|
+| MUT-1 | `FirstFilledValue` treats a Boolean `false` as not filled, so only `true` is selected. |
+| MUT-2 | `FirstFilledValue` passes over a formally invalid source as if it were empty and scans on. |
+| MUT-3 | A relational comparison reads an empty Number operand as `0`. |
+| MUT-4 | The partial call ignores the relevant set and reports exactly what the full call reports. |
+| MUT-5 | A yearless Date copied into a year-bearing target is completed into the year 2000 rather than the declared Base Year; admission and the formal check of stored input are unchanged. |
+| MUT-6 | A value declared `ddMM` is decoded month-first, as `MMdd` is; rendering into a `ddMM` target is unchanged. |
+
+Procedure, from a clean tree:
+
+1. Freeze the natural implementation as one commit and record it. Run `cargo test --release` and the differential, saving both outputs under `reports/qualification/M5/natural/`.
+2. For each mutation in table order, apply its change to the working tree only and save it as `reports/qualification/M5/<id>/patch.diff`. Run `cargo test --release` and the differential into that directory. Then restore the natural tree with `git checkout -- .` and confirm `git diff --exit-code` passes before the next mutation. Never commit a mutated evaluator.
+3. A mutation whose behavior the implementation cannot express, because the construct is unsupported, is recorded as not applicable with that reason, and the next one follows.
+4. After the last mutation, rerun both commands on the natural tree into `reports/qualification/M5/natural-after/`; the differential must be byte-identical to the first natural run.
+5. Commit the M5 reports, and add the `QUALIFICATION.md` section. Per mutation, give the patch's SHA-256, the failing test names, every `request`, `row` and channel whose class left `match`, and any that newly matched. Add both natural digests and the identity check.
 
 ## Reports
 

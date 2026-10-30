@@ -649,3 +649,17 @@ The task, profile, comparison contract and milestones are the [evaluator kit](..
 - `result`: of the 1522 in-profile `partialMessages` channels, 1520 match, none diverge and 2 are refused, both a duplicated key whose winner spec/08 §4.3 leaves to host order. The `messages` channels rose to 3749 matching of 4023 through the shared join and duplicated-key work, and `computations` stayed at 1524 of 1606; no channel diverges.
 - `questions-and-guesses`: none new; Q-005's derivation is now implemented, leaving only the host-order winner refused.
 - `exclusions`: M5 waits for its instruction with a later packet.
+
+<a id="run-u02-m5"></a>
+### U02 M5 — seeded mutations
+
+- `task`: [U01 evaluator](#task-u01-evaluator), rerun cold as U02, milestone M5
+- `status`: pending; the predictions below were frozen before the M5 instruction was sent, and are not in any packet.
+- `semantic-basis`: packet v7 and the kit's [mutation set](../IMPLEMENTER-KIT-EVALUATOR.md#m5-mutation-set).
+- `prediction-rule`: each prediction names rows whose own channel must leave `match` and rows whose own channel must stay `match`; a mutation may move other channels and rows, which the predictions do not claim. A row the frozen natural run does not match is outside its prediction. Each set was derived from the retained artifact's observed values.
+- `predict-MUT-1`: `computations` on `boolean-first-filled-false-is-filled/req.json` rows `false-then-true` and `false-then-false` must diverge; `absent-then-true`, `true-then-false` and `both-absent` must stay.
+- `predict-MUT-2`: `computations` on `first-filled-malformed-prefix-and-inventory/req.json` rows `q1-first-malformed`, `q5-first-malformed-stale`, `s2-row1-malformed` and `s6-row1-malformed-stale` must diverge; the other twelve rows must stay.
+- `predict-MUT-3`: `messages` on `negation-pair-grid-2026-10-02/request.json` rows `all-empty` and `blank` must diverge, `[A] <= 5` firing there; the other eight rows must stay.
+- `predict-MUT-4`: `partialMessages` on `partial-parallel-2026-10-10/request.json` must diverge on the 19 rows whose observed partial and full messages differ and stay on the 7 where they coincide: `whole`, `empty-payloads-whole`, `invalid-key-whole`, `duplicate-outer-4-whole`, `duplicate-outer-4-first`, `duplicate-outer-5-whole` and `number-token-aliases`.
+- `predict-MUT-5`: `computations` on `yearless-direct-copy-base-year-2026-10-30/request.json` rows `march-fifth` and `leap-day` and on `request-2023.json` rows `june-eleventh` and `leap-day` must diverge, the last through its `MM` source alone; `empty-sources` in both, `malformed-day` in `request.json` and `malformed` in `request-2023.json` must stay.
+- `predict-MUT-6`: `computations` on `yearless-direct-copy-base-year-2026-10-30/request.json` rows `march-fifth` and `leap-day` and on `request-2023.json` row `june-eleventh` must diverge; `empty-sources` in both must stay.
