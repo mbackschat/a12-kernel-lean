@@ -47,7 +47,7 @@ When the theory lacks something U03 needs, never supply the semantics in U03. Ex
 
 ## Encoding rules
 
-- Lower Number values to SMT integers scaled by the field's declared scale, bounded by its declared domain, never to unrestricted `Real`; `signed` is not a lower bound.
+- Lower Number values to SMT integers scaled by the field's declared scale, bounded by its declared domain, never to unrestricted `Real`. A domain is what the theory's formal check admits for a stored value, which already rejects a negative value on a `positivesOnly` field; add no bound of your own from `signed`, which elsewhere drives directional fillability.
 - Keep absence a separate state from every value for each field type, and preserve Confirm's stored-true restriction.
 - Encode an authored rule under acceptance as its non-firing, taken from the theory's verdict semantics, never as its surface condition negated; add no `Not` to the A12 condition language.
 - Use tagged solver symbols derived from stable model identities, and name every assertion with a source-map entry: field domains, required findings, authored rules and goals separately.

@@ -157,7 +157,7 @@ Each future field constraint becomes first-class executable policy data in the m
 
 Keep operator configuration separate from formal-input constraints. In particular, [`NumField.signed`](../A12Kernel/Core.lean) drives directional fillability and is not a lower bound. Do not overload it with every authoring constraint merely to simplify the solver.
 
-Preserve exact `Rat` semantics and every named normalization point. A closed numeric profile may lower values to scaled SMT integers, but only with an explicit bridge to A12 scale-19 `HALF_UP` comparison and stored-form constraints. Translating all Number values to unrestricted SMT `Real`, or inferring non-negativity from `signed = false`, would be unsound.
+Preserve exact `Rat` semantics and every named normalization point. A closed numeric profile may lower values to scaled SMT integers, but only with an explicit bridge to A12 scale-19 `HALF_UP` comparison and stored-form constraints. Translating all Number values to unrestricted SMT `Real`, or inferring non-negativity from `signed = false` beyond what the formal check of a stored value enforces, would be unsound.
 
 Boolean and Confirm must preserve absence and Confirm's stored-true restriction. Enum tokens require a first-class finite domain. Dates require a fixed world and an exact ordinal/calendar bridge. Strings require the already established one-pass CRLF ingestion, UTF-16 length, charset/newline policy, and a deliberately closed regex/string-theory subset before admission.
 
