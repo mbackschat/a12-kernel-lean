@@ -353,4 +353,57 @@ example : [none, some 2001].all (fun baseYear =>
     yearlessShiftEquality baseYear "06-15" "06-16" true == some ["match"]) = true := by
   native_decide
 
+private def stampModel (format : String) (baseYear : Option Int) (zone : String) : FlatModel := {
+  fields := [
+    { id := 0, groupPath := ["Form"], name := "D", policy := { kind := .temporal .date (TemporalComponents.ofFormat format) },
+      temporalTargetPolicy := some { format } },
+    { id := 1, groupPath := ["Form"], name := "T", policy := { kind := .temporal .time .time },
+      temporalTargetPolicy := some { format := "HH:mm:ss" } },
+    { id := 2, groupPath := ["Form"], name := "Result", policy := { kind := .temporal .dateTime .now },
+      temporalTargetPolicy := some { format := "yyyy-MM-dd'T'HH:mm:ss" } }]
+  timeZoneId := zone, baseYear }
+
+/-- `DateTime(D, T)` over a `format`-declared `D`, as the outcome on a target seeded as the capture
+seeds it, at the capture's clock `2024-03-30T23:00:00Z`. -/
+private def completedStamp (format source clock : String) (baseYear : Option Int := some 2024)
+    (zone := "UTC") : Option String := do
+  let fixture := stampModel format baseYear zone
+  let dm : DmModel := { flat := fixture, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Lean.Json.mkObj [("Form", Lean.Json.mkObj [
+    ("D", .str source), ("T", .str clock), ("Result", "2001-12-25T12:30:00")])])).toOption
+  let world : World := { now := { epochMillis := 1711839600000 }, modelZoneRules := ModelZone.concreteRules }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler fixture).toOption
+  let document ← (checkDocument prepared "en_US" input.data).toOption
+  let step ← (lowerComputation fixture .english {
+    name := "ResultComp", group := ["Form"], targetRelPath := "../Result", commonPrecondition := none,
+    alternatives := [{ precondition := none, operation := "DateTime(D,T)" }], errorCodesToSuppress := [] }).toOption
+  let results ← (runComputations world prepared document [step.2]).toOption
+  results.head?.map (·.outcome)
+
+/-- The rule condition's admission, as `none` or the refusal's code. -/
+private def stampRuleRefusal (format : String) (baseYear : Option Int) : Option String :=
+  let fixture := stampModel format baseYear "UTC"
+  let rule : DmRule := {
+    group := ["Form"], name := "Stamp", errorEntityRelPath := "../Result"
+    errorCode := "STAMP", condition := "DateTime(D,T) == [Result]", severity := "ERROR" }
+  let dm : DmModel := { flat := fixture, rules := [rule], computations := [], conditionLanguage := "en_US", refusals := [] }
+  match checkValidationRule dm .english rule with
+  | .ok _ => none
+  | .error refusal => some refusal.detail
+
+-- A component-omitting Date argument completes to its earliest day, a yearless one in the Base
+-- Year; the completed Berlin label `2024-03-31T02:30:00` is a spring gap and clears. Without a Base
+-- Year a yearless argument is refused in a rule condition, the year-bearing ones admitted
+-- ([DateTime component completion](../../../docs/sources/temporal-constant-and-base-year-probes.md#src-datetime-component-completion)).
+example :
+    [("yyyy", "2024"), ("yyyy-MM", "2024-03"), ("MM", "03"), ("MM-dd", "03-31")].map
+      (fun (format, source) => completedStamp format source "12:30:00") =
+      [some "value 2024-01-01T12:30:00", some "value 2024-03-01T12:30:00", some "value 2024-03-01T12:30:00",
+        some "value 2024-03-31T12:30:00"] ∧
+    completedStamp "MM-dd" "03-31" "02:30:00" (zone := "Europe/Berlin") = some "cleared" ∧
+    completedStamp "MM" "03" "02:30:00" (zone := "Europe/Berlin") = some "value 2024-03-01T02:30:00" ∧
+    ["yyyy", "yyyy-MM", "MM", "MM-dd"].map (stampRuleRefusal · none) =
+      [none, none, some "MVK_WRONG_DATE_FORMAT_FOR_OP", some "MVK_WRONG_DATE_FORMAT_FOR_OP"] ∧
+    ["MM", "MM-dd"].map (stampRuleRefusal · (some 2024)) = [none, none] := by native_decide
+
 end A12Kernel.Dm.CalendarExpressionLocks

@@ -127,13 +127,15 @@ private def fired (document : Json) : Option (List String) := do
       s!"{source.errorCode} {renderPointer dm.flat message.errorAddress} {reprStr message.messageType}")
   pure messages.flatten
 
-/-- The reference channels of one parallel rule's firings, sorted, as `pointer referenced fillToFix`. -/
-private def referenced (name : String) (document : Json) : Option (List (String × List String × List String)) := do
+/-- The reference channels of one parallel rule's or generated rule's firings, sorted, as
+`pointer referenced fillToFix`; `code` is the rule's error code. -/
+private def referenced (code : String) (document : Json) : Option (List (String × List String × List String)) := do
   let dm ← dm?
   let input ← (readDocument dm document).toOption
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let source ← dm.rules.find? (·.name == name)
+  let generated ← dm.computations.mapM (·.generatedRule? .english)
+  let source ← (dm.rules ++ generated).find? (·.errorCode == code)
   let .parallel plan ← (checkValidationRule dm .english source world).toOption | none
   let fired ← (runParallelRuleReferences checked plan (some world)).toOption
   let sorted := fun (pointers : List MessagePointer) =>
@@ -252,5 +254,29 @@ example : referenced "k07b" sparse = some [
         "Staffing/Supply[2]/Note"],
       ["/Staffing[1]/Ledger[-5]/Amount", "/Staffing[1]/Ledger[-5]/Code", "Staffing/Supply[2]/Department",
         "Staffing/Supply[2]/Headcount", "Staffing/Supply[2]/Note"])] := by native_decide
+
+-- A starred read of either joined group, filtered or not, adds its own fields at coordinate `0` and
+-- no index field, while the joined operation's row-bound partner read brings `Department`
+-- (SPEC-2026-10-30-07). Shown at the matched partner row, where both reads meet.
+example : ["COut03", "COut04", "COut05"].mapM (fun code => (referenced code matched).map
+    (·.filter (·.1.startsWith "Staffing/Supply[2]/"))) = some [
+    [("Staffing/Supply[2]/Out03",
+      ["/Staffing[1]/Demand[0]/Base", "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department", "Staffing/Supply[2]/Department", "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Out03"],
+      ["/Staffing[1]/Demand[0]/Base", "Staffing/Demand[2]/Base", "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department", "Staffing/Supply[2]/Headcount", "Staffing/Supply[2]/Out03"])],
+    [("Staffing/Supply[2]/Out04",
+      ["/Staffing[1]/Supply[0]/Headcount", "Staffing/Demand[2]/Base", "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department", "Staffing/Supply[2]/Headcount", "Staffing/Supply[2]/Out04"],
+      ["/Staffing[1]/Supply[0]/Headcount", "Staffing/Demand[2]/Base", "Staffing/Demand[2]/Department",
+        "Staffing/Supply[2]/Department", "Staffing/Supply[2]/Headcount", "Staffing/Supply[2]/Out04"])],
+    [("Staffing/Supply[2]/Out05",
+      ["/Staffing[1]/Demand[0]/Base", "/Staffing[1]/Demand[0]/Headcount", "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department", "Staffing/Supply[2]/Department", "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Out05"],
+      ["/Staffing[1]/Demand[0]/Base", "/Staffing[1]/Demand[0]/Headcount", "Staffing/Demand[2]/Base",
+        "Staffing/Demand[2]/Department", "Staffing/Supply[2]/Department", "Staffing/Supply[2]/Headcount",
+        "Staffing/Supply[2]/Out05"])]] := by native_decide
 
 end A12Kernel.Dm.ParallelJoinedGuardLocks
