@@ -220,11 +220,11 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-30-02"></a>
 ### SPEC-2026-10-30-02 — A yearless field copied into a year-bearing Date target takes the declared Base Year, a month alone completing to the first
 
-- `status`: handed-off
+- `status`: accepted
 - `canonical`: [spec/09 §4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape), the bullet on a field source's static component compatibility, with the year-carrier row in [spec/05](../spec/05-dates-and-time.md#where-a-yearless-value-gets-its-year) and the constant scope of the §4.1 Base Year sentence.
 - `delta`: Adds the copy direction the clause did not state: a yearless field into a year-bearing Date target is refused `MVK_INVALID_COMPARE_TO_DATE` without a Base Year and admitted with one, whatever the two component sets, and stores the source in the declared Base Year rendered in the target's format, a month-only source completing its day to the first. An absent or malformed source clears the target, a day the Base Year makes unreal included. The §4.1 statement that a Base Year adds nothing to the stored text is narrowed to a constant's store, which it always described.
 - `basis`: the retained [yearless direct copy](sources/temporal-constant-and-base-year-probes.md#src-yearless-direct-copy-base-year) capture, Kernel 30.8.1, measured locally 2026-10-30 on both codegen strategies: all twenty pairs of five yearless sources and four year-bearing targets under Base Year 2023, refused without one, where `06-11` stores `2023-06-11`, `11.06.2023`, `2023-06` and `2023`, `06` stores `2023-06-01` and `02-29` clears, and nine of those pairs under Base Year 2024. The `MM-dd` admission confirms the peer's `kf483` row; `kf550` measures the same completion on `FirstFilledValue`.
 - `acceptance`: Reconcile the bare-copy store, the month-only completion to the first and the clears in a12-dmkits' own record. DATE_FRAGMENT declarations, partial precision, repeatable carriers and a DateTime target are unmeasured, so do not claim them.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
-- `reviewed a12-dmkits revision`: none yet.
-- `disposition`: none yet.
+- `reviewed a12-dmkits revision`: `48ec4bcc5a4117600070be144704869cfc9d5b95`.
+- `disposition`: Reconciled with no correction: the peer re-measured all twenty pairs under both Base Years on both strategies and its checker names the refusal on all twenty, agreeing on every row. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-30b).
