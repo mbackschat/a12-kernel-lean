@@ -97,7 +97,7 @@ The first six classes are leaf classes; the last three are operand classes, cons
 
 | Class | Defined in | Meaning |
 |---|---|---|
-| `leaf seed` | [§12 §4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing) | directions seeded at the leaf |
+| `leaf seed` | [§12 §4 leaf seeds](10-validation-and-polarity.md#leaf-seeds) | directions seeded at the leaf |
 | `arithmetic propagation` | [§12 §4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing) | the operator's propagation formula |
 | `Number aggregate missingness` | [§12 §4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing) | the aggregate's own directions |
 | `count headroom` | [§12 §4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing) | grows while headroom remains |

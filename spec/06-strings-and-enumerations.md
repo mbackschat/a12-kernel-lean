@@ -87,7 +87,7 @@ A constant is typed before these checks, so a valid date or `HH:mm:ss` literal, 
 
 **Admission does not imply JavaScript portability.** Known legal separators include inline flag forms, `\R` and `\h`, Unicode `\s`, dot and code-point differences, unmatched backreferences, non-nested class intersections, `\x{…}`, `\N{…}`, `\X` and `\b{g}`. Generated static Java agrees with the Java runtime on the exercised cases. The Kernel's TypeScript target anchors the raw source inside a JavaScript regular expression as a non-capturing group between `^` and `$`; any resulting difference is a characterized strategy split and never replaces the Groovy-dynamic result.
 
-**An empty authored condition pattern is admitted statically but fails when its call is reached**, before the supplied String's availability is inspected. This is a runtime failure, not either operator's ordinary match result: a preceding false guard hides it, while a subsequent false condition cannot suppress it.
+**An empty authored condition pattern is admitted statically but fails when its call is reached**, before the supplied String's availability is inspected. This is a runtime failure of [§12 §3.1](10-validation-and-polarity.md#31-truth-testing-and-message-classification), not either operator's ordinary match result: a preceding false guard hides it, while a subsequent false condition cannot suppress it.
 
 - Validation catches it at the enclosing rule and emits that rule's VALUE error. Partial validation still applies error-field dispatch relevance, but operand non-relevance alone does not hide a reached call.
 - Computation clears the affected target and blocks alternative fallback; formal-input prechecking can prevent the call first, while independent computations continue.

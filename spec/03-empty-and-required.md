@@ -117,7 +117,7 @@ Thus, in an instance holding other content, `MaxValue(A,B) == 0` fires with both
 
 ### A.4 The row gate — where the substitutions stop
 
-**Under full validation, a rule is evaluated at an instance without content only when it can fire there.** Everything in A.1–A.3 happens inside a content-bearing instance. At an instance without content a rule is evaluated only when one of these holds; otherwise it is not evaluated there and stays silent:
+**Under full validation, a rule is evaluated at an instance without content only when it can fire there.** Everything in A.1–A.3 happens inside a content-bearing instance. Which root instances are dispatched and which declared slots below them a rule visits is the rule iteration domain of [§9 §1.3](07-repetition-and-iteration.md#13-evaluation-domains). At an instance without content a rule is evaluated only when one of these holds; otherwise it is not evaluated there and stays silent:
 
 1. its condition **can fire on empty**, by the structural predicate below;
 2. a comparison in its condition holds a **lifting count on its small side**;

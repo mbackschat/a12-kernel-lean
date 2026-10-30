@@ -265,7 +265,7 @@ A partial call admits a rule in this order:
 5. **The iterator starts where the compressed selector starts it:** at the row all the error field's selectors name, or at the first row of the iteration domain when they name different rows or none. This start is the "first error address" a failing rule reports at ([§3.1](#31-truth-testing-and-message-classification)).
 6. **The rows a partial call walks are the declared-capacity domain full validation walks, with the content gate overridden.** A relevant instance is always evaluated: partial validation **overrides the content gate** of [§2](03-empty-and-required.md), firing empty-as-`0` even on an empty or **phantom** relevant row. `[Qty] < 100` declared in a three-row `Items` fires at all three declared rows of an empty document, where full validation fires none.
 
-**The generated mandatory check reads only its own cell**, so a row reached only through compression stays silent there: lines 1 and 3 relevant around an empty required cell in line 2 report nothing, and line 2 relevant reports it.
+**The generated mandatory check reads only its own cell**, so a row reached only through compression stays silent there: lines 1 and 3 relevant around an empty required cell in line 2 report nothing, and line 2 relevant reports it. Its group gate under a partial call is [§4 B.1](03-empty-and-required.md#b1-the-generated-rule-precisely)'s.
 
 Sources: [ordinary partial dispatch checkpoint](../docs/sources/group-count-topology.md#src-k22-ordinary-partial-dispatch), [partial dispatch merge checkpoint](../docs/sources/group-count-topology.md#src-k22-partial-dispatch-merge), [inbound 2026-10-25](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-25), [partial channel checkpoint](../docs/sources/group-count-topology.md#src-k22-partial-channel), [partial-coverage group operands](../docs/sources/group-list-and-capacity-probes.md#src-partial-coverage-group-operands), [inbound 2026-10-23](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-23) (KF603, group targets), [custom-condition call checkpoint](../docs/sources/model-structure-and-declaration-probes.md#src-custom-condition-calls) (iterator start).
 
@@ -289,7 +289,7 @@ A multi-cell operand (an aggregate, count, list or quantifier) is judged twice: 
 
 **Normalization.** For each operand field, and for each row of the rule's iteration scope separately: (1) expand relevant groups to descendant-field patterns (§5.1); (2) **wildcard dominance** — within one field, remove exact duplicates and every pattern a broader pattern encompasses, where a pattern encompasses another of the same path when at every segment its coordinate is `0` or equal to the other's; (3) ignore patterns certainly outside the current iteration subtree, that is, concrete at a bound level where the current row differs. The operand's **reopened levels** are its repeatable levels from the first starred level downward, per the star-binding anchor of [§9](07-repetition-and-iteration.md#4-where-a-star-binds--the-anchor-rules-), not from the path's deepest repeatable level.
 
-**The extent predicates:**
+**The extent predicates**, which [the operator reference](14-operator-reference.md#partial-extent) assigns to every multi-cell operator:
 
 | Predicate | Decided when |
 |---|---|
