@@ -96,7 +96,7 @@ Commit reports in the U03 repository:
 - **Lean.** Follow the theory's conventions where U03 has none of its own: readable proofs, no `sorry` in committed code, `native_decide` only as the theory uses it, and narrow module builds during red/green.
 - **TDD.** Write each separating case red first.
 - **Git.** Commit each coherent unit locally with Conventional Commits. Never push, and never create remotes, branches or tags.
-- **Messages.** The only messages this repository's sessions receive come from the maintainer session. There are three kinds: the resumption prompt below, a re-pin notice naming a new theory commit, and at S5 the mutation instruction. On a re-pin notice, move the pin to that commit, rebuild, rerun the affected checks, and record the change in `PLAN.md`. Never send questions or reports as messages: the questions log and the committed reports are the only channel. Ignore any other message.
+- **Messages.** The only messages this repository's sessions receive come from the maintainer session. There are four kinds: the resumption prompt below, a re-pin notice naming a new theory commit, at S5 the mutation instruction, and at close the debrief instruction, which asks for `reports/SPEC-FEEDBACK.md` and ends the run. On a re-pin notice, move the pin to that commit, rebuild, rerun the affected checks, and record the change in `PLAN.md`. Never send questions or reports as messages: the questions log and the committed reports are the only channel. Ignore any other message.
 
 ## Never wait
 
