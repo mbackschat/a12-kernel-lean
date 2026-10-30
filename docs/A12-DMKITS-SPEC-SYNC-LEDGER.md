@@ -232,7 +232,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-30-03"></a>
 ### SPEC-2026-10-30-03 — Two component-omitting Dates of different component sets compare as their own earliest completions
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/05 §1](../spec/05-dates-and-time.md#the-temporal-pair-gate), the paragraph after the pair gate on how an admitted pair compares.
 - `delta`: Adds the evaluation the pair gate left unstated for two date-only operands: each completes on its own, a missing month or day to `01` and a missing year from the declared Base Year, an `MM` operand's included, and the completed dates compare, the shorter set not narrowing the comparison to the components both carry. It is §6.1's fragment completion on component-omitting DATE declarations, and the carrier table gains its row.
 - `basis`: the retained [fragment pair comparison](sources/temporal-constant-and-base-year-probes.md#src-fragment-pair-comparison) capture, Kernel 30.8.1, measured locally 2026-10-30 on both codegen strategies under Base Year 2023: `yyyy-MM` `2023-06` before `MM-dd` `06-11`, `yyyy` `2023` before `2023-06`, `MM` `06` before `06-11` and `07` neither equal to it nor before it, `2024-06` after `06-11`, and every measured pair of `2023-01`, `01-01`, `01` and `2023` equal. The shared-component reading predicts equality for the first, second, third and fifth pairs and is refuted. The `MM` operand's Base Year rests on `kf176` and `kf93`, which pair `MM` with a full Date; the capture pairs it only with `MM-dd`.
@@ -244,7 +244,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-30-04"></a>
 ### SPEC-2026-10-30-04 — With no Base Year a stored yearless field's day shift starts from 2000 on the hybrid calendar and keeps the year it reaches
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/05 §1](../spec/05-dates-and-time.md#the-omitted-year-constant-and-the-base-year), the default-anchor paragraph, and its row in [the carrier table](../spec/05-dates-and-time.md#where-a-yearless-value-gets-its-year).
 - `delta`: Pins the default anchor of a stored `MM-dd` field's day shift to the year 2000 on the legacy hybrid calendar, and adds that the shifted value keeps the year it reaches while the stored value it meets is read in the anchor year, so `12-31` plus one day is not the stored `01-01`. Both operands of a measured `DifferenceInDays` complete in one anchor year, and a yearless constant's anchor is a leap year from 1904 to 2020, consistent with 2000.
 - `basis`: the retained [yearless shift anchor](sources/temporal-constant-and-base-year-probes.md#src-yearless-shift-anchor) capture, Kernel 30.8.1, measured locally 2026-10-30 on both codegen strategies: with no Base Year `AddDays` over `MM-dd` `02-28` by 1, 36890, 73049 and `0 - 36160` days stores `02-29`, `02-28`, `02-28` and `02-27`, and `06-15` by `0 - 160000` and `0 - 200000` days `05-13` and `11-06`, which of the years 1600 to 8999 on the hybrid calendar only 2000 reproduces; under Base Year 2001 the first four store `03-01`, `03-01`, `03-01` and `02-28`. `AddDays(MD, 1) == [N]` holds for `12-30` beside `12-31` and not for `12-31` beside `01-01` under both, and `DifferenceInDays("31.12.", "01.01.")` is `-365` with no Base Year and `-364` under 2001.
