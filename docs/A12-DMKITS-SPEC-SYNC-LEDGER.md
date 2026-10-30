@@ -280,7 +280,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-30-08"></a>
 ### SPEC-2026-10-30-08 — A rule reporting on the root fires at the bare root pointer, and the root names none of its fields under either polarity
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/07 §1.7](../spec/07-repetition-and-iteration.md#17-a-group-as-error-entity), the bullet on a rule reporting on the root, and [spec/01 §3.1](../spec/01-data-model.md#fill-to-fix-classes), the root-group presence bullet.
 - `delta`: Replaces "its firing is unmeasured". A rule reporting on the root is admitted only from a group below it with a condition naming the root group, and fires once at `Order`: the root's absence on an empty root as an OMISSION, its presence as a VALUE once anything below it is filled. Widens the root-group bullet from the positive form to both polarities: `GroupNotFilled` over the root contributes no fields either, on a root target and beside a field target.
 - `basis`: the [root-target checkpoint](sources/key-join-and-parallel-probes.md#src-root-error-target), Kernel 30.8.1 on both strategies at a12-dmkits `08b0d6499`, measured 2026-10-30; Lean replays the whole request, references included.
@@ -290,7 +290,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-30-09"></a>
 ### SPEC-2026-10-30-09 — A declared `,` decimal separator changes neither stored Number reads nor condition literals
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/01 §1.1](../spec/01-data-model.md#11-the-two-special-model-level-configurations), the `decimalSeparator` bullet.
 - `delta`: Narrows "any other effect of a declared `,` on evaluation is unmeasured". A declared `,` is admitted; stored `1,5` stays a formal error, stored `1.5` reads as a Number under `>`, `==` and `FieldFilled`, and the literal `1,5` is refused `MVK_UNEXPECTED_TOKEN`, exactly as under `.`.
 - `basis`: the [declared-comma checkpoint](sources/domain-ingestion-probes.md#src-declared-comma-separator), twin models differing in the separator alone, Kernel 30.8.1 on both strategies at a12-dmkits `08b0d6499`, measured 2026-10-30; Lean replays both requests.
@@ -300,7 +300,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-30-10"></a>
 ### SPEC-2026-10-30-10 — Inside one computation a comparison and a sub-day difference read the exact instant a chained shift keeps across an overlap
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/05 §5](../spec/05-dates-and-time.md#5-time-zones-and-the-sub-day-difference), the bullet on instant-based comparison and chained shifts.
 - `delta`: Extends the kept instant inside one computation, measured on a chained shift by peer [KF504](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf504) row `l1`, to a precondition comparison and a sub-day difference of `AddHours`: on `2024-10-27` from `01:30`, `AddHours(DT0, 1) < AddHours(DT0, 2)` holds although both render `02:30`, `AddHours(DT0, 1) == [DTX]` is false against a stored `02:30`, and their `DifferenceInMinutes` is `60`.
 - `basis`: the [overlap-instant checkpoint](sources/repeatable-temporal-computation-probes.md#src-overlap-instant-in-computation), Kernel 30.8.1 on both strategies at a12-dmkits `08b0d6499`, measured 2026-10-30; Lean replays the whole request.
