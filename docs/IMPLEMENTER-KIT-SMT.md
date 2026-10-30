@@ -41,7 +41,7 @@ Models are DM-JSON files read through the theory's own reader; the export handof
 
 ## Reaching the theory's semantics
 
-The worked examples of the reader-to-evaluator path are the theory's lock modules [`CalendarExpressionLocks.lean`](../A12Kernel/Reference/Dm/CalendarExpressionLocks.lean) and [`ParallelJoinedGuardLocks.lean`](../A12Kernel/Reference/Dm/ParallelJoinedGuardLocks.lean). They read a model with `readModel`, a document with `readDocument`, prepare it with `prepareFlatStringContext` and `checkDocument`, and check and run a rule with `checkValidationRule` and `runValidationRule`; `validationRules` in [`Replay.lean`](../A12Kernel/Reference/Dm/Replay.lean) lists the rules full validation runs. Under `strictNoMessages`, acceptance is the conjunction that every formal finding, every generated finding and every rule's firing list is empty, so the order of composition cannot change it.
+The worked examples of the reader-to-evaluator path are the theory's lock modules [`CalendarExpressionLocks.lean`](../A12Kernel/Reference/Dm/CalendarExpressionLocks.lean) and [`ParallelJoinedGuardLocks.lean`](../A12Kernel/Reference/Dm/ParallelJoinedGuardLocks.lean). They read a model with `readModel`, a document with `readDocument`, prepare it with `prepareFlatStringContext` and `checkDocument`, and check and run a rule with `checkValidationRule` and `runValidationRule`; `validationRules` in [`Replay.lean`](../A12Kernel/Reference/Dm/Replay.lean) lists the rules full validation runs. For a scalar-plan rule, `scalarConditionVerdict` in [`Validate.lean`](../A12Kernel/Reference/Dm/Validate.lean) returns the condition's verdict before the root content gate, in the context `scalarFullValidationContext` builds and `runRuleAt` uses, and `evalAddressedFullAt_of_gate_open` and `evalAddressedFullAt_of_gate_closed` state how the gated firing follows from it. Under `strictNoMessages`, acceptance is the conjunction that every formal finding, every generated finding and every rule's firing list is empty, so the order of composition cannot change it.
 
 When the theory lacks something U03 needs, never supply the semantics in U03. Examples are a declared Number bound or scale that the formal check does not enforce, a missing absolute-required finding, or no way to obtain a document's formal findings. Record a question, mark the dependent capability unsupported so that it fails closed, and continue. The theory owner lands the fix in `a12-kernel-lean` and sends a re-pin notice.
 
@@ -105,7 +105,7 @@ Work never waits for a person or another session:
 - A semantic gap in the theory gets a question, a fail-closed `unsupported` capability, and continued work on everything else.
 - Information outside the allowed reads is never fetched; record what was missing and continue.
 - A proof that two successive attempts neither narrow nor close is recorded in `PLAN.md` as unproved, with both attempts, and work moves on.
-- A finished milestone is no stopping point; continue with `PLAN.md`'s next action.
+- A finished milestone is no stopping point: after its qualification commit, continue with `PLAN.md`'s next action in the same session. End a session only for the halt condition below.
 - A pin that does not resolve, or a theory build that fails at the pin, is the one condition that halts work. Record it in `PLAN.md` and end the session until a re-pin notice arrives.
 
 ## Session prompts

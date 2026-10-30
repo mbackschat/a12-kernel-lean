@@ -99,6 +99,14 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `assurance`: E/P/Q closed for cold Analyze, Verify, and Synthesize tasks over the exact presence fragment. Lean independently certifies the same-field contradiction and replays the different-field witness; raw SMT UNSAT remains bounded solver output rather than proof. No kernel-evidence claim
 - `remains`: Wider analysis requires a new consumer hypothesis
 
+<a id="cap-scalar-pre-gate-verdict"></a>
+#### Scalar pre-gate condition verdict
+
+- `boundary`: A scalar-plan rule's condition verdict before the root content gate, in the full-validation context the rule's own run uses, for analysis that separates a reachable condition from a firing rule (U03's Q-002)
+- `owner`: [`Validate.lean`](../../A12Kernel/Reference/Dm/Validate.lean)'s `scalarFullValidationContext`, `scalarConditionVerdict` and the two gate theorems; [scalar verdict locks](../../A12Kernel/Reference/Dm/ScalarVerdictLocks.lean)
+- `assurance`: E/P: `runRuleAt` evaluates the same context by construction, the gate theorems derive its firing from the verdict, and the locks separate a fired condition from a silent rule on an empty root. No kernel-evidence claim beyond the content gate's own
+- `remains`: Row and once plans expose no pre-gate verdict
+
 
 ### §13 — message interpolation
 

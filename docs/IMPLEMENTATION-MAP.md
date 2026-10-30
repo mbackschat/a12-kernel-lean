@@ -595,6 +595,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Rule negation and `Non<Operation>` twins](implementation/validation-messages-and-custom.md#cap-rule-negation)
 <a id="cap-presence-contradiction-analyzer"></a>
 - [Presence contradiction analyzer](implementation/validation-messages-and-custom.md#cap-presence-contradiction-analyzer)
+<a id="cap-scalar-pre-gate-verdict"></a>
+- [Scalar pre-gate condition verdict](implementation/validation-messages-and-custom.md#cap-scalar-pre-gate-verdict)
 <a id="cap-whole-rule-authoring-and-rendering"></a>
 - [Whole-rule authoring and rendering](implementation/validation-messages-and-custom.md#cap-whole-rule-authoring-and-rendering)
 <a id="cap-index-message-authoring-and-rendering"></a>

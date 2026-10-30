@@ -692,3 +692,13 @@ The task, profile, comparison contract and milestones are the [evaluator kit](..
 - `result`: of 1040 capture models, 5 are admitted and 1035 rejected, each rejection naming a capability; all five admitted models are Number-only and hold no authored rule, so the profile's rule semantics rest on U03's fixtures. One seeded fixture per excluded model feature is rejected with exactly its capability, and the admitted rule fragment was measured through the theory's rule checker and locked. 36 locks pass after failing red against stubs.
 - `questions`: Q-001 asked whether `signed = false` bounds a Number domain. The kit wrongly said it is no lower bound, while the theory's formal check rejects a negative stored value on a `positivesOnly` field; U03 implemented that formal check as the domain, which is correct. The kit and proposal sentences were corrected for the next re-pin.
 - `oracle`: HIGH read the qualification section, plan, questions and pin at `3271412`; the locks were not rerun.
+
+<a id="run-u03-s2"></a>
+### U03 S2 — exact relations and the exhaustive oracle
+
+- `task`: [U03 SMT-backed analysis](../PLAN.md), milestone S2
+- `status`: accepted
+- `pin`: theory `12912354c5c9c28cd626d15f0cf88f54ab12b2c8`; qualification commit `9282dbf`, after one resumption prompt, the session having stopped after S1
+- `result`: `strictNoMessages` and the four admitted queries are Lean relations over the theory's evaluation, and the executable check is proved equal to the witness relation. The exhaustive oracle is proved sound for a returned witness and complete within its candidate domains. 75 checks pass after failing red; the polarity table separates a dead rule from an uninhabited model and `conditionTruthReachable` from `ruleFiringReachable` on a model whose empty root gates its rule.
+- `questions`: Q-002 found the pre-gate verdict unexposed, so U03 assembled the scalar context from public functions. The theory now exposes `scalarConditionVerdict` and `scalarFullValidationContext`, which `runRuleAt` itself uses, with gate theorems and a [separating lock](../../A12Kernel/Reference/Dm/ScalarVerdictLocks.lean); it reaches U03 with the batched re-pin.
+- `oracle`: HIGH read the qualification section and both questions at `9282dbf`; U03's checks were not rerun.

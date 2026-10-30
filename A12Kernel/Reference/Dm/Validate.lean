@@ -210,6 +210,62 @@ def observe (model : FlatModel) (message : FlatRuleMessage) : ObservedMessage :=
     severity := match message.severity with
       | .error => "ERROR" | .warning => "WARNING" | .info => "INFO" }
 
+/-- The context full validation evaluates a scalar-plan rule's condition in, over the staged view of
+`applyFullIndexPreliminary`. A fixed group operand reads its full-validation slice of the document, as the
+addressed numeric route does for the same groups. This context has no error channel, so an addressing
+error, which only a group below an unbound repeatable level could raise, reads as an unavailable group,
+UNKNOWN rather than a fault. -/
+def scalarFullValidationContext (world : World) (checked : CheckedDocument model) :
+    AddressedValidationEvaluationContext model := {
+  scalar := {
+    fields := checked.flatContext.withWorld world
+    groups := fun path => (checked.groupPresenceInput path [] .fullyRelevant false).toOption.map (·.derive) }
+  outer := []
+  input := .checked checked }
+
+/-- A scalar-plan rule's condition verdict in the context `runRuleAt` evaluates it in, before the root
+content gate that withholds a condition unable to fire on an empty root (spec/03 §A.4). `.inl` is a
+reached temporal fault, which the rule reports as a runtime failure. For the analysis consumer
+that separates a reachable condition from a firing rule (U03 Q-002). -/
+def scalarConditionVerdict (world : World) (checked : CheckedDocument model)
+    (rule : CheckedResolvedValidationRule model) (registry : CustomValidationRegistry model := {}) :
+    Except String (Sum ScalarTemporalEvaluationFault Verdict) :=
+  match checked.applyFullIndexPreliminary with
+  | .error error => .error (repr error).pretty
+  | .ok preliminary =>
+      let context := rule.withCustomConditions
+        (scalarFullValidationContext world preliminary.computationInput) .all registry
+      match rule.core.condition.evalAddressedWithRepetitionNotUniqueResult context none with
+      | .ok verdict => .ok (.inr verdict)
+      | .error (.inr fault) => .ok (.inl fault)
+      | .error (.inl error) => .error (repr error).pretty
+
+/-- With the root content gate open, an addressed rule emits exactly what its condition verdict
+determines. -/
+theorem evalAddressedFullAt_of_gate_open {rule : ResolvedValidationRule model}
+    {context : AddressedValidationEvaluationContext model} {hasContent : Bool} {errorPath : List Nat}
+    (gate : (hasContent || rule.condition.canFireOnEmpty) = true) :
+    rule.evalAddressedFullAt context hasContent errorPath =
+      match rule.condition.evalAddressedWithRepetitionNotUniqueResult context none with
+      | .ok verdict => pure (rule.emitAt errorPath verdict)
+      | .error (.inl error) => throw error
+      | .error (.inr _) => pure (rule.emitRuntimeFailureAt errorPath) := by
+  have : (!hasContent && !rule.condition.canFireOnEmpty) = false := by
+    cases hasContent <;> cases h : rule.condition.canFireOnEmpty <;> simp_all
+  simp only [ResolvedValidationRule.evalAddressedFullAt, this]
+  rfl
+
+/-- With the root content gate closed, an addressed rule does not fire, whatever its condition's
+verdict. -/
+theorem evalAddressedFullAt_of_gate_closed {rule : ResolvedValidationRule model}
+    {context : AddressedValidationEvaluationContext model} {hasContent : Bool} {errorPath : List Nat}
+    (gate : (hasContent || rule.condition.canFireOnEmpty) = false) :
+    rule.evalAddressedFullAt context hasContent errorPath = pure .notFired := by
+  have : (!hasContent && !rule.condition.canFireOnEmpty) = true := by
+    cases hasContent <;> cases h : rule.condition.canFireOnEmpty <;> simp_all
+  simp only [ResolvedValidationRule.evalAddressedFullAt, this]
+  rfl
+
 /-- Run one checked rule over a checked document on its certified iteration plan, keeping the
 environment each message fired at, which its reference channels are projected from. -/
 def runRuleAt (world : World) (checked : CheckedDocument model)
@@ -231,17 +287,7 @@ def runRuleAt (world : World) (checked : CheckedDocument model)
       | .error error => .error (repr error).pretty
       | .ok preliminary =>
           let checked := preliminary.computationInput
-          let context : AddressedValidationEvaluationContext model := {
-            scalar := {
-              fields := checked.flatContext.withWorld world
-              -- A fixed group operand reads its full-validation slice of the document, as the
-              -- addressed numeric route does for the same groups. This context has no error channel, so
-              -- an addressing error, which only a group below an unbound repeatable level could raise,
-              -- reads as an unavailable group, UNKNOWN rather than a fault.
-              groups := fun path =>
-                (checked.groupPresenceInput path [] .fullyRelevant false).toOption.map (·.derive) }
-            outer := []
-            input := .checked checked }
+          let context := scalarFullValidationContext world checked
           match rule.ordinaryOnceRootHasContent checked [] with
           | .error error => .error (repr error).pretty
           | .ok hasContent =>
