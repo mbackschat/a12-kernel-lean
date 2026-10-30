@@ -114,7 +114,7 @@ M5 asks whether this implementation's tests and differential detect a seeded sem
 |---|---|
 | MUT-1 | `FirstFilledValue` treats a Boolean `false` as not filled, so only `true` is selected. |
 | MUT-2 | `FirstFilledValue` passes over a formally invalid source as if it were empty and scans on. |
-| MUT-3 | A relational comparison reads an empty Number operand as `0`. |
+| MUT-3 | Under full validation, a relational comparison of field reads alone is evaluated at an instance without content, its empty Number operands read as `0`; the row gate is otherwise unchanged. |
 | MUT-4 | The partial call ignores the relevant set and reports exactly what the full call reports. |
 | MUT-5 | A yearless Date copied into a year-bearing target is completed into the year 2000 rather than the declared Base Year; admission and the formal check of stored input are unchanged. |
 | MUT-6 | A value declared `ddMM` is decoded month-first, as `MMdd` is; rendering into a `ddMM` target is unchanged. |
