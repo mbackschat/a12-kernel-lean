@@ -216,3 +216,15 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
 - `reviewed a12-dmkits revision`: `f22972e27b7f376b450ed8b50ea527d05611f525`.
 - `disposition`: Reconciled: both codes draw no class, and the peer separated the stage the capture could not, each read and expanded before the check refuses it, both engines refusing it too with no check in front. Its code table shows the language read as a locale, so concrete syntax §12 and the readers now compare locale keys, `de-DE` selecting German, and the member-binding table in [spec/01 §1.1](../spec/01-data-model.md#member-binding) leaves no model on a code the parser refuses, as the peer's KF650 row now states. The precheck row for `{"code":"en_us"}` is the Kernel deserializer's refusal, as the corrected checkpoint records. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-10-30a).
+
+<a id="spec-2026-10-30-02"></a>
+### SPEC-2026-10-30-02 — A yearless field copied into a year-bearing Date target completes into the Base Year, a month alone to the first
+
+- `status`: pending
+- `canonical`: [spec/09 §4](../spec/09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape), the bullet on a field source's static component compatibility.
+- `delta`: Adds the copy direction the clause did not state: a yearless field into a year-bearing Date target is refused `MVK_INVALID_COMPARE_TO_DATE` without a Base Year and admitted with one, whatever the two component sets, and stores the source completed into the Base Year and rendered in the target's format, a month-only source completing its day to the first. An absent or malformed source clears the target.
+- `basis`: the retained [yearless direct copy](sources/temporal-constant-and-base-year-probes.md#src-yearless-direct-copy-base-year) capture, Kernel 30.8.1, measured locally 2026-10-30 on both codegen strategies: nine yearless-into-year-bearing copies over five source and four target spellings, refused without a Base Year and admitted with Base Year 2024, where `03-05` stores `2024-03-05`, `05.03.2024`, `2024-03` and `2024` and `03` stores `2024-03-01`. The `MM-dd` admission confirms the peer's `kf483` row.
+- `acceptance`: Reconcile the bare-copy store, the month-only completion to the first and the clear on a malformed source in a12-dmkits' own record. The other spellings, partial precision, DATE_FRAGMENT declarations and repeatable carriers are unmeasured, so do not claim them.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.

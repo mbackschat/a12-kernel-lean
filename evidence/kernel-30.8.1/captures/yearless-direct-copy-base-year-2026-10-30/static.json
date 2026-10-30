@@ -1,0 +1,59 @@
+{
+  "route": "dmtool model check -m <model>, Kernel diagnostics projected to code by computation",
+  "models": {
+    "Copy_DM.json": {
+      "valid": true,
+      "verification": "KERNEL_CONFIRMED",
+      "computations": {
+        "/Form/c_DayFromDay": [],
+        "/Form/c_DotFullFromDay": [],
+        "/Form/c_DotFullFromIso": [],
+        "/Form/c_IsoFromDay": [],
+        "/Form/c_IsoFromDayMonth": [],
+        "/Form/c_IsoFromDot": [],
+        "/Form/c_IsoFromIso": [],
+        "/Form/c_IsoFromMonth": [],
+        "/Form/c_IsoFromMonthDay": [],
+        "/Form/c_YearFromDay": [],
+        "/Form/c_YearFromMonth": [],
+        "/Form/c_YearMonthFromDay": []
+      }
+    },
+    "CopyNoBaseYear_DM.json": {
+      "valid": false,
+      "verification": "KERNEL_CONFIRMED",
+      "computations": {
+        "/Form/c_DayFromDay": [],
+        "/Form/c_DotFullFromDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_DotFullFromIso": [],
+        "/Form/c_IsoFromDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_IsoFromDayMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_IsoFromDot": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_IsoFromIso": [],
+        "/Form/c_IsoFromMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_IsoFromMonthDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearFromDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearFromMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearMonthFromDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ]
+      }
+    }
+  }
+}

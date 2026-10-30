@@ -1,0 +1,521 @@
+{
+  "header": {
+    "id": "CopyNoBaseYear_DM",
+    "modelType": "document",
+    "modelVersion": "28.4.0",
+    "locales": [
+      {
+        "code": "en_US"
+      }
+    ],
+    "labels": [],
+    "annotations": [],
+    "modelReferences": []
+  },
+  "content": {
+    "modelInfo": {
+      "name": "CopyNoBaseYear_DM",
+      "variant": "cockpit",
+      "revision": "Arbeitsversion",
+      "immutable": false
+    },
+    "modelConfig": {
+      "decimalSeparator": ".",
+      "timeZone": "Europe/Berlin",
+      "conditionLanguage": {
+        "code": "en_US"
+      },
+      "fieldRefByShortNameAllowed": true
+    },
+    "typeDefinitions": [],
+    "modelRoot": {
+      "rootGroups": [
+        {
+          "type": "Group",
+          "id": "/Form",
+          "name": "Form",
+          "Group": {
+            "repeatability": 1,
+            "elements": [
+              {
+                "type": "Field",
+                "id": "/Form/Day",
+                "name": "Day",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Dot",
+                "name": "Dot",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "dd.MM."
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/MonthDay",
+                "name": "MonthDay",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MMdd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/DayMonth",
+                "name": "DayMonth",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "ddMM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Month",
+                "name": "Month",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/Iso",
+                "name": "Iso",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/DotFull",
+                "name": "DotFull",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "dd.MM.yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/IsoFromDay",
+                "name": "IsoFromDay",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/IsoFromDot",
+                "name": "IsoFromDot",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/IsoFromMonthDay",
+                "name": "IsoFromMonthDay",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/IsoFromDayMonth",
+                "name": "IsoFromDayMonth",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/IsoFromMonth",
+                "name": "IsoFromMonth",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/DotFullFromDay",
+                "name": "DotFullFromDay",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "dd.MM.yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YearFromDay",
+                "name": "YearFromDay",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YearMonthFromDay",
+                "name": "YearMonthFromDay",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/YearFromMonth",
+                "name": "YearFromMonth",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/IsoFromIso",
+                "name": "IsoFromIso",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "yyyy-MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/DotFullFromIso",
+                "name": "DotFullFromIso",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "dd.MM.yyyy"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Field",
+                "id": "/Form/DayFromDay",
+                "name": "DayFromDay",
+                "Field": {
+                  "fieldType": {
+                    "type": "DateType",
+                    "DateType": {
+                      "format": "MM-dd"
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_IsoFromDay",
+                "name": "c_IsoFromDay",
+                "Computation": {
+                  "computedFieldRelPath": "../IsoFromDay",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Day]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_IsoFromDot",
+                "name": "c_IsoFromDot",
+                "Computation": {
+                  "computedFieldRelPath": "../IsoFromDot",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Dot]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_IsoFromMonthDay",
+                "name": "c_IsoFromMonthDay",
+                "Computation": {
+                  "computedFieldRelPath": "../IsoFromMonthDay",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[MonthDay]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_IsoFromDayMonth",
+                "name": "c_IsoFromDayMonth",
+                "Computation": {
+                  "computedFieldRelPath": "../IsoFromDayMonth",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[DayMonth]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_IsoFromMonth",
+                "name": "c_IsoFromMonth",
+                "Computation": {
+                  "computedFieldRelPath": "../IsoFromMonth",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Month]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_DotFullFromDay",
+                "name": "c_DotFullFromDay",
+                "Computation": {
+                  "computedFieldRelPath": "../DotFullFromDay",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Day]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_YearFromDay",
+                "name": "c_YearFromDay",
+                "Computation": {
+                  "computedFieldRelPath": "../YearFromDay",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Day]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_YearMonthFromDay",
+                "name": "c_YearMonthFromDay",
+                "Computation": {
+                  "computedFieldRelPath": "../YearMonthFromDay",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Day]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_YearFromMonth",
+                "name": "c_YearFromMonth",
+                "Computation": {
+                  "computedFieldRelPath": "../YearFromMonth",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Month]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_IsoFromIso",
+                "name": "c_IsoFromIso",
+                "Computation": {
+                  "computedFieldRelPath": "../IsoFromIso",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Iso]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_DotFullFromIso",
+                "name": "c_DotFullFromIso",
+                "Computation": {
+                  "computedFieldRelPath": "../DotFullFromIso",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Iso]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "Computation",
+                "id": "/Form/c_DayFromDay",
+                "name": "c_DayFromDay",
+                "Computation": {
+                  "computedFieldRelPath": "../DayFromDay",
+                  "computationAlternatives": [
+                    {
+                      "operation": "[Day]"
+                    }
+                  ],
+                  "errorMessage": [
+                    {
+                      "locale": "en_US",
+                      "text": "Probe."
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
