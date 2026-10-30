@@ -1,0 +1,211 @@
+{
+  "header" : {
+    "id" : "Gt_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Gt_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Mix",
+        "name" : "Mix",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Mix/DT0",
+            "name" : "DT0",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Mix/DTX",
+            "name" : "DTX",
+            "Field" : {
+              "fieldType" : {
+                "type" : "DateTimeType",
+                "DateTimeType" : {
+                  "format" : "yyyy-MM-dd'T'HH:mm:ss"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Mix/P1",
+            "name" : "P1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Mix/P2",
+            "name" : "P2",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Mix/P3",
+            "name" : "P3",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Mix/D1",
+            "name" : "D1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Mix/M1",
+            "name" : "M1",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Mix/P1Comp",
+            "name" : "P1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P1",
+              "commonPrecondition" : "AddHours(DT0, 1) < AddHours(DT0, 2)",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Mix/P2Comp",
+            "name" : "P2Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P2",
+              "commonPrecondition" : "AddHours(DT0, 1) == [DTX]",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Mix/P3Comp",
+            "name" : "P3Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../P3",
+              "commonPrecondition" : "AddHours(DT0, 1) != [DTX]",
+              "computationAlternatives" : [ {
+                "operation" : "1"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Mix/D1Comp",
+            "name" : "D1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../D1",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInDays(DT0, AddHours(DT0, 24))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Mix/M1Comp",
+            "name" : "M1Comp",
+            "Computation" : {
+              "computedFieldRelPath" : "../M1",
+              "computationAlternatives" : [ {
+                "operation" : "DifferenceInMinutes(AddHours(DT0, 1), AddHours(DT0, 2))"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Mix/v1",
+            "name" : "v1",
+            "Rule" : {
+              "errorEntityRelPath" : "../DTX",
+              "errorCode" : "v1",
+              "errorCondition" : "AddHours(DT0, 1) == [DTX]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

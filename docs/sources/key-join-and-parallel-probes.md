@@ -87,6 +87,19 @@ Source checkpoints for rules and computations over two repeatable groups joined 
 - `sync`: [SPEC-2026-10-23-02](https://github.com/mbackschat/a12-kernel-lean/blob/e48204df08f6dd823c28011f520672cfefe0fd60/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-23-02).
 - `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/group-target-nested-join-2026-10-23/) retains the four models, the rule and computation specs, the four requests and artifacts with their rendered messages redacted, and the dry-run verdicts projected to their codes. [Manifest](../../evidence/kernel-30.8.1/captures/group-target-nested-join-2026-10-23/MANIFEST.sha256), SHA-256 `9d591037b8655e119eae79ecad1c813826e9482ec6af906be42f4df56f23261c`.
 
+<a id="src-root-error-target"></a>
+#### A rule reporting on the root fires once at the bare root pointer when its condition names the root group, and the root names none of its fields under either polarity, measured 2026-10-30
+
+- `producer`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`, measurement checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1` built and runtime, JDK 21; `enginesAgree: true` on every row. One `:adapter:kernelProbe` request, `request-root.json`, observing `validateFull` over four documents.
+- `model`: `Groot_DM` ([model](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/Groot_DM.json)): `/Order` holds `Note` and `Email`, the fixed `Meta` holds `Ref`. Rules `sa`–`se` are declared in `/Order/Meta` with error target `../..`; `c0`–`c2` in `/Order` report on `../Note`. dmtool's `rule add` refuses a group path as `field`, so the root-target rules were written into the DM-JSON directly and admitted by `model check`.
+- `admission`: from `/Order/Meta`, `GroupNotFilled(..)`, `GroupFilled(..)`, `GroupFilled(..) And FieldNotFilled(../Note)`, `GroupNotFilled(/Order)` and `FieldNotFilled(/Order/Note) And GroupFilled(/Order)` are admitted; `FieldNotFilled(../Note)` alone draws `MVK_ERROR_FIELD_NOT_REFERENCED`. From `/Order` the target `..` fails the build with no class.
+- `firing`: on `{"Order":{}}` the two absences `sa`, `sd` fire as OMISSION at `Order`; on a root holding only `Email`, only `Note` or only `Meta/Ref`, `GroupFilled(..)` (`sb`) fires as VALUE at `Order`, and `sc`, `se` fire as OMISSION on the `Email`-only and `Meta`-only roots, where `Note` is empty. Each fires once per document.
+- `references`: `sa`, `sd` and `sb` reference nothing and list nothing to fill; `sc`, `se` reference and list `Order/Note` alone. Beside a field target, `GroupNotFilled(/Order) And FieldNotFilled(Note)` (`c1`) and its `Or` twin (`c2`) list only `Order/Note`, so the root's absence names none of its fields on either carrier, as peer [KF522](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf522) states for the root's presence.
+- `lean`: the [root-target locks](../../A12Kernel/Reference/Dm/GroupTargetLocks.lean) hold the admission, firing and reference rows; `lake exe a12-kernel-replay` matches every rule of the request, references included.
+- `limit`: partial validation and message texts are not observed, nor a root target beside a repeatable group or a parallel join, nor a lower target referenced only through the root.
+- `sync`: [SPEC-2026-10-30-08](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-30-08).
+- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/) retains the four models, the four requests and their artifacts with rendered messages redacted. [Manifest](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/MANIFEST.sha256), SHA-256 `206ac4fef2ed7204bb4da34c945273983b3e146b7ac00f397645d1ec6958efd7`.
+
 <a id="src-joined-filled-count"></a>
 #### A filled-field count over a joined pair is the ordinary validation count, admitted by the count guard's three constant rules, measured 2026-10-24
 

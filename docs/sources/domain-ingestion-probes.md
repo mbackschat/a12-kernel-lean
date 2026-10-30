@@ -96,3 +96,15 @@
 - `lean`: the [classifier-owned selectors](../../A12Kernel/Elaboration/FormalMessageKeys.lean) and the existing complete-date and Number selectors reproduce every row in the [key locks](../../A12Kernel/Conformance/FormalMessageKeys.lean), and the [Number projection](../../A12Kernel/Evidence/NumberFormalProjection.lean) replays the Number codes of the first two runs.
 - `limit`: the other ten addressing pairings are source-read; the unsigned plus arm stays source-read, since a leading plus drew no refusal here; a Base Year below 1900 and the check on a day-bearing omitting format are unmeasured. No format carrying a single-digit component is admitted at all ([spec/05](../../spec/05-dates-and-time.md)), so none has a key.
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/k22-formal-keys-wider-2026-10-24/) with the three models, requests, artifacts with catalog text redacted, the key table and `MANIFEST.sha256`.
+
+<a id="src-declared-comma-separator"></a>
+#### A declared `,` decimal separator is admitted and changes neither stored Number reads nor condition literals, measured 2026-10-30
+
+- `producer`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`, measurement checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1` built and runtime, JDK 21; `enginesAgree: true` on every row. Two `:adapter:kernelProbe` requests, `request-comma.json` and `request-dot.json`, observing `validateFull` over the same five documents.
+- `model`: the twins `Gd_DM` (`decimalSeparator` `,`) and `Gp_DM` (`.`), each a root `Form` with the Number `Amt` of scale 1 and the rules `[Amt] > 1.5`, `[Amt] == 2` and `FieldFilled(Amt)`; `model check` admits both.
+- `runtime`: both twins give identical messages: the stored `1,5` and `2,5` draw `zahlHatUngueltigeZeichen`, while `1.5`, `2` and `2.5` read as Numbers and fire the rules their values satisfy.
+- `static`: the literal `1,5` in `[Amt] > 1,5` draws `MVK_UNEXPECTED_TOKEN` under both separators.
+- `lean`: `lake exe a12-kernel-replay` matches every rule of both requests.
+- `limit`: a computed Number's rendering under a declared `,` and message interpolation beyond the earlier display row are not observed.
+- `sync`: [SPEC-2026-10-30-09](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-30-09).
+- `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/) retains the four models, the four requests and their artifacts with rendered messages redacted. [Manifest](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/MANIFEST.sha256), SHA-256 `206ac4fef2ed7204bb4da34c945273983b3e146b7ac00f397645d1ec6958efd7`.

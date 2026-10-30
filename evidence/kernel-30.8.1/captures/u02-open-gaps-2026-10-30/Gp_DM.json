@@ -1,0 +1,94 @@
+{
+  "header" : {
+    "id" : "Gp_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Gp_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Form",
+        "name" : "Form",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Form/Amt",
+            "name" : "Amt",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 1
+                }
+              }
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/q1",
+            "name" : "q1",
+            "Rule" : {
+              "errorEntityRelPath" : "../Amt",
+              "errorCode" : "q1",
+              "errorCondition" : "[Amt] > 1.5",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/q2",
+            "name" : "q2",
+            "Rule" : {
+              "errorEntityRelPath" : "../Amt",
+              "errorCode" : "q2",
+              "errorCondition" : "[Amt] == 2",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Form/q3",
+            "name" : "q3",
+            "Rule" : {
+              "errorEntityRelPath" : "../Amt",
+              "errorCode" : "q3",
+              "errorCondition" : "FieldFilled(Amt)",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

@@ -128,8 +128,11 @@ def assembleResolvedValidationRuleFor (model : FlatModel)
             .error (.errorFieldNotReferenced field)
           else .ok rule
       | .group path =>
+          -- A root target referenced by the root's own presence is measured
+          -- ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-root-error-target));
+          -- a lower target referenced only through the root is not.
           if !condition.core.allLeaves ValidationConditionLeaf.supportsGroupTarget ||
-              condition.core.rootOnlyGroupTargetReference path then
+              (condition.core.rootOnlyGroupTargetReference path && path.length != 1) then
             .error (.groupErrorTarget path .unsupported)
           else .ok rule
   -- The walk's refusal, measured only where the error field binds the level ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24c-group-operand-walk)),

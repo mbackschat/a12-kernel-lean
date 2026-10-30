@@ -1,0 +1,615 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "Gt_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-30T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "overlap0130",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "D1Comp",
+       "field": "Mix/D1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/D1",
+        "Mix/DT0"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M1Comp",
+       "field": "Mix/M1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/M1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P1Comp",
+       "field": "Mix/P1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P3Comp",
+       "field": "Mix/P3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/DTX",
+        "Mix/P3"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Mix/D1",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Mix/M1",
+        "cleared": false,
+        "errored": false,
+        "value": "60"
+       },
+       {
+        "field": "Mix/P1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/P2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Mix/P3",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "D1Comp",
+       "field": "Mix/D1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/D1",
+        "Mix/DT0"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M1Comp",
+       "field": "Mix/M1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/M1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P1Comp",
+       "field": "Mix/P1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P3Comp",
+       "field": "Mix/P3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/DTX",
+        "Mix/P3"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Mix/D1",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Mix/M1",
+        "cleared": false,
+        "errored": false,
+        "value": "60"
+       },
+       {
+        "field": "Mix/P1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/P2",
+        "cleared": true,
+        "errored": false
+       },
+       {
+        "field": "Mix/P3",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "overlap0030",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "D1Comp",
+       "field": "Mix/D1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/D1",
+        "Mix/DT0"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M1Comp",
+       "field": "Mix/M1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/M1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P1Comp",
+       "field": "Mix/P1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P2Comp",
+       "field": "Mix/P2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/DTX",
+        "Mix/P2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "v1",
+       "field": "Mix/DTX",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/DTX"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Mix/D1",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Mix/M1",
+        "cleared": false,
+        "errored": false,
+        "value": "60"
+       },
+       {
+        "field": "Mix/P1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/P2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/P3",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "D1Comp",
+       "field": "Mix/D1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/D1",
+        "Mix/DT0"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M1Comp",
+       "field": "Mix/M1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/M1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P1Comp",
+       "field": "Mix/P1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P2Comp",
+       "field": "Mix/P2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/DTX",
+        "Mix/P2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "v1",
+       "field": "Mix/DTX",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/DTX"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Mix/D1",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Mix/M1",
+        "cleared": false,
+        "errored": false,
+        "value": "60"
+       },
+       {
+        "field": "Mix/P1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/P2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/P3",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "summer",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "D1Comp",
+       "field": "Mix/D1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/D1",
+        "Mix/DT0"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M1Comp",
+       "field": "Mix/M1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/M1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P1Comp",
+       "field": "Mix/P1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P2Comp",
+       "field": "Mix/P2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/DTX",
+        "Mix/P2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "v1",
+       "field": "Mix/DTX",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/DTX"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Mix/D1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/M1",
+        "cleared": false,
+        "errored": false,
+        "value": "60"
+       },
+       {
+        "field": "Mix/P1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/P2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/P3",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "D1Comp",
+       "field": "Mix/D1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/D1",
+        "Mix/DT0"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "M1Comp",
+       "field": "Mix/M1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/M1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P1Comp",
+       "field": "Mix/P1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/P1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "P2Comp",
+       "field": "Mix/P2",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/DTX",
+        "Mix/P2"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "v1",
+       "field": "Mix/DTX",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [
+        "Mix/DT0",
+        "Mix/DTX"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Mix/D1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/M1",
+        "cleared": false,
+        "errored": false,
+        "value": "60"
+       },
+       {
+        "field": "Mix/P1",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/P2",
+        "cleared": false,
+        "errored": false,
+        "value": "1"
+       },
+       {
+        "field": "Mix/P3",
+        "cleared": true,
+        "errored": false
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  }
+ ]
+}

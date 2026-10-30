@@ -490,7 +490,8 @@ private def groupTargetReferences : ValidationCondition model → GroupPath → 
 def referencesGroupTarget (condition : ValidationCondition model) (target : GroupPath) : Bool :=
   !(groupTargetReferences condition target).isEmpty
 
-/-- Whether only the root group references `target`, a case no retained observation covers. -/
+/-- Whether only the root group references `target`. Measured only where `target` is the root itself
+([root-target checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-root-error-target)). -/
 def rootOnlyGroupTargetReference (condition : ValidationCondition model) (target : GroupPath) : Bool :=
   (groupTargetReferences condition target).all (·.isRoot)
 

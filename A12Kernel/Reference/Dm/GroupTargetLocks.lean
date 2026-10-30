@@ -550,4 +550,70 @@ example :
         "/Order[1]/Lines[1]/Slots[-6]/Tagged[1]/Flag", "Order/Picks/LineNo", "Order/Picks/Ref"]] := by
   native_decide
 
+/-- The [root-target capture](../../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/Groot_DM.json)'s
+shape: `/Order` holds `Note` and `Email`, the fixed `Meta` holds `Ref`. -/
+private def rootDm : DmModel :=
+  { flat := { fields := [text 1 O "Note" [], text 2 O "Email" [], text 3 (O ++ ["Meta"]) "Ref" []] }
+    rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+
+open Lean in
+/-- The messages a rule in `/Order/Meta` reporting on the root through `../..` fires over `document`. -/
+private def firedOnRoot (condition : String) (document : Json) : Option (List String) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let input ← (readDocument rootDm document).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler rootDm.flat).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let rule ← (checkValidationRule rootDm .english
+    { group := O ++ ["Meta"], name := "RootProbe", errorCode := "P", errorEntityRelPath := "../..", condition,
+      severity := "ERROR" }).toOption
+  pure ((← (runValidationRule world checked rule).toOption).map fun message =>
+    let observed := observe rootDm.flat message
+    s!"{observed.pointer}:{observed.messageType}")
+
+open Lean in
+/- A rule reporting on the root fires at the bare root pointer when its condition names the root
+   group ([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-root-error-target),
+   rows `sa`–`se`): the root's absence on an empty root, its presence once anything below it is
+   filled, a meta-only root included, and beside an empty `Note` an OMISSION. A field read alone does
+   not reference the root (`sf`). -/
+example :
+    let order := fun (cells : List (String × Json)) => Json.mkObj [("Order", Json.mkObj cells)]
+    let empty := order []
+    let note := order [("Note", "n")]
+    let metaOnly := order [("Meta", Json.mkObj [("Ref", "x")])]
+    [empty, note, metaOnly].map (firedOnRoot "GroupNotFilled(..)") = [some ["Order:OMISSION_ERROR"], some [], some []] ∧
+    [empty, note, metaOnly].map (firedOnRoot "GroupNotFilled(/Order)") = [some ["Order:OMISSION_ERROR"], some [], some []] ∧
+    [empty, note, metaOnly].map (firedOnRoot "GroupFilled(..)") = [some [], some ["Order:VALUE_ERROR"], some ["Order:VALUE_ERROR"]] ∧
+    [empty, note, metaOnly].map (firedOnRoot "GroupFilled(..) And FieldNotFilled(../Note)") =
+      [some [], some [], some ["Order:OMISSION_ERROR"]] ∧
+    [empty, note, metaOnly].map (firedOnRoot "FieldNotFilled(/Order/Note) And GroupFilled(/Order)") =
+      [some [], some [], some ["Order:OMISSION_ERROR"]] ∧
+    meets rootDm (O ++ ["Meta"]) "../.." "FieldNotFilled(../Note)" (.kernelClass UNREFERENCED) := by
+  native_decide
+
+open Lean in
+/-- The `referenced` and `fillToFix` pointers of each message a rule in `group` reporting on `target`
+fires over the empty root. -/
+private def rootReferences (group : GroupPath) (target condition : String) :
+    Option (List (List String × List String)) := do
+  let world : World := { now := { epochMillis := 0 } }
+  let input ← (readDocument rootDm (Json.mkObj [("Order", Json.mkObj [])])).toOption
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler rootDm.flat).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let rule ← (checkRule rootDm .english
+    { group, name := "RootProbe", errorCode := "P", errorEntityRelPath := target, condition,
+      severity := "ERROR" }).toOption
+  (← (runRule world checked rule).toOption).mapM fun message => do
+    let references ← (rule.condition.core.messageReferences message [] none).toOption
+    pure (references.referenced.map (renderFieldPointer rootDm.flat),
+      references.fillToFix.map (renderFieldPointer rootDm.flat))
+
+/- The root's absence names none of its fields under either polarity, on a root target (`sa`) and
+   beside a field target's own empty field (`c1`), where a non-root group's absence lists them. -/
+example :
+    rootReferences (O ++ ["Meta"]) "../.." "GroupNotFilled(..)" = some [([], [])] ∧
+    rootReferences O "../Note" "GroupNotFilled(/Order) And FieldNotFilled(Note)" =
+      some [(["Order/Note"], ["Order/Note"])] := by
+  native_decide
+
 end A12Kernel.Dm.GroupTargetLocks

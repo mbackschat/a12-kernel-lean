@@ -1,0 +1,221 @@
+{
+ "header": {
+  "id": "Groot_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Gb_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Order",
+     "name": "Order",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Order/Note",
+        "name": "Note",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Order/Email",
+        "name": "Email",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Order/Meta",
+        "name": "Meta",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Order/Meta/Ref",
+           "name": "Ref",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Order/Meta/sa",
+           "name": "sa",
+           "Rule": {
+            "errorEntityRelPath": "../..",
+            "errorCode": "sa",
+            "errorCondition": "GroupNotFilled(..)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Order/Meta/sb",
+           "name": "sb",
+           "Rule": {
+            "errorEntityRelPath": "../..",
+            "errorCode": "sb",
+            "errorCondition": "GroupFilled(..)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Order/Meta/sc",
+           "name": "sc",
+           "Rule": {
+            "errorEntityRelPath": "../..",
+            "errorCode": "sc",
+            "errorCondition": "GroupFilled(..) And FieldNotFilled(../Note)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Order/Meta/sd",
+           "name": "sd",
+           "Rule": {
+            "errorEntityRelPath": "../..",
+            "errorCode": "sd",
+            "errorCondition": "GroupNotFilled(/Order)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Rule",
+           "id": "/Order/Meta/se",
+           "name": "se",
+           "Rule": {
+            "errorEntityRelPath": "../..",
+            "errorCode": "se",
+            "errorCondition": "FieldNotFilled(/Order/Note) And GroupFilled(/Order)",
+            "severity": "ERROR",
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "probe"
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/c0",
+        "name": "c0",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "c0",
+         "errorCondition": "FieldNotFilled(Note)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/c1",
+        "name": "c1",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "c1",
+         "errorCondition": "GroupNotFilled(/Order) And FieldNotFilled(Note)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Order/c2",
+        "name": "c2",
+        "Rule": {
+         "errorEntityRelPath": "../Note",
+         "errorCode": "c2",
+         "errorCondition": "GroupNotFilled(/Order) Or FieldNotFilled(Note)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "probe"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

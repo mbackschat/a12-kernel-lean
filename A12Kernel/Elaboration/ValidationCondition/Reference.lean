@@ -771,8 +771,10 @@ def ValidationConditionLeaf.referencePointers (environment : Env)
       sievedFieldPointers model
         (fun declaration => comparison.referencesField model declaration.id)
         environment
-  | .groupPresence operator reference =>
-      if operator == .filled && reference.path.length == 1 then pure []
+  | .groupPresence _ reference =>
+      -- A root group names none of its fields under either polarity (peer KF522; the negation on a
+      -- root and a field target in the [root-target checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-root-error-target)).
+      if reference.path.length == 1 then pure []
       else fixedGroupPointers model reference environment
   | .guardedRootCurrentRepetition guard _ _ =>
       (concreteFieldPointer guard environment).map ([·])

@@ -1,0 +1,50 @@
+{
+ "model": "Gp_DM.json",
+ "clock": "2026-10-30T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "dot15",
+   "documentInline": {
+    "Form": {
+     "Amt": "1.5"
+    }
+   }
+  },
+  {
+   "name": "comma15",
+   "documentInline": {
+    "Form": {
+     "Amt": "1,5"
+    }
+   }
+  },
+  {
+   "name": "two",
+   "documentInline": {
+    "Form": {
+     "Amt": "2"
+    }
+   }
+  },
+  {
+   "name": "dot25",
+   "documentInline": {
+    "Form": {
+     "Amt": "2.5"
+    }
+   }
+  },
+  {
+   "name": "comma25",
+   "documentInline": {
+    "Form": {
+     "Amt": "2,5"
+    }
+   }
+  }
+ ]
+}

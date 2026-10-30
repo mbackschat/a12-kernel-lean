@@ -1,0 +1,42 @@
+{
+ "model": "Groot_DM.json",
+ "clock": "2026-10-30T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "empty",
+   "documentInline": {
+    "Order": {}
+   }
+  },
+  {
+   "name": "email",
+   "documentInline": {
+    "Order": {
+     "Email": "e"
+    }
+   }
+  },
+  {
+   "name": "note",
+   "documentInline": {
+    "Order": {
+     "Note": "n"
+    }
+   }
+  },
+  {
+   "name": "meta",
+   "documentInline": {
+    "Order": {
+     "Meta": {
+      "Ref": "x"
+     }
+    }
+   }
+  }
+ ]
+}

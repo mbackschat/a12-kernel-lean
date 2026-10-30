@@ -1,0 +1,461 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "Groot_DM.json",
+  "locale": "en_US",
+  "clock": "2026-10-30T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "c0",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "c1",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "c2",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "sa",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "sd",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "c0",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "c1",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "c2",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "sa",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "sd",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "email",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "c0",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "c2",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "sb",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "sc",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "se",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "c0",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "c2",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "sb",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "sc",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "se",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "note",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "sb",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "sb",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "meta",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "c0",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "c2",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "sb",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "sc",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "se",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "c0",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "c2",
+       "field": "Order/Note",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "sb",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "m",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "sc",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      },
+      {
+       "code": "se",
+       "field": "Order",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "m",
+       "referenced": [
+        "Order/Note"
+       ],
+       "fillToFix": [
+        "Order/Note"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
