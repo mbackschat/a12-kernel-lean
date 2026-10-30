@@ -619,7 +619,8 @@ private def readModelCore (json : Json)
   bindLocalizedTextMembers content
   discard <| builtHeaderLocales json
   -- A check-only frame shape builds a model whose check fails, and the runtime route refuses such a
-  -- model before evaluating it (model frame check route checkpoint, 2026-10-29).
+  -- model before evaluating it (model frame check route checkpoint, 2026-10-29; for an unsupported
+  -- condition language, the peer letter of 2026-10-30a).
   if let some failure := frame.checkFailure? then throw s!"model frame {repr failure} fails the consistency check"
   let config := frame.config
   let info := frame.info

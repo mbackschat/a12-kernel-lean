@@ -20,10 +20,10 @@ group-path codeless notification to everything below it and withholds the path c
 class and the field messages there, and a field carrying a path class of its own reports no type body.
 The result is a list of `(label, element path)` pairs. A model the Kernel cannot build, by an empty
 element name, a blank rule or computation name, a repeated hint-list locale, an Enumeration declaring
-no values, a repeated type-definition id, a declared locale with no language or declared twice, or a row-key nomination that binds to no field, yields the one unbuilt-model label and no path. The report is a multiset, so the walk order is not an observation.
+no values, a repeated type-definition id, a declared locale with no language or declared twice, a row-key nomination that binds to no field, or a frame shape that costs only the check (`FrameCheckFailure`), yields the one unbuilt-model label and no path. The report is a multiset, so the walk order is not an observation.
 
 It is an input adapter, differentially tested by the field-declaration capture rather than proved. A
-condition language other than the two whose tokens are measured, a member of the wrong shape, a
+member of the wrong shape, a
 localized-text member that does not bind (`bindLocalizedTextMembers`), a header locale code the parser
 refuses (`headerLocales`), an
 unresolvable type definition, a repeatability past a signed 32-bit count (which the Kernel does not

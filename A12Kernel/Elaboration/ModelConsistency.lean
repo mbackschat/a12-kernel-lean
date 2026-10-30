@@ -100,7 +100,7 @@ structure ConsistencyTypeDefinition where
 /-- A frame shape the Kernel builds a model from but whose entry consistency check then fails without a
 class: no `header.modelVersion`, no `content.modelInfo`, `header.locales` absent or `null`, or a `null`
 supported character (peer KF650), and a condition language that parses as a locale other than "en_US"
-and "de_DE" (peer letter of 2026-10-30a). -/
+and "de_DE", measured for the codes the peer letter of 2026-10-30a lists. -/
 inductive FrameCheckFailure where
   | versionMissing
   | modelInfoMissing

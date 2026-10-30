@@ -16,7 +16,8 @@ checkpoint). A member it cannot bind leaves no model, a read failure here:
 * An object member binds an object, and its absence where the member is optional.
 
 Five shapes cost only the entry's consistency check: no `modelVersion`, no `modelInfo`, `locales`
-absent or `null`, a `null` supported character, and a condition language naming an unsupported locale.
+absent or `null`, a `null` supported character, and a condition language naming a parsed locale other
+than the two supported, measured for the codes `supportedConditionLanguages` lists.
 The model builds and its check fails without a class, so they are a `FrameCheckFailure`, never a read
 failure.
 

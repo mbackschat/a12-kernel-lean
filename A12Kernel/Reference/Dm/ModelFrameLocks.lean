@@ -6,7 +6,8 @@ import A12Kernel.Elaboration.DeclarationReport
 /-! # How the DM-JSON readers bind a model's frame
 
 Each expectation is a Kernel row of peer KF650 (a12-dmkits `413880f4b`,
-`CheckerModelFrameAgreementTest`, Kernel gate, kernel 30.8.1, 2026-10-29), and every row the
+`CheckerModelFrameAgreementTest`, Kernel gate, kernel 30.8.1, 2026-10-29), or for the condition
+language's codes a row of the peer letter of 2026-10-30a (a12-dmkits `f22972e2`), and every row the
 `dmtool model check` grid admits agrees with the
 [model frame members](../../../docs/sources/model-structure-and-declaration-probes.md#src-model-frame-members)
 checkpoint. A member the Kernel cannot bind leaves no model, a read failure in every reader. The
@@ -125,17 +126,19 @@ private def language (value : Json) (condition : String := "FieldFilled(Gate)") 
 /-- A condition language is a text or an object whose `code` is a text, read as a locale: a bare "de_DE"
 declares German conditions exactly as `{"code":"de_DE"}` does, and "de-DE" names the same locale. A
 code the locale parser refuses and every other shape leave no model, while a parsed locale other than
-"en_US" and "de_DE" builds and fails the check (peer letter of 2026-10-30a). -/
+"en_US" and "de_DE" builds and fails the check, the letter's rows being the codes listed here (peer letter
+of 2026-10-30a). -/
 example :
     verdict (language (Json.str "en_US")) = some .builds ∧
     verdict (language (Json.mkObj [("code", "en_US")])) = some .builds ∧
     verdict (language (Json.str "de_DE") "FeldAngegeben(Gate)") = some .builds ∧
     verdict (language (Json.mkObj [("code", "de_DE")]) "FeldAngegeben(Gate)") = some .builds ∧
     ((readModel (language (Json.str "de_DE") "FeldAngegeben(Gate)")).toOption.map (·.conditionLanguage)) = some "de_DE" ∧
+    verdict (language (Json.str "de-DE") "FeldAngegeben(Gate)") = some .builds ∧
     ((readModel (language (Json.str "de-DE") "FeldAngegeben(Gate)")).toOption.map (·.conditionLanguage)) = some "de_DE" ∧
     verdict (language (Json.mkObj [("code", "en-US")])) = some .builds ∧
-    ["zz", "", "de", "fr_FR", "de_DE_x"].all (fun code => verdict (language (Json.mkObj [("code", Json.str code)])) == some .checkOnly) ∧
-    ["en_us", "klingon"].all (fun code => verdict (language (Json.mkObj [("code", Json.str code)])) == some .noModel) ∧
+    ["zz", "", "de", "en", "fr_FR", "de_DE_x"].all (fun code => verdict (language (Json.mkObj [("code", Json.str code)])) == some .checkOnly) ∧
+    ["en_us", "EN_US", "klingon", "en_USA", " "].all (fun code => verdict (language (Json.mkObj [("code", Json.str code)])) == some .noModel) ∧
     [Json.null, Json.mkObj [], Json.arr #[], toJson (5 : Nat), Json.bool true, Json.mkObj [("code", Json.null)],
       Json.mkObj [("code", Json.mkObj [])], Json.mkObj [("x", "en_US")]].all
       (fun value => verdict (language value) == some .noModel) := by
