@@ -1,0 +1,184 @@
+{
+ "header": {
+  "id": "RangeFill_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "RangeFill_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "typeDefinitions": [],
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/SD",
+        "name": "SD",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {
+           "errorMessage": [
+            {
+             "locale": "en_US",
+             "text": "Text required."
+            }
+           ],
+           "maxLength": 15,
+           "pattern": "[0-9]+"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SL",
+        "name": "SL",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {
+           "errorMessage": [
+            {
+             "locale": "en_US",
+             "text": "Text required."
+            }
+           ],
+           "maxLength": 15,
+           "pattern": "[A-Z]+"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/X",
+        "name": "X",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {
+           "maxLength": 15
+          }
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/OVEQ",
+        "name": "OVEQ",
+        "Rule": {
+         "errorEntityRelPath": "../SD",
+         "errorCode": "OVEQ",
+         "errorCondition": "RangeAsNumber(SD, 1, 6) == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "OVEQ"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/OVLT",
+        "name": "OVLT",
+        "Rule": {
+         "errorEntityRelPath": "../SD",
+         "errorCode": "OVLT",
+         "errorCondition": "RangeAsNumber(SD, 1, 6) < 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "OVLT"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/INGT",
+        "name": "INGT",
+        "Rule": {
+         "errorEntityRelPath": "../SD",
+         "errorCode": "INGT",
+         "errorCondition": "RangeAsNumber(SD, 1, 2) > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "INGT"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/NDEQ",
+        "name": "NDEQ",
+        "Rule": {
+         "errorEntityRelPath": "../SL",
+         "errorCode": "NDEQ",
+         "errorCondition": "RangeAsNumber(SL, 1, 2) == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "NDEQ"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/NDLT",
+        "name": "NDLT",
+        "Rule": {
+         "errorEntityRelPath": "../SL",
+         "errorCode": "NDLT",
+         "errorCondition": "RangeAsNumber(SL, 1, 2) < 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "NDLT"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

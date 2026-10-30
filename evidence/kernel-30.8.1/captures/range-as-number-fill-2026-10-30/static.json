@@ -1,0 +1,15 @@
+{
+  "route": "dmtool model check -m <model>, Kernel diagnostics projected to code",
+  "producer": {
+    "dmtool": "0.13.0",
+    "source": "08b0d6499c98b132257ec961eb214de73fa223e3 (clean)",
+    "kernel": "30.8.1 built and runtime"
+  },
+  "models": {
+    "RangeFill_DM.json": {
+      "valid": true,
+      "verification": "KERNEL_CONFIRMED",
+      "codes": []
+    }
+  }
+}
