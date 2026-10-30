@@ -39,6 +39,7 @@ trust-audit = "Support: axiom and trust audit of the elaborated environment, wit
 verification-tooling = "Repository guards, their self-tests and the CI workflow"
 probe-tooling = "Helpers that prepare Kernel probe runs"
 report-tooling = "Generator of the conformance-coverage report"
+consumer-run-tooling = "Maintainer-side watch over an implementing consumer session"
 distribution = "Preparation of a GitHub publication"
 build-tooling = "Lake build, dependency manifest and toolchain pin"
 repository-config = "Git ignore list and shared coding-agent settings"
@@ -284,6 +285,14 @@ kind = ["source"]
 purpose = "production"
 category = "shipment"
 reason = "Cuts each evaluator packet version from one committed revision"
+
+[[rules]]
+id = "consumer-run-tooling"
+match = ["scripts/watch-u-session.sh"]
+kind = ["source"]
+purpose = "production"
+category = "consumer-run-tooling"
+reason = "Maintainer's watch over an implementing U-session"
 
 [[rules]]
 id = "distribution"
