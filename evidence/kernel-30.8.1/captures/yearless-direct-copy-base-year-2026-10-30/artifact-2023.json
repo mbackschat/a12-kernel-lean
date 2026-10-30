@@ -1,0 +1,2644 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "Grid2023_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "june-eleventh",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "c_DayFromDay",
+              "field": "Form/DayFromDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day",
+                "Form/DayFromDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DotFullFromDay",
+              "field": "Form/DotFullFromDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day",
+                "Form/DotFullFromDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DotFullFromDayMonth",
+              "field": "Form/DotFullFromDayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth",
+                "Form/DotFullFromDayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DotFullFromDot",
+              "field": "Form/DotFullFromDot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot",
+                "Form/DotFullFromDot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DotFullFromMonth",
+              "field": "Form/DotFullFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DotFullFromMonth",
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DotFullFromMonthDay",
+              "field": "Form/DotFullFromMonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DotFullFromMonthDay",
+                "Form/MonthDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromDay",
+              "field": "Form/IsoFromDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day",
+                "Form/IsoFromDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromDayMonth",
+              "field": "Form/IsoFromDayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth",
+                "Form/IsoFromDayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromDot",
+              "field": "Form/IsoFromDot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot",
+                "Form/IsoFromDot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromIso",
+              "field": "Form/IsoFromIso",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Iso",
+                "Form/IsoFromIso"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromMonth",
+              "field": "Form/IsoFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/IsoFromMonth",
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromMonthDay",
+              "field": "Form/IsoFromMonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/IsoFromMonthDay",
+                "Form/MonthDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromDay",
+              "field": "Form/YearFromDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day",
+                "Form/YearFromDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromDayMonth",
+              "field": "Form/YearFromDayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth",
+                "Form/YearFromDayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromDot",
+              "field": "Form/YearFromDot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot",
+                "Form/YearFromDot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromMonth",
+              "field": "Form/YearFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/YearFromMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromMonthDay",
+              "field": "Form/YearFromMonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MonthDay",
+                "Form/YearFromMonthDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromDay",
+              "field": "Form/YearMonthFromDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day",
+                "Form/YearMonthFromDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromDayMonth",
+              "field": "Form/YearMonthFromDayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth",
+                "Form/YearMonthFromDayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromDot",
+              "field": "Form/YearMonthFromDot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot",
+                "Form/YearMonthFromDot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromMonth",
+              "field": "Form/YearMonthFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/YearMonthFromMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromMonthDay",
+              "field": "Form/YearMonthFromMonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MonthDay",
+                "Form/YearMonthFromMonthDay"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DayFromDay",
+                "cleared": false,
+                "errored": false,
+                "value": "06-11"
+              },
+              {
+                "field": "Form/DotFullFromDay",
+                "cleared": false,
+                "errored": false,
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromDayMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromDot",
+                "cleared": false,
+                "errored": false,
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "01.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromMonthDay",
+                "cleared": false,
+                "errored": false,
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/IsoFromDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromDayMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromDot",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-01-02"
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06-01"
+              },
+              {
+                "field": "Form/IsoFromMonthDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/YearFromDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromDayMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromDot",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromMonthDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearMonthFromDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromDayMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromDot",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromMonthDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DayFromDay",
+                "value": "06-11"
+              },
+              {
+                "field": "Form/DotFullFromDay",
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromDayMonth",
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromDot",
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromMonth",
+                "value": "01.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromMonthDay",
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/IsoFromDay",
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromDayMonth",
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromDot",
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "value": "2022-01-02"
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "value": "2023-06-01"
+              },
+              {
+                "field": "Form/IsoFromMonthDay",
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/YearFromDay",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromDayMonth",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromDot",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromMonthDay",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearMonthFromDay",
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromDayMonth",
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromDot",
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromMonthDay",
+                "value": "2023-06"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Day": "06-11",
+                "DayFromDay": "06-11",
+                "DayMonth": "1106",
+                "Dot": "11.06.",
+                "DotFullFromDay": "11.06.2023",
+                "DotFullFromDayMonth": "11.06.2023",
+                "DotFullFromDot": "11.06.2023",
+                "DotFullFromMonth": "01.06.2023",
+                "DotFullFromMonthDay": "11.06.2023",
+                "Iso": "2022-01-02",
+                "IsoFromDay": "2023-06-11",
+                "IsoFromDayMonth": "2023-06-11",
+                "IsoFromDot": "2023-06-11",
+                "IsoFromIso": "2022-01-02",
+                "IsoFromMonth": "2023-06-01",
+                "IsoFromMonthDay": "2023-06-11",
+                "Month": "06",
+                "MonthDay": "0611",
+                "YearFromDay": "2023",
+                "YearFromDayMonth": "2023",
+                "YearFromDot": "2023",
+                "YearFromMonth": "2023",
+                "YearFromMonthDay": "2023",
+                "YearMonthFromDay": "2023-06",
+                "YearMonthFromDayMonth": "2023-06",
+                "YearMonthFromDot": "2023-06",
+                "YearMonthFromMonth": "2023-06",
+                "YearMonthFromMonthDay": "2023-06"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "c_DayFromDay",
+              "field": "Form/DayFromDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day",
+                "Form/DayFromDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DotFullFromDay",
+              "field": "Form/DotFullFromDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day",
+                "Form/DotFullFromDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DotFullFromDayMonth",
+              "field": "Form/DotFullFromDayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth",
+                "Form/DotFullFromDayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DotFullFromDot",
+              "field": "Form/DotFullFromDot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot",
+                "Form/DotFullFromDot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DotFullFromMonth",
+              "field": "Form/DotFullFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DotFullFromMonth",
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_DotFullFromMonthDay",
+              "field": "Form/DotFullFromMonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DotFullFromMonthDay",
+                "Form/MonthDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromDay",
+              "field": "Form/IsoFromDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day",
+                "Form/IsoFromDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromDayMonth",
+              "field": "Form/IsoFromDayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth",
+                "Form/IsoFromDayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromDot",
+              "field": "Form/IsoFromDot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot",
+                "Form/IsoFromDot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromIso",
+              "field": "Form/IsoFromIso",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Iso",
+                "Form/IsoFromIso"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromMonth",
+              "field": "Form/IsoFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/IsoFromMonth",
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromMonthDay",
+              "field": "Form/IsoFromMonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/IsoFromMonthDay",
+                "Form/MonthDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromDay",
+              "field": "Form/YearFromDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day",
+                "Form/YearFromDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromDayMonth",
+              "field": "Form/YearFromDayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth",
+                "Form/YearFromDayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromDot",
+              "field": "Form/YearFromDot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot",
+                "Form/YearFromDot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromMonth",
+              "field": "Form/YearFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/YearFromMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromMonthDay",
+              "field": "Form/YearFromMonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MonthDay",
+                "Form/YearFromMonthDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromDay",
+              "field": "Form/YearMonthFromDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day",
+                "Form/YearMonthFromDay"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromDayMonth",
+              "field": "Form/YearMonthFromDayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth",
+                "Form/YearMonthFromDayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromDot",
+              "field": "Form/YearMonthFromDot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot",
+                "Form/YearMonthFromDot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromMonth",
+              "field": "Form/YearMonthFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/YearMonthFromMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromMonthDay",
+              "field": "Form/YearMonthFromMonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MonthDay",
+                "Form/YearMonthFromMonthDay"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DayFromDay",
+                "cleared": false,
+                "errored": false,
+                "value": "06-11"
+              },
+              {
+                "field": "Form/DotFullFromDay",
+                "cleared": false,
+                "errored": false,
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromDayMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromDot",
+                "cleared": false,
+                "errored": false,
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "01.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromMonthDay",
+                "cleared": false,
+                "errored": false,
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/IsoFromDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromDayMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromDot",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "cleared": false,
+                "errored": false,
+                "value": "2022-01-02"
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06-01"
+              },
+              {
+                "field": "Form/IsoFromMonthDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/YearFromDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromDayMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromDot",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromMonthDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearMonthFromDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromDayMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromDot",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromMonthDay",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-06"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DayFromDay",
+                "value": "06-11"
+              },
+              {
+                "field": "Form/DotFullFromDay",
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromDayMonth",
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromDot",
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromMonth",
+                "value": "01.06.2023"
+              },
+              {
+                "field": "Form/DotFullFromMonthDay",
+                "value": "11.06.2023"
+              },
+              {
+                "field": "Form/IsoFromDay",
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromDayMonth",
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromDot",
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "value": "2022-01-02"
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "value": "2023-06-01"
+              },
+              {
+                "field": "Form/IsoFromMonthDay",
+                "value": "2023-06-11"
+              },
+              {
+                "field": "Form/YearFromDay",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromDayMonth",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromDot",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromMonthDay",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearMonthFromDay",
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromDayMonth",
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromDot",
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "value": "2023-06"
+              },
+              {
+                "field": "Form/YearMonthFromMonthDay",
+                "value": "2023-06"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Day": "06-11",
+                "DayFromDay": "06-11",
+                "DayMonth": "1106",
+                "Dot": "11.06.",
+                "DotFullFromDay": "11.06.2023",
+                "DotFullFromDayMonth": "11.06.2023",
+                "DotFullFromDot": "11.06.2023",
+                "DotFullFromMonth": "01.06.2023",
+                "DotFullFromMonthDay": "11.06.2023",
+                "Iso": "2022-01-02",
+                "IsoFromDay": "2023-06-11",
+                "IsoFromDayMonth": "2023-06-11",
+                "IsoFromDot": "2023-06-11",
+                "IsoFromIso": "2022-01-02",
+                "IsoFromMonth": "2023-06-01",
+                "IsoFromMonthDay": "2023-06-11",
+                "Month": "06",
+                "MonthDay": "0611",
+                "YearFromDay": "2023",
+                "YearFromDayMonth": "2023",
+                "YearFromDot": "2023",
+                "YearFromMonth": "2023",
+                "YearFromMonthDay": "2023",
+                "YearMonthFromDay": "2023-06",
+                "YearMonthFromDayMonth": "2023-06",
+                "YearMonthFromDot": "2023-06",
+                "YearMonthFromMonth": "2023-06",
+                "YearMonthFromMonthDay": "2023-06"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "leap-day",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "c_DotFullFromMonth",
+              "field": "Form/DotFullFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DotFullFromMonth",
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromIso",
+              "field": "Form/IsoFromIso",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Iso",
+                "Form/IsoFromIso"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromMonth",
+              "field": "Form/IsoFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/IsoFromMonth",
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromMonth",
+              "field": "Form/YearFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/YearFromMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromMonth",
+              "field": "Form/YearMonthFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/YearMonthFromMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Day",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/DayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Dot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/MonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MonthDay"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DayFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "01.02.2023"
+              },
+              {
+                "field": "Form/DotFullFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "cleared": false,
+                "errored": false,
+                "value": "2020-02-29"
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-02-01"
+              },
+              {
+                "field": "Form/IsoFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-02"
+              },
+              {
+                "field": "Form/YearMonthFromMonthDay",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Day",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Day"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/DayMonth",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/DayMonth"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Dot",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Dot"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/MonthDay",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/MonthDay"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DotFullFromMonth",
+                "value": "01.02.2023"
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "value": "2020-02-29"
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "value": "2023-02-01"
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "value": "2023-02"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Day": "02-29",
+                "DayFromDay": null,
+                "DayMonth": "2902",
+                "Dot": "29.02.",
+                "DotFullFromDay": null,
+                "DotFullFromDayMonth": null,
+                "DotFullFromDot": null,
+                "DotFullFromMonth": "01.02.2023",
+                "DotFullFromMonthDay": null,
+                "Iso": "2020-02-29",
+                "IsoFromDay": null,
+                "IsoFromDayMonth": null,
+                "IsoFromDot": null,
+                "IsoFromIso": "2020-02-29",
+                "IsoFromMonth": "2023-02-01",
+                "IsoFromMonthDay": null,
+                "Month": "02",
+                "MonthDay": "0229",
+                "YearFromDay": null,
+                "YearFromDayMonth": null,
+                "YearFromDot": null,
+                "YearFromMonth": "2023",
+                "YearFromMonthDay": null,
+                "YearMonthFromDay": null,
+                "YearMonthFromDayMonth": null,
+                "YearMonthFromDot": null,
+                "YearMonthFromMonth": "2023-02",
+                "YearMonthFromMonthDay": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "c_DotFullFromMonth",
+              "field": "Form/DotFullFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DotFullFromMonth",
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromIso",
+              "field": "Form/IsoFromIso",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Iso",
+                "Form/IsoFromIso"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_IsoFromMonth",
+              "field": "Form/IsoFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/IsoFromMonth",
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearFromMonth",
+              "field": "Form/YearFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/YearFromMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_YearMonthFromMonth",
+              "field": "Form/YearMonthFromMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month",
+                "Form/YearMonthFromMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Day",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/DayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Dot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/MonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MonthDay"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DayFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "01.02.2023"
+              },
+              {
+                "field": "Form/DotFullFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "cleared": false,
+                "errored": false,
+                "value": "2020-02-29"
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-02-01"
+              },
+              {
+                "field": "Form/IsoFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "cleared": false,
+                "errored": false,
+                "value": "2023-02"
+              },
+              {
+                "field": "Form/YearMonthFromMonthDay",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Day",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Day"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/DayMonth",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/DayMonth"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Dot",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Dot"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/MonthDay",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/MonthDay"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/DotFullFromMonth",
+                "value": "01.02.2023"
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "value": "2020-02-29"
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "value": "2023-02-01"
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "value": "2023"
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "value": "2023-02"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Day": "02-29",
+                "DayFromDay": null,
+                "DayMonth": "2902",
+                "Dot": "29.02.",
+                "DotFullFromDay": null,
+                "DotFullFromDayMonth": null,
+                "DotFullFromDot": null,
+                "DotFullFromMonth": "01.02.2023",
+                "DotFullFromMonthDay": null,
+                "Iso": "2020-02-29",
+                "IsoFromDay": null,
+                "IsoFromDayMonth": null,
+                "IsoFromDot": null,
+                "IsoFromIso": "2020-02-29",
+                "IsoFromMonth": "2023-02-01",
+                "IsoFromMonthDay": null,
+                "Month": "02",
+                "MonthDay": "0229",
+                "YearFromDay": null,
+                "YearFromDayMonth": null,
+                "YearFromDot": null,
+                "YearFromMonth": "2023",
+                "YearFromMonthDay": null,
+                "YearMonthFromDay": null,
+                "YearMonthFromDayMonth": null,
+                "YearMonthFromDot": null,
+                "YearMonthFromMonth": "2023-02",
+                "YearMonthFromMonthDay": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "malformed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Day",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/DayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Dot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Iso",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Iso"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Month",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/MonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MonthDay"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DayFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromMonthDay",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Day",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Day"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/DayMonth",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/DayMonth"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Dot",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Dot"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Iso",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Iso"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Month",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Month"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/MonthDay",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/MonthDay"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Day": "13-45",
+                "DayFromDay": null,
+                "DayMonth": "4513",
+                "Dot": "45.13.",
+                "DotFullFromDay": null,
+                "DotFullFromDayMonth": null,
+                "DotFullFromDot": null,
+                "DotFullFromMonth": null,
+                "DotFullFromMonthDay": null,
+                "Iso": "2022-13-01",
+                "IsoFromDay": null,
+                "IsoFromDayMonth": null,
+                "IsoFromDot": null,
+                "IsoFromIso": null,
+                "IsoFromMonth": null,
+                "IsoFromMonthDay": null,
+                "Month": "13",
+                "MonthDay": "1345",
+                "YearFromDay": null,
+                "YearFromDayMonth": null,
+                "YearFromDot": null,
+                "YearFromMonth": null,
+                "YearFromMonthDay": null,
+                "YearMonthFromDay": null,
+                "YearMonthFromDayMonth": null,
+                "YearMonthFromDot": null,
+                "YearMonthFromMonth": null,
+                "YearMonthFromMonthDay": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Day",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Day"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/DayMonth",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/DayMonth"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Dot",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Dot"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Iso",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Iso"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/Month",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/Month"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "datumFormatFalsch",
+              "field": "Form/MonthDay",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MonthDay"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DayFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromMonthDay",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": [
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Day",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Day"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/DayMonth",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/DayMonth"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Dot",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Dot"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Iso",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Iso"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/Month",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/Month"
+                ],
+                "fillToFix": []
+              },
+              {
+                "code": "datumFormatFalsch",
+                "field": "Form/MonthDay",
+                "severity": "ERROR",
+                "type": "VALUE_ERROR",
+                "message": "[redacted]",
+                "referenced": [
+                  "Form/MonthDay"
+                ],
+                "fillToFix": []
+              }
+            ]
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "Day": "13-45",
+                "DayFromDay": null,
+                "DayMonth": "4513",
+                "Dot": "45.13.",
+                "DotFullFromDay": null,
+                "DotFullFromDayMonth": null,
+                "DotFullFromDot": null,
+                "DotFullFromMonth": null,
+                "DotFullFromMonthDay": null,
+                "Iso": "2022-13-01",
+                "IsoFromDay": null,
+                "IsoFromDayMonth": null,
+                "IsoFromDot": null,
+                "IsoFromIso": null,
+                "IsoFromMonth": null,
+                "IsoFromMonthDay": null,
+                "Month": "13",
+                "MonthDay": "1345",
+                "YearFromDay": null,
+                "YearFromDayMonth": null,
+                "YearFromDot": null,
+                "YearFromMonth": null,
+                "YearFromMonthDay": null,
+                "YearMonthFromDay": null,
+                "YearMonthFromDayMonth": null,
+                "YearMonthFromDot": null,
+                "YearMonthFromMonth": null,
+                "YearMonthFromMonthDay": null
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-sources",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DayFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromMonthDay",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "DayFromDay": null,
+                "DotFullFromDay": null,
+                "DotFullFromDayMonth": null,
+                "DotFullFromDot": null,
+                "DotFullFromMonth": null,
+                "DotFullFromMonthDay": null,
+                "IsoFromDay": null,
+                "IsoFromDayMonth": null,
+                "IsoFromDot": null,
+                "IsoFromIso": null,
+                "IsoFromMonth": null,
+                "IsoFromMonthDay": null,
+                "YearFromDay": null,
+                "YearFromDayMonth": null,
+                "YearFromDot": null,
+                "YearFromMonth": null,
+                "YearFromMonthDay": null,
+                "YearMonthFromDay": null,
+                "YearMonthFromDayMonth": null,
+                "YearMonthFromDot": null,
+                "YearMonthFromMonth": null,
+                "YearMonthFromMonthDay": null
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/DayFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/DotFullFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromIso",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/IsoFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearFromMonthDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDay",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDayMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromDot",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromMonth",
+                "cleared": true,
+                "errored": false
+              },
+              {
+                "field": "Form/YearMonthFromMonthDay",
+                "cleared": true,
+                "errored": false
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "DayFromDay": null,
+                "DotFullFromDay": null,
+                "DotFullFromDayMonth": null,
+                "DotFullFromDot": null,
+                "DotFullFromMonth": null,
+                "DotFullFromMonthDay": null,
+                "IsoFromDay": null,
+                "IsoFromDayMonth": null,
+                "IsoFromDot": null,
+                "IsoFromIso": null,
+                "IsoFromMonth": null,
+                "IsoFromMonthDay": null,
+                "YearFromDay": null,
+                "YearFromDayMonth": null,
+                "YearFromDot": null,
+                "YearFromMonth": null,
+                "YearFromMonthDay": null,
+                "YearMonthFromDay": null,
+                "YearMonthFromDayMonth": null,
+                "YearMonthFromDot": null,
+                "YearMonthFromMonth": null,
+                "YearMonthFromMonthDay": null
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

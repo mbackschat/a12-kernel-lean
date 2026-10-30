@@ -1,5 +1,10 @@
 {
   "route": "dmtool model check -m <model>, Kernel diagnostics projected to code by computation",
+  "producer": {
+    "dmtool": "0.13.0",
+    "source": "08b0d6499c98b132257ec961eb214de73fa223e3 (clean)",
+    "kernel": "30.8.1 built and runtime"
+  },
   "models": {
     "Copy_DM.json": {
       "valid": true,
@@ -51,6 +56,102 @@
           "MVK_INVALID_COMPARE_TO_DATE"
         ],
         "/Form/c_YearMonthFromDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ]
+      }
+    },
+    "Grid2023_DM.json": {
+      "valid": true,
+      "verification": "KERNEL_CONFIRMED",
+      "computations": {
+        "/Form/c_DayFromDay": [],
+        "/Form/c_DotFullFromDay": [],
+        "/Form/c_DotFullFromDayMonth": [],
+        "/Form/c_DotFullFromDot": [],
+        "/Form/c_DotFullFromMonth": [],
+        "/Form/c_DotFullFromMonthDay": [],
+        "/Form/c_IsoFromDay": [],
+        "/Form/c_IsoFromDayMonth": [],
+        "/Form/c_IsoFromDot": [],
+        "/Form/c_IsoFromIso": [],
+        "/Form/c_IsoFromMonth": [],
+        "/Form/c_IsoFromMonthDay": [],
+        "/Form/c_YearFromDay": [],
+        "/Form/c_YearFromDayMonth": [],
+        "/Form/c_YearFromDot": [],
+        "/Form/c_YearFromMonth": [],
+        "/Form/c_YearFromMonthDay": [],
+        "/Form/c_YearMonthFromDay": [],
+        "/Form/c_YearMonthFromDayMonth": [],
+        "/Form/c_YearMonthFromDot": [],
+        "/Form/c_YearMonthFromMonth": [],
+        "/Form/c_YearMonthFromMonthDay": []
+      }
+    },
+    "GridNoBaseYear_DM.json": {
+      "valid": false,
+      "verification": "KERNEL_CONFIRMED",
+      "computations": {
+        "/Form/c_DayFromDay": [],
+        "/Form/c_DotFullFromDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_DotFullFromDayMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_DotFullFromDot": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_DotFullFromMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_DotFullFromMonthDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_IsoFromDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_IsoFromDayMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_IsoFromDot": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_IsoFromIso": [],
+        "/Form/c_IsoFromMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_IsoFromMonthDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearFromDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearFromDayMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearFromDot": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearFromMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearFromMonthDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearMonthFromDay": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearMonthFromDayMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearMonthFromDot": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearMonthFromMonth": [
+          "MVK_INVALID_COMPARE_TO_DATE"
+        ],
+        "/Form/c_YearMonthFromMonthDay": [
           "MVK_INVALID_COMPARE_TO_DATE"
         ]
       }

@@ -95,6 +95,7 @@ Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2
 | message-key reading of a stored day-and-month value | the Base Year, `2000` when none is declared | [§4.2](#42-message-keys-of-a-stored-date-refusal) |
 | message-key reading of a partially known Date | an unknown year reads as `2000`, an unknown month or day as `01` | [§4.2](#42-message-keys-of-a-stored-date-refusal) |
 | a yearless value or constant read for calculation | the declared Base Year; with none, a default anchor that is a leap year (its exact year has no witness known) | [§1](#the-omitted-year-constant-and-the-base-year) |
+| a yearless field copied into a year-bearing Date target | the declared Base Year, a month-only source completing its day to the first; with none the copy is refused | [§11 §4](09-computations.md#4-the-stored-form--a-computed-value-lands-as-a-string-in-the-targets-shape) |
 | calendar check of an omitted-year literal | a common year, never the Base Year | [§1](#1-constant-format-and-the-stringdate-literal-ambiguity-) |
 | a computed component-omitting target's check | the stored value's formal completion, after rendering | [§3.1](#31-date) |
 | DateRange day-and-month endpoints | the Base Year, `2000` when none is declared; interpreted wrapping pairs move one endpoint a year | [§8.2](#82-the-two-stage-runtime-reading) |

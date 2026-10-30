@@ -1,0 +1,145 @@
+{
+  "model": "Grid2023_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "june-eleventh",
+      "documentInline": {
+        "Form": {
+          "IsoFromDay": "1999-12-31",
+          "DotFullFromDay": "31.12.1999",
+          "YearMonthFromDay": "1999-12",
+          "YearFromDay": "1999",
+          "IsoFromDot": "1999-12-31",
+          "DotFullFromDot": "31.12.1999",
+          "YearMonthFromDot": "1999-12",
+          "YearFromDot": "1999",
+          "IsoFromMonthDay": "1999-12-31",
+          "DotFullFromMonthDay": "31.12.1999",
+          "YearMonthFromMonthDay": "1999-12",
+          "YearFromMonthDay": "1999",
+          "IsoFromDayMonth": "1999-12-31",
+          "DotFullFromDayMonth": "31.12.1999",
+          "YearMonthFromDayMonth": "1999-12",
+          "YearFromDayMonth": "1999",
+          "IsoFromMonth": "1999-12-31",
+          "DotFullFromMonth": "31.12.1999",
+          "YearMonthFromMonth": "1999-12",
+          "YearFromMonth": "1999",
+          "IsoFromIso": "1999-12-31",
+          "DayFromDay": "12-31",
+          "Day": "06-11",
+          "Dot": "11.06.",
+          "MonthDay": "0611",
+          "DayMonth": "1106",
+          "Month": "06",
+          "Iso": "2022-01-02"
+        }
+      }
+    },
+    {
+      "name": "leap-day",
+      "documentInline": {
+        "Form": {
+          "IsoFromDay": "1999-12-31",
+          "DotFullFromDay": "31.12.1999",
+          "YearMonthFromDay": "1999-12",
+          "YearFromDay": "1999",
+          "IsoFromDot": "1999-12-31",
+          "DotFullFromDot": "31.12.1999",
+          "YearMonthFromDot": "1999-12",
+          "YearFromDot": "1999",
+          "IsoFromMonthDay": "1999-12-31",
+          "DotFullFromMonthDay": "31.12.1999",
+          "YearMonthFromMonthDay": "1999-12",
+          "YearFromMonthDay": "1999",
+          "IsoFromDayMonth": "1999-12-31",
+          "DotFullFromDayMonth": "31.12.1999",
+          "YearMonthFromDayMonth": "1999-12",
+          "YearFromDayMonth": "1999",
+          "IsoFromMonth": "1999-12-31",
+          "DotFullFromMonth": "31.12.1999",
+          "YearMonthFromMonth": "1999-12",
+          "YearFromMonth": "1999",
+          "IsoFromIso": "1999-12-31",
+          "DayFromDay": "12-31",
+          "Day": "02-29",
+          "Dot": "29.02.",
+          "MonthDay": "0229",
+          "DayMonth": "2902",
+          "Month": "02",
+          "Iso": "2020-02-29"
+        }
+      }
+    },
+    {
+      "name": "malformed",
+      "documentInline": {
+        "Form": {
+          "IsoFromDay": "1999-12-31",
+          "DotFullFromDay": "31.12.1999",
+          "YearMonthFromDay": "1999-12",
+          "YearFromDay": "1999",
+          "IsoFromDot": "1999-12-31",
+          "DotFullFromDot": "31.12.1999",
+          "YearMonthFromDot": "1999-12",
+          "YearFromDot": "1999",
+          "IsoFromMonthDay": "1999-12-31",
+          "DotFullFromMonthDay": "31.12.1999",
+          "YearMonthFromMonthDay": "1999-12",
+          "YearFromMonthDay": "1999",
+          "IsoFromDayMonth": "1999-12-31",
+          "DotFullFromDayMonth": "31.12.1999",
+          "YearMonthFromDayMonth": "1999-12",
+          "YearFromDayMonth": "1999",
+          "IsoFromMonth": "1999-12-31",
+          "DotFullFromMonth": "31.12.1999",
+          "YearMonthFromMonth": "1999-12",
+          "YearFromMonth": "1999",
+          "IsoFromIso": "1999-12-31",
+          "DayFromDay": "12-31",
+          "Day": "13-45",
+          "Dot": "45.13.",
+          "MonthDay": "1345",
+          "DayMonth": "4513",
+          "Month": "13",
+          "Iso": "2022-13-01"
+        }
+      }
+    },
+    {
+      "name": "empty-sources",
+      "documentInline": {
+        "Form": {
+          "IsoFromDay": "1999-12-31",
+          "DotFullFromDay": "31.12.1999",
+          "YearMonthFromDay": "1999-12",
+          "YearFromDay": "1999",
+          "IsoFromDot": "1999-12-31",
+          "DotFullFromDot": "31.12.1999",
+          "YearMonthFromDot": "1999-12",
+          "YearFromDot": "1999",
+          "IsoFromMonthDay": "1999-12-31",
+          "DotFullFromMonthDay": "31.12.1999",
+          "YearMonthFromMonthDay": "1999-12",
+          "YearFromMonthDay": "1999",
+          "IsoFromDayMonth": "1999-12-31",
+          "DotFullFromDayMonth": "31.12.1999",
+          "YearMonthFromDayMonth": "1999-12",
+          "YearFromDayMonth": "1999",
+          "IsoFromMonth": "1999-12-31",
+          "DotFullFromMonth": "31.12.1999",
+          "YearMonthFromMonth": "1999-12",
+          "YearFromMonth": "1999",
+          "IsoFromIso": "1999-12-31",
+          "DayFromDay": "12-31"
+        }
+      }
+    }
+  ]
+}
