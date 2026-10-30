@@ -328,4 +328,29 @@ example : bindingAdmitted ["P"] "Rows/B2" "FirstFilledValue(Rows/B, B0)" = true 
       | .error refusal => refusal.detail == "MVK_NO_BOOLY_ALLOWED"
       | .ok _ => false) = true := by native_decide
 
+private def yearlessShiftEquality (baseYear : Option Int) (source stored : String) (fires : Bool) :
+    Option (List String) := do
+  let fixture := { fragmentModel "MM-dd" (TemporalComponents.ofFormat "MM-dd") baseYear with timeZoneId := "Europe/Berlin" }
+  let rule : DmRule := {
+    group := ["Form"], name := "Shifted", errorEntityRelPath := "../Result"
+    errorCode := "SHIFTED", condition := "AddDays(D,1) == [Result]", severity := "ERROR" }
+  let dm : DmModel := { flat := fixture, rules := [rule], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Lean.Json.mkObj [("Form", Lean.Json.mkObj [
+    ("D", .str source), ("Result", .str stored)])])).toOption
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler fixture).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let messages := if fires then [{
+    code := "SHIFTED", pointer := "Form/Result", messageType := "VALUE_ERROR", severity := "ERROR" }] else []
+  pure ((replayRules dm .english world checked messages).map (·.status.tier))
+
+-- A yearless shift keeps the year it reaches, so crossing December 31 leaves it unequal to the
+-- stored `01-01`, with or without a Base Year; inside the year it equals the stored month and day
+-- ([yearless shift anchor](../../../docs/sources/temporal-constant-and-base-year-probes.md#src-yearless-shift-anchor)).
+example : [none, some 2001].all (fun baseYear =>
+    yearlessShiftEquality baseYear "12-31" "01-01" false == some ["match"] &&
+    yearlessShiftEquality baseYear "12-30" "12-31" true == some ["match"] &&
+    yearlessShiftEquality baseYear "06-15" "06-16" true == some ["match"]) = true := by
+  native_decide
+
 end A12Kernel.Dm.CalendarExpressionLocks

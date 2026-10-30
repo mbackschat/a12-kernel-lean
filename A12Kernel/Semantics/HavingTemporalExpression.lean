@@ -236,7 +236,7 @@ private def readAtom (profile : ModelZone.ConcreteProfile) (baseYear : Option In
   | .dateLiteral value yearPresent => do
       let some date := profile.resolveCompletedDateParts? value | throw context.temporalValueFailure
       pure (.value (if yearPresent || baseYear.isSome then .date date
-        else .yearless date { month := date.parts.month, day := date.parts.day }) true)
+        else .yearless date { month := date.parts.month, day := date.parts.day } 0) true)
   | .baseYearBound bound => do
       let some year := baseYear | throw context.unsupportedDateCalendar
       let some date := profile.resolveCompletedDateParts? (baseYearRangeParts year bound) |

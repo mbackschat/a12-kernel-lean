@@ -291,7 +291,9 @@ measured by comparison against a full Date (the DateFragment runtime-completion 
 equal to its month's first day
 ([checkpoint](../../docs/sources/temporal-and-message-probes.md#src-partial-date-readers)). A yearless
 fragment in a model declaring no Base Year is computed by the Kernel and completes to
-`FlatModel.baseYearOrDefault`, whose leap-ness is measured and whose exact year has no witness. -/
+`FlatModel.baseYearOrDefault`. The year 2000 is measured only for a stored `MM-dd` field's day
+shift ([yearless shift anchor](../../docs/sources/temporal-constant-and-base-year-probes.md#src-yearless-shift-anchor)),
+not on this read-back. -/
 def dateFragment (model : FlatModel) (target : FieldId) :
     StringTargetOutcome → Except DocumentComputationStepFault CheckedCell
   | .noValue => pure empty
@@ -407,7 +409,7 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
             | .error .calendarUnavailable | .error .indexedOperandNotSupported => throw .temporalExpressionUnavailable
             | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return (.valueError .fullDate, DocumentComputationReadBack.poison)
           let outcome := match result with
-            | .value (.date value) _ | .value (.yearless value _) _ => target.evaluateParts value.parts
+            | .value (.date value) _ | .value (.yearless value _ _) _ => target.evaluateParts value.parts
             | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
             | .unknown cause => .poison cause
             | _ => .poison .malformed

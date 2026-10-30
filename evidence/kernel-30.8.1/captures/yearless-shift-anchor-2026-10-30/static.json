@@ -15,6 +15,16 @@
       "valid": true,
       "verification": "KERNEL_CONFIRMED",
       "codes": []
+    },
+    "AnchorCross_DM.json": {
+      "valid": true,
+      "verification": "KERNEL_CONFIRMED",
+      "codes": []
+    },
+    "AnchorCross2001_DM.json": {
+      "valid": true,
+      "verification": "KERNEL_CONFIRMED",
+      "codes": []
     }
   }
 }

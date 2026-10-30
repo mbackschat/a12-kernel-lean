@@ -452,7 +452,7 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
   | .dateLiteral profile value yearPresent =>
       match profile.resolveCompletedDateParts? value with
       | some value => pure (.value (if yearPresent || model.hasBaseYear then .date value else
-          .yearless value { month := value.parts.month, day := value.parts.day }) true)
+          .yearless value { month := value.parts.month, day := value.parts.day } 0) true)
       | none => throw .dateTimeLabelUnresolved
   | .fixed value => pure (.value value true)
   | .baseYearBound profile year bound =>

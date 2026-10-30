@@ -35,7 +35,7 @@ def TemporalOperationUnit.admitsScalarDifference (unit : TemporalOperationUnit) 
   | .seconds => DateTimeSubdayUnit.seconds.compatible left right
 
 private def scalarInstant? : ScalarTemporalValue → Option Instant
-  | .date value | .yearless value _ => some value.instant
+  | .date value | .yearless value _ _ => some value.instant
   | .instant value => some value
   | _ => none
 

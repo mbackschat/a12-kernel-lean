@@ -1,0 +1,488 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.13.0",
+    "kernel": {
+      "builtAgainst": "30.8.1",
+      "runtime": "30.8.1"
+    },
+    "source": {
+      "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "AnchorCross2001_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "mid-year",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "EQSHIFT",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM160000",
+              "field": "Form/TM160000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM160000"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM200000",
+              "field": "Form/TM200000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM200000"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM160000",
+                "cleared": false,
+                "errored": false,
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TM200000",
+                "cleared": false,
+                "errored": false,
+                "value": "11-06"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM160000",
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TM200000",
+                "value": "11-06"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "06-15",
+                "N": "06-16",
+                "TM160000": "05-13",
+                "TM200000": "11-06"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "EQSHIFT",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM160000",
+              "field": "Form/TM160000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM160000"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM200000",
+              "field": "Form/TM200000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM200000"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM160000",
+                "cleared": false,
+                "errored": false,
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TM200000",
+                "cleared": false,
+                "errored": false,
+                "value": "11-06"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM160000",
+                "value": "05-13"
+              },
+              {
+                "field": "Form/TM200000",
+                "value": "11-06"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "06-15",
+                "N": "06-16",
+                "TM160000": "05-13",
+                "TM200000": "11-06"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "year-end",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "c_TM160000",
+              "field": "Form/TM160000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM160000"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM200000",
+              "field": "Form/TM200000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM200000"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM160000",
+                "cleared": false,
+                "errored": false,
+                "value": "11-28"
+              },
+              {
+                "field": "Form/TM200000",
+                "cleared": false,
+                "errored": false,
+                "value": "05-24"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM160000",
+                "value": "11-28"
+              },
+              {
+                "field": "Form/TM200000",
+                "value": "05-24"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "12-31",
+                "N": "01-01",
+                "TM160000": "11-28",
+                "TM200000": "05-24"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "c_TM160000",
+              "field": "Form/TM160000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM160000"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM200000",
+              "field": "Form/TM200000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM200000"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM160000",
+                "cleared": false,
+                "errored": false,
+                "value": "11-28"
+              },
+              {
+                "field": "Form/TM200000",
+                "cleared": false,
+                "errored": false,
+                "value": "05-24"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM160000",
+                "value": "11-28"
+              },
+              {
+                "field": "Form/TM200000",
+                "value": "05-24"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "12-31",
+                "N": "01-01",
+                "TM160000": "11-28",
+                "TM200000": "05-24"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "year-end-same",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "EQSHIFT",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM160000",
+              "field": "Form/TM160000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM160000"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM200000",
+              "field": "Form/TM200000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM200000"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM160000",
+                "cleared": false,
+                "errored": false,
+                "value": "11-27"
+              },
+              {
+                "field": "Form/TM200000",
+                "cleared": false,
+                "errored": false,
+                "value": "05-23"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM160000",
+                "value": "11-27"
+              },
+              {
+                "field": "Form/TM200000",
+                "value": "05-23"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "12-30",
+                "N": "12-31",
+                "TM160000": "11-27",
+                "TM200000": "05-23"
+              }
+            }
+          }
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "EQSHIFT",
+              "field": "Form/N",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/N"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM160000",
+              "field": "Form/TM160000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM160000"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "c_TM200000",
+              "field": "Form/TM200000",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "[redacted]",
+              "referenced": [
+                "Form/MD",
+                "Form/TM200000"
+              ],
+              "fillToFix": []
+            }
+          ],
+          "computations": {
+            "outcomes": [
+              {
+                "field": "Form/TM160000",
+                "cleared": false,
+                "errored": false,
+                "value": "11-27"
+              },
+              {
+                "field": "Form/TM200000",
+                "cleared": false,
+                "errored": false,
+                "value": "05-23"
+              }
+            ],
+            "formalErrorsInOperands": []
+          },
+          "computeResults": {
+            "withoutErrors": [
+              {
+                "field": "Form/TM160000",
+                "value": "11-27"
+              },
+              {
+                "field": "Form/TM200000",
+                "value": "05-23"
+              }
+            ],
+            "errored": [],
+            "applied": {
+              "Form": {
+                "MD": "12-30",
+                "N": "12-31",
+                "TM160000": "11-27",
+                "TM200000": "05-23"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -15,12 +15,19 @@ inductive ScalarTemporalValue where
   | noValue
   | nonRelevant
   | date (value : DateValue)
-  | yearless (value : DateValue) (key : MonthDayValue)
+  /-- A yearless read keeps its month/day `key` and the whole years `carry` a day shift has moved it
+  past its anchor year: a shift keeps the year it reaches, so `12-31` plus one day is not the stored
+  `01-01` ([yearless shift anchor](../../docs/sources/temporal-constant-and-base-year-probes.md#src-yearless-shift-anchor)). -/
+  | yearless (value : DateValue) (key : MonthDayValue) (carry : Int)
   | time (value : TimeOfDay)
   | instant (value : Instant)
   deriving Repr, DecidableEq
 
 namespace ScalarTemporalValue
+
+/-- Calendar order on carried yearless reads: the carried year first, then the month/day label. -/
+def yearlessBefore (left right : Int × MonthDayValue) : Bool :=
+  left.1 < right.1 || (left.1 == right.1 && left.2.before right.2)
 
 def select (operator : TemporalExtremumOp) : ScalarTemporalValue → ScalarTemporalValue → ScalarTemporalValue
   | .nonRelevant, _ | _, .nonRelevant => .nonRelevant
@@ -30,17 +37,20 @@ def select (operator : TemporalExtremumOp) : ScalarTemporalValue → ScalarTempo
       .date (match operator with
         | .minimum => if right.instant.epochMillis < left.instant.epochMillis then right else left
         | .maximum => if left.instant.epochMillis < right.instant.epochMillis then right else left)
-  | .yearless left leftKey, .yearless right rightKey =>
+  | .yearless left leftKey leftCarry, .yearless right rightKey rightCarry =>
+      let leftValue := ScalarTemporalValue.yearless left leftKey leftCarry
+      let rightValue := ScalarTemporalValue.yearless right rightKey rightCarry
       match operator with
-      | .minimum => if rightKey.before leftKey then .yearless right rightKey else .yearless left leftKey
-      | .maximum => if leftKey.before rightKey then .yearless right rightKey else .yearless left leftKey
+      | .minimum => if yearlessBefore (rightCarry, rightKey) (leftCarry, leftKey) then rightValue else leftValue
+      | .maximum => if yearlessBefore (leftCarry, leftKey) (rightCarry, rightKey) then rightValue else leftValue
   | .time left, .time right => .time (operator.selectTime left right)
   | .instant left, .instant right => .instant (operator.selectInstant left right)
   | left, _ => left
 
 def holds (operator : TemporalComparisonOp) : ScalarTemporalValue → ScalarTemporalValue → Bool
   | .date left, .date right => operator.holdsInstant left.instant right.instant
-  | .yearless _ left, .yearless _ right => operator.holdsMonthDay left right
+  | .yearless _ left leftCarry, .yearless _ right rightCarry =>
+      operator.holdsOrdered yearlessBefore (leftCarry, left) (rightCarry, right)
   | .time left, .time right => operator.holdsTime left right
   | .instant left, .instant right => operator.holdsInstant left right
   | _, _ => false
@@ -89,7 +99,7 @@ def projectScalarTemporalObservationWith (baseYear : Option Int) (profile : Opti
           | none => .unknown .malformed
     | _ => .unknown .malformed
   else match observation.asYearlessDateExtremumOperand field.components, observation with
-    | .value key given, .value (.temporal (.date value)) => .value (.yearless value key) given
+    | .value key given, .value (.temporal (.date value)) => .value (.yearless value key 0) given
     | .notEvaluated, _ => .notEvaluated
     | .unknown cause, _ => .unknown cause
     | _, _ => .unknown .malformed
@@ -102,7 +112,7 @@ def TemporalNumericPart.admitsComponents (part : TemporalNumericPart)
 
 def TemporalNumericPart.projectScalarCore (part : TemporalNumericPart) (profile : ModelZone.ConcreteProfile) :
     ScalarTemporalValue → Except ScalarTemporalPrimitiveFault Rat
-  | .date value | .yearless value _ =>
+  | .date value | .yearless value _ _ =>
       match part with
       | .date part => pure (part.extract value.parts)
       | .time _ => throw .calendarUnavailable
@@ -183,15 +193,15 @@ def shiftScalarTemporalValue (profile : ModelZone.ConcreteProfile) (unit : Tempo
   | .days | .months | .years =>
       let unit : DateShiftUnit := match unit with | .days => .days | .months => .months | _ => .years
       let instant ← match value with
-        | .date value | .yearless value _ => pure value.instant
+        | .date value | .yearless value _ _ => pure value.instant
         | .instant instant => pure instant
         | _ => throw .calendarUnavailable
       let some (label, shifted) := profile.shiftCalendar? unit instant (temporalShiftAmountToInt32 amount)
         | throw .calendarUnavailable
       match value with
       | .date _ => pure (.date { instant := shifted, parts := label.parts, basis := .legacyHybrid })
-      | .yearless _ _ => pure (.yearless { instant := shifted, parts := label.parts, basis := .legacyHybrid }
-          { month := label.parts.month, day := label.parts.day })
+      | .yearless source _ carry => pure (.yearless { instant := shifted, parts := label.parts, basis := .legacyHybrid }
+          { month := label.parts.month, day := label.parts.day } (carry + (label.parts.year - source.parts.year)))
       | .instant _ => pure (.instant shifted)
       | _ => throw .calendarUnavailable
 
@@ -285,7 +295,7 @@ def projectScalarRangeBoundObservation (profile : ModelZone.ConcreteProfile)
           let key := label.completed bound
           let some value := profile.resolveCompletedDateParts? {
             year := 2000, month := key.month, day := key.day } | throw .calendarUnavailable
-          pure (.value (.yearless value key) true)
+          pure (.value (.yearless value key 0) true)
   | .value _ => .error .calendarUnavailable
 
 def ConstructedDateValue.asScalarTemporalOperand :

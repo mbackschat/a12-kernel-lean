@@ -1,0 +1,44 @@
+{
+  "model": "AnchorCross_DM.json",
+  "locale": "en_US",
+  "observe": [
+    "validateFull",
+    "compute",
+    "computeResults"
+  ],
+  "rows": [
+    {
+      "name": "mid-year",
+      "documentInline": {
+        "Form": {
+          "MD": "06-15",
+          "N": "06-16",
+          "TM160000": "07-07",
+          "TM200000": "07-07"
+        }
+      }
+    },
+    {
+      "name": "year-end",
+      "documentInline": {
+        "Form": {
+          "MD": "12-31",
+          "N": "01-01",
+          "TM160000": "07-07",
+          "TM200000": "07-07"
+        }
+      }
+    },
+    {
+      "name": "year-end-same",
+      "documentInline": {
+        "Form": {
+          "MD": "12-30",
+          "N": "12-31",
+          "TM160000": "07-07",
+          "TM200000": "07-07"
+        }
+      }
+    }
+  ]
+}

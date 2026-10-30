@@ -1,0 +1,154 @@
+{
+ "header": {
+  "id": "AnchorCross2001_DM",
+  "modelType": "document",
+  "modelVersion": "28.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "AnchorCross2001_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false,
+   "baseYear": "2001"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "typeDefinitions": [],
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/MD",
+        "name": "MD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/N",
+        "name": "N",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TM160000",
+        "name": "TM160000",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TM200000",
+        "name": "TM200000",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_TM160000",
+        "name": "c_TM160000",
+        "Computation": {
+         "computedFieldRelPath": "../TM160000",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(MD, 0 - 160000)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c_TM200000",
+        "name": "c_TM200000",
+        "Computation": {
+         "computedFieldRelPath": "../TM200000",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(MD, 0 - 200000)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "Probe."
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/EQSHIFT",
+        "name": "EQSHIFT",
+        "Rule": {
+         "errorEntityRelPath": "../N",
+         "errorCode": "EQSHIFT",
+         "errorCondition": "AddDays(MD, 1) == [N]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "EQSHIFT"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
