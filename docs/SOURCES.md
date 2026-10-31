@@ -182,6 +182,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 30d handback](sources/inbound-handbacks.md#src-inbound-2026-10-30d): a12-dmkits `0ff5672ca393f98bb0284f2739d034ac4a1fc703`; the component-omitting date pair and the yearless shift anchor reconciled.
 - [October 30e handback](sources/inbound-handbacks.md#src-inbound-2026-10-30e): a12-dmkits `0e40ab97641ec86390613894a22b57bbc29bf7f5`; the DateTime argument's Base Year separated from the clock and the starred joined read reconciled.
 - [October 30f handback](sources/inbound-handbacks.md#src-inbound-2026-10-30f): a12-dmkits `d310167e8a9dcc6c11265cb16ef564d355b21e86`; the root error target, the declared comma separator and the kept overlap instant reconciled.
+- [October 30g handback](sources/inbound-handbacks.md#src-inbound-2026-10-30g): a12-dmkits `03f7e55332a4a1a47b1c38e055b3f12ab7292f61`; `RepetitionNotUnique`'s own gates ahead of the filter body's classes, and a category read in a body, reconciled.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route

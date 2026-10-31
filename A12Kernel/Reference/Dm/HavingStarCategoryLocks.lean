@@ -84,4 +84,24 @@ example : nestedModel.validate.isOk = true ∧
     HavingFixture.filterDiagnostic? nestedModel
       "FirstFilledValue(Rows/Labels, Rows*/Labels/E) == \"keep\"" = some .duplicateParam2 := by native_decide
 
+/- A body addresses every level its reads cross, so a category read on the filtered group or on a
+repeatable below it is the group's class, while one on a field of that group is admitted (a12-dmkits
+2026-10-30f, [checkpoint](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-30g)). Only
+the rule route is asserted, the measured carrier. -/
+private def partsModel : FlatModel := { model with
+  fields := model.fields ++ [
+    { id := 6, name := "W", groupPath := ["Form", "Rows", "Parts"], repeatableScope := [10, 11],
+      policy := { kind := .number { scale := 0, signed := true } } },
+    { id := 7, name := "Kind", groupPath := ["Form", "Rows", "Parts"], repeatableScope := [10, 11],
+      policy := { kind := .enumeration }, enumeration := (model.fields.find? (·.id == 3)).bind (·.enumeration) }]
+  repeatableGroups := model.repeatableGroups ++ [{ level := 11, path := ["Form", "Rows", "Parts"], repeatability := some 3 }] }
+
+example : partsModel.validate.isOk = true ∧
+    (HavingFixture.readerResults "Sum(Rows*/N Having [Rows -> Label] == \"K\")" partsModel false).1 =
+      "MVK_NO_GROUPS_ALLOWED" ∧
+    (HavingFixture.readerResults "Sum(Rows*/Parts*/W Having [Rows/Parts -> Label] == \"K\")" partsModel false).1 =
+      "MVK_NO_GROUPS_ALLOWED" ∧
+    (HavingFixture.readerResults "Sum(Rows*/N Having [Rows/Tag -> Label] == \"K\")" partsModel false).1 =
+      "admitted" := by native_decide
+
 end A12Kernel.Dm.HavingStarCategoryLocks

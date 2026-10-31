@@ -181,4 +181,43 @@ example : [false, true].all (fun row =>
     indexedResult (preceding ++ "RepetitionNotUnique($Rows/N @From Rows)") row ==
       ("MVK_INVALID_OUTER_ITERATION", "MVK_INVALID_OUTER_ITERATION")) = true := by native_decide
 
+/- The policy carrier of the a12-dmkits 2026-10-30f rows: a second repeatable keyed like `Rows`, a
+fixed group and a repeatable below the filtered one. Inside a body the construct's own key-list and
+`@From` gates answer first; the construct class and the walk's iteration class are the two controls
+([checkpoint](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-30g)). Only the rule
+route is asserted, because the rows measure a root rule reporting on a root field. -/
+private def policyModel : FlatModel := { indexedModel with
+  fields := indexedModel.fields ++ [
+    { id := 9, name := "Name", groupPath := ["Form", "Insured"], policy := { kind := .string } },
+    { id := 11, name := "ItemRef", groupPath := ["Form", "Rows", "Items"], repeatableScope := [10, 11],
+      policy := { kind := .string } },
+    { id := 12, name := "Tag", groupPath := ["Form", "Payments"], repeatableScope := [20],
+      policy := { kind := .string } },
+    { id := 13, name := "PayRef", groupPath := ["Form", "Payments"], repeatableScope := [20],
+      policy := { kind := .string } }]
+  repeatableGroups := indexedModel.repeatableGroups ++ [
+    { level := 11, path := ["Form", "Rows", "Items"], repeatability := some 3 },
+    { level := 20, path := ["Form", "Payments"], repeatability := some 3, indexField := some 12 }] }
+
+example : policyModel.validate.isOk = true := by native_decide
+
+private def policyCases : List (String × String) := [
+  ("RepetitionNotUnique(Rows/Tag)", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION"),
+  ("RepetitionNotUnique(Rows/Tag @From Rows)", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION"),
+  ("RepetitionNotUnique(Payments/PayRef)", "MVK_INVALID_ITERATION_IN_FILTER_CONDITION"),
+  ("RepetitionNotUnique(Insured)", "MVK_NO_GROUPS_ALLOWED"),
+  ("RepetitionNotUnique(Rows*/Tag)", "MVK_NO_WILDCARDS_ALLOWED"),
+  ("RepetitionNotUnique(Payments*/PayRef)", "MVK_NO_WILDCARDS_ALLOWED"),
+  ("RepetitionNotUnique(Rows/Raw)", "MVK_INVALID_RAW_TYPE"),
+  ("RepetitionNotUnique(Rows/N, Rows*/Tag)", "MVK_NO_WILDCARDS_ALLOWED"),
+  ("[Rows/Tag] == \"x\" And RepetitionNotUnique(Rows*/Tag)", "MVK_NO_WILDCARDS_ALLOWED"),
+  ("RepetitionNotUnique(Rows*/Tag @From Rows)", "MVK_NO_WILDCARDS_ALLOWED"),
+  ("RepetitionNotUnique(Rows/Tag @From Payments)", "MVK_NOT_IN_GROUP"),
+  ("RepetitionNotUnique(Rows/Tag @From Rows/Tag)", "MVK_NO_FIELDS_ALLOWED"),
+  ("RepetitionNotUnique(Rows/Items/ItemRef @From Rows/Items/ItemRef)", "MVK_NO_FIELDS_ALLOWED")]
+
+example : policyCases.all (fun (body, expected) =>
+    (HavingFixture.readerResults ("Sum(Rows*/N Having " ++ body ++ ")") policyModel false).1 == expected) = true := by
+  native_decide
+
 end A12Kernel.Dm.HavingRepetitionAdmissionLocks
