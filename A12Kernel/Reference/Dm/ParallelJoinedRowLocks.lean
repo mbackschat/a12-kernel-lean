@@ -18,8 +18,8 @@ The documents separate a partner holding the copied field, a partner holding onl
 a target row without a partner. The capture's one failing guard meets a partner holding neither field,
 so no row separates the guard from the copy.
 
-The last section copies an Enumeration into a target nested below an unjoined repeatable group, a
-reduction of `evidence/kernel-30.8.1/captures/runtime-open-cells-2026-10-28/` (`join-*` rows).
+The last section copies an Enumeration and a Date into targets nested below an unjoined repeatable
+group, a reduction of `evidence/kernel-30.8.1/captures/runtime-open-cells-2026-10-28/` (`join-*` rows).
 -/
 
 namespace A12Kernel.Dm.ParallelJoinedRowLocks
@@ -144,24 +144,30 @@ private def slotComputation (name target operation : String) : Json :=
     ("computationAlternatives", Json.arr #[Json.mkObj [("operation", .str operation)]]),
     ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])]
 
-private def nestedDm? : Option DmModel :=
+/-- `Join` with `Refs` holding `refFields` beside its key and `Lines/Slots` holding `slotElements`. -/
+private def joinDm? (refFields slotElements : List Json) : Option DmModel :=
   let slots := element "Group" "/Join/Lines/Slots" "Slots" [("repeatability", toJson 3),
-    ("indexFieldName", "Key"), ("elements", Json.arr #[joinField "/Join/Lines/Slots" "Key" text,
-      joinField "/Join/Lines/Slots" "TKind" kind, joinField "/Join/Lines/Slots" "KindCopy" kind,
-      slotComputation "CTKind" "TKind" "[../../Refs/Kind]",
-      slotComputation "CKindCopy" "KindCopy" "[TKind]"])]
+    ("indexFieldName", "Key"), ("elements", Json.arr (joinField "/Join/Lines/Slots" "Key" text :: slotElements).toArray)]
   (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
     element "Group" "/Join" "Join" [("repeatability", toJson 1), ("elements", Json.arr #[
       element "Group" "/Join/Refs" "Refs" [("repeatability", toJson 3), ("indexFieldName", "Key"),
-        ("elements", Json.arr #[joinField "/Join/Refs" "Key" text, joinField "/Join/Refs" "Kind" kind])],
+        ("elements", Json.arr (joinField "/Join/Refs" "Key" text :: refFields).toArray)],
       element "Group" "/Join/Lines" "Lines" [("repeatability", toJson 2),
         ("elements", Json.arr #[joinField "/Join/Lines" "LNote" text, slots])]])]])])])])).toOption
 
-private def joinDocument (refs : List String) (lines : List (List String)) : Json :=
+private def nestedDm? : Option DmModel :=
+  joinDm? [joinField "/Join/Refs" "Kind" kind] [
+    joinField "/Join/Lines/Slots" "TKind" kind, joinField "/Join/Lines/Slots" "KindCopy" kind,
+    slotComputation "CTKind" "TKind" "[../../Refs/Kind]",
+    slotComputation "CKindCopy" "KindCopy" "[TKind]"]
+
+private def joinDocument (refs : List String) (lines : List (List String))
+    (refEntries : List (String × String) := [("Kind", "A")])
+    (slotEntries : List (String × String) := [("TKind", "B"), ("KindCopy", "B")]) : Json :=
   Json.mkObj [("Join", Json.mkObj [
-    ("Refs", Json.arr (refs.map fun key => row [("Key", key), ("Kind", "A")]).toArray),
+    ("Refs", Json.arr (refs.map fun key => row (("Key", key) :: refEntries)).toArray),
     ("Lines", Json.arr (lines.map fun keys => Json.mkObj [("LNote", "l"), ("Slots", Json.arr (keys.map fun key =>
-      row [("Key", key), ("TKind", "B"), ("KindCopy", "B")]).toArray)]).toArray)])]
+      row (("Key", key) :: slotEntries)).toArray)]).toArray)])]
 
 -- Distinct keys copy the partner's token, and the row copy follows it (`join-distinct`).
 example : (computed (joinDocument ["a", "b"] [["a", "b"]]) nestedDm?).map (·.mergeSort) = some [
@@ -183,5 +189,27 @@ example : (computed (joinDocument ["a", "b"] [["a", "a"], ["b"]]) nestedDm?).map
 example : (fired (joinDocument ["a", "b"] [["a", "b"]]) nestedDm?).map (·.filter (·.startsWith "CTKind")) = some [
     "CTKind Join/Lines/Slots/TKind A12Kernel.Polarity.value",
     "CTKind Join/Lines/Slots[2]/TKind A12Kernel.Polarity.value"] := by native_decide
+
+/- The Date twin, `CTOn` of the same capture: its generated rule compares two Dates, which has no
+pair form, over a target the instance view keeps repeatable below `Lines`. -/
+private def datedDm? : Option DmModel :=
+  joinDm? [joinField "/Join/Refs" "On" date] [
+    joinField "/Join/Lines/Slots" "TOn" date, slotComputation "CTOn" "TOn" "[../../Refs/On]"]
+
+private def datedDocument (lines : List (List String) := [["a", "b"]]) : Json :=
+  joinDocument ["a", "b"] lines (refEntries := [("On", "2024-01-01")]) (slotEntries := [("TOn", "2000-01-01")])
+
+-- The copy changes each seeded row, and the generated rule fires VALUE at both (`join-distinct`).
+example : (computed datedDocument datedDm?).map (·.mergeSort) = some [
+    "Join/Lines/Slots/TOn value 2024-01-01", "Join/Lines/Slots[2]/TOn value 2024-01-01"] ∧
+  fired datedDocument datedDm? = some [
+    "CTOn Join/Lines/Slots/TOn A12Kernel.Polarity.value",
+    "CTOn Join/Lines/Slots[2]/TOn A12Kernel.Polarity.value"] := by native_decide
+
+-- An unmatched row reads its partner's Date empty, and a key repeated within one line clears both
+-- rows, so neither fires (`join-own-unmatched`, `join-own-duplicate`).
+example : fired (datedDocument [["a", "z"]]) datedDm? = some ["CTOn Join/Lines/Slots/TOn A12Kernel.Polarity.value"] ∧
+    fired (datedDocument [["a", "a"], ["b"]]) datedDm? =
+      some ["CTOn Join/Lines[2]/Slots/TOn A12Kernel.Polarity.value"] := by native_decide
 
 end A12Kernel.Dm.ParallelJoinedRowLocks

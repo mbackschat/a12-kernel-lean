@@ -239,12 +239,29 @@ private def bindPairLeaf (model : FlatModel) (group : GroupPath) (suppress : Boo
           -- lowered once more with the error side's group bound.
           match ordinaryLeaf expression with
           | .ok leaf => pure (.ordinary leaf)
-          | .error refusal => match mixed with
+          | .error refusal =>
             -- No binding fixes the whole comparison: each operand without a pair form keeps its
             -- ordinary meaning as an atom (generated rule of joined-carrier capture row `j11`, 2026-10-14).
-            | some leaf => tryCatch (bindPair leaf) fun _ => .error refusal
-            | none => .error refusal
+            let atoms : Lowering (ParallelFieldLeaf model) := match mixed with
+              | some leaf => tryCatch (bindPair leaf) fun _ => .error refusal
+              | none => .error refusal
+            match boundTemporalFields view expression with
+            | some condition => tryCatch (bindPair (.flat condition (model.fields.filterMap fun declaration =>
+                if condition.referencesField declaration.id then some declaration.id else none))) fun _ => atoms
+            | none => atoms
 where
+  -- Two temporal fields compared directly have no pair form, and the view types the comparison over
+  -- itself, which cannot cross back; a frame the view keeps repeatable leaves the flat carrier only
+  -- its row-bound reads, which it then takes, as the String twin's does (runtime open-cells probe,
+  -- `CTOn`, 2026-10-28).
+  boundTemporalFields (view : FlatModel) (expression : Expr) : Option FlatConditionLeaf := do
+    let .compareFields op left right ← lowerFlat view group expression | none
+    let read := fun reference => (view.resolveBoundRuleOperand group group true (.direct reference)).toOption
+    let left ← read left
+    let right ← read right
+    let .temporal _ _ := left.policy.kind | none
+    let .temporal _ _ := right.policy.kind | none
+    (FlatConditionLeaf.compare <$> elaborateTemporalFieldPair view.hasBaseYear op.toTemporal left right).toOption
   ordinaryLeaf (expression : Expr) : Lowering (ValidationConditionLeaf model) :=
     match lowerCondition model group suppress expression with
     | .ok checked => single checked
