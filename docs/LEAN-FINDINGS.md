@@ -2796,6 +2796,6 @@ Lean treatment: none. The owner chose to state no order for these notifications,
 
 The October 29a letter recorded a header demand of a well-formed language tag, measured through `BoundModel.ofJson`, whose lock counted any runtime exception as the Kernel's refusal. `BoundModel.ofJson` runs the Kernel's gate first and then dmtool's own model index, which parses each header code as a language tag; on all 21 tag-refused codes beside `fr_CH`, as on the 20 it reran beside `en_US`, the gate had passed and the index threw ([checkpoint](sources/model-structure-and-declaration-probes.md#src-header-locale-codes)). On the `BoundModel.ofJson` route only the stack separated the two, since a refusal and the index's throw both leave the caller an exception and no model; `model check`'s envelope marks the throw as an internal tool error.
 
-Lean treatment: none in Lean; [spec/01 §1.1](../spec/01-data-model.md#member-binding) states the Kernel's account and [SPEC-2026-10-29-02](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-29-02) carries it back.
+Lean treatment: none in Lean; [spec/01 §1.1](../spec/01-data-model.md#member-binding) states the Kernel's account and [SPEC-2026-10-29-02](https://github.com/mbackschat/a12-kernel-lean/blob/1f755d54874701c9056ef7be93a6ba6005779ad5/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-29-02) carries it back.
 
 **Before adopting an oracle refusal that arrives as an exception, locate the throwing frame relative to the oracle's gate.** A refusal thrown after the gate returned is the instrument's, whatever the route is called.

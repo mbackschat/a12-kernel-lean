@@ -178,5 +178,5 @@
 - `controls`: from `00:30` beside a stored `01:30`, and on `2024-06-01`, `P2` and `v1` see equality, `P3` clears and `M1` is `60`; `D1` is `0` and `1`.
 - `lean`: `lake exe a12-kernel-replay` matches every computation, operand channel and rule of the request.
 - `limit`: `D1`'s rows are values only: no row lands a 24-hour shift inside the ambiguous hour, so they do not separate a kept instant from a re-read rendering for `DifferenceInDays`.
-- `sync`: [SPEC-2026-10-30-10](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-30-10).
+- `sync`: [SPEC-2026-10-30-10](https://github.com/mbackschat/a12-kernel-lean/blob/1f755d54874701c9056ef7be93a6ba6005779ad5/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-30-10).
 - `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/) retains the four models, the four requests and their artifacts with rendered messages redacted, and `static-checks.json`, the single-rule `model check` verdicts projected to their codes. [Manifest](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/MANIFEST.sha256), SHA-256 `2d308aeeb48592f96b71ac08c5a222a3a9db907f043040662e907b3c36b7c21a`.

@@ -106,5 +106,5 @@
 - `static`: the literal `1,5` in `[Amt] > 1,5` draws `MVK_UNEXPECTED_TOKEN` under both separators (`q4` under `,`, `q4p` under `.`).
 - `lean`: `lake exe a12-kernel-replay` matches every rule of both requests.
 - `limit`: a computed Number's rendering under a declared `,`, the stored text's other consumers (Number `minLength`/`maxLength`, `FieldValueAsString`) and message interpolation beyond the earlier display row are not observed.
-- `sync`: [SPEC-2026-10-30-09](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-30-09).
+- `sync`: [SPEC-2026-10-30-09](https://github.com/mbackschat/a12-kernel-lean/blob/1f755d54874701c9056ef7be93a6ba6005779ad5/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-30-09).
 - `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/) retains the four models, the four requests and their artifacts with rendered messages redacted, and `static-checks.json`, the single-rule `model check` verdicts projected to their codes. [Manifest](../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/MANIFEST.sha256), SHA-256 `2d308aeeb48592f96b71ac08c5a222a3a9db907f043040662e907b3c36b7c21a`.
