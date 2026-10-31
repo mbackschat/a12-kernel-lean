@@ -40,7 +40,7 @@ digits is left out, the variant subtags up to the first that is not 5–8 ASCII 
 opening with a digit, are kept, and that one and those after it follow as a private-use `lvariant`
 sequence ending before the first subtag that is not 1–8 ASCII letters or digits. A locale with no country
 and no kept subtag but such a sequence is tagged with no language. The locales the JDK tags specially,
-such as `ja_JP_JP`, lie outside the represented profile. -/
+such as "ja_JP_JP", lie outside the represented profile. -/
 def languageTag (locale : ParsedLocale) : String :=
   let languageWellFormed := (2 ≤ locale.language.length && locale.language.length ≤ 8) && asciiLetters locale.language
   let country :=
