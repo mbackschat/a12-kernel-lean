@@ -178,4 +178,14 @@ example :
     spec12Class "FieldFilled(Reference) And [Reference] > \u0663" = some "MVK_LEXER_STANDARD_ERROR" := by
   native_decide
 
+/- A mixed connective is refused once the part after it has run its reference checks and before any
+later part's (spec/12 §3.1): a bad name in that next part answers `MVK_INVALID_ENTITY`, one in a later
+part `MVK_BRACKET_MISSING`, and a sound next part leaves the connective's class. -/
+example :
+    spec12Class "FieldFilled(Reference) And FieldFilled(Code) Or FieldFilled(Nope)" = some "MVK_INVALID_ENTITY" ∧
+    spec12Class "FieldFilled(Reference) And FieldFilled(Code) Or FieldFilled(Code) And FieldFilled(Nope)" =
+      some "MVK_BRACKET_MISSING" ∧
+    spec12Class "FieldFilled(Reference) And FieldFilled(Code) Or FieldFilled(Code)" = some "MVK_BRACKET_MISSING" := by
+  native_decide
+
 end A12Kernel.Dm.ParseDefectClassLocks

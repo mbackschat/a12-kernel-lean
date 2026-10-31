@@ -236,7 +236,12 @@ private partial def condition (comments : Bool) : P Expr := do
       | _ => none
     let some connective := next | break
     if op.any (· != connective) then
-      throw { errorClass := .bracketMissing, offset := (← read)[← get]!.offset }
+      -- The Kernel refuses the mix only once the part after it has completed, so that part's
+      -- productions are recorded and a reference defect there answers first (spec/12 §3.1).
+      let offset := (← read)[← get]!.offset
+      advance
+      discard <| branch comments
+      throw { errorClass := .bracketMissing, offset }
     op := some connective
     advance
     parts := parts.push (← branch comments)
@@ -418,8 +423,13 @@ end
 private def preamble : P (List String) := do
   if ← acceptKeyword "@SuppressWarning" then
     expectSymbol "("
+    -- A quoted or digit-initial name lexes as one name yet is no usable name here, so it is a parse
+    -- failure at that token (spec/12 §4, `7_DAYS` and `'MVK_LATE'`), ahead of a later character the
+    -- lexer cannot take.
     let name ← match ← peek with
-      | some (.name name _) => advance; pure name
+      | some (.name name quoted) =>
+          if quoted || name.front.isDigit then failHere .unexpectedToken
+          advance; pure name
       | _ => failHere .expectedTokenNotFound
     expectSymbol ")"
     return [name]

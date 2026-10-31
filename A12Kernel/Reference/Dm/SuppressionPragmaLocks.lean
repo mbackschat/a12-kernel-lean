@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Validate
+import A12Kernel.Reference.Dm.ParallelValidation
 
 /-! # The suppression pragma of a computation or rule
 
@@ -10,7 +11,9 @@ entries fail the parse (spec/12 §4). The rows `sw-1`, `sw-twin` and `sw-two` re
 Kernel 30.8.1 capture `evidence/kernel-30.8.1/captures/field-declaration-notifications-2026-10-13/`;
 the lower-case and padded names are statements of spec/12 §4 without a retained row of their own.
 
-The rule route shares the pragma gate and is locked once, since a rule carries the pragma as text.
+The rule route shares the pragma gate and is locked once, since a rule carries the pragma as text; it
+is the admission entry `checkValidationRule`, whose syntax refusals take the first class a production
+raised (spec/12 §3.1).
 -/
 
 namespace A12Kernel.Dm.SuppressionPragmaLocks
@@ -32,7 +35,7 @@ private def computationOutcome (suppressed : List String) : String :=
 
 private def ruleOutcome (name : String) : String :=
   let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
-  match checkRule dm .english {
+  match checkValidationRule dm .english {
     group := ["Form"], name := "R", errorEntityRelPath := "../Ref", errorCode := "E", severity := "ERROR"
     condition := s!"@SuppressWarning({name}) FieldFilled(Ref)" } with
   | .ok _ => "admitted"
@@ -66,6 +69,17 @@ example : computationOutcome ["MVK_BOGUS", scaleWarning] == KernelStaticDiagnost
 example :
     ruleOutcome "MVK_BOGUS" == KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode &&
     ruleOutcome scaleWarning == "admitted" := by
+  native_decide
+
+-- A digit-initial name, a quoted name and a keyword of the model's own language lex but are no usable name at this
+-- position, so they are parse failures, ahead of a later character the lexer cannot take (peer
+-- KERNEL-FINDINGS' suppression table, spec/12 §4).
+example :
+    ruleOutcome "7_DAYS" == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
+    ruleOutcome "7_DAYS É" == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
+    ruleOutcome "'MVK_LATE'" == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
+    ruleOutcome "And" == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
+    ruleOutcome "And É" == KernelStaticDiagnostic.unexpectedToken.kernelCode := by
   native_decide
 
 end A12Kernel.Dm.SuppressionPragmaLocks
