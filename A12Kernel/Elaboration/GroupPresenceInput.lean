@@ -20,12 +20,6 @@ private def CheckedGroupPresenceError.ofEnvBinding : EnvBindingError →
   | .duplicateBinding level => .duplicateBinding level
   | .zeroBinding level => .zeroBinding level
 
-private def NatPath.isPrefixOf : List Nat → List Nat → Bool
-  | [], _ => true
-  | _, [] => false
-  | expected :: expectedRest, actual :: actualRest =>
-      expected == actual && NatPath.isPrefixOf expectedRest actualRest
-
 /-- Whether one instantiated row lies inside a group's subtree, at a bound outer address.
 
     The row-containment half of group content, and the rule both arms answer: the compute arm's

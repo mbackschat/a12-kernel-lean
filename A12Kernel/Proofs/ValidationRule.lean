@@ -297,7 +297,8 @@ theorem assembleResolvedValidationRule_rejects_negativeIteration
         severity messagePlan = .error error ∧
       (error = .negativeConditionInIteration level ∨ error.precedesNegativeIteration = true) := by
   cases errorEntity <;>
-    unfold assembleResolvedValidationRuleFor assembleResolvedValidationRuleFor.finish <;>
+    unfold assembleResolvedValidationRuleFor assembleResolvedValidationRuleFor.finish
+      assembleResolvedValidationRuleFor.negativeLevel? <;>
     simp only [RuleErrorEntity.selectionBound] at invalid ⊢ <;> simp only [invalid] <;>
     repeat' split
   all_goals first
@@ -370,7 +371,7 @@ theorem checkedValidationRule_partial_repeatable_filtered_skips
     rule.evalOrdinaryRepeatablePartial checked scope =
       .ok .skipped := by
   simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartial,
-    fieldTarget, filtered] <;> rfl
+    CheckedResolvedValidationRule.skipsPartialCall, fieldTarget, filtered] <;> rfl
 
 /-- Once the call-local preliminary view is built, the unfiltered convenience boundary delegates to its prepared evaluator without rebuilding relevance inside the rule. -/
 theorem checkedValidationRule_partial_repeatable_prepared
@@ -386,7 +387,7 @@ theorem checkedValidationRule_partial_repeatable_prepared
     rule.evalOrdinaryRepeatablePartial checked scope =
       rule.evalOrdinaryRepeatablePartialPrepared preliminary := by
   simp [CheckedResolvedValidationRule.evalOrdinaryRepeatablePartial,
-    fieldTarget, unfiltered, prepared] <;> rfl
+    CheckedResolvedValidationRule.skipsPartialCall, fieldTarget, unfiltered, prepared] <;> rfl
 
 /-- At the prepared one-row boundary, error-path nonrelevance at the iteration-bound levels is a rule skip rather than semantic UNKNOWN and prevents every addressed read. -/
 theorem checkedValidationRule_partial_repeatable_irrelevant_row_skips
@@ -413,7 +414,7 @@ theorem checkedValidationRule_partial_once_filtered_skips
   rule.evalOrdinaryOncePartial checked scope =
       .ok .skipped := by
   simp [CheckedResolvedValidationRule.evalOrdinaryOncePartial,
-    fieldTarget, filtered] <;> rfl
+    CheckedResolvedValidationRule.skipsPartialCall, fieldTarget, filtered] <;> rfl
 
 /-- A once plan binds no error-field repetition level even though its message pointer retains the all-one error environment. -/
 theorem checkedValidationRule_partialErrorBoundLevels_once
@@ -440,6 +441,7 @@ theorem checkedValidationRule_partial_once_irrelevant_skips
   simp [CheckedResolvedValidationRule.evalOrdinaryOncePartialPrepared,
     CheckedResolvedValidationRule.onceEnvironment,
     CheckedResolvedValidationRule.partialErrorBoundLevels,
+    CheckedResolvedValidationRule.skipsPartialCall,
     unfiltered, supported, once, fieldTarget, irrelevant] <;> rfl
 
 /-- Checked assembly preserves its explicit error field and metadata through message emission. -/

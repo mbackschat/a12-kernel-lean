@@ -113,21 +113,17 @@ def assembleResolvedValidationRuleFor (model : FlatModel)
     (fun core entity => core.referencesErrorEntity entity)
     ValidationCondition.ordinaryIterationScope
     condition errorEntity errorCode severity messagePlan
-  -- A rule reporting on its own group fails the Kernel's build by every spelling, ahead of the
-  -- condition's references ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
-  let declared : Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
+  let assembled : Except FlatRuleAssemblyError (CheckedResolvedValidationRule model) :=
     match errorEntity with
+    | .field field => assembledRule.bind fun rule =>
+        if condition.core.authoredErrorReference? field == some false then
+          .error (.errorFieldNotReferenced field)
+        else .ok rule
     | .group path =>
+        -- A rule reporting on its own group fails the Kernel's build by every spelling, ahead of the
+        -- condition's references ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
         if path == condition.declaringGroup then .error (.groupErrorTarget path .declaringGroup)
-        else assembledRule
-    | .field _ => assembledRule
-  let assembled := declared.bind fun rule =>
-      match errorEntity with
-      | .field field =>
-          if condition.core.authoredErrorReference? field == some false then
-            .error (.errorFieldNotReferenced field)
-          else .ok rule
-      | .group path =>
+        else assembledRule.bind fun rule =>
           -- A nonrepeatable root target referenced by the root's own presence is measured
           -- ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-root-error-target));
           -- a repeating root, and a lower target referenced only through the root, are not.
@@ -148,9 +144,9 @@ def assembleResolvedValidationRuleFor (model : FlatModel)
       | none, .groupErrorTarget _ .declaringGroup | none, .groupErrorTarget _ .unknown
       | none, .groupErrorTarget _ .unsupported => .error error
       | none, _ =>
-          match condition.core.iterationLegality (errorEntity.selectionBound condition.core) with
-          | .ok (.invalid level) => .error (.negativeConditionInIteration level)
-          | .ok .legal | .ok (.insufficient _) | .error _ => .error error
+          match negativeLevel? with
+          | some level => .error (.negativeConditionInIteration level)
+          | none => .error error
   | .ok rule =>
       let errorGroup := rule.errorPlacement.groupPath
       -- With the error field outside the rule group nothing binds a level, the rule group's own
@@ -173,6 +169,12 @@ def assembleResolvedValidationRuleFor (model : FlatModel)
               else finish rule
           | .group _ => finish rule
 where
+  /-- The level the per-level negative-condition gate refuses, judged at the levels the rule
+  iterates outside the error entity's key selection. -/
+  negativeLevel? : Option RepeatableLevel :=
+    match condition.core.iterationLegality (errorEntity.selectionBound condition.core) with
+    | .ok (.invalid level) => some level
+    | .ok .legal | .ok (.insufficient _) | .error _ => none
   /-- A group target's own level is not checked: the Kernel judges only the levels above the
   entity ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-group-target-nested-join),
   `group-level` row `t6`). A field target's level bound by its key selection is not iterated
@@ -189,9 +191,9 @@ where
           match (rule.iterationScope.getD []).find? unbound? with
           | some level => .error (.iterationInvalid errorEntity level)
           | none =>
-              match condition.core.iterationLegality selectionBound with
-              | .ok (.invalid level) => .error (.negativeConditionInIteration level)
-              | .ok .legal | .ok (.insufficient _) | .error _ => .ok rule
+              match negativeLevel? with
+              | some level => .error (.negativeConditionInIteration level)
+              | none => .ok rule
 
 /-- Assemble a rule reporting on a field. -/
 def assembleResolvedValidationRule (model : FlatModel)
