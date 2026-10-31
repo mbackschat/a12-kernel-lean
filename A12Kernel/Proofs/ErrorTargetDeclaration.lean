@@ -77,7 +77,7 @@ the cascade's three classes unproduceable by any one model. -/
 theorem formOnlyIterationRefusal_a12_never_zIteration (profile : IterationProfile) :
     formOnlyIterationRefusal false profile ≠ some .errorFieldAndZIterationInvalid := by
   unfold formOnlyIterationRefusal
-  simp only [Bool.false_eq_true, if_false]
+  simp only [Bool.false_eq_true, ite_false]
   split
   · simp
   · cases profile.firstInnerLevel <;> simp

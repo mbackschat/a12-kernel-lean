@@ -79,7 +79,7 @@ theorem constructorOperandRefusal_family (constructor : TemporalConstructor) (po
       some (if operand.isDateFamily == expected.isDateFamily then .extractOpWrongPosition
             else .extractOpNotAllowed) := by
   unfold constructorOperandRefusal
-  simp only [hslot, hne, beq_iff_eq, hslotless, Bool.false_eq_true, if_false]
+  simp only [hslot, hne, beq_iff_eq, hslotless, Bool.false_eq_true, ite_false]
   cases hfamily : operand.isDateFamily == expected.isDateFamily <;> simp_all
 
 /-- Time admits exactly its canonical prefixes, including the empty prefix. -/

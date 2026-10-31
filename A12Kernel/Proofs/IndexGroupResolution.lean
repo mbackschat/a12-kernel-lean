@@ -69,7 +69,7 @@ theorem multipleIndexFields2_is_innermost :
   | cons group outer ih =>
     intro hp
     by_cases hdecl : group.declaresIndex = true
-    · simp only [indexGroupWalk, hdecl, Bool.not_true, Bool.false_eq_true, if_false] at hp
+    · simp only [indexGroupWalk, hdecl, Bool.not_true, Bool.false_eq_true, ite_false] at hp
       cases found with
       | some _ => simp at hp
       | none =>
@@ -77,7 +77,7 @@ theorem multipleIndexFields2_is_innermost :
         · refine ⟨group, ?_, hcount⟩
           simp only [indexDeclaringGroups, List.mem_filter]
           exact ⟨List.mem_cons_self, hdecl⟩
-        · simp only [hcount, if_false] at hp
+        · simp only [hcount, ite_false] at hp
           obtain ⟨target, hmem, hgt⟩ := ih (some group) hp
           exact ⟨target, mem_indexDeclaringGroups_cons target group outer hmem, hgt⟩
     · simp only [Bool.not_eq_true] at hdecl
@@ -97,13 +97,13 @@ theorem indexGroupWalk_error_classes :
   | cons group outer ih =>
     intro refusal hp
     by_cases hdecl : group.declaresIndex = true
-    · simp only [indexGroupWalk, hdecl, Bool.not_true, Bool.false_eq_true, if_false] at hp
+    · simp only [indexGroupWalk, hdecl, Bool.not_true, Bool.false_eq_true, ite_false] at hp
       cases found with
       | some _ => exact Or.inl (by simpa [eq_comm] using hp)
       | none =>
         by_cases hcount : group.declaredNames > 1
         · exact Or.inr (by simpa [hcount, eq_comm] using hp)
-        · simp only [hcount, if_false] at hp
+        · simp only [hcount, ite_false] at hp
           exact ih (some group) refusal hp
     · simp only [Bool.not_eq_true] at hdecl
       rw [indexGroupWalk_skips_nonIndex found group outer hdecl] at hp

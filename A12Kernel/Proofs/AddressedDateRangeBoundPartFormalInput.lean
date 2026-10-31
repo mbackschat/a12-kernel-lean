@@ -25,7 +25,7 @@ theorem addressedDateRangeBoundPart_executeResultWithFormalInputs_exact
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation]
   rw [executed]
-  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure, Except.map, NumericComputationFormalInputRunView.of] <;> rfl
+  simp [ComputationFormalInputFinding.assembleResult, assembled, bind, Except.bind, pure, Except.pure, Except.map, NumericComputationFormalInputRunView.of] <;> rfl
 
 /-- A post-preparation addressed failure retains the exact eager inventory beside the unchanged fault. -/
 theorem addressedDateRangeBoundPart_executeResultWithFormalInputs_failure_exact

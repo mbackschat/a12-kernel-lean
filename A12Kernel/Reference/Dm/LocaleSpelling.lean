@@ -30,9 +30,9 @@ def parseLocale? (spelling : String) : Except String (Option ParsedLocale) := do
   let country (part : List Char) := part.length == 2 && part.all Char.isUpper
   let area (part : List Char) := part.length == 3 && part.all Char.isDigit
   let built (language country variant : List Char) : Except String (Option ParsedLocale) := do
-    let language := match (String.mk language).toLower with
+    let language := match (String.ofList language).toLower with
       | "iw" => "he" | "ji" => "yi" | "in" => "id" | other => other
-    let locale : ParsedLocale := { language, country := String.mk country, variant := String.mk variant }
+    let locale : ParsedLocale := { language, country := String.ofList country, variant := String.ofList variant }
     if locale.key == "ja_JP_JP" || locale.key == "th_TH_TH" then
       throw s!"locale {spelling} carries a JDK extension, outside the represented profile"
     return some locale
@@ -47,10 +47,10 @@ def parseLocale? (spelling : String) : Except String (Option ParsedLocale) := do
           | first :: second :: tail =>
               if !(first.isUpper && second.isUpper) then none
               else match tail with
-                | [] => some { language := "", country := String.mk [first, second], variant := "" }
+                | [] => some { language := "", country := String.ofList [first, second], variant := "" }
                 | next :: variant =>
                     if next == separator && !variant.isEmpty then
-                      some { language := "", country := String.mk [first, second], variant := String.mk variant }
+                      some { language := "", country := String.ofList [first, second], variant := String.ofList variant }
                     else none
           | _ => none
       if language chars then return ← built chars [] []

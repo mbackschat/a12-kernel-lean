@@ -76,7 +76,7 @@ theorem checkedIsolatedParallelNumericDirectRun_executeResultWithFormalInputs_ex
   rw [CheckedIsolatedParallelNumericDirectRun.executeResultWithFormalInputs,
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation, executed]
-  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure]
+  simp [ComputationFormalInputFinding.assembleResult, assembled, bind, Except.bind, pure, Except.pure]
 
 /-- A post-preparation execution failure retains the exact eager inventory beside the unchanged addressed fault. -/
 theorem checkedIsolatedParallelNumericDirectRun_executeResultWithFormalInputs_failure_exact

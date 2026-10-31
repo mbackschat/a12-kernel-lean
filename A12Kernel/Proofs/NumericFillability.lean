@@ -174,7 +174,7 @@ theorem numericArithmeticOutcome_divide_fixed
     NumericArithmeticOutcome.divide
       (.value dividend .fixed) (.value divisor .fixed) =
         .value (roundMathContext50 (dividend / divisor)) .fixed := by
-  simp only [NumericArithmeticOutcome.divide, divideNumeric, if_neg nonzero]
+  simp only [NumericArithmeticOutcome.divide, divideNumeric, ite_eq_right nonzero]
   generalize NumericSign.ofRat dividend = dividendSign
   generalize NumericSign.ofRat divisor = divisorSign
   cases dividendSign <;> cases divisorSign <;> rfl

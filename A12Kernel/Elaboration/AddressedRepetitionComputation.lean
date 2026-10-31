@@ -74,7 +74,7 @@ def CheckedAddressedNumericTarget.admitsRepetitionOperand
   | .dateRangeBoundPart source _ _ =>
       target.admitsSourceField source.id fun owned => owned.toDateRangeField? == some source
   | .temporalFieldPart source part format =>
-      target.admitsSourceField source.id fun owned =>
+      target.admitsSourceField source.id fun _ =>
         model.admitsTemporalNumericPart source part format
   | .fieldValueAsNumber source =>
       match model.certifiedFieldValueAsNumberDeclaration? source with

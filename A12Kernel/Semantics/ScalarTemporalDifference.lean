@@ -6,7 +6,8 @@ namespace A12Kernel
 /-- Computation stops at a formal first operand; validation still reaches the second. The
 ordinary/Having direct, shifted and constructed difference controls isolate this order
 (docs/sources/temporal-runtime-fold-probes.md#src-recursive-difference-effects). -/
-def readTemporalPairWith (phase : Phase) (readFirst : Except Error First)
+def readTemporalPairWith.{u, v} {Error : Type u} {First Second : Type v} (phase : Phase)
+    (readFirst : Except Error First)
     (formalCause? : First → Option FormalCause) (readSecond : Unit → Except Error Second) :
     Except Error (Except FormalCause (First × Second)) := do
   let first ← readFirst
@@ -14,7 +15,8 @@ def readTemporalPairWith (phase : Phase) (readFirst : Except Error First)
     if let some cause := formalCause? first then return .error cause
   pure (.ok (first, ← readSecond ()))
 
-def readTemporalPair (phase : Phase) (read : Source → Except Error Operand)
+def readTemporalPair.{u, v, w} {Source : Sort u} {Error : Type v} {Operand : Type w} (phase : Phase)
+    (read : Source → Except Error Operand)
     (formalCause? : Operand → Option FormalCause) (left right : Source) :
     Except Error (Except FormalCause (Operand × Operand)) :=
   readTemporalPairWith phase (read left) formalCause? (fun () => read right)

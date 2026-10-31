@@ -260,7 +260,7 @@ theorem generatedNumericOperationTable_executeResultWithFormalInputs_exact
   rw [planned]
   simp only [preparation]
   rw [executed]
-  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure]
+  simp [ComputationFormalInputFinding.assembleResult, assembled, bind, Except.bind, pure, Except.pure]
 
 /-- After generated preparation succeeds, any subsequent execution failure retains the exact eager raw findings beside the unchanged failure. -/
 theorem generatedNumericOperationTable_executeResultWithFormalInputs_failure_exact

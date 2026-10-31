@@ -387,12 +387,12 @@ private def numericGuard (participates : ParallelFieldOperand → Bool)
 /-- Presence quantifiers share one participation rule for ordinary and parallel iteration.
 The two mixed-sensitive operators require every operand to iterate (spec/07 §2; IterationNotValidVisitor). -/
 private def fillGuard (participates : ParallelFieldOperand → Bool)
-    (op : FieldFillQuantifier) (left right : ParallelFieldOperand) : IterationGuardStatus :=
-  if !(participates left || participates right) then .noReference else
+    (op : FieldFillQuantifier) (lhs rhs : ParallelFieldOperand) : IterationGuardStatus :=
+  if !(participates lhs || participates rhs) then .noReference else
     match op with
     | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled => .unguarded
     | .atLeastOneFieldFilled | .fieldsNotCollectivelyFilled =>
-        if participates left && participates right then .guarded else .unguarded
+        if participates lhs && participates rhs then .guarded else .unguarded
     | .allFieldsFilled | .moreThanOneFieldFilled => .guarded
 
 /-- For direct fields on the joined pair, the parallel guard follows the source operator's iteration test, not its runtime empty verdict (Kernel `IterationNotValidVisitor`). -/
@@ -405,9 +405,9 @@ def guards (pair : CheckedParallelFieldPair model) : ParallelFieldLeaf model →
       pair.groups.leftGroup.path.isPrefixOf (pair.declaration field).groupPath ||
       pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) value = .guarded)
   | .presence _ .notFilled => false
-  | .fill op left right => decide (fillGuard (fun field =>
+  | .fill op lhs rhs => decide (fillGuard (fun field =>
       pair.groups.leftGroup.path.isPrefixOf (pair.declaration field).groupPath ||
-      pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) op left right = .guarded)
+      pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) op lhs rhs = .guarded)
   | .customCondition _ | .ordinary _ | .valuesNotUnique _ => false
   | .flat condition reads => decide (condition.iterationGuard (fun field =>
       reads.any fun operand => (pair.declaration operand).id == field &&
@@ -422,14 +422,14 @@ def guardAt (pair : CheckedParallelFieldPair model) (level : RepeatableLevel)
   | .groupPresence op reference =>
       if !reference.boundRepeatableScope.contains level then .noReference
       else if op.canFireOnEmpty then .unguarded else .guarded
-  | .fill op left right => fillGuard
-      (fun field => (pair.declaration field).repeatableScope.contains level) op left right
+  | .fill op lhs rhs => fillGuard
+      (fun field => (pair.declaration field).repeatableScope.contains level) op lhs rhs
   | .presence field op =>
       if !(pair.declaration field).repeatableScope.contains level then .noReference
       else match op with | .filled => .guarded | .notFilled => .unguarded
-  | .numeric _ left right =>
-      if (pair.declaration left).repeatableScope.contains level ||
-          (pair.declaration right).repeatableScope.contains level then .guarded else .noReference
+  | .numeric _ lhs rhs =>
+      if (pair.declaration lhs).repeatableScope.contains level ||
+          (pair.declaration rhs).repeatableScope.contains level then .guarded else .noReference
   | .customCondition _ | .ordinary _ => .noReference
   | .valuesNotUnique operands =>
       if operands.any (fun operand => (pair.declaration operand).repeatableScope.contains level) then .unclassified

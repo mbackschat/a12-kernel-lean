@@ -64,7 +64,7 @@ theorem addressedDateTimeSubdayShiftComputation_executeResultWithFormalInputs_ex
     planned]
   simp only [Except.mapError, Bind.bind, Except.bind, preparation]
   rw [executed]
-  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure]
+  simp [ComputationFormalInputFinding.assembleResult, assembled, bind, Except.bind, pure, Except.pure]
 
 /-- Once the addressed plan succeeds, a later structural failure retains the exact eager findings beside the unchanged fault. -/
 theorem addressedDateTimeSubdayShiftComputation_executeResultWithFormalInputs_failure_exact

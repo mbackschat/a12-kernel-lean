@@ -206,7 +206,7 @@ theorem readGroupCountOperand_fixed_error_iff_notAdmitted
           Except.ok (fields.map fun declaration => observeCell .computation (context.starRead context.outer declaration.id)) := by
       induction fields with
       | nil => rfl
-      | cons first rest ih => simp [List.mapM_cons, ih, bind, Except.bind, Functor.map, Except.map, pure, Except.pure]
+      | cons first rest ih => simp [List.mapM_cons, ih, bind, Except.bind, pure, Except.pure]
     simp [pureRead]
 
 

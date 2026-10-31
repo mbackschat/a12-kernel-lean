@@ -215,7 +215,7 @@ example :
 /-- The labels one field `/Policy/F` of `typeName` and `body` draws, or the unbuilt label. -/
 private def typed (typeName : String) (body : List (String × Json)) (deleted := false) : List String :=
   (report "/Policy/F" (model [group "Policy" [field "F" typeName body deleted]])).map fun entry =>
-    if unbuilt.contains entry then entry else entry.dropRight 1
+    if unbuilt.contains entry then entry else (entry.dropEnd 1).copy
 
 private def range (format separator : Option String) : List String :=
   typed "DateRangeType" (format.toList.map (fun text => ("format", Json.str text)) ++

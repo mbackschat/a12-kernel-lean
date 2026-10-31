@@ -27,7 +27,7 @@ theorem computedNumberSelfValidation_notFired_iff
   · simp [equal]
   · have fires : (normalizedComparisonValue computed != normalizedComparisonValue stored) = true :=
       by simp [equal]
-    simp only [fires, if_pos]
+    simp only [fires, ite_eq_left]
     split <;> simp [equal]
 
 /-- A computation whose every operand is closed types VALUE.
@@ -119,14 +119,14 @@ theorem computedNumberSelfValidationIfDecided_unknown_iff
   cases decided with
   | false => simp [computedNumberSelfValidationIfDecided]
   | true =>
-      simp only [computedNumberSelfValidationIfDecided, if_true, computedNumberSelfValidation,
+      simp only [computedNumberSelfValidationIfDecided, ite_true, computedNumberSelfValidation,
         NumericComparisonOp.eval, NumericComparisonOp.holds]
       by_cases equal : normalizedComparisonValue computed = normalizedComparisonValue stored
       · simp [equal]
       · have fires :
             (normalizedComparisonValue computed != normalizedComparisonValue stored) = true := by
           simp [equal]
-        simp only [fires, if_pos]
+        simp only [fires, ite_eq_left]
         split <;> simp
 
 /-! ## The producer -/

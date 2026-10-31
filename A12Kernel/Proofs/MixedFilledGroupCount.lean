@@ -41,7 +41,7 @@ theorem numberOfFilledGroupsForValidationOperands_fixed
   by_cases hAny :
       states.any fun state => state.asFilledGroupCountPresence == .unavailable
   · simp [hAny]
-  · simp only [hAny, if_false, Bool.false_eq_true]
+  · simp only [hAny, ite_false, Bool.false_eq_true]
     simp [validationOperandFold_fixed states 0]
 
 private theorem sumOfOnes {α : Type} :

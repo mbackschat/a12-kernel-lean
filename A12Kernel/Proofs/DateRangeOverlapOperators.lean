@@ -265,7 +265,7 @@ private theorem scanDateRangesOverlapOccurrences_fired_iff
             seen.any current.range.overlaps = false := by
           simpa using overlap
         simp only [scanOverlapOccurrences]
-        rw [if_neg overlap]
+        rw [ite_eq_right overlap]
         rw [ih (current.range :: seen)
           (reachedFilter || current.fromFilteredOperand)]
         rw [dateRangeOverlap_tailTruth seen current rest noSeenOverlap]

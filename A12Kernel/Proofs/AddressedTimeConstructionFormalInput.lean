@@ -25,7 +25,7 @@ theorem addressedTimeConstruction_executeResultWithFormalInputs_exact
   simp only [Except.mapError, bind, Except.bind, preparation]
   rw [CheckedAddressedTimeConstructionComputation.executeResultWithRead,
     executed]
-  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure, Except.map] <;> rfl
+  simp [ComputationFormalInputFinding.assembleResult, assembled, bind, Except.bind, pure, Except.pure, Except.map] <;> rfl
 
 /-- A post-preparation addressed execution failure retains the exact eager inventory beside the unchanged existing fault. -/
 theorem addressedTimeConstruction_executeResultWithFormalInputs_failure_exact

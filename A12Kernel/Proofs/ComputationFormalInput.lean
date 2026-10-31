@@ -16,7 +16,7 @@ theorem computationFormalInputFinding_selected
     List.mem_flatMap] at member
   obtain ⟨placement, _, member⟩ := member
   by_cases included : plan.includesField placement.address.field = true
-  · simp only [included, if_true, List.mem_map] at member
+  · simp only [included, ite_true, List.mem_map] at member
     obtain ⟨cause, _, equality⟩ := member
     subst finding
     simpa [CheckedComputationFormalInputPlan.includesField] using included
@@ -34,7 +34,7 @@ theorem computationFormalInputPreliminaryFinding_selected
     List.mem_filterMap] at member
   obtain ⟨generated, _, member⟩ := member
   by_cases included : plan.includesField generated.address.field = true
-  · simp only [included, if_true, Option.some.injEq] at member
+  · simp only [included, ite_true, Option.some.injEq] at member
     subst finding
     simpa [CheckedComputationFormalInputPlan.includesField] using included
   · simp [included] at member

@@ -452,8 +452,7 @@ theorem scalarComputationRun_documentFor_read
           (checkedDocument_overlay_find_unlisted (run.filterInput input) _ { field, path := [] } unlisted)
         unfold CheckedScalarComputationRun.documentFor
         simp only [CheckedDocument.flatContext, same,
-          CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay, found, target,
-          CheckedDocument.scalarComputationContext]
+          CheckedScalarComputationRun.numberContext, ScalarComputationContext.withFixedOverlay, found, target]
         rfl
 
 end A12Kernel

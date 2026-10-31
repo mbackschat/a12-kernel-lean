@@ -96,7 +96,7 @@ theorem indexScan_class_follows_reference (semantic : Bool) :
       case semanticIndex =>
         cases outerWildcard
         · exact ih _ _ (by simpa using h)
-        · simp only [if_true, Option.some.injEq] at h
+        · simp only [ite_true, Option.some.injEq] at h
           cases h; cases semantic <;> simp
     · simp only [Option.some.injEq] at h
       cases h
@@ -104,7 +104,7 @@ theorem indexScan_class_follows_reference (semantic : Bool) :
       split at hl
       · exact absurd hl (by simp)
       · split at hl
-        · cases semantic <;> simp only [if_true, Option.some.injEq] at hl <;>
+        · cases semantic <;> simp only [ite_true, Option.some.injEq] at hl <;>
             cases hl <;> simp
         · exact absurd hl (by simp)
 

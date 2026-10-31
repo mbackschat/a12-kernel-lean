@@ -129,7 +129,7 @@ theorem currentRepetitionAlternatingEnumerationHaving_executeResultWithFormalInp
     CheckedCurrentRepetitionAlternatingEnumerationHaving.executeResultWithConsumerFallbackRead,
     executed] at produced
   simp only [bind, Except.bind, pure, Except.pure,
-    Except.ok.injEq, ComputationFormalInputFinding.assembleResult, assembled] at produced
+    Except.ok.injEq, assembled] at produced
   subst view
   exact ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
 

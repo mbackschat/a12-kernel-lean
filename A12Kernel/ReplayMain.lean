@@ -240,7 +240,7 @@ private def readJson (path : System.FilePath) : IO Json := do
 private def clockMillis? (text : String) : Option Int := do
   let [date, time] := text.splitOn "T" | none
   let [year, month, day] := date.splitOn "-" | none
-  let [hour, minute, second] := (time.dropRightWhile (· == 'Z')).splitOn ":" | none
+  let [hour, minute, second] := (time.dropEndWhile (· == 'Z')).toString.splitOn ":" | none
   let (y, m, d) := (← year.toInt?, ← month.toInt?, ← day.toInt?)
   -- Days from the civil date by the proleptic Gregorian era formula.
   let y' := if m ≤ 2 then y - 1 else y
@@ -300,7 +300,7 @@ private def tableMessageRows (requestPath : System.FilePath) : IO (Array Json) :
   let mut rows : Array (String × Option (Array Json) × Option (Array Json)) := #[]
   for entry in ← (requestPath.parent.getD ".").readDir do
     if entry.path.extension != some "tsv" then continue
-    let lines := ((← IO.FS.readFile entry.path).splitOn "\n").map (·.dropRightWhile (· == '\r'))
+    let lines := ((← IO.FS.readFile entry.path).splitOn "\n").map (fun line => (line.dropEndWhile (· == '\r')).toString)
       |>.filter (· != "")
     if lines.head? != some "# row\tobservation\tcode-field-type" then continue
     for line in lines.drop 1 do
@@ -505,7 +505,7 @@ private def pointerCell (model : FlatModel) (pointer : String) : Option CellAddr
     match segment.splitOn "[" with
     | [name] => some (name, 1)
     | [name, index] => do
-        let n ← (index.dropRightWhile (· == ']')).toNat?
+        let n ← (index.dropEndWhile (· == ']')).toString.toNat?
         if n == 0 then none else some (name, n)
     | _ => none
   let names := parts.map (·.1)

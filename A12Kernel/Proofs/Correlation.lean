@@ -656,7 +656,7 @@ theorem computationHavingScan_failedSuccessor_precedesCurrent
     (secondFails : condition.evalComputationIn context { innerEnv := second, outerEnv := outer } = .error fault) :
     condition.scanComputation context outer consume [first, second] initial = .error fault := by
   simp [CorrelatedHaving.scanComputation, CorrelatedHaving.scanComputationCandidates,
-    firstHolds, secondFails, bind, Except.bind, pure, Except.pure]
+    firstHolds, secondFails, bind, Except.bind]
 
 /-- A structural failure during successor lookahead wins before the shared scan can consume the pending payload. -/
 theorem havingResolvingScan_failedSuccessor_precedesCurrent

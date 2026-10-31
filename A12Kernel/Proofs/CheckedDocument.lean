@@ -338,7 +338,7 @@ theorem checkedDocument_computationRowOutcomes_mem
       simp only [Except.mapError, bind, Except.bind] at executed
       obtain ⟨environment, _, produced⟩ := exceptMapM_mem executed entry member
       by_cases over : checked.environmentOverLimit scope environment
-      · simp only [over, if_pos] at produced
+      · simp only [over, ite_eq_left] at produced
         exact .inl ⟨environment, produced⟩
       · simp only [over] at produced
         exact .inr ⟨environment, produced⟩
@@ -631,7 +631,7 @@ only by other stages. Physical addressing remains independent of this visibility
 theorem checkedDocument_filterRows_inherited (checked : CheckedDocument model)
     (relevant : FieldId → Bool) (specified : checked.filterRows.isSome = true) :
     checked.withComputationFilterRows relevant = checked := by
-  simp only [CheckedDocument.withComputationFilterRows, specified, Bool.true_eq, ↓reduceIte]
+  simp only [CheckedDocument.withComputationFilterRows, specified, ↓reduceIte]
 
 /-- Filter-cache visibility changes traversal bounds, never the cells read at an address. -/
 theorem checkedDocument_filterRows_read (checked : CheckedDocument model)

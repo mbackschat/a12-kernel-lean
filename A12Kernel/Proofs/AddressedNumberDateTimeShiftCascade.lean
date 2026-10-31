@@ -44,7 +44,7 @@ theorem addressedNumberDateTimeShiftCascade_amountRead_completed
       plan.producer.placement.targetField = .ok address := resolved
   unfold CheckedAddressedNumberDateTimeShiftCascade.amountRead
   rw [resolved']
-  simp only [bind, Except.bind, beq_self_eq_true, if_true]
+  simp only [bind, Except.bind, beq_self_eq_true, ite_true]
   change (match producer.find? (fun candidate =>
       candidate.targetField == address) with
     | some candidate =>
@@ -70,7 +70,7 @@ theorem addressedNumberDateTimeShiftCascade_amountRead_hides_stale
       plan.producer.placement.targetField = .ok address := resolved
   unfold CheckedAddressedNumberDateTimeShiftCascade.amountRead
   rw [resolved']
-  simp only [bind, Except.bind, beq_self_eq_true, if_true]
+  simp only [bind, Except.bind, beq_self_eq_true, ite_true]
   change (match producer.find? (fun candidate =>
       candidate.targetField == address) with
     | some candidate =>
@@ -132,7 +132,7 @@ theorem addressedNumberDateTimeShift_executeResultWithFormalInputs_exact
   simp only [bind, Except.bind, Except.mapError, preparation] at produced
   rw [CheckedAddressedNumberDateTimeShiftCascade.executeResultWithProducerRead,
     executed] at produced
-  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq, ComputationFormalInputFinding.assembleResult, assembled] at produced
+  simp only [bind, Except.bind, pure, Except.pure, Except.ok.injEq, assembled] at produced
   subst view
   exact ⟨rfl, rfl, rfl, rfl⟩
 

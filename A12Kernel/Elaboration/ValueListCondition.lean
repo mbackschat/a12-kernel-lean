@@ -21,7 +21,7 @@ def quantifier : CheckedValueListCondition model → ValueListQuantifier
   | .token source => source.quantifier
   | .literals source => source.quantifier
 
-def modelWellFormed (source : CheckedValueListCondition model) : model.validate.isOk = true :=
+theorem modelWellFormed (source : CheckedValueListCondition model) : model.validate.isOk = true :=
   match source with
   | .number source => source.fields.modelWellFormed
   | .token source => source.fields.modelWellFormed

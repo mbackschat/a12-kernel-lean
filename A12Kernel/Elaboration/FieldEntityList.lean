@@ -589,7 +589,7 @@ theorem resolveFieldEntityOperandIn_declaringGroupValid
   | keyed source form =>
       by_cases valid : GroupPath.isValid declaringGroup = true
       · exact valid
-      · simp [elaborateKeyedEntityExtent, valid, Except.map, Except.mapError, bind, Except.bind] at ok
+      · simp [elaborateKeyedEntityExtent, valid, Except.mapError, bind, Except.bind] at ok
   | indexed source form =>
       cases hSource : elaborateSemanticIndexSource model declaringGroup source
         (some (model.repeatableScopeForGroupPath (fixedTargetGroup?.getD writtenGroup))) with
@@ -620,7 +620,7 @@ theorem resolveFieldEntityOperandIn_declaringGroupValid
       | some targetGroup =>
           cases hGroup : model.resolveFixedTargetListGroupReference declaringGroup reference with
           | error _ =>
-              simp only [hGroup, Option.isSome_some, if_true, bind, Except.bind,
+              simp only [hGroup, Option.isSome_some, ite_true, bind, Except.bind,
                 Except.mapError] at ok
               cases ok
           | ok resolvedGroup =>
@@ -629,7 +629,7 @@ theorem resolveFieldEntityOperandIn_declaringGroupValid
           cases hGroup :
               groupReadScope.resolve model declaringGroup reference (some writtenGroup) with
           | error _ =>
-              simp only [hGroup, Option.isSome_none, Bool.false_eq_true, if_false, bind,
+              simp only [hGroup, Option.isSome_none, Bool.false_eq_true, ite_false, bind,
                 Except.bind, Except.mapError] at ok
               cases ok
           | ok resolvedGroup =>

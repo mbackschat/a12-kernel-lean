@@ -478,7 +478,7 @@ theorem elaborateStarredGroupOperandSource_declaringGroupValid
     split at resolved
     · cases resolved
     · rw [SurfaceStarGroupPath.resolveBase] at resolved
-      simp only [hValid, Bool.not_false, if_true, bind, Except.bind, throw, throwThe,
+      simp only [hValid, Bool.not_false, ite_true, bind, Except.bind, throw, throwThe,
         MonadExceptOf.throw] at resolved
       cases resolved
 

@@ -17,7 +17,7 @@ inductive CheckedValuesNotUniqueCondition (model : FlatModel) where
 
 namespace CheckedValuesNotUniqueCondition
 
-def modelWellFormed (source : CheckedValuesNotUniqueCondition model) :
+theorem modelWellFormed (source : CheckedValuesNotUniqueCondition model) :
     model.validate.isOk = true :=
   match source with
   | .number source => source.modelWellFormed

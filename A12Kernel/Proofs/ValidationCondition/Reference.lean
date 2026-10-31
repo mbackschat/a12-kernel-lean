@@ -189,7 +189,7 @@ theorem sievedFieldPointers_exact_of_bound (model : FlatModel)
   intro declaration member pointer head
   obtain ⟨declared, referenced⟩ := List.mem_filter.mp member
   unfold sievedFieldPointer at head
-  rw [if_pos (bound declaration declared referenced)] at head
+  rw [ite_eq_left (bound declaration declared referenced)] at head
   exact (concreteFieldPointer_exact declaration environment pointer head).2
 
 /-- The projection is blind to the connective, which is the precise sense in which it is structural: a reference is authored, not decisive, so an `Or` branch that never decided still contributes. -/

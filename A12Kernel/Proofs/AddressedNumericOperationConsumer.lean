@@ -41,7 +41,7 @@ theorem matchingFingerprint_some_iff
       before.analyze = view ∧ after.analyze = view := by
   unfold matchingFingerprint?
   by_cases same : before.analyze = after.analyze
-  · rw [if_pos same]
+  · rw [ite_eq_left same]
     constructor
     · intro accepted
       have candidate : after.analyze = view :=
@@ -49,7 +49,7 @@ theorem matchingFingerprint_some_iff
       exact ⟨same.trans candidate, candidate⟩
     · rintro ⟨_, candidate⟩
       exact congrArg some candidate
-  · rw [if_neg same]
+  · rw [ite_eq_right same]
     constructor
     · intro impossible
       cases impossible

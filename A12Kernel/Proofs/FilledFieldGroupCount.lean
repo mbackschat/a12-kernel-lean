@@ -158,7 +158,7 @@ theorem checkedFieldFillList_fill_with_declared_capacity
   have capacities := validationFillCapacities_unindexed list.operands document outer unindexed
   simp only [CheckedFieldFillList.fillCapacity?] at available
   cases operator <;>
-    simp [CheckedFieldFillList.evaluateFill?, unfiltered, unindexed, resolved, capacities, available,
+    simp [CheckedFieldFillList.evaluateFill?, unfiltered, resolved, capacities, available,
       FieldFillQuantifier.evalValidation, bind, Except.bind, pure, Except.pure]
 
 /-- A group operand's list reads the group source's own declared slots, so the capacity theorem

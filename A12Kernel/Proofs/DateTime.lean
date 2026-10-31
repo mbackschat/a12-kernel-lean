@@ -263,7 +263,7 @@ theorem civilDate_next_unixEpochDay (date : CivilDate) :
             omega
         simp only [CivilDate.next?]
         rw [found]
-        simp only [beforeLast, if_true]
+        simp only [beforeLast, ite_true]
         rw [civilDate_ofYmd_map_unixEpochDay
           year month (day + 1) nextReal]
         simp [CivilDate.unixEpochDay, CivilDate.dayOffset]
@@ -280,7 +280,7 @@ theorem civilDate_next_unixEpochDay (date : CivilDate) :
           simp only [Option.getD_some] at prefixStep
           simp only [CivilDate.next?]
           rw [found]
-          simp only [Nat.lt_irrefl, if_false, beforeDecember, if_true]
+          simp only [Nat.lt_irrefl, ite_false, beforeDecember, ite_true]
           rw [civilDate_ofYmd_map_unixEpochDay
             year (month + 1) 1 nextReal]
           simp [CivilDate.unixEpochDay, CivilDate.dayOffset]

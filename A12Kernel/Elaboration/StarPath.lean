@@ -392,7 +392,7 @@ private theorem planFromMarkedAxes_never_incoherentCore
       cases hBelow : firstUnstarredAxis? (marked.drop index) with
       | some path => simp [hBelow]
       | none =>
-          simp only [hBelow, dif_pos bound]
+          simp only [hBelow, dite_eq_left bound]
           split <;> simp
 
 /-- A successful plan's axes are exactly the marked axes it scanned. -/

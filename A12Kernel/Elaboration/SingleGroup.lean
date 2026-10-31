@@ -587,12 +587,12 @@ private theorem FlatModel.resolveFixedGroupReferenceWith_declaringGroupValid
     cases surface with
     | path groupPath =>
         rw [SurfaceGroupReference.resolveAgainst, SurfaceGroupPath.resolveAgainst] at ok
-        simp only [hValid, Bool.not_false, if_true, bind, Except.bind, throw, throwThe,
+        simp only [hValid, Bool.not_false, ite_true, bind, Except.bind, throw, throwThe,
           MonadExceptOf.throw, Except.mapError] at ok
         cases ok
     | ruleGroup starred =>
         rw [SurfaceGroupReference.resolveAgainst] at ok
-        simp only [hValid, Bool.not_false, if_true, bind, Except.bind, throw, throwThe,
+        simp only [hValid, Bool.not_false, ite_true, bind, Except.bind, throw, throwThe,
           MonadExceptOf.throw, Except.mapError] at ok
         cases ok
 

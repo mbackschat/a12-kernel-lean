@@ -24,7 +24,7 @@ theorem addressedEnumeration_executeResultWithFormalInputs_exact
     planned]
   simp only [Except.mapError, bind, Except.bind, preparation]
   rw [CheckedAddressedEnumerationComputation.executeResultWithRead, executed]
-  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure, Except.map] <;> rfl
+  simp [ComputationFormalInputFinding.assembleResult, assembled, bind, Except.bind, pure, Except.pure, Except.map] <;> rfl
 
 /-- A post-preparation addressed execution failure retains the exact eager inventory beside the unchanged existing fault. -/
 theorem addressedEnumeration_executeResultWithFormalInputs_failure_exact
@@ -64,7 +64,7 @@ theorem addressedEnumerationFirstFilled_executeResultWithFormalInputs_exact
   simp only [Except.mapError, bind, Except.bind, preparation]
   rw [CheckedAddressedEnumerationFirstFilledComputation.executeResultWithRead,
     executed]
-  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure, Except.map] <;> rfl
+  simp [ComputationFormalInputFinding.assembleResult, assembled, bind, Except.bind, pure, Except.pure, Except.map] <;> rfl
 
 /-- A post-preparation first-filled execution failure retains the exact eager inventory beside the unchanged existing fault. -/
 theorem addressedEnumerationFirstFilled_executeResultWithFormalInputs_failure_exact

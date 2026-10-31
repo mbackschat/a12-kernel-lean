@@ -889,7 +889,7 @@ theorem FlatModel.resolveFieldDeclarationUnchecked_declaringGroupValid
   | true => rfl
   | false =>
     rw [FlatModel.resolveFieldDeclarationUnchecked] at resolved
-    simp only [hValid, Bool.not_false, if_true, bind, Except.bind, throw, throwThe,
+    simp only [hValid, Bool.not_false, ite_true, bind, Except.bind, throw, throwThe,
       MonadExceptOf.throw] at resolved
     cases resolved
 

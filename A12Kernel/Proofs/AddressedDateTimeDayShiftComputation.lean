@@ -71,7 +71,7 @@ theorem addressedDateTimeDayShiftComputation_executeResultWithFormalInputs_exact
   simp only [Except.mapError, Bind.bind, Except.bind, preparation]
   rw [CheckedAddressedDateTimeDayShiftComputation.executeResultWithAmountRead,
     executed]
-  simp [ComputationFormalInputFinding.assembleResult, assembled, Except.mapError, bind, Except.bind, pure, Except.pure]
+  simp [ComputationFormalInputFinding.assembleResult, assembled, bind, Except.bind, pure, Except.pure]
 
 /-- A post-preparation structural failure retains the exact eager findings beside the unchanged calendar-day fault. -/
 theorem addressedDateTimeDayShiftComputation_executeResultWithFormalInputs_failure_exact

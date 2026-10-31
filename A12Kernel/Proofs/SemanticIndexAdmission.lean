@@ -49,7 +49,7 @@ private theorem indexResolution_error_classes (path : List IndexDeclaringGroup)
       | some g =>
           by_cases hn : g.nameResolvesToField = true
           · simp [hn] at h
-          · simp only [hn, Bool.false_eq_true, if_false, Except.error.injEq] at h
+          · simp only [hn, Bool.false_eq_true, ite_false, Except.error.injEq] at h
             exact Or.inr (Or.inr h.symm)
 
 /-- The key-shape stage reports only its own two classes. -/
@@ -240,7 +240,7 @@ theorem rawTypeOperandInvalid_needs_strict (site : SemanticIndexAdmissionSite) (
     | constant _ _ => simp [keyUsageRefusal] at hs
     | reference _ =>
         simp only [keyUsageRefusal, hlen, Bool.not_true, Bool.false_and,
-          Bool.false_eq_true, if_false] at hs
+          Bool.false_eq_true, ite_false] at hs
         split at hs <;> simp at hs
   · simp at hs
 

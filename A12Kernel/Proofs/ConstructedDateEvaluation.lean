@@ -75,8 +75,7 @@ theorem checkedConstructedDateTodayExtractor_requires_world
     (checked : CheckedConstructedDatePointInTimeExtractor model)
     (isToday : checked.point = .today) :
     checked.read none = .error .todayWorldRequired := by
-  simp [CheckedConstructedDatePointInTimeExtractor.read, readConstructedDateClock, projectConstructedDateClock,
-    ConstructedDateComponentFault.toEvaluationFault, isToday]
+  simp [CheckedConstructedDatePointInTimeExtractor.read, readConstructedDateClock, isToday]
   rfl
 
 /-- A resolved `Today` projects exactly the certified local calendar component. -/
@@ -89,8 +88,7 @@ theorem checkedConstructedDateTodayExtractor_read
     checked.read (some world) =
       .ok (.value (checked.part.extract label.parts).num) := by
   simp [CheckedConstructedDatePointInTimeExtractor.read, readConstructedDateClock, projectConstructedDateClock,
-    ConstructedDateComponentFault.toEvaluationFault, isToday,
-    CheckedConstructedDatePointInTimeExtractor.project, resolved, decoded]
+    isToday, resolved, decoded]
   rfl
 
 /-- Dynamic `Now` has no implicit clock fallback. -/
@@ -98,8 +96,7 @@ theorem checkedConstructedDateNowExtractor_requires_world
     (checked : CheckedConstructedDatePointInTimeExtractor model)
     (isNow : checked.point = .now) :
     checked.read none = .error .nowWorldRequired := by
-  simp [CheckedConstructedDatePointInTimeExtractor.read, readConstructedDateClock, projectConstructedDateClock,
-    ConstructedDateComponentFault.toEvaluationFault, isNow]
+  simp [CheckedConstructedDatePointInTimeExtractor.read, readConstructedDateClock, isNow]
   rfl
 
 /-- `Now` projects the retained exact world instant without consulting zone rules. -/
@@ -111,8 +108,7 @@ theorem checkedConstructedDateNowExtractor_read
     checked.read (some world) =
       .ok (.value (checked.part.extract label.parts).num) := by
   simp [CheckedConstructedDatePointInTimeExtractor.read, readConstructedDateClock, projectConstructedDateClock,
-    ConstructedDateComponentFault.toEvaluationFault,
-    CheckedConstructedDatePointInTimeExtractor.project, isNow, decoded]
+    isNow, decoded]
   rfl
 
 /-- A reached checked String contributes its decoded and narrowed host-integer component. -/

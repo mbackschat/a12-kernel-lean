@@ -25,7 +25,7 @@ false generalisation it forbids. -/
 theorem indexPosition_row_needs_length (position length : Nat)
     (h : indexPosition position length = .row) : 1 < length := by
   unfold indexPosition at h
-  cases hp : position == 0 <;> simp only [hp, Bool.false_eq_true, if_true, if_false] at h
+  cases hp : position == 0 <;> simp only [hp, Bool.false_eq_true, ite_true, ite_false] at h
   · cases hl : position + 1 == length <;> simp only [hl] at h
     · exact absurd h (by simp)
     · have hp' : position ≠ 0 := by simpa using hp

@@ -441,7 +441,7 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
         | none => false) = true at admitted
       generalize resolved : model.checkedEnumerationOperand? operand = checked at admitted
       cases checked with
-      | none => simp [resolved] at admitted
+      | none => simp at admitted
       | some checked =>
           exact checkedEnumerationOperand_admitsField model operand checked resolved
   | textFields op left right =>

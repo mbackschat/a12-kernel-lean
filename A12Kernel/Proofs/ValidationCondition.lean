@@ -180,7 +180,7 @@ theorem validationConditionLeaf_flat_evalAddressed_resolved
       .ok (condition.evalSelected { context.scalar.fields with
         read := fun field => (cells.find? (·.1 == field)).map (·.2) |>.getD (context.scalar.fields.read field) }
         context.directRelevant) := by
-  simp only [ValidationConditionLeaf.evalAddressed, addressed, Bool.not_true, ↓reduceIte, resolved]
+  simp only [ValidationConditionLeaf.evalAddressed, addressed, Bool.not_true, resolved]
   rfl
 
 /-- The mixed tree's reference traversal preserves every reference in an embedded flat condition. -/
@@ -231,7 +231,7 @@ theorem validationCondition_numeric_evalSelected_of_relevant
     (ValidationCondition.numeric (model := model) comparison).evalSelected
         context isRelevant =
       comparison.evalSelectedWithGroups context := by
-  simp [ValidationCondition.numeric, ValidationCondition.evalSelected, ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
+  simp [ValidationCondition.numeric, ValidationCondition.evalSelected, ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult,
     Except.mapError, Except.toOption,
     ValidationConditionLeaf.evalSelected, relevant]
 
@@ -246,7 +246,7 @@ theorem validationCondition_groupPresence_evalSelected
     (ValidationCondition.groupPresence (model := model)
         operator reference).evalSelected
         context isRelevant = operator.eval state := by
-  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
+  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult,
     Except.mapError, Except.toOption,
     ValidationConditionLeaf.evalSelected, resolved]
 
@@ -261,7 +261,7 @@ theorem validationCondition_groupPresence_missing_isUnknown
     (ValidationCondition.groupPresence (model := model)
         operator reference).evalSelected
         context isRelevant = .unknown := by
-  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
+  simp [ValidationCondition.groupPresence, ValidationCondition.evalSelected, ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult,
     Except.mapError, Except.toOption,
     ValidationConditionLeaf.evalSelected, missing]
 
@@ -382,11 +382,11 @@ theorem validationCondition_repeatablePresence_evalAddressed
   cases h : context.readCell context.outer declaration.id with
   | ok cell => simp [ValidationCondition.repeatableFieldPresence, ValidationCondition.evalAddressed,
       ValidationCondition.evalWithTemporalResult, ValidationConditionLeaf.evalAddressed,
-      h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
+      h, Except.mapError, bind, Except.bind, pure, Except.pure]
   | error error =>
       cases error <;> simp [ValidationCondition.repeatableFieldPresence, ValidationCondition.evalAddressed,
         ValidationCondition.evalWithTemporalResult, ValidationCondition.addressedValueFailure?,
-        ValidationConditionLeaf.evalAddressed, h, Except.mapError, Except.map, bind, Except.bind, pure, Except.pure]
+        ValidationConditionLeaf.evalAddressed, h, Except.mapError, bind, Except.bind]
       all_goals
         rename_i cause
         cases cause <;> rfl
@@ -506,7 +506,7 @@ theorem validationCondition_iterationLegality_singleton_unguarded
     condition.iterationLegality = .ok (.invalid level) := by
   rw [ValidationCondition.iterationLegality, scope]
   simp only [bind, Except.bind, pure, Except.pure, List.filter_cons, judged, Bool.not_false,
-    ite_true, List.filter_nil]
+    List.filter_nil]
   change Except.ok
     (match condition.iterationGuardStatusAt level with
     | .guarded => ValidationCondition.IterationLegality.legal
@@ -528,7 +528,7 @@ theorem validationCondition_iterationLegality_singleton_guarded
     condition.iterationLegality = .ok .legal := by
   rw [ValidationCondition.iterationLegality, scope]
   simp only [bind, Except.bind, pure, Except.pure, List.filter_cons, judged, Bool.not_false,
-    ite_true, List.filter_nil]
+    List.filter_nil]
   change Except.ok
     (match condition.iterationGuardStatusAt level with
     | .guarded => ValidationCondition.IterationLegality.legal

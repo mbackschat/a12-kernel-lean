@@ -96,7 +96,7 @@ private theorem temporalOperand_resolve_agreesOn
       have readEq := agreement field.id (by
         simpa [FlatTemporalOperand.fields, FlatTemporalOperand.fieldValues, FlatField.id] using relevant)
       simp_all [FlatTemporalOperand.resolve,
-        FlatContext.resolveTemporalComparisonOperand, FlatContext.resolveTemporalFieldBy]
+        FlatContext.resolveTemporalFieldBy]
   | literalValue instant components => rfl
   | timeValue value => rfl
   | localDateTimeValue profile label => rfl

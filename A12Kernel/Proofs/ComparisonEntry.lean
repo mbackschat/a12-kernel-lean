@@ -42,7 +42,7 @@ theorem comparisonEntry_pattern_iff (left right : ComparisonEntryOperand) :
   cases left with
   | field k =>
       simp only [checkComparisonEntry, comparisonConstantPairAllowed,
-        ComparisonEntryOperand.constantForm, Bool.not_true, Bool.false_eq_true, if_false]
+        ComparisonEntryOperand.constantForm, Bool.not_true, Bool.false_eq_true, ite_false]
       by_cases hk : k = .string
       · subst hk
         by_cases hr : right.kind = .string <;> simp [hr]

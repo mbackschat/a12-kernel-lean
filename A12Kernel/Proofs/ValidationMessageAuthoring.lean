@@ -130,8 +130,8 @@ theorem checkMessageGroup_absolute_admitted
       unfold checkMessageGroup resolveMessageGroup at admitted
       by_cases hRoot : (model.hasGroupPath [root] || model.declaresEmptyGroup [root]) = true
       · by_cases hDeclared : model.declaresEntityPath (root :: rest) = true
-        · simp only [hRoot, hDeclared, Bool.not_true, Bool.false_eq_true, if_false,
-            if_true, admitMessageGroup] at admitted
+        · simp only [hRoot, hDeclared, Bool.not_true, Bool.false_eq_true, ite_false,
+            ite_true, admitMessageGroup] at admitted
           by_cases hValid : GroupPath.isValid (root :: rest) = true
           · by_cases hAvailable : messageGroupAvailable model condition (root :: rest) = true
             · exact ⟨hAvailable, hRoot⟩
@@ -168,7 +168,7 @@ theorem checkMessageGroup_ruleGroup_resolvesToRuleGroup
     (belowRoot : ¬ condition.rowGroup.length ≤ 1) :
     (checkMessageGroup (ValidationMessageCondition.flat condition) parameter .ruleGroup).map
         (fun access => access.group) = .ok condition.rowGroup := by
-  simp only [checkMessageGroup, ValidationMessageCondition.rowGroup, resolveMessageGroup, belowRoot, if_false,
+  simp only [checkMessageGroup, ValidationMessageCondition.rowGroup, resolveMessageGroup, belowRoot, ite_false,
     admitMessageGroup, valid, messageGroupAvailable, groupPath_isPrefixOf_self, Bool.true_or,
     dite_true]
   rfl
@@ -182,7 +182,7 @@ theorem checkMessageGroup_ruleGroup_refusedAtRootLocus
     (atRoot : condition.rowGroup.length ≤ 1) :
     checkMessageGroup condition parameter .ruleGroup =
       .error (.ruleGroupImmediatelyBelowRoot parameter) := by
-  simp only [checkMessageGroup, resolveMessageGroup, atRoot, if_true]
+  simp only [checkMessageGroup, resolveMessageGroup, atRoot, ite_true]
 
 theorem checkMessageGroup_rootGroup_resolvesToChainRoot
     {model : FlatModel} {condition : CheckedFlatCondition model}
@@ -192,7 +192,7 @@ theorem checkMessageGroup_rootGroup_resolvesToChainRoot
         (fun access => access.group) = .ok (condition.rowGroup.take 1) := by
   simp only [checkMessageGroup, ValidationMessageCondition.rowGroup, resolveMessageGroup,
     ValidationMessageCondition.parallelIteration, hashParameterRefusal, Bool.not_true,
-    Bool.false_eq_true, if_false, admitMessageGroup, groupPath_isValid_take_one valid,
+    Bool.false_eq_true, ite_false, admitMessageGroup, groupPath_isValid_take_one valid,
     messageGroupAvailable, groupPath_take_isPrefixOf, Bool.true_or, dite_true]
   rfl
 
