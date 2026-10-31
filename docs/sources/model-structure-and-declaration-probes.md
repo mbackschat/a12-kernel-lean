@@ -569,7 +569,7 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `measured-runtime`: With four `Rows` against a capacity of three and every `Fix/FKey` at `X`, `RW1` fires at the first three rows only; the fourth draws its structural findings and no rule message.
 - `lean`: the rule-check registry agrees on all five static rows, Lean's filter walk placing a fixed group's key at its group's position on the read's path, and the replay matches all 268 instances of the runtime request.
 - `limit`: a fixed-group index only; the root index, other filter carriers and a comparison body whose payload name resolves are not separated.
-- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/key-over-root-fixed-index-filter-message-overcap-2026-10-31/).
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/key-over-root-fixed-index-filter-message-overcap-2026-10-31/). At retention each artifact went through a JSON round trip that blanked every `message` value to `""`, the model's own text included; after JSON normalization nothing else differs from the producer's output.
 
 <a id="src-below-key-payload-references"></a>
 #### String, token and first-filled comparisons over a read below the key reference the error field, the selected bin's index and the payload, as the Number form does, measured locally 2026-10-31
@@ -577,4 +577,4 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `producer`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`, measurement checkout and primary checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1` built and runtime; both strategies agree on every row. `rule check` and `model check` over `BK4_DM`, the [below-key selection](#src-below-key-selection) model with a String `Tag` and an Enumeration `Kind` beside `Qty`, and one `:adapter:kernelProbe` run observing `validateFull` over the checkpoint's six documents and `bk-payload`.
 - `measured`: Declared in `Depot/Bins/Slots` on `Note`, `[Tag For "b"] == "s"`, `[Kind For "b"] == "p"` and `FirstFilledValue(Tag For "b", Tag) == "s"` fire on the equal slot only. Each references `Note`, `Depot/Bins[2]/BinCode` and the selected payload, and the first-filled form also the unkeyed `Tag`. The single-operand `FirstFilledValue(Tag For "b")` draws `MVK_PARAMSIZE_INVALIDN`.
 - `lean`: the replay matches all 182 instances.
-- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/below-key-string-token-first-filled-references-2026-10-31/).
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/below-key-string-token-first-filled-references-2026-10-31/). At retention each artifact went through a JSON round trip that blanked every `message` value to `""`, the model's own text included; after JSON normalization nothing else differs from the producer's output.

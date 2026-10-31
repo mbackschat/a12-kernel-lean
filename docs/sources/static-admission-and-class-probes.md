@@ -644,4 +644,4 @@ Static admission, operand kind gates, and diagnostic-class probes. Evaluation an
 - `declaration`: the field schema, the predefined-type registry of `dmtool manifest` and the model JSON offer one declaration, `CustomFieldType` with a type name and optional lengths, and no base-kind key, so no predefined type of another kind is declarable on this route.
 - `measured`: `[P] + "x" == "ax"` and `[P] + [S] == "ab"` are admitted, and `[P] + [N] > 0` draws `MVK_NO_STRING_OR_NUMBER_FOR_ADD`. `Out = [P] + "x"` computes `ax` for `P` at `a`.
 - `lean`: the replay host registers no custom field type, so the runtime request stays unprepared.
-- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/plus-over-predefined-type-field-2026-10-31/).
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/plus-over-predefined-type-field-2026-10-31/). At retention each artifact went through a JSON round trip that blanked every `message` value to `""`, the model's own text included; after JSON normalization nothing else differs from the producer's output.
