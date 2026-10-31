@@ -280,25 +280,28 @@ def captures : List (String × String × String) := [
   ("captures/value-list-base-type-cross-pairs/observations-basetype.json", "captures/pattern-comparison-left-kind-gate/Probe4_DM.json", "captures/value-list-base-type-cross-pairs/ops-basetype.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
-def deferred : List (String × String) := [
-  ("comparison-entry-gates/observations.json#groupregex", "host pattern compiler, SG7"),
-  ("comparison-entry-gates/observations2.json#violatedcontrol", "host pattern compiler, SG7"),
-  ("parser-static-legality-sweep/ops2-obs.json#Q07", "host pattern compiler, SG7"),
-  ("comparison-entry-gates/observations.json#regex", "host pattern compiler, SG7"),
-  ("field-value-read-remaining-sites/observations-grid.json#p5", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs.json#pm-ctl", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs.json#pm-ctlrel", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs.json#pm-unique", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs.json#pv-ctl", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus-abs", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs-review.json#pv-unique", "host pattern compiler, SG7"),
-  ("pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus", "host pattern compiler, SG7")]
+def deferred : List (String × String) :=
+  (["comparison-entry-gates/observations.json#groupregex",
+    "comparison-entry-gates/observations2.json#violatedcontrol",
+    "parser-static-legality-sweep/ops2-obs.json#Q07",
+    "comparison-entry-gates/observations.json#regex",
+    "field-value-read-remaining-sites/observations-grid.json#p5",
+    "pattern-and-key-resolver-classes/obs.json#pm-ctl",
+    "pattern-and-key-resolver-classes/obs.json#pm-ctlrel",
+    "pattern-and-key-resolver-classes/obs.json#pm-unique",
+    "pattern-and-key-resolver-classes/obs.json#pv-ctl",
+    "pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus",
+    "pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus-abs",
+    "pattern-and-key-resolver-classes/obs-review.json#pv-unique",
+    "pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus"].map (·, "host pattern compiler, SG7"))
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with
   | .ok json => pure json
   | .error message => throw (IO.userError s!"{path}: {message}")
+
+/-- A JSON object's string member, `none` when it is absent or not a string. -/
+private def stringAt? (json : Json) (key : String) : Option String := (json.getObjValAs? String key).toOption
 
 /-- The values of `flag`, written either as a separate argument or joined by `=`; the instrument
 reads both forms. -/
@@ -314,18 +317,22 @@ private def argsOf (args : List String) (flag : String) : List String :=
 
 private def segments (path : String) : List String := (path.splitOn "/").filter (· != "")
 
-/-- A rule at `group` reporting on the entity at absolute `field`, whose group defaults to the entity's
-own group, addressed relative to it. -/
-private def ruleAt (field : List String) (group? : Option String) (errorCode condition : String) : DmRule :=
+/-- The declaring group, defaulting to the entity's own group, and the entity at absolute `field`
+addressed relative to it. -/
+private def placement (field : List String) (group? : Option String) : List String × String :=
   let group := match group? with
     | some path => segments path
     | none => field.dropLast
-  -- The path climbs from the rule to the deepest group the declaring group shares with the field, then
-  -- descends, so a field below the declaring group keeps its intermediate groups.
+  -- The path climbs from the declaration to the deepest group the declaring group shares with the
+  -- field, then descends, so a field below the declaring group keeps its intermediate groups.
   let shared := ((group.zip field.dropLast).takeWhile fun (a, b) => a == b).length
   let ups := group.length - shared + 1
-  { group, name := "Probe", severity := "ERROR", errorCode, condition
-    errorEntityRelPath := String.intercalate "/" (List.replicate ups ".." ++ field.drop shared) }
+  (group, String.intercalate "/" (List.replicate ups ".." ++ field.drop shared))
+
+/-- A rule reporting on the entity at absolute `field`, placed as `placement` places it. -/
+private def ruleAt (field : List String) (group? : Option String) (errorCode condition : String) : DmRule :=
+  let (group, errorEntityRelPath) := placement field group?
+  { group, name := "Probe", severity := "ERROR", errorCode, condition, errorEntityRelPath }
 
 /-- The rule a `rule check` request authors. -/
 private def requestedRule (args : List String) : DmRule :=
@@ -334,63 +341,63 @@ private def requestedRule (args : List String) : DmRule :=
 
 /-- The rule a `rule add --dry-run` spec authors; its `field` may name a group. -/
 private def specRule (spec : Json) : DmRule :=
-  ruleAt (segments ((spec.getObjValAs? String "field").toOption.getD "")) (spec.getObjValAs? String "group").toOption
-    ((spec.getObjValAs? String "code").toOption.getD "") ((spec.getObjValAs? String "condition").toOption.getD "")
+  ruleAt (segments ((stringAt? spec "field").getD "")) (stringAt? spec "group")
+    ((stringAt? spec "code").getD "") ((stringAt? spec "condition").getD "")
 
 /-- A written message locale keyed as the declared locales are; the corpus writes only spellings inside
 the represented profile. -/
 private def writtenLocale (spelling : String) : String := (localeKey spelling).toOption.getD spelling
 
-/-- The written texts, and for each declared locale the request leaves out the instrument's own
-parameter-free placeholder, which it supplies rather than leave the locale without a text. -/
+/-- The written texts, and for each declared locale they leave out the instrument's own parameter-free
+placeholder, which it supplies rather than leave the locale without a text. -/
+private def withPlaceholders (locales : List String) (written : List (String × String)) :
+    List (String × String) :=
+  (locales.filter (fun locale => !written.any (·.1 == locale))).map (·, "placeholder") ++ written
+
+/-- A `rule check` request's written texts, with the instrument's placeholder for each omitted locale. -/
 private def messageEntries (locales : List String) (args : List String) : List (String × String) :=
   let written := (argsOf args "--message").map fun entry => match entry.splitOn "=" with
     | locale :: text => (writtenLocale locale, String.intercalate "=" text)
     | [] => ("", "")
-  (locales.filter (fun locale => !written.any (·.1 == locale))).map (·, "placeholder") ++ written
+  withPlaceholders locales written
 
 /-- What this project reports for one admitted declaration: its classes in report order and the
 number of refusals that carry no class. -/
 private def reported (model : FlatModel) (profile : ValidationMessageKeywordProfile)
     (condition : ValidationMessageCondition model) (locales : List String)
     (entries : List (String × String)) : List String × Nat :=
-  let refusals := fun text => validationMessageTemplateRefusals model profile condition text
+  -- Each judged text is checked once; its refusals feed both the classes and the unclassed count.
+  let judged := errorTextClasses locales entries fun text =>
+    [(validationMessageTemplateRefusals model profile condition text, text)]
   let verdicts : DeclarationVerdicts := {
     presence := messagePresence locales entries
-    errorText := errorTextClasses locales entries fun text =>
-      (refusals text).filterMap (·.namedRuleDiagnostic?) }
+    errorText := judged.flatMap fun (refusals, _) => refusals.filterMap (·.namedRuleDiagnostic?) }
   -- The repertoire finding is codeless and stands beside the parameter refusals.
-  let unclassed := (errorTextClasses locales entries fun text =>
-      [(refusals text).countP (·.namedRuleDiagnostic?.isNone) +
-        (firstUnsupportedMessageTemplateCharacter? text).toList.length]).sum
+  let unclassed := (judged.map fun (refusals, text) =>
+      refusals.countP (·.namedRuleDiagnostic?.isNone) +
+        (firstUnsupportedMessageTemplateCharacter? text).toList.length).sum
   (verdicts.report.map (·.kernelCode), unclassed)
 
 /-- The computation a `computation add` spec authors, placed in its `group` or else its computed
 field's group, the target addressed from the computation element one level below that group. -/
 private def requestedComputation (spec : Json) : DmComputation :=
-  let field := segments ((spec.getObjValAs? String "computedField").toOption.getD "")
-  let group := match (spec.getObjValAs? String "group").toOption with
-    | some path => segments path
-    | none => field.dropLast
-  -- The path climbs and descends as `requestedRule`'s does, so a target below the declaring group
-  -- keeps its intermediate groups.
-  let shared := ((group.zip field.dropLast).takeWhile fun (a, b) => a == b).length
-  let ups := group.length - shared + 1
+  let field := segments ((stringAt? spec "computedField").getD "")
+  let (group, targetRelPath) := placement field (stringAt? spec "group")
   let alternatives := ((spec.getObjValAs? (Array Json) "alternatives").toOption.getD #[]).toList.map
     fun alternative => {
-      precondition := (alternative.getObjValAs? String "precondition").toOption
-      operation := (alternative.getObjValAs? String "operation").toOption.getD ""
-      toleranceRangeOp := (alternative.getObjValAs? String "toleranceRangeOp").toOption }
+      precondition := stringAt? alternative "precondition"
+      operation := (stringAt? alternative "operation").getD ""
+      toleranceRangeOp := (stringAt? alternative "toleranceRangeOp") }
   { group, name := "Probe", alternatives
     errorCodesToSuppress := ((spec.getObjValAs? (Array String) "errorCodesToSuppress").toOption.getD #[]).toList
-    targetRelPath := String.intercalate "/" (List.replicate ups ".." ++ field.drop shared)
-    commonPrecondition := (spec.getObjValAs? String "commonPrecondition").toOption }
+    targetRelPath
+    commonPrecondition := (stringAt? spec "commonPrecondition") }
 
 /-- A computation spec's written texts, with the instrument's placeholder for each omitted locale. -/
 private def specEntries (locales : List String) (spec : Json) : List (String × String) :=
   let written := ((spec.getObjValAs? (Array Json) "messages").toOption.getD #[]).toList.map fun entry =>
-    (writtenLocale ((entry.getObjValAs? String "locale").toOption.getD ""), (entry.getObjValAs? String "text").toOption.getD "")
-  (locales.filter (fun locale => !written.any (·.1 == locale))).map (·, "placeholder") ++ written
+    (writtenLocale ((stringAt? entry "locale").getD ""), (stringAt? entry "text").getD "")
+  withPlaceholders locales written
 
 /-- How one refusal meets the Kernel's verdict and codes, `none` when they agree. -/
 private def refusedAgainst (refusal : Refusal) (valid : Bool) (kernel : List String) : Option String :=
@@ -403,10 +410,19 @@ private def refusedAgainst (refusal : Refusal) (valid : Bool) (kernel : List Str
         else some s!"class {code} against {kernel}"
     | none => if named.isEmpty then none else some s!"unclassed {refusal.construct} ({refusal.detail}) against {kernel}"
 
+/-- A retained dry-run or `apply` row normalized to the self-contained shape. -/
+private def retainedRow (id row : Json) : Json :=
+  Json.mkObj [("id", id), ("valid", row.getObjValD "admitted"), ("codes", row.getObjValD "codes")]
+
 inductive Outcome where
   | skipped
   | agrees
   | diverges (detail : String)
+
+/-- A comparison's divergence detail as its outcome, agreeing when there is none. -/
+private def Outcome.ofDetail? : Option String → Outcome
+  | some detail => .diverges detail
+  | none => .agrees
 
 /-- The Kernel's codes on one row, without the instrument's own `RK_` refusals. -/
 private def kernelCodes (observation : Json) : List String :=
@@ -448,15 +464,13 @@ private def compare (dm : DmModel) (locales : List String) (rule : DmRule)
         let (codes, unclassed) := match checked with
           | .ordinary checked => reported dm.flat profile (.rule checked) locales entries
           | .parallel checked => reported dm.flat profile (.parallel checked rule.group) locales entries
-        let internal := (kernel.filter (· == "MVK_INTERNAL_ERROR")).length
+        let internal := kernel.count "MVK_INTERNAL_ERROR"
         let named := kernel.filter (· != "MVK_INTERNAL_ERROR")
         let sorted := fun (list : List String) => list.mergeSort (· ≤ ·)
         if sorted codes != sorted named || unclassed < internal then some s!"{codes} against {kernel}"
         else if valid != (codes.isEmpty && unclassed == 0) then some s!"verdict {valid}, classes {codes}"
         else none
-  match outcome with
-  | some detail => .diverges detail
-  | none => .agrees
+  .ofDetail? outcome
 
 /-- Compare one `computation add` row: the computation's own admission first, then the rule it
 generates, whose message is the computation's. -/
@@ -468,9 +482,7 @@ private def compareComputation (dm : DmModel) (locales : List String) (computati
   let kernel := kernelCodes observation
   withLanguage dm fun language =>
   match checkComputation dm language computation with
-  | .error refusal => match refusedAgainst refusal valid kernel with
-    | some detail => .diverges detail
-    | none => .agrees
+  | .error refusal => .ofDetail? (refusedAgainst refusal valid kernel)
   | .ok _ => match computation.generatedRule? language with
     | some rule => compare dm locales rule entries observation true
     | none => .diverges "admitted computation without a generated rule"
@@ -478,24 +490,24 @@ private def compareComputation (dm : DmModel) (locales : List String) (computati
 /-- A self-contained row is its own `rule check`, its one message in the model's first locale. -/
 private def selfContained (locales : List String) (request : Json) :
     Option (Sum DmRule DmComputation × List (String × String)) := do
-  let condition ← (request.getObjValAs? String "condition").toOption
-  let field := (request.getObjValAs? String "field").toOption.getD ""
-  let id := (request.getObjValAs? String "id").toOption.getD ""
-  let text := (request.getObjValAs? String "message").toOption.getD ""
-  let rule := ruleAt (segments field) (request.getObjValAs? String "group").toOption id condition
+  let condition ← stringAt? request "condition"
+  let field := (stringAt? request "field").getD ""
+  let id := (stringAt? request "id").getD ""
+  let text := (stringAt? request "message").getD ""
+  let rule := ruleAt (segments field) (stringAt? request "group") id condition
   pure (Sum.inl rule, messageEntries locales [s!"--message={locales.headD ""}={text}"])
 
 /-- The root-group element a structured `apply` operation adds, `none` for any other operation. Only
 a DateRange field is built: its operation writes its whole type, while a field of another kind takes
 instrument defaults the captures do not retain. -/
 private def addedElement? (op : Json) : Option (String × Json) := do
-  guard ((op.getObjValAs? String "target").toOption == some "field")
-  guard ((op.getObjValAs? String "kind").toOption == some "DATERANGE")
-  let group ← (op.getObjValAs? String "group").toOption
-  let name ← (op.getObjValAs? String "name").toOption
+  guard (stringAt? op "target" == some "field")
+  guard (stringAt? op "kind" == some "DATERANGE")
+  let group ← stringAt? op "group"
+  let name ← stringAt? op "name"
   let range := op.getObjValD "dateRange"
-  let format ← (range.getObjValAs? String "format").toOption
-  let separator ← (range.getObjValAs? String "separator").toOption
+  let format ← stringAt? range "format"
+  let separator ← stringAt? range "separator"
   pure (group, Json.mkObj [("type", "Field"), ("id", Json.str s!"{group}/{name}"), ("name", Json.str name),
     ("Field", Json.mkObj [("fieldType", Json.mkObj [("type", "DateRangeType"),
       ("DateRangeType", Json.mkObj [("format", Json.str format), ("rangeSeparator", Json.str separator)])])])])
@@ -504,7 +516,7 @@ private def addedElement? (op : Json) : Option (String × Json) := do
 private def appendToRootGroup (model : Json) (group : String) (element : Json) : Json :=
   let roots := ((model.getObjValD "content").getObjValD "modelRoot").getObjValD "rootGroups"
   let roots := (roots.getArr?.toOption.getD #[]).map fun root =>
-    if (root.getObjValAs? String "id").toOption != some group then root else
+    if (stringAt? root "id") != some group then root else
     let body := root.getObjValD "Group"
     root.setObjVal! "Group" (body.setObjVal! "elements"
       (Json.arr (((body.getObjValAs? (Array Json) "elements").toOption.getD #[]).push element)))
@@ -531,60 +543,64 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
   let mut deferredSeen : Array String := #[]
   for (observations, modelPath, requests) in captures do
     let (batchModel, batchLocales) ← loadModel (root / modelPath)
+    let requestDir := (root / requests).parent.getD root
     -- A dry-run batch retains only each row's verdict and Kernel codes, keyed by row id, since the
     -- instrument's envelope renders the Kernel's messages.
     let retained ← readJson (root / observations)
     let batch := match retained.getObjValAs? (Array Json) "observations", retained.getObjVal? "rows" with
       | .ok rows, _ => rows
-      | .error _, .ok (.obj rows) => rows.foldl (init := #[]) fun batch (id : String) (row : Json) => batch.push (Json.mkObj
-          [("id", Json.str id), ("valid", row.getObjValD "admitted"), ("codes", row.getObjValD "codes")])
+      | .error _, .ok (.obj rows) =>
+          rows.foldl (init := #[]) fun batch (id : String) (row : Json) => batch.push (retainedRow (Json.str id) row)
       -- A self-contained list keeps each row's own `id` and `valid`; a structured `apply` packet
       -- retains one row per case.
       | .error _, _ => (retained.getArr?.toOption.getD #[]).map fun (row : Json) =>
-          if (row.getObjVal? "id").isOk then row else Json.mkObj
-            [("id", row.getObjValD "case"), ("valid", row.getObjValD "admitted"), ("codes", row.getObjValD "codes")]
+          if (row.getObjVal? "id").isOk then row else retainedRow (row.getObjValD "case") row
     let requestRows := match (← readJson (root / requests)) with
       | .arr rows => rows
       | json => (json.getObjValAs? (Array Json) "observations").toOption.getD #[]
     for request in requestRows do
       let args := ((request.getObjValAs? (Array String) "args").toOption.getD #[]).toList
       -- A structured `apply` case is its `<case>-spec.json`: field additions, then the computation.
-      let applyOps ← match (request.getObjValAs? String "case").toOption with
+      let applyOps ← match (stringAt? request "case") with
         | some case => do
-            let spec ← readJson ((root / requests).parent.getD root / s!"{case}-spec.json")
+            let spec ← readJson (requestDir / s!"{case}-spec.json")
             pure (some (spec.getArr?.toOption.getD #[]).toList)
         | none => pure none
-      let fieldAdds := (applyOps.getD []).filter fun op => (op.getObjValAs? String "target").toOption == some "field"
+      let fieldAdds := (applyOps.getD []).filter fun op => stringAt? op "target" == some "field"
       let added := fieldAdds.filterMap addedElement?
-      if added.length != fieldAdds.length then continue
+      -- A case whose added field this projection cannot build is unreplayable, never a silent pass.
+      if added.length != fieldAdds.length then
+        failures := failures.push
+          s!"{(observations.drop "captures/".length)}#{(stringAt? request "case").getD ""}: adds a field kind addedElement? does not build"
+        continue
       -- A row may name its own model, with the instrument's `-m` or a self-contained row's `model`:
       -- a file beside the request file, or else beside the batch's model.
-      let (dm, locales) ← match argsOf args "-m" ++ (request.getObjValAs? String "model").toOption.toList with
+      let (dm, locales) ← match argsOf args "-m" ++ (stringAt? request "model").toList with
         | file :: _ =>
-            let beside := (root / requests).parent.getD root / file
+            let beside := requestDir / file
             loadModel (if ← beside.pathExists then beside else (root / modelPath).parent.getD root / file)
         | [] => if added.isEmpty then pure (batchModel, batchLocales) else loadModel (root / modelPath) added
       -- A batch may interleave other verbs. A rule check is its rule's static verdict, a computation
       -- preview its computation's.
-      let declaration ← match (request.getObjValAs? String "verb").toOption, args with
+      let declaration ← match (stringAt? request "verb"), args with
         | some "rule", "check" :: _ => pure (some (Sum.inl (requestedRule args), messageEntries locales args))
         | some "rule", "add" :: "--dry-run" :: file :: _ => do
-            let spec ← readJson ((root / requests).parent.getD root / file)
+            let spec ← readJson (requestDir / file)
             pure (some (Sum.inl (specRule spec), specEntries locales spec))
         | some "computation", "add" :: "--dry-run" :: file :: _ | some "computation", "add" :: file :: _ => do
-            let spec ← readJson ((root / requests).parent.getD root / file)
+            let spec ← readJson (requestDir / file)
             pure (some (Sum.inr (requestedComputation spec), specEntries locales spec))
         | none, [] =>
           if let some ops := applyOps then
-            pure ((ops.find? fun op => (op.getObjValAs? String "target").toOption == some "computation").map
+            pure ((ops.find? fun op => stringAt? op "target" == some "computation").map
               fun op => (Sum.inr (requestedComputation op), specEntries locales op))
           else pure (selfContained locales request)
         | _, _ => pure none
       let some (declaration, entries) := declaration | continue
-      let id := ((request.getObjValAs? String "id").toOption <|> (request.getObjValAs? String "case").toOption).getD ""
+      let id := (stringAt? request "id" <|> stringAt? request "case").getD ""
       let key := s!"{(observations.drop "captures/".length)}#{id}"
       -- A declared row without its observation is a pairing defect, never a silent pass.
-      let some observation := batch.find? (fun row => (row.getObjValAs? String "id").toOption == some id)
+      let some observation := batch.find? (fun row => stringAt? row "id" == some id)
         | failures := failures.push s!"{key}: no retained observation"
       let outcome := match declaration with
         | .inl rule => compare dm locales rule entries observation false
