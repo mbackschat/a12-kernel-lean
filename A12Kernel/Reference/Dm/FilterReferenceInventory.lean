@@ -20,11 +20,11 @@ private def referenceLevels (model : FlatModel) (declaringGroup : GroupPath)
     | .error error => match model.groupNamedBy? declaringGroup field with
         | some group => pure group
         | none => elaborated "HavingWalk" (.error error : Except ResolveError GroupPath)
-  let indexedLevel ← if reference.index.isSome then do
+  let indexed ← if reference.index.isSome then do
       let some group := model.semanticIndexGroupForPath? path | refuse "HavingWalk" "unresolved index group"
-      let some level := group.level? | refuse "HavingWalk" "key over a root or fixed-group index"
-      pure (some level)
+      pure (some group)
     else pure none
+  let indexedLevel := indexed.bind (·.level?)
   -- Lexical resolution may supply an implicit prefix; authored stars still belong to their
   -- original named suffix. Index metadata remains separate throughout this phase (spec/07 §3).
   let offset := path.length - reference.path.segments.length
@@ -35,10 +35,18 @@ private def referenceLevels (model : FlatModel) (declaringGroup : GroupPath)
       (reference.path.segments[position - offset]?).any (·.star)
     let marker := if indexedLevel == some level then IndexMarker.semanticIndex
       else if starred then .wildcard else .iteration
-    pure ({
+    pure (group.path.length, ({
       marker
       onFilteredPath := candidate.contains level
-      reopensFilteredLevel := reopened.contains level } : FilterIndexLevel)
+      reopensFilteredLevel := reopened.contains level } : FilterIndexLevel))
+  -- A root or fixed group's key selects no repetition level, so it takes its group's position among
+  -- the levels: the Kernel refuses it in a filter body as a repeatable group's key
+  -- (docs/sources/model-structure-and-declaration-probes.md#src-single-instance-key-filter-message-overcap).
+  let levels := match indexed with
+    | some (.single groupPath _) =>
+        let (outer, inner) := levels.span (·.1 < groupPath.length)
+        outer.map (·.2) ++ [{ marker := .semanticIndex }] ++ inner.map (·.2)
+    | _ => levels.map (·.2)
   pure { levels, marked := reference.path.correlated }
 
 mutual

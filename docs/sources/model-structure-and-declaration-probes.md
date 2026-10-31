@@ -567,7 +567,7 @@ Source checkpoints for how a **model** and a **rule's own declarations** are sha
 - `producer`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`, measurement checkout and primary checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1` built and runtime; both strategies agree on every row. `rule check` over `A30d_DM`, the [single-instance key](#src-single-instance-key) model with an Enumeration `Cover/CKind` carrying a category `Grade`, and one `:adapter:kernelProbe` run observing `validateFull`.
 - `measured-static`: In `/IxFix`, `Sum(Cover/Reps*/RAmt Having [Cover/CAmt For "X"] > 0) > 0` draws `MVK_SEMANTIC_INDEX_NOT_ALLOWED`, and so does the comparison body `[Cover/Reps/RAmt] > [Cover/CAmt For "X"]`. The message parameters `$Cover/CAmt.value For "X"$` and `$Cover/CKind->Grade For "X"$` draw `MVK_INDEX_FOR_ERROR_TEXT_INVALID`, while the unkeyed `$Cover/CAmt.value$` is admitted.
 - `measured-runtime`: With four `Rows` against a capacity of three and every `Fix/FKey` at `X`, `RW1` fires at the first three rows only; the fourth draws its structural findings and no rule message.
-- `lean`: the replay matches all 268 instances of the runtime request.
+- `lean`: the rule-check registry agrees on all five static rows, the filter walk placing a fixed group's key at its group's position on the read's path, and the replay matches all 268 instances of the runtime request.
 - `limit`: a fixed-group index only; the root index, other filter carriers and the bare `[RAmt]` row, which drew `MVK_FIELDNAME_NOT_UNIQUE` for its name, are not separated.
 - `bytes`: [capture](../../evidence/kernel-30.8.1/captures/key-over-root-fixed-index-filter-message-overcap-2026-10-31/).
 

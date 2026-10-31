@@ -19,11 +19,11 @@ private def model : FlatModel := { HavingFixture.model with
     { level := 20, path := ["Form", "Rows", "Lines"], repeatability := some 2 },
     { level := 30, path := ["Form", "Parties"], repeatability := some 2 }] }
 
-private def walk (target body : String) : Option (Option KernelStaticDiagnostic) := do
+private def walk (target body : String) (fixture : FlatModel := model) : Option (Option KernelStaticDiagnostic) := do
   let source ← (← (parseModelPath .english target).toOption).toStarFieldPath?
-  let checked ← (elaborateStarFieldPath model ["Form"] source).toOption
+  let checked ← (elaborateStarFieldPath fixture ["Form"] source).toOption
   let expression := (← (parseText .english body).toOption).body
-  let (references, forbidden) ← (filterBodyInventory model ["Form"] checked expression).toOption
+  let (references, forbidden) ← (filterBodyInventory fixture ["Form"] checked expression).toOption
   pure (filterBodyRefusal references forbidden)
 
 example : model.validate.isOk = true ∧
@@ -50,6 +50,21 @@ example : walk "Rows*/N" "RepetitionNotUnique(Rows/N @From Parties)" =
       some (some .invalidIterationInFilterCondition) ∧
     walk "Rows*/N" "RepetitionNotUnique(Rows/N @From Rows)" =
       some (some .disallowedConstructInFilterCondition) := by native_decide
+
+/- A key over a fixed group's index has no repetition level, yet the walk refuses it as it refuses a
+repeatable group's key, where its group sits on the read's path
+([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-single-instance-key-filter-message-overcap),
+row `h1`). Its order against an outer level's own refusal is that position, unmeasured. -/
+private def coverModel : FlatModel := { model with
+  fields := model.fields ++ [
+    { id := 8, name := "Key", groupPath := ["Form", "Cover"], policy := { kind := .string } },
+    { id := 9, name := "Amt", groupPath := ["Form", "Cover"], policy := { kind := .number { scale := 0, signed := true } } }]
+  nonrepeatableIndexFields := [(["Form", "Cover"], 8)] }
+
+example : coverModel.validate.isOk = true ∧
+    walk "Rows*/N" "FieldFilled(Cover/Amt For \"X\") And FieldFilled(Rows/N)" coverModel =
+      some (some .semanticIndexNotAllowed) ∧
+    walk "Rows*/N" "FieldFilled(Cover/Amt) And FieldFilled(Rows/N)" coverModel = some none := by native_decide
 
 private def admission (body : String) (fixture : FlatModel := model) : Option String := do
   let source ← (elaborateStarFieldPath fixture ["Form"] {

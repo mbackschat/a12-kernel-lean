@@ -121,13 +121,18 @@ def admitsErrorOnLeft : ParallelOuterScopePlan → Bool → Bool
 
 end ParallelOuterScopePlan
 
-/-- Whether two index fields' kinds join: equal kinds, or two Numbers whatever their scales. The
-    Kernel admits a Number join across maximum scales (k22-static-classes-2026-10-24, `s5-j-n0n2`),
-    and its lookup re-normalizes a key under the destination declaration without rounding, so equal
-    numbers meet as equal kinds' do
-    ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-parallel-number-index-tokens)). -/
+/-- Whether two index fields' kinds join: equal kinds, two Numbers whatever their scales, or two
+    temporal kinds. The Kernel admits a Number join across maximum scales (k22-static-classes-2026-10-24,
+    `s5-j-n0n2`), and its lookup re-normalizes a key under the destination declaration without rounding,
+    so equal numbers meet as equal kinds' do
+    ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-parallel-number-index-tokens)).
+    A temporal pair joins on its keys' cache text, so a Date beside a DateTime, a Time or a date fragment
+    binds no partner row whose text differs, as the Kernel's rows do
+    ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-cross-kind-join-keys)); which
+    temporal pairs a rule may join is `FieldKind.indexTypeGate`'s question, asked before this one. -/
 def FieldKind.joinsAsIndex : FieldKind → FieldKind → Bool
   | .number _, .number _ => true
+  | .temporal _ _, .temporal _ _ => true
   | left, right => left == right
 
 /-- A model-certified pair of index groups with either one common outer repeatable scope or one non-indexed frame on exactly one side. -/

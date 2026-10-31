@@ -37,6 +37,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-10-31-01"></a>
+### SPEC-2026-10-31-01 — A String and a Custom join key of one text match, while no two temporal keys of different kinds match
+
+- `status`: pending
+- `canonical`: [spec/07 §2.2](../spec/07-repetition-and-iteration.md#22-static-gates), the paragraph after the index-kind table.
+- `delta`: Replaces "how two keys of different kinds match at runtime is unmeasured". A String key and a Custom key of one text match; a Date beside a DateTime at midnight, a Date beside a Time, a Date inside a `yyyy-MM` fragment's month and a DateTime beside its own clock time never match, so each such row's join finds no partner row.
+- `basis`: the [cross-kind join checkpoint](sources/key-join-and-parallel-probes.md#src-cross-kind-join-keys), `validateFull` on both strategies at a12-dmkits `08b0d6499`, Kernel 30.8.1, measured 2026-10-31.
+- `acceptance`: Reconcile a12-dmkits' account of joining keys of different kinds. Text equality and "never across kinds" coincide on every temporal row, since the admitted formats give different kinds different texts, so do not claim either as the temporal mechanism.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
 <a id="spec-2026-10-31-02"></a>
 ### SPEC-2026-10-31-02 — A predefined type is a Custom declaration, so `+`'s string-like operands are String and Custom
 
