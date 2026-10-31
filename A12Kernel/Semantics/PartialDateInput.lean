@@ -28,14 +28,17 @@ def classifyPartialDateStored (format : FullDateTargetFormat)
     match format.parseComponents? text with
     | none => .rejected .dateFormat
     | some parts =>
-        -- The gates run in the measured order, and the order is the whole content of this clause:
-        -- the *reality* of the present components is a calendar question decided first, its
-        -- *position in time* is decided next, and only then does the declaration's precision judge
-        -- the omission depth. Running the floor before reality would report an impossible month
-        -- beside an omitted day as an omission failure, which the kernel does not.
+        -- The gates run in the measured order (spec/05 §6.2): a zero pattern that is not a monotone
+        -- suffix is refused first, then the *reality* of the present components, then their
+        -- *position in time*, and only then the declaration's precision. Reality before the floor
+        -- keeps an impossible month beside a legally omitted day a format failure, and the pattern
+        -- before reality keeps one beside an omitted year a date failure (`d5-3`).
         if parts.day = 0 && parts.month = 0 && parts.year = 0 then
           -- Nothing is present, so there is no calendar and no position to judge.
           gateByPrecision .omittedYear
+        else if parts.year = 0 then
+          -- A present month or day beside an omitted year is no monotone suffix.
+          .rejected .dateInvalid
         else if parts.day = 0 && parts.month = 0 then
           guardCompletion { year := parts.year, month := 1, day := 1 }
             (OmittedMonthDate.ofYear? (parts.year : Int) |>.map .omittedMonth)
@@ -43,9 +46,9 @@ def classifyPartialDateStored (format : FullDateTargetFormat)
           guardCompletion { year := parts.year, month := parts.month, day := 1 }
             (OmittedDayDate.ofYearMonth? (parts.year : Int) parts.month
               |>.map .omittedDay)
-        else if parts.month = 0 || parts.year = 0 then
-          -- A present day beside an omitted month, or a present month or day beside an omitted year:
-          -- the zeros are not a monotone suffix, so this is an omission failure, not a spelling one.
+        else if parts.month = 0 then
+          -- A present day beside an omitted month: the zeros are not a monotone suffix, so this is
+          -- an omission failure, not a spelling one.
           .rejected .dateInvalid
         else
           guardCompletion parts

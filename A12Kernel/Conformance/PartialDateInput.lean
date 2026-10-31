@@ -85,6 +85,15 @@ example :
       classify? .dayOptional "2024-00-15" = some (.rejected .dateInvalid) := by
   native_decide
 
+/- The omission pattern precedes reality (spec/05 §6.2, step 3 of the cause order): a present month beside an omitted year
+and day is a non-suffix shape however unreal the month, so `0000-13-00` is the date cause, row `d5-3`
+of `evidence/kernel-30.8.1/captures/k22-message-keys-2026-10-24/`, while `2024-13-00`, a legal
+day-omitting suffix, stays the format cause below. -/
+example :
+    classify? .yearOptional "0000-13-00" = some (.rejected .dateInvalid) ∧
+      classify? .yearOptional "0000-06-00" = some (.rejected .dateInvalid) := by
+  native_decide
+
 /- **The two causes split on reality, not on legality.** An impossible calendar date is the *format*
 cause even though its spelling is well formed and its declaration could hold a value there — and so is
 an impossible month standing beside a legally omitted day, which is the sharpest cell of the whole
