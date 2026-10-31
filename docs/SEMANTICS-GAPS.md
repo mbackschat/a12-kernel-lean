@@ -4,7 +4,7 @@ This is the open-only inventory of residual obligations toward conformance with 
 
 ## Query contract
 
-[`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns implemented/proved/evidenced behavior, [`SOURCES.md`](SOURCES.md) owns provenance and [`PLAN.md`](PLAN.md) owns selection. This hub preserves stable links to the 24 family records in six shards. The shards retain only residual distinctions and links to their owners; completed milestones are removed.
+[`IMPLEMENTATION-MAP.md`](IMPLEMENTATION-MAP.md) owns implemented/proved/evidenced behavior, [`SOURCES.md`](SOURCES.md) owns provenance and [`PLAN.md`](PLAN.md) owns selection. This hub preserves stable links to the family records in six shards. The shards retain only residual distinctions and links to their owners; completed milestones are removed.
 
 - `remaining` and `diagnostics` identify residual behavior or exact output distinctions, bounded by the record's scope/exclusion links. Since the K19 disposition (2026-10-14), a `remaining` bullet is an evaluator omission its owning task in the [conformance checklist](PLAN.md#remaining-conformance-checklist) closes, and `diagnostics` and `evidence-needed` are correspondence work for K22.
 - `evidence-needed` means additional correspondence is missing; it does not by itself mean executable support is absent.
