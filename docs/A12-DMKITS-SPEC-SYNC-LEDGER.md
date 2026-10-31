@@ -40,7 +40,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-31-01"></a>
 ### SPEC-2026-10-31-01 — A String and a Custom join key of one text match, while two temporal keys of different kinds under the measured formats never matched
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/07 §2.2](../spec/07-repetition-and-iteration.md#22-static-gates), the paragraph after the index-kind table.
 - `delta`: Replaces "how two keys of different kinds match at runtime is unmeasured". A String key and a Custom key of one text match; under the measured formats a Date beside a DateTime at midnight, a Date beside a Time, a Date inside a `yyyy-MM` fragment's month and a DateTime beside its own clock time never matched, so each such row's join found no partner row. Two kinds declaring one format stay unmeasured, and whether an index field takes such a format is unmeasured too.
 - `basis`: the [cross-kind join checkpoint](sources/key-join-and-parallel-probes.md#src-cross-kind-join-keys), `validateFull` on both strategies at a12-dmkits `08b0d6499`, Kernel 30.8.1, measured 2026-10-31.
@@ -50,7 +50,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-10-31-02"></a>
 ### SPEC-2026-10-31-02 — A predefined type is a Custom declaration, so `+`'s string-like operands are String and Custom
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/04 §4.1](../spec/04-numbers-and-decimals.md#41-arithmetic-operand-kinds), the `+` paragraph.
 - `delta`: Removes the predefined type as a third string-like operand kind: the only predefined-type declaration is a Custom field type, and `+` over one is admitted and concatenates.
 - `basis`: the [predefined-type checkpoint](sources/static-admission-and-class-probes.md#src-plus-over-predefined-type), `rule check`, `model check` and `compute` at a12-dmkits `08b0d6499`, Kernel 30.8.1, measured 2026-10-31.

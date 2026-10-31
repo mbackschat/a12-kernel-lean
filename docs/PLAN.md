@@ -207,7 +207,7 @@ The request adopts this sequencing and the two consumer objectives. It does not 
 ### Measured-divergence milestone — owner direction 2026-10-31
 
 - `state`: closed on 2026-10-31 after its cold review was disposed. Every scoped item landed red first against its retained row, the five measured accounts joined the batch, and the population replay admits no `tier2` validation instance.
-- `remaining`: the unmeasured extensions the review named are calibration or representation bullets in [SG9](gaps/paths-and-groups.md#gap-sg9). [SG7](gaps/strings-and-messages.md#gap-sg7)'s unregistered-validator timing stays deferred until a consumer needs the Kernel's failure timing. Two spec deltas, `SPEC-2026-10-31-01` and `-02`, are pending with a12-dmkits.
+- `remaining`: the unmeasured extensions the review named are calibration or representation bullets in [SG9](gaps/paths-and-groups.md#gap-sg9). [SG7](gaps/strings-and-messages.md#gap-sg7)'s unregistered-validator timing stays deferred until a consumer needs the Kernel's failure timing. Two spec deltas, `SPEC-2026-10-31-01` and `-02`, are handed off to a12-dmkits.
 
 <a id="next-consumer-decision"></a>
 ### Next consumers — owner direction and open decision
