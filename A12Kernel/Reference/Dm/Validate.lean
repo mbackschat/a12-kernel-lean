@@ -8,8 +8,8 @@ import A12Kernel.Elaboration.ValidationMessageTypes
 Each rule is parsed, lowered at its declaring group and assembled with its error field, code and
 severity; the checked rule then runs on the iteration plan its condition and error field certify. The
 fired messages are projected to what a Kernel `validateFull` observation reports and this project
-may compare: the error code, the error field's pointer and the message type. Rendered text is never
-compared (CLAUDE.md, message catalog rule).
+may compare: the error code, the error entity's pointer, the message type and the severity. Rendered
+text is never compared (CLAUDE.md, message catalog rule).
 
 A scalar rule takes the full-validation content gate the once plan applies, the admitted content of
 the error field's root instance. Lean's scalar rules otherwise receive that gate from their caller, so
@@ -119,13 +119,12 @@ def parseValidationText (language : Language) (condition : String) : Lowering Te
 def _root_.A12Kernel.FlatRuleAssemblyError.refusalDetail (error : FlatRuleAssemblyError) : String :=
   classifiedDetail error
 
-/-- Parse, lower and assemble one rule, retaining named-type validity resolution from the supplied
-world. Replay supplies the same registry used to prepare and evaluate the document. -/
+/-- Lower and assemble one admitted rule from its parsed `text`, retaining named-type validity
+resolution from the supplied world. Replay supplies the same registry used to prepare and evaluate
+the document. -/
 private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language : Language) (rule : DmRule)
-    (world : World := { now := { epochMillis := 0 } }) :
+    (text : Text) (world : World := { now := { epochMillis := 0 } }) :
     Lowering (CheckedResolvedValidationRule model.flat) := do
-  admitDeclarations [rule.declaration]
-  let text ← parseValidationText language rule.condition
   let suppress := text.suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES"
   -- Static reads use the error field's scope (spec/07 §3); that scope must not create runtime
   -- iteration for a fixed expression reporting below a star (ConstructedDateValidityLocks).
@@ -143,22 +142,27 @@ private def checkRuleWith (useErrorBinding : Bool) (model : DmModel) (language :
   | .error error => refuse "RuleAssembly" error.refusalDetail
 
 /-- Ordered authored admission uses the error field's scope from the first attempt, including refused reads.
-Other rules retain the compatibility fallback; lexical paths resolve at the declaring group. -/
+Other rules retain the compatibility fallback; the declaring-group attempt resolves paths at the
+declaring group. -/
 def checkRule (model : DmModel) (language : Language) (rule : DmRule)
     (world : World := { now := { epochMillis := 0 } }) :
-    Lowering (CheckedResolvedValidationRule model.flat) :=
-  match checkRuleWith false model language rule world with
+    Lowering (CheckedResolvedValidationRule model.flat) := do
+  -- Admission and parsing do not depend on the attempt, so both attempts share them.
+  admitDeclarations [rule.declaration]
+  let text ← parseValidationText language rule.condition
+  match checkRuleWith false model language rule text world with
   | .ok checked => .ok checked
   | .error refusal =>
-      match checkRuleWith true model language rule world with
+      match checkRuleWith true model language rule text world with
       | .ok checked => .ok checked
       | .error boundRefusal =>
           -- A fully lowered row-bound tree reaches the rule gates; its refusal takes precedence
-          -- over the lexical attempt's unbound read (H10 iteration-guard matrix). So does a bound
-          -- refusal past the error field when the lexical one is a missing star: that level is the
-          -- one the error field binds, so only the bound attempt judges the read as the Kernel does
-          -- (spec/07 §3; SumOfProducts rows of inbound 2026-10-18, SPEC-2026-10-14-08). An error
-          -- field that does not resolve binds nothing, so the lexical refusal stands.
+          -- over the declaring-group attempt's unbound read (H10 iteration-guard matrix). So does
+          -- a bound refusal past the error field when the declaring-group one is a missing star:
+          -- that level is the one the error field binds, so only the bound attempt judges the read
+          -- as the Kernel does (spec/07 §3; SumOfProducts rows of inbound 2026-10-18,
+          -- SPEC-2026-10-14-08). An error field that does not resolve binds nothing, so the
+          -- declaring-group refusal stands.
           if boundRefusal.construct == "RuleAssembly" ||
               (refusal.kernelClass? == some KernelStaticDiagnostic.noWildcard.kernelCode &&
                 boundRefusal.construct != "ErrorEntity") then

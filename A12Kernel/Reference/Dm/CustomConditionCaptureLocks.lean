@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.Replay
 
 /-! # Custom-condition callbacks against the retained call capture
 
@@ -69,19 +70,7 @@ private def run (world : World) (checked validated : CheckedDocument model) (sco
     (rule : CheckedResolvedValidationRule model) : Option (List FlatRuleMessage) :=
   match scope with
   | .full => (runRule world validated rule registry).toOption
-  | .partialSet _ =>
-      match rule.ordinaryIterationPlan with
-      | .rows _ => (rule.evalOrdinaryRepeatablePartial checked scope (some world) registry).toOption.map fun
-          | .skipped => []
-          | .evaluated rows => rows.filterMap fun
-              | (_, .evaluated outcome) => outcome.message?
-              | (_, .skipped) => none
-      | .once _ => (rule.evalOrdinaryOncePartial checked scope (some world) registry).toOption.map fun
-          | .skipped => []
-          | .evaluated _ outcome => outcome.message?.toList
-      | .scalar => (rule.evalAddressedPartial checked scope (some world) registry).toOption.map fun
-          | .skipped => []
-          | .evaluated outcome => outcome.message?.toList
+  | .partialSet relevant => (runRulePartial world checked relevant (.ordinary rule) registry).toOption
 
 /-- Each finding as `code type pointer`, a caught failure marked `!`, or `none` when the rule, the
 document or the run is refused. `formal` is the call's recorded `formallyIncorrect`: in `doc-bad`,

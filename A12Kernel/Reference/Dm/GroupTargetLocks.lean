@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.ComputationCheck
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.Replay
 import A12Kernel.Reference.Dm.Validate
 
 /-! # Rules reporting on a group against the retained group-target capture
@@ -12,6 +13,10 @@ Kernel's `rule add --dry-run` verdict, or its admission of a rule `model check` 
 separate a group's own or a containing group's presence, which references the target, from a field
 inside it, which does not, and the group's own level, which no reference needs to bind, from the
 levels above it. The population replay compares the same rules' firings and references.
+
+The later sections extend the shape to the blank-root batch's twin rows and runtime firings, partial
+calls, the nested-capacity batch, error-target path rows and group-target computations, joined
+filled counts and keyed groups beside a join, and the root as an error target.
 -/
 
 namespace A12Kernel.Dm.GroupTargetLocks
@@ -63,13 +68,15 @@ example : model.validate.isOk = true := by native_decide
 private def dm : DmModel :=
   { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
 
+/-- A validation rule of `group` reporting on `path`, with the error code and severity every probe in
+this module shares. -/
+private def probe (name : String) (group : GroupPath) (path condition : String) : DmRule :=
+  { group, name, errorCode := "P", errorEntityRelPath := path, condition, severity := "ERROR" }
+
 /-- The class this reader answers, `admitted`, or the refusal's detail when it carries no class, so
 a refusal without a class fails a row rather than passing as any expected class. -/
 private def verdict (errorEntity condition : String) (group : GroupPath := O) : String :=
-  let rule : DmRule :=
-    { group, name := "GroupProbe", errorCode := "P", errorEntityRelPath := "../" ++ errorEntity,
-      condition, severity := "ERROR" }
-  match checkValidationRule dm .english rule with
+  match checkValidationRule dm .english (probe "GroupProbe" group ("../" ++ errorEntity) condition) with
   | .ok _ => "admitted"
   | .error refusal => refusal.kernelClass?.getD refusal.detail
 
@@ -166,25 +173,31 @@ example :
     verdict "Lines/Parts" "GroupFilled(Lines/Parts) And CustomCondition X And FieldFilled(Picks/Ref)" = "admitted" := by
   native_decide
 
+private def world : World := { now := { epochMillis := 0 } }
+
+open Lean in
+/-- `document` read, prepared and checked against `dm`, or `none` when a step refuses; with `clean`,
+a document the reader recorded refusals for is refused too. -/
+private def checkedOf (dm : DmModel) (document : Json) (clean := false) :
+    Option (CheckedDocument dm.flat) := do
+  let input ← (readDocument dm document).toOption
+  if clean && !input.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
+  (checkDocument prepared "en_US" input.data).toOption
+
 open Lean in
 /-- The pointers a rule reporting on `Lines/Parts` fires at over `Lines` rows of `(LineNo, parts)`,
-each part a `PartNo`, empty for a part holding no field, beside `Picks` rows of `(LineNo, Ref)`. -/
+each part a `PartNo`, empty for a part holding only `Count`, beside `Picks` rows of `(LineNo, Ref)`. -/
 private def fired (condition : String) (lines : List (String × List String)) (picks : List (String × String)) :
     Option (List String) := do
-  let world : World := { now := { epochMillis := 0 } }
   let part := fun (partNo : String) =>
     if partNo.isEmpty then Json.mkObj [("Count", Json.str "1")] else Json.mkObj [("PartNo", Json.str partNo)]
   let lineRows := lines.map fun (no, parts) =>
     Json.mkObj [("LineNo", Json.str no), ("Parts", Json.arr (parts.map part).toArray)]
   let pickRows := picks.map fun (no, ref) => Json.mkObj [("LineNo", Json.str no), ("Ref", Json.str ref)]
-  let input ← (readDocument dm (Json.mkObj [("Order", Json.mkObj [
-    ("Lines", Json.arr lineRows.toArray), ("Picks", Json.arr pickRows.toArray)])])).toOption
-  if !input.refusals.isEmpty then none
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
-  let document ← (checkDocument prepared "en_US" input.data).toOption
-  let checked ← (checkValidationRule dm .english
-    { group := O, name := "GroupProbe", errorCode := "P", errorEntityRelPath := "../Lines/Parts", condition,
-      severity := "ERROR" }).toOption
+  let document ← checkedOf dm (Json.mkObj [("Order", Json.mkObj [
+    ("Lines", Json.arr lineRows.toArray), ("Picks", Json.arr pickRows.toArray)])]) (clean := true)
+  let checked ← (checkValidationRule dm .english (probe "GroupProbe" O "../Lines/Parts" condition)).toOption
   pure ((← (runValidationRule world document checked).toOption).map fun message => (observe model message).pointer)
 
 /-- Internal witnesses, `external evidence pending` beyond `t8`'s capture: the group's own presence
@@ -204,33 +217,16 @@ open Lean in
 relevant, over line `A` with parts `[{}, {Count}]`, line `B` with a part holding `Count` and their
 picks, or `none` when the rule or document is refused. -/
 private def firedPartially (entity condition : String) : Option (List String) := do
-  let world : World := { now := { epochMillis := 0 } }
   let count := fun (value : String) => Json.mkObj [("Count", Json.str value)]
   let document := Json.mkObj [("Order", Json.mkObj [
     ("Lines", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Parts", Json.arr #[Json.mkObj [], count "5"])],
       Json.mkObj [("LineNo", Json.str "B"), ("Parts", Json.arr #[count "6"])]]),
     ("Picks", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Ref", Json.str "r")],
       Json.mkObj [("LineNo", Json.str "B"), ("Ref", Json.str "r")]])])]
-  let input ← (readDocument dm document).toOption
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
-  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let checked ← checkedOf dm document
   let relevant : List RelevantEntityPattern := [{ path := O, indices := [.concrete 1] }]
-  let messages ← match ← (checkValidationRule dm .english
-      { group := O, name := "PartialProbe", errorCode := "P", errorEntityRelPath := "../" ++ entity, condition,
-        severity := "ERROR" }).toOption with
-    | .parallel rule => (runPartialParallelRule checked rule relevant (world := some world)).toOption
-    | .ordinary rule => match rule.ordinaryIterationPlan with
-      | .rows _ => (rule.evalOrdinaryRepeatablePartial checked (.partialSet relevant) (some world)).toOption.map fun
-          | .skipped => []
-          | .evaluated rows => rows.filterMap fun
-              | (_, .evaluated outcome) => outcome.message?
-              | (_, .skipped) => none
-      | .once _ => (rule.evalOrdinaryOncePartial checked (.partialSet relevant) (some world)).toOption.map fun
-          | .skipped => []
-          | .evaluated _ outcome => outcome.message?.toList
-      | .scalar => (rule.evalAddressedPartial checked (.partialSet relevant) (some world)).toOption.map fun
-          | .skipped => []
-          | .evaluated outcome => outcome.message?.toList
+  let rule ← (checkValidationRule dm .english (probe "PartialProbe" O ("../" ++ entity) condition)).toOption
+  let messages ← (runRulePartial world checked relevant rule).toOption
   pure (messages.map fun message => (observe model message).pointer)
 
 /-- A partial call reports no rule whose error entity is a group, ordinary or beside a join, while
@@ -265,14 +261,8 @@ example : (rootRows.filter fun (_, group, entity, condition, expected) =>
 open Lean in
 /-- The pointers a rule in `/Order` reporting on `entity` fires at over `document`. -/
 private def firedOn (entity condition : String) (document : Json) (dm : DmModel := dm) : Option (List String) := do
-  let world : World := { now := { epochMillis := 0 } }
-  let input ← (readDocument dm document).toOption
-  if !input.refusals.isEmpty then none
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
-  let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let rule ← (checkValidationRule dm .english
-    { group := O, name := "BlankProbe", errorCode := "P", errorEntityRelPath := "../" ++ entity, condition,
-      severity := "ERROR" }).toOption
+  let checked ← checkedOf dm document (clean := true)
+  let rule ← (checkValidationRule dm .english (probe "BlankProbe" O ("../" ++ entity) condition)).toOption
   pure ((← (runValidationRule world checked rule).toOption).map fun message => (observe dm.flat message).pointer)
 
 open Lean in
@@ -301,6 +291,16 @@ example :
   native_decide
 
 open Lean in
+/-- The document holding the given `Lines` and `Picks` rows under `/Order`. -/
+private def order (lines picks : List Json) : Json :=
+  Json.mkObj [("Order", Json.mkObj [("Lines", Json.arr lines.toArray), ("Picks", Json.arr picks.toArray)])]
+
+open Lean in
+/-- A `Picks` row of index `key`, holding its `Ref` unless `ref` is false. -/
+private def pick (key : String) (ref : Bool := true) : Json :=
+  Json.mkObj ([("LineNo", Json.str key)] ++ (if ref then [("Ref", Json.str "r")] else []))
+
+open Lean in
 /- The nested-capacity batch's rows: beside the `Lines`–`Picks` join, the error field's `Parts` rows
 follow the ordinary capacity rule with the joined level counted once, so five declared parts are all
 visited and six only where some line's parts or slots occupy them, and an unmatched line visits them
@@ -308,9 +308,6 @@ too ([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-nest
 example :
     let six : DmModel := { dm with flat := { model with repeatableGroups := model.repeatableGroups.map fun group =>
       if group.path == L ++ ["Parts"] then { group with repeatability := some 6 } else group } }
-    let order := fun (lines picks : List Json) => Json.mkObj [("Order", Json.mkObj
-      [("Lines", Json.arr lines.toArray), ("Picks", Json.arr picks.toArray)])]
-    let pick := fun (key : String) => Json.mkObj [("LineNo", Json.str key), ("Ref", Json.str "r")]
     let line := fun (key : String) (members : List (String × Json)) => Json.mkObj ((("LineNo", Json.str key)) :: members)
     let rows := fun (n : Nat) => Json.arr ((List.replicate n (Json.mkObj [])).toArray)
     let parts := fun (owner : String) (n : Nat) => (List.range n).map fun i =>
@@ -340,16 +337,12 @@ row: the channels the Kernel gives the `D` pick of `oneEach`
 `capacity-five`), with this document's pick at row 2. -/
 example :
     (do
-      let world : World := { now := { epochMillis := 0 } }
-      let pick := fun (key : String) => Json.mkObj [("LineNo", Json.str key), ("Ref", Json.str "r")]
       let document := Json.mkObj [("Order", Json.mkObj [("Lines", Json.arr #[Json.mkObj [("LineNo", Json.str "A")]]),
         ("Picks", Json.arr #[pick "A", pick "D"])])]
-      let input ← (readDocument dm document).toOption
-      let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
-      let checked ← (checkDocument prepared "en_US" input.data).toOption
+      let checked ← checkedOf dm document
       let .parallel rule ← (checkValidationRule dm .english
-        { group := O, name := "UnmatchedProbe", errorCode := "P", errorEntityRelPath := "../Lines/Parts/Count",
-          condition := "[Lines/Parts/Count] < 5 And FieldFilled(Picks/Ref)", severity := "ERROR" }).toOption | none
+        (probe "UnmatchedProbe" O "../Lines/Parts/Count"
+          "[Lines/Parts/Count] < 5 And FieldFilled(Picks/Ref)")).toOption | none
       let rows ← (runParallelRuleReferences checked rule (some world)).toOption
       rows.filterMapM fun (message, references) => do
         let pointer := renderPointer dm.flat message.errorAddress
@@ -366,9 +359,9 @@ example :
 /-- The [inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)'s
 model: `/Order` holds `Code`, the group `Meta` holds `Ref`, and `Lines` repeats. -/
 private def pathModel : DmModel :=
-  { flat := { fields := [text 1 O "Code" [], text 2 (O ++ ["Meta"]) "Ref" [], text 3 L "Sku" [10]]
-              repeatableGroups := [{ level := 10, path := L, repeatability := some 5 }] }
-    rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  { dm with
+    flat := { fields := [text 1 O "Code" [], text 2 (O ++ ["Meta"]) "Ref" [], text 3 L "Sku" [10]]
+              repeatableGroups := [{ level := 10, path := L, repeatability := some 5 }] } }
 
 example : pathModel.flat.validate.isOk = true := by native_decide
 
@@ -380,10 +373,7 @@ private inductive Expected where
 
 private def meets (dm : DmModel) (group : GroupPath) (path condition : String) : Expected → Bool
   | expected =>
-    let rule : DmRule :=
-      { group, name := "PathProbe", errorCode := "P", errorEntityRelPath := path, condition,
-        severity := "ERROR" }
-    match checkValidationRule dm .english rule, expected with
+    match checkValidationRule dm .english (probe "PathProbe" group path condition), expected with
     | .ok _, .admitted => true
     | .error refusal, .kernelClass code => refusal.kernelClass? == some code
     | .error refusal, .noClass reason =>
@@ -434,14 +424,14 @@ example :
 /-- A fixed `Info` inside `Parts` beside the joined `Picks`: a fixed group at the error group's
 level is read at its first row, its fields among the references. -/
 private def innerModel : DmModel :=
-  { flat := { fields := [text 10 L "LineNo" [10], text 20 (L ++ ["Parts"]) "PartNo" [10, 11],
+  { dm with
+    flat := { fields := [text 10 L "LineNo" [10], text 20 (L ++ ["Parts"]) "PartNo" [10, 11],
                 text 22 (L ++ ["Parts", "Info"]) "Text" [10, 11],
                 text 30 (O ++ ["Picks"]) "LineNo" [13], text 31 (O ++ ["Picks"]) "Ref" [13]]
               repeatableGroups := [
                 { level := 10, path := L, repeatability := some 50, indexField := some 10 },
                 { level := 11, path := L ++ ["Parts"], repeatability := some 5 },
-                { level := 13, path := O ++ ["Picks"], repeatability := some 10, indexField := some 30 }] }
-    rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+                { level := 13, path := O ++ ["Picks"], repeatability := some 10, indexField := some 30 }] } }
 
 open Lean in
 /-- The referenced pointers of the messages `condition` fires reporting on `entity` (by default
@@ -452,13 +442,9 @@ private def referenced (condition : String) (dm : DmModel := innerModel) (entity
         ("PartNo", Json.str "x"), ("Info", Json.mkObj [("Text", Json.str "t")])]])]]),
       ("Picks", Json.arr #[Json.mkObj [("LineNo", Json.str "A"), ("Ref", Json.str "r")]])])]) :
     Option (List (List String)) := do
-  let world : World := { now := { epochMillis := 0 } }
-  let input ← (readDocument dm document).toOption
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
-  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let checked ← checkedOf dm document
   let .parallel rule ← (checkValidationRule dm .english
-    { group := O, name := "InnerProbe", errorCode := "P", errorEntityRelPath := "../" ++ entity, condition,
-      severity := "ERROR" }).toOption | none
+    (probe "InnerProbe" O ("../" ++ entity) condition)).toOption | none
   let rows ← (runParallelRuleReferences checked rule (some world)).toOption
   rows.mapM fun (_, references) =>
     references.toOption.map fun references => references.referenced.map (renderFieldPointer dm.flat)
@@ -471,14 +457,14 @@ example :
 /-- Unkeyed `Slots` (2) inside the keyed `Lines` beside the joined `Picks`, the
 [unkeyed capture](../../../evidence/kernel-30.8.1/captures/keyed-group-beside-join-2026-10-24/K22u_DM.json)'s shape. -/
 private def slotsModel : DmModel :=
-  { flat := { fields := [text 10 L "LineNo" [10], text 60 (L ++ ["Slots"]) "SlotNo" [10, 12],
+  { dm with
+    flat := { fields := [text 10 L "LineNo" [10], text 60 (L ++ ["Slots"]) "SlotNo" [10, 12],
                 text 62 (L ++ ["Slots"]) "Mark" [10, 12],
                 text 30 (O ++ ["Picks"]) "LineNo" [13], text 31 (O ++ ["Picks"]) "Ref" [13]]
               repeatableGroups := [
                 { level := 10, path := L, repeatability := some 50, indexField := some 10 },
                 { level := 12, path := L ++ ["Slots"], repeatability := some 2 },
-                { level := 13, path := O ++ ["Picks"], repeatability := some 10, indexField := some 30 }] }
-    rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+                { level := 13, path := O ++ ["Picks"], repeatability := some 10, indexField := some 30 }] } }
 
 open Lean in
 /- An enclosing joined group's expansion keeps only its own repeatable level bound: the error group's
@@ -506,12 +492,8 @@ open Lean in
    filled `Ref` (`badQty`), `== 0` fires where neither is filled, and `== 1` counts an unmatched
    partner as empty on both sides of the join (`unmatched`). -/
 example :
-    let order := fun (lines picks : List Json) => Json.mkObj [("Order", Json.mkObj [
-      ("Lines", Json.arr lines.toArray), ("Picks", Json.arr picks.toArray)])]
     let line := fun (qty : Option String) => Json.mkObj ([("LineNo", Json.str "A")] ++
       (qty.map fun value => [("Qty", Json.str value)]).getD [])
-    let pick := fun (key : String) (ref : Bool) => Json.mkObj ([("LineNo", Json.str key)] ++
-      (if ref then [("Ref", Json.str "r")] else []))
     let count := fun (comparison : String) document =>
       firedOn "Lines/Qty" s!"NumberOfFilledFields(Lines/Qty, Picks/Ref) {comparison}" document countDm
     count "> 0" (order [line (some "x")] [pick "A" true]) = some [] ∧
@@ -531,13 +513,9 @@ open Lean in
    a line without slots, referencing the group's fields at `[-6]` and the partner's index field but
    not its own side's. -/
 example :
-    let order := fun (lines picks : List Json) => Json.mkObj [("Order", Json.mkObj [
-      ("Lines", Json.arr lines.toArray), ("Picks", Json.arr picks.toArray)])]
     let line := fun (key : String) (slots : List Json) => Json.mkObj [("LineNo", Json.str key), ("Sku", Json.str "s"),
       ("Slots", Json.arr slots.toArray)]
     let slot := Json.mkObj [("SlotNo", Json.str "1"), ("Mark", Json.str "m")]
-    let pick := fun (key : String) (ref : Bool) => Json.mkObj ([("LineNo", Json.str key)] ++
-      (if ref then [("Ref", Json.str "r")] else []))
     firedOn "Lines/Slots" "GroupFilled(Lines/Slots) And FieldFilled(Picks/Ref)"
         (order [line "A" [slot]] [pick "A" true]) = some [] ∧
     firedOn "Lines/Slots" "GroupFilled(Lines) And FieldFilled(Picks/Ref)"
@@ -553,19 +531,13 @@ example :
 /-- The [root-target capture](../../../evidence/kernel-30.8.1/captures/u02-open-gaps-2026-10-30/Groot_DM.json)'s
 shape: `/Order` holds `Note` and `Email`, the fixed `Meta` holds `Ref`. -/
 private def rootDm : DmModel :=
-  { flat := { fields := [text 1 O "Note" [], text 2 O "Email" [], text 3 (O ++ ["Meta"]) "Ref" []] }
-    rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  { dm with flat := { fields := [text 1 O "Note" [], text 2 O "Email" [], text 3 (O ++ ["Meta"]) "Ref" []] } }
 
 open Lean in
 /-- The messages a rule in `/Order/Meta` reporting on the root through `../..` fires over `document`. -/
 private def firedOnRoot (condition : String) (document : Json) : Option (List String) := do
-  let world : World := { now := { epochMillis := 0 } }
-  let input ← (readDocument rootDm document).toOption
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler rootDm.flat).toOption
-  let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let rule ← (checkValidationRule rootDm .english
-    { group := O ++ ["Meta"], name := "RootProbe", errorCode := "P", errorEntityRelPath := "../..", condition,
-      severity := "ERROR" }).toOption
+  let checked ← checkedOf rootDm document
+  let rule ← (checkValidationRule rootDm .english (probe "RootProbe" (O ++ ["Meta"]) "../.." condition)).toOption
   pure ((← (runValidationRule world checked rule).toOption).map fun message =>
     let observed := observe rootDm.flat message
     s!"{observed.pointer}:{observed.messageType}")
@@ -596,13 +568,8 @@ open Lean in
 fires over the empty root. -/
 private def rootReferences (group : GroupPath) (target condition : String) :
     Option (List (List String × List String)) := do
-  let world : World := { now := { epochMillis := 0 } }
-  let input ← (readDocument rootDm (Json.mkObj [("Order", Json.mkObj [])])).toOption
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler rootDm.flat).toOption
-  let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let rule ← (checkRule rootDm .english
-    { group, name := "RootProbe", errorCode := "P", errorEntityRelPath := target, condition,
-      severity := "ERROR" }).toOption
+  let checked ← checkedOf rootDm (Json.mkObj [("Order", Json.mkObj [])])
+  let rule ← (checkRule rootDm .english (probe "RootProbe" group target condition)).toOption
   (← (runRule world checked rule).toOption).mapM fun message => do
     let references ← (rule.condition.core.messageReferences message [] none).toOption
     pure (references.referenced.map (renderFieldPointer rootDm.flat),

@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.Replay
 
 /-! # Partial validation over first-filled, extremum, count, construction and keyed carriers
 
@@ -54,21 +55,6 @@ private def document (duplicate : Bool) : Lean.Json :=
 private def relevant (path : List String) (reps : List Nat) : RelevantEntityPattern :=
   { path := "P" :: path, indices := reps.map fun n => if n == 0 then .all else .concrete n }
 
-private def runPartial (world : World) (checked : CheckedDocument model) (scope : ValidationRelevanceScope)
-    (rule : CheckedResolvedValidationRule model) : Option (List FlatRuleMessage) :=
-  match rule.ordinaryIterationPlan with
-  | .rows _ => (rule.evalOrdinaryRepeatablePartial checked scope (some world)).toOption.map fun
-      | .skipped => []
-      | .evaluated rows => rows.filterMap fun
-          | (_, .evaluated outcome) => outcome.message?
-          | (_, .skipped) => none
-  | .once _ => (rule.evalOrdinaryOncePartial checked scope (some world)).toOption.map fun
-      | .skipped => []
-      | .evaluated _ outcome => outcome.message?.toList
-  | .scalar => (rule.evalAddressedPartial checked scope (some world)).toOption.map fun
-      | .skipped => []
-      | .evaluated outcome => outcome.message?.toList
-
 /-- The fired message types under one relevance set, or `none` when the rule or document is refused. -/
 private def fired (condition : String) (coverage : List RelevantEntityPattern)
     (errorField : String := "Total") (duplicate : Bool := false) : Option (List String) := do
@@ -82,7 +68,7 @@ private def fired (condition : String) (coverage : List RelevantEntityPattern)
       condition, severity := "ERROR" } world with
     | .ok (.ordinary rule) => some rule
     | _ => none
-  let messages ← runPartial world checked (.partialSet coverage) rule
+  let messages ← (runRulePartial world checked coverage (.ordinary rule)).toOption
   pure (messages.map fun message => (observe model message).messageType)
 
 private def total := relevant ["Total"] [1, 1]
