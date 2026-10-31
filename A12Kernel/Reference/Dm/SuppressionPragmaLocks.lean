@@ -1,6 +1,7 @@
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.ParallelValidation
+import A12Kernel.Reference.Dm.ComputationCheck
 
 /-! # The suppression pragma of a computation or rule
 
@@ -80,6 +81,24 @@ example :
     ruleOutcome "'MVK_LATE'" == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
     ruleOutcome "And" == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
     ruleOutcome "And É" == KernelStaticDiagnostic.unexpectedToken.kernelCode := by
+  native_decide
+
+/-- The class the computation admission entry `checkComputation` reports, the entry peer KF298's rows
+measure; `lowerComputation` alone answers a later unlexable character with the lexer class. -/
+private def checkedComputationOutcome (suppressed : List String) : String :=
+  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  match checkComputation dm .english {
+    group := ["Form"], name := "Cp", targetRelPath := "../Total", commonPrecondition := none
+    alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := suppressed } with
+  | .ok _ => "admitted"
+  | .error refusal => refusal.detail
+
+example :
+    checkedComputationOutcome ["7_DAYS É"] == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
+    checkedComputationOutcome ["And É"] == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
+    checkedComputationOutcome [scaleWarning, "MVK_FRAÉ"] == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
+    checkedComputationOutcome ["MVK_FRAÉ", scaleWarning] == KernelStaticDiagnostic.lexerStandardError.kernelCode &&
+    checkedComputationOutcome [scaleWarning] == "admitted" := by
   native_decide
 
 end A12Kernel.Dm.SuppressionPragmaLocks

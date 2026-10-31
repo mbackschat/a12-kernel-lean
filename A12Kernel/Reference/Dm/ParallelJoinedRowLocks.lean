@@ -18,8 +18,10 @@ The documents separate a partner holding the copied field, a partner holding onl
 a target row without a partner. The capture's one failing guard meets a partner holding neither field,
 so no row separates the guard from the copy.
 
-The last section copies an Enumeration and a Date into targets nested below an unjoined repeatable
-group, a reduction of `evidence/kernel-30.8.1/captures/runtime-open-cells-2026-10-28/` (`join-*` rows).
+A later section copies an Enumeration and a Date into targets nested below an unjoined repeatable
+group, a reduction of `evidence/kernel-30.8.1/captures/runtime-open-cells-2026-10-28/` (`join-*` rows),
+and the last joins temporal keys of two kinds, a reduction of
+`evidence/kernel-30.8.1/captures/cross-kind-join-key-matching-2026-10-31/`.
 -/
 
 namespace A12Kernel.Dm.ParallelJoinedRowLocks
@@ -38,9 +40,9 @@ private def number : Json :=
 private def date : Json :=
   Json.mkObj [("type", "DateType"), ("DateType", Json.mkObj [("format", "yyyy-MM-dd")])]
 
-private def keyed (name key : String) (fields : List Json) : Json :=
+private def keyed (name key : String) (fields : List Json) (keyType : Json := text) : Json :=
   element "Group" s!"/Staffing/{name}" name [("repeatability", toJson 50),
-    ("elements", Json.arr (field name key text :: fields).toArray), ("indexFieldName", .str key)]
+    ("elements", Json.arr (field name key keyType :: fields).toArray), ("indexFieldName", .str key)]
 
 private def computation (name target operation : String) (guard : Option String) : Json :=
   element "Computation" s!"/Staffing/Supply/{name}" name [("computedFieldRelPath", .str s!"../{target}"),
@@ -81,14 +83,16 @@ private def computed (document : Json) (model? : Option DmModel := dm?) : Option
   let outcomes ← (runComputations world prepared checked (lowered.map (·.2))).toOption
   pure (outcomes.map fun outcome => s!"{outcome.pointer} {outcome.outcome}")
 
-/-- Each generated rule's firings, as `code pointer type`. -/
-private def fired (document : Json) (model? : Option DmModel := dm?) : Option (List String) := do
+/-- Each generated rule's firings, or each of `rules`', as `code pointer type`. -/
+private def fired (document : Json) (model? : Option DmModel := dm?)
+    (rules : DmModel → Option (List DmRule) := (·.computations.mapM (·.generatedRule? .english))) :
+    Option (List String) := do
   let dm ← model?
   let input ← (readDocument dm document).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let generated ← dm.computations.mapM (·.generatedRule? .english)
+  let generated ← rules dm
   let messages ← generated.mapM fun source => do
     let plan ← (checkValidationRule dm .english source world).toOption
     let fired ← (runValidationRule world checked plan).toOption
@@ -126,6 +130,24 @@ example : fired matched = some [
     "Ct03 Staffing/Supply/OutD1 A12Kernel.Polarity.value",
     "Ct03 Staffing/Supply[2]/OutD1 A12Kernel.Polarity.value"] ∧
   fired sparse = some ["Ct03 Staffing/Supply[2]/OutD1 A12Kernel.Polarity.value"] := by native_decide
+
+/- Temporal keys of two kinds join on the rule carrier the cross-kind probe measured
+([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-cross-kind-join-keys)); a
+computation joining them is unmeasured and keeps the equal-kind join, so a Date key against a Time key
+refuses the copy while two Date keys admit it. -/
+private def time : Json :=
+  Json.mkObj [("type", "TimeType"), ("TimeType", Json.mkObj [("format", "HH:mm:ss")])]
+
+private def keyKindsAdmitCopy (demandKey supplyKey : Json) : Option Bool := do
+  let dm ← (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+    element "Group" "/Staffing" "Staffing" [("repeatability", toJson 1), ("elements", Json.arr #[
+      keyed "Demand" "Department" [field "Demand" "Label" text] demandKey,
+      keyed "Supply" "Department" [field "Supply" "OutS1" text,
+        computation "Ct01" "OutS1" "[/Staffing/Demand/Label]" none] supplyKey])]])])])])).toOption
+  let source ← dm.computations.head?
+  pure (lowerComputation dm.flat .english source).toBool
+
+example : keyKindsAdmitCopy date date = some true ∧ keyKindsAdmitCopy date time = some false := by native_decide
 
 /-! ### An Enumeration target nested below an unjoined repeatable group
 
@@ -211,5 +233,42 @@ example : (computed datedDocument datedDm?).map (·.mergeSort) = some [
 example : fired (datedDocument [["a", "z"]]) datedDm? = some ["CTOn Join/Lines/Slots/TOn A12Kernel.Polarity.value"] ∧
     fired (datedDocument [["a", "a"], ["b"]]) datedDm? =
       some ["CTOn Join/Lines[2]/Slots/TOn A12Kernel.Polarity.value"] := by native_decide
+
+/-! ### Temporal join keys of two kinds
+
+Two sibling joins whose rule fires exactly when the error row's key binds no partner: a Date key
+beside a Date key, and a Date key beside a DateTime key. The second binds no partner even at midnight
+of the same day ([checkpoint](../../../docs/sources/key-join-and-parallel-probes.md#src-cross-kind-join-keys),
+rows `DD-eq`, `DD-ne`, `DT-mid`, `DT-ne`). -/
+
+private def dateTime : Json := Json.mkObj [("type", "DateTimeType"),
+  ("DateTimeType", Json.mkObj [("format", "yyyy-MM-dd'T'HH:mm:ss")])]
+
+private def crossKindDm? : Option DmModel :=
+  let side (name key payload : String) (keyType : Json) : Json :=
+    element "Group" s!"/XJ/{name}" name [("repeatability", toJson 5), ("indexFieldName", .str key),
+      ("elements", Json.arr #[joinField s!"/XJ/{name}" key keyType, joinField s!"/XJ/{name}" payload text])]
+  let rule (pair : String) : Json :=
+    element "Rule" s!"/XJ/J{pair}" s!"J{pair}" [("errorEntityRelPath", .str s!"../L{pair}/V"),
+      ("errorCode", .str s!"J{pair}"), ("severity", "ERROR"),
+      ("errorCondition", .str s!"FieldFilled(L{pair}/V) And FieldNotFilled(R{pair}/W)"),
+      ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])]
+  (readModel (checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [("modelRoot", Json.mkObj [("rootGroups", Json.arr #[
+    element "Group" "/XJ" "XJ" [("repeatability", toJson 1), ("elements", Json.arr #[
+      side "LDD" "K" "V" date, side "RDD" "K" "W" date, side "LDT" "K" "V" date, side "RDT" "K" "W" dateTime,
+      rule "DD", rule "DT"])]])])])])).toOption
+
+private def crossKindDocument (pair left right : String) : Json :=
+  Json.mkObj [("XJ", Json.mkObj [(s!"L{pair}", Json.arr #[row [("K", left), ("V", "v")]]),
+    (s!"R{pair}", Json.arr #[row [("K", right), ("W", "w")]])])]
+
+private def crossKindFired (pair left right : String) : Option (List String) :=
+  fired (crossKindDocument pair left right) crossKindDm? (rules := fun dm => some dm.rules)
+
+example : crossKindFired "DD" "2026-01-02" "2026-01-02" = some [] ∧
+    crossKindFired "DD" "2026-01-02" "2026-01-03" = some ["JDD XJ/LDD/V A12Kernel.Polarity.omission"] ∧
+    crossKindFired "DT" "2026-01-02" "2026-01-02T00:00:00" = some ["JDT XJ/LDT/V A12Kernel.Polarity.omission"] ∧
+    crossKindFired "DT" "2026-01-02" "2026-01-03T00:00:00" = some ["JDT XJ/LDT/V A12Kernel.Polarity.omission"] := by
+  native_decide
 
 end A12Kernel.Dm.ParallelJoinedRowLocks

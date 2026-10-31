@@ -466,6 +466,14 @@ def checkParallelTargetJoin (model : FlatModel)
           let groups ←
             checkParallelIndexGroups model targetGroup sourceGroup
               |>.mapError .join
+          -- Temporal keys of two kinds join on the rule carrier the cross-kind probe measured
+          -- (docs/sources/key-join-and-parallel-probes.md#src-cross-kind-join-keys); no computation
+          -- joining them is measured, so this carrier keeps the equal-kind join.
+          if let (.temporal .., .temporal ..) :=
+              (groups.leftIndexDeclaration.policy.kind, groups.rightIndexDeclaration.policy.kind) then
+            if groups.leftIndexDeclaration.policy.kind != groups.rightIndexDeclaration.policy.kind then
+              throw (.join (.incompatibleIndexFields
+                groups.leftIndexDeclaration.path groups.rightIndexDeclaration.path))
           if hTargetGroup :
               groups.leftGroup.path.isPrefixOf
                 targetDeclaration.groupPath = true then

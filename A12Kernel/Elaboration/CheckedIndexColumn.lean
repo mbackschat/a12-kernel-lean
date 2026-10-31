@@ -128,8 +128,8 @@ end ParallelOuterScopePlan
     ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-parallel-number-index-tokens)).
     A temporal pair joins on its keys' cache text, so a Date beside a DateTime, a Time or a date fragment
     binds no partner row whose text differs, as the Kernel's rows do
-    ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-cross-kind-join-keys)); which
-    temporal pairs a rule may join is `FieldKind.indexTypeGate`'s question, asked before this one. -/
+    ([checkpoint](../../docs/sources/key-join-and-parallel-probes.md#src-cross-kind-join-keys)). That
+    probe measures rules: `checkParallelTargetJoin` keeps a computation's join to equal temporal kinds. -/
 def FieldKind.joinsAsIndex : FieldKind → FieldKind → Bool
   | .number _, .number _ => true
   | .temporal _ _, .temporal _ _ => true

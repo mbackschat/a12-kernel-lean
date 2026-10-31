@@ -94,6 +94,13 @@ example :
       classify? .yearOptional "0000-06-00" = some (.rejected .dateInvalid) := by
   native_decide
 
+/- The same zero year at a shallower precision is that precision's own omission failure, still ahead of
+the unreal month. A statement of spec/05 §6.2's cause order without a retained row of its own. -/
+example :
+    classify? .dayOptional "0000-13-00" = some (.rejected .dateInvalid) ∧
+      classify? .monthOptional "0000-13-00" = some (.rejected .dateInvalid) := by
+  native_decide
+
 /- **The two causes split on reality, not on legality.** An impossible calendar date is the *format*
 cause even though its spelling is well formed and its declaration could hold a value there — and so is
 an impossible month standing beside a legally omitted day, which is the sharpest cell of the whole
