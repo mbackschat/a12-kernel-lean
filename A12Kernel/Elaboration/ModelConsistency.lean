@@ -155,6 +155,10 @@ inductive ModelConsistencyClass where
   /-- A deleted field's lifted Enumeration with two categories of one name
   (`ModelBuildFailure.enumerationCategoryNameDuplicated`). -/
   | enumerationCategoryDuplicate
+  /-- A header declaring no locale (spec/01 §1.1). -/
+  | supportedLanguagesMissing
+  /-- Two distinct declared locales sharing one JDK language tag (`ParsedLocale.languageTag`). -/
+  | supportedLanguagesDuplicate
   deriving Repr, DecidableEq
 
 namespace ModelConsistencyClass
@@ -166,10 +170,10 @@ def all : List ModelConsistencyClass :=
     multiSelectRequiredField, multiSelectRequiredFlag, multiSelectIndexField, multiSelectFieldType,
     multiSelectOtherElements, boundTotalDigitsTooLong, boundSignedZero, idEmpty, errorConditionEmpty,
     errorEntityEmpty, computationOperationEmpty, typeDefinitionNameEmpty, elementNameEmpty, typeDefinitionReferenceEmpty,
-    computedFieldEmpty, enumerationCategoryDuplicate]
+    computedFieldEmpty, enumerationCategoryDuplicate, supportedLanguagesMissing, supportedLanguagesDuplicate]
 
-/-- The label the captures give the class, or for the three lifted classes the label the locks give it. None
-of these classes carries a Kernel code, so each is named by its own class. -/
+/-- The label the captures give the class, or for the three lifted classes the label the locks give it. The
+two supported-language classes carry their Kernel code; every other class is codeless and named by itself. -/
 def observedLabel : ModelConsistencyClass → String
   | idNotUnique => "codeless:id-not-unique"
   | numberMaxValueExceeded => "codeless:number-max-value-exceeded"
@@ -194,6 +198,8 @@ def observedLabel : ModelConsistencyClass → String
   | typeDefinitionReferenceEmpty => "codeless:typedef-reference-empty"
   | computedFieldEmpty => "codeless:computed-field-empty"
   | enumerationCategoryDuplicate => "codeless:enum-category-duplicate"
+  | supportedLanguagesMissing => "MVK_SUPP_LANGUAGES_MISSING"
+  | supportedLanguagesDuplicate => "MVK_SUPP_LANGUAGES_DUPLICATE"
 
 end ModelConsistencyClass
 
@@ -528,6 +534,16 @@ def emptinessNotifications (model : ConsistencyModel) : List ModelConsistencyNot
             raiseIf (operations.any (·.isEmpty)) path .computationOperationEmpty
         | _ => []
 
+/-- The header's model-level classes: `MVK_SUPP_LANGUAGES_MISSING` for no declared locale, and one
+`MVK_SUPP_LANGUAGES_DUPLICATE` for each language tag two distinct declared locales share, in the order the
+tags first occur. They stand ahead of the content's notifications; no capture orders them against another
+class ([header locale codes](../../docs/sources/model-structure-and-declaration-probes.md#src-header-locale-codes)). -/
+def supportedLanguageNotifications (model : ConsistencyModel) : List ModelConsistencyNotification :=
+  if model.declaredLocales.isEmpty then [{ path := [], kind := .supportedLanguagesMissing }] else
+  let tags := model.declaredLocales.map (·.languageTag)
+  (tags.eraseDups.filter fun tag => tags.count tag > 1).map fun _ =>
+    { path := [], kind := .supportedLanguagesDuplicate }
+
 /-- The Kernel's consistency check of a read model. An error means the model reaches a case the
 captures do not measure: attachment rule texts under another condition language, or a bound outside
 the normal double range. -/
@@ -537,7 +553,7 @@ def check (model : ConsistencyModel) : Except String ModelConsistencyOutcome :=
   | none => do
       let attachment ← attachmentGroupNotifications model
       let boundFormal ← boundFormalNotifications model
-      pure (.checked (idUniquenessNotifications model ++ numberLimitNotifications model ++
+      pure (.checked (supportedLanguageNotifications model ++ idUniquenessNotifications model ++ numberLimitNotifications model ++
         attachment ++ multiSelectGroupNotifications model ++ boundFormal ++
         emptinessNotifications model))
 

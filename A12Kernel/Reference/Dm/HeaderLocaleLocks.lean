@@ -9,8 +9,7 @@ import A12Kernel.Reference.Dm.EntryFrameFixture
 Each expectation is a Kernel row of the
 [header locale codes](../../../docs/sources/model-structure-and-declaration-probes.md#src-header-locale-codes)
 probe (`dmtool model check`, Kernel 30.8.1, 2026-10-29), declared beside "en_US" as the probe declares
-it, or of peer KF290's message rows. The probe's `MVK_SUPP_LANGUAGES_DUPLICATE` rows are a deliberate
-non-law: that model-level class is not produced, so those models read as built. -/
+it, or of peer KF290's message rows. -/
 
 namespace A12Kernel.Dm.HeaderLocaleLocks
 
@@ -82,11 +81,21 @@ example :
     [["US"], ["CH"], ["ée"], ["ja_JP_JP"]].all (fun codes => verdict (declaring codes) == some .outsideProfile) := by
   native_decide
 
-/-- The non-law: two distinct locales sharing one JDK language tag read as built, where the Kernel draws
-`MVK_SUPP_LANGUAGES_DUPLICATE` (rows `s36`, `g02`). -/
+/-- The model-level classes the consistency check draws beside a built model. -/
+private def modelClasses (json : Json) : Option (List String) :=
+  (checkModelConsistency json).toOption.map (·.observedLabels)
+
+/-- Two distinct locales sharing one JDK language tag draw `MVK_SUPP_LANGUAGES_DUPLICATE`, once for three
+codes on one tag, and an empty list draws `MVK_SUPP_LANGUAGES_MISSING`; the tags of the other pairs differ
+(rows `s36`, `g02` and the tag pairs of the checkpoint). The model is still built. -/
 example :
-    verdict (declaring ["en_US_abcdefghi"]) = some .builds ∧
-    verdict (declaring ["de_CH", "de_CH_abcdefghi"]) = some .builds := by
+    [["en_US_abcdefghi"], ["de_CH", "de_CH_abcdefghi"], ["und_419", "1_419"], ["und_419", "abcdefghi_419"],
+      ["1_419", "d_419"], ["en_US_1996", "en_US_1996_abcdefghi"], ["en_US_abcdefghi", "en_US_abcdefghi_x"]].all
+      (fun codes => verdict (declaring codes) == some .builds &&
+        modelClasses (declaring codes) == some ["MVK_SUPP_LANGUAGES_DUPLICATE"]) ∧
+    [["en_US_abcd"], ["en_US_x"], ["de", "de__1996"], ["und", "de_CH"], ["de_CH_POSIX", "de_CH_posix"]].all
+      (fun codes => modelClasses (declaring codes) == some []) ∧
+    modelClasses (model (Json.arr #[])) = some ["MVK_SUPP_LANGUAGES_MISSING"] := by
   native_decide
 
 /-- A `locales` member that is no list leaves no model and a `null` one costs the model its check (peer

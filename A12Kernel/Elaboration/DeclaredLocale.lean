@@ -9,7 +9,7 @@ equal exactly where the locales are equal.
 
 A header's declared locales fail the build on a locale with an empty language and on two codes naming one
 locale. Two distinct locales sharing one JDK language tag instead draw `MVK_SUPP_LANGUAGES_DUPLICATE`, a
-model-level class this account does not produce. -/
+model-level class `languageTag` decides. -/
 
 namespace A12Kernel
 
@@ -29,6 +29,38 @@ def key (locale : ParsedLocale) : String :=
   if locale.variant.isEmpty then
     if locale.country.isEmpty then locale.language else s!"{locale.language}_{locale.country}"
   else s!"{locale.language}_{locale.country}_{locale.variant}"
+
+private def asciiAlnum (c : Char) : Bool := c.isAlphanum && c.toNat < 128
+
+private def asciiLetters (text : String) : Bool := text.all fun c => c.isAlpha && c.toNat < 128
+
+/-- The JDK's `toLanguageTag` of the locale, as spec/01 §1.1 states it over the measured pairs: a language
+that is not 2–8 ASCII letters reads as `und`, a country that is not two ASCII letters or three ASCII
+digits is left out, the variant subtags up to the first that is not 5–8 ASCII letters or digits, or four
+opening with a digit, are kept, and that one and those after it follow as a private-use `lvariant`
+sequence ending before the first subtag that is not 1–8 ASCII letters or digits. A locale with no country
+and no kept subtag but such a sequence is tagged with no language. The locales the JDK tags specially,
+such as `ja_JP_JP`, lie outside the represented profile. -/
+def languageTag (locale : ParsedLocale) : String :=
+  let languageWellFormed := (2 ≤ locale.language.length && locale.language.length ≤ 8) && asciiLetters locale.language
+  let country :=
+    if (locale.country.length == 2 && asciiLetters locale.country) ||
+        (locale.country.length == 3 && locale.country.all fun c => c.isDigit && c.toNat < 128) then
+      some locale.country
+    else none
+  let subtags := if locale.variant.isEmpty then [] else locale.variant.splitOn "_"
+  let kept (subtag : String) :=
+    subtag.all asciiAlnum &&
+      ((5 ≤ subtag.length && subtag.length ≤ 8) || (subtag.length == 4 && subtag.front.isDigit))
+  let variants := subtags.takeWhile kept
+  let privateUse := (subtags.dropWhile kept).takeWhile fun subtag =>
+    1 ≤ subtag.length && subtag.length ≤ 8 && subtag.all asciiAlnum
+  let language :=
+    if languageWellFormed then some locale.language
+    else if country.isNone && variants.isEmpty && !privateUse.isEmpty then none
+    else some "und"
+  let privateTail := if privateUse.isEmpty then [] else "x" :: "lvariant" :: privateUse
+  "-".intercalate (language.toList ++ country.toList ++ variants ++ privateTail)
 
 end ParsedLocale
 
