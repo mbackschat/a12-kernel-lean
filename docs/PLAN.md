@@ -12,7 +12,7 @@
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
 - `sequence`: K21 checks semantic transport, K22 accepts conformance, then U01 implements the Rust interpreter, U02 repeats it cold on the rewritten spec, and U03 builds the SMT consumer. Concrete repository, dependency and public-contract choices retain their existing decision boundaries.
-- `active`: the [measured-divergence milestone](#measured-divergence-milestone), adopted by the owner on 2026-10-31, runs before Q2.
+- `active`: none. The [measured-divergence milestone](#measured-divergence-milestone) closed on 2026-10-31; Q2 waits for the owner's Q2-P1 profile decision.
 - `stop`: Stop the conformance phase at K22 and select U01. A genuine blocker keeps its task unchecked. Do not append an automatic conformance-tail programme or require the consumer products before K22.
 
 <a id="single-track-breadth-queue"></a>
@@ -206,13 +206,8 @@ The request adopts this sequencing and the two consumer objectives. It does not 
 <a id="measured-divergence-milestone"></a>
 ### Measured-divergence milestone — owner direction 2026-10-31
 
-- `state`: active. The owner adopted it on 2026-10-31 as an explicit exception to the K22 `stop` rule, ahead of Q2: it closes the gap-shard boundaries where the executable account contradicts a retained Kernel row, so the consumers inherit no known measured divergence.
-- `scope`: the [SG9](gaps/paths-and-groups.md#gap-sg9) `CTOn` Date joined-copy rule, the `7_DAYS` suppress-warning token and the mixed `And`/`Or` refusal order; the [SG10](gaps/strings-and-messages.md#gap-sg10) supported-language classes; the [SG6](gaps/numeric-and-temporal.md#gap-sg6) partial-Date omission order. The pre-existing linter warnings join the same batch.
-- `acceptance`: each item lands red first against its retained row: the 25 `tier2` `CTOn` instances of `runtime-open-cells-2026-10-28` replay as match; the `k*` and `b3` header-locale rows draw their classes; row `d5-3` draws `datumFalsch`; the spec/12 §3.1 and §4 rows draw their classes. Each closed item deletes its boundary bullet.
-- `deferred`: the [SG7](gaps/strings-and-messages.md#gap-sg7) unregistered-validator timing, which differs only for a host missing a registration; it reopens when a consumer needs the Kernel's failure timing.
-- `measurement`: five open accounts are measured on the [local Kernel route](TESTING-KERNEL-PROBES.md#the-kernel-runtime-probe-route) first, and one `EXP-` request carries only what it cannot reach: cross-kind parallel-join key matching at runtime, error-selection reanchoring at two depths, a single-instance index key inside `Having`, with a message suffix or over capacity, the guards on reads below a key, and `+` over a non-String predefined type. Each settled account joins the same batch and gate.
-- `gate`: the high-blast edits are made consecutively behind narrow builds, then one full build, one `lake test`, one replay and one evidence run; the push's publish script supplies the trust audit.
-- `stop`: the milestone closes when every scoped item is accepted; it adds no further conformance tail, and Q2 follows.
+- `state`: closed on 2026-10-31 after its cold review was disposed. Every scoped item landed red first against its retained row, the five measured accounts joined the batch, and the population replay admits no `tier2` validation instance.
+- `remaining`: the unmeasured extensions the review named are calibration or representation bullets in [SG9](gaps/paths-and-groups.md#gap-sg9). [SG7](gaps/strings-and-messages.md#gap-sg7)'s unregistered-validator timing stays deferred until a consumer needs the Kernel's failure timing. Two spec deltas, `SPEC-2026-10-31-01` and `-02`, are pending with a12-dmkits.
 
 <a id="next-consumer-decision"></a>
 ### Next consumers — owner direction and open decision
