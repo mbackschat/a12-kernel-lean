@@ -1,0 +1,70 @@
+[
+ {
+  "id": "p1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p1",
+   "--field",
+   "/PT/P",
+   "--group",
+   "/PT",
+   "--condition",
+   "[P] + \"x\" == \"ax\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "p2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p2",
+   "--field",
+   "/PT/P",
+   "--group",
+   "/PT",
+   "--condition",
+   "[P] + [S] == \"ab\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "p3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p3",
+   "--field",
+   "/PT/P",
+   "--group",
+   "/PT",
+   "--condition",
+   "[P] + [N] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "p4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "p4",
+   "--field",
+   "/PT/P",
+   "--group",
+   "/PT",
+   "--condition",
+   "[S] + \"x\" == \"ax\"",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

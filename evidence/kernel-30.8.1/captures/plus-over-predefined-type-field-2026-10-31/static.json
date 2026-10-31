@@ -1,0 +1,53 @@
+[
+ {
+  "row": "p1",
+  "route": "rule check",
+  "declaredIn": "/PT",
+  "errorField": "/PT/P",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "p2",
+  "route": "rule check",
+  "declaredIn": "/PT",
+  "errorField": "/PT/P",
+  "valid": true,
+  "codes": [
+   "RK_UNGUARDED_STRING_CONCAT"
+  ]
+ },
+ {
+  "row": "p3",
+  "route": "rule check",
+  "declaredIn": "/PT",
+  "errorField": "/PT/P",
+  "valid": false,
+  "codes": [
+   "MVK_NO_STRING_OR_NUMBER_FOR_ADD"
+  ]
+ },
+ {
+  "row": "p4",
+  "route": "rule check",
+  "declaredIn": "/PT",
+  "errorField": "/PT/P",
+  "valid": false,
+  "codes": [
+   "MVK_ERROR_FIELD_NOT_REFERENCED"
+  ]
+ },
+ {
+  "row": "comp-Out",
+  "route": "computation add --dry-run",
+  "computedField": "/PT/Out",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "model-check",
+  "route": "model check",
+  "valid": true,
+  "codes": []
+ }
+]

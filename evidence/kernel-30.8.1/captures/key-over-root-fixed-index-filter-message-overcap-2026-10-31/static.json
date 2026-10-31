@@ -1,0 +1,52 @@
+[
+ {
+  "row": "h1",
+  "route": "rule check",
+  "declaredIn": "/IxFix",
+  "errorField": "/IxFix/Cover/CAmt",
+  "valid": false,
+  "codes": [
+   "MVK_SEMANTIC_INDEX_NOT_ALLOWED"
+  ]
+ },
+ {
+  "row": "h2",
+  "route": "rule check",
+  "declaredIn": "/IxFix",
+  "errorField": "/IxFix/Cover/CAmt",
+  "valid": false,
+  "codes": [
+   "MVK_FIELDNAME_NOT_UNIQUE"
+  ]
+ },
+ {
+  "row": "m1",
+  "route": "rule check",
+  "declaredIn": "/IxFix",
+  "errorField": "/IxFix/Cover/CAmt",
+  "valid": false,
+  "codes": [
+   "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
+  ]
+ },
+ {
+  "row": "m2",
+  "route": "rule check",
+  "declaredIn": "/IxFix",
+  "errorField": "/IxFix/Cover/CAmt",
+  "valid": false,
+  "codes": [
+   "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
+  ]
+ },
+ {
+  "row": "m0",
+  "route": "rule check",
+  "declaredIn": "/IxFix",
+  "errorField": "/IxFix/Cover/CAmt",
+  "valid": true,
+  "codes": [
+   "RK_INVERTED_REQUIREDNESS"
+  ]
+ }
+]

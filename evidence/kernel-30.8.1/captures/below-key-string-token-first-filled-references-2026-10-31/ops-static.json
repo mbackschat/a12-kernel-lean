@@ -1,0 +1,87 @@
+[
+ {
+  "id": "S1S",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "S1S",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And [Tag For \"b\"] == \"s\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "S1E",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "S1E",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And [Kind For \"b\"] == \"p\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "S1F",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "S1F",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And FirstFilledValue(Tag For \"b\") == \"s\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "S1F2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "S1F2",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And FirstFilledValue(Tag For \"b\", Tag) == \"s\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "S1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "S1",
+   "--field",
+   "/Depot/Bins/Slots/Note",
+   "--group",
+   "/Depot/Bins/Slots",
+   "--condition",
+   "FieldFilled(Note) And [Qty For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

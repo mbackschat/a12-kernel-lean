@@ -636,3 +636,12 @@ Static admission, operand kind gates, and diagnostic-class probes. Evaluation an
 - `lean`: The [rule-check projection](../../A12Kernel/Evidence/RuleCheckProjection.lean) agrees with all 91 rows once it reads a computation spec's `errorCodesToSuppress`, the eight admitted root-index keys since the [single-instance key](model-structure-and-declaration-probes.md#src-single-instance-key) change.
 - `limit`: Static admission and leading class only. A `−1` maximum with no declared minimum, `INVALID_INDEX_FIELD_INCONSISTENT_TYPES` and an empty category after the arrow are unmeasured.
 - `bytes`: [Capture](../../evidence/kernel-30.8.1/captures/unknown-scale-and-root-index-2026-10-28/). [Manifest](../../evidence/kernel-30.8.1/captures/unknown-scale-and-root-index-2026-10-28/MANIFEST.sha256), SHA-256 `faf857af0e126f8e2a43ad21199c985f40e43912a60416ccd1d23d5785de3fbd`.
+
+<a id="src-plus-over-predefined-type"></a>
+#### A predefined type is declared as a Custom field type, and `+` over it is admitted and concatenates, measured locally 2026-10-31
+
+- `producer`: a12-dmkits `08b0d6499c98b132257ec961eb214de73fa223e3`, measurement checkout and primary checkout clean before and after; dmtool `0.13.0`, Kernel `30.8.1` built and runtime; both strategies agree on every row. `rule check`, a `computation add --dry-run` and `model check` over `PT_DM`, and one `:adapter:kernelProbe` run observing `validateFull` and `compute` with `customFieldTypes` registering `PtCode`.
+- `declaration`: the field schema, the predefined-type registry of `dmtool manifest` and the model JSON offer one declaration, `CustomFieldType` with a type name and optional lengths, and no base-kind key, so no predefined type of another kind is declarable on this route.
+- `measured`: `[P] + "x" == "ax"` and `[P] + [S] == "ab"` are admitted, and `[P] + [N] > 0` draws `MVK_NO_STRING_OR_NUMBER_FOR_ADD`. `Out = [P] + "x"` computes `ax` for `P` at `a`.
+- `lean`: the replay host registers no custom field type, so the runtime request stays unprepared.
+- `bytes`: [capture](../../evidence/kernel-30.8.1/captures/plus-over-predefined-type-field-2026-10-31/).

@@ -1,0 +1,87 @@
+[
+ {
+  "id": "r1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r1",
+   "--field",
+   "/Q2/A/B/X",
+   "--group",
+   "/Q2",
+   "--condition",
+   "GroupFilled(A For \"a\") And [A/B/X] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r2",
+   "--field",
+   "/Q2/A/B/X",
+   "--group",
+   "/Q2",
+   "--condition",
+   "[A/B/X For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r3",
+   "--field",
+   "/Q2/A/B/X",
+   "--group",
+   "/Q2/A",
+   "--condition",
+   "GroupFilled(B For \"b\") And [T] == \"t\"",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r4",
+   "--field",
+   "/Q2/A/B/X",
+   "--group",
+   "/Q2/A",
+   "--condition",
+   "[B/X For \"b\"] > 0 And GroupFilled(/Q2/A For \"a\")",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "r5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "r5",
+   "--field",
+   "/Q2/A/B/X",
+   "--group",
+   "/Q2/A",
+   "--condition",
+   "GroupFilled(/Q2/A For \"a\") And [B/X For \"b\"] > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

@@ -1,0 +1,96 @@
+{
+  "header" : {
+    "id" : "PT_DM",
+    "modelType" : "document",
+    "modelVersion" : "28.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "PT_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/PT",
+        "name" : "PT",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/PT/P",
+            "name" : "P",
+            "Field" : {
+              "fieldType" : {
+                "type" : "CustomFieldType",
+                "CustomFieldType" : {
+                  "name" : "PtCode"
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/PT/S",
+            "name" : "S",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/PT/N",
+            "name" : "N",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/PT/Out",
+            "name" : "Out",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/PT/OutComp",
+            "name" : "OutComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Out",
+              "computationAlternatives" : [ {
+                "operation" : "[P] + \"x\""
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "probe"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

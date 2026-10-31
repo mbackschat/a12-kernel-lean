@@ -1,0 +1,95 @@
+[
+ {
+  "row": "JSS",
+  "route": "rule check",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "JDD",
+  "route": "rule check",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "JDT",
+  "route": "rule check",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "JDM",
+  "route": "rule check",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "JDF",
+  "route": "rule check",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "JTM",
+  "route": "rule check",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "JSC",
+  "route": "rule check",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "model-check",
+  "route": "model check",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "fmt-time-HH:mm",
+  "route": "field add --dry-run",
+  "declaration": "TIME HH:mm",
+  "valid": false,
+  "source": "KERNEL",
+  "codes": []
+ },
+ {
+  "row": "fmt-datetime-yyyy-MM-ddTHH:mm",
+  "route": "field add --dry-run",
+  "declaration": "DATETIME yyyy-MM-dd'T'HH:mm",
+  "valid": false,
+  "source": "KERNEL",
+  "codes": []
+ },
+ {
+  "row": "fmt-datetime-yyyy-MM-dd HH:mm",
+  "route": "field add --dry-run",
+  "declaration": "DATETIME yyyy-MM-dd HH:mm",
+  "valid": false,
+  "source": "KERNEL",
+  "codes": []
+ },
+ {
+  "row": "fmt-time-HH:mm:ss",
+  "route": "field add --dry-run",
+  "declaration": "TIME HH:mm:ss",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "fmt-datetime-yyyy-MM-ddTHH:mm:ss",
+  "route": "field add --dry-run",
+  "declaration": "DATETIME yyyy-MM-dd'T'HH:mm:ss",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "fmt-datefragment-yyyy-MM",
+  "route": "field add --dry-run",
+  "declaration": "DATEFRAGMENT yyyy-MM",
+  "valid": true,
+  "codes": []
+ }
+]

@@ -1,0 +1,598 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "XJ2_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "SS-eq",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "SS-ne",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JSS",
+       "field": "XJ/LSS/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RSS[-5]/K",
+        "/XJ[1]/RSS[-5]/W",
+        "XJ/LSS/K",
+        "XJ/LSS/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RSS[-5]/K",
+        "/XJ[1]/RSS[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JSS",
+       "field": "XJ/LSS/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RSS[-5]/K",
+        "/XJ[1]/RSS[-5]/W",
+        "XJ/LSS/K",
+        "XJ/LSS/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RSS[-5]/K",
+        "/XJ[1]/RSS[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DD-eq",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "DD-ne",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JDD",
+       "field": "XJ/LDD/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDD[-5]/K",
+        "/XJ[1]/RDD[-5]/W",
+        "XJ/LDD/K",
+        "XJ/LDD/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDD[-5]/K",
+        "/XJ[1]/RDD[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JDD",
+       "field": "XJ/LDD/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDD[-5]/K",
+        "/XJ[1]/RDD[-5]/W",
+        "XJ/LDD/K",
+        "XJ/LDD/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDD[-5]/K",
+        "/XJ[1]/RDD[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-mid",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JDT",
+       "field": "XJ/LDT/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W",
+        "XJ/LDT/K",
+        "XJ/LDT/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JDT",
+       "field": "XJ/LDT/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W",
+        "XJ/LDT/K",
+        "XJ/LDT/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-day",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JDT",
+       "field": "XJ/LDT/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W",
+        "XJ/LDT/K",
+        "XJ/LDT/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JDT",
+       "field": "XJ/LDT/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W",
+        "XJ/LDT/K",
+        "XJ/LDT/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DT-ne",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JDT",
+       "field": "XJ/LDT/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W",
+        "XJ/LDT/K",
+        "XJ/LDT/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JDT",
+       "field": "XJ/LDT/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W",
+        "XJ/LDT/K",
+        "XJ/LDT/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDT[-5]/K",
+        "/XJ[1]/RDT[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DM-mid",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JDM",
+       "field": "XJ/LDM/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDM[-5]/K",
+        "/XJ[1]/RDM[-5]/W",
+        "XJ/LDM/K",
+        "XJ/LDM/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDM[-5]/K",
+        "/XJ[1]/RDM[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JDM",
+       "field": "XJ/LDM/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDM[-5]/K",
+        "/XJ[1]/RDM[-5]/W",
+        "XJ/LDM/K",
+        "XJ/LDM/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDM[-5]/K",
+        "/XJ[1]/RDM[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DM-day",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JDM",
+       "field": "XJ/LDM/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDM[-5]/K",
+        "/XJ[1]/RDM[-5]/W",
+        "XJ/LDM/K",
+        "XJ/LDM/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDM[-5]/K",
+        "/XJ[1]/RDM[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JDM",
+       "field": "XJ/LDM/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDM[-5]/K",
+        "/XJ[1]/RDM[-5]/W",
+        "XJ/LDM/K",
+        "XJ/LDM/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDM[-5]/K",
+        "/XJ[1]/RDM[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DF-in",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JDF",
+       "field": "XJ/LDF/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDF[-5]/K",
+        "/XJ[1]/RDF[-5]/W",
+        "XJ/LDF/K",
+        "XJ/LDF/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDF[-5]/K",
+        "/XJ[1]/RDF[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JDF",
+       "field": "XJ/LDF/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDF[-5]/K",
+        "/XJ[1]/RDF[-5]/W",
+        "XJ/LDF/K",
+        "XJ/LDF/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDF[-5]/K",
+        "/XJ[1]/RDF[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "DF-first",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JDF",
+       "field": "XJ/LDF/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDF[-5]/K",
+        "/XJ[1]/RDF[-5]/W",
+        "XJ/LDF/K",
+        "XJ/LDF/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDF[-5]/K",
+        "/XJ[1]/RDF[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JDF",
+       "field": "XJ/LDF/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RDF[-5]/K",
+        "/XJ[1]/RDF[-5]/W",
+        "XJ/LDF/K",
+        "XJ/LDF/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RDF[-5]/K",
+        "/XJ[1]/RDF[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TM-same",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JTM",
+       "field": "XJ/LTM/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RTM[-5]/K",
+        "/XJ[1]/RTM[-5]/W",
+        "XJ/LTM/K",
+        "XJ/LTM/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RTM[-5]/K",
+        "/XJ[1]/RTM[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JTM",
+       "field": "XJ/LTM/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RTM[-5]/K",
+        "/XJ[1]/RTM[-5]/W",
+        "XJ/LTM/K",
+        "XJ/LTM/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RTM[-5]/K",
+        "/XJ[1]/RTM[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TM-mid",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JTM",
+       "field": "XJ/LTM/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RTM[-5]/K",
+        "/XJ[1]/RTM[-5]/W",
+        "XJ/LTM/K",
+        "XJ/LTM/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RTM[-5]/K",
+        "/XJ[1]/RTM[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JTM",
+       "field": "XJ/LTM/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RTM[-5]/K",
+        "/XJ[1]/RTM[-5]/W",
+        "XJ/LTM/K",
+        "XJ/LTM/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RTM[-5]/K",
+        "/XJ[1]/RTM[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

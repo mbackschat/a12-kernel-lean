@@ -37,4 +37,12 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
-No entry is pending or handed off.
+<a id="spec-2026-10-31-02"></a>
+### SPEC-2026-10-31-02 — A predefined type is a Custom declaration, so `+`'s string-like operands are String and Custom
+
+- `status`: pending
+- `canonical`: [spec/04 §4.1](../spec/04-numbers-and-decimals.md#41-arithmetic-operand-kinds), the `+` paragraph.
+- `delta`: Removes the predefined type as a third string-like operand kind: the only predefined-type declaration is a Custom field type, and `+` over one is admitted and concatenates.
+- `basis`: the [predefined-type checkpoint](sources/static-admission-and-class-probes.md#src-plus-over-predefined-type), `rule check`, `model check` and `compute` at a12-dmkits `08b0d6499`, Kernel 30.8.1, measured 2026-10-31.
+- `acceptance`: Reconcile a12-dmkits' operand-kind account of `+`. The search covered the field schema, `dmtool manifest` and the model JSON; another declaration route is not excluded.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

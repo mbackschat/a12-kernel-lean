@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "08b0d6499c98b132257ec961eb214de73fa223e3",
+    "state" : "CLEAN"
+  },
+  "model" : "24263b3afbf112305b90a38fc47aa77cebfff4c88ea2e5d3b37e79369b26f6ee",
+  "observations" : [ {
+    "id" : "p1",
+    "inputHash" : "a6af9ba8ce5072c51bae9b72225cb561b204c423099a4aceb46d345f11a8d5d4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "p2",
+    "inputHash" : "23cd9081693a01080d90a9f3290e8c109b15d9a7ab3e4306bec7fa9e11aa053a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_UNGUARDED_STRING_CONCAT" ]
+  }, {
+    "id" : "p3",
+    "inputHash" : "919010137af7de36e19a3f4610cefd5ca66ccd4e832bc64e9724de09ce9ee539",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_STRING_OR_NUMBER_FOR_ADD" ]
+  }, {
+    "id" : "p4",
+    "inputHash" : "b40218a43a2013b883c37fb27253cc3bb749a6b84c745eb64595ccee6644e540",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_REFERENCED" ]
+  } ]
+}

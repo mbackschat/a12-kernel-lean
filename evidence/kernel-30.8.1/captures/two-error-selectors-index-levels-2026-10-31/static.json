@@ -1,0 +1,45 @@
+[
+ {
+  "row": "r1",
+  "route": "rule check",
+  "declaredIn": "/Q2",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "r2",
+  "route": "rule check",
+  "declaredIn": "/Q2",
+  "valid": false,
+  "codes": [
+   "MVK_MULTIPLE_INDEX_FIELDS"
+  ]
+ },
+ {
+  "row": "r3",
+  "route": "rule check",
+  "declaredIn": "/Q2/A",
+  "valid": false,
+  "codes": [
+   "MVK_MULTIPLE_INDEX_FIELDS"
+  ]
+ },
+ {
+  "row": "r4",
+  "route": "rule check",
+  "declaredIn": "/Q2/A",
+  "valid": false,
+  "codes": [
+   "MVK_MULTIPLE_INDEX_FIELDS"
+  ]
+ },
+ {
+  "row": "r5",
+  "route": "rule check",
+  "declaredIn": "/Q2/A",
+  "valid": false,
+  "codes": [
+   "MVK_MULTIPLE_INDEX_FIELDS"
+  ]
+ }
+]

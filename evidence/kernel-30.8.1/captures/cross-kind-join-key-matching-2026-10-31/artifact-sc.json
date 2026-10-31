@@ -1,0 +1,84 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "XJ_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "SC-eq",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": []
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": []
+    }
+   ]
+  },
+  {
+   "name": "SC-ne",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "JSC",
+       "field": "XJ/LSC/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RSC[-5]/K",
+        "/XJ[1]/RSC[-5]/W",
+        "XJ/LSC/K",
+        "XJ/LSC/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RSC[-5]/K",
+        "/XJ[1]/RSC[-5]/W"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "JSC",
+       "field": "XJ/LSC/V",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "",
+       "referenced": [
+        "/XJ[1]/RSC[-5]/K",
+        "/XJ[1]/RSC[-5]/W",
+        "XJ/LSC/K",
+        "XJ/LSC/V"
+       ],
+       "fillToFix": [
+        "/XJ[1]/RSC[-5]/K",
+        "/XJ[1]/RSC[-5]/W"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,121 @@
+[
+ {
+  "id": "JSS",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "JSS",
+   "--field",
+   "/XJ/LSS/V",
+   "--group",
+   "/XJ",
+   "--condition",
+   "FieldFilled(LSS/V) And FieldNotFilled(RSS/W)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "JDD",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "JDD",
+   "--field",
+   "/XJ/LDD/V",
+   "--group",
+   "/XJ",
+   "--condition",
+   "FieldFilled(LDD/V) And FieldNotFilled(RDD/W)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "JDT",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "JDT",
+   "--field",
+   "/XJ/LDT/V",
+   "--group",
+   "/XJ",
+   "--condition",
+   "FieldFilled(LDT/V) And FieldNotFilled(RDT/W)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "JDM",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "JDM",
+   "--field",
+   "/XJ/LDM/V",
+   "--group",
+   "/XJ",
+   "--condition",
+   "FieldFilled(LDM/V) And FieldNotFilled(RDM/W)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "JDF",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "JDF",
+   "--field",
+   "/XJ/LDF/V",
+   "--group",
+   "/XJ",
+   "--condition",
+   "FieldFilled(LDF/V) And FieldNotFilled(RDF/W)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "JTM",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "JTM",
+   "--field",
+   "/XJ/LTM/V",
+   "--group",
+   "/XJ",
+   "--condition",
+   "FieldFilled(LTM/V) And FieldNotFilled(RTM/W)",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "JSC",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "JSC",
+   "--field",
+   "/XJ/LSC/V",
+   "--group",
+   "/XJ",
+   "--condition",
+   "FieldFilled(LSC/V) And FieldNotFilled(RSC/W)",
+   "--message",
+   "en_US=probe"
+  ]
+ }
+]

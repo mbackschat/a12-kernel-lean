@@ -1,0 +1,87 @@
+[
+ {
+  "id": "h1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h1",
+   "--field",
+   "/IxFix/Cover/CAmt",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "Sum(Cover/Reps*/RAmt Having [Cover/CAmt For \"X\"] > 0) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "h2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "h2",
+   "--field",
+   "/IxFix/Cover/CAmt",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "NumberOfFilledFields(Cover/Reps*/RAmt Having [RAmt] > [Cover/CAmt For \"X\"]) > 0",
+   "--message",
+   "en_US=probe"
+  ]
+ },
+ {
+  "id": "m1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m1",
+   "--field",
+   "/IxFix/Cover/CAmt",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Cover/CAmt)",
+   "--message",
+   "en_US=probe $Cover/CAmt.value For \"X\"$"
+  ]
+ },
+ {
+  "id": "m2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m2",
+   "--field",
+   "/IxFix/Cover/CAmt",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Cover/CAmt)",
+   "--message",
+   "en_US=probe $Cover/CKind->Grade For \"X\"$"
+  ]
+ },
+ {
+  "id": "m0",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--code",
+   "m0",
+   "--field",
+   "/IxFix/Cover/CAmt",
+   "--group",
+   "/IxFix",
+   "--condition",
+   "FieldFilled(Cover/CAmt)",
+   "--message",
+   "en_US=probe $Cover/CAmt.value$"
+  ]
+ }
+]

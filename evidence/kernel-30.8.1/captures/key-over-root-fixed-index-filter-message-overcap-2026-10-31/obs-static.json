@@ -1,0 +1,42 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.13.0",
+  "kernelBuilt" : "30.8.1",
+  "kernelRuntime" : "30.8.1",
+  "source" : {
+    "revision" : "08b0d6499c98b132257ec961eb214de73fa223e3",
+    "state" : "CLEAN"
+  },
+  "model" : "85af060dc1bd9895c02fbfc701ff149178c37d6184003eb613f459d5a5ad04bc",
+  "observations" : [ {
+    "id" : "h1",
+    "inputHash" : "22b4b184bae9842955eccf258823f502993784354cc228722c77106ce47f2e9f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_SEMANTIC_INDEX_NOT_ALLOWED" ]
+  }, {
+    "id" : "h2",
+    "inputHash" : "7cba940582fa4e82957575452050eeea62e10da7e2098fedd31ae2e6482cc0a2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_FIELDNAME_NOT_UNIQUE" ]
+  }, {
+    "id" : "m1",
+    "inputHash" : "d4a657c29e1d2759d9f8e6cd5844e8f25b560f17ddaadeb1c63eab64e1204276",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_FOR_ERROR_TEXT_INVALID" ]
+  }, {
+    "id" : "m2",
+    "inputHash" : "1cc6a6445fa4a898a8ac032f5eb9ac1b730816776a59c73276f4a79bd611b285",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_FOR_ERROR_TEXT_INVALID" ]
+  }, {
+    "id" : "m0",
+    "inputHash" : "c1467ad4ad616bbd408cb1c5f44a1039de4657ae18da3bd64a8202c75219b616",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  } ]
+}

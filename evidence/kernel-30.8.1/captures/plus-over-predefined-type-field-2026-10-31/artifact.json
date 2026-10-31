@@ -1,0 +1,82 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.13.0",
+  "kernel": {
+   "builtAgainst": "30.8.1",
+   "runtime": "30.8.1"
+  },
+  "source": {
+   "revision": "08b0d6499c98b132257ec961eb214de73fa223e3",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "PT_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "pt-compute",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "OutComp",
+       "field": "PT/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "PT/Out",
+        "PT/P"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "PT/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "ax"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "OutComp",
+       "field": "PT/Out",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "",
+       "referenced": [
+        "PT/Out",
+        "PT/P"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "PT/Out",
+        "cleared": false,
+        "errored": false,
+        "value": "ax"
+       }
+      ],
+      "formalErrorsInOperands": []
+     }
+    }
+   ]
+  }
+ ]
+}

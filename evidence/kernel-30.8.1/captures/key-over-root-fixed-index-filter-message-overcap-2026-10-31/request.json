@@ -1,0 +1,153 @@
+{
+ "model": "A30d_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "rows-overcap",
+   "documentInline": {
+    "IxRoot": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CFlag": "true"
+     },
+     "RootKey": "X",
+     "BFlag": "false"
+    },
+    "IxFix": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CoverKey": "X",
+      "CFlag": "true"
+     },
+     "KeyF": "X",
+     "BFlag": "false",
+     "Rows": [
+      {
+       "RL": "a",
+       "Fix": {
+        "FKey": "X",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "b",
+       "Fix": {
+        "FKey": "X",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "c",
+       "Fix": {
+        "FKey": "X",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "d",
+       "Fix": {
+        "FKey": "X",
+        "FAmt": "5"
+       }
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "a-match",
+   "documentInline": {
+    "IxRoot": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CFlag": "true"
+     },
+     "RootKey": "X",
+     "BFlag": "false"
+    },
+    "IxFix": {
+     "Note": "n",
+     "Cover": {
+      "CAmt": "5",
+      "CNote": "n",
+      "Reps": [
+       {
+        "RAmt": "1",
+        "RLab": "a"
+       },
+       {
+        "RAmt": "2",
+        "RLab": "b"
+       }
+      ],
+      "CoverKey": "X",
+      "CFlag": "true"
+     },
+     "KeyF": "X",
+     "BFlag": "false",
+     "Rows": [
+      {
+       "RL": "a",
+       "Fix": {
+        "FKey": "X",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "b",
+       "Fix": {
+        "FKey": "Y",
+        "FAmt": "5"
+       }
+      },
+      {
+       "RL": "c",
+       "Fix": {
+        "FAmt": "5"
+       }
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,47 @@
+[
+ {
+  "row": "S1S",
+  "route": "rule check",
+  "declaredIn": "/Depot/Bins/Slots",
+  "errorField": "/Depot/Bins/Slots/Note",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "S1E",
+  "route": "rule check",
+  "declaredIn": "/Depot/Bins/Slots",
+  "errorField": "/Depot/Bins/Slots/Note",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "row": "S1F",
+  "route": "rule check",
+  "declaredIn": "/Depot/Bins/Slots",
+  "errorField": "/Depot/Bins/Slots/Note",
+  "valid": false,
+  "codes": [
+   "MVK_PARAMSIZE_INVALIDN"
+  ],
+  "note": "as written in the plan: single operand"
+ },
+ {
+  "row": "S1F2",
+  "route": "rule check",
+  "declaredIn": "/Depot/Bins/Slots",
+  "errorField": "/Depot/Bins/Slots/Note",
+  "valid": true,
+  "codes": [],
+  "note": "nearest admitted FirstFilledValue form: the keyed read plus the unkeyed same-field operand"
+ },
+ {
+  "row": "S1",
+  "route": "rule check",
+  "declaredIn": "/Depot/Bins/Slots",
+  "errorField": "/Depot/Bins/Slots/Note",
+  "valid": true,
+  "codes": [],
+  "note": "existing Number rule, control"
+ }
+]

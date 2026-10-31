@@ -1,0 +1,52 @@
+{
+ "model": "XJ_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "customFieldTypes": {
+  "ProbeCode": {
+   "pattern": "[ab]+"
+  }
+ },
+ "rows": [
+  {
+   "name": "SC-eq",
+   "documentInline": {
+    "XJ": {
+     "LSC": [
+      {
+       "K": "a",
+       "V": "v"
+      }
+     ],
+     "RSC": [
+      {
+       "K": "a",
+       "W": "w"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "SC-ne",
+   "documentInline": {
+    "XJ": {
+     "LSC": [
+      {
+       "K": "a",
+       "V": "v"
+      }
+     ],
+     "RSC": [
+      {
+       "K": "b",
+       "W": "w"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}
