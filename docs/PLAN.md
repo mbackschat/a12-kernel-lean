@@ -12,7 +12,7 @@
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
 - `sequence`: K21 checks semantic transport, K22 accepts conformance, then U01 implements the Rust interpreter, U02 repeats it cold on the rewritten spec, and U03 builds the SMT consumer. Concrete repository, dependency and public-contract choices retain their existing decision boundaries.
-- `active`: none. The [measured-divergence milestone](#measured-divergence-milestone) closed on 2026-10-31; Q2 waits for the owner's Q2-P1 profile decision.
+- `active`: the [kernel 31.1.1 migration](#kernel-31-migration), waiting on a12-dmkits' 31.1.1 probe revision. The [measured-divergence milestone](#measured-divergence-milestone) closed on 2026-10-31; Q2 waits for the owner's Q2-P1 profile decision.
 - `stop`: Stop the conformance phase at K22 and select U01. A genuine blocker keeps its task unchecked. Do not append an automatic conformance-tail programme or require the consumer products before K22.
 
 <a id="single-track-breadth-queue"></a>
@@ -208,6 +208,15 @@ The request adopts this sequencing and the two consumer objectives. It does not 
 
 - `state`: closed on 2026-10-31 after its cold review was disposed. Every scoped item landed red first against its retained row, the five measured accounts joined the batch, and the population replay admits no `tier2` validation instance.
 - `remaining`: the unmeasured extensions the review named are calibration or representation bullets in [SG9](gaps/paths-and-groups.md#gap-sg9). [SG7](gaps/strings-and-messages.md#gap-sg7)'s unregistered-validator timing stays deferred until a consumer needs the Kernel's failure timing. Its two spec deltas, `SPEC-2026-10-31-01` and `-02`, are accepted at a12-dmkits `aa66320b6`.
+
+<a id="kernel-31-migration"></a>
+### Kernel 31.1.1 migration — owner direction 2026-11-02
+
+- `decision`: the owner decided on 2026-11-02 that both projects migrate from A12 2025.06-ext5 (kernel 30.8.1, DM 28.4.0) to 2026.06-ext1 (kernel 31.1.1, DM 29.4.0). a12-dmkits relayed it in its Letter A, and the owner confirmed it in this repository's session. The floor is single: one 31.1.1 account, not dual support.
+- `frozen`: local tag `kernel-30.8.1-final` on `f54b66b2` holds the last account that targets 30.8.1. Retained observations under `evidence/kernel-30.8.1/` keep their version and their meaning.
+- `method`: a clause moves to 31.1.1 only when a measured row settles it: a verdict-delta row from a12-dmkits (input, observed at 30.8.1, observed at 31.1.1, oracle), or this project's own measurement. Letter A's change inventory is changelog and source reading, not measurement, and moves no clause on its own. Clauses keyed by a static diagnostic code are checked against the code's 31.1.1 meaning, because at least one code kept its name and changed its meaning.
+- `30.8.1-route`: the [pinned measurement checkout](sources/cross-layer-routes.md#src-measurement-checkout-route) at `08b0d6499`, an ancestor of a12-dmkits' `kernel-30.8.1-final` tag `7b1892c65`, still answers 30.8.1 for a later question. Re-pinning it to a 31.1.1 revision is a separate, recorded step.
+- `next`: a12-dmkits names its 31.1.1 probe revision, then runs this project's retained `request*.json` set at `kernel-30.8.1-final` through the 31.1.1 model migrator and sends back what the migrator changed, lost or refused, followed by verdict-delta letters. CLAUDE.md's goal line names 31.1.1 from this decision on.
 
 <a id="next-consumer-decision"></a>
 ### Next consumers — owner direction and open decision

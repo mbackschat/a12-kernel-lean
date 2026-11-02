@@ -9,6 +9,8 @@ Authority order is **[`../../a12-kernel`](../../a12-kernel) → project-owned [`
 
 All kernel source routes below target kernel **30.8.1**, inspected at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`. Read source to learn behavior; never link, call, ship, or transcribe it.
 
+Since 2026-11-02 the `../a12-kernel` checkout stands at `eec9134` (A12 2026.06-ext1, kernel 31.1.1), the [migration target](PLAN.md#kernel-31-migration). Its working tree therefore answers 31.1.1, and the `_30_8` package links below no longer resolve there (the runtime package is now `_31_1`). Read a 30.8.1 route with `git -C ../a12-kernel show cb66e51:<path>`, and cite a source read by the revision it was taken at.
+
 ## Query contract
 
 Start from the relevant [`spec/` clause](../spec/SEMANTICS-MAP.md), then:
