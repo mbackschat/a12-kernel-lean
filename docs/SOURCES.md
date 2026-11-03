@@ -7,9 +7,7 @@ This hub and bounded [`sources/`](sources/) records own provenance: routes from 
 
 Authority order is **[`../../a12-kernel`](../../a12-kernel) → project-owned [`../spec/`](../spec/) and Lean theory → [a12-dmkits](../../a12-rulekit)**. The real kernel is the behavioral oracle. The spec and Lean theory are this project’s working semantics-of-record. a12-dmkits is a peer clean-room implementation, source of maintained kernel-executing differentials, and knowledge corpus.
 
-All kernel source routes below target kernel **30.8.1**, inspected at revision `cb66e51fa7ab90b650698f861bf670754e2e1e66`. Read source to learn behavior; never link, call, ship, or transcribe it.
-
-Since 2026-11-02 the `../a12-kernel` checkout stands at `eec9134` (A12 2026.06-ext1, kernel 31.1.1), the [migration target](PLAN.md#kernel-31-migration). Its working tree therefore answers 31.1.1, and the `_30_8` package links below no longer resolve there (the runtime package is now `_31_1`). Read a 30.8.1 route with `git -C ../a12-kernel show cb66e51:<path>`, and cite a source read by the revision it was taken at.
+The kernel source routes below target kernel **31.1.1**, the [migration target](PLAN.md#kernel-31-migration), at revision `eec9134` of the `../a12-kernel` checkout. Every source reading cited for kernel 30.8.1 was taken at `cb66e51fa7ab90b650698f861bf670754e2e1e66` and is cited as plain text pinned to `cb66e51`, readable with `git -C ../a12-kernel show cb66e51:<path>`. Read source to learn behavior; never link, call, ship, or transcribe it.
 
 ## Query contract
 
@@ -72,18 +70,18 @@ The `.st` files are mandatory review inputs whenever generated control flow matt
 
 The main reusable roots are:
 
-- runtime core: [`kernel-rt/kernel-core-runtime/.../_30_8/internal/core/`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/core/);
-- runtime format definitions: [`kernel-rt/kernel-core-runtime/.../_30_8/internal/formatdef/`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/formatdef/);
+- runtime core: [`kernel-rt/kernel-core-runtime/.../_31_1/internal/core/`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_31_1/internal/core/);
+- runtime format definitions: [`kernel-rt/kernel-core-runtime/.../_31_1/internal/formatdef/`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_31_1/internal/formatdef/);
 - parser/static checks: [`kernel-tool/kernel-core-parser/.../check/`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/check/);
 - parse-tree creation/representation: [`kernel-tool/kernel-core-parser/.../parsebaum/`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/parsebaum/);
 - static diagnostic identities and their message text: [`ParserErrorTypesEnum`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/error/ParserErrorTypesEnum.java) and [`error_messages_en.properties`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/resources/internal/vk_parser_error_messages/error_messages_en.properties), which is where an `MVK_*` code found in an envelope is resolved back to its raising gate;
-- declared field types and their format handling: [`kernel-md/kernel-md-a12internal/.../fieldtypes/`](../../a12-kernel/kernel-md/kernel-md-a12internal/src/main/java/com/mgmtp/a12/kernel/md/model/a12internal/fieldtypes/);
+- declared field types and their format handling: [`kernel-md-documentmodel/.../a12internal/fieldtypes/`](../../a12-kernel/kernel-md-documentmodel/src/main/java/com/mgmtp/a12/kernel/md/model/a12internal/fieldtypes/);
 - condition grammar: [`GrammarOnly_ConditionParser.g4`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/antlr4/com/mgmtp/a12/kernel/core/parser/internal/grammar/gen/GrammarOnly_ConditionParser.g4), authoritative for surface spelling where an operator inventory is not;
 - codegen templates: [`kernel-tool/kernel-core-codegen*/src/main/resources/internal/templates/`](../../a12-kernel/kernel-tool/kernel-core-codegen/src/main/resources/internal/templates/);
 - codegen backing beans: [`kernel-tool/kernel-core-codegen/.../backingbeans/`](../../a12-kernel/kernel-tool/kernel-core-codegen/src/main/java/com/mgmtp/a12/kernel/core/codegen/internal/generator/backingbeans/);
 - immutable DocumentV2 API: [`kernel-md-document-v2`](../../a12-kernel/kernel-md/kernel-md-document-v2/src/main/java/com/mgmtp/a12/kernel/md/document/apiV2/immutable/);
 - runtime service/result assembly: [`kernel-md-runtime-service`](../../a12-kernel/kernel-md/kernel-md-runtime-service/src/main/java/com/mgmtp/a12/kernel/md/rt/);
-- model API and codegen parameters: [`kernel-md-model-api`](../../a12-kernel/kernel-md/kernel-md-model-api/src/main/java/com/mgmtp/a12/kernel/md/model/api/) and [`kernel-md-model`](../../a12-kernel/kernel-md/kernel-md-model/src/main/java/com/mgmtp/a12/kernel/md/model/).
+- model API and codegen parameters: [`kernel-md-documentmodel`](../../a12-kernel/kernel-md-documentmodel/src/main/java/com/mgmtp/a12/kernel/md/model/api/) and [`kernel-md-model`](../../a12-kernel/kernel-md/kernel-md-model/src/main/java/com/mgmtp/a12/kernel/md/model/).
 
 ## Clause-to-source drill map
 
