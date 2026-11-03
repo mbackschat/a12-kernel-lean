@@ -62,7 +62,7 @@ Each section's table names the column's classes, links the clause that defines e
 
 `AtLeastOneDateRangeOverlaps`' class concerns its list cells; its scalar follows [§6 §8](05-dates-and-time.md#8-date-ranges-and-overlap).
 
-**Measured scope.** [§3 B.2](02-logic-and-formal-errors.md#b2-the-three-cell-states--the-third-one-is-not-empty) records the measured members, and [§2 A.2](03-empty-and-required.md#a2-where-an-operator-overrides-its-kinds-default) and [§9 §3.8](07-repetition-and-iteration.md#38-sumofproducts) the count family's and `SumOfProducts`' measurements.
+**Measured scope.** [§3 B.2](02-logic-and-formal-errors.md#b2-the-three-cell-states--the-third-one-is-not-empty) records the measured members, and [§2 A.2](03-empty-and-required.md#a2-where-an-operator-overrides-its-kinds-default) and [§9 §3.8](07-repetition-and-iteration.md#38-sumofproducts) and [§9 §3.10](07-repetition-and-iteration.md#310-sumofterms) the count family's, `SumOfProducts`' and `SumOfTerms`' measurements.
 
 ### Unavailable read in computation
 
@@ -112,6 +112,7 @@ The first six classes are leaf classes; the last three are operand classes, cons
 | `date validity` | [§6 §3](05-dates-and-time.md#3-constructing-dates-and-checking-validity) | incomplete or unreal construction |
 | `overlap scan` | [§6 §8](05-dates-and-time.md#8-date-ranges-and-overlap) | the overlap predicate's scan |
 | `pair product` | [§9 §3.8](07-repetition-and-iteration.md#38-sumofproducts) | per-pair missingness |
+| `term-sum capacity` | [§9 §3.10](07-repetition-and-iteration.md#310-sumofterms) | VALUE only when every declared row is visited and has a term value |
 | `always VALUE` | [§12 §4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing) | every firing is VALUE |
 | `always OMISSION` | [§12 §4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing) | every firing is OMISSION |
 | `n/a` | — | a connective ([§12 §3](10-validation-and-polarity.md#3-every-fired-message-is-typed--value-vs-omission-)), or an operator no admitted rule contains |
@@ -135,6 +136,7 @@ The first six classes are leaf classes; the last three are operand classes, cons
 | `positional` | [§12 §4](10-validation-and-polarity.md#4-the-directional-fill-machinery-behind-the-typing) | where the filtered value was compared |
 | `fill witness` | [§1 A.4.5](02-logic-and-formal-errors.md#a45-validation-filtered-field-fill-lists) | the deciding filled witnesses |
 | `overlap scan` | [§6 §8](05-dates-and-time.md#8-date-ranges-and-overlap) | the overlap predicate's scan |
+| `unvisited row` | [§9 §3.10](07-repetition-and-iteration.md#310-sumofterms) | a dropped row counts as not visited |
 | `n/a` | — | no operand can carry a filter, by the basis below |
 
 **The `n/a` basis.** A filter needs a starred operand and a group operand takes none ([§9 §3](07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation)), so F is `n/a` exactly where a chapter rules out a filtered operand:
@@ -165,6 +167,7 @@ An operator no chapter restricts this way holds `not stated`.
 | `none` | [§12 §5.4](10-validation-and-polarity.md#54-the-extent-of-a-multi-cell-operand) | non-relevant members skipped |
 | `key rows` | [§12 §5.3](10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set) | every key component relevant |
 | `selection` | [§12 §5.5](10-validation-and-polarity.md#55-a-selection-that-resolves-to-no-row) | index and target coverage |
+| `whole capacity` | [§9 §3.10](07-repetition-and-iteration.md#310-sumofterms) | every row of the capacity relevant as a whole, and an error-free row 1 |
 | `n/a` | — | no multi-cell operand, by the basis below; each cell read is judged by [§12 §5.3](10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set) |
 
 X is `n/a` for the operators the first four bullets above list and for the operators with no operand; `CurrentRepetition` reads no cell ([§12 §5.3](10-validation-and-polarity.md#53-reading-a-cell-under-a-relevant-set)). A keyed or semantic-index operand of any operator adds the `selection` judgment to that operator's own class ([§12 §5.5](10-validation-and-polarity.md#55-a-selection-that-resolves-to-no-row)).
@@ -494,6 +497,7 @@ A comparison's V and C cells concern its own reads; each operand's cells are its
 | `MinValue` / `MinWert` (Date/Time/DateTime) | `all-cells` | `poisons` | `field source` | `not-given` | `not-given` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | `same set`; `full only` | `skipped` | `no lift` | n/a | not stated | not stated; not stated | `ordinary` |
 | `MaxValue` / `MaxWert` (Date/Time/DateTime) | `all-cells` | `poisons` | `field source` | `not-given` | `not-given` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | `same set`; `full only` | `skipped` | `no lift` | n/a | not stated | not stated; not stated | `ordinary` |
 | `SumOfProducts` / `SummeVonProdukten` | `all-cells` | `poisons` | `field source` | `pair product` | n/a | `complete cross-product` | not stated; filter n/a | `entity`, `entity` | n/a | not stated; not stated | `fillable zero` | `no lift` | `scale sum`; not stated | not stated | `selected`; not stated | `ordinary` |
+| `SumOfTerms` / `SummeVonTermen` | `all-cells` | `poisons` | not stated | `term-sum capacity` | `unvisited row` | `whole capacity` | `instantiated`; not stated | `entity`, `value` | n/a | not stated; not stated | not stated | not stated | not stated; not stated | not stated | not stated; not stated | `ordinary` |
 | `NumberOfFilledFields` / `AnzahlAngegebenerFelder` | `all-cells` | `poisons` | `field source` | `count headroom` | `filled shrink` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | `any format`; `any precision` | `not counted` | `lifting count` | not stated; not stated | `presence only` | `selected`; `category refused, before repeat` | `upward count` |
 | `NumberOfValueInFields` / `AnzahlWertInFeldliste` | `all-cells` | `poisons` | `field source` | `count headroom` | `match shrink` | `declared slots` | `instantiated`; filter `dense` | `literal` `In` `entity`… | n/a | not stated; not stated | `not counted` | `no lift` | `integral`; not stated | not stated | not stated; not stated | `ordinary` |
 | `NumberOfDifferentValues` / `AnzahlVerschiedenerWerte` | `all-cells` | `poisons` | `field source` | `count headroom` | `full movement` | `all-rows` | `instantiated`; filter `sparse-enabled` | `entity`… | n/a | not stated; `full only` | `not counted` | `lifting count` | `integral`; not stated | `raw class` | `selected`; `category refused, before repeat` | `upward count` |

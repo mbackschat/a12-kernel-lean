@@ -313,7 +313,7 @@ Sources: [list reads](../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-l
 
 ## 5. Keyword catalog (English ↔ German, verified pairs)
 
-**The table is the complete set of keyword pairs, with each keyword's grammatical category.** A spelling in neither column is an ordinary name. With the language-neutral `In` family (`In`, `in`, `IN`) and the case variants of concrete syntax §1 (two more spellings each for `And`, `Or` and `To` in either language) it accounts for the 112 English spellings, and with the 13 German-only constructs below for the 125 German ones. Symbols are language-neutral. German uses the domain nouns *Feld* = field, *Kontext* = repetition/group-context, *Wiederholung* = repetition, *Angegeben* = specified/filled.
+**The table is the complete set of keyword pairs, with each keyword's grammatical category.** A spelling in neither column is an ordinary name. With the language-neutral `In` family (`In`, `in`, `IN`) and the case variants of concrete syntax §1 (two more spellings each for `And`, `Or` and `To` in either language) it accounts for the 113 English spellings, and with the 13 German-only constructs below for the 126 German ones. Symbols are language-neutral. German uses the domain nouns *Feld* = field, *Kontext* = repetition/group-context, *Wiederholung* = repetition, *Angegeben* = specified/filled.
 
 | Category | Grammatical role |
 |---|---|
@@ -428,6 +428,7 @@ Sources: [list reads](../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-l
 | `Valid` | `Gueltig` | condition call |
 | `Invalid` | `Ungueltig` | condition call |
 | `SumOfProducts` | `SummeVonProdukten` | operation call |
+| `SumOfTerms` | `SummeVonTermen` | operation call |
 | `FirstFilledValue` | `ErsterAngegebenerWert` | operation call |
 | `DateRange` | `DatumBereich` | operation call |
 | `RuleGroup` | `RegelKontext` | entity |
@@ -435,7 +436,7 @@ Sources: [list reads](../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-l
 | `ValueNotConsistent` | `WertNichtKonsistent` | condition call |
 | `To` | `Zu` | separator |
 
-The language-neutral `In` family is a separator. The category counts are closed: 2 connectives, 6 comparators, 28 condition calls, 1 custom condition, 53 operation calls, 5 constants, 2 argument keywords, 3 modifiers, 1 separator besides `In`, 1 entity and 1 directive.
+The language-neutral `In` family is a separator. The category counts are closed: 2 connectives, 6 comparators, 28 condition calls, 1 custom condition, 54 operation calls, 5 constants, 2 argument keywords, 3 modifiers, 1 separator besides `In`, 1 entity and 1 directive. The `SumOfTerms` pair is a kernel 31.1.1 addition, measured in English only; its German spelling is read from the 31.1.1 lexer.
 
 **The German-only constructs are the H-model form constructs.** They have no English twin and no row in the operator reference. In an English model each lexes as a name; written as a whole condition, the constructs of the table's first six rows and its three `Zeile…` rows are measured to draw `MVK_UNEXPECTED_TOKEN` there, and the other four are unmeasured. In a German model each is a keyword, and every measured one is refused by a class that depends on the construct and its position (concrete syntax §3.1):
 
@@ -459,7 +460,7 @@ The six constructs drawing `MVK_INVALID_ROOT_GROUP_CONSTR` as whole conditions d
 
 > **Non-normative implementation note.** Model keywords as a table of explicitly accepted spellings mapped to `(keyword, language)`, plus one canonical render spelling per `(keyword, language)` and the category above. Do not normalize case before lookup. Keep it *data*, not code — a future port to another surface re-reads the same table. English is the canonical render target; German is a supported second target.
 
-Sources: [inbound 2026-09-21 corrections](../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections), [form-level constructs](../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-form-condition-constructs), [form keyword](../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-form-keyword), [class order](../docs/sources/inbound-handbacks.md#inbound-2026-09-25b-condition-class-order).
+Sources: [inbound 2026-09-21 corrections](../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections), [form-level constructs](../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-form-condition-constructs), [form keyword](../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-form-keyword), [class order](../docs/sources/inbound-handbacks.md#inbound-2026-09-25b-condition-class-order), [inbound 2026-11-03d](../docs/sources/inbound-handbacks.md#src-inbound-2026-11-03d).
 
 ---
 

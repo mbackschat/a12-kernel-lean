@@ -780,6 +780,49 @@ A **declared** scan evaluates the filter at every declared coordinate. [The oper
 
 Sources: [reviewed extent matrix](../docs/sources/inbound-handbacks.md#inbound-2026-10-09-extensions), [computation guard operand scope](../docs/sources/computation-scheduling-probes.md#src-computation-guard-operand-scope), [reviewed scope and limits](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-09a), [sparse filter traversal](../docs/sources/group-and-iteration-probes.md#src-sparse-filter-traversal).
 
+### 3.10 `SumOfTerms`
+
+**`SumOfTerms(G*, t)` evaluates the Number term `t` once for each in-capacity row of the starred repeatable group `G*`, with that row bound, and adds the results.** The first argument is the iteration entity: a group path whose lowest repeatable level carries the star, optionally with a `Having` filter. The second is a term built from the row's fields, other reads and operations. Both validation conditions and computations take it. Measured on kernel 31.1.1 only.
+
+**Iteration entity admission.** The entity names a group, its lowest repeatable level starred. Two stars, `Claims*/Parts*`, are admitted. So is an unstarred upper level the rule already binds above a starred lower one, such as `Claims/Parts*` in a rule iterating `Claims`. A filtered entity is admitted, and the term may then read a field the filter reads.
+
+| Entity defect | Class |
+|---|---|
+| the group unstarred, in a rule iterating it | `MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED` |
+| the group unstarred, in a rule not iterating it; an unstarred upper level the rule does not bind | `MVK_NO_WILDCARD` |
+| a repeatable group below the star left unstarred | `MVK_NO_WILDCARD` |
+| a non-repeatable group below the star | `MVK_GROUP_NOT_REPEATABLE` |
+| a field path | `MVK_NO_FIELDS_ALLOWED` |
+| a star on a non-repeatable group | `MVK_INVALID_WILDCARD` |
+| a semantic index on the starred level | `MVK_SEMANTIC_INDEX_AND_WILDCARD`, the entity's own gate answering first |
+
+**Term admission.** The term must be Number-valued and must read the lowest starred level. It may also read a field of a non-repeatable group outside the iteration and an unfiltered aggregate or count, over another repeatable group or below the row. `BaseYear` beside a row read is admitted.
+
+| Term defect | Class |
+|---|---|
+| a term that reads no field of the lowest starred level, including a literal, `BaseYear` alone, and a term reading only the upper level of a two-star entity | `MVK_NO_ITERATION_FOR_LOWEST_WILDCARD` |
+| a String term | `MVK_NO_NUMBER` |
+| a read of another repeatable group's field | `MVK_INVALID_ITERATION_IN_SET_EXPRESSION` |
+| a semantic-index read | `MVK_SEMANTIC_INDEX_NOT_ALLOWED` |
+| a `$`-marked read, of the row's field or of a field no star iterates | `MVK_INVALID_OUTER_ITERATION` |
+| a filtered aggregate or count; a nested `SumOfTerms` | `MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION` |
+| a filtered group count over a level below the row | `MVK_NO_WILDCARD`, the inner filter's own gate answering first |
+| an aggregate starring the outer level of a two-star entity | `MVK_NO_WILDCARD` |
+
+**The error field.** The iteration entity references the group it names at its lowest level and nothing above it, and a read in the term never references the error field ([§1.5](#15-error-field-admission)). So an error field read only in the term draws `MVK_ERROR_FIELD_NOT_REFERENCED`, and so does one in another repeatable group or above a nested iteration's lowest level, while any field of the lowest iterated group is referenced. A filter's unmarked read does not reference the error field either; its `$`-marked read does, as in [§3.2](#32-correlation--and-currentrepetition).
+
+**Evaluation.** The term is added over every in-capacity row of the entity. A row beyond the declared capacity is not added and draws the over-capacity findings of [§4.3](#43-capacity-rows-beyond-the-declared-repeatability). A row the filter drops, including one whose filter verdict is unknown, adds nothing. A non-repeatable field the term reads is added once per row. A row whose term has no value, because a field it reads is empty, a division is by zero, or the row holds no field the term reads, adds nothing and leaves the result fillable; the measured rows do not separate this from adding the term's other reads. Over no row the sum is `0`. A formally invalid cell the term reads makes validation unavailable and the computation poison: a stored target is cleared, and an empty one gets no outcome. A formally invalid cell no term reads changes nothing. A computed result carries no trailing zeros (`110.5`, `0`).
+
+**Message type.** A firing is VALUE only when every declared row of the entity is instantiated, passes the filter, is filled and has a term value. Otherwise it is OMISSION. So filling every declared row turns the type to VALUE, while one empty term field, one row the filter drops, or one unfilled declared row keeps it OMISSION. A row whose division by zero leaves no term value keeps `DIV` OMISSION in the same document where `GT` is VALUE.
+
+**References.** A message references the term's fields and the filter's fields at the iteration's any-row index (`Claims[0]/Amount`, `Claims[0]/Parts[0]/Qty`). A field of a non-repeatable group appears at its own index (`Address[1]/Zip`), and a `$`-marked filter read appears too. A field of the row that no term reads is named nowhere, so the group is not expanded the way a starred group operand is. On OMISSION the same fields are the fill-to-fix set, except that an upward count inside the term withholds the comparison's ordinary operands, as [data model §3.1](01-data-model.md#fill-to-fix-classes)'s upward count does. With such a count in the term, `FieldNotFilled(Holder) And SumOfTerms(…) < 2` fires on an empty root, which the same rule without the count does not. The count does not have this effect inside the entity's filter.
+
+**Partial validation decides it only when every row of the capacity is relevant as a whole**: the group, at the any-row index or at every declared row, or every field the group holds, fields no term reads included. Relevance of only the fields the term reads leaves it undecided, where a plain `Sum` over them is decided. The relevant document must also have an error-free instance at row index 1: a formally invalid field in row 1 leaves it undecided, and one in row 2 does not. Row index 1 is meant, not the first row held: with row 1 absent, a defect in row 2 or 3 does not block. A term sum with a filtered entity is skipped, as every filtered rule is in partial validation ([§12 §5](10-validation-and-polarity.md#5-full-vs-partial-validation)).
+
+Measured scope: one model family, rules at the root and in the iterated group, and one computation, on kernel 31.1.1, with both runtime strategies agreeing. A term over Date, Time or Enumeration reads, keyed or category entity operands, the term's static scale, and a raw String are unmeasured.
+
+Sources: [inbound 2026-11-03d](../docs/sources/inbound-handbacks.md#src-inbound-2026-11-03d).
+
 ---
 
 ## 4. Where a star binds — the anchor rules ⚠

@@ -187,6 +187,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [October 30g handback](sources/inbound-handbacks.md#src-inbound-2026-10-30g): a12-dmkits `03f7e55332a4a1a47b1c38e055b3f12ab7292f61`; `RepetitionNotUnique`'s own gates ahead of the filter body's classes, and a category read in a body, reconciled.
 - [November 3a letter](sources/inbound-handbacks.md#src-inbound-2026-11-03a): a12-dmkits `d403d5058e55d4164b339b6143977fc96c947b2b`, re-run at `ab99f606363066ee6f3e4ef1736734cbedd84b7b`, kernel 31.1.1; document uniqueness criteria admission, expansion and move rewrite adopted as spec/01 §1.5.
 - [November 3c model migration](sources/inbound-handbacks.md#src-inbound-2026-11-03c): kernel 31.1.1's migrator run at a12-dmkits `5be5b26650cf7fb414179baa422371dec68b82f1`; the retained probe models change only their version stamp.
+- [November 3d letter](sources/inbound-handbacks.md#src-inbound-2026-11-03d): a12-dmkits `7def7526711298bbf486fba342a8007f797b2271` and `28432881b25193bcf402c14655bdebd45bba4a8b`, re-run at `1124b523f090d4f999de0f74e4192b5046e13636`, kernel 31.1.1; `SumOfTerms` adopted as spec/07 §3.10.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route
