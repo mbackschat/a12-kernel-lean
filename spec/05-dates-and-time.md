@@ -1,6 +1,6 @@
 # 05 — Dates and time (§6)
 
-A temporal value is not a canonical instant. It is a value **in a declared format**, which fixes its component set; it is resolved on the **legacy hybrid calendar in the model zone**; and where it has no value it carries a **reason** — incomplete, unreal, non-relevant or formally unavailable — that later consumers keep apart. Some values are deliberately imprecise (component-omitting formats, fragments, partially known dates). Temporal arithmetic is asymmetric — a shift is not the inverse of a difference — and calendar-corrected, and a String literal shaped like a date is a date.
+A temporal value is not a canonical instant. It is a value **in a declared format**, which fixes its component set; it is resolved at runtime on the **proleptic ISO calendar in the model zone**, while static admission judges a constant on the hybrid Julian–Gregorian calendar; and where it has no value it carries a **reason** — incomplete, unreal, non-relevant or formally unavailable — that later consumers keep apart. Some values are deliberately imprecise (component-omitting formats, fragments, partially known dates). Temporal arithmetic is asymmetric — a shift is not the inverse of a difference — and calendar-corrected, and a String literal shaped like a date is a date.
 
 Empty-date behaviour — not evaluated in comparisons, the fillable `0` of the extractors and differences, dropped or `no value` in aggregates — is [§2](03-empty-and-required.md#a2-where-an-operator-overrides-its-kinds-default)'s. Which operator takes which class of the operand gates this chapter defines is column D of [the operator reference](14-operator-reference.md#temporal-operand-gate).
 
@@ -118,7 +118,7 @@ Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2
 | a date constant, a literal `T` and a clock constant, concatenated | date-time constant | `"05.03.2024T12:30:00"`, the measured admitted spelling | `"2024-03-05T12:30:00"`, the space-separated form |
 | any other content | String | `"abc"`, the ISO-shaped `"2022-01-01"` | — |
 
-- **The calendar is the legacy hybrid one**, Julian before the October 1582 cutover: 29 February 1500 and 4 October 1582 exist, the cutover labels 5 through 14 October 1582 and 29 February 1700 do not. A constant before the cutover is a Julian instant, so `DifferenceInDays("04.10.1582", Inception)` counts no skipped label.
+- **Static admission uses the hybrid calendar**, Julian before the October 1582 cutover: 29 February 1500 and 4 October 1582 exist, the cutover labels 5 through 14 October 1582 and 29 February 1700 do not. At runtime a constant is read on the proleptic calendar of [§2.7](#27-calendar-basis): `DifferenceInDays("04.10.1582", Inception)` with Inception `2024-01-01` is 161161. A label real only on the Julian side, such as `"29.02.1500"`, is admitted, and at runtime resolves to its Julian instant, proleptic 10 March 1500, under UTC, and fails the evaluation when reached under `Europe/Berlin`.
 - **The omitted-year check uses a common year and never consults the Base Year**: `"29.02."` is refused even under Base Year 2024, so a model may compute across a February 29 that no literal names ([below](#the-omitted-year-constant-and-the-base-year)).
 - **Inside a value list** a date-shaped entry stays a String; no other context that changes the classification is known.
 - **A literal that fails every temporal shape is a String, and the class it draws is its consumer's**: opposite a text field it is admitted; opposite a Date it is refused as a text is, `MVK_INVALID_COMPARE_TO_DATE` under `==` and `MVK_INVALID_TYPE_FOR_COMPARISON` under `>` (`"29.02.2023"`); at a temporal computation target `MVK_INVALID_COMPARE_TO_DATE` ([§11 §4.1](09-computations.md#41-temporal-constants)); as a temporal-operation operand `MVK_INVALID_DATE_STRING`, which names the literal ([§9](#9-datetime-rides-the-date-format-definition--but-the-operand-gates-are-per-operator-)). The omitted-year calendar refusal reaches these same consumer classes. Neither code is the classification's own signature.
@@ -136,7 +136,7 @@ Typing by content has these consequences:
 - A `dd.MM.yyyy` literal compares chronologically with a DATE field whatever the field's stored format, and rides in argument position: `DifferenceInDays(OrderDate, "01.01.2022")`.
 - `Today` and `Now` are typed as [§7](#7-the-point-in-time-and-reference-sources) states, and a date-time constant is a date-time, so the clock matters under `==` only: opposite a Date, `== Now` and `==` the date-time constant draw `MVK_INVALID_COMPARE_TO_DATE` while `>` the date-time constant is admitted, and `[Stamped] == Today` and a Time `== Now` draw the date class. A computation's constant is typed the same way ([§11 §4.1](09-computations.md#41-temporal-constants)).
 
-Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [inbound 2026-09-26d constant typing](../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-constant-typing), [constant family gate](../docs/sources/temporal-constant-and-base-year-probes.md#src-constant-literal-family-gate), [literal composition](../docs/sources/temporal-constant-and-base-year-probes.md#src-temporal-constant-literal-composition), [yearless anchor](../docs/sources/temporal-constant-and-base-year-probes.md#src-yearless-anchor-is-the-base-year), a12-dmkits [KF78](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf78) and ledger `SPEC-2026-07-27-06` for the clock shape.
+Sources: [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temporal-adoption), [inbound 2026-09-26d constant typing](../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-constant-typing), [constant family gate](../docs/sources/temporal-constant-and-base-year-probes.md#src-constant-literal-family-gate), [literal composition](../docs/sources/temporal-constant-and-base-year-probes.md#src-temporal-constant-literal-composition), [yearless anchor](../docs/sources/temporal-constant-and-base-year-probes.md#src-yearless-anchor-is-the-base-year), a12-dmkits [KF78](../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf78) and ledger `SPEC-2026-07-27-06` for the clock shape.
 
 > **Non-normative implementation note.** Classify literals in the lexer or typer, not the evaluator.
 
@@ -230,7 +230,7 @@ Sources: [recursive temporal expression](../docs/sources/temporal-and-message-pr
 - **`AddYears` maps the last day of February to the last day of February**, correcting *into* a leap year: `AddYears("28.02.2023", 1) = 29.02.2024`, and `28.02.1999 + 1 year = 29.02.2000`, not the plain `28.02.2000`.
 - **`AddMonths` preserves the day number and clamps** an end-of-month overflow to the shorter month's last day, never carrying into the next month: `AddMonths("28.02.2011", 12) = 28.02.2012`; `31.01.2008 + 1 month = 29.02.2008`.
 
-The two therefore disagree across a leap-year boundary, so an age check built on either is wrong around leap days. Calendar field mutation preserves the source's millisecond, except that the leap-to-nonleap February-28 correction clears the entire clock.
+The two therefore disagree across a leap-year boundary, so an age check built on either is wrong around leap days. `AddDays` keeps the source's millisecond; whether a month or year shift keeps it, and whether the leap-to-nonleap February-28 correction clears the clock, as kernel 30.8.1 did, is unmeasured on 31.1.1.
 
 Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family).
 
@@ -246,20 +246,22 @@ Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-prob
 
 ### 2.5 Day differences
 
-**`DifferenceInDays(a, b)` is a signed model-zone calendar-step count, aware of the time of day.** It orders the two resolved legacy-calendar values, qualifies a whole-year candidate through the corrected year mutation `AddYears` uses, jumps by `yearDifference × 365` days with a day-of-month mutation, then advances one calendar day at a time until the next landing would pass the later operand, and finally restores the authored order (`b − a`). The year qualification uses the sign-independent later, post-gap year landing of [§2.7](#27-calendar-basis); every lower-bound or residual day landing assumes the offset of the instant it starts from and keeps the millisecond ([§5](#5-time-zones-and-the-sub-day-difference)). A DateTime operand is admitted, and a mixed `(datetime, date)` pair is legal, the date reading as midnight in the model zone.
+**`DifferenceInDays(a, b)` counts the whole days between the two operands' model-zone wall clocks, truncated toward zero, with the sign of `b − a`.** Each operand is read as its local date and time of day in the model zone, a label in a spring gap first moving forward by the gap ([§5](#5-time-zones-and-the-sub-day-difference)), and the result is the number of complete 24-hour wall-clock days from the first to the second. Elapsed instant time does not decide it. A DateTime operand is admitted, and a mixed `(datetime, date)` pair is legal, the date reading as midnight in the model zone.
 
 | Operands | Result | Why |
 |---|---|---|
-| `23:00 → 01:00` next day | 0 | time-of-day aware, not the date parts' 1 |
-| Berlin `2024-03-30T12:00 → 2024-03-31T12:00` | 1 | despite only 23 elapsed instant hours |
-| Berlin `2024-03-30T02:30 → 2024-03-31T01:45` | 1 | one calendar-day step lands at `01:30` before the second operand; wall-label seconds (23 h 15 m) would truncate to 0 |
-| Berlin `2023-04-01T02:30 → 2024-04-05T02:30` | 369 | each step starts from its source offset; a direction-selected landing gives 370 |
-| Berlin `2003-03-31T02:30 → 2024-03-31T03:00` | 7670 | compute-time year qualification; direction-selected gap qualification gives 7671 |
-| `Pacific/Apia` `2011-12-29T12:00 → 2011-12-31T12:00` | 1 | one day-of-month step skips the missing 30 December; a proleptic wall-label coordinate gives 2 |
+| `23:00 → 01:00` next day | 0 | two wall hours |
+| Berlin `2024-03-30T12:00 → 2024-03-31T12:00` | 1 | one wall day, although only 23 instant hours elapse |
+| Berlin `2024-03-30T02:30 → 2024-03-31T01:45` | 0 | 23 h 15 m of wall clock; the reverse order is 0 too |
+| Berlin `2024-03-30T02:30 → 2024-03-31T02:30` | 1 | the gap label reads as `03:30` |
+| Berlin `2024-10-27T01:30 → AddHours(…, 24)`, and from `00:30` | 0 | 24 instant hours across the autumn overlap end one wall hour short; from `2024-06-01T01:30` it is 1 |
+| Berlin `2023-04-01T02:30 → 2024-04-05T02:30` | 370 | |
+| Berlin `2003-03-31T02:30 → 2024-03-31T03:00` | 7671 | |
+| `Pacific/Apia` `2011-12-29T12:00 → 2011-12-31T12:00` | 2 | the wall clocks span the skipped 30 December; `→ 2011-12-31T11:59:59` is 1 |
 
-The wall-seconds quotient `Δ wall-label seconds / 86 400` agrees with the first two rows but is not generally equivalent, even within Berlin: it fails around special-hour landings and skipped whole dates.
+Kernel 30.8.1 counted calendar-day steps instead and answered 1, 369, 7670 and 1 on the third, sixth, seventh and eighth rows.
 
-Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family), [temporal difference gates](../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format).
+Sources: [inbound 2026-11-03e](../docs/sources/inbound-handbacks.md#src-inbound-2026-11-03e), [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temporal-adoption).
 
 ### 2.6 Sub-day arithmetic
 
@@ -272,18 +274,18 @@ Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-prob
 
 ### 2.7 Calendar basis
 
-**No single calendar implementation serves every temporal consumer; the operand's calendar basis is observable.** A real value produced by `Date(...)` keeps the constructor's model-zone legacy hybrid-calendar identity ([§3.4](#34-calendar-reality)) through the legal `AddDays`, `AddMonths` and `AddYears` and the `DifferenceInDays`, `DifferenceInMonths` and `DifferenceInYears` consumers. The calendar of a shift or completed-period difference whose source is a stored value, a fragment or a range and whose landing falls before the 1582 cutover is not stated.
+**At runtime every temporal consumer computes on the proleptic ISO calendar in the model zone.** Construction, shifts, differences, the clock's reading ([§7](#7-the-point-in-time-and-reference-sources)), the date-typed `BaseYear` and yearless completion all use it: `Date("29", "2", "1500")` is unreal while 28 February and 1 March 1500 and 29 February 1600 are real, `1500-02-28 + 1 day` is 1 March 1500, and `DifferenceInDays` from 4 to 15 October 1582 is 11. There are no missing October 1582 labels. Static admission of a date constant keeps the hybrid Julian–Gregorian calendar instead ([§1](#1-constant-format-and-the-stringdate-literal-ambiguity-)), so the two accounts differ before 15 October 1582.
 
-- **A constructed-Date month or year shift whose nominal field-preserving landing lies in the missing `1582-10-05..14` labels moves forward by ten civil labels.** So `1582-09-10 + 1 month = 1582-10-20` and `1581-10-10 + 1 year = 1582-10-20`. From `1582-09-10`, the constructed 15 October and 20 October are zero and one whole month away; from `1581-10-10`, 15 October 1582 is zero whole years and 11 whole months away, and 20 October one year and 12 months.
-- **The `AddYears` February-28 correction uses Gregorian leap status even on the Julian side**: `1499-02-28 + 1 year = 1500-02-28`, although a `Date(...)` whose Year component is a field holding 1500 constructs 29 February 1500.
-- **A constructed-Date shift keeps the exact model-zone instant its particular calendar mutation selects, so equal decoded labels do not imply equal results.** Direct Date comparison resolves both operands to exact instants: a constructed or shifted Date supplies its retained instant, an ordinary stored Date one derived by the ordinary model-zone parse. A day landing follows [§5](#5-time-zones-and-the-sub-day-difference)'s source-offset re-fit: under `Europe/Berlin`, `AddDays(Date("30", "9", "1916"), 1)` carries CEST and lands at `1916-09-30T22:00:00Z`, while `AddDays(Date("1", "3", "1916"), 214)` carries CET into the same label and lands at `1916-09-30T23:00:00Z`, equal to a fresh `Date("1", "10", "1916")`. At that repeated midnight `AddDays(Date("30", "9", "1916"), 1) == Date("1", "10", "1916")` is false, while the corresponding one-month and one-year comparisons are true.
-- **`AddMonths` and `AddYears` resolve at compute time, independently of the amount's sign**: both signed month routes from 1 September and 1 November 1916, and both signed year routes from 1 October 1915 and 1917, into 1 October 1916 select the later CET instant. A nominal month or year landing in a gap moves to its post-gap label.
+- **Month and year shifts and the completed-period differences across 1582 follow the proleptic calendar.** From `1582-09-10` the constructed 20 October is one whole month away, and from `1581-10-10` it is one year and 12 months away; a month shift from `1582-09-10` does not land on 20 October.
+- **The `AddYears` February-28 correction holds before the cutover too**: `1499-02-28 + 1 year = 1500-02-28`.
+- **A shift keeps its source's offset where the target label allows it, and a fresh construction takes the earlier offset** ([§5](#5-time-zones-and-the-sub-day-difference)). Under `Europe/Berlin` the repeated midnight of 1 October 1916 has a CEST and a CET instant: `Date("1", "10", "1916")` is the CEST one; `AddDays(Date("30", "9", "1916"), 1)` and `AddMonths(Date("1", "9", "1916"), 1)` start from CEST and equal it; `AddYears(Date("1", "10", "1915"), 1)`, and a day or month shift from a CET source such as `Date("1", "4", "1916")` plus 183 days, keep CET and do not.
+- A month or year landing in a gap is unmeasured on 31.1.1.
 
 The year components in these examples are fields: a quoted Year constant is bounded to 1800–2199 ([§3.1](#31-date)). Every other operation follows its own clause.
 
-Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21).
+Sources: [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temporal-adoption).
 
-> **Non-normative implementation note.** Keep the operand's calendar basis; use a proleptic-Gregorian function only where a narrowed domain proves it equivalent. Write the `AddMonths` clamp and the `AddYears` February correction as code rather than trusting a library default, and the sub-day family as integer epoch milliseconds with truncating division.
+> **Non-normative implementation note.** Compute runtime dates as `java.time` does: proleptic local dates, a zone-rules lookup from a local date-time to its valid offsets, and shifts on the local label that then re-resolve with the source offset preferred. Keep the static constant check's hybrid calendar a separate function.
 
 ### 2.8 Reading operands
 
@@ -291,7 +293,7 @@ Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-prob
 
 - Either missing operand maps to symmetric fillable zero; formal unavailability stays UNKNOWN in validation and poisons in computation; a structural addressing failure is a fault, not UNKNOWN.
 - A temporal extraction over a repeated row reads that row's decoded value: an empty source yields symmetric fillable zero, a filled one a fixed component, and a formally unavailable one UNKNOWN in validation.
-- `DifferenceInDays` reads each operand's decoded local label and its already-resolved exact instant under the model-zone profile; the sub-day differences read the exact instants and the selected unit ([§2.6](#26-sub-day-arithmetic)).
+- `DifferenceInDays` reads each operand's model-zone wall clock ([§2.5](#25-day-differences)); the sub-day differences read the exact instants and the selected unit ([§2.6](#26-sub-day-arithmetic)).
 
 Sources: [recursive difference effects](../docs/sources/temporal-runtime-fold-probes.md#src-recursive-difference-effects), [temporal difference gates](../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format).
 
@@ -329,11 +331,11 @@ Sources: [K22 static batch 5](../docs/sources/group-count-topology.md#src-k22-st
 
 **The extensible-String alternative** is a client-interface capability of a String declaration, distinct from an Enumeration declaration, and the DM-JSON model format does not expose that flag. Its width requirement stays exact, but it need not carry a digit pattern, so the conversion cannot assume unsigned integer text: it accepts the Java decimal spellings — a leading sign, a leading or trailing decimal point, an exponent, BMP decimal digits — after normalizing a comma to a dot, then truncates toward zero and keeps the low signed 32 bits. So `+1` contributes 1, `.5` contributes 0, `2e3` contributes 2000 and `3e9` contributes −1294967296; the declared width still bounds which tokens reach a position. A nonnumeric token that passed the String's formal checks raises a runtime conversion failure rather than producing an empty component or an unreal date. Unmeasured.
 
-**A fully present Date must also resolve to a strict host-calendar instant within signed 64-bit milliseconds.** A year beyond that range is unreal, not a conversion failure, and there is no four-digit runtime year ceiling: an extensible Year `2e8` can construct a real date whose spelling then fails the target's formal format, while `3e8` and `2e9` construct unreal dates. Unmeasured.
+**A fully present Date must also form a real date of the host calendar.** A year beyond the host's range is unreal, not a conversion failure, and there is no four-digit runtime year ceiling. Where the range ends is unmeasured.
 
 **Arguments are evaluated in authored order.** In validation an earlier formally unavailable component does not stop later conversion, so a later nonnumeric extensible String still fails the rule; computation stops at formal poison. A cause-free non-relevant extractor component does not stop a Date computation from reading later components, so a later formal poison still wins; with no later failure, construction keeps the non-relevance, and an enclosing `Min` does not substitute its concrete fallback. With no argument raising, formal unavailability and missing-component provenance keep their ordinary constructor meaning. Boolean short-circuiting still decides whether the constructor is reached at all ([§12 §3.1](10-validation-and-polarity.md#31-truth-testing-and-message-classification)).
 
-**A computed component-omitting target is checked after rendering.** The target format may discard the expression's year, so the target check uses the stored value's format-specific completion ([stored temporal text](#stored-temporal-text)). Under Base Year 1583 a month-and-day shift reaching January 1584 still renders `01-01` and is refused after completion back into 1583, while the month-only target stays admitted. A literal `"29.02.2024"` assigned to `MM-dd` under Base Year 2023 keeps an errored `02-29` attempt and poisons its dependent; under Base Year 2024 the same assignment succeeds. Year and year-month targets refuse five-digit attempted years as format failures. Arithmetic itself keeps the intermediate calendar result, below-floor dates included, so returning it to the storage range before assignment succeeds.
+**A computed component-omitting target is checked after rendering.** The target format may discard the expression's year, so the target check uses the stored value's format-specific completion ([stored temporal text](#stored-temporal-text)). Under Base Year 1583 a month-and-day shift reaching January 1584 still renders `01-01` and is refused after completion back into 1583, while the month-only target stays admitted. A literal `"29.02.2024"` assigned to a day-month Date or fragment target (`MM-dd`, `MMdd`, `dd.MM.` or `ddMM`) under Base Year 2023 fails the whole computation's result assembly, because the target's format refusal and its value failure land on one target pointer ([§11 §4.2](09-computations.md#42-temporal-targets)); under Base Year 2024 the same assignment stores `02-29`. Year and year-month targets refuse five-digit attempted years as format failures, rendering the year with a sign: `+10000-12-15`, `+10000-01`, `+10000`. Arithmetic itself keeps the intermediate calendar result, below-floor dates included, so returning it to the storage range before assignment succeeds.
 
 Sources: [construction route](../docs/sources/temporal-and-message-probes.md#src-temporal-construction-route), [operand family](../docs/sources/computation-placement-and-constant-probes.md#src-temporal-operand-family-is-the-formats-not-the-kinds), [recursive Date components](../docs/sources/temporal-runtime-fold-probes.md#src-recursive-date-components), [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21).
 
@@ -353,7 +355,7 @@ Sources: [inbound 2026-09-26o](../docs/sources/inbound-handbacks.md#inbound-2026
 
 ### 3.3 `DateTime(date, time)` and the DateTime projections
 
-**`DateTime(date, time)` evaluates its Date argument before its Time argument** and resolves a real combined wall label in the model zone. In computation, poison aborts before later arguments; clean absence and cause-free non-relevance do not. After both operands are reached, non-relevance takes precedence over an ordinary no-value, and the Time side's reasons are kept. **A component-omitting Date argument completes to its earliest day.** `yyyy` completes to January 1 and `yyyy-MM` to the first of its month, with or without a Base Year. A yearless `MM-dd` or `MM` argument is refused `MVK_WRONG_DATE_FORMAT_FOR_OP` without a Base Year, measured in a rule condition, and otherwise completes in the Base Year, `MM` to the first: under Base Year 2024, `2024`, `2024-03`, `03` and `03-31` with `12:30:00` store `2024-01-01T12:30:00`, `2024-03-01T12:30:00`, `2024-03-01T12:30:00` and `2024-03-31T12:30:00`. The completed label then resolves as any other, so `03-31` with `02:30:00` is a Berlin spring-gap label and clears cleanly. This is the earliest completion of [§6.1](#61-fragments). The yearless argument's year is the Base Year, not the clock's or another argument's: under Base Year 2023 with a 2026 clock and `2022` beside it, `03` completes to `2023-03-01`, and at `02:30:00` in Berlin `03-26`, 2023's spring-gap day, clears while `03-29`, 2026's, stores. The Time argument admits a clock-formatted operand of any declared kind and refuses a complete date and a complete date-time on components; that position is reachable through `DateTime(ValueAsDate(partial, FirstDay), …)` and measured there.
+**`DateTime(date, time)` evaluates its Date argument before its Time argument** and resolves a real combined wall label in the model zone. In computation, poison aborts before later arguments; clean absence and cause-free non-relevance do not. After both operands are reached, non-relevance takes precedence over an ordinary no-value, and the Time side's reasons are kept. **A component-omitting Date argument completes to its earliest day.** `yyyy` completes to January 1 and `yyyy-MM` to the first of its month, with or without a Base Year. A yearless `MM-dd` or `MM` argument is refused `MVK_WRONG_DATE_FORMAT_FOR_OP` without a Base Year, measured in a rule condition, and otherwise completes in the Base Year, `MM` to the first: under Base Year 2024, `2024`, `2024-03`, `03` and `03-31` with `12:30:00` store `2024-01-01T12:30:00`, `2024-03-01T12:30:00`, `2024-03-01T12:30:00` and `2024-03-31T12:30:00`. The completed label then resolves as any other, so a Berlin spring-gap label moves forward by the gap ([§5](#5-time-zones-and-the-sub-day-difference)). This is the earliest completion of [§6.1](#61-fragments). The yearless argument's year is the Base Year, not the clock's or another argument's: under Base Year 2023 with a 2026 clock and `2022` beside it, `03` completes to `2023-03-01`, and at `02:30:00` in Berlin `03-26`, 2023's spring-gap day, stores `2023-03-26T03:30:00`, while `03-29`, 2026's, stores its own label. The Time argument admits a clock-formatted operand of any declared kind and refuses a complete date and a complete date-time on components; that position is reachable through `DateTime(ValueAsDate(partial, FirstDay), …)` and measured there.
 
 **`TimeFromDateTime(source)` and `DateFromDateTime(source)` require a DateTime operand whose declared or derived format carries year, month, day, hour, minute and second**; over the admitted vocabulary only `yyyy-MM-dd'T'HH:mm:ss` does. A valueless source is returned with its not-given or non-relevant reason unchanged.
 
@@ -370,9 +372,9 @@ Sources: [composition locus](../docs/sources/temporal-and-message-probes.md#src-
 
 ### 3.4 Calendar reality
 
-**The constructor's reality test is model-zone-sensitive and uses the legacy hybrid calendar**, not an abstract proleptic-Gregorian date: Kernel 30.8.1 builds a non-lenient Gregorian calendar in the model's `timeZone`, whose default cutover follows Julian rules before the Gregorian transition, and a zone discontinuity can remove a whole local date. So under UTC a construction whose Year component is a field holding 1500 makes 29 February 1500 real on the Julian side, while `Date("30", "12", "2011")` is unreal in `Pacific/Apia`, where that local date was skipped. The zone database is a runtime input the Kernel version alone does not identify; a zone-free proleptic-Gregorian predicate is not equivalent.
+**The constructor's reality test is the proleptic ISO calendar.** `Date("29", "2", "1500")` is unreal under UTC, GMT and `Europe/Berlin` alike, while 28 February and 1 March 1500 and 29 February 1600 are real, and `Date("30", "12", "2011")` is real in `Pacific/Apia` although that zone skipped the local date. Every measured construction agrees with a zone-free proleptic validity predicate; no witness is known of a zone making a proleptic date unreal.
 
-Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family).
+Sources: [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temporal-adoption).
 
 ### 3.5 Reasons and their composition
 
@@ -380,8 +382,8 @@ Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2
 
 - **An unreal `Date(...)` carries no date value**: it neither rolls over nor keeps an out-of-range label.
 - **Time construction has the same dimensions**: a fixed impossible clock has no payload with fixed provenance, and an empty component no payload with missing provenance. A component of missing provenance whose value is known, such as an hour extracted from a shift whose amount read an empty field, is the missing supplied component of [§3.2](#32-time-and-the-clock-anchor). An unknown-year partially known Date interpretation stays non-relevant rather than neutral absence ([§6.3](#63-valueasdate)).
-- **`DateTime(date, time)`** ([§3.3](#33-datetimedate-time-and-the-datetime-projections)): combining a Date and a Time into a nonexistent Berlin spring-gap label yields a clean no-value, whereas resolving that label as a date-time constant raises a computation value failure ([§5](#the-nonexistent-wall-label)). The kept autumn-fold construction chooses the later occurrence, observed by adding one hour to reach 03:30. These are measured on the pinned Berlin profile and do not generalize it to other zones.
-- **`DateFromDateTime`, `TimeFromDateTime` and the legal shifts keep the source's no-value reason**, and real `Date(...)` descendants keep the legacy-calendar identity of [§2.7](#27-calendar-basis).
+- **`DateTime(date, time)`** ([§3.3](#33-datetimedate-time-and-the-datetime-projections)): combining a Date and a Time into a nonexistent Berlin spring-gap label yields the instant one gap later, as every carrier of [§5](#the-nonexistent-wall-label) does but the clock-free ones. Which occurrence an autumn-fold construction chooses is unmeasured on 31.1.1; kernel 30.8.1 chose the later. These are measured on the pinned Berlin profile and do not generalize it to other zones.
+- **`DateFromDateTime`, `TimeFromDateTime` and the legal shifts keep the source's no-value reason**, and real `Date(...)` descendants keep the source offset of [§2.7](#27-calendar-basis).
 - **Numeric extractors and differences** map an incomplete operand and a present-but-unreal one to the same actual Number `0`, with fillable provenance for the first and fixed for the second, so a fired comparison can be OMISSION for incomplete input and VALUE for unreal input although the amounts agree. They map a non-relevant or malformed operand to UNKNOWN, never to zero.
 - **Quarter.** `DayFromDate`, `MonthFromDate`, `QuarterFromDate` and `YearFromDate` are the direct date components; for a real source the quarter is `((month − 1) / 3) + 1` with integer division, and the zero projection of an incomplete or unreal source is `0` for Quarter as for the others.
 - **Direct Date `Min`/`Max`** skips a check-relevant valueless operand when another concrete value exists, and a non-relevant operand propagates non-relevance. Operand-list extrema can select their other value while keeping the incomplete-versus-unreal distinction. This consumer admission does not widen the grammar: `YearFromDate(Min(...))` stays refused where the extractor requires a narrower source form ([§2.9](#29-operand-shapes)).
@@ -446,12 +448,12 @@ Sources: [inbound 2026-10-18](../docs/sources/inbound-handbacks.md#src-inbound-2
 
 - it is strictly *before*: `1583-10-15` errors and `1583-10-16` is valid;
 - a day-optional value completes its omitted day to `01` before the check ([§6.2](#62-partially-known-dates));
-- a stored value is first judged real on the legacy hybrid calendar, so a real label below the floor draws the floor's `datumFalsch` and an unreal one the format's `datumFormatFalsch`: `1500-02-29`, `1300-02-29` and `1582-10-04` draw `datumFalsch`, while `1582-10-05`, `1582-10-14` and `1700-02-29` draw `datumFormatFalsch`;
+- a stored value is first judged real, and a real label below the floor draws the floor's `datumFalsch` while an unreal one draws the format's `datumFormatFalsch`. Reality is proleptic, with one zone-dependent exception: outside `Europe/Berlin` a Julian leap day before the cutover is still read as real, at its Julian instant ten days later on the proleptic calendar. So under `Europe/Berlin` `1582-10-04`, `1582-10-05` and `1582-10-14` draw `datumFalsch` and `1500-02-29`, `1300-02-29` and `1700-02-29` draw `datumFormatFalsch`; under UTC `1582-10-04`, `1500-02-29` and `1300-02-29` draw `datumFalsch` and `1700-02-29` draws `datumFormatFalsch`. Other zones and the cutover labels under UTC are unmeasured;
 - a **stored** value below it is the formal error `datumFalsch`, which suppresses referencing rules ([§3 B.1](02-logic-and-formal-errors.md#b1-what-a-formal-error-is)); a **computed** one is ERRORED; a date **range** floors its *start* the same way, with the range's own pair of codes ([§8.1](#81-declaration-and-stored-text)).
 
 ⚠ **The floor is not a criterion of the `Date(...)` constructor's reality test** ([§3.4](#34-calendar-reality)): it gates stored and computed values only. Static component admission and the immediate-entity requirement of the validity predicates apply separately. The floor is also distinct from the opt-in pre-1900 check below.
 
-Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family).
+Sources: [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temporal-adoption).
 
 ### 4.1 The pre-1900 check
 
@@ -463,10 +465,11 @@ Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2
 |---|---|---|
 | DATE | refused at model admission, `MVK_ADDITIONAL_CHECK_INVALID` | admitted |
 | DATE_FRAGMENT | as DATE: of the thirteen admitted formats the six year-free ones — `MM`, `MM-dd`, `MMdd`, `ddMM`, `dd.MM.`, `HH:mm:ss` — are refused | the seven year-bearing ones are admitted |
-| DATE_RANGE | exempt: all eight admitted `(format, separator)` pairs take the check, the four year-free ones included | admitted |
-| TIME, DATE_TIME | the property does not exist on these declarations: injecting it is rejected by the model deserializer, naming the declaration type and the property, before any consistency gate | — |
+| DATE_RANGE | exempt: every admitted `(format, separator)` pair takes the check, the year-free ones included ([§8.1](#81-declaration-and-stored-text)) | admitted |
+| TIME | the declaration does not declare the property: the reader passes over it, and it has no effect | — |
+| DATE_TIME | unmeasured on 31.1.1; kernel 30.8.1's reader refused the injected property | — |
 
-The Kernel states the refusal in component terms — a date field lacking a year cannot carry the check — not kind terms. So the year co-requirement belongs to the DATE and DATE_FRAGMENT carriers, not to the check: a consumer gates the check on year presence there and must not model it as admitted-and-inert on those two kinds, while one enforcing the requirement on every temporal kind refuses four legal range declarations.
+The Kernel states the refusal in component terms — a date field lacking a year cannot carry the check — not kind terms. So the year co-requirement belongs to the DATE and DATE_FRAGMENT carriers, not to the check: a consumer gates the check on year presence there and must not model it as admitted-and-inert on those two kinds, while one enforcing the requirement on every temporal kind refuses the legal year-free range declarations.
 
 Sources: [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-09-08), [inbound 2026-09-05c](../docs/sources/inbound-handbacks.md#inbound-2026-09-05c), [inbound 2026-09-21](../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections).
 
@@ -484,7 +487,7 @@ Sources: [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-
    | `YEAR_OPTIONAL` | an unknown year beside a known month or day, `DATUM_JAHROPTIONAL_MONAT_ODER_TAG_ANGEGEBEN` | an unknown month beside a known day, `DATUM_MONATOPTIONAL_TAG_ANGEGEBEN` |
 
    The unknown parts then read as `01` (day, month) and `2000` (year) for the steps below, so `DAY_OPTIONAL` `2026-13-00` selects `DATUM_MONAT_FEHLER`.
-3. **Calendar reality.** A syntactically sound label the legacy calendar rejects keeps the code `datumFormatFalsch` and is read component by component: a zero component selects `DATUM_FORMAT`; with the pre-1900 check enabled a year below 1900 selects `DATUM_ADDITIONAL_CHECK`, ahead of the month, so `13.13.1850` selects it; a month above 12 selects `DATUM_MONAT_FEHLER`; an exact 29 February `DATUM_FEBRUAR_29_FEHLER`; and every other day `DATUM_TAG_FEHLER`, the cutover gap day `1582-10-10` included.
+3. **Calendar reality.** A syntactically sound label the runtime calendar rejects ([§4](#4-the-gregorian-floor)) keeps the code `datumFormatFalsch` and is read component by component: a zero component selects `DATUM_FORMAT`; with the pre-1900 check enabled a year below 1900 selects `DATUM_ADDITIONAL_CHECK`, ahead of the month, so `13.13.1850` selects it; a month above 12 selects `DATUM_MONAT_FEHLER`; an exact 29 February `DATUM_FEBRUAR_29_FEHLER`; and every other day `DATUM_TAG_FEHLER`.
 4. **Position.** A real label fails only as a date, with the code `datumFalsch`: under the enabled pre-1900 check `DATUM_ADDITIONAL_CHECK`, otherwise below the floor `DATUM`.
 
 **The same reading serves every date-bearing format, applied to the completed text.**
@@ -495,7 +498,7 @@ Sources: [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-
 
 **A DateRange** missing its separator, or not split into two nonempty readable endpoints, selects `DATUM_BEREICH_FORMAT`. An unreal endpoint, the start read first, selects the start or end variant of the month, 29-February and day keys, a zero component the range's format key and the pre-1900 check `DATUM_BEREICH_DATUM_ADDITIONAL_CHECK`; an inverted range selects `DATUM_BEREICH_NICHT_GUELTIG`, and a start below the floor `DATUM_BEREICH_DATUM`.
 
-Measured scope: the three fixed-width complete formats with one separator, the three partial precisions over `yyyy-MM-dd`, a `yyyy-MM-dd` range at `/`, the component-omitting formats, the clock and the date-time format; a Base Year below 1900 is unmeasured.
+Measured scope, on kernel 30.8.1: which key 31.1.1 selects is unmeasured, including for labels whose reality changed with the calendar, such as `1582-10-10` and a Berlin `1500-02-29`. Measured on 30.8.1: the three fixed-width complete formats with one separator, the three partial precisions over `yyyy-MM-dd`, a `yyyy-MM-dd` range at `/`, the component-omitting formats, the clock and the date-time format; a Base Year below 1900 is unmeasured.
 
 Sources: [message keys](../docs/sources/domain-ingestion-probes.md#src-date-message-keys-k22), [formal keys, wider](../docs/sources/domain-ingestion-probes.md#src-k22-formal-keys-wider).
 
@@ -503,47 +506,53 @@ Sources: [message keys](../docs/sources/domain-ingestion-probes.md#src-date-mess
 
 ## 5. Time zones and the sub-day difference
 
-**The model's configured time zone resolves every temporal value, through the legacy `java.util.TimeZone` rules, not `java.time`**, applied at **parse time** to every DATE and DATE_TIME; stored text is converted by a non-lenient `SimpleDateFormat` ([stored temporal text](#stored-temporal-text)). The DM-JSON key is `content.modelConfig.timeZone`; the capitalized `TimeZone` is the internal metamodel key code generation copies it into. An absent key means `UTC`. A plain DATE is midnight in the model zone.
+**The model's configured time zone resolves every temporal value through the `java.time` zone rules of the host's time-zone database**, applied at **parse time** to every DATE and DATE_TIME. The DM-JSON key is `content.modelConfig.timeZone`; the capitalized `TimeZone` is the internal metamodel key code generation copies it into. An absent key, and an empty one, mean `UTC`. A plain DATE is midnight in the model zone.
 
-**Which ids are legal is a host input.** The legal set is the host's legacy time-zone id table, versioned with the host exactly as the zone rules are: an explicit id is model-legal exactly when it is the literal `GMT` or `java.util.TimeZone.getTimeZone(id).getID() != "GMT"`. Known IANA ids, `GMT±HH:MM`, `UTC`, `Zulu` and `Etc/UTC` are legal; an empty, unknown or misspelled id, which silently collapses to `GMT`, is refused `MVK_INVALID_TIME_ZONE`.
+**Which ids are legal is a host input.** `GMT+01:00`, `Etc/GMT+5`, `EST` and `UTC` are legal, and `utc`, `GMT+24`, `UTC+1`, `Z` and a blank id are refused `MVK_INVALID_TIME_ZONE`; the legal set is the host's zone-id table, versioned with the host exactly as the zone rules are. Other ids are unmeasured on 31.1.1.
 
 **The sub-day differences subtract physical instants** ([§2.6](#26-sub-day-arithmetic)). Under `UTC` the wall-clock gap equals the instant gap; under `Europe/Berlin` two date-times straddling a transition differ by their physical elapsed time: `2024-03-31T01:30:00 → 03:30:00` is `DifferenceInHours = 1` across the skipped 02:00 hour, and `2024-10-27T01:30:00 → 03:30:00` is `3` across the repeated hour.
 
-**The non-lenient zone-set parse gives every historical transition these laws:**
+**A wall label resolves to an instant by two laws, for stored text, constructions and constants alike:**
 
-- **Every gap is a formal error.** A stored wall time that does not exist, such as `2024-03-31T02:30:00` under Berlin, draws `datumFormatFalsch` — the non-lenient round trip rejects it — and suppresses a referencing rule like any malformed value. It is not rolled forward.
-- **Every overlap selects the smaller, after offset.** In an ordinary modern CEST→CET overlap that is CET: `01:30 → 02:30` on `2024-10-27` is `DifferenceInMinutes = 120`, and two stored `02:30` values are instant-equal. In a historical CEMT→CEST overlap the same rule selects CEST, not CET.
-- **Date-time comparison is instant-based, and a chained `AddHours`, `AddMinutes` or `AddSeconds` result keeps its exact instant.** `AddHours(01:30 CEST, 1)` lands on the daylight side of the ambiguous hour, so it is not equal to the equal-looking stored `"02:30:00"`, which re-parses on the standard side: the pair is 60 real minutes apart. A rendering-based re-parse loses this; the arithmetic is instant in, instant out. Inside one computation `AddHours` keeps it too: from `01:30` on `2024-10-27`, the precondition `AddHours(DT0, 1) < AddHours(DT0, 2)` holds although both render `02:30`, `AddHours(DT0, 1) == [DTX]` is false against a stored `02:30`, and `DifferenceInMinutes` of the pair is `60`. The other consumers of a kept instant are stated with their operators: `DifferenceInDays` and the sub-day differences in [§2.8](#28-reading-operands), the projections in [§3.3](#33-datetimedate-time-and-the-datetime-projections) and the extrema in [§3.5](#35-reasons-and-their-composition).
-- **Across a computation join the instant is not carried.** A computation reading another computation's DateTime target reads that target's stored rendering, as the document's own text would be read, so a result on the daylight `02:30` is read on the standard one: `AddHours(00:30, 2)` computed into one field on `2024-10-27` and read by `DifferenceInHours` from `00:30` gives `3`, and a day shift landing on the daylight `02:30` is moved two hours further, to `04:30`.
-- **A day-of-month landing assumes the source instant's own offset**, not one chosen from the amount's sign. The nominal target advances the wall label by whole days, keeping clock and millisecond; if the offset in force there differs, the re-fit to it is kept only when it lands on the expected civil date (source date plus amount), not when it merely keeps the raw landing's own date; otherwise the first candidate stands. Witnesses: `2024-10-27T00:30 + 1 day` renders `2024-10-28T00:30` and `2024-03-30T23:30 + 1 day` renders `2024-03-31T23:30`, where the raw-date reading gives `2024-10-27T23:30` and `2024-04-01T00:30`, and `DifferenceInDays` steps through the same landing. The spring-gap separator is a pair, not a roll-forward rule: `2024-03-30T02:30 + 1 day` starts from CET and renders `2024-03-31T01:30`, while `2023-08-31T02:30 + 213 days` starts from CEST, reaches the same gap and renders `2024-03-31T03:30`. A backward landing onto the 1916 `23:00–24:00` gap is the historical control: `1916-05-01T23:30 - 1 day` keeps 30 April and renders `1916-04-30T22:30` CET instead of changing the civil date to 1 May.
+- **A gap label moves forward by the gap.** A stored `2024-03-31T02:30:00` under Berlin is the instant of `03:30:00`, a value and not a formal error; so is a label in the 1945 double-summer gap.
+- **An overlap label takes the earlier offset.** In the 2024 autumn overlap that is CEST: `01:30 → 02:30` on `2024-10-27` is `DifferenceInMinutes = 60`. A historical CEMT→CEST overlap is unmeasured on 31.1.1.
 
-Sources: [DateTime join](../docs/sources/computation-scheduling-probes.md#src-datetime-join), [inbound 2026-09-07](../docs/sources/inbound-handbacks.md#inbound-2026-09-07-dispositions), [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family).
+**Date-time comparison is instant-based, and a chained `AddHours`, `AddMinutes` or `AddSeconds` result keeps its exact instant.** From `01:30` on `2024-10-27`, `AddHours(DT0, 1) < AddHours(DT0, 2)` holds although both render `02:30`, `AddHours(DT0, 1)` equals a stored `02:30`, which now reads on the same daylight side, and `DifferenceInMinutes` of the pair is `60`. The other consumers of a kept instant are stated with their operators: the sub-day differences in [§2.8](#28-reading-operands), the projections in [§3.3](#33-datetimedate-time-and-the-datetime-projections) and the extrema in [§3.5](#35-reasons-and-their-composition).
+
+**A computation reading another computation's DateTime target reads its stored rendering**, as the document's own text would be read. Across the 2024 autumn overlap the measured round trips lose nothing, since the rendering re-reads at the earlier offset: `AddHours(00:30, 2)` computed into one field on `2024-10-27` and read by `DifferenceInHours` from `00:30` gives `2`.
+
+**A day shift advances the wall label by whole days, keeping clock and millisecond, and re-resolves it with the source's offset preferred; a gap landing moves forward by the gap.** `2024-10-27T00:30 + 1 day` is `2024-10-28T00:30`, `2024-03-30T23:30 + 1 day` is `2024-03-31T23:30`, and `2024-03-30T02:30 + 1 day` is `2024-03-31T03:30`, not `01:30`. Month and year shifts take the same source-offset preference ([§2.7](#27-calendar-basis)).
+
+Sources: [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temporal-adoption), [DateTime join](../docs/sources/computation-scheduling-probes.md#src-datetime-join).
 
 ### The nonexistent wall label
 
-**A wall label the model zone skips has no instant, and each carrier answers it by its own rule:**
+**A wall label the model zone skips is answered by each carrier's own rule:**
 
 | Carrier | Outcome | Owner |
 |---|---|---|
-| stored DateTime text | `datumFormatFalsch`; the referencing rule is suppressed; not rolled forward | [above](#5-time-zones-and-the-sub-day-difference) |
-| `DateTime(date, time)` | a clean no-value | [§3.5](#35-reasons-and-their-composition) |
-| a date-time constant at runtime, validation | a runtime failure that fails the rule with one VALUE message | [§12 §3.1](10-validation-and-polarity.md#31-truth-testing-and-message-classification) |
-| a date-time constant at runtime, computation | a computation value failure: no value and one addressed `berechnungsWertFehler` per in-capacity target row | [§11 §4.1](09-computations.md#41-temporal-constants) |
+| stored DateTime text | the instant one gap later | [above](#5-time-zones-and-the-sub-day-difference) |
+| `DateTime(date, time)` | the instant one gap later | [§3.5](#35-reasons-and-their-composition) |
+| a date-time constant at runtime, computation | the instant one gap later, stored per target row | [§11 §4.1](09-computations.md#41-temporal-constants) |
+| a date-time constant at runtime, validation | unmeasured on 31.1.1 | — |
 | a date-time constant at static admission | admitted under a UTC host default zone, refused `MVK_INVALID_COMPARE_TO_DATE` under a Berlin host default | [§11 §4.1](09-computations.md#41-temporal-constants) |
-| `Date(...)` of a skipped whole local date | an unreal Date | [§3.4](#34-calendar-reality) |
-| an `AddDays` landing | the source-offset re-fit above, rendering a label on either side of the gap | [above](#5-time-zones-and-the-sub-day-difference) |
-| an `AddMonths` or `AddYears` landing | moves to the post-gap label | [§2.7](#27-calendar-basis) |
+| `Date(...)` of a skipped whole local date | a real Date | [§3.4](#34-calendar-reality) |
+| an `AddDays` landing | the instant one gap later | [above](#5-time-zones-and-the-sub-day-difference) |
+| an `AddMonths` or `AddYears` landing | unmeasured on 31.1.1 | [§2.7](#27-calendar-basis) |
 | `AddHours`, `AddMinutes`, `AddSeconds` | instant arithmetic, resolving no label | [§2.6](#26-sub-day-arithmetic) |
 | a stored DATE or DateRange endpoint whose midnight is skipped | not stated | — |
 
+**A label with no instant at all is a Julian leap day before the cutover under `Europe/Berlin`.** A date-time constant `"29.02.1500T10:00:00"` is admitted, and at runtime in a computation it is a value failure: no value and one addressed `berechnungsWertFehler` per in-capacity target row.
+
 Measured on the pinned Berlin profile; the `Date(...)` row on `Pacific/Apia`.
 
-### 5.1 Versioned `Europe/Berlin` legacy profile
+### 5.1 Versioned `Europe/Berlin` profile
 
-The normative profile `europe-berlin-java-util-timezone-jdk21-tzdb2026a-v1` records the legacy `java.util.TimeZone` observations on JDK 21.0.11 with tzdb 2026a. Before the first entry, the offset is flat CET `+3600`; unlike `java.time`, this path does not expose pre-1893 LMT `+3208`. At each listed UTC instant, `offset after` takes effect. The table contains all 62 legacy transitions through 1997, including CEMT `+10800` in the 1945 and 1947 double-summer periods.
+The normative profile `europe-berlin-java-time-jdk21-tzdb2026a-v1` records the `java.time` zone rules on JDK 21 with tzdb 2026a. Before the first entry the offset is local mean time, `+3208` seconds (`+00:53:28`), until the local midnight that begins 1 April 1893, when it becomes CET `+3600`: so `1893-03-31T23:00 → 1893-04-01T01:00` is 113 minutes. At each listed UTC instant, `offset after` takes effect. After that 1893 entry the table contains all 62 transitions from 1916 through 1997, including CEMT `+10800` in the 1945 and 1947 double-summer periods.
 
 | UTC transition instant | Offset after (seconds) |
 |---|---:|
+| `1893-03-31T23:06:32Z` | 3600 |
 | `1916-04-30T22:00:00Z` | 7200 |
 | `1916-09-30T23:00:00Z` | 3600 |
 | `1917-04-16T01:00:00Z` | 7200 |
@@ -609,11 +618,11 @@ The normative profile `europe-berlin-java-util-timezone-jdk21-tzdb2026a-v1` reco
 
 After the final entry, retain its `+3600` offset through the end of 1997. Beginning with 1998, apply the recurring EU rule: offset `+7200` from the last Sunday of March at `01:00Z` inclusive until the last Sunday of October at `01:00Z` exclusive, otherwise `+3600`. The rule has held since 1996; the explicit 1996 and 1997 entries make the table-to-recurrence boundary non-overlapping. For 1980–1995, the table records the historically different last-Sunday-of-September end.
 
-The profile is pinned to that JDK and tzdb release and claims no equivalence to a later one.
+The profile is pinned to that JDK and tzdb release and claims no equivalence to a later one. How a label resolves against these offsets is [§5](#5-time-zones-and-the-sub-day-difference)'s.
 
-Sources: a12-dmkits `BerlinHistoricalTzTest` (the production table against an independent JDK 21.0.11/tzdb2026a 62-pair vector on JVM and Node, before, at and after every transition, every gap and overlap class, both outer regimes, and seeded mutation classes) and `BerlinTransitionOracleDiffTest` (the Groovy-dynamic and generated static Java engines at all 62 transitions against that vector).
+Sources: [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temporal-adoption); a12-dmkits `BerlinHistoricalTzTest` (the production table against an independent JDK 21.0.11/tzdb2026a 62-pair vector on JVM and Node, before, at and after every transition, every gap and overlap class, both outer regimes, and seeded mutation classes) and `BerlinTransitionOracleDiffTest` (the Groovy-dynamic and generated static Java engines at all 62 transitions against that vector).
 
-> **Non-normative implementation note.** Resolve the model's zone id through a host-supplied versioned profile ([`01-data-model.md`](01-data-model.md)); a staged consumer supporting fewer zones refuses every other legal id before evaluation, and implements the day-landing re-fit separately from month and year resolution.
+> **Non-normative implementation note.** Resolve the model's zone id through a host-supplied versioned profile ([`01-data-model.md`](01-data-model.md)); a staged consumer supporting fewer zones refuses every other legal id before evaluation.
 
 ---
 
@@ -701,7 +710,7 @@ Sources: [`ValueAsDate` locus](../docs/sources/temporal-and-message-probes.md#sr
 
 - **`Today` ignores the time of day**: it truncates the validation instant to midnight **in the model zone**, so under `Europe/Berlin` the day boundary is Berlin midnight, not UTC midnight. It is a date of the `dd.MM.yyyy` shape.
 - **`Now` is the raw validation instant**, including any millisecond remainder supplied through `currentDateForTest` or sampled from the wall clock; it is not rounded to authored DateTime precision before a comparison or difference. `Now` is a DATETIME. Ordering (`<`, `<=`, `>`, `>=`) against a DATE or a DATETIME is legal and compares both on the common model-zone timeline, a DATE read at model-zone midnight. Equality and inequality need the other operand to carry a time component, so `Now == PlainDate` and `Now != PlainDate` are refused `MVK_INVALID_COMPARE_TO_DATE` ([§1](#the-temporal-pair-gate)). `Now` is legal as a computation result but unsuitable for stable equality: the generated validation may sample a later instant and disagree at once ([§11 §1](09-computations.md#1-the-ground-rules)).
-- **Both read their date on the legacy hybrid calendar**: an instant pinned at `1500-03-10T12:00Z` reads 29 February 1500, and one at `1582-10-14T12:00Z` reads 4 October.
+- **Both read their date on the proleptic calendar**: an instant pinned at `1500-03-10T12:00Z` reads 10 March 1500, and one at `1582-10-14T12:00Z` reads 14 October.
 - **`BaseYear` is polymorphic by its typed use.** An explicitly date-typed source receives the Base Year's start (`2020-01-01`); a numeric comparison, an ordinary arithmetic expression or a Number computation receives the fixed scale-0 year number (`2020`); and `StartOfDateRange(BaseYear)` and `EndOfDateRange(BaseYear)` are `01.01` and `31.12` of that year. Its polarity is VALUE. How `BaseYear` meets the comparison walk is [§1](#cross-kind-comparison-classes)'s.
 
 Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [inbound 2026-09-26d constant typing](../docs/sources/inbound-handbacks.md#inbound-2026-09-26d-constant-typing).
@@ -716,7 +725,7 @@ Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2
 
 ### 8.1 Declaration and stored text
 
-**A DATE_RANGE declaration is admitted for exactly eight `(format, separator)` pairs**: `dd.MM.yyyy` with `-`, `yyyy-MM-dd` with `/`, `yyyy` with `/`, `yyyy-MM` with `/`, `MM` with `/`, `MM-dd` with `/`, `MM` with the empty separator, and `dd.MM` with `-`. Every other pair of the complete candidate grid is refused, separator swaps, every dot separator, every other empty separator and every `yyyyMM` pair included. The allowlist does not by itself establish that every range operation admits every pair. They form five component classes: the complete-date pairs, the `MM` pairs, `MM-dd` with `dd.MM`, `yyyy`, and `yyyy-MM`.
+**A DATE_RANGE declaration is admitted for exactly twelve `(format, separator)` pairs**: `dd.MM.yyyy` with `-`, `dd.MM` with `-`, and each of `yyyy-MM-dd`, `yyyy`, `yyyy-MM`, `MM` and `MM-dd` with `/` or with the empty separator. An empty separator reads as absent, which is `/`, wherever the Kernel copies the model before checking or evaluating it, as its expansion does; checked without that copy, `yyyy-MM-dd` with the empty separator draws a codeless range-format refusal. Every other pair of the complete candidate grid is refused, separator swaps, every dot separator and every `yyyyMM` pair included. The allowlist does not by itself establish that every range operation admits every pair. They form five component classes: the complete-date pairs, the `MM` pairs, `MM-dd` with `dd.MM`, `yyyy`, and `yyyy-MM`.
 
 **`interpretationOfYear` may be omitted or set to `FROM` or `TO` on every admitted pair**, year-bearing ones included. An omitted key is the standard interpretation; a present but empty token makes the model illegal at deserialization. The accepted declaration is distinct from the effective runtime format ([§8.2](#82-the-two-stage-runtime-reading)).
 
@@ -729,7 +738,7 @@ Sources: [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2
 
 Every failure keeps the physical placement and exact text, makes a reached validation read UNKNOWN and a reached computation read poison.
 
-**An empty declared separator is a real policy, not the absence of a delimiter.** Under the legal `MM` with empty-separator declaration the stored token is split at its midpoint, so `0609` has the endpoints `06` and `09`; it is not split into characters and does not draw `datumBereichTrennerFehlt`. An odd-length token has no midpoint and draws `datumBereichFormatFalsch`: `061`, `06109` and `6` do, while `0609` is admitted.
+**An empty declared separator reads as `/` at runtime.** Under `MM` with the empty separator, `0609`, `061`, `06109` and `6` draw `datumBereichTrennerFehlt`, `06/09` is admitted, `09/06` draws `datumBereichNichtGueltig` and `13/09` `datumBereichFormatFalsch`, on both runtime strategies. Kernel 30.8.1 split such a token at its midpoint instead.
 
 Sources: [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-09-08), [shared runtime](../docs/sources/date-range-construction.md#src-date-range-shared-runtime), [inbound 2026-10-27](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-27).
 
@@ -897,11 +906,11 @@ Sources: [temporal difference gates](../docs/sources/computation-placement-and-c
 - [ ] Every temporal gate and reader asks the declared format's component set, never the kind; admit exactly the thirteen format strings.
 - [ ] Stored temporal text converts non-leniently and fails with the two Date codes only; a yearless value takes its year from [its carrier's row](#where-a-yearless-value-gets-its-year).
 - [ ] A quoted literal is classified by content alone ([§1](#1-constant-format-and-the-stringdate-literal-ambiguity-)); apply the constant gate's ungrouped-clock exception and the cross-kind walks.
-- [ ] `AddMonths` clamps, `AddYears` corrects into leap years; shift amounts truncate and narrow to signed 32 bits; constructed Dates keep their hybrid-calendar identity and instant.
+- [ ] `AddMonths` clamps, `AddYears` corrects into leap years; shift amounts truncate and narrow to signed 32 bits; runtime dates are proleptic in the model zone, a shift keeps its source offset where the label allows, and static constant admission stays hybrid.
 - [ ] Extractions and differences are non-expandable scale-0 Numbers; empty operands give symmetric fillable zero; `DifferenceInDays` steps model-zone calendar days; sub-day differences divide epoch milliseconds, truncated toward zero, order `b − a`.
 - [ ] `Valid`/`Invalid` over `Date(...)` have complementary truth but distinct verdicts; over a named type an unregistered name fails the rule.
 - [ ] The floor `1583-10-16` gates stored and computed values, not the constructor; the pre-1900 check follows [§4.1](#41-the-pre-1900-check)'s table.
-- [ ] Zones resolve through a versioned legacy profile; gaps are formal errors, overlaps take the after offset, sub-day shifts keep their instant, a nonexistent label is answered per carrier.
+- [ ] Zones resolve through a versioned `java.time` profile with local mean time; a gap label moves forward by the gap, an overlap takes the earlier offset, sub-day shifts keep their instant, `DifferenceInDays` counts whole wall-clock days, and a label with no instant is answered per carrier.
 - [ ] Partial dates: monotone suffix, omission before reality before position, precision classes per gate; `ValueAsDate` bridges them.
 - [ ] Ranges: equality by component set, closed intervals, any-pair versus scalar-versus-list overlap.
 - [ ] Operand gates are per unit ([§9](#9-datetime-rides-the-date-format-definition--but-the-operand-gates-are-per-operator-)); each operator's class is the operator reference's column D.
