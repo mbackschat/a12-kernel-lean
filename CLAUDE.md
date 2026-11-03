@@ -259,7 +259,7 @@ Permanent representation invariants:
 - Preserve exact decimals and every specified rounding stage; never replace ordered evaluation with algebraic reassociation.
 - Keep instantiated repeatable rows separate from cell storage, and keep captured outer environments separate from candidate inner environments.
 - Keep validation's extensional unknown/polarity account separate from computation's ordered poison and short-circuit account.
-- Model the target kernel's calendar reality (the measured 30.8.1 profile until 31.1.1 is measured) through an explicit versioned model-zone profile; never substitute the zone-free proleptic `CivilDate` predicate for the hybrid-calendar boundary.
+- Model kernel 31.1.1's split calendar through an explicit versioned model-zone profile: runtime computes on the proleptic ISO calendar in the model zone with the zone's full transition history, while static admission of date constants keeps the hybrid Julian/Gregorian boundary. Never let one account stand in for the other, and never substitute the zone-free `CivilDate` predicate for either.
 - Reuse a semantic mechanism only when a second completed consumer has the same meaning and result domain. Otherwise retain the local owner named in [`docs/IMPLEMENTATION-MAP.md`](docs/IMPLEMENTATION-MAP.md).
 
 The design decisions behind these types (extrinsic AST, `Rat` + rendered stored-form, the unified `Verdict`, the two-level cell model, the `Document` split, the injected `World`) are recorded with rationale in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).

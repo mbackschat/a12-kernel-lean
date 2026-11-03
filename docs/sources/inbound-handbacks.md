@@ -1027,7 +1027,7 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `oracle`: kernel 31.1.1 (`a12-kernel` `eec9134`), built and runtime, through in-process JUnit locks: the Kernel's model check for admission and includes, its move support for rename and move. No document is evaluated, so no strategy applies and no launcher was used.
 - `review`: A HIGH reconciliation on 2026-11-03 adopted the admission classes, the field and text-parameter conditions, the expansion outcome and the move-support rewrite into [spec/01 §1.5](../../spec/01-data-model.md#15-document-uniqueness-criteria), naming each refusal in original words rather than by its rendered sentence.
 - `not-adopted`: The letter's §4 source reading, that no runtime or code-generation source reads a criterion, is reachability by reading, so the spec leaves evaluation's use of a criterion unmeasured. Whether the parent's check reads an included model's criteria is not separated by the rows, and the spec says so rather than adopting the peer's summary that only the entry's criteria are checked. Mapping the refusals to the new consistency category keys is unmeasured.
-- `sync`: spec/01 gains §1.5 as an inbound addition from a committed peer revision; no ledger entry is created. The Lean reader binds DM 28.4.0 and does not yet read the member; the [migration milestone](../PLAN.md#kernel-31-migration) owns that obligation.
+- `sync`: spec/01 gains §1.5 as an inbound addition from a committed peer revision; no ledger entry is created. The Lean reader does not yet read the member; the [migration milestone](../PLAN.md#kernel-31-migration) owns that obligation.
 
 <a id="src-inbound-2026-11-03c"></a>
 ## Reviewed November 3c migration of the retained probe models to DM 29.4.0
