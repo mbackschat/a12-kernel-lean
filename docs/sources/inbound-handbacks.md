@@ -1054,3 +1054,11 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `revision`: a12-dmkits `fe4d26e1417cef069fafcbd5ca45234ac3a4c589`, re-run by the peer at `1124b523f090d4f999de0f74e4192b5046e13636`, of which it is an ancestor; read with `git` only.
 - `oracle`: kernel 31.1.1 (`a12-kernel` `eec9134`): the Kernel's model check and reader, and runtime on dynamic Groovy with generated Java agreeing unless a row says otherwise.
 - `state`: Received and read on 2026-11-03, not yet reviewed or adopted. The [migration milestone](../PLAN.md#kernel-31-migration) owns its batch order; each batch records its own review here when it lands. Its §6 mechanisms are the peer's source readings, and its rendered Kernel sentences are not copied.
+
+<a id="src-inbound-2026-11-03f"></a>
+## Received November 3f letter of kernel 31.1.1's include mount, Document array elements and type-definition order
+
+- `source`: Peer-session letter of 2026-11-03, `a12-kernel-lean-spec-corrections-2026-11-03d.md` (Letter E of the [kernel 31.1.1 migration](../PLAN.md#kernel-31-migration)), SHA-256 `851a8b660a1f48a18b3d23493012bbca3c389665ad4f6691d79c30c003a52805`, handed over by path and hash by the a12-dmkits session. It answers no ledger entry and amends no earlier letter.
+- `revision`: a12-dmkits `ae67703efe43edba265d46098d01b7c4fb2681d3`, a descendant of `1124b523f`; read with `git` only. The locks `IncludeConfigShapeLawsTest`, `A12JsonIngressDiffTest`, `CheckerBasicSentenceOrderAgreementTest`, `CheckerImportedTypeDefinitionAgreementTest` and `WorkspaceTypeDefinitionCollisionKernelTest` exist there.
+- `oracle`: kernel 31.1.1 (`a12-kernel` `eec9134`), built and runtime, through in-process JUnit locks: the Kernel's expansion and model check for §1 and §3, its Document reader for §2. No document is evaluated.
+- `state`: Received and read on 2026-11-03, not yet reviewed or adopted. §2 contradicts [spec/01 §2.3](../../spec/01-data-model.md#23-reading-a-document-from-json)'s discard of a non-object array element and joins batch `M7`; §1 and §3 join batch `M1–M3` in the [migration milestone](../PLAN.md#kernel-31-migration).

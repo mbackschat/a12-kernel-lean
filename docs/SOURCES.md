@@ -187,6 +187,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [November 3c model migration](sources/inbound-handbacks.md#src-inbound-2026-11-03c): kernel 31.1.1's migrator run at a12-dmkits `5be5b26650cf7fb414179baa422371dec68b82f1`; the retained probe models change only their version stamp.
 - [November 3d letter](sources/inbound-handbacks.md#src-inbound-2026-11-03d): a12-dmkits `7def7526711298bbf486fba342a8007f797b2271` and `28432881b25193bcf402c14655bdebd45bba4a8b`, re-run at `1124b523f090d4f999de0f74e4192b5046e13636`, kernel 31.1.1; `SumOfTerms` adopted as spec/07 §3.10.
 - [November 3e letter](sources/inbound-handbacks.md#src-inbound-2026-11-03e): a12-dmkits `fe4d26e1417cef069fafcbd5ca45234ac3a4c589`, re-run at `1124b523f090d4f999de0f74e4192b5046e13636`, kernel 31.1.1; received, adopted batch by batch.
+- [November 3f letter](sources/inbound-handbacks.md#src-inbound-2026-11-03f): a12-dmkits `ae67703efe43edba265d46098d01b7c4fb2681d3`, kernel 31.1.1; received, adopted in batches `M7` and `M1–M3`.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
 ## a12-dmkits drill route
