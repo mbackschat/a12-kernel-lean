@@ -359,6 +359,33 @@ Measured scope: the omission consequence on all three carriers with unfiltered a
 
 Sources: [variant filter omission checkpoint](../docs/sources/static-admission-and-class-probes.md#src-variant-filter-declaration-omission), [inbound 2026-09-27a variant filter stages](../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-variant-filter-stages), [inbound 2026-09-26m model texts](../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-model-texts), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), a12-dmkits `KF299`, `KF305` and `FieldVariantStageLawsTest` at `69497f567` (no local record).
 
+### 1.5 Document uniqueness criteria
+
+**A model may declare document uniqueness criteria: named lists of fields whose combined values no two stored documents may share, each with a per-locale error text. The model check admits a criterion only when it has a name unique among the model's criteria, at least one field, every field named by full path and admissible, and an error text for the model locale whose parameters name only the criterion's own fields.** The member is `content.documentUniquenessCriteria`, a list of objects with `name`, `fields` (each `{"fullName": <path>}`) and `errorMessage` (each `{"locale", "text"}`). A model without the member, or with an empty list, is admitted. A text parameter is a `$`-delimited full path of one of the criterion's fields, written with or without the `.value` suffix.
+
+A field is admissible when it exists as a field, is required with the requiredness mode `absoluteOrRelativeToNextRepAncestor`, is not transient, and is not in a repeatable group. Each refusal below is a notification of the model check that refuses the model, and every one but the last carries no class key:
+
+| Defect, the rest of the criterion admissible | Refusal |
+|---|---|
+| an empty name | the missing-name refusal |
+| an empty field list | the no-field refusal, naming the criterion |
+| a field path naming nothing, naming a group, or written as a relative path | the field-not-found refusal, naming the criterion and the path as written |
+| a field with no requiredness, or required with mode `relativeToParent` | the field-not-required refusal |
+| a field inside a repeatable group | the repeatable-field refusal |
+| a transient field | the transient-field refusal |
+| no error text for the model locale | the missing-text refusal, naming the criterion and the locale |
+| two criteria of one name | the duplicate-name refusal, once for each of the two |
+| a text parameter naming a field outside the criterion, or naming the criterion's own field by a relative path | the invalid-parameter refusal, naming the criterion and the locale |
+| an unterminated `$` parameter | the invalid-text refusal, naming the criterion and the locale, with the key `WRONG_NUMBER_OF_DOLLARS` |
+
+A structure change that leaves a criterion's field missing, including removing the field or the group holding it, is refused like a missing field. **Expansion keeps only the entry model's criteria.** An entry criterion may name a field the entry reaches through an included model and is then admitted and kept. A criterion declared inside an included model is not kept after expansion, whether the include is mounted as a single group or at the model root, and an entry criterion sharing its name is kept over the entry's own fields only. The same included model checked alone is judged as an entry model, so criteria copied into it from a parent that name the parent's fields are refused there as missing fields, while the parent mounting it is admitted. Whether the parent's check reads an included model's criteria at all is not separated by these rows.
+
+**Renaming or moving a field rewrites every criterion naming it, in both its field list and its text parameters**, keeping a parameter's `.value` suffix. This was measured for a field rename, a move into a group, and a root rename, through the Kernel's move support. Whether the rewritten model is then admitted was not observed.
+
+Measured scope: one `en_US` model, on kernel 31.1.1, through the Kernel's model check. A model with several locales, an admissible field nested in a non-repeatable group below a repeatable one, the order of these refusals against the rules of [§1.2](#12-model-consistency-rules) and the category keys of the refusals are unmeasured. No rule, computation or document validation result is stated for a criterion, and whether evaluation reads one is unmeasured.
+
+Sources: [inbound 2026-11-03a](../docs/sources/inbound-handbacks.md#src-inbound-2026-11-03a).
+
 ---
 
 ## 2. Document = an instance of the tree
