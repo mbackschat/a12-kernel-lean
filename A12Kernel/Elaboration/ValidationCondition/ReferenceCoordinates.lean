@@ -11,12 +11,11 @@ For ordinary and starred operands, coordinate assignment follows one rule. A rep
 
 namespace A12Kernel
 
-/-- Why one structural reference projection has no answer. No case means an empty reference set: the leaf, atom, or operand family is outside the current fragment, a filtered star's operand coordinates are unpinned, or the firing environment does not bind a level the reference needs.
+/-- Why one structural reference projection has no answer. No case means an empty reference set: the leaf or operand family is outside the current fragment, a filtered star's operand coordinates are unpinned, or the firing environment does not bind a level the reference needs.
 
     `incoherentHavingField` is fail-closed protection for the one route whose checked representation retains a resolved Number field rather than its declaration. [`CheckedStarHaving.wellFormed`](A12Kernel.CheckedStarHaving.wellFormed) makes it unreachable for an elaborated filter. -/
 inductive ReferenceProjectionError where
   | unclassifiedLeaf
-  | unclassifiedAtom
   | unclassifiedOperand
   | filteredStarOperand
   | incoherentHavingField (field : FieldId)
