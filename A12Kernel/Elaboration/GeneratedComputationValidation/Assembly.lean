@@ -478,8 +478,8 @@ def CheckedNumericComputationAtom.toValidationAtom :
       pure (.ordinary (.stringRange source start finish))
   | .numeric (.fieldValueAsNumber source) =>
       pure (.ordinary (.fieldValueAsNumber source))
-  | .numeric (.dateDifference unit left right) =>
-      pure (.ordinary (.dateDifference unit left right))
+  | .numeric (.dateDifference unit profile left right) =>
+      pure (.ordinary (.dateDifference unit profile left right))
   | .numeric (.dateTimeDifference unit left right) =>
       pure (.ordinary (.dateTimeDifference unit left right))
   | .numeric (.dayDifference profile left right) =>

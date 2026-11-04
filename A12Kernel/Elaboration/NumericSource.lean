@@ -274,7 +274,7 @@ inductive ResolvedNumericAtom (Field : Type)
   | stringLength (source : FlatStringField)
   | stringRange (source : FlatStringField) (start finish : Nat)
   | fieldValueAsNumber (source : ResolvedFieldValueAsNumberSource)
-  | dateDifference (unit : DateDifferenceUnit)
+  | dateDifference (unit : DateDifferenceUnit) (profile : ModelZone.ConcreteProfile)
       (left right : ResolvedDateDifferenceOperand)
   | dateTimeDifference (unit : DateTimeSubdayUnit)
       (left right : FlatTemporalOperand)
@@ -339,7 +339,7 @@ def summaryWith (fieldSummary : Field → NumericScaleSummary)
   | .stringLength _ => NumericScaleSummary.field 0
   | .stringRange _ _ _ => NumericScaleSummary.field 0
   | .fieldValueAsNumber source => NumericScaleSummary.field source.scale
-  | .dateDifference _ _ _ => NumericScaleSummary.field 0
+  | .dateDifference _ _ _ _ => NumericScaleSummary.field 0
   | .dateTimeDifference _ _ _ => NumericScaleSummary.field 0
   | .dayDifference _ _ _ => NumericScaleSummary.field 0
   | .aggregate op source => aggregateSummary op source

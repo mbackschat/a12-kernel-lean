@@ -2,7 +2,7 @@ import A12Kernel.Semantics.CivilDateCoordinate
 
 /-! # Civil and admitted full-Date day/month/year shifts
 
-This capsule starts with a complete civil Date and an already converted integer offset. Day shifting uses a bounded inverse of the existing Gregorian day coordinate; month shifting applies the post-cutover target-day clamp; year shifting applies the distinct end-of-February preservation. The `FullDate` projections additionally enforce the universal A12 Date floor, while expression consumers may retain a real pre-floor landing for a later target check. Numeric truncation and 32-bit conversion, `Date(...)` legacy-hybrid provenance, partial dates, DateTime, target formatting, and result-cell effects remain outside.
+This capsule starts with a complete civil Date and an already converted integer offset. Day shifting uses a bounded inverse of the existing Gregorian day coordinate; month shifting applies the post-cutover target-day clamp; year shifting applies the distinct end-of-February preservation. The `FullDate` projections additionally enforce the universal A12 Date floor, while expression consumers may retain a real pre-floor landing for a later target check. Numeric truncation and 32-bit conversion, partial dates, DateTime, target formatting, and result-cell effects remain outside.
 -/
 
 namespace A12Kernel

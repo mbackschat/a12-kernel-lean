@@ -398,12 +398,12 @@ example :
       (modelWith) 0 .firstDay .months .left).toOption.get (by native_decide)
     let last := (elaborateValueAsDateDifference
       (modelWith) 0 .lastDay .months .left).toOption.get (by native_decide)
-    first.evaluateRaw Phase.validation
-        (.parsed "00.02.2024") other =
-        .operand (.value 1 .fixed) ∧
-      last.evaluateRaw Phase.validation
-        (.parsed "00.02.2024") other =
-        .operand (.value 0 .fixed) := by
+    (first.evaluateRaw Phase.validation
+        (.parsed "00.02.2024") other).toOption =
+        some (.operand (.value 1 .fixed)) ∧
+      (last.evaluateRaw Phase.validation
+        (.parsed "00.02.2024") other).toOption =
+        some (.operand (.value 0 .fixed)) := by
   native_decide
 
 /- Authored operand placement changes the sign and the first reached formal cause. -/
@@ -413,18 +413,67 @@ example :
       (modelWith) 0 .firstDay .months .left).toOption.get (by native_decide)
     let right := (elaborateValueAsDateDifference
       (modelWith) 0 .firstDay .months .right).toOption.get (by native_decide)
-    left.evaluateRaw Phase.computation
-        (.parsed "00.02.2024") other =
-        .operand (.value 1 .fixed) ∧
-      right.evaluateRaw Phase.computation
-        (.parsed "00.02.2024") other =
-        .operand (.value (-1) .fixed) ∧
-      left.evaluateRaw Phase.computation
-        (.rejected .malformed) (.unavailable .computedDependency) =
-        .operand (.unknown .malformed) ∧
-      right.evaluateRaw Phase.computation
-        (.rejected .malformed) (.unavailable .computedDependency) =
-        .operand (.unknown .computedDependency) := by
+    (left.evaluateRaw Phase.computation
+        (.parsed "00.02.2024") other).toOption =
+        some (.operand (.value 1 .fixed)) ∧
+      (right.evaluateRaw Phase.computation
+        (.parsed "00.02.2024") other).toOption =
+        some (.operand (.value (-1) .fixed)) ∧
+      (left.evaluateRaw Phase.computation
+        (.rejected .malformed) (.unavailable .computedDependency)).toOption =
+        some (.operand (.unknown .malformed)) ∧
+      (right.evaluateRaw Phase.computation
+        (.rejected .malformed) (.unavailable .computedDependency)).toOption =
+        some (.operand (.unknown .computedDependency)) := by
+  native_decide
+
+/- A formally invalid first partial Date stops computation before a date constant without an instant in second position is reached. spec/05 §2.8; measured for DifferenceInDays only — unmeasured on 31.1.1 for this carrier. -/
+example :
+    let left := (elaborateValueAsDateDifference
+      (modelWith) 0 .firstDay .months .left).toOption.get (by native_decide)
+    (left.evaluateRaw Phase.computation
+        (.rejected .malformed) .noInstantConstant).toOption =
+        some (.operand (.unknown .malformed)) := by
+  native_decide
+
+/- The constant failure still comes first in validation, in second position, and beside a valid first partial Date in computation. spec/05 §2.8; measured for DifferenceInDays only — unmeasured on 31.1.1 for this carrier. -/
+example :
+    let left := (elaborateValueAsDateDifference
+      (modelWith) 0 .firstDay .months .left).toOption.get (by native_decide)
+    let right := (elaborateValueAsDateDifference
+      (modelWith) 0 .firstDay .months .right).toOption.get (by native_decide)
+    (left.evaluateRaw Phase.validation
+        (.rejected .malformed) .noInstantConstant).toOption =
+        some .constantFailure ∧
+      (right.evaluateRaw Phase.computation
+        (.rejected .malformed) .noInstantConstant).toOption =
+        some .constantFailure ∧
+      (left.evaluateRaw Phase.computation
+        (.parsed "00.02.2024") .noInstantConstant).toOption =
+        some .constantFailure := by
+  native_decide
+
+/- The same reading order holds in a day difference: a formally invalid first partial Date stops
+computation before a constant without an instant, which validation and a constant in first position still
+reach. spec/05 §2.8, measured for DifferenceInDays over stored operands; unmeasured on 31.1.1 for this
+carrier. -/
+example :
+    let left := (elaborateValueAsDateDayDifference
+      (modelWith) 0 .firstDay .left).toOption.get (by native_decide)
+    let right := (elaborateValueAsDateDayDifference
+      (modelWith) 0 .firstDay .right).toOption.get (by native_decide)
+    (left.evaluateRaw Phase.computation
+        (.rejected .malformed) .noInstantConstant).toOption =
+        some (.operand (.unknown .malformed)) ∧
+      (left.evaluateRaw Phase.validation
+        (.rejected .malformed) .noInstantConstant).toOption =
+        some .constantFailure ∧
+      (right.evaluateRaw Phase.computation
+        (.rejected .malformed) .noInstantConstant).toOption =
+        some .constantFailure ∧
+      (right.evaluateRaw Phase.validation
+        (.rejected .malformed) .noInstantConstant).toOption =
+        some .constantFailure := by
   native_decide
 
 /- Cause-free unknown-year non-relevance precedes empty substitution, while ordinary empty substitutes symmetric zero beside a present operand. -/
@@ -432,12 +481,12 @@ example :
     let checked := (elaborateValueAsDateDifference
       (modelWith (dayOptionalSource .yearOptional))
       0 .lastDay .years .left).toOption.get (by native_decide)
-    checked.evaluateRaw Phase.validation
-        (.parsed "00.00.0000") .empty =
-        .nonRelevant ∧
-      checked.evaluateRaw Phase.validation
-        .empty (.value { year := 2024, month := 1, day := 1 }) =
-        .operand (.value 0 .both) ∧
+    (checked.evaluateRaw Phase.validation
+        (.parsed "00.00.0000") .empty).toOption =
+        some .nonRelevant ∧
+      (checked.evaluateRaw Phase.validation
+        .empty (.value { year := 2024, month := 1, day := 1 })).toOption =
+        some (.operand (.value 0 .both)) ∧
       ValueAsDateDifferenceResult.nonRelevant.evalFixedRight
         .equal 0 = .unknown ∧
       (ValueAsDateDifferenceResult.operand (.value 1 .fixed)).evalFixedRight

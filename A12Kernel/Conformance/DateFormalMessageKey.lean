@@ -22,8 +22,8 @@ private def date := dateIn .utc
 private def range (text : String) : Option String :=
   (FullDateInputFormat.yearMonthDayDashes.dateRangeMessageKey? .utc "/" false text).map (·.bundleKey)
 
-/- `D1`, a full `yyyy-MM-dd`: every syntactically sound unreal date selects a component key, the
-   cutover gap day the day's, and only a zero part, a short part or a non-digit the format key. -/
+/- `D1`, a full `yyyy-MM-dd`: every syntactically sound unreal date selects a component key, and
+   only a zero part, a short part or a non-digit the format key. -/
 example :
     [("2026-13-01", "DATUM_MONAT_FEHLER"), ("2026-02-30", "DATUM_TAG_FEHLER"),
       ("2025-02-29", "DATUM_FEBRUAR_29_FEHLER"), ("2024-02-30", "DATUM_TAG_FEHLER"),

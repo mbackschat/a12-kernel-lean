@@ -181,4 +181,25 @@ example :
         some 1711848600000 := by
   native_decide
 
+/- Local mean time ends at the 1893 local midnight, so two wall hours across it are 6808 seconds, 113
+whole minutes (a12-dmkits `BerlinHistoricalTzDiffTest.the1893SwitchFromLocalMeanTimeShortensTheNight`
+at `1124b523f`), while a pre-1916 pair inside one offset period is plain wall arithmetic
+(`pre1916SameEraIsPlainWallArithmetic`). The midnight itself falls in the gap and lands one gap later, on
+the transition instant that `00:06:32` names; that row is derived and unmeasured on 31.1.1. -/
+private def resolvedMillis? (year : Int) (month day hour minute second : Nat) : Option Int :=
+  ((LocalDateTime.ofYmdHms? year month day hour minute second).bind
+    EuropeBerlinProfile.resolveLocal?).map (·.epochMillis)
+
+private def spanMillis? (first second : Option Int) : Option Int := do
+  pure ((← second) - (← first))
+
+example :
+    (spanMillis? (resolvedMillis? 1893 3 31 23 0 0) (resolvedMillis? 1893 4 1 1 0 0) == some 6808000 &&
+      (6808000 : Int) / 60000 == 113 &&
+      spanMillis? (resolvedMillis? 1850 6 1 0 0 0) (resolvedMillis? 1850 6 3 0 0 0) == some 172800000 &&
+      resolvedMillis? 1893 4 1 0 0 0 == resolvedMillis? 1893 4 1 0 6 32 &&
+      resolvedMillis? 1893 4 1 0 0 0 ==
+        (LocalDateTime.ofYmdHms? 1893 3 31 23 6 32).map (·.resolveUtc.epochMillis)) = true := by
+  native_decide
+
 end A12Kernel.Conformance.BerlinTimeZone

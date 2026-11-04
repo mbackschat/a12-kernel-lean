@@ -195,7 +195,9 @@ def ordinaryNumericAtomFieldDeclarations?
       | .error _ => none
   | .fieldValueAsNumber source =>
       (model.certifiedFieldValueAsNumberDeclaration? source).map (· :: [])
-  | .dateDifference unit left right => do
+  | .dateDifference unit profile left right => do
+      if ModelZone.ConcreteProfile.ofId? model.timeZoneId != some profile then
+        none
       let declarations := temporalDifferenceOperandDeclarations? (clock := false) model
         (fun source =>
           unit.admittedBy model.hasBaseYear source.components)

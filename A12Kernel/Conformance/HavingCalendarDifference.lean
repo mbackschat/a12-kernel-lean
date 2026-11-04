@@ -12,8 +12,8 @@ local instance [DecidableEq ε] [DecidableEq α] : DecidableEq (Except ε α)
 private def reference (origin : HavingOrigin) (id : FieldId) : HavingTemporalRef := {
   origin, field := { id, kind := .date, components := { year := true, month := true, day := true, hour := false, minute := false, second := false } } }
 private def atoms : List HavingNumericAtom :=
-  [.dateDifference .months (.field (reference .inner 1)) (.field (reference .outer 2)),
-   .dateDifference .years (.field (reference .inner 1)) (.field (reference .outer 2)),
+  [.dateDifference .months .utc (.field (reference .inner 1)) (.field (reference .outer 2)),
+   .dateDifference .years .utc (.field (reference .inner 1)) (.field (reference .outer 2)),
    .dayDifference .utc (.field (reference .inner 1)) (.field (reference .outer 2))]
 private def dateCell : CheckedCell := {
   rawPresent := true, findings := [], parsed := some (.temporal (.date {
@@ -60,8 +60,8 @@ example : atoms.all (fun atom => CorrelatedHaving.fieldIds (condition atom) == [
 
 private def staticAtoms : List HavingNumericAtom :=
   let literal : ResolvedDateDifferenceOperand HavingTemporalRef := .literal { year := some 1970, month := 1, day := 1 } 2023 .utc
-  [.dateDifference .months literal (.field (reference .outer 2)),
-   .dateDifference .years (.field (reference .outer 2)) (.baseYear 1970 .direct),
+  [.dateDifference .months .utc literal (.field (reference .outer 2)),
+   .dateDifference .years .utc (.field (reference .outer 2)) (.baseYear 1970 .direct),
    .dayDifference .utc (.literal { year := some 1970, month := 1, day := 1 } 2023 .utc) (.field (reference .outer 2))]
 
 example : staticAtoms.all (fun atom => atom.origins == [.outer] &&
@@ -88,8 +88,8 @@ example : (HavingNumericAtom.dayDifference .utc (.baseYear 2024 .direct)
       typeValidityValueFailure := "type validity value failure", groupUnavailable := fun _ => "group unavailable" } frame = .ok (.value 60) := by native_decide
 
 private def clockAtoms : List HavingNumericAtom :=
-  [.dateDifference .months (.field (reference .inner 1)) (.today .utc),
-   .dateDifference .years (.today .utc) (.field (reference .inner 1)),
+  [.dateDifference .months .utc (.field (reference .inner 1)) (.today .utc),
+   .dateDifference .years .utc (.today .utc) (.field (reference .inner 1)),
    .dayDifference .utc (.field (reference .inner 1)) (.today .utc)]
 
 /- A missing clock is the structural calendar fault: it is reached only when its operand is read, so `or`/`and` short-circuit past it and a scan reports it from the first row that reads it. -/
@@ -114,7 +114,7 @@ example : clockAtoms.all (fun atom =>
 example : clockAtoms.all (fun atom =>
     atom.readComputation (pair emptyCell dateCell) frame == .error () &&
     atom.readComputation (pair invalid dateCell) frame ==
-      (match atom with | .dateDifference .years _ _ => .error () | _ => .ok (.poison .malformed)) &&
+      (match atom with | .dateDifference .years _ _ _ => .error () | _ => .ok (.poison .malformed)) &&
     atom.readValidation (pair invalid dateCell) frame == .error () &&
     atom.readComputation { (pair emptyCell dateCell) with
       world := some { now := { epochMillis := 0 } } } frame == .ok (.value 0) &&

@@ -55,7 +55,7 @@ def addressedNumericValidationFieldIds :
   | .stringLength source => [source.id]
   | .stringRange source _ _ => [source.id]
   | .fieldValueAsNumber source => [source.fieldId]
-  | .dateDifference _ left right => ((left.fields ++ right.fields).map (·.id)).eraseDups
+  | .dateDifference _ _ left right => ((left.fields ++ right.fields).map (·.id)).eraseDups
   | .dayDifference _ left right => ((left.fields ++ right.fields).map (·.id)).eraseDups
   | .dateTimeDifference _ left right =>
       ((left.fields ++ right.fields).map FlatField.id).eraseDups

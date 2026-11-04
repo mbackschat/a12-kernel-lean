@@ -126,7 +126,7 @@ theorem addressedRepetitionComputation_excludes_target
           simp [← certifiedFieldValueAsNumberDeclaration_id found, admitted.1]
     -- Two endpoints, each carrying its own certificate, so the pair is closed by the endpoint lemma
     -- twice rather than by unfolding a single lookup.
-    case dateDifference _ left right =>
+    case dateDifference _ _ left right =>
       simp only [CheckedAddressedNumericTarget.admitsRepetitionOperand,
         Bool.and_eq_true] at admitted
       simp only [ResolvedNumericAtom.referencesFieldWith]
@@ -248,7 +248,7 @@ theorem admitsRepetitionOperand_rowBound {model : FlatModel}
         simp only [found, Bool.and_eq_true] at admitted
         cases (by simpa using referenced : source.fieldId = field)
         exact ⟨owned, certifiedFieldValueAsNumberDeclaration_lookup found, admitted.2⟩
-  case dateDifference _ left right =>
+  case dateDifference _ _ left right =>
     simp only [CheckedAddressedNumericTarget.admitsRepetitionOperand,
       Bool.and_eq_true] at admitted
     rcases Bool.or_eq_true _ _ |>.mp referenced with reads | reads

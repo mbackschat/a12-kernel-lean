@@ -255,7 +255,6 @@ draws one diagnostic. -/
 def DocumentTargetOutcome.drawsSecondDiagnostic (model : FlatModel) (target : FieldId) :
     DocumentTargetOutcome → Bool
   | .fullDate (.errored attempted _) => reCompletionFails attempted.text
-  | .dateFragment (.errored attempted _) => reCompletionFails attempted.text
   | _ => false
 where
   reCompletionFails (text : String) : Bool :=

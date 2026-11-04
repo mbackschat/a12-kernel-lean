@@ -63,7 +63,7 @@ def CorrelatedHavingLeaf.wellFormedForSingleGroup
     (model : FlatModel) (group : RepeatableGroupDecl) : CorrelatedHavingLeaf → Bool
   | .numeric comparison => comparison.havingAdmitted fun
       | .baseYear year | .baseYearDatePart year _ _ => model.baseYear == some year
-      | .firstFilled _ | .groupCount _ | .product _ | .collectionCount _ | .aggregate _ _ | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .clockPart _ _ _ | .fieldValueAsNumber _ _ => false
+      | .firstFilled _ | .groupCount _ | .product _ | .collectionCount _ | .aggregate _ _ | .dateDifference _ _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ | .clockPart _ _ _ | .fieldValueAsNumber _ _ => false
       | .field reference => model.admitsSingleGroupNumber group reference.field
       | .dateRangeBoundPart _ _ _ _ | .stringLength _ _ | .stringRange _ _ _ _ | .temporalPart _ _ _ _ | .temporalExpressionPart _ _ | .temporalDifference _ _ _ => false
       | .repetition reference => reference.source == .repeatable group.level
@@ -293,7 +293,7 @@ def CorrelatedHavingLeaf.reachesReopenedLevel (model : FlatModel)
         | .firstFilled slots | .aggregate _ slots => (HavingNumberAggregate.presenceSlots slots).any fun slot =>
             slot.references.any (·.origin == .inner) &&
               (slot.bindingScope? model).any (fun scope => scope.any reopenedLevels.contains)
-        | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).any fun reference => reference.origin == .inner &&
+        | .dateDifference _ _ left right | .dayDifference _ left right => (left.fields ++ right.fields).any fun reference => reference.origin == .inner &&
             (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
               declaration.repeatableScope.any reopenedLevels.contains
         | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).any fun reference => reference.origin == .inner &&

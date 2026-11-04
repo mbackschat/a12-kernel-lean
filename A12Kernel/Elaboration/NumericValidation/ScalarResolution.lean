@@ -156,6 +156,9 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
         throw (.fieldOutsideRowGroup declaration.path rowGroup)
       resolveFieldValueAsNumberAtom declaration surface.projectionRef
   | .dateDifference unit left right => do
+      let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+        | some profile => pure profile
+        | none => throw (.unsupportedCalendarProfile model.timeZoneId)
       let resolveOperand := resolveDateDifferenceOperandWith model false
         (fun reference =>
           resolveTemporalNumericField model rowGroup writtenGroup reference
@@ -165,7 +168,7 @@ private def resolveNumericAtom (model : FlatModel) (rowGroup writtenGroup : Grou
       let resolvedRight ← resolveOperand right
       if unit.compatible model.hasBaseYear
           resolvedLeft.components resolvedRight.components then
-        pure (.dateDifference unit resolvedLeft resolvedRight)
+        pure (.dateDifference unit profile resolvedLeft resolvedRight)
       else
         throw .incompatibleDateDifference
   | .dateTimeDifference unit left right => do
@@ -327,6 +330,9 @@ private def resolveAddressedNumericAtomIn (model : FlatModel)
           (addressedEntityResolution model declaringGroup rowGroup surface.reference)
       resolveFieldValueAsNumberAtom declaration surface.projectionRef
   | .dateDifference unit left right => do
+      let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+        | some profile => pure profile
+        | none => throw (.unsupportedCalendarProfile model.timeZoneId)
       let resolveOperand := resolveDateDifferenceOperandWith model false
         (fun reference => do
           let declaration ←
@@ -343,7 +349,7 @@ private def resolveAddressedNumericAtomIn (model : FlatModel)
       let resolvedRight ← resolveOperand right
       if unit.compatible model.hasBaseYear
           resolvedLeft.components resolvedRight.components then
-        pure (.dateDifference unit resolvedLeft resolvedRight)
+        pure (.dateDifference unit profile resolvedLeft resolvedRight)
       else
         throw .incompatibleDateDifference
   | .dateTimeDifference unit left right => do

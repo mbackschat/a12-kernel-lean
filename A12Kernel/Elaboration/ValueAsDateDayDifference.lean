@@ -50,7 +50,7 @@ private def evaluateAvailable
       | .error .constantHasNoInstant => pure .constantFailure
       | .error .unsupportedCalendar => throw .unsupportedCalendar
 
-/-- Evaluate both authored reads before helper-level non-relevance or empty substitution, then delegate the concrete case to the existing calendar-day core. -/
+/-- Evaluate both authored reads before helper-level non-relevance or empty substitution, then delegate the concrete case to the existing calendar-day core. A formally unavailable first operand in computation stops the evaluation before a constant without an instant in second position is reached, while validation still reaches it (spec/05 §2.8). -/
 def evaluate (checked : CheckedValueAsDateDayDifference model)
     (phase : Phase)
     (cell : CheckedCell
@@ -60,6 +60,12 @@ def evaluate (checked : CheckedValueAsDateDayDifference model)
   let sourceObservation :=
     checked.toCheckedZonedValueAsDateSource.toCheckedValueAsDateSource.observe
       phase cell
+  match checked.placement, phase, sourceObservation with
+  | .left, .computation, .unavailable cause => pure (.operand (.unknown cause))
+  | _, _, _ =>
+  match other with
+  | .noInstantConstant => pure .constantFailure
+  | _ =>
   match checked.placement with
   | .left =>
       match sourceObservation with

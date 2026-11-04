@@ -21,7 +21,7 @@ itself measured, so this order is inherited rather than separately established. 
 check cannot arise here, because the policy gate already refuses it on a DateTime declaration.
 
 The date half's calendar reality is the full-Date classifier's account, reused rather than restated:
-the same component parser and the same legacy-hybrid reality test. Wider formats, other zones, and repeatable addressing stay with their
+the same component parser and the same model-zone reality test (`storedLabelReal`). Wider formats, other zones, and repeatable addressing stay with their
 existing owners. -/
 
 namespace A12Kernel

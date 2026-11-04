@@ -84,11 +84,11 @@ example :
         .incomplete .unknown = some .unavailable := by
   native_decide
 
-/- The constructed calendar is the proleptic one the decoded counter uses, so the two agree at the former cutover: 10 September to 15 October 1582 is one whole month, where the hybrid calendar counted zero. 31.1.1 silently refuses the zero count (a12-dmkits `ConstructedDateCalendarDiffTest`, `monthAndYearArithmeticIgnoresTheFormerCutover`, CUTOVER_MONTH_BEFORE); the count one is derived. Unmeasured on 31.1.1. -/
+/- The constructed calendar is the proleptic one the stored-Date counter uses, so the two agree at the former cutover: 10 September to 15 October 1582 is one whole month, where the hybrid calendar counted zero. 31.1.1 silently refuses the zero count (a12-dmkits `ConstructedDateCalendarDiffTest`, `monthAndYearArithmeticIgnoresTheFormerCutover`, CUTOVER_MONTH_BEFORE); the count one is derived. Unmeasured on 31.1.1. -/
 example :
-    DateDifferenceUnit.months.between
+    DateDifferenceUnit.months.betweenIn? .utc
         { year := 1582, month := 9, day := 10 }
-        { year := 1582, month := 10, day := 15 } = 1 ∧
+        { year := 1582, month := 10, day := 15 } = some 1 ∧
       CheckedConstructedDateDifference.differenceResolved? .utc .months
         (constructed 1582 9 10) (constructed 1582 10 15) =
         some (.value 1 false) := by

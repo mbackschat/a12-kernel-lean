@@ -16,16 +16,21 @@ open A12Kernel A12Kernel.Dm Lean
 /-- The call's raw result, a refusal included; `zone` is the model's time zone. `none` only when the
 fixture itself does not read or check. -/
 private def runResult (format literal : String) (baseYear : Option Int := none)
-    (repeated : Bool := false) (zone : String := "UTC") :
+    (repeated : Bool := false) (zone : String := "UTC") (fragment : Bool := false) :
     Option (Lowering (List ComputedOutcome × List ComputedMessage)) := do
   let group := if repeated then ["Form", "Rows"] else ["Form"]
+  let scope := if repeated then [10] else []
+  let target ← if fragment then
+      (readFieldType 1 group "Value" scope (Json.mkObj [("fieldType", Json.mkObj [
+        ("type", .str "DateFragmentType"),
+        ("DateFragmentType", Json.mkObj [("formatOfFragment", .str format)])])])).toOption
+    else pure {
+      id := 1, name := "Value", groupPath := group, repeatableScope := scope
+      policy := { kind := .temporal .date (TemporalComponents.ofFormat format) }
+      temporalTargetPolicy := some { format } }
   let model : FlatModel := {
     timeZoneId := zone, baseYear
-    fields := [
-      { id := 1, name := "Value", groupPath := group
-        repeatableScope := if repeated then [10] else []
-        policy := { kind := .temporal .date (TemporalComponents.ofFormat format) }
-        temporalTargetPolicy := some { format } }]
+    fields := [target]
     repeatableGroups := if repeated then
       [{ level := 10, path := group, repeatability := some 2 }] else [] }
   let computation : DmComputation := {
@@ -56,8 +61,8 @@ private def runWithMessages (format literal : String) (baseYear : Option Int := 
 /-- The refusal of a call that cannot assemble its result: its construct and whether its detail names
 a duplicate report pointer. -/
 private def assemblyRefusal (format literal : String) (baseYear : Option Int := none)
-    (repeated : Bool := false) : Option (String × Bool) :=
-  match runResult format literal baseYear repeated with
+    (repeated : Bool := false) (fragment : Bool := false) : Option (String × Bool) :=
+  match runResult format literal baseYear repeated (fragment := fragment) with
   | some (.error refusal) => some (refusal.construct, (refusal.detail.splitOn "duplicatePointer").length > 1)
   | _ => none
 
@@ -92,10 +97,14 @@ example : [false, true].all (fun repeated =>
 /- A leap literal into a day-month target under a common Base Year draws two diagnostics at the target
 pointer, the re-completed label's format refusal and the store's failed re-parse, so the whole call fails
 result assembly; under a leap Base Year it stores, and a year-carrying target stores the full date (spec/05
-§3.1; a12-dmkits `CalendarTargetCompletionDiffTest` at `1124b523f`, every day-month format). -/
+§3.1). a12-dmkits `CalendarTargetCompletionDiffTest` at `1124b523f` measures the nonrepeatable rows: every
+day-month format on a DATE and a DATE_FRAGMENT target, `MM-dd` under Base Year 2024 and the `yyyy-MM-dd`
+target. The repeated rows and `dd.MM.` under Base Year 2024 are unmeasured on 31.1.1. -/
 example : [false, true].all (fun repeated =>
     ["MM-dd", "MMdd", "dd.MM.", "ddMM"].all (fun format =>
-      assemblyRefusal format "29.02.2024" (some 2023) repeated == some ("ComputationRun", true)) &&
+      assemblyRefusal format "29.02.2024" (some 2023) repeated == some ("ComputationRun", true) &&
+      assemblyRefusal format "29.02.2024" (some 2023) repeated (fragment := true) ==
+        some ("ComputationRun", true)) &&
     [("MM-dd", "02-29"), ("dd.MM.", "29.02.")].all (fun (format, stored) =>
       run format "29.02.2024" (some 2024) repeated ==
         some (if repeated then [s!"value {stored}", s!"value {stored}", "cleared"]

@@ -159,8 +159,24 @@ theorem valueAsDateDifference_evaluate_left_unavailable
       checked.toCheckedValueAsDateSource.observe phase cell =
         .unavailable sourceCause) :
     checked.evaluate phase cell (.unavailable otherCause) =
-      .operand (.unknown sourceCause) := by
-  rw [CheckedValueAsDateDifference.evaluate.eq_def, placement, observed]
+      .ok (.operand (.unknown sourceCause)) := by
+  cases phase <;>
+    simp [CheckedValueAsDateDifference.evaluate, placement, observed] <;> rfl
+
+/-- In computation a left-positioned partial-Date formal cause stops the evaluation whatever the ordinary Date operand holds (spec/05 §2.8). -/
+theorem valueAsDateDifference_evaluate_left_computation_unavailable
+    (checked : CheckedValueAsDateDifference model)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (other : DateDifferenceOperand)
+    (cause : FormalCause)
+    (placement : checked.placement = .left)
+    (observed :
+      checked.toCheckedValueAsDateSource.observe .computation cell =
+        .unavailable cause) :
+    checked.evaluate .computation cell other =
+      .ok (.operand (.unknown cause)) := by
+  simp [CheckedValueAsDateDifference.evaluate, placement, observed] <;> rfl
 
 /-- When the ordinary Date is authored first, its formal cause wins before the partial-Date read can contribute its cause. -/
 theorem valueAsDateDifference_evaluate_right_unavailable
@@ -172,8 +188,9 @@ theorem valueAsDateDifference_evaluate_right_unavailable
     (placement : checked.placement = .right)
     :
     checked.evaluate phase cell (.unavailable otherCause) =
-      .operand (.unknown otherCause) := by
-  rw [CheckedValueAsDateDifference.evaluate.eq_def, placement]
+      .ok (.operand (.unknown otherCause)) := by
+  simp [CheckedValueAsDateDifference.evaluate, placement]
+  rfl
 
 /-- Date-side formal unavailability stops construction before the direct Time observation can contribute another cause. -/
 theorem valueAsDateTime_evaluate_date_unavailable
@@ -246,7 +263,7 @@ theorem valueAsDateTime_evaluate_nonRelevant_empty
       .unknown := by
   rfl
 
-/-- A left-positioned partial-Date formal cause wins before the ordinary calendar-day operand is inspected. -/
+/-- A left-positioned partial-Date formal cause wins before the ordinary calendar-day operand is inspected, unless that operand is a constant without an instant, which validation still reaches (spec/05 §2.8). -/
 theorem valueAsDateDayDifference_evaluate_left_unavailable
     (checked : CheckedValueAsDateDayDifference model)
     (phase : Phase)
@@ -257,11 +274,27 @@ theorem valueAsDateDayDifference_evaluate_left_unavailable
     (placement : checked.placement = .left)
     (observed :
       checked.toCheckedZonedValueAsDateSource.toCheckedValueAsDateSource.observe
-        phase cell = .unavailable cause) :
+        phase cell = .unavailable cause)
+    (reached : other ≠ .noInstantConstant) :
     checked.evaluate phase cell other =
       .ok (.operand (.unknown cause)) := by
-  rw [CheckedValueAsDateDayDifference.evaluate.eq_def, placement, observed]
-  rfl
+  cases phase <;> cases other <;>
+    simp_all [CheckedValueAsDateDayDifference.evaluate] <;> rfl
+
+/-- In computation a left-positioned partial-Date formal cause stops the evaluation whatever the ordinary operand holds (spec/05 §2.8). -/
+theorem valueAsDateDayDifference_evaluate_left_computation_unavailable
+    (checked : CheckedValueAsDateDayDifference model)
+    (cell : CheckedCell
+      (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
+    (other : CalendarDayDifferenceOperand)
+    (cause : FormalCause)
+    (placement : checked.placement = .left)
+    (observed :
+      checked.toCheckedZonedValueAsDateSource.toCheckedValueAsDateSource.observe
+        .computation cell = .unavailable cause) :
+    checked.evaluate .computation cell other =
+      .ok (.operand (.unknown cause)) := by
+  simp [CheckedValueAsDateDayDifference.evaluate, placement, observed] <;> rfl
 
 /-- A right-positioned ordinary formal cause wins without consulting the partial-Date observation. -/
 theorem valueAsDateDayDifference_evaluate_right_unavailable
@@ -287,6 +320,6 @@ theorem valueAsDateDayDifference_evaluate_nonRelevant_empty
         phase cell = .nonRelevant) :
     checked.evaluate phase cell .empty = .ok .nonRelevant := by
   rw [CheckedValueAsDateDayDifference.evaluate.eq_def, observed]
-  cases checked.placement <;> rfl
+  cases checked.placement <;> cases phase <;> rfl
 
 end A12Kernel

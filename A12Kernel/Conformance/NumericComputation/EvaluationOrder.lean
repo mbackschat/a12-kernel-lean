@@ -173,7 +173,7 @@ private def temporalDifferenceAtoms : List NumericComputationAtom :=
   let field : FlatTemporalField := { id := 1, kind := .dateTime, components := TemporalComponents.now }
   [.dateTimeDifference .seconds (.fieldValue field) .nowValue,
    .dayDifference .utc (.field field) (.today .utc),
-   .dateDifference .months (.field { field with kind := .date, components := TemporalComponents.fullDate }) (.today .utc)]
+   .dateDifference .months .utc (.field { field with kind := .date, components := TemporalComponents.fullDate }) (.today .utc)]
 
 example : temporalDifferenceAtoms.all (fun atom =>
     (match ({ read := fun _ => { rawPresent := true, parsed := none, findings := [.malformed] } } : ScalarComputationContext).readNumericComputationAtom atom with

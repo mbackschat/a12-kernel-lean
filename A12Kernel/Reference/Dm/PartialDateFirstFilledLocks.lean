@@ -165,12 +165,12 @@ example : run .full false "2024-06-11" "2023-12-11" "2024-06-11"
     (targetFormat := some "yyyyMMdd") = some (.fired .value, ["value 20240611"]) := by
   native_decide
 
-private def profileRun (sourceFormat targetFormat first second : String)
+private def profileRunResult (sourceFormat targetFormat first second : String)
     (baseYear : Option Int := none) (repeated : Bool := false)
     (sourceChecked : Bool := false) (targetChecked : Bool := false)
     (clean : String := "2022-07-08") (secondFormat : Option String := none)
     (downstream : Bool := false) :
-    Option (List (String × String)) := do
+    Option (Lowering (List ComputedOutcome)) := do
   let group := if repeated then ["Form", "Rows"] else ["Form"]
   let scope := if repeated then [10] else []
   let declaration (id : FieldId) (name format : String) (checked : Bool) :=
@@ -220,9 +220,25 @@ private def profileRun (sourceFormat targetFormat first second : String)
         errorCodesToSuppress := [] }).toOption
       pure [next, step]
     else pure [step]
-  let outcomes ← (runComputations world prepared document steps).toOption
+  pure (runComputations world prepared document steps)
+
+private def profileRun (sourceFormat targetFormat first second : String)
+    (baseYear : Option Int := none) (repeated : Bool := false)
+    (sourceChecked : Bool := false) (targetChecked : Bool := false)
+    (clean : String := "2022-07-08") (secondFormat : Option String := none)
+    (downstream : Bool := false) :
+    Option (List (String × String)) := do
+  let outcomes ← (← profileRunResult sourceFormat targetFormat first second baseYear repeated
+    sourceChecked targetChecked clean secondFormat downstream).toOption
   pure ((outcomes.filter fun outcome => !downstream || outcome.pointer.endsWith "/Next").map
     fun outcome => (outcome.pointer, outcome.outcome))
+
+/-- Whether a call fails result assembly on a duplicate report pointer. -/
+private def duplicatePointerRefusal (result : Option (Lowering (List ComputedOutcome))) : Bool :=
+  match result with
+  | some (.error refusal) => refusal.construct == "ComputationRun" &&
+      (refusal.detail.splitOn "duplicatePointer").length > 1
+  | _ => false
 
 private def expectedProfiles (repeated : Bool) (first clean : String) :
     Option (List (String × String)) :=
@@ -257,7 +273,8 @@ example : [false, true].all (fun repeated =>
       (clean := "08.07.")).isNone &&
     -- The leap day reaches a day-month target under a common Base Year, so the call fails assembly as
     -- the literal case does (spec/05 §3.1); the first-filled carrier is unmeasured on 31.1.1.
-    (profileRun "yyyy-MM-dd" "ddMM" "2024-02-29" "2024-06-11" (some 2023) repeated).isNone &&
+    duplicatePointerRefusal
+      (profileRunResult "yyyy-MM-dd" "ddMM" "2024-02-29" "2024-06-11" (some 2023) repeated) &&
     profileRun "dd.MM." "yyyy-MM-dd" "29.02." "11.06." (some 2023) repeated
       (clean := "08.07.") == expectedProfiles repeated "cleared" "value 2023-07-08") := by native_decide
 

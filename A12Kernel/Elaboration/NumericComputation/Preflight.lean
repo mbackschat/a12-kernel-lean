@@ -35,7 +35,7 @@ def NumericComputationAtom.numericComputationFault? :
   -- ([checkpoint](../../../docs/sources/computation-placement-and-constant-probes.md#src-temporal-difference-gates-read-the-format)).
   -- `hasBaseYear` is unavailable on this model-free route, so the completed-period arm passes the
   -- permissive value; a preflight must never be stricter than the gate it guards.
-  | .dateDifference unit left right =>
+  | .dateDifference unit _ left right =>
       let fault? : ResolvedDateDifferenceOperand → Option NumericComputationFault
         | .field source =>
             if unit.admittedBy true source.components then none

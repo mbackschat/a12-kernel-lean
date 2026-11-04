@@ -10,10 +10,8 @@ calendar ([spec/05 §2.7 and §1](../../../spec/05-dates-and-time.md)). Each row
 `FieldFilled(Reference) And (…)` on a `/Policy` host whose stored values are `Inception` 2024-01-01,
 `Day` 29, `Month` 2, `Year` 1500 and the `MM` range `Season` `02/02`, and reads `fires`, `silent`, `fails` (the rule's runtime
 failure) or `refused`. The clock rows are locked by `HybridCalendarClockDiffTest` and the stored-date and
-UTC constant rows named in their comments by `StoredDateCalendarDiffTest`, both of a12-dmkits at its
-simplification revision `1124b523f`; the Julian leap day rows under Europe/Berlin that reach a difference or
-a Date target, and the other constant and Base Year rows, follow the same account and are unmeasured on
-31.1.1. -/
+pre-cutover value rows named in their comments by `StoredDateCalendarDiffTest`, both of a12-dmkits at its
+simplification revision `1124b523f`; the rows their comments mark unmeasured follow the same account. -/
 
 namespace A12Kernel.Dm.HybridCalendarLocks
 
@@ -153,10 +151,18 @@ example : outcomes "Europe/Berlin" 2024 1750672800000 ["[Inception] == Today", "
   native_decide
 
 /- A constant before the cutover is read on the proleptic calendar, so `DifferenceInDays("04.10.1582",
-   Inception)` is 161161 (spec/05 §1 states this value; the 30.8.1 count of 161151 skipped the ten
-   missing labels). The `AddDays` and `AddHours` rows apply the same reading to a shift source and are
-   unmeasured on 31.1.1: 4 October 1582 plus 161161 days is `Inception`, and 4 October 23:00 plus an hour
-   is 5 October, ten whole days before 15 October noon. -/
+   Inception)` is 161161 where the 30.8.1 count of 161151 skipped the ten missing labels, and 4 October
+   1582 plus 161161 days is `Inception`: locked under Europe/Berlin by
+   `StoredDateCalendarDiffTest.aPreCutoverConstantCountsOnTheProlepticCalendar`, its UTC twin unmeasured on
+   31.1.1. Under UTC 4 October 23:00 plus an hour is 5 October, ten whole days before 15 October noon,
+   locked by `everyPreCutoverValueCountsOnTheProlepticCalendar`. -/
+example : expect "Europe/Berlin" 2024 0 [
+    ("DifferenceInDays(\"04.10.1582\", Inception) == 161161", "fires"),
+    ("DifferenceInDays(\"04.10.1582\", Inception) == 161151", "silent"),
+    ("[Inception] == AddDays(\"04.10.1582\", 161161)", "fires"),
+    ("[Inception] == AddDays(\"04.10.1582\", 161151)", "silent")] = true := by
+  native_decide
+
 example : expect "UTC" 2024 0 [
     ("DifferenceInDays(\"04.10.1582\", Inception) == 161161", "fires"),
     ("DifferenceInDays(\"04.10.1582\", Inception) == 161151", "silent"),
@@ -166,12 +172,18 @@ example : expect "UTC" 2024 0 [
     ("DifferenceInDays(AddHours(\"04.10.1582T23:00:00\", 1), \"15.10.1582T12:00:00\") == 0", "silent")] = true := by
   native_decide
 
-/- A Base Year of 1500 starts its year on the proleptic calendar, which has 191387 days to `Inception`
-   and a 28-day February, so the constructed Julian leap day `Date(29, 2, 1500)` is unreal and compares
-   with nothing (spec/05 §3.1; `ConstructedDateCalendarDiffTest` locks the unreality), while the real
-   `Date("28", Month, Year)` equals its own constant and a yearless `28.02.` is one day from `01.03.`
-   (spec/05's omitted-year section: two days under a leap Base Year, one under 2023). The `MM` range
-   `Season` ends on that proleptic February's 28th. The remaining values are unmeasured on 31.1.1. -/
+/- A Base Year of 1500 starts its year on the proleptic calendar, which has a 28-day February, so under
+   UTC the constructed Julian leap day `Date(29, 2, 1500)` is unreal and compares with nothing, the `MM`
+   range `Season` ends on 28 February and not on the constant `"29.02.1500"`, and a yearless `28.02.` is one
+   day from `01.03.`: locked by `StoredDateCalendarDiffTest.everyPreCutoverValueCountsOnTheProlepticCalendar`
+   (UTC, Base Year 1500). `BaseYear` is 191387 days before `Inception`, locked under Europe/Berlin by
+   `aPreCutoverBaseYearCountsOnTheProlepticCalendar` and unmeasured under UTC; the real `Date("28", Month,
+   Year)` rows are unmeasured on 31.1.1. -/
+example : expect "Europe/Berlin" 1500 0 [
+    ("DifferenceInDays(BaseYear, Inception) == 191387", "fires"),
+    ("DifferenceInDays(BaseYear, Inception) == 191378", "silent")] = true := by
+  native_decide
+
 example : expect "UTC" 1500 0 [
     ("DifferenceInDays(BaseYear, Inception) == 191387", "fires"),
     ("DifferenceInDays(BaseYear, Inception) == 191378", "silent"),

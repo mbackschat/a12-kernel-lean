@@ -1,22 +1,32 @@
 import A12Kernel.Semantics.DateDifference
 
-/-! # Admitted full-Date month/year difference locks -/
+/-! # Completed-period Date difference locks
+
+Date operands count on exact instants in the model zone: the UTC rows carry proleptic-day counts, and the Europe/Berlin rows separate the two zones at the repeated midnight of 1916-10-01.
+-/
 
 namespace A12Kernel.Conformance.DateDifference
 
 open A12Kernel
 
+private def differenceIn? (unit : DateDifferenceUnit) (profile : ModelZone.ConcreteProfile)
+    (firstYear : Int) (firstMonth firstDay : Nat)
+    (secondYear : Int) (secondMonth secondDay : Nat) : Option Int :=
+  unit.betweenIn? profile
+    { year := firstYear, month := firstMonth, day := firstDay }
+    { year := secondYear, month := secondMonth, day := secondDay }
+
 private def differenceInMonths? (firstYear : Int) (firstMonth firstDay : Nat)
-    (secondYear : Int) (secondMonth secondDay : Nat) : Option Int := do
-  let first ← FullDate.ofYmd? firstYear firstMonth firstDay
-  let second ← FullDate.ofYmd? secondYear secondMonth secondDay
-  pure (first.differenceInMonths second)
+    (secondYear : Int) (secondMonth secondDay : Nat) : Option Int :=
+  differenceIn? .months .utc firstYear firstMonth firstDay secondYear secondMonth secondDay
 
 private def differenceInYears? (firstYear : Int) (firstMonth firstDay : Nat)
-    (secondYear : Int) (secondMonth secondDay : Nat) : Option Int := do
-  let first ← FullDate.ofYmd? firstYear firstMonth firstDay
-  let second ← FullDate.ofYmd? secondYear secondMonth secondDay
-  pure (first.differenceInYears second)
+    (secondYear : Int) (secondMonth secondDay : Nat) : Option Int :=
+  differenceIn? .years .utc firstYear firstMonth firstDay secondYear secondMonth secondDay
+
+private def baseYearDifference? (unit : DateDifferenceUnit) (year : Int)
+    (first second : BaseYearDateSource) : Option Int :=
+  unit.betweenIn? .utc (first.parts year) (second.parts year)
 
 /- Whole-month difference counts a clamped month-end landing but not an overshooting ordinary day. -/
 example :
@@ -50,22 +60,39 @@ example :
 
 /- Direct Base Year and its range start are the same date-difference source. -/
 example :
-    baseYearDateDifferenceInMonths 2024 .direct (.range .start) = 0 ∧
-      baseYearDateDifferenceInYears 2024 .direct (.range .start) = 0 := by
+    baseYearDifference? .months 2024 .direct (.range .start) = some 0 ∧
+      baseYearDifference? .years 2024 .direct (.range .start) = some 0 := by
   native_decide
 
 /- The selected end of Base Year's range is eleven whole months, but no whole year, after its direct January source. -/
 example :
-    baseYearDateDifferenceInMonths 2024 .direct (.range .finish) = 11 ∧
-      baseYearDateDifferenceInMonths 2024 (.range .finish) .direct = -11 ∧
-      baseYearDateDifferenceInYears 2024 .direct (.range .finish) = 0 ∧
-      baseYearDateDifferenceInYears 2024 (.range .finish) .direct = 0 := by
+    baseYearDifference? .months 2024 .direct (.range .finish) = some 11 ∧
+      baseYearDifference? .months 2024 (.range .finish) .direct = some (-11) ∧
+      baseYearDifference? .years 2024 .direct (.range .finish) = some 0 ∧
+      baseYearDifference? .years 2024 (.range .finish) .direct = some 0 := by
   native_decide
 
 /- Configured Base-Year sources remain floor-free before the stored-Date boundary. -/
 example :
-    baseYearDateDifferenceInMonths 1500 .direct (.range .finish) = 11 ∧
-      baseYearDateDifferenceInYears 1500 .direct (.range .finish) = 0 := by
+    baseYearDifference? .months 1500 .direct (.range .finish) = some 11 ∧
+      baseYearDifference? .years 1500 .direct (.range .finish) = some 0 := by
+  native_decide
+
+private def evaluated? (profile : ModelZone.ConcreteProfile) (unit : DateDifferenceUnit)
+    (first second : DateParts) : Option NumericOperand :=
+  (DateDifferenceOperand.evaluate profile unit (.value first) (.value second)).toOption
+
+/- Europe/Berlin repeats its midnight on 1916-10-01: a Date reads as the earlier, CEST, midnight, while a shift from the CET midnight of 1915-10-01 or 1916-04-01 keeps its CET offset and lands an hour later, so the year and the sixth month are incomplete there and complete under UTC. The reversed pairs carry the same count with the sign applied. Unmeasured on 31.1.1. Basis: spec/05 §2.4, §2.7. -/
+example :
+    let october1915 : DateParts := { year := 1915, month := 10, day := 1 }
+    let april1916 : DateParts := { year := 1916, month := 4, day := 1 }
+    let october1916 : DateParts := { year := 1916, month := 10, day := 1 }
+    evaluated? .europeBerlin .years october1915 october1916 = some (.value 0 .fixed) ∧
+      evaluated? .europeBerlin .months april1916 october1916 = some (.value 5 .fixed) ∧
+      evaluated? .utc .years october1915 october1916 = some (.value 1 .fixed) ∧
+      evaluated? .utc .months april1916 october1916 = some (.value 6 .fixed) ∧
+      evaluated? .europeBerlin .years october1916 october1915 = some (.value 0 .fixed) ∧
+      evaluated? .europeBerlin .months october1916 april1916 = some (.value (-5) .fixed) := by
   native_decide
 
 /-- A `dd.MM.` declaration: date components without a year, which is the only shape the Base-Year

@@ -1,13 +1,14 @@
 import A12Kernel.Semantics.BaseYearDateSource
+import A12Kernel.Semantics.CalendarArithmetic
 import A12Kernel.Semantics.DateShift
 import A12Kernel.Semantics.DateTimeDayDifference
 import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked calendar differences
 
-This capsule computes signed calendar differences through one phase-observed numeric operand boundary. Date-only month/year differences use decoded date parts; day differences preserve both the decoded proleptic Date/DateTime label and its already-resolved exact instant for a selected model-zone profile. A date constant enters a day difference through its stored-label resolution, which gives a Julian leap day its Julian instant under UTC and none under Europe/Berlin, and `Today` and a Base Year enter on the proleptic calendar (spec/05 §1, §2.7). Stored/full Dates, admitted date literals and direct or range-selected Base-Year sources share the boundary.
+This capsule computes signed calendar differences through one phase-observed numeric operand boundary. Date-only month/year differences read each decoded Date as its start of day in the model zone and count on exact instants through the shared completed-period mechanism of `CalendarArithmetic` (spec/05 §2.4, §2.7); day differences preserve both the decoded proleptic Date/DateTime label and its already-resolved exact instant for a selected model-zone profile. A date constant enters a day difference through its stored-label resolution, which gives a Julian leap day its Julian instant under UTC and none under Europe/Berlin, and `Today` and a Base Year enter on the proleptic calendar (spec/05 §1, §2.7). Stored/full Dates, admitted date literals and direct or range-selected Base-Year sources share the boundary.
 
-The shared decoded-parts mechanism does not itself accept arbitrary authored dates. Its consumers retain their own boundaries: `FullDate` preserves the stored-value floor, while configured Base Year remains floor-free. The observed operand boundary preserves formal-cause precedence and symmetric empty-to-zero provenance, and it fails the evaluation for a date constant the model zone gives no instant, a Julian leap day under Europe/Berlin (spec/05 §1). Checked field/literal/Base-Year lowering, per-operation kind/component gates, concrete profile selection, scale 0, validation polarity, and computation poison are supplied by the shared numeric-expression consumers; constructed `Date(...)` execution, wider authored temporal operands, and temporal targets remain outside.
+The month/year counter does not itself accept arbitrary authored dates. Its consumers retain their own boundaries: `FullDate` preserves the stored-value floor, while configured Base Year remains floor-free. The observed operand boundary preserves formal-cause precedence and symmetric empty-to-zero provenance, and it fails the evaluation for a date constant the model zone gives no instant, a Julian leap day under Europe/Berlin (spec/05 §1). Checked field/literal/Base-Year lowering, per-operation kind/component gates, concrete profile selection, scale 0, validation polarity, and computation poison are supplied by the shared numeric-expression consumers; constructed `Date(...)` execution, wider authored temporal operands, and temporal targets remain outside.
 -/
 
 namespace A12Kernel
@@ -94,56 +95,16 @@ def yearCompatible (hasBaseYear : Bool)
 
 end CalendarDayDifference
 
-namespace DateParts
-
-namespace Difference
-
-/-- An admitted consumer supplies a real month; zero is an unreachable defensive default. -/
-def monthLastDay (parts : DateParts) : Nat :=
-  (DateParts.daysInMonth? parts.year parts.month).getD 0
-
-/-- Completed months for an already ordered pair. The raw coordinate count is reduced only when its clamped landing passes the later day. -/
-def wholeMonthsForward (earlier later : DateParts) : Int :=
-  let candidate := later.monthCoordinate - earlier.monthCoordinate
-  let landingDay :=
-    DateParts.Shift.monthLandingDay earlier (monthLastDay later)
-  if later.day < landingDay then candidate - 1 else candidate
-
-/-- Completed years for an already ordered pair. The candidate landing follows `AddYears`, including last-of-February preservation. -/
-def wholeYearsForward (source target : DateParts) : Int :=
-  let candidate := target.year - source.year
-  if source.month < target.month then
-    candidate
-  else if target.month < source.month then
-    candidate - 1
-  else
-    let landingDay :=
-      DateParts.Shift.yearLandingDay source (monthLastDay source)
-        (monthLastDay target)
-    if target.day < landingDay then candidate - 1 else candidate
-
-/-- Restore the original operand order after evaluating a nonnegative whole-period count. Equal operands reach the reverse branch and still produce zero. -/
-def signedWholePeriods
-    (forward : DateParts → DateParts → Int)
-    (first second : DateParts) : Int :=
-  if decide (first.Before second) then forward first second
-  else -(forward second first)
-
-end Difference
-
-end DateParts
-
 namespace DateDifferenceUnit
 
-/-- Apply the selected completed-period core to two already-admitted decoded dates. -/
-def between (unit : DateDifferenceUnit) (first second : DateParts) : Int :=
+/-- Signed completed periods between two Dates, each read as its start of day in the model zone. -/
+def betweenIn? (unit : DateDifferenceUnit) (profile : ModelZone.ConcreteProfile)
+    (first second : DateParts) : Option Int := do
+  let start ← profile.resolveCalendarLabel? (CalendarLabel.midnight first)
+  let finish ← profile.resolveCalendarLabel? (CalendarLabel.midnight second)
   match unit with
-  | .months =>
-      DateParts.Difference.signedWholePeriods
-        DateParts.Difference.wholeMonthsForward first second
-  | .years =>
-      DateParts.Difference.signedWholePeriods
-        DateParts.Difference.wholeYearsForward first second
+  | .months => profile.differenceResolvedInMonths? start finish
+  | .years => profile.differenceResolvedInYears? start finish
 
 end DateDifferenceUnit
 
@@ -182,14 +143,17 @@ def ofConstant (profile : ModelZone.ConcreteProfile) (parts : DateParts) : DateD
   else .value parts
 
 /-- A constant without an instant fails the evaluation ahead of every other operand state, because the constant is reached whatever the other operand holds. Formal unavailability then dominates emptiness; emptiness yields the kernel's symmetric zero. The ordering of the failure against the other states is unmeasured on 31.1.1. -/
-def evaluate (unit : DateDifferenceUnit)
+def evaluate (profile : ModelZone.ConcreteProfile) (unit : DateDifferenceUnit)
     (left right : DateDifferenceOperand) : Except DifferenceEvaluationFault NumericOperand :=
   match left, right with
   | .noInstantConstant, _ | _, .noInstantConstant => throw .constantHasNoInstant
   | .unavailable cause, _ => pure (.unknown cause)
   | _, .unavailable cause => pure (.unknown cause)
   | .empty, _ | _, .empty => pure (.value 0 .both)
-  | .value first, .value second => pure (.value (unit.between first second) .fixed)
+  | .value first, .value second =>
+      match unit.betweenIn? profile first second with
+      | some count => pure (.value count .fixed)
+      | none => throw .unsupportedCalendar
 
 end DateDifferenceOperand
 
@@ -261,48 +225,5 @@ def evaluate (profile : ModelZone.ConcreteProfile)
       | none => throw .unsupportedCalendar
 
 end CalendarDayDifferenceOperand
-
-namespace FullDate
-
-namespace Difference
-
-/-- Stored-Date specialization of the shared decoded-parts month counter. -/
-def wholeMonthsForward (earlier later : FullDate) : Int :=
-  DateParts.Difference.wholeMonthsForward earlier.civil.parts later.civil.parts
-
-/-- Stored-Date specialization of the shared decoded-parts year counter. -/
-def wholeYearsForward (earlier later : FullDate) : Int :=
-  DateParts.Difference.wholeYearsForward earlier.civil.parts later.civil.parts
-
-/-- Restore stored-Date operand order while retaining the established `FullDate` proof seam. -/
-def signedWholePeriods
-    (forward : FullDate → FullDate → Int)
-    (first second : FullDate) : Int :=
-  if first.before second then forward first second
-  else -(forward second first)
-
-end Difference
-
-/-- Signed count of complete month shifts from the first admitted Date to the second. -/
-def differenceInMonths (first second : FullDate) : Int :=
-  Difference.signedWholePeriods Difference.wholeMonthsForward first second
-
-/-- Signed count of complete year shifts from the first admitted Date to the second. -/
-def differenceInYears (first second : FullDate) : Int :=
-  Difference.signedWholePeriods Difference.wholeYearsForward first second
-
-end FullDate
-
-/-- Signed count of complete month shifts between two direct or range-selected projections of the configured Base Year. -/
-def baseYearDateDifferenceInMonths (year : Int)
-    (first second : BaseYearDateSource) : Int :=
-  DateParts.Difference.signedWholePeriods DateParts.Difference.wholeMonthsForward
-    (first.parts year) (second.parts year)
-
-/-- Signed count of complete year shifts between two direct or range-selected projections of the configured Base Year. -/
-def baseYearDateDifferenceInYears (year : Int)
-    (first second : BaseYearDateSource) : Int :=
-  DateParts.Difference.signedWholePeriods DateParts.Difference.wholeYearsForward
-    (first.parts year) (second.parts year)
 
 end A12Kernel

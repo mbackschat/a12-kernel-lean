@@ -253,13 +253,13 @@ def readNumericComputationAtomWith
           | some amount => pure (.value amount)
           | none => throw (.fieldKindMismatch source.fieldId)
       | .unknown cause | .poison cause => pure (.poison cause)
-  | .dateDifference unit left right => do
+  | .dateDifference unit profile left right => do
       let pair ← readTemporalPair .computation (context.readDateDifferenceOperand)
         (fun operand => match operand with | .unavailable cause => some cause | _ => none) left right
       match pair with
       | .error cause => pure (.poison cause)
       | .ok (leftOperand, rightOperand) =>
-          match DateDifferenceOperand.evaluate unit leftOperand rightOperand with
+          match DateDifferenceOperand.evaluate profile unit leftOperand rightOperand with
           | .ok operand => pure operand.toComputationResult
           | .error .constantHasNoInstant => throw (.temporalExpression .dateTimeLabelUnresolved)
           | .error .unsupportedCalendar => throw .unsupportedDateCalendar

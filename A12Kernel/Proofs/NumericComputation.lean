@@ -411,12 +411,13 @@ theorem readTemporalNumeric_value
 /-- A supported date-difference source uses the same phase reads and maps its exact numeric/fault provenance once into computation outcome space. -/
 theorem readDateDifference_evaluated
     (context : ScalarComputationContext) (unit : DateDifferenceUnit)
+    (profile : ModelZone.ConcreteProfile)
     (left right : ResolvedDateDifferenceOperand) (operand : NumericOperand)
     (leftOperand rightOperand : DateDifferenceOperand)
     (leftResolved : context.readDateDifferenceOperand left = .ok leftOperand)
     (rightResolved : context.readDateDifferenceOperand right = .ok rightOperand)
-    (evaluated : DateDifferenceOperand.evaluate unit leftOperand rightOperand = .ok operand) :
-    context.readNumericComputationAtom (.dateDifference unit left right) =
+    (evaluated : DateDifferenceOperand.evaluate profile unit leftOperand rightOperand = .ok operand) :
+    context.readNumericComputationAtom (.dateDifference unit profile left right) =
       .ok operand.toComputationResult := by
   cases leftOperand <;> cases rightOperand <;>
     simp_all [ScalarComputationContext.readNumericComputationAtom,

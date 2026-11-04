@@ -82,11 +82,12 @@ def CheckedAddressedNumericTarget.admitsRepetitionOperand
           owned.id != target.targetField &&
             owned.repetitionBoundBy target.targetDeclaration.repeatableScope
       | none => false
-  | .dateDifference unit left right =>
-      DateDifferenceUnit.compatible unit model.baseYear.isSome left.components right.components &&
-        target.admitsDateDifferenceEndpoint left && target.admitsDateDifferenceEndpoint right
   -- The profile is certified against the model's own zone, so a forged calendar cannot ride in on an
   -- otherwise admissible operand pair.
+  | .dateDifference unit profile left right =>
+      ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
+        DateDifferenceUnit.compatible unit model.baseYear.isSome left.components right.components &&
+        target.admitsDateDifferenceEndpoint left && target.admitsDateDifferenceEndpoint right
   | .dayDifference profile left right =>
       ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
         CalendarDayDifference.admittedBy left.components &&
@@ -265,9 +266,12 @@ private def resolveRepetitionOperand (target : CheckedAddressedNumericTarget mod
         let rest ← source.rest.mapM resolveNumber
         pure (.aggregate op { first, rest })
     | .dateDifference unit left right => do
+        let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+          | some profile => pure profile
+          | none => throw .unsupportedExpression
         let left ← resolveDateDifferenceEndpoint target left
         let right ← resolveDateDifferenceEndpoint target right
-        pure (.dateDifference unit left right)
+        pure (.dateDifference unit profile left right)
     | .dayDifference left right => do
         let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
           | some profile => pure profile
@@ -379,8 +383,8 @@ def AddressedRepetitionOperand.readAt {model : FlatModel}
     exact readAddressedAtom model (.temporalFieldPart source part format) [source.id] read environment
   case fieldValueAsNumber source =>
     exact readAddressedAtom model (.fieldValueAsNumber source) [source.fieldId] read environment
-  case dateDifference unit left right =>
-    exact readAddressedAtom model (.dateDifference unit left right)
+  case dateDifference unit profile left right =>
+    exact readAddressedAtom model (.dateDifference unit profile left right)
       ([left.endpointField?, right.endpointField?].filterMap id) read environment
   case dayDifference profile left right =>
     exact readAddressedAtom model (.dayDifference profile left right)

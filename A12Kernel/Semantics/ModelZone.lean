@@ -90,7 +90,7 @@ def resolveCalendarLabel? (profile : ConcreteProfile) (label : CalendarLabel) : 
 def storedLabelReal (profile : ConcreteProfile) (parts : DateParts) : Bool :=
   parts.isReal || (profile == .utc && parts.isJulianOnly)
 
-/-- Resolve a stored or constant label (spec/05 §1, §4) as a fresh label, except that a Julian leap day the proleptic calendar lacks resolves outside Europe/Berlin to its Julian instant, ten days later on the proleptic calendar. Under Europe/Berlin that label names no instant. -/
+/-- Resolve a stored or constant label (spec/05 §1, §4) as a fresh label, except that a Julian leap day the proleptic calendar lacks resolves outside Europe/Berlin to its Julian instant, read with the proleptic label of that instant (1500-02-29 reads as 1500-03-10). Under Europe/Berlin that label names no instant. -/
 def resolveStoredLabel? (profile : ConcreteProfile) (label : CalendarLabel) : Option Instant :=
   match profile.resolveCalendarLabel? label with
   | some instant => some instant

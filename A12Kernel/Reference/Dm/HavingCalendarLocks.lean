@@ -482,7 +482,8 @@ example : [("UTC", "31", "12", "4", "1969", "23"),
           some (.fired .omission, ["value 14"])) = true := by native_decide
 
 -- The clock reads the proleptic calendar: 1582-10-14T00:00Z is 14 October, where kernel 30.8.1 read the
--- Julian 4 October (`HybridCalendarClockDiffTest` locks 12:00Z under Europe/Berlin; spec/05 §2.7).
+-- Julian 4 October (spec/05 §2.7). `HybridCalendarClockDiffTest` locks 12:00Z under Europe/Berlin; this UTC
+-- midnight row is unmeasured on 31.1.1.
 example : runModel model "[Rows/N] > 0 And DayFromDate(Now) == 14 And YearFromDate(Now) == 1582"
     false "" "" "" (clock := { epochMillis := -12219379200000 }) (ruleExpected := "14") ==
       some (.fired .omission, ["value 14"]) := by native_decide
@@ -582,23 +583,26 @@ example : ["Today == Today", "Now == Now", "{Today} == {Today}", "{Now} == {Now}
     "\"05.03.2024\" == Now", "\"03:04:05\" == Now"].all (fun condition =>
     (runModel model ("[Rows/N] > 0 And " ++ condition) false "" "" "").isNone) = true := by native_decide
 
-private def gapFilter (literalFirst : Bool) : String :=
+/- A Julian leap-day date-time constant has no instant under Europe/Berlin (spec/05 §1), so reaching it
+in a Having filter fails the evaluation; the validation and computation rows below are unmeasured on 31.1.1
+for this carrier. -/
+private def noInstantFilter (literalFirst : Bool) : String :=
   if literalFirst then "\"29.02.1500T10:00:00\" < [Rows/Tag]"
   else "[Rows/Tag] > \"29.02.1500T10:00:00\""
 
 example : [false, true].all (fun first => ["", "bad", "2024-03-05T03:04:05"].all fun value =>
-    (runModel dateTimes (gapFilter first) false "" value "2024-03-05T03:04:05") ==
+    (runModel dateTimes (noInstantFilter first) false "" value "2024-03-05T03:04:05") ==
       some (.fired .value, [])) = true := by native_decide
 
-example : runModel dateTimes ("[Rows/N] < 0 And " ++ gapFilter true) false "" "bad" "bad"
+example : runModel dateTimes ("[Rows/N] < 0 And " ++ noInstantFilter true) false "" "bad" "bad"
     (ruleExpected := "0") = some (.fired .omission, ["value 0"]) := by native_decide
 
-example : runModel dateTimes ("[Rows/N] > 0 Or " ++ gapFilter true) false "" "bad" "bad"
+example : runModel dateTimes ("[Rows/N] > 0 Or " ++ noInstantFilter true) false "" "bad" "bad"
     (ruleExpected := "14") = some (.fired .omission, ["value 14"]) ∧
-    runModel dateTimes ("[Rows/Tag] == \"05.03.2024T03:04:05\" And " ++ gapFilter true) false "" "bad" "bad"
+    runModel dateTimes ("[Rows/Tag] == \"05.03.2024T03:04:05\" And " ++ noInstantFilter true) false "" "bad" "bad"
     (ruleExpected := "0") = some (.fired .omission, []) := by native_decide
 
-private def gapTargetOutcome (literalFirst : Bool) (value : String) (rows : Bool := true) :
+private def noInstantTargetOutcome (literalFirst : Bool) (value : String) (rows : Bool := true) :
     Option NumericTargetCheckResult := do
   let dm : DmModel := { flat := dateTimes, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
@@ -608,7 +612,7 @@ private def gapTargetOutcome (literalFirst : Bool) (value : String) (rows : Bool
   let checked ← (checkDocument prepared "en_US" input.data).toOption
   let (_, .number table _) ← (lowerComputation dateTimes .english {
     group := ["Form"], name := "Total", targetRelPath := "../Out", commonPrecondition := none,
-    alternatives := [{ precondition := none, operation := "Sum(Rows*/N Having " ++ gapFilter literalFirst ++ ")" }],
+    alternatives := [{ precondition := none, operation := "Sum(Rows*/N Having " ++ noInstantFilter literalFirst ++ ")" }],
     errorCodesToSuppress := [] }).toOption | none
   let addressed := checked.indexedComputationFillContext
   (table.evaluateIn {
@@ -619,9 +623,9 @@ private def gapTargetOutcome (literalFirst : Bool) (value : String) (rows : Bool
     filterStoredText := addressed.storedText
     starRead := addressed.read, starStoredText := addressed.storedText }).toOption
 
-example : gapTargetOutcome false "" = some (.supported (.invalidNoValue .calculationValue)) ∧
-    gapTargetOutcome true "bad" = some (.supported (.invalidNoValue .calculationValue)) ∧
-    gapTargetOutcome false "bad" = some (.supported (.inheritedPoison .dateFormat)) := by native_decide
+example : noInstantTargetOutcome false "" = some (.supported (.invalidNoValue .calculationValue)) ∧
+    noInstantTargetOutcome true "bad" = some (.supported (.invalidNoValue .calculationValue)) ∧
+    noInstantTargetOutcome false "bad" = some (.supported (.inheritedPoison .dateFormat)) := by native_decide
 
 private def keywordTargets : FlatModel := { model with
   fields := model.fields ++ (["Date", "Time", "Datum", "Zeit"].zipIdx.map fun (name, index) =>

@@ -328,6 +328,30 @@ example : bindingAdmitted ["P"] "Rows/B2" "FirstFilledValue(Rows/B, B0)" = true 
       | .error refusal => refusal.detail == "MVK_NO_BOOLY_ALLOWED"
       | .ok _ => false) = true := by native_decide
 
+private def yearlessLongShift (baseYear : Option Int) (operation : String) : Option (List String) := do
+  let fixture := { fragmentModel "MM-dd" (TemporalComponents.ofFormat "MM-dd") baseYear with timeZoneId := "Europe/Berlin" }
+  let dm : DmModel := { flat := fixture, computations := [], rules := [], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Lean.Json.mkObj [("Form", Lean.Json.mkObj [
+    ("D", .str "06-15"), ("N", "0"), ("Result", .str "01-01")])])).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler fixture).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  let step ← (lowerComputation fixture .english {
+    group := ["Form"], name := "ResultComp", targetRelPath := "../Result", commonPrecondition := none
+    alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }).toOption
+  pure ((← (runComputations world prepared checked [step.2]).toOption).map (·.outcome))
+
+-- Shifts back past 1582 land on proleptic labels, from a stored source and from a yearless constant, with
+-- no Base Year and under 2001 (a12-dmkits `YearlessShiftAnchorDiffTest` at `1124b523f`; kernel 30.8.1
+-- stored the Julian `05-13` and `11-06`).
+example : [none, some 2001].all (fun baseYear =>
+    ["AddDays(D, 0 - 160000)", "AddDays(\"15.06.\", 0 - 160000)"].all
+      (fun operation => yearlessLongShift baseYear operation == some ["value 05-23"]) &&
+    ["AddDays(D, 0 - 200000)", "AddDays(\"15.06.\", 0 - 200000)"].all
+      (fun operation => yearlessLongShift baseYear operation == some ["value 11-15"])) = true := by
+  native_decide
+
 private def yearlessShiftEquality (baseYear : Option Int) (source stored : String) (fires : Bool) :
     Option (List String) := do
   let fixture := { fragmentModel "MM-dd" (TemporalComponents.ofFormat "MM-dd") baseYear with timeZoneId := "Europe/Berlin" }

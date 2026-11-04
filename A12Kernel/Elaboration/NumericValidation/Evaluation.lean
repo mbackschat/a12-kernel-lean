@@ -24,7 +24,7 @@ def FlatContext.resolveDateTimeDifferenceOperand
 /-- Whether a date difference reaches a date constant the model zone gives no instant, a Julian leap day under Europe/Berlin, which fails the rule's evaluation (spec/05 §1). Only the addressed route can raise that failure; the flat entry point below has no failure channel and reads such an atom as malformed. -/
 def ValidationEvaluationContext.differenceConstantFails
     (context : ValidationEvaluationContext) : NumericValidationAtom → Bool
-  | .dateDifference _ left right =>
+  | .dateDifference _ _ left right =>
       left.validationOperand context.fields == .noInstantConstant ||
         right.validationOperand context.fields == .noInstantConstant
   | .dayDifference profile left right =>
@@ -52,8 +52,8 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
       ((context.fields.observeValidationAt field.id).asStringRangeOperand start finish).toValidationArithmetic
   | .fieldValueAsNumber source =>
       (source.observeOperand (context.fields.observeValidationAt source.fieldId)).toValidationArithmetic
-  | .dateDifference unit left right =>
-      match DateDifferenceOperand.evaluate unit
+  | .dateDifference unit profile left right =>
+      match DateDifferenceOperand.evaluate profile unit
           (left.validationOperand context.fields)
           (right.validationOperand context.fields) with
       | .ok operand => operand.toValidationArithmetic

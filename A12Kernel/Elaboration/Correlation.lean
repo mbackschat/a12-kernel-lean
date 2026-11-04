@@ -519,7 +519,7 @@ def CorrelatedHaving.outerIterationScopes
         | .product source => source.presenceSlots.map (·.outerIterationScope? model)
         | .collectionCount source => source.presenceSlots.map (·.outerIterationScope? model)
         | .firstFilled slots | .aggregate _ slots => (HavingNumberAggregate.presenceSlots slots).map (·.outerIterationScope? model)
-        | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map fun reference =>
+        | .dateDifference _ _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map fun reference =>
             outerHavingFieldIterationScope model reference.origin reference.field.id
         | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map fun reference =>
             outerHavingFieldIterationScope model reference.origin reference.field.id
@@ -710,7 +710,8 @@ def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : Group
       let first ← resolve left
       let second ← resolve right
       if !unit.compatible model.hasBaseYear (first.componentsWith (·.field.components)) (second.componentsWith (·.field.components)) then throw .numericExpressionUnsupported
-      pure (.dateDifference unit first second)
+      let some profile := ModelZone.ConcreteProfile.ofId? model.timeZoneId | throw .numericExpressionUnsupported
+      pure (.dateDifference unit profile first second)
     dayDifference := fun left right => do
       let resolve := resolveCalendar true (CalendarDayDifference.admittedBy)
       let first ← resolve left

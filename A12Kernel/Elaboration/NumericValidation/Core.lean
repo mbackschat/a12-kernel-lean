@@ -376,7 +376,7 @@ def NumericValidationAtom.admitted
           model.admitsAddressedFieldValueAsNumber rowGroup source
       | .modelWideNonrepeatable | .modelWideCheckedComputation =>
           model.admitsFieldValueAsNumberSource source
-  | .dateDifference unit left right =>
+  | .dateDifference unit profile left right =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
             match scope with
@@ -388,7 +388,8 @@ def NumericValidationAtom.admitted
         | .literal source year profile => source.admittedIn model year profile
         | .baseYear year _ => model.baseYear == some year
         | .today profile => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
-      admitted left && admitted right &&
+      ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
+        admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
   | .dateTimeDifference unit left right =>
       let admitted : FlatTemporalOperand → Bool
@@ -505,7 +506,7 @@ def NumericValidationAtom.referencesField (model : FlatModel) :
   | .stringLength source, field => source.id == field
   | .stringRange source _ _, field => source.id == field
   | .fieldValueAsNumber source, field => source.fieldId == field
-  | .dateDifference _ left right, field =>
+  | .dateDifference _ _ left right, field =>
       left.references field || right.references field
   | .dateTimeDifference _ left right, field =>
       left.dateTimeDifferenceReferences field ||
@@ -529,7 +530,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .stringLength source => isRelevant source.id
   | .stringRange source _ _ => isRelevant source.id
   | .fieldValueAsNumber source => isRelevant source.fieldId
-  | .dateDifference _ left right =>
+  | .dateDifference _ _ left right =>
       let operandRelevant : ResolvedDateDifferenceOperand → Bool
         | .field source => isRelevant source.id
         | .baseYear _ _ | .literal _ _ _ | .today _ => true

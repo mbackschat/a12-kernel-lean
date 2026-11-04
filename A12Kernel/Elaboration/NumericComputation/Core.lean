@@ -90,7 +90,7 @@ def FlatModel.admitsNumericComputationOperand
       match model.certifiedFieldValueAsNumberDeclaration? source with
       | some declaration => declaration.repetitionBoundBy scope
       | none => false
-  | .numeric (.dateDifference unit left right) =>
+  | .numeric (.dateDifference unit profile left right) =>
       let admitted : ResolvedDateDifferenceOperand → Bool
         | .field source =>
             model.admitsTemporalComputationOperand scope source
@@ -99,7 +99,8 @@ def FlatModel.admitsNumericComputationOperand
         | .baseYear year _ => model.baseYear == some year
         | .today profile => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
         | .now _ admitted => nomatch admitted
-      admitted left && admitted right &&
+      ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
+        admitted left && admitted right &&
         unit.compatible model.hasBaseYear left.components right.components
   | .numeric (.dateTimeDifference unit left right) =>
       let admitted : FlatTemporalOperand → Bool
@@ -185,7 +186,7 @@ def ResolvedNumericAtom.referencesFieldWith {Aggregate : Type}
   | .stringLength source => source.id == field
   | .stringRange source _ _ => source.id == field
   | .fieldValueAsNumber source => source.fieldId == field
-  | .dateDifference _ left right => left.references field || right.references field
+  | .dateDifference _ _ left right => left.references field || right.references field
   | .dateTimeDifference _ left right =>
       left.dateTimeDifferenceReferences field || right.dateTimeDifferenceReferences field
   | .dayDifference _ left right => left.references field || right.references field
@@ -469,6 +470,9 @@ def FlatModel.elaborateNumericComputationAtom
         | .error error =>
             throw (.fieldValueAsNumberSource declaration.path error)
     | .numeric (.dateDifference unit left right) => do
+        let profile ← match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+          | some profile => pure profile
+          | none => throw (.unsupportedCalendarProfile model.timeZoneId)
         let resolveOperand : SurfaceDateDifferenceOperand →
             Except NumericComputationElabError ResolvedDateDifferenceOperand
           | .field reference => do
@@ -495,7 +499,7 @@ def FlatModel.elaborateNumericComputationAtom
         let resolvedRight ← resolveOperand right
         if unit.compatible model.hasBaseYear
             resolvedLeft.components resolvedRight.components then
-          pure (.numeric (.dateDifference unit resolvedLeft resolvedRight))
+          pure (.numeric (.dateDifference unit profile resolvedLeft resolvedRight))
         else
           throw .incompatibleDateDifference
     | .numeric (.dateTimeDifference unit left right) => do

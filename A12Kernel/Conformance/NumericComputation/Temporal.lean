@@ -56,6 +56,27 @@ example :
         (.literal { year := some 2024, month := 3, day := 1 })) = some (.value 2) := by
   native_decide
 
+/- Stored Date fields count completed years on exact model-zone instants, so 1915-10-01 to 1916-10-01 straddles Europe/Berlin's repeated midnight and is incomplete there, while UTC counts the year. Unmeasured on 31.1.1. Basis: spec/05 §2.4, §2.7. -/
+example :
+    let laterDateId : FieldId := 15
+    let zoned (zone : String) : FlatModel :=
+      { model with
+        timeZoneId := zone
+        fields := model.fields ++
+          [temporalDeclaration laterDateId "LaterDate" .date TemporalComponents.fullDate] }
+    let stored (year : Int) (month day : Nat) : CheckedCell :=
+      checkedTemporal .date TemporalComponents.fullDate (.parsed (dateValue year month day))
+    let input : ScalarComputationContext :=
+      { context (date := stored 1915 10 1) with
+        read := fun field =>
+          if field == laterDateId then stored 1916 10 1
+          else (context (date := stored 1915 10 1)).read field }
+    let years := surfaceDateDifference .years
+      (surfaceDateOperand "Date") (surfaceDateOperand "LaterDate")
+    checkedResultOfIn (zoned "Europe/Berlin") years input = some (.value 0) ∧
+      checkedResultOfIn (zoned "UTC") years input = some (.value 1) := by
+  native_decide
+
 /- Checked computation shares the temporal component source seam and admits both direct operation-form wrappers. -/
 example :
     checkedResultOf (surfaceDateFieldPart "DateTime" .day)

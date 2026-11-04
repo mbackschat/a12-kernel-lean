@@ -16,7 +16,7 @@ inductive HavingNumericAtomOf (Temporal : Type) where
   | product (source : HavingNumericProduct)
   | collectionCount (source : HavingCollectionCount)
   | aggregate (op : NumericAggregateOp) (slots : List (HavingFieldListSlot HavingNumberRef))
-  | dateDifference (unit : DateDifferenceUnit) (left right : ResolvedDateDifferenceOperand HavingTemporalRef)
+  | dateDifference (unit : DateDifferenceUnit) (profile : ModelZone.ConcreteProfile) (left right : ResolvedDateDifferenceOperand HavingTemporalRef)
   | dayDifference (profile : ModelZone.ConcreteProfile) (left right : ResolvedDateDifferenceOperand HavingTemporalRef true)
   | dateTimeDifference (unit : DateTimeSubdayUnit) (left right : FlatTemporalOperand HavingTemporalRef)
   | baseYear (year : Int)
@@ -40,7 +40,7 @@ def HavingNumericAtomOf.mapTemporal (f : Temporal → Next) : HavingNumericAtomO
   | .product a0 => .product a0
   | .collectionCount a0 => .collectionCount a0
   | .aggregate a0 a1 => .aggregate a0 a1
-  | .dateDifference a0 a1 a2 => .dateDifference a0 a1 a2
+  | .dateDifference a0 a1 a2 a3 => .dateDifference a0 a1 a2 a3
   | .dayDifference a0 a1 a2 => .dayDifference a0 a1 a2
   | .dateTimeDifference a0 a1 a2 => .dateTimeDifference a0 a1 a2
   | .baseYear a0 => .baseYear a0
@@ -62,7 +62,7 @@ def HavingNumericAtomOf.originsWith (origins : Temporal → List HavingOrigin) :
   | .product source => [source.left.origin, source.right.origin]
   | .collectionCount source => (source.presenceSlots.flatMap (·.references)).map (·.origin)
   | .firstFilled slots | .aggregate _ slots => (slots.flatMap (·.references)).map (·.origin)
-  | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (·.origin)
+  | .dateDifference _ _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (·.origin)
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (·.origin)
   | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => []
   | .field reference => [reference.origin]
@@ -78,7 +78,7 @@ def HavingNumericAtomOf.fieldOriginsWith (fields : Temporal → List (HavingOrig
   | .product source => [(source.left.origin, source.left.field.id), (source.right.origin, source.right.field.id)]
   | .collectionCount source => (source.presenceSlots.flatMap (·.references)).map (fun ref => (ref.origin, ref.field))
   | .firstFilled slots | .aggregate _ slots => (slots.flatMap (·.references)).map (fun reference => (reference.origin, reference.field.id))
-  | .dateDifference _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (fun reference => (reference.origin, reference.field.id))
+  | .dateDifference _ _ left right | .dayDifference _ left right => (left.fields ++ right.fields).map (fun reference => (reference.origin, reference.field.id))
   | .dateTimeDifference _ left right => (left.fieldValues ++ right.fieldValues).map (fun reference => (reference.origin, reference.field.id))
   | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ | .repetition _ => []
   | .dateRangeBoundPart origin source _ _ => [(origin, source.id)]
@@ -93,7 +93,7 @@ def HavingNumericAtomOf.summary : HavingNumericAtomOf Temporal → NumericScaleS
   | .temporalExpressionPart _ _ => .field 0
   | .groupCount _ | .collectionCount _ | .aggregate .distinctCount _ => .field 0
   | .firstFilled slots | .aggregate _ slots => (slots.flatMap (·.references)).foldl (fun summary reference => summary.union reference.field.info.staticSummary) (.field 0)
-  | .dateDifference _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ => .field 0
+  | .dateDifference _ _ _ _ | .dayDifference _ _ _ | .dateTimeDifference _ _ _ => .field 0
   | .baseYear _ | .baseYearDatePart _ _ _ | .clockPart _ _ _ => .field 0
   | .fieldValueAsNumber _ source => .field source.scale
   | .field reference => reference.field.info.staticSummary
@@ -168,10 +168,10 @@ def HavingNumericAtomOf.readArithmetic [SizeOf Temporal] (phase : Phase)
   match atom with
   | .temporalDifference unit left right => difference unit left right (by simp; omega) (by simp; omega)
   | .temporalExpressionPart part source => projection part source (by simp; omega)
-  | .dateDifference unit left right => do
+  | .dateDifference unit profile left right => do
       let result ← readHavingCalendarDifference phase context.read frame
         (readHavingDateOperand context.world context.unsupportedDateCalendar)
-        (fun | .unavailable cause => some cause | _ => none) (fun cause => .ok (.unknown cause)) (DateDifferenceOperand.evaluate unit) left right
+        (fun | .unavailable cause => some cause | _ => none) (fun cause => .ok (.unknown cause)) (DateDifferenceOperand.evaluate profile unit) left right
       match result with
       | .ok operand => pure operand.toValidationArithmetic
       | .error .constantHasNoInstant => throw context.temporalValueFailure
@@ -246,7 +246,7 @@ def formatWithSubterm [SizeOf Temporal] (atom : HavingNumericAtomOf Temporal)
   | .product a0 => "product" ++ " " ++ (repr a0)
   | .collectionCount a0 => "collectionCount" ++ " " ++ (repr a0)
   | .aggregate a0 a1 => "aggregate" ++ " " ++ (repr a0) ++ " " ++ (repr a1)
-  | .dateDifference a0 a1 a2 => "dateDifference" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2)
+  | .dateDifference a0 a1 a2 a3 => "dateDifference" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2) ++ " " ++ (repr a3)
   | .dayDifference a0 a1 a2 => "dayDifference" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2)
   | .dateTimeDifference a0 a1 a2 => "dateTimeDifference" ++ " " ++ (repr a0) ++ " " ++ (repr a1) ++ " " ++ (repr a2)
   | .baseYear a0 => "baseYear" ++ " " ++ (repr a0)
@@ -280,8 +280,8 @@ def decideEqWithSubterm [SizeOf Temporal] (left right : HavingNumericAtomOf Temp
     exact decidable_of_iff (a0 = b0) (by simp)
   case aggregate.aggregate a0 a1 b0 b1 =>
     exact decidable_of_iff (a0 = b0 ∧ a1 = b1) (by simp)
-  case dateDifference.dateDifference a0 a1 a2 b0 b1 b2 =>
-    exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2) (by simp)
+  case dateDifference.dateDifference a0 a1 a2 a3 b0 b1 b2 b3 =>
+    exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2 ∧ a3 = b3) (by simp)
   case dayDifference.dayDifference a0 a1 a2 b0 b1 b2 =>
     exact decidable_of_iff (a0 = b0 ∧ a1 = b1 ∧ a2 = b2) (by simp)
   case dateTimeDifference.dateTimeDifference a0 a1 a2 b0 b1 b2 =>

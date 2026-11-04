@@ -132,8 +132,9 @@ def HavingNumericAtomOf.wellFormedWith (model : FlatModel) (candidateLevels oute
   | .product source => source.wellFormed model candidateLevels outerLevels
   | .collectionCount source => source.wellFormed model candidateLevels outerLevels
   | .firstFilled slots | .aggregate _ slots => HavingNumberAggregate.wellFormed model candidateLevels outerLevels slots
-  | .dateDifference unit left right => unit.compatible model.hasBaseYear
-      (left.componentsWith (·.field.components)) (right.componentsWith (·.field.components)) &&
+  | .dateDifference unit profile left right => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
+      unit.compatible model.hasBaseYear
+        (left.componentsWith (·.field.components)) (right.componentsWith (·.field.components)) &&
       [left, right].all (calendarSourceAdmitted model candidateLevels outerLevels)
   | .dayDifference profile left right => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
       CalendarDayDifference.admittedBy (left.componentsWith (·.field.components)) &&

@@ -54,13 +54,13 @@ theorem orderedNumericValidationAtom_repeatableTemporalFieldPart_requiresAddress
 
 /-- A Date completed-period difference cannot fall back to scalar evaluation when its model-certified field operand is repeatable; the other operand may remain model-owned Base Year. -/
 theorem orderedNumericValidationAtom_repeatableDateDifference_requiresAddressed
-    (unit : DateDifferenceUnit) (field : FlatTemporalField)
+    (unit : DateDifferenceUnit) (profile : ModelZone.ConcreteProfile) (field : FlatTemporalField)
     (year : Int) (source : BaseYearDateSource)
     (declaration : FlatFieldDecl)
     (lookup : model.lookupUniqueId field.id = .ok declaration)
     (repeatable : declaration.repeatableScope.isEmpty = false) :
     (OrderedNumericValidationAtom.ordinary
-      (.dateDifference unit (.field field)
+      (.dateDifference unit profile (.field field)
         (.baseYear year source))).requiresAddressedValidation
         (model := model) = true := by
   simp [OrderedNumericValidationAtom.requiresAddressedValidation,

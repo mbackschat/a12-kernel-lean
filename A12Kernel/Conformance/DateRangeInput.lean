@@ -697,7 +697,7 @@ example : [("dd.MM", "-", "01.06-01.09"), ("MM-dd", "/", "06-01/09-01")].all
           | .ok (.parsed (.dateRange (.exact _))) => true
           | _ => false))) = true := by native_decide
 
-/- Yearless completion reads the proleptic calendar (spec/05 §2.7), so a month-only range ending in February of Base Year 1500 ends on the 28th; the hybrid calendar's Julian February had 29 days. Unmeasured on 31.1.1. -/
+/- Yearless completion reads the proleptic calendar (spec/05 §2.7), so a month-only range ending in February of Base Year 1500 ends on the 28th; the hybrid calendar's Julian February had 29 days. Locked under UTC by a12-dmkits `StoredDateCalendarDiffTest.everyPreCutoverValueCountsOnTheProlepticCalendar` at `1124b523f`. -/
 example : (match FlatModel.classifyRuntimeDateRange
     { fields := [], baseYear := some 1500, timeZoneId := "UTC" } { format := "MM", separator := "/" } "01/02" with
   | .ok (.parsed (.dateRange (.exact range))) => range.finish.parts.day == 28
