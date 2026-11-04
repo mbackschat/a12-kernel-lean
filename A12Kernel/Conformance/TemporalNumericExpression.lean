@@ -68,7 +68,7 @@ example : generated .now 13 = some none ∧
   native_decide
 
 /-- A Julian leap day names no instant under Berlin (spec/05 §5), the unresolvable DateTime literal this row reads; a spring-gap label resolves one gap later. -/
-private def noInstantLabel : LegacyCalendarLabel :=
+private def noInstantLabel : CalendarLabel :=
   { parts := { year := 1500, month := 2, day := 29 }
     time := (TimeOfDay.ofHms? 10 0 0).get (by decide) }
 

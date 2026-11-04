@@ -107,7 +107,7 @@ inductive FlatTemporalOperand (Field : Type := FlatTemporalField) where
   | fieldValue (field : Field)
   | literalValue (instant : Instant) (components : TemporalComponents := TemporalComponents.fullDate)
   | timeValue (value : TimeOfDay)
-  | localDateTimeValue (profile : ModelZone.ConcreteProfile) (label : LegacyCalendarLabel)
+  | localDateTimeValue (profile : ModelZone.ConcreteProfile) (label : CalendarLabel)
   | grouped (source : FlatTemporalOperand Field)
   | todayValue (zoneId : String)
   | baseYearValue (zoneId : String) (year : Int)

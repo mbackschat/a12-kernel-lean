@@ -1,5 +1,5 @@
 import A12Kernel.Semantics.DateShift
-import A12Kernel.Semantics.LegacyCalendarExpression
+import A12Kernel.Semantics.CalendarExpression
 
 /-! # Model-zone completed-period differences
 

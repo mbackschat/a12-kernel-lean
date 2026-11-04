@@ -3,7 +3,7 @@ import A12Kernel.Semantics.ConstructedDateInputs
 import A12Kernel.Semantics.DateAggregate
 import A12Kernel.Semantics.DateTimeAggregate
 import A12Kernel.Semantics.TimeAggregate
-import A12Kernel.Semantics.LegacyCalendarExpression
+import A12Kernel.Semantics.CalendarExpression
 import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.NumericExpression
 

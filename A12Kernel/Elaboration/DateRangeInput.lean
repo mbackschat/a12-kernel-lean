@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.FullDateInput
-import A12Kernel.Semantics.LegacyCalendarExpression
+import A12Kernel.Semantics.CalendarExpression
 import A12Kernel.Semantics.Observation
 import A12Kernel.Semantics.TemporalFormat
 import A12Kernel.Elaboration.Flat.Types

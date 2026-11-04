@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.PartialDateInput
 import A12Kernel.Semantics.DateRangeOverlap
-import A12Kernel.Semantics.LegacyCalendarExpression
+import A12Kernel.Semantics.CalendarExpression
 
 /-! # Checked component-omitting Date input
 

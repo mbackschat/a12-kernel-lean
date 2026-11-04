@@ -5,7 +5,7 @@ import A12Kernel.Semantics.DateTime
 This module implements the exact `europe-berlin-java-time-jdk21-tzdb2026a-v1` profile from `spec/05` §5.1: local mean time until 1893, the transition table through 1997, and the EU recurrence after it. It owns UTC offset selection and local-label resolution with an optional preferred offset, the rule kernel 31.1.1 applies through `java.time` (spec/05 §5): a gap label resolves one gap later, an overlap label to the preferred offset when valid and otherwise to the earlier instant. Model-zone dispatch, parsing, formal-cell projection, rendering and public protocol exposure remain separate.
 -/
 
-namespace A12Kernel.EuropeBerlinLegacyProfile
+namespace A12Kernel.EuropeBerlinProfile
 
 /-- Stable identity of the pinned timezone account. -/
 def version : String :=
@@ -175,4 +175,4 @@ def resolvePreferring? (dateTime : LocalDateTime) (preferred : Option Int) : Opt
 def resolveLocal? (dateTime : LocalDateTime) : Option Instant :=
   resolvePreferring? dateTime none
 
-end A12Kernel.EuropeBerlinLegacyProfile
+end A12Kernel.EuropeBerlinProfile

@@ -150,7 +150,7 @@ The letter is the peer's `-2026-10-02`, delivered by its session and frozen at S
 
 **Classification.** Inbound from committed, reviewed revisions; [`spec/05`](../../spec/05-dates-and-time.md) §5's landing bullet now names the expected date and these rows.
 
-**Lean.** Already this account: the re-fit is compared with the expected date, and the four values are locked in [`BerlinLegacyCalendarArithmetic`](../../A12Kernel/Conformance/BerlinLegacyCalendarArithmetic.lean) and [`DateTimeDayDifference`](../../A12Kernel/Conformance/DateTimeDayDifference.lean). Its Date-source rows are not locked.
+**Lean.** Already this account: the re-fit is compared with the expected date, and the four values are locked in [`CalendarArithmetic`](../../A12Kernel/Conformance/CalendarArithmetic.lean) and [`DateTimeDayDifference`](../../A12Kernel/Conformance/DateTimeDayDifference.lean). Its Date-source rows are not locked.
 
 <a id="inbound-2026-10-02-partial-date-readers"></a>
 **Claim.** Its §10 (`FirstFilledValuePartialDateDiffTest` at `a7ed04ad`) has `FirstFilledValue` select a partially known Date as its earliest day, `2024-06-00` as `2024-06-01` and `2024-00-00` as `2024-01-01`, directly, starred, over a group and keyed, while `0000-00-00` and a malformed value leave the selection unknown and end the walk. A copy of the selection into a full Date takes the first day, and a malformed or unknown-year value clears it. `PartialDatePresenceDiffTest` at `ed58c513` adds stored-text uniqueness at `MONTH_OPTIONAL` and `YEAR_OPTIONAL` and down a starred column.

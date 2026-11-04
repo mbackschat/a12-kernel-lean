@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.ValueAsDateTimeExtraction
-import A12Kernel.Semantics.BerlinLegacyCalendarArithmetic
+import A12Kernel.Semantics.CalendarArithmetic
 
 /-! # Checked DateTime calendar-day shifts
 

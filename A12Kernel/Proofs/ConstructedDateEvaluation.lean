@@ -81,7 +81,7 @@ theorem checkedConstructedDateTodayExtractor_requires_world
 /-- A resolved `Today` projects exactly the certified local calendar component. -/
 theorem checkedConstructedDateTodayExtractor_read
     (checked : CheckedConstructedDatePointInTimeExtractor model)
-    (world : World) (instant : Instant) (label : LegacyCalendarLabel)
+    (world : World) (instant : Instant) (label : CalendarLabel)
     (isToday : checked.point = .today)
     (resolved : world.today? model.timeZoneId = some instant)
     (decoded : checked.profile.calendarLabel? instant = some label) :
@@ -102,7 +102,7 @@ theorem checkedConstructedDateNowExtractor_requires_world
 /-- `Now` projects the retained exact world instant without consulting zone rules. -/
 theorem checkedConstructedDateNowExtractor_read
     (checked : CheckedConstructedDatePointInTimeExtractor model)
-    (world : World) (label : LegacyCalendarLabel)
+    (world : World) (label : CalendarLabel)
     (isNow : checked.point = .now)
     (decoded : checked.profile.calendarLabel? world.now = some label) :
     checked.read (some world) =

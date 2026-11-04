@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.BerlinLegacyCalendarArithmetic
+import A12Kernel.Semantics.CalendarArithmetic
 
 /-! # Model-zone completed-period laws
 

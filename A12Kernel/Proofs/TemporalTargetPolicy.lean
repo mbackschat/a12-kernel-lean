@@ -50,7 +50,7 @@ theorem fullDateTarget_evaluateCivil_beforeGregorianFloor
 /-- DateTime rendering uses the local wall label selected from the exact input instant; no caller-supplied label or host zone can replace it. -/
 theorem dateTimeTarget_evaluate_value
     (target : CheckedDateTimeTarget model)
-    (instant : Instant) (dateTime : LegacyCalendarLabel) (value : Value)
+    (instant : Instant) (dateTime : CalendarLabel) (value : Value)
     (decoded :
       target.profile.calendarLabel? instant = some dateTime)
     (readable :
@@ -65,7 +65,7 @@ theorem dateTimeTarget_evaluate_value
 cause, never accepted; the Kernel reports such a target errored. -/
 theorem dateTimeTarget_evaluate_rejected
     (target : CheckedDateTimeTarget model)
-    (instant : Instant) (dateTime : LegacyCalendarLabel) (cause : BaseFormalCause)
+    (instant : Instant) (dateTime : CalendarLabel) (cause : BaseFormalCause)
     (decoded :
       target.profile.calendarLabel? instant = some dateTime)
     (rejected :

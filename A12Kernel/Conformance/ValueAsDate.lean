@@ -580,7 +580,7 @@ example :
     let observed : Bool :=
       match checked.evaluateRaw
           (.parsed "16.10.1583") (.value (-367)) with
-      | .error (.unsupportedLegacyLanding date) =>
+      | .error (.unsupportedPreCutoverLanding date) =>
           date.parts.year == 1582 &&
             date.parts.month == 10 && date.parts.day == 14
       | _ => false

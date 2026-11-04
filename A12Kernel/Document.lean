@@ -75,7 +75,7 @@ def pathForScope (environment : Env) :
 
 end Env
 
-/-- Capability projection of one versioned legacy model-zone account. `Today` clears the local clock at an exact instant; local-label resolution supports stored values, Base Year, and later calendar consumers. A complete kernel consumer supplies every model-legal id; a narrower consumer returns `none` for every unsupported id. -/
+/-- Capability projection of one versioned model-zone account. `Today` clears the local clock at an exact instant; local-label resolution supports stored values, Base Year, and later calendar consumers. A complete kernel consumer supplies every model-legal id; a narrower consumer returns `none` for every unsupported id. -/
 structure ModelZoneRules where
   today? : String → Instant → Option Instant
   resolveLocal? : String → Int → Nat → Nat → Nat → Nat → Nat → Option Instant

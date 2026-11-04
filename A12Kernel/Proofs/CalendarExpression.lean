@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.LegacyCalendarExpression
+import A12Kernel.Semantics.CalendarExpression
 
 namespace A12Kernel
 

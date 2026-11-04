@@ -1,5 +1,5 @@
 import A12Kernel.Semantics.FullDateInputFormat
-import A12Kernel.Semantics.LegacyCalendarExpression
+import A12Kernel.Semantics.CalendarExpression
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.ConstructedDateDay
 import A12Kernel.Semantics.DateTimeComparison

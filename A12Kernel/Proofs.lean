@@ -3,7 +3,7 @@ import A12Kernel.Proofs.HavingFirstFilled
 import A12Kernel.Proofs.HavingCollectionCount
 import A12Kernel.Proofs.HavingUniqueness
 import A12Kernel.Proofs.CorrelationReferences
-import A12Kernel.Proofs.LegacyCalendarExpression
+import A12Kernel.Proofs.CalendarExpression
 import A12Kernel.Proofs.AddressedDateFromDateTime
 import A12Kernel.Proofs.AddressedDateFromDateTimeFormalInput
 import A12Kernel.Proofs.AddressedDateRangeBoundPart
@@ -37,8 +37,8 @@ import A12Kernel.Proofs.AddressedTimeConstructionFormalInput
 import A12Kernel.Proofs.AddressedTimeFromDateTime
 import A12Kernel.Proofs.AddressedTimeFromDateTimeFormalInput
 import A12Kernel.Proofs.BaseYearDateSource
-import A12Kernel.Proofs.BerlinLegacyCalendarArithmetic
-import A12Kernel.Proofs.BerlinLegacyTimeZone
+import A12Kernel.Proofs.CalendarArithmetic
+import A12Kernel.Proofs.BerlinTimeZone
 import A12Kernel.Proofs.BooleanConstantComputation
 import A12Kernel.Proofs.RepeatableDateConstantComputation
 import A12Kernel.Proofs.DateConstantTarget

@@ -144,7 +144,7 @@ example :
       temporalExpressionResult (.group .now) (.group .now) = none := by native_decide
 
 /-- Under Berlin a Julian leap day before the cutover names no instant (spec/05 §5), so it is the unresolvable DateTime literal these rows read. A spring-gap label resolves one gap later and no longer fails. -/
-private def berlinNoInstant : LegacyCalendarLabel :=
+private def berlinNoInstant : CalendarLabel :=
   { parts := { year := 1500, month := 2, day := 29 }
     time := (TimeOfDay.ofHms? 10 0 0).get (by native_decide) }
 

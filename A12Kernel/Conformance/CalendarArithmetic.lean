@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.BerlinLegacyCalendarArithmetic
+import A12Kernel.Semantics.CalendarArithmetic
 import A12Kernel.Semantics.DateTimeDayDifference
 
 /-! # Model-zone calendar shift and completed-period locks (kernel 31.1.1)
@@ -6,7 +6,7 @@ import A12Kernel.Semantics.DateTimeDayDifference
 These cases separate the proleptic calendar and the source-offset preference of `ZonedDateTime` shifts from the 30.8.1 hybrid stepping and compute-time resolution (spec/05 §2.3, §2.4, §2.7, §5). Calendar-only rows hold under UTC and Berlin alike (a12-dmkits `ConstructedDateCalendarDiffTest`, `supportedGmtAndBerlinShareTheProlepticCalendar`); the repeated-midnight rows are Berlin-only (`ConstructedDateInstantDiffTest`, `WallDayArithmeticDiffTest`).
 -/
 
-namespace A12Kernel.Conformance.BerlinLegacyCalendarArithmetic
+namespace A12Kernel.Conformance.CalendarArithmetic
 
 open A12Kernel
 
@@ -147,4 +147,4 @@ example :
       { year := 1999, month := 2, day := 28 } = true := by
   native_decide
 
-end A12Kernel.Conformance.BerlinLegacyCalendarArithmetic
+end A12Kernel.Conformance.CalendarArithmetic

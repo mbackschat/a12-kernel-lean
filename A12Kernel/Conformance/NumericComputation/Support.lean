@@ -404,12 +404,12 @@ def berlinDateTimeValue
     (admissible :
       (LocalDateTime.ofYmdHms? year month day hour minute second).isSome)
     (resolved :
-      (EuropeBerlinLegacyProfile.resolveLocal?
+      (EuropeBerlinProfile.resolveLocal?
         (localDateTime year month day hour minute second admissible)).isSome) :
     Value :=
   let point := localDateTime year month day hour minute second admissible
   .temporal (.dateTime
-    ((EuropeBerlinLegacyProfile.resolveLocal?
+    ((EuropeBerlinProfile.resolveLocal?
       (localDateTime year month day hour minute second admissible)).get resolved)
     point.date.civil.parts point.time)
 
@@ -417,7 +417,7 @@ def berlinDaylightFoldValue : Value :=
   let point := localDateTime 2024 10 27 2 15 0 (by native_decide)
   let beforeFold := localDateTime 2024 10 27 1 15 0 (by native_decide)
   let daylightInstant :=
-    (EuropeBerlinLegacyProfile.resolveLocal? beforeFold).get
+    (EuropeBerlinProfile.resolveLocal? beforeFold).get
       (by native_decide) |>.shiftHours 1
   .temporal (.dateTime daylightInstant point.date.civil.parts point.time)
 

@@ -442,10 +442,10 @@ These stable names help when a query crosses numbered clauses. Their capability 
 
 - `owner-and-boundary`: [`DateConstruction.lean`](../../A12Kernel/Semantics/DateConstruction.lean), [`BaseYearDateSource.lean`](../../A12Kernel/Semantics/BaseYearDateSource.lean), and checked component owners share typed Date construction without collapsing calendar provenance.
 
-<a id="cap-berlin-legacy-calendar-arithmetic"></a>
-#### Berlin legacy calendar arithmetic
+<a id="cap-calendar-arithmetic"></a>
+#### Calendar arithmetic
 
-- `owner-and-boundary`: [`BerlinLegacyCalendarArithmetic.lean`](../../A12Kernel/Semantics/BerlinLegacyCalendarArithmetic.lean) owns the profile-generic completed month/year counts over exact instants, each landing taken from `shiftCalendar?` in [`LegacyCalendarExpression.lean`](../../A12Kernel/Semantics/LegacyCalendarExpression.lean). [`DateTimeDayDifference.lean`](../../A12Kernel/Semantics/DateTimeDayDifference.lean) owns the wall-clock day count; it is not elapsed-duration division.
+- `owner-and-boundary`: [`CalendarArithmetic.lean`](../../A12Kernel/Semantics/CalendarArithmetic.lean) owns the profile-generic completed month/year counts over exact instants, each landing taken from `shiftCalendar?` in [`CalendarExpression.lean`](../../A12Kernel/Semantics/CalendarExpression.lean). [`DateTimeDayDifference.lean`](../../A12Kernel/Semantics/DateTimeDayDifference.lean) owns the wall-clock day count; it is not elapsed-duration division.
 
 <a id="cap-addressed-numeric-placement-and-execution-seam"></a>
 #### Addressed numeric placement and execution seam

@@ -1,5 +1,5 @@
 import A12Kernel.Semantics.ScalarTemporalValue
-import A12Kernel.Semantics.BerlinLegacyCalendarArithmetic
+import A12Kernel.Semantics.CalendarArithmetic
 import A12Kernel.Semantics.DateDifference
 
 namespace A12Kernel

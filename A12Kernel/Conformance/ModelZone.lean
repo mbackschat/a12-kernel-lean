@@ -68,7 +68,7 @@ example :
 
 /- A Julian-only label resolves under UTC to its Julian instant, proleptic 1500-03-10 (spec/05 §1); under Berlin it names no instant. A proleptic label resolves as a fresh label in both. -/
 example :
-    let label (year : Int) (month day : Nat) : LegacyCalendarLabel := LegacyCalendarLabel.midnight { year, month, day }
+    let label (year : Int) (month day : Nat) : CalendarLabel := CalendarLabel.midnight { year, month, day }
     (ModelZone.ConcreteProfile.utc.resolveStoredLabel? (label 1500 2 29),
       ModelZone.ConcreteProfile.utc.resolveCalendarLabel? (label 1500 3 10),
       ModelZone.ConcreteProfile.europeBerlin.resolveStoredLabel? (label 1500 2 29),

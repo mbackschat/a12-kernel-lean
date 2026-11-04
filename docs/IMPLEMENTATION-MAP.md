@@ -718,8 +718,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Resolved Date-range overlap truth, admission, and scans](implementation/date-range.md#cap-resolved-date-range-overlap-truth-admission-and-scans)
 <a id="cap-resolved-direct-date-construction-and-base-year-sources"></a>
 - [Resolved direct Date construction and Base-Year sources](implementation/cross-clause.md#cap-resolved-direct-date-construction-and-base-year-sources)
-<a id="cap-berlin-legacy-calendar-arithmetic"></a>
-- [Berlin legacy calendar arithmetic](implementation/cross-clause.md#cap-berlin-legacy-calendar-arithmetic)
+<a id="cap-calendar-arithmetic"></a>
+- [Calendar arithmetic](implementation/cross-clause.md#cap-calendar-arithmetic)
 <a id="cap-addressed-numeric-placement-and-execution-seam"></a>
 - [Addressed numeric placement and execution seam](implementation/cross-clause.md#cap-addressed-numeric-placement-and-execution-seam)
 <a id="cap-certified-direct-number-source-certificate"></a>

@@ -184,7 +184,7 @@ def timeConstant? (text : String) : Option TimeOfDay := do
 /-- The wall label a date literal joined by `T` to a clock literal names, admitted on the hybrid calendar:
 before the cutover it is a Julian label, so `"04.10.1582T23:00:00"` is admitted. The instant it denotes is
 resolved at runtime by `ConcreteProfile.resolveStoredLabel?` (2026-10-21 §1.12). -/
-def dateTimeConstant? (text : String) : Option LegacyCalendarLabel := do
+def dateTimeConstant? (text : String) : Option CalendarLabel := do
   let [date, clock] := text.splitOn "T" | none
   pure { parts := ← hybridDateConstant? date, time := ← timeConstant? clock }
 

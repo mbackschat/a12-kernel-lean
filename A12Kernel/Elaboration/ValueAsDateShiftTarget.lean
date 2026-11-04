@@ -24,7 +24,7 @@ structure CheckedValueAsDateShiftTarget (model : FlatModel) where
 /-- Structural failure outside the rich target-outcome domain. -/
 inductive ValueAsDateShiftTargetFault where
   | shift (error : ValueAsDateShiftFault)
-  | unsupportedLegacyLanding (date : CivilDate)
+  | unsupportedPreCutoverLanding (date : CivilDate)
   deriving Repr, DecidableEq
 
 namespace CheckedValueAsDateShiftTarget
@@ -47,7 +47,7 @@ def evaluateOutcome (checked : CheckedValueAsDateShiftTarget model)
   | .poison cause => pure (.poison cause)
   | .value date =>
       if date.Before firstSupportedLanding then
-        throw (.unsupportedLegacyLanding date)
+        throw (.unsupportedPreCutoverLanding date)
       else
         pure (checked.target.evaluateCivil date)
 

@@ -1,4 +1,4 @@
-import A12Kernel.Proofs.BerlinLegacyTimeZone
+import A12Kernel.Proofs.BerlinTimeZone
 import A12Kernel.Semantics.FlatValidation
 import A12Kernel.Semantics.ModelZone
 
@@ -103,8 +103,8 @@ theorem concreteProfile_resolveLocal_injective
   | europeBerlin =>
       simp only [ModelZone.ConcreteProfile.attains, Bool.not_eq_true', List.isEmpty_eq_false_iff]
         at leftAttained rightAttained
-      simp only [ModelZone.ConcreteProfile.resolveLocal?, EuropeBerlinLegacyProfile.resolveLocal?,
-        EuropeBerlinLegacyProfile.resolvePreferring?] at leftResolved rightResolved
+      simp only [ModelZone.ConcreteProfile.resolveLocal?, EuropeBerlinProfile.resolveLocal?,
+        EuropeBerlinProfile.resolvePreferring?] at leftResolved rightResolved
       have walls := berlin_resolveWall_injective_attained leftAttained rightAttained
         leftResolved rightResolved
       exact localDateTime_resolveUtc_injective _ _ (instant_eq_of_epochMillis walls)

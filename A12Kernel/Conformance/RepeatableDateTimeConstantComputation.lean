@@ -62,28 +62,28 @@ private def rows (count : Nat) : Option (CheckedDocument model) :=
     cells := [] }).toOption
 
 /-- The measured admitted literal `"05.03.2024T12:30:00"`, already classified. -/
-private def marchFifth : LegacyCalendarLabel :=
+private def marchFifth : CalendarLabel :=
   .ofLocal ((LocalDateTime.ofYmdHms? 2024 3 5 12 30 0).get (by native_decide))
 
 /-- 02:30 on the Berlin spring-forward night: a wall label inside the gap, resolved one gap later. -/
-private def gapLabel : LegacyCalendarLabel :=
+private def gapLabel : CalendarLabel :=
   .ofLocal ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide))
 
 /-- The admitted literal `"29.02.1500T10:00:00"`: a Julian leap day, a label of the hybrid calendar that
 the proleptic calendar lacks and that lies before the stored-value floor. -/
-private def julianLeapDay : LegacyCalendarLabel :=
+private def julianLeapDay : CalendarLabel :=
   { parts := { year := 1500, month := 2, day := 29 }
     time := (TimeOfDay.ofHms? 10 0 0).get (by native_decide) }
 
 private def run? (declaringGroup : GroupPath) (target : FieldId) (count : Nat)
-    (constant : LegacyCalendarLabel := marchFifth) :
+    (constant : CalendarLabel := marchFifth) :
     Option RepeatableDateTimeConstantComputationRun :=
   (checkRepeatableDateTimeConstantComputation model declaringGroup target
     constant).toOption.bind fun operation =>
       (rows count).bind fun input => (operation.execute input).toOption
 
 private def outcome? (declaringGroup : GroupPath) (target : FieldId)
-    (constant : LegacyCalendarLabel := marchFifth) : Option DateTimeTargetOutcome :=
+    (constant : CalendarLabel := marchFifth) : Option DateTimeTargetOutcome :=
   (run? declaringGroup target 1 constant).bind fun run =>
     run.outcomes.head?.map fun entry => entry.outcome
 

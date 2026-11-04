@@ -176,7 +176,7 @@ def ofObservation : CellObservation Value → DateDifferenceOperand
 /-- A date constant as a completed-period difference reads it when reached (spec/05 §1). A label real on the proleptic calendar is its own date. A Julian leap day the proleptic calendar lacks reads as the date of the label decoded at its Julian instant under UTC, and has no instant under Europe/Berlin. -/
 def ofConstant (profile : ModelZone.ConcreteProfile) (parts : DateParts) : DateDifferenceOperand :=
   if parts.isJulianOnly then
-    match (profile.resolveStoredLabel? (LegacyCalendarLabel.midnight parts)).bind profile.calendarLabel? with
+    match (profile.resolveStoredLabel? (CalendarLabel.midnight parts)).bind profile.calendarLabel? with
     | some label => .value label.parts
     | none => .noInstantConstant
   else .value parts
@@ -196,7 +196,7 @@ end DateDifferenceOperand
 /-- One checked Date/DateTime operand for model-zone calendar-day difference. Exact instant identity remains paired with its decoded proleptic label (spec/05 §2.5, §2.7). -/
 inductive CalendarDayDifferenceOperand where
   | empty
-  | value (label : LegacyCalendarLabel) (instant : Instant)
+  | value (label : CalendarLabel) (instant : Instant)
   | unavailable (cause : FormalCause)
   | unsupportedCalendar
   /-- A date constant the model zone gives no instant, a Julian leap day under Europe/Berlin (spec/05 §1). Reaching it fails the evaluation as a value failure, which `unsupportedCalendar`, the answer for an operand outside the selected profile, does not. -/
@@ -209,7 +209,7 @@ namespace CalendarDayDifferenceOperand
 def ofObservation : CellObservation Value → CalendarDayDifferenceOperand
   | .empty => .empty
   | .value (.temporal (.date date)) =>
-      .value (LegacyCalendarLabel.midnight date.parts) date.instant
+      .value (CalendarLabel.midnight date.parts) date.instant
   | .value (.temporal (.dateTime instant parts time)) =>
       .value { parts, time } instant
   | .value _ => .unavailable .malformed
@@ -218,7 +218,7 @@ def ofObservation : CellObservation Value → CalendarDayDifferenceOperand
 /-- Resolve an admitted calendar endpoint at its proleptic midnight in its model-zone profile. -/
 def ofParts (profile : ModelZone.ConcreteProfile)
     (parts : DateParts) : CalendarDayDifferenceOperand :=
-  let label := LegacyCalendarLabel.midnight parts
+  let label := CalendarLabel.midnight parts
   match profile.resolveCalendarLabel? label with
   | some instant => .value label instant
   | none => .unsupportedCalendar
@@ -226,7 +226,7 @@ def ofParts (profile : ModelZone.ConcreteProfile)
 /-- Resolve an authored date constant as a stored label resolves (spec/05 §1): under UTC a Julian leap day the proleptic calendar lacks keeps its Julian instant, and the label then decodes to the day that instant names. Under Europe/Berlin such a constant has no instant and the difference fails when reached. -/
 def ofConstant (profile : ModelZone.ConcreteProfile)
     (parts : DateParts) : CalendarDayDifferenceOperand :=
-  match profile.resolveStoredLabel? (LegacyCalendarLabel.midnight parts) with
+  match profile.resolveStoredLabel? (CalendarLabel.midnight parts) with
   | some instant =>
       match profile.calendarLabel? instant with
       | some label => .value label instant

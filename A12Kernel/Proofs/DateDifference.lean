@@ -199,8 +199,8 @@ theorem calendarDayDifferenceOperand_empty_unsupported_zero
 /-- Two resolved day operands delegate exactly to the selected profile without re-resolving either local label. -/
 theorem calendarDayDifferenceOperand_values_delegate
     (profile : ModelZone.ConcreteProfile)
-    (first : LegacyCalendarLabel) (firstInstant : Instant)
-    (second : LegacyCalendarLabel) (secondInstant : Instant) (days : Int)
+    (first : CalendarLabel) (firstInstant : Instant)
+    (second : CalendarLabel) (secondInstant : Instant) (days : Int)
     (evaluated : profile.differenceResolvedInDays? firstInstant secondInstant = some days) :
     CalendarDayDifferenceOperand.evaluate profile
         (.value first firstInstant) (.value second secondInstant) =

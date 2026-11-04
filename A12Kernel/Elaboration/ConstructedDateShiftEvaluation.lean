@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.ConstructedDateEvaluation
 import A12Kernel.Elaboration.TemporalShiftAmount
-import A12Kernel.Semantics.BerlinLegacyCalendarArithmetic
+import A12Kernel.Semantics.CalendarArithmetic
 
 /-! # Checked constructed-Date shifts
 

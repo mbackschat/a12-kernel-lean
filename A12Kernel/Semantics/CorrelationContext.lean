@@ -6,7 +6,7 @@ import A12Kernel.Semantics.NumericConversion
 import A12Kernel.Semantics.DateDifferenceSource
 import A12Kernel.Semantics.DateTimeDifference
 import A12Kernel.Semantics.NumericAggregate
-import A12Kernel.Semantics.LegacyCalendarExpression
+import A12Kernel.Semantics.CalendarExpression
 import A12Kernel.Semantics.ComputationCondition
 
 /-! Correlated operand identities, binding frames and caller-owned read capabilities. -/

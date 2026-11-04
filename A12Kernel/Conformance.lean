@@ -64,8 +64,8 @@ import A12Kernel.Conformance.TimeFirstFilledComputationRows
 import A12Kernel.Conformance.AddressedTimeFromDateTime
 import A12Kernel.Conformance.AddressedTimeFromDateTimeFormalInput
 import A12Kernel.Conformance.BaseYearDateSource
-import A12Kernel.Conformance.BerlinLegacyCalendarArithmetic
-import A12Kernel.Conformance.BerlinLegacyTimeZone
+import A12Kernel.Conformance.CalendarArithmetic
+import A12Kernel.Conformance.BerlinTimeZone
 import A12Kernel.Conformance.BooleanConstantComputation
 import A12Kernel.Conformance.LiteralComparisonDiagnostic
 import A12Kernel.Conformance.ComparisonEntry

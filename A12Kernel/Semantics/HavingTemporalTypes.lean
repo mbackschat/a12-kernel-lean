@@ -41,7 +41,7 @@ inductive HavingTemporalAtom where
   | dateConstruction (components : ResolvedConstructedDateComponents (HavingTemporalComponent ResolvedConstructedDateSource DateNumericPart (TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation)))
   | dateLiteral (value : DateParts) (yearPresent : Bool)
   | timeLiteral (value : TimeOfDay)
-  | dateTimeLiteral (value : LegacyCalendarLabel)
+  | dateTimeLiteral (value : CalendarLabel)
   | today
   | now
   | baseYearBound (bound : BaseYearRangeEndpoint)

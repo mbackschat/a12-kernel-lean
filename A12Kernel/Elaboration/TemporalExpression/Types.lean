@@ -28,7 +28,7 @@ inductive SurfaceScalarTemporalExpression where
   | today
   | dateLiteral (value : DateParts) (yearPresent : Bool := true)
   | timeLiteral (value : TimeOfDay)
-  | dateTimeLiteral (value : LegacyCalendarLabel)
+  | dateTimeLiteral (value : CalendarLabel)
   | rangeBound (reference : SurfaceFieldPath) (bound : DateRangeBound)
   | indexedRangeBound (source : SurfaceSemanticIndex) (bound : DateRangeBound)
   | baseYearBound (bound : BaseYearRangeEndpoint)
@@ -143,7 +143,7 @@ inductive ScalarTemporalAtom (model : FlatModel) where
   | today (profile : ModelZone.ConcreteProfile)
   /-- Authored year presence survives effective Base-Year supplementation (spec/05 §1). -/
   | dateLiteral (profile : ModelZone.ConcreteProfile) (value : DateParts) (yearPresent : Bool := true)
-  | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : LegacyCalendarLabel)
+  | dateTimeLiteral (profile : ModelZone.ConcreteProfile) (value : CalendarLabel)
   | dateConstruction (components : CheckedConstructedDateComponents model
       (Sum (Sum (CheckedConstructedDateSource model) (CheckedIndexedDateComponent model)) (ScalarTemporalNumericAtom model)))
   | timeConstruction (components : TimeComponentPrefix (Sum (Sum (CheckedTimeComponent model) (CheckedIndexedTimeComponent model)) (ScalarTemporalNumericAtom model)))

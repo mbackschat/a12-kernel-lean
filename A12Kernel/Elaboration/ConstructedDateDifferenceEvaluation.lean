@@ -60,8 +60,8 @@ def differenceInstants? (profile : ModelZone.ConcreteProfile)
 private def differenceFresh?
     (profile : ModelZone.ConcreteProfile)
     (unit : DateShiftUnit) (first second : DateParts) : Option Int := do
-  let firstInstant ← profile.resolveCalendarLabel? (LegacyCalendarLabel.midnight first)
-  let secondInstant ← profile.resolveCalendarLabel? (LegacyCalendarLabel.midnight second)
+  let firstInstant ← profile.resolveCalendarLabel? (CalendarLabel.midnight first)
+  let secondInstant ← profile.resolveCalendarLabel? (CalendarLabel.midnight second)
   differenceInstants? profile unit firstInstant secondInstant
 
 /-- Delegate one resolved pair to the profile-generic difference of its fresh midnights. -/

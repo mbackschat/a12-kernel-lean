@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.CheckedDocument
-import A12Kernel.Semantics.LegacyCalendarExpression
+import A12Kernel.Semantics.CalendarExpression
 import A12Kernel.Elaboration.ConstructedDateComponents
 import A12Kernel.Semantics.BaseYearDateSource
 import A12Kernel.Semantics.ConstructedDateDay

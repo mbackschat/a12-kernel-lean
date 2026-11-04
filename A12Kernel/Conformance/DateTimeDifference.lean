@@ -1,5 +1,5 @@
 import A12Kernel.Semantics.DateTimeDifference
-import A12Kernel.Semantics.BerlinLegacyTimeZone
+import A12Kernel.Semantics.BerlinTimeZone
 
 /-! # Resolved DateTime-difference executable locks
 
@@ -57,9 +57,9 @@ example :
 /- The selected Berlin autumn endpoints are three physical hours apart despite two wall-clock hours. -/
 example :
     (do
-      let first ← EuropeBerlinLegacyProfile.resolveLocal?
+      let first ← EuropeBerlinProfile.resolveLocal?
         (dateTime 2024 10 27 1 30 0 (by native_decide))
-      let second ← EuropeBerlinLegacyProfile.resolveLocal?
+      let second ← EuropeBerlinProfile.resolveLocal?
         (dateTime 2024 10 27 3 30 0 (by native_decide))
       pure (first.difference .hours second)) =
         some 3 := by
@@ -68,9 +68,9 @@ example :
 /- A fresh ambiguous 02:30 takes the earlier, daylight-side offset, 60 minutes after fresh 01:30 (spec/05 §5; a12-dmkits `DstTimeZoneDiffTest`). -/
 example :
     (do
-      let first ← EuropeBerlinLegacyProfile.resolveLocal?
+      let first ← EuropeBerlinProfile.resolveLocal?
         (dateTime 2024 10 27 1 30 0 (by native_decide))
-      let second ← EuropeBerlinLegacyProfile.resolveLocal?
+      let second ← EuropeBerlinProfile.resolveLocal?
         (dateTime 2024 10 27 2 30 0 (by native_decide))
       pure (first.difference .minutes second)) =
         some 60 := by
@@ -79,9 +79,9 @@ example :
 /- Chained instant arithmetic reaches daylight-side 02:30, the instant a fresh 02:30 now resolves to as well, so the difference is zero (spec/05 §5). -/
 example :
     (do
-      let first ← EuropeBerlinLegacyProfile.resolveLocal?
+      let first ← EuropeBerlinProfile.resolveLocal?
         (dateTime 2024 10 27 1 30 0 (by native_decide))
-      let second ← EuropeBerlinLegacyProfile.resolveLocal?
+      let second ← EuropeBerlinProfile.resolveLocal?
         (dateTime 2024 10 27 2 30 0 (by native_decide))
       pure ((first.shiftHours 1).difference .minutes second)) =
         some 0 := by

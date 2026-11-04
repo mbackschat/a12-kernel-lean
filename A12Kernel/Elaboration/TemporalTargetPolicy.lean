@@ -1,4 +1,4 @@
-import A12Kernel.Semantics.LegacyCalendarExpression
+import A12Kernel.Semantics.CalendarExpression
 import A12Kernel.Elaboration.DateTimeInput
 import A12Kernel.Elaboration.OmittingDateInput
 import A12Kernel.Elaboration.Flat.Model

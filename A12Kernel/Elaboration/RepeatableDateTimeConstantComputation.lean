@@ -16,7 +16,7 @@ sibling constant families ([checkpoint](../../docs/sources/computation-placement
 declared format is `yyyy-MM-dd'T'HH:mm:ss`, which is the only DateTime declaration format this
 project's renderer admits ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-temporal-constant-literal-composition)).
 Admission is static and the literal is upstream of this carrier, which takes an already-classified
-`LegacyCalendarLabel`, a label admitted on the hybrid calendar that may lie before the stored-value
+`CalendarLabel`, a label admitted on the hybrid calendar that may lie before the stored-value
 floor; `spec/12` owns the lexical rule.
 
 The constant remains a wall label for storage, but the model zone still validates that label at
@@ -67,13 +67,13 @@ structure CheckedRepeatableDateTimeConstantComputation (model : FlatModel) where
   dateTimeTarget : CheckedDateTimeFormatTarget model
   /-- The two certificates describe one field. Without this they could drift to different targets. -/
   sameTarget : dateTimeTarget.checked.target.id = checkedTarget.targetField
-  constant : LegacyCalendarLabel
+  constant : CalendarLabel
 
 /-- Check carrier-neutral repeatable placement, then refine the target to the renderable complete
 DateTime subset. Runtime model-zone validation remains in execution rather than this static gate. -/
 def checkRepeatableDateTimeConstantComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (constant : LegacyCalendarLabel) :
+    (constant : CalendarLabel) :
     Except RepeatableDateTimeConstantComputationElabError
       (CheckedRepeatableDateTimeConstantComputation model) := do
   let checkedTarget ←

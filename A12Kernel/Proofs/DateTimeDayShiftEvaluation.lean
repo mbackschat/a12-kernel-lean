@@ -1,5 +1,5 @@
 import A12Kernel.Elaboration.DateTimeDayShiftEvaluation
-import A12Kernel.Proofs.BerlinLegacyCalendarArithmetic
+import A12Kernel.Proofs.CalendarArithmetic
 
 /-! # Checked DateTime calendar-day shift laws -/
 
