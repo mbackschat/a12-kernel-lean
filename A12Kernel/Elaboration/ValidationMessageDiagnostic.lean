@@ -17,6 +17,7 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
     ValidationMessageTemplateError → Option KernelStaticDiagnostic
   | .emptyTemplate => some .ruleHasNoErrorText
   | .lineSeparator => some .invalidMessageLinebreak
+  | .wrongEncoding => some .wrongEncoding
   | .controlCharacter _ => some .invalidMessageCharacters
   | .oddDollarCount => some .wrongNumberOfDollars
   | .noBaseYear => some .noMessageBaseYear
@@ -54,15 +55,17 @@ def ValidationMessageTemplateError.namedRuleDiagnostic? :
 
 /-- The established named class of a String-pattern field-message refusal.
 
-A line separator draws `INVALID_LINEBREAK` and a control character `INVALID_CHARACTERS`, as on a
-rule's message ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)); an odd dollar
-count `WRONG_NUMBER_OF_DOLLARS`, a parameter other than the two tokens, the empty one included,
-`INVALID_PARAMETER`, and an empty text the pairing class `MVK_ERROR_MESSAGE_AND_PATTERN_INVALID`
+A line separator draws `INVALID_LINEBREAK`, a lone surrogate `WRONG_ENCODING` and a control character
+`INVALID_CHARACTERS`, as on a rule's message
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)); an odd dollar
+count `WRONG_NUMBER_OF_DOLLARS`, a non-empty parameter other than the two tokens `INVALID_PARAMETER`
+(an empty pair names none), and an empty text the pairing class `MVK_ERROR_MESSAGE_AND_PATTERN_INVALID`
 ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates)). The parameter-body
 character refusal has no field-carrier row and stays `none`, which never means acceptance. -/
 def ValidationMessageTemplateError.namedStringPatternDiagnostic? :
     ValidationMessageTemplateError → Option KernelStaticDiagnostic
   | .lineSeparator => some .invalidMessageLinebreak
+  | .wrongEncoding => some .wrongEncoding
   | .controlCharacter _ => some .invalidMessageCharacters
   | .oddDollarCount => some .wrongNumberOfDollars
   | .invalidParameter _ => some .invalidMessageParameter

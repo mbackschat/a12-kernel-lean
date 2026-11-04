@@ -239,6 +239,18 @@ private def parsed (language : Language) (text : String) : Lowering Text :=
   | .ok text => pure text
   | .error error => refuse "Syntax" error.errorClass.code
 
+/-- An alternative's precondition text, which is refused when empty. See `alternativeGuard`. -/
+private def alternativeGuardText (resolve : String → Lowering α) (text : String) : Lowering α :=
+  if text.isEmpty then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code else resolve text
+
+/-- An alternative's own precondition, none when the member is absent. A member written empty is no absent
+one: it draws the unexpected-token class on kernel 31.1.1, where the parser's empty-text class is the common
+precondition's and the operation's (spec/01 §1.2, a12-dmkits `CheckerEmptyMemberAgreementTest` at
+`1124b523f`). -/
+private def alternativeGuard (resolve : String → Lowering α) : Option String → Lowering (Option α)
+  | none => pure none
+  | some text => some <$> alternativeGuardText resolve text
+
 /-- The declaration a computation targets. Its path is relative to the computation element. -/
 def targetOf (language : Language) (model : FlatModel) (computation : DmComputation) :
     Lowering FlatFieldDecl := do
@@ -301,7 +313,7 @@ private def guards (language : Language) (model : FlatModel) (computation : DmCo
     let surface ← guardSurface language model computation target suppress text
     (model.elaborateCheckedComputationCondition computation.group target.groupPath surface).mapError guardRefusal
   let common ← computation.commonPrecondition.mapM resolve
-  let own ← computation.alternatives.mapM (·.precondition.mapM resolve)
+  let own ← computation.alternatives.mapM (alternativeGuard resolve ·.precondition)
   pure (common, own)
 
 /-- Every alternative's guard, with the common precondition distributed, checked against the
@@ -339,7 +351,7 @@ private def joinedGuards (language : Language) (model : FlatModel) (computation 
     if !guard.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
     tree guard
   let common ← computation.commonPrecondition.mapM resolve
-  let own ← computation.alternatives.mapM (·.precondition.mapM resolve)
+  let own ← computation.alternatives.mapM (alternativeGuard resolve ·.precondition)
   let withCommon := fun (guard : Option (ConditionTree (ParallelNumericGuardPart model joined))) =>
     match common, guard with
     | none, guard => guard
@@ -467,7 +479,8 @@ private def checkComputationOrderedAdmission (language : Language) (model : Flat
     pure body
   let common := computation.commonPrecondition.map (fragment true)
   let alternatives := computation.alternatives.map fun alternative =>
-    (alternative.precondition.map (fragment true), fragment false alternative.operation, alternative.toleranceRangeOp)
+    (alternative.precondition.map (alternativeGuardText (fragment true)),
+      fragment false alternative.operation, alternative.toleranceRangeOp)
   let projected := fun (source : Lowering Expr) => source.toOption.any fun expression =>
     expression.hasProjectedReferenceTo model computation.group target.id
   let ordered := fun (source : Lowering Expr) =>

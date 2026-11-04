@@ -1,4 +1,5 @@
 import Lean.Data.Json
+import A12Kernel.Elaboration.ValidationMessageTypes
 import A12Kernel.Reference.Dm.LocaleSpelling
 import A12Kernel.Reference.Dm.ModelFrame
 
@@ -98,6 +99,15 @@ def bindLocalizedTextMembers (content : Json) : Except String Unit := do
     bindMembers definition ["internalDescription"]
   let roots := ((member content "modelRoot").getObjValAs? (Array Json) "rootGroups").toOption.getD #[]
   roots.forM bindElement
+
+/-- Whether a rule's or computation's message entries leave the model unbuilt: an entry of a locale the model
+does not declare whose text `undeclaredLocaleMessageBuilds` refuses against the declared locales' texts, each
+read as the last entry written for its locale as the error-text check reads it. `declared` are parsed locale
+keys, as the entries' are. A defective declared text is refused first, with its own class, because the check
+runs before the build; that precedence belongs to the callers, which see the check's other findings. -/
+def undeclaredLocaleBuildFailure (declared : List String) (entries : List (String × String)) : Bool :=
+  let judged := declared.filterMap fun locale => (entries.filter (·.1 == locale)).getLast?.map (·.2)
+  entries.any fun (locale, text) => !declared.contains locale && !undeclaredLocaleMessageBuilds judged text
 
 /-- The locales a model's header declares, in declaration order: each `locales` entry an object's string
 `code` or a bare text, judged alike (header locale codes checkpoint,

@@ -8,8 +8,7 @@ probe grid's flat model and its repeatable twin with identical results, from a r
 whose condition reads `Score` and `Grade`
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). A list
 holds one class per refused parameter in written order, and an empty list is an admitted template.
-`none:` names a refusal this fragment projects to no class: the one row, `$Score For RuleGroup$`, on
-which the Kernel fails internally. -/
+`none:` names a refusal this fragment projects to no class. -/
 
 namespace A12Kernel.Conformance.MessageParameterDecoder
 
@@ -65,7 +64,7 @@ private def classes (template : String) : List String :=
       (validationMessageTemplateRefusals model keywordProfile condition template).map fun error =>
         (error.namedRuleDiagnostic?.map (·.kernelCode)).getD ("none:" ++ arm error)
 
-/- Whitespace the lexer hides, anywhere in a parameter, and a category name that is one token: a token after it is refused only once the category's own gates pass, and an empty name draws its class before the kind gate. -/
+/- Whitespace the lexer hides, anywhere in a parameter, and a category name that is one token: a token after it is refused only once the category's own gates pass, and an empty name draws its class right after entity resolution, before the kind gate and before condition membership (kernel 31.1.1, a12-dmkits `MessageParameterDecoderAgreementTest` `anEmptyCategoryNameOnAnUnreadFieldPrecedesMembership` at `1124b523f`; `Anchor` is a field the rule never reads). -/
 example :
     [
     ("Check $Grade->Band$.", []),
@@ -77,6 +76,13 @@ example :
     ("Check $Grade-> $.", ["NO_CATEGORY"]),
     ("Check $Grade->$.", ["NO_CATEGORY"]),
     ("Check $Score-> $.", ["NO_CATEGORY"]),
+    ("Check $Anchor->$.", ["NO_CATEGORY"]),
+    ("Check $Anchor->Band$.", ["INVALID_FIELD"]),
+    ("Check $Anchor -> -> Band$.", ["NO_CATEGORY"]),
+    ("Check $Nope ->$.", ["INVALID_ENTITY"]),
+    ("Check $Nope -> -> Band$.", ["INVALID_ENTITY"]),
+    ("Check $Grade-> For \"k\"$.", ["NO_CATEGORY"]),
+    ("Check $Grade->Band For \"k\"$.", ["MVK_INDEX_FOR_ERROR_TEXT_INVALID"]),
     ("Check $Grade->Band x$.", ["MVK_UNEXPECTED_TOKEN"]),
     ("Check $Grade->Band.value$.", ["MVK_UNEXPECTED_TOKEN"]),
     ("Check $Grade->Band/Foo$.", ["MVK_UNEXPECTED_TOKEN"]),
@@ -90,7 +96,7 @@ example :
     ].all (fun (template, kernel) => classes template == kernel) := by
   native_decide
 
-/- A key, spaced or not, and a literal that contains the key terminal, reach the index gate, which refuses every key on a condition that reads none; a keyed key draws the nesting class first, and the rule-group terminal as a field draws its own class after its key's nesting. As a key it fails inside the Kernel, a defect this fragment leaves unclassed. -/
+/- A key, spaced or not, and a literal that contains the key terminal, reach the index gate, which refuses every key on a condition that reads none; a keyed key draws the nesting class first, and the rule-group terminal as a field draws its own class after its key's nesting. As a key it meets the same gate, `MVK_INDEX_FOR_ERROR_TEXT_INVALID`, where kernel 30.8.1 failed internally (a12-dmkits `MessageParameterDecoderAgreementTest` row R02 at `1124b523f`, kernel 31.1.1, KF663). -/
 example :
     [
     ("Check $Score For  \"k\"$.", ["MVK_INDEX_FOR_ERROR_TEXT_INVALID"]),
@@ -99,13 +105,13 @@ example :
     ("Check $Score For \"a For b\"$.", ["MVK_INDEX_FOR_ERROR_TEXT_INVALID"]),
     ("Check $Score For Grade For \"a For b\"$.", ["ILLEGAL_SEMANTIC_INDEX"]),
     ("Check $RuleGroup For Score For \"k\"$.", ["ILLEGAL_SEMANTIC_INDEX"]),
-    ("Check $Score For RuleGroup$.", ["none:ruleGroupUnresolved"]),
+    ("Check $Score For RuleGroup$.", ["MVK_INDEX_FOR_ERROR_TEXT_INVALID"]),
     ("Check $Nope For Score.x$.", ["INVALID_ENTITY"]),
     ("Check $Nope For \"k\" x$.", ["INVALID_ENTITY"])
     ].all (fun (template, kernel) => classes template == kernel) := by
   native_decide
 
-/- The group position's key: the group's own lookup answers first, then the key's nesting or syntax, then the key's gate, `INVALID_GROUP` on an admitted group too; a group keyword followed by a key reads as a name, and the rule-group shorthand keeps its keyword. -/
+/- The group position's key: the group's own lookup answers first, then the key's nesting or syntax, then the key's gate, `INVALID_GROUP` on an admitted group too, the rule-group shorthand as that key included (row F5g of a12-dmkits `MessageParameterDecoderAgreementTest` at `1124b523f`, kernel 31.1.1, KF663); a group keyword followed by a key reads as a name, and the rule-group shorthand keeps its keyword. -/
 example :
     [
     ("Check $#Cases For \"k\"$.", ["INVALID_GROUP"]),
@@ -204,7 +210,7 @@ example :
     ("Check $#/Probe/Cases For /Nope For \"k\"$.", ["INVALID_ROOT_GROUP"]),
     ("Check $#/Probe/Cases For ../../..$.", ["ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"]),
     ("Check $#/Probe/Cases For ..Wrong$.", ["INVALID_ENTITY"]),
-    ("Check $#/Probe/Cases For RuleGroup$.", ["none:ruleGroupUnresolved"]),
+    ("Check $#/Probe/Cases For RuleGroup$.", ["INVALID_GROUP"]),
     ("Check $#/Probe/Cases For Nope$.", ["INVALID_GROUP"]),
     ("Check $Nope->Band x$.", ["INVALID_ENTITY"]),
     ("Check $Nope->Band$.", ["INVALID_ENTITY"])

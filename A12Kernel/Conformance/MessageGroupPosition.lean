@@ -347,7 +347,7 @@ example :
 
 /- A dotted continuation is part of its name segment, so the segment names no group, while a word that
 cannot continue it is a token left after the path. An exempt word may continue one and, except the
-value suffix and the form-pointer terminals, end it; a keyword-and-name word continued by a dot is a
+value suffix and the form-line terminal, end it; a keyword-and-name word continued by a dot is a
 path segment. -/
 example :
     let deep := pathTemplateError? ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
@@ -360,11 +360,37 @@ example :
       deep "In $#RootGroup.x$" = some (.invalidGroupParameter "#RootGroup.x") ∧
       deep "In $#Zeile.x$" = some (.invalidGroupParameter "#Zeile.x") ∧
       deep "In $#'RootGroup'.x$" = some (.invalidGroupParameter "#'RootGroup'.x") ∧
-      (["Head.value", "Head.Vordruckname", "Head.RuleGroup", "Head.For", "Head.1", "Head."].all
+      (["Head.value", "Head.RuleGroup", "Head.For", "Head.1", "Head."].all
         fun argument => deep s!"In $#{argument}$" =
           some (.parameterSyntax s!"#{argument}" .unexpected)) = true ∧
-      (["Head.'value'", "Head.'RuleGroup'", "Head.'For'"].all fun argument =>
+      (["Head.Vordruckname", "Head.'Vordruckname'", "Head.'value'", "Head.'RuleGroup'", "Head.'For'"].all fun argument =>
         deep s!"In $#{argument}$" = some (.invalidGroupParameter s!"#{argument}")) = true := by
+  native_decide
+
+/- **Each language's reserved dotted suffixes**, bare and quoted, against ordinary-name controls: a word
+   that may stand inside a name and end it joins the segment and draws the group class, a reserved one
+   that may not is a token left after the path, and quoting any of them restores the name. `Vordruckname`
+   left the grammar on kernel 31.1.1 and sits with `Archive` among the ordinary names, bare and quoted
+   alike. The peer's 44-row grid on this fixture's `Head`. Locked: a12-dmkits
+   MessageGroupDottedBoundaryAgreementTest at 1124b523f, kernel 31.1.1. -/
+example :
+    let named (profile : ValidationMessageKeywordProfile) (word : String) (quoted : Bool) :
+        Option (Option String) := do
+      let condition ← (elaborate model ["Order"]
+        (.fieldFilled (pathAt (.relative 0) ["Head", "Deeper"] "Deep"))).toOption
+      let spelled := if quoted then s!"'{word}'" else word
+      match elaborateValidationMessageTemplate model profile condition s!"In $#Head.{spelled}$" with
+      | .ok _ => none
+      | .error error => some (error.namedRuleDiagnostic?.map KernelStaticDiagnostic.kernelCode)
+    let grid (profile : ValidationMessageKeywordProfile) (allowed reserved : List String) : Bool :=
+      (allowed ++ ["Vordruckname"] ++ reserved ++ ["Archive"]).all fun word =>
+        [false, true].all fun quoted =>
+          named profile word quoted =
+            some (some (if !quoted && reserved.contains word then "MVK_UNEXPECTED_TOKEN" else "INVALID_GROUP"))
+    grid .english ["RootGroup", "Zeile", "Usb", "index"]
+        ["Vordruckzeile", "RuleGroup", "For", "BaseYear", "value"] = true ∧
+      grid .german ["LfdNr", "Zeile", "Usb", "index"]
+        ["Vordruckzeile", "RegelKontext", "Fuer", "Referenzjahr", "Wert"] = true := by
   native_decide
 
 /- The cold review's rows, each measured: a retired offset's digits are no name, so a dot after them is

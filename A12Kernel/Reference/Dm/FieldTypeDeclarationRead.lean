@@ -161,6 +161,9 @@ private structure ElementReport where
   orderingGate : Bool := false
   /-- A field's error text failed a check the entity walk itself runs. -/
   walkRefused : Bool := false
+  /-- A rule's or computation's message leaves the model unbuilt, once nothing else was reported
+  (`undeclaredLocaleBuildFailure`). -/
+  buildFailure : Bool := false
 
 /-- The classes the Kernel's entity walk draws at a field's error text beside its path and count
 classes: the encoding, line-break, control-character, dollar and parameter checks
@@ -339,7 +342,9 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
       if let .rule .unreadable := declaration.kind then throw s!"rule {name} has an unreadable errorCode"
       let labels := declaration.notifications.filterMap (·.kind.label?) ++
         above.forRule.map (·.label) ++ repertoireIf annotated
-      pure [{ path, labels := collapseRepertoire labels }]
+      let messages := (localizedTextMember body "errorMessage").toOption.getD []
+      let buildFailure := undeclaredLocaleBuildFailure environment.context.declaredLocales messages
+      pure [{ path, labels := collapseRepertoire labels, buildFailure }]
   | _ => pure []
 
 /-- The notifications every element's declaration raises, each as its capture label and the
@@ -385,8 +390,11 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
   else if let some reason := reports.findSome? (·.refusal) then
     throw reason
   else
-    pure (converted.sentences.map (fun (sentence, path) => (sentence.label, "/" ++ "/".intercalate path)) ++
-      reports.flatMap fun report => report.labels.map fun label => (label, "/" ++ "/".intercalate report.path))
+    let reported := converted.sentences.map (fun (sentence, path) => (sentence.label, "/" ++ "/".intercalate path)) ++
+      reports.flatMap fun report => report.labels.map fun label => (label, "/" ++ "/".intercalate report.path)
+    -- Code generation runs only on a model the check passed, so a message it refuses leaves the model unbuilt
+    -- only beside no reported class (a12-dmkits `ErrorTextLocaleScopeLawsTest` at `1124b523f`, KF659).
+    pure (if reported.isEmpty && reports.any (·.buildFailure) then [(modelNotBuiltLabel, "")] else reported)
 
 /-! ## Locks on the member coercions this reader depends on -/
 

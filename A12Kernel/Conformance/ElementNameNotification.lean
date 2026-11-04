@@ -23,17 +23,19 @@ private def messageCodes (carrier : FieldMessageCarrier) (entries : List (String
 /-- The stand-in the model reader writes for a lone surrogate, so a text carries the defect. -/
 private def lone : String := String.singleton loneSurrogateStandIn
 
-/- A lone surrogate in a field message is the first text gate: the encoding class stands alone for
-   the field, from the first failing declared locale, in place of the character or parameter class the
-   same text would otherwise draw, and a locale the model does not declare is never asked (we-s, we-e,
-   spec/11 Part A). -/
+/- A lone surrogate in a field message is the second text gate, after the line break: the encoding class
+   stands in place of the character or parameter class the same text would otherwise draw, for each
+   declared locale it fails in, and a locale the model does not declare is never asked (we-s, we-e,
+   spec/11 Part A). Locked: a12-dmkits ErrorTextCharacterGateLawsTest and FieldTypeMessageTextLawsTest at
+   1124b523f, kernel 31.1.1, which reports every declared locale where kernel 30.8.1 reported the first. -/
 example :
     messageCodes .stringPattern [("en_US", "bad " ++ lone)] = ["WRONG_ENCODING"] ∧
     messageCodes .enumerationInvalidValue [("en_US", lone)] = ["WRONG_ENCODING"] ∧
     messageCodes .stringPattern [("en_US", "a\t" ++ lone)] = ["WRONG_ENCODING"] ∧
     messageCodes .stringPattern [("en_US", "$bogus$ " ++ lone)] = ["WRONG_ENCODING"] ∧
     messageCodes .stringPattern [("en_US", "a\tb"), ("de_DE", lone)] ["en_US", "de_DE"] =
-      ["INVALID_CHARACTERS"] ∧
+      ["INVALID_CHARACTERS", "WRONG_ENCODING"] ∧
+    messageCodes .stringPattern [("en_US", "a\nb" ++ lone)] = ["INVALID_LINEBREAK"] ∧
     messageCodes .stringPattern [("en_US", "ok"), ("de_DE", lone)] ["en_US", "de_DE"] =
       ["WRONG_ENCODING"] ∧
     messageCodes .stringPattern [("fr_FR", lone), ("en_US", "ok")] = [] := by
@@ -267,6 +269,11 @@ example :
       ["WRONG_ENCODING", "codeless:supplementary-character"] ∧
     fieldLabels (.enumeration { values := [{ token := "A" }], messages := [message "en_US" lone] }) =
       ["WRONG_ENCODING", "codeless:supplementary-character"] ∧
+    fieldLabels (.string { pattern := some "[A-Z]+", messages := [message "en_US" ("a\nb" ++ lone)] }) =
+      ["INVALID_LINEBREAK", "codeless:supplementary-character"] ∧
+    fieldLabels (.string { pattern := some "[A-Z]+", messages := [message "en_US" "a\tb",
+      message "de_DE" "a\nb"] }) (locales := ["en_US", "de_DE"]) =
+      ["INVALID_CHARACTERS", "INVALID_LINEBREAK"] ∧
     fieldLabels (.string { pattern := some "[A-Z]+", messages := [message "en_US" "bad 😀"] }) =
       ["codeless:supplementary-character"] ∧
     fieldLabels (.string { pattern := some "[A-Z]+", messages := [message "en_US" "bad",

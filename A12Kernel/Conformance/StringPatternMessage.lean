@@ -3,8 +3,8 @@ import A12Kernel.Elaboration.ValidationMessageDiagnostic
 
 /-! # String-pattern producer conformance locks
 
-The two admitted tokens in each condition language against stylized and actual names, the dollar
-pieces Java's `split` reads, and the gates it shares with the rule producer. -/
+The two admitted tokens in each condition language against stylized and actual names, the empty pairs
+the producer skips, and the gates it shares with the rule producer. -/
 
 namespace A12Kernel.Conformance.StringPatternMessage
 
@@ -44,8 +44,7 @@ example :
         some (.invalidParameter "Field") ∧
       stringPatternTemplateError? "$Code$" =
         some (.invalidParameter "Code") ∧
-      stringPatternTemplateError? "Cost $$ $field$" =
-        some (.invalidParameter "") ∧
+      stringPatternTemplateError? "Cost $$ $field$" = none ∧
       stringPatternTemplateError? "$field" =
         some .oddDollarCount := by
   native_decide
@@ -97,13 +96,13 @@ example :
 example :
     ["capitals only", "$field$ takes capitals", "$field.value$ is not capitals",
         "$field$$field.value$"].all (fun text => stringPatternTemplateError? text == none) ∧
-    ["$field takes capitals", "$Field$ takes capitals", "$Code$ takes capitals", "cost $$ in capitals",
+    ["$field takes capitals", "$Field$ takes capitals", "$Code$ takes capitals",
         "$Feld$ takes capitals", "$f" ++ cp 0x00EF ++ "eld$ is not capitals", "$field\ttakes capitals",
         "$Code$ and $field", ""].map
         stringPatternNamedDiagnostic? =
       [some (some "WRONG_NUMBER_OF_DOLLARS"), some (some "INVALID_PARAMETER"),
        some (some "INVALID_PARAMETER"), some (some "INVALID_PARAMETER"),
-       some (some "INVALID_PARAMETER"), some (some "INVALID_PARAMETER"), some (some "INVALID_CHARACTERS"),
+       some (some "INVALID_PARAMETER"), some (some "INVALID_CHARACTERS"),
        some (some "WRONG_NUMBER_OF_DOLLARS"), some (some "MVK_ERROR_MESSAGE_AND_PATTERN_INVALID")] := by
   native_decide
 
@@ -116,18 +115,24 @@ example :
       some (.invalidParameter "field") := by
   native_decide
 
-/- **The parameters are Java's `split` pieces, whose trailing empty pieces are dropped**: an empty pair at
-   the very end, or alone, names no parameter and is admitted, where the same pair at the start is an
-   empty parameter. The admitted pair renders verbatim, `Cost $$` and `$$` measured on both runtime
-   strategies ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-field-message-render)). -/
+/- **Every empty pair is skipped, wherever it stands**: at the start, inside the text, at the end or alone,
+   it names no parameter and is admitted (kernel 30.8.1 refused all but the last two as `INVALID_PARAMETER`).
+   An admitted pair keeps its dollars as literal text, which the trailing pair measures on both runtime
+   strategies (`Cost $$` renders `Cost $$`, [inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-field-message-render));
+   what a pair inside the text renders is unmeasured and is given the same account. A wrong name beside a
+   skipped pair is still refused. Locked: a12-dmkits FieldTypeMessageTextLawsTest
+   (`whatThePatternsMessageMayCarryBeyondItsCharacters`, `howTheTextIsCutAndWhichEntryIsExamined`) at
+   1124b523f, kernel 31.1.1. -/
 example :
-    stringPatternTemplateError? "capitals only $$" = none ∧
-    stringPatternTemplateError? "$$" = none ∧
-    stringPatternTemplateError? "$$ capitals only" = some (.invalidParameter "") ∧
+    ["capitals only $$", "$$", "$$ capitals only", "cost $$ in capitals", "$field$$field.value$",
+        "$$$$", "$$ $field$ $$"].all (fun text => stringPatternTemplateError? text == none) ∧
+    stringPatternTemplateError? "$$ $Code$" = some (.invalidParameter "Code") ∧
+    stringPatternTemplateError? "$$ capitals $" = some .oddDollarCount ∧
     stringPatternRender? "Cost $$" = some { text := "Cost $$" } ∧
     stringPatternRender? "$$" = some { text := "$$" } ∧
     stringPatternRender? "capitals only $$" = some { text := "capitals only $$" } ∧
-    stringPatternRender? "$field$$$" = some { text := "Code$$" } := by
+    stringPatternRender? "$field$$$" = some { text := "Code$$" } ∧
+    stringPatternRender? "a $$ b $field$" = some { text := "a $$ b Code" } := by
   native_decide
 
 end A12Kernel.Conformance.StringPatternMessage

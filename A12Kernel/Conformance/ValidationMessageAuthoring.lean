@@ -199,7 +199,7 @@ private def baseYearRender? (template : String) : Option ResolvedMessageText := 
       { providerResult := none, modelLabel := none, debugDisplay := "A" }
     fieldValue := fun _ => { displayValue := none, defaultDisplay := "0" }
     fieldStoredToken := fun _ => none
-    formPointer := fun _ _ => ""
+    formPointer := fun _ => ""
   }).render
 
 /- The Base Year parameter applies its authored offset at authoring, because nothing about it depends
@@ -280,12 +280,8 @@ private def inputs : ValidationMessageInputs where
     else
       { displayValue := none, defaultDisplay := "" }
   fieldStoredToken cell := if cell.field == status.id then some "open" else none
-  -- Distinct per terminal so a render case can tell which word was written, which is the only thing
-  -- a caller can be asked for while what the Kernel renders here is unmeasured.
-  formPointer _ pointer :=
-    match pointer with
-    | .line => "L"
-    | .name => "N"
+  -- A fixed text, the only thing a caller can be asked for while what the Kernel renders here is unmeasured.
+  formPointer _ := "L"
 
 def render? (template : String) : Option ResolvedMessageText := do
   let condition ← condition?
@@ -302,13 +298,10 @@ private def renderOn? (group : GroupPath) (reference : SurfaceFieldPath)
       template).toOption
   pure (checked.toRenderPlan inputs).render
 
-/- The checked part retains **which** of the two form-pointer words was authored, so a caller can
-   answer for each one separately. That is the whole reason the two are one form with a terminal field
-   rather than one undifferentiated part: what either renders is unmeasured, and a part that had
-   collapsed them could not even pose the question to its caller. -/
+/- The form pointer is its own checked part, so a caller answers for it separately from a name: what it
+   renders is unmeasured, and a part that had collapsed it into text could not even pose the question. -/
 example :
-    render? "at $Other.Vordruckzeile$/$Other.Vordruckname$" =
-      some { text := "at L/N" } := by
+    render? "at $Other.Vordruckzeile$" = some { text := "at L" } := by
   native_decide
 
 /- A category access renders the category token the field's **current stored value** maps to, through
@@ -378,6 +371,22 @@ private def namedClassOn? (onModel : FlatModel) (group : GroupPath) (reference :
   | .ok _ => none
   | .error error => some (error.namedRuleDiagnostic?.map KernelStaticDiagnostic.kernelCode)
 
+/- The nine rows of the peer's empty-category grid on this fixture. Locked: a12-dmkits
+   EmptyCategoryNamePrerequisiteLawsTest at 1124b523f, kernel 31.1.1. -/
+example :
+    let reading := namedClassOn? model ["Order"] (bare "Status")
+    let unread := namedClassOn? model ["Order"] (bare "Amount")
+    reading "See $Status ->$" = some (some "NO_CATEGORY") ∧
+      unread "See $Other ->$" = some (some "NO_CATEGORY") ∧
+      unread "See $NoSuchField ->$" = some (some "INVALID_ENTITY") ∧
+      reading "See $Status -> -> Group$" = some (some "NO_CATEGORY") ∧
+      unread "See $Other -> -> Group$" = some (some "NO_CATEGORY") ∧
+      unread "See $NoSuchField -> -> Group$" = some (some "INVALID_ENTITY") ∧
+      reading "See $Status -> Group$" = none ∧
+      unread "See $Status -> Group$" = some (some "INVALID_FIELD") ∧
+      unread "See $Status ->$" = some (some "NO_CATEGORY") := by
+  native_decide
+
 /- The name position's path refusals carry their own classes: an unknown root, an entity that does not
 resolve below it, and a walk past the root. A name that resolves to a group is no read field, whatever the condition reads inside it
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals)). -/
@@ -408,7 +417,7 @@ example :
     let root := namedClassOn? model ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
     let side := namedClassOn? model ["Order", "Side"] (bare "Aside")
     root "See $Head.Vordruckzeile$" = some (some "INVALID_FIELD_IN_PARAMETER") ∧
-      root "See $/Order/Head.Vordruckname$" = some (some "INVALID_FIELD_IN_PARAMETER") ∧
+      root "See $/Order/Head.Vordruckname$" = some (some "INVALID_ENTITY") ∧
       namedClassOn? model ["Order", "Head"] (bare "Amount") "See $Head.Vordruckzeile$" =
         some (some "INVALID_ENTITY") ∧
       namedClassOn? model ["Order", "Head"] (bare "Amount") "See $Deeper.Vordruckzeile$" =
@@ -427,6 +436,30 @@ example :
       root "See $Deep$" = none ∧
       side "See $Deep.Vordruckzeile$" = none ∧
       side "See $Amount.Vordruckzeile$" = some (some "ERROR_TEXT_FIELDNAME_NOT_UNIQUE") := by
+  native_decide
+
+/- **A form alternative refuses a key before it looks its subject up, and `Vordruckname` is no form
+   alternative.** The peer's 36-row grid — three suffixes against a read field, a group read into and an
+   unknown name, each with no tail, a literal key, an unknown key and a stray word — on this fixture's
+   read field `Deep` and group `Head`. A stray word is the syntax class before any lookup; `Vordruckname`
+   is one dotted name that names nothing, so every other tail draws the entity class where kernel 30.8.1
+   gave it the form-pointer rows. Locked: a12-dmkits MessageFormAlternativeAgreementTest at 1124b523f,
+   kernel 31.1.1. -/
+example :
+    let root := namedClassOn? model ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
+    let expected (suffix subject tail : String) : Option (Option String) :=
+      if tail == " x" then some (some "MVK_UNEXPECTED_TOKEN")
+      else if suffix == "Vordruckname" then some (some "INVALID_ENTITY")
+      else if suffix != "value" && tail != "" then some (some "MVK_UNEXPECTED_TOKEN")
+      else if subject == "Nope" || tail == " For Nope" then some (some "INVALID_ENTITY")
+      else if tail == " For \"k\"" then some (some "MVK_INDEX_FOR_ERROR_TEXT_INVALID")
+      else if subject == "Head" then
+        some (some (if suffix == "value" then "INVALID_FIELD" else "INVALID_FIELD_IN_PARAMETER"))
+      else none
+    (["Vordruckzeile", "Vordruckname", "value"].all fun suffix =>
+      ["Deep", "Head", "Nope"].all fun subject =>
+        ["", " For \"k\"", " For Nope", " x"].all fun tail =>
+          root s!"See ${subject}.{suffix}{tail}$" == expected suffix subject tail) = true := by
   native_decide
 
 /- A key is a literal or an entity with a key of its own, and the checks run in the parser's event
@@ -455,10 +488,14 @@ private def templateNamedDiagnostic? (template : String) : Option (Option String
   (templateError? template).map fun error =>
     error.namedRuleDiagnostic?.map KernelStaticDiagnostic.kernelCode
 
+/- **An empty category name is asked after entity resolution and before condition membership**, so a field
+   no condition reads draws the empty-name class where kernel 30.8.1 asked membership first, an undeclared
+   name still draws its entity class, and a named category on the same field still meets membership. The
+   doubled arrow behaves row for row the same. Locked: a12-dmkits EmptyCategoryNamePrerequisiteLawsTest at
+   1124b523f, kernel 31.1.1 (`Status` is the read enumeration, `Other` the unread field). -/
 example :
-    templateError? "$Other->$" = some (.fieldNotReferenced "Other->" other.id) ∧
-    templateError? "$Other->->Group$" =
-      some (.fieldNotReferenced "Other->->Group" other.id) ∧
+    templateError? "$Other->$" = some (.missingCategoryName "Other->") ∧
+    templateError? "$Other->->Group$" = some (.missingCategoryName "Other->->Group") ∧
     templateError? "$Missing->$" =
       some (.reference "Missing->" (.invalidEntity (bare "Missing"))) ∧
     templateError? "$Missing->->Group$" =
@@ -469,8 +506,7 @@ example :
   native_decide
 
 example :
-    templateError? "$Other-> For \"k1\"$" =
-      some (.keyNotInCondition "Other-> For \"k1\"") ∧
+    templateError? "$Other-> For \"k1\"$" = some (.missingCategoryName "Other-> For \"k1\"") ∧
     templateError? "$Missing-> For \"k1\"$" =
       some (.reference "Missing-> For \"k1\"" (.invalidEntity (bare "Missing"))) := by
   native_decide
@@ -560,7 +596,8 @@ example :
    separator still answers. Either character gate withholds the parameter classes: the unknown name draws
    its entity class only in the control row, and the unclosed parameter its dollar class not at all. A
    no-break space is admitted, which separates the `\p{C}` reading from one refusing every non-printing
-   or space character. -/
+   or space character. Locked: a12-dmkits ErrorTextCharacterGateLawsTest (`theWiderSetWithholdsTheParameterClassesToo`)
+   at 1124b523f, kernel 31.1.1. -/
 example :
     templateError? ("par " ++ cp 0x2029) = some .lineSeparator ∧
     templateError? ("nbsp " ++ cp 0x00A0 ++ " x") = none ∧
@@ -572,6 +609,51 @@ example :
     templateError? ("see $Missing$ a" ++ cp 0x2028 ++ "b") = some .lineSeparator ∧
     templateError? ("see $Amount a" ++ cp 0x200B ++ "b") =
       some (.controlCharacter (Char.ofNat 0x200B)) := by
+  native_decide
+
+/- **The encoding is the second text gate, between the line break and `\p{C}`**, so a lone surrogate
+   (the model reader's stand-in scalar) draws `WRONG_ENCODING` beside the codeless repertoire refusal,
+   and a line separator beside one still answers first. The stand-in is itself a `\p{C}` scalar, so
+   only the order makes it the encoding class, where kernel 30.8.1 named it the control class. Every row
+   of the peer's character-gate grid on a rule's message. Locked: a12-dmkits ErrorTextCharacterGateLawsTest
+   at 1124b523f, kernel 31.1.1. -/
+example :
+    templateError? ("a" ++ String.singleton loneSurrogateStandIn ++ "b") =
+      some (.unsupportedCharacterWithError loneSurrogateStandIn .wrongEncoding) ∧
+    templateNamedDiagnostic? ("a" ++ String.singleton loneSurrogateStandIn ++ "b") =
+      some (some "WRONG_ENCODING") ∧
+    templateError? ("a\nb" ++ String.singleton loneSurrogateStandIn ++ "c") =
+      some (.unsupportedCharacterWithError loneSurrogateStandIn .lineSeparator) ∧
+    templateNamedDiagnostic? ("a\nb" ++ String.singleton loneSurrogateStandIn ++ "c") =
+      some (some "INVALID_LINEBREAK") ∧
+    templateError? ("a\tb" ++ String.singleton loneSurrogateStandIn ++ "c") =
+      some (.unsupportedCharacterWithError loneSurrogateStandIn .wrongEncoding) ∧
+    templateError? ("see $Missing$ a" ++ String.singleton loneSurrogateStandIn ++ "b") =
+      some (.unsupportedCharacterWithError loneSurrogateStandIn .wrongEncoding) := by
+  native_decide
+
+/- The rest of that grid, row for row, on the rule carrier. A supplementary character outside `\p{C}` is
+   the codeless refusal alone, one inside it (a private-use or a language-tag scalar) draws the control
+   class beside it. -/
+example :
+    [("plain", "plain", none), ("U+2028", "a" ++ cp 0x2028 ++ "b", some .lineSeparator),
+      ("U+2029", "a" ++ cp 0x2029 ++ "b", some .lineSeparator), ("line feed", "a\nb", some .lineSeparator),
+      ("tab", "a\tb", some (.controlCharacter '\t')),
+      ("U+0085", "a" ++ cp 0x0085 ++ "b", some (.controlCharacter (Char.ofNat 0x0085))),
+      ("U+200B", "a" ++ cp 0x200B ++ "b", some (.controlCharacter (Char.ofNat 0x200B))),
+      ("U+00AD", "a" ++ cp 0x00AD ++ "b", some (.controlCharacter (Char.ofNat 0x00AD))),
+      ("U+FEFF", "a" ++ cp 0xFEFF ++ "b", some (.controlCharacter (Char.ofNat 0xFEFF))),
+      ("U+200E", "a" ++ cp 0x200E ++ "b", some (.controlCharacter (Char.ofNat 0x200E))),
+      ("U+E000", "a" ++ cp 0xE000 ++ "b", some (.controlCharacter (Char.ofNat 0xE000))),
+      ("U+0378", "a" ++ cp 0x0378 ++ "b", some (.controlCharacter (Char.ofNat 0x0378))),
+      ("U+00A0", "a" ++ cp 0x00A0 ++ "b", none),
+      ("supplementary private use", "a" ++ cp 0xF0000 ++ "b",
+        some (.unsupportedCharacterWithError (Char.ofNat 0xF0000) (.controlCharacter (Char.ofNat 0xF0000)))),
+      ("supplementary outside C", "a" ++ cp 0x1F600 ++ "b", some (.unsupportedCharacter (Char.ofNat 0x1F600))),
+      ("U+E0001", "a" ++ cp 0xE0001 ++ "b",
+        some (.unsupportedCharacterWithError (Char.ofNat 0xE0001) (.controlCharacter (Char.ofNat 0xE0001)))),
+      ("U+2028 beside tab", "a\tb" ++ cp 0x2028 ++ "c", some .lineSeparator)].all
+      fun (_, text, expected) => templateError? text == expected := by
   native_decide
 
 /- **The control class is Java's `\p{C}` asked per code point**
@@ -619,17 +701,22 @@ example :
         some (.reference "ÄÜÖäüöß" (.invalidEntity (bare "ÄÜÖäüöß"))) := by
   native_decide
 
-/- **The two form-pointer terminals are the one field form that skips the condition-membership gate.**
-   The Kernel admits `$Entity.Vordruckzeile$` and `$Entity.Vordruckname$` on a field the condition
-   never references — measured on a Number field, a repeatable-group field, and the bare, relative and
-   absolute spellings alike — where every other name-position form on an unreferenced field is refused.
-   `Other` is unreferenced here, `Amount` is the condition's own operand, and the third row is the
-   contrast that makes the exemption a fact about the suffix rather than about the model. -/
+/- **The form-line terminal is the one field form that skips the condition-membership gate.** The Kernel
+   admits `$Entity.Vordruckzeile$` on a field the condition never references — measured on a Number field,
+   a repeatable-group field, and the bare, relative and absolute spellings alike — where every other
+   name-position form on an unreferenced field is refused. `Other` is unreferenced here, `Amount` is the
+   condition's own operand, and the third row is the contrast that makes the exemption a fact about the
+   suffix rather than about the model; the same message with the plain `$Other$` is refused, the membership
+   bypass that makes the form line admitted (a12-dmkits RuleMessageFormLineParameterDiffTest at 1124b523f,
+   whose runtime fault on the form line this account does not model: the rendering is a caller input). Its former sibling `Vordruckname` is no terminal on kernel 31.1.1,
+   so it enjoys no such exemption: `$Other.Vordruckname$` is a dotted name that names nothing. -/
 example :
     templateOk? "row $Other.Vordruckzeile$" = some true ∧
-      templateOk? "row $Other.Vordruckname$" = some true ∧
+      templateOk? "zeile=[$Other.Vordruckzeile$] plain=[$Amount$]" = some true ∧
       templateOk? "row $Amount.Vordruckzeile$" = some true ∧
-      templateError? "row $Other$" = some (.fieldNotReferenced "Other" other.id) := by
+      templateError? "row $Other$" = some (.fieldNotReferenced "Other" other.id) ∧
+      templateError? "row $Other.Vordruckname$" =
+        some (.reference "Other.Vordruckname" (.invalidEntity (bare "Other.Vordruckname"))) := by
   native_decide
 
 /- Their only measured gate resolves the entity to a **field**: an undeclared name draws its own
@@ -700,7 +787,7 @@ example :
     templateError? "$Status->Group For \"k1\"$" =
         some (.keyNotInCondition "Status->Group For \"k1\"") ∧
       templateError? "$Status-> For \"k1\"$" =
-        some (.keyNotInCondition "Status-> For \"k1\"") := by
+        some (.missingCategoryName "Status-> For \"k1\"") := by
   native_decide
 
 /- **The value suffix is the profile's word, not a literal in the parser.** Every sibling terminal was

@@ -106,6 +106,7 @@ Selected-overlap implementation and assurance live in the [shared overlap owner]
 - `baseline`: [Correlation](../implementation/repetition-and-paths.md#cap-star-selection-and-correlation), [two-level scope source](../sources/having-filter-probes.md#src-filter-reference-two-levels-above) and [captured runtime](../sources/having-filter-probes.md#src-off-path-captured-filter-runtime) own the two distinct gates and existing controls.
 - `consumer-gated`: normalized public `.fieldOutsideEnvironment` becomes generic `incoherentCore`, losing a Kernel class available internally. A new published diagnostic needs an Explain/Analyze consumer and a [protocol](../PROTOCOL.md) decision; D18 excludes this transport extension.
 - `reopen-when`: an adopted Explain/Analyze consumer requires the public diagnostic distinction.
+- `calibration-31`: kernel 31.1.1 changed the value-list quantifiers' guard test, which the peer reads as equivalent on every authorable shape without measuring it. So `NoFieldValueIncludedInValueList` over a filtered list whose body reads a `$`-marked field of another group (row `f-list` of the [guard lock](../../A12Kernel/Reference/Dm/IterationGuardLocks.lean)) keeps its kernel 30.8.1 source-read admission, unmeasured on 31.1.1; one rule-check row settles it.
 - `route-state`: discovery-required
 
 <a id="sg19--repetition-reference-binding"></a>

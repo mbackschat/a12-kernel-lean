@@ -320,7 +320,27 @@ def deferred : List (String × String) :=
     "having-iteration-guards-2026-10-09/observations.json#vNotAllFieldsFilledmarked",
     "having-iteration-guards-2026-10-09/observations.json#vNotExactlyOneFieldFilledmarked"].map
       (·, "kernel 31.1.1 negative-iteration guard")) ++
-  [("filtered-star-leading-kind/obs3.json#ctl-filtered-group-unstarred", "kernel 31.1.1 filtered-group kind after the walk")]
+  [("filtered-star-leading-kind/obs3.json#ctl-filtered-group-unstarred", "kernel 31.1.1 filtered-group kind after the walk")] ++
+  -- Kernel 30.8.1 rows of three message-parameter changes of kernel 31.1.1 (Letter B §5g and §5i): `Vordruckname`
+  -- is an ordinary name, an empty category name is asked before membership, and the rule-group terminal as a
+  -- key meets the ordinary key gate. `P00` is unmeasured on 31.1.1: Lean derives its class from the grammar.
+  (["message-name-position-carriers-2026-10-01/obs.json#P2",
+    "message-parameter-iteration-and-encoding-classes/ops-obs.json#F05-vordruckname",
+    "message-parameter-iteration-and-encoding-classes/ops2-obs.json#J03-repeatable-vordruckname",
+    "message-parameter-iteration-and-encoding-classes/ops3-obs.json#O03-unreferenced-vordruckname",
+    "message-parameter-iteration-and-encoding-classes/ops3-obs.json#P00-rulegroup-vordruckname",
+    "parser-index-and-iteration-classes/obs5.json#E03"].map (·, "kernel 31.1.1 retired form-name terminal")) ++
+  (["message-category-gate-order/observations.json#empty-unreferenced",
+    "message-category-gate-order/observations.json#doubled-empty-unreferenced",
+    "message-category-gate-order/observations.json#keyed-empty-unreferenced",
+    "message-category-gate-order/observations.json#keyed-empty-referenced",
+    "message-category-gate-order/observations.json#empty-absolute-unreferenced",
+    "message-parameter-refusal-classes/ops-obs.json#H12-category-empty"].map
+      (·, "kernel 31.1.1 empty category name before membership")) ++
+  (["message-decoder-matrix-2026-10-01/obs-flat-review.json#F5g",
+    "message-decoder-matrix-2026-10-01/obs-flat.json#R02",
+    "message-decoder-matrix-2026-10-01/obs-review.json#F5g",
+    "message-decoder-matrix-2026-10-01/obs.json#R02"].map (·, "kernel 31.1.1 rule-group key"))
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

@@ -8,9 +8,17 @@ field-pattern messages; checked rule-parameter resolution belongs to ValidationM
 
 namespace A12Kernel
 
+/-- The scalar the model reader writes in place of a lone UTF-16 surrogate, the last Unicode scalar. The
+reader reads an authored `U+10FFFF` as `U+10FFFE`, so this scalar stands for a lone surrogate alone, and the
+encoding gate reads it. -/
+def loneSurrogateStandIn : Char := Char.ofNat 0x10FFFF
+
 inductive ValidationMessageTemplateError where
   | emptyTemplate
   | lineSeparator
+  /-- A lone surrogate, the Kernel's `WRONG_ENCODING`. It is a `\p{C}` scalar too, so it is the encoding
+  class only because the gate is asked before `\p{C}`. -/
+  | wrongEncoding
   | controlCharacter (character : Char)
   /-- A character outside the template's BMP repertoire. The Kernel refuses it **codelessly**, through
   the runtime formal class its message text belongs to rather than through a bracketed parameter key. -/
@@ -99,9 +107,11 @@ inductive ValidationMessageTemplateError where
   /-- The rule-group terminal as a field, with or without a suffix or key, refused `INVALID_PARAMETER`
   by the field's own check before any other gate. -/
   | ruleGroupParameter (parameter : String)
-  /-- The rule-group terminal where the Kernel's check expects a resolved entity: a form pointer's
-  entity or a field's key. The Kernel fails there with `MVK_INTERNAL_ERROR`, a defect this fragment
-  refuses on its own arm and does not model. -/
+  /-- The rule-group terminal as a form pointer's entity, where the Kernel's check expects a resolved
+  entity. The Kernel fails there with `MVK_INTERNAL_ERROR`, a defect this fragment refuses on its own arm
+  and does not model. As a field's key it is no longer such a fault: kernel 31.1.1 resolves it as a key
+  like any entity, which `keyNotInCondition` and `invalidGroupParameter` carry
+  ([KF663](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf663)). -/
   | ruleGroupUnresolved (parameter : String)
   /-- A value or category suffix on a key over a root or fixed-group index. Its name form renders the
   field's name as an unkeyed one does
@@ -115,8 +125,9 @@ private def isLineSeparator (character : Char) : Bool :=
     character.toNat == 0x2028 || character.toNat == 0x2029
 
 /-- The Kernel's `INVALID_CHARACTERS` class over a message template: every code point Java's `\p{C}`
-matches on JDK 21, control, format, private-use and unassigned alike, asked after the line gate so a
-line separator keeps its own class ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). -/
+matches on JDK 21, control, format, private-use and unassigned alike, asked after the line and encoding
+gates so a line separator and a lone surrogate keep their own classes
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-message-characters)). -/
 private def isControlCharacter (character : Char) : Bool :=
   isJavaOtherCategory character
 
@@ -156,11 +167,12 @@ structure ValidationMessageKeywordProfile where
   rootGroupTerminal : String
   /-- The selected language's spelling of the group position's own-group shorthand. -/
   ruleGroupTerminal : String
-  /-- The two form-pointer terminals. The Kernel's own bundles spell both identically in English and
-  German, but they are data like every sibling terminal rather than literals, because the one exception
-  to that discipline was a latent bilingual defect ([`LF166`](../../docs/LEAN-FINDINGS.md)). -/
+  /-- The form-line terminal. The Kernel's own bundles spell it identically in English and German, but it
+  is data like every sibling terminal rather than a literal, because the one exception to that
+  discipline was a latent bilingual defect ([`LF166`](../../docs/LEAN-FINDINGS.md)). Kernel 31.1.1
+  retired the sibling `Vordruckname` terminal, which is an ordinary name there
+  ([KF657](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf657)). -/
   formLineTerminal : String
-  formNameTerminal : String
   /-- The historic group terminals the Kernel recognizes in the group position and refuses on the
   modern route. Measured under the English condition language the set is `Zeile` and `Usb`; whether it
   is selected by language at all is unmeasured, so the caller supplies it like the other terminals. -/
@@ -175,16 +187,15 @@ this producer historically accepts unquoted inside an entity name; only `For`, `
 `BaseYear` therefore need the quote escape
 ([parameter surface](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-surface-and-iteration-gates)). -/
 def ValidationMessageKeywordProfile.english : ValidationMessageKeywordProfile := {
-  path := { reserved := ["For", "index", "RootGroup", "RuleGroup", "Usb", "Vordruckname",
+  path := { reserved := ["For", "index", "RootGroup", "RuleGroup", "Usb",
     "Vordruckzeile", "BaseYear", "value", "Zeile"] }
-  unquotedTerminals := ["value", "RootGroup", "Zeile", "Usb", "index", "Vordruckzeile", "Vordruckname"]
+  unquotedTerminals := ["value", "RootGroup", "Zeile", "Usb", "index", "Vordruckzeile"]
   baseYearTerminal := "BaseYear"
   forTerminal := "For"
   valueSuffixTerminal := "value"
   rootGroupTerminal := "RootGroup"
   ruleGroupTerminal := "RuleGroup"
   formLineTerminal := "Vordruckzeile"
-  formNameTerminal := "Vordruckname"
   retiredGroupTerminals := ["Zeile", "Usb"]
   offsetGroupTerminals := ["Zeile"] }
 
@@ -193,16 +204,15 @@ roles; a German condition language selects them whatever the message's locale, a
 terminals are shared ([German terminals](../../docs/sources/message-and-pointer-probes.md#src-german-condition-language-terminals),
 [index suffix](../../docs/sources/message-and-pointer-probes.md#src-index-german-suffix)). -/
 def ValidationMessageKeywordProfile.german : ValidationMessageKeywordProfile := {
-  path := { reserved := ["Fuer", "index", "LfdNr", "RegelKontext", "Usb", "Vordruckname",
+  path := { reserved := ["Fuer", "index", "LfdNr", "RegelKontext", "Usb",
     "Vordruckzeile", "Referenzjahr", "Wert", "Zeile"] }
-  unquotedTerminals := ["Wert", "LfdNr", "Zeile", "Usb", "index", "Vordruckzeile", "Vordruckname"]
+  unquotedTerminals := ["Wert", "LfdNr", "Zeile", "Usb", "index", "Vordruckzeile"]
   baseYearTerminal := "Referenzjahr"
   forTerminal := "Fuer"
   valueSuffixTerminal := "Wert"
   rootGroupTerminal := "LfdNr"
   ruleGroupTerminal := "RegelKontext"
   formLineTerminal := "Vordruckzeile"
-  formNameTerminal := "Vordruckname"
   retiredGroupTerminals := ["Zeile", "Usb"]
   offsetGroupTerminals := ["Zeile"] }
 
@@ -211,8 +221,7 @@ words, and the exemption from quoting that keeps a reserved word a name. -/
 def ValidationMessageKeywordProfile.parameterKeywords (profile : ValidationMessageKeywordProfile) :
     MessageParameterKeywords :=
   { reserved := profile.path.reserved, exempt := profile.unquotedTerminals,
-    exemptNonFinal :=
-      [profile.valueSuffixTerminal, profile.formLineTerminal, profile.formNameTerminal],
+    exemptNonFinal := [profile.valueSuffixTerminal, profile.formLineTerminal],
     ruleGroup := profile.ruleGroupTerminal, rootGroup := profile.rootGroupTerminal,
     retired := profile.retiredGroupTerminals, offset := profile.offsetGroupTerminals,
     forTerminal := profile.forTerminal }
@@ -221,13 +230,19 @@ def ValidationMessageKeywordProfile.parameterKeywords (profile : ValidationMessa
 def ValidationMessageKeywordProfile.nameTerminals (profile : ValidationMessageKeywordProfile) :
     MessageNameTerminals :=
   { baseYear := profile.baseYearTerminal, valueSuffix := profile.valueSuffixTerminal,
-    formLine := profile.formLineTerminal, formName := profile.formNameTerminal }
+    formLine := profile.formLineTerminal }
 
+/-- The three character gates, asked in the order a12-dmkits' `ErrorTextCharacterGateLawsTest` measures on
+both carriers at kernel 31.1.1: the line break, then the encoding, then `\p{C}`, each withholding the gates
+after it. Kernel 30.8.1 asked `\p{C}` first on a rule's message and the encoding first on a field's. -/
 private def validateMessageTemplatePrefix (source : String) :
     Except ValidationMessageTemplateError Unit := do
   if source.isEmpty then throw .emptyTemplate
   match source.toList.find? isLineSeparator with
   | some _ => throw .lineSeparator
+  | none => pure ()
+  match source.toList.find? (· == loneSurrogateStandIn) with
+  | some _ => throw .wrongEncoding
   | none => pure ()
   match source.toList.find? isControlCharacter with
   | some character => throw (.controlCharacter character)
@@ -238,13 +253,31 @@ private def validateMessageTemplateSegments (source : String) :
   if source.toList.count '$' % 2 != 0 then throw .oddDollarCount
   pure (source.splitOn "$")
 
-/-- The lexical gates both producers share: the line and control gates, then dollar parity. The
+/-- The lexical gates both producers share: the line, encoding and control gates, then dollar parity. The
 repertoire refusal is not one of them; each producer adds it with `withMessageRepertoire`, since it
 stands beside these failures. -/
 def validateMessageTemplateSource (source : String) :
     Except ValidationMessageTemplateError (List String) := do
   validateMessageTemplatePrefix source
   validateMessageTemplateSegments source
+
+/-- The pieces between a dollar pair of a message text, in order, empty ones included. -/
+private def messageParameterPieces : List String → List String
+  | _ :: piece :: rest => piece :: messageParameterPieces rest
+  | _ => []
+
+/-- Whether kernel 31.1.1's model build reads an undeclared locale's message text. The error-text check never
+examines it, but code generation looks each of its parameters up among those spelled by the declared texts of
+the same message and fails the build on a miss (a12-dmkits `ErrorTextLocaleScopeLawsTest` at `1124b523f`,
+KF659). The lookup compares spellings, not meanings, so the same field written as an absolute path is a miss;
+an empty pair names no parameter and a character gate is not a parameter lookup, so both build; an odd number
+of dollars fails. Whether a spelling must occur in one declared text or in all is unmeasured, since the rows
+measured it in both or in neither: this account asks for some declared text. -/
+def undeclaredLocaleMessageBuilds (declaredTexts : List String) (text : String) : Bool :=
+  text.toList.count '$' % 2 == 0 &&
+    (messageParameterPieces (text.splitOn "$")).all fun parameter =>
+      parameter.isEmpty || declaredTexts.any fun declared =>
+        (messageParameterPieces (declared.splitOn "$")).contains parameter
 
 /-- Add the codeless repertoire refusal to a producer's result, keeping the producer's own first
 failure beside it. It stands beside a named class on a rule's message

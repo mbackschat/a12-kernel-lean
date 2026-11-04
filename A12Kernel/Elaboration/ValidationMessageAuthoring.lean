@@ -73,12 +73,14 @@ One **non-field** parameter form is admitted: the Base Year terminal with an opt
 Its only static gate is that the model declares a Base Year, and the offset is applied at authoring
 because nothing about it depends on the document.
 
-Two **form-pointer** forms are admitted beside those, `<entity>.Vordruckzeile` and
-`<entity>.Vordruckname`. They share the name position's entity spec and nothing else: their one gate
-resolves that entity to a field, and the condition-membership requirement every other field form
-carries **does not apply** — the Kernel admits both on a field the condition never references, which
-is why the checked part has no membership witness to carry rather than an unset one. What either
-renders is unmeasured and stays caller-supplied.
+One **form-pointer** form is admitted beside those, `<entity>.Vordruckzeile`. It shares the name
+position's entity spec and nothing else: its one gate resolves that entity to a field, and the
+condition-membership requirement every other field form carries **does not apply** — the Kernel admits
+it on a field the condition never references, which is why the checked part has no membership witness
+to carry rather than an unset one. What it renders is unmeasured and stays caller-supplied. Kernel
+31.1.1 retired the `Vordruckname` terminal, so `<entity>.Vordruckname` is one dotted name and meets the
+entity lookup like any other
+([KF657](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf657)).
 
 The index terminal uses the checked rule's actual error declaration and condition-reference modes.
 Its resolution and suffix gates are owned by `IndexMessageAuthoring`.
@@ -147,7 +149,6 @@ structure CheckedValidationMessageFormPointer
   parameter : String
   reference : SurfaceFieldPath
   declaration : FlatFieldDecl
-  pointer : MessageFormPointer
   resolved :
     model.messageNameModel.resolveFieldDeclarationUnchecked condition.rowGroup reference =
       .ok declaration
@@ -460,17 +461,26 @@ private def resolveMessageGroupKeyEntity (model : FlatModel)
       match ← resolveMessageSpec model profile condition parameter spec with
       | some (.inl entity) => pure (some (.field entity.declaration))
       | some (.inr _) => pure none
-      | none => throw (.ruleGroupUnresolved parameter)
+      -- The rule-group terminal as a group-position key meets the ordinary key gate, which draws the group
+      -- class there (kernel 31.1.1, a12-dmkits `MessageParameterDecoderAgreementTest` row F5g at `1124b523f`).
+      | none => throw (.invalidGroupParameter parameter)
 
 private def resolveMessageReference (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
     (condition : ValidationMessageCondition model)
-    (parameter : String) (spec : MessageEntitySpec) (keyHead : Option MessageKeyHead) :
+    (parameter : String) (spec : MessageEntitySpec) (suffix : MessageFieldSuffix)
+    (keyHead : Option MessageKeyHead) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageReference model condition) := do
-  let entity ← match ← resolveMessageSpec model profile condition parameter spec, keyHead with
+  let resolved ← resolveMessageSpec model profile condition parameter spec
+  -- Kernel 31.1.1 asks an empty category name right after entity resolution, ahead of the group refusal, the
+  -- key's gates and condition membership: an unread field, an unread key and a group with no index field
+  -- all draw the empty-name class, where kernel 30.8.1 asked membership first (a12-dmkits
+  -- `EmptyCategoryNamePrerequisiteLawsTest` and `MessageParameterDecoderAgreementTest` at `1124b523f`). The
+  -- rule-group terminal as a field is refused earlier still, by the field's own check below.
+  if suffix == .category "" && resolved.isSome then throw (.missingCategoryName parameter)
+  let entity ← match resolved, keyHead with
     | some (.inl entity), _ => pure entity
-    | some (.inr _), some (.entity .ruleGroup) => throw (.ruleGroupUnresolved parameter)
     -- A keyed group meets the key's gate, measured beside a condition keying that group (row `b01`).
     | some (.inr _), some _ => throw (.keyNotInCondition parameter)
     | some (.inr group), none => throw (.groupInNamePosition parameter group)
@@ -478,7 +488,8 @@ private def resolveMessageReference (model : FlatModel)
   let key ← keyHead.mapM fun
     | .literal text =>
         pure (messageLiteralKey model (model.semanticIndexGroupForPath? entity.declaration.groupPath) text)
-    | .entity .ruleGroup => throw (.ruleGroupUnresolved parameter)
+    -- The rule-group terminal as a key resolves to no field, so it meets the ordinary key gate below
+    -- (kernel 31.1.1; it was an internal fault on kernel 30.8.1, `KF663`).
     | .entity keySpec => do
         match ← resolveMessageSpec model profile condition parameter keySpec with
         | some (.inl keyEntity) => pure (.field keyEntity.declaration)
@@ -498,17 +509,17 @@ private def resolveMessageReference (model : FlatModel)
         else .fieldNotReferenced parameter entity.declaration.id)
   | none => throw (.groupReferenceMetadataRequired parameter)
 
-/-- Check the category after entity resolution and condition membership, including an empty name.
+/-- Check the category after entity resolution and condition membership; an empty name is asked earlier, by
+`resolveMessageReference`.
 
 The [category-order checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-category-gate-order) separates
-these prerequisite failures from the missing-name refusal. Kind and declared-category checks then
-reuse the existing Enumeration projection boundary. -/
+these prerequisite failures from the missing-name refusal, whose place kernel 31.1.1 moved ahead of
+membership. Kind and declared-category checks then reuse the existing Enumeration projection boundary. -/
 private def resolveMessageCategory
     (reference : CheckedValidationMessageReference model condition)
     (parameter category : String) :
     Except ValidationMessageTemplateError
       (CheckedValidationMessageCategory model condition) := do
-  if category.isEmpty then throw (.missingCategoryName parameter)
   match hSource : reference.declaration.enumeration with
   | none =>
       throw (.categoryFieldNotEnumeration parameter reference.declaration.id)
@@ -532,8 +543,8 @@ private def resolveMessageCategory
 
 /-- Run a parameter's events in the parser's order, stopping at the first that fails. A name inside a
 group-position key is looked up by the same check as anywhere else, but an unresolved one draws the
-group class there, and the rule-group terminal as such a key fails inside the Kernel, which this
-fragment leaves unclassed; a root, a parent walk and a turning point keep their classes
+group class there, the rule-group terminal as such a key included (kernel 31.1.1 resolves it as a key; kernel
+30.8.1 failed internally); a root, a parent walk and a turning point keep their classes
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). -/
 private def runMessageEvents (model : FlatModel)
     (profile : ValidationMessageKeywordProfile)
@@ -541,7 +552,6 @@ private def runMessageEvents (model : FlatModel)
     List MessageParameterEvent → Except ValidationMessageTemplateError Unit
   | [] => pure ()
   | .resolve spec :: rest => do
-      if inGroupKey && spec == .ruleGroup then throw (.ruleGroupUnresolved parameter)
       match (if inGroupKey then
           (resolveMessageGroupKeyEntity model profile condition parameter spec).map (fun _ => ())
         else (resolveMessageSpec model profile condition parameter spec).map (fun _ => ())) with
@@ -586,7 +596,7 @@ private def checkMessageField (model : FlatModel)
     (entity : MessageEntitySpec) (suffix : MessageFieldSuffix) (keyHead : Option MessageKeyHead) :
     Except ValidationMessageTemplateError (CheckedValidationMessagePart model condition) := do
   checkMessageFieldSuffix condition parameter suffix
-    (← resolveMessageReference model profile condition parameter entity keyHead)
+    (← resolveMessageReference model profile condition parameter entity suffix keyHead)
 
 /-- Check one name-position parameter: its events, then its form's own check, then a fault the parser
 meets at the end it requires. -/
@@ -600,7 +610,7 @@ private def checkMessageName (model : FlatModel)
     | none => throw (.invalidParameter parameter)
     | some (.field entity suffix key) =>
         checkMessageField model profile condition parameter entity suffix key
-    | some (.formPointer entity pointer) =>
+    | some (.formPointer entity) =>
         -- The one field form the Kernel admits on a field the condition never references, measured on
         -- six admitted spellings against the same model's own membership refusals.
         match ← resolveMessageSpec model profile condition parameter entity with
@@ -609,7 +619,6 @@ private def checkMessageName (model : FlatModel)
               parameter
               reference := entity.reference
               declaration := entity.declaration
-              pointer
               resolved := entity.resolved })
         | some (.inr group) => throw (.groupInFormPointer parameter group)
         | none => throw (.ruleGroupUnresolved parameter)
@@ -710,9 +719,9 @@ structure ValidationMessageInputs where
   /-- The cell's current stored token. The category mapping is applied by the checked part, not by
   the caller, because the mapping is the declaration's and is measured. -/
   fieldStoredToken : CellAddr → Option String
-  /-- What a form pointer renders. Caller-supplied because it is unmeasured; the field and which of
-  the two terminals was written are both passed, so a caller need not re-derive either. -/
-  formPointer : FieldId → MessageFormPointer → String
+  /-- What a form pointer renders. Caller-supplied because it is unmeasured; the field it names is
+  passed, so a caller need not re-derive it. -/
+  formPointer : FieldId → String
 
 /-- Render already-selected inputs. Repeatable callers must supply the resolved group coordinate and
 each read reference's row path; `toRenderPlanAt` owns the addressed selection before this final
@@ -746,7 +755,7 @@ def CheckedValidationMessagePart.toRenderPartWithGroupIndex
             checked.categoryTokenFor? name stored }
       | .none => .text ""
   | .formPointer access =>
-      .formPointer { text := inputs.formPointer access.declaration.id access.pointer }
+      .formPointer { text := inputs.formPointer access.declaration.id }
 
 def CheckedValidationMessagePart.toRenderPart
     {condition : CheckedFlatCondition model}

@@ -3064,5 +3064,6 @@ run_cmd do
 #print axioms A12Kernel.storedTemporalNumeric_partial_time_refused
 #print axioms A12Kernel.storedTemporalNumeric_clock_year
 #print axioms A12Kernel.eraseDups_nodup_of_length_le
+#print axioms A12Kernel.enumerationDeclaration_valueEntries_eq_map_some
 #print axioms A12Kernel.enumerationDeclaration_notifications_nodup
 #print axioms A12Kernel.enumerationDeclaration_notifications_eq_nil_of_validate_ok

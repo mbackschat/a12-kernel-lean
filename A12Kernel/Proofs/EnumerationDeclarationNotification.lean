@@ -25,7 +25,7 @@ theorem eraseDups_nodup_of_length_le {α : Type} [BEq α] [LawfulBEq α] :
           (Nat.le_trans (List.length_filter_le _ _) (by simp at small; omega))
 
 /-- Without a token-less entry the value entries are the stored tokens, one `some` each. -/
-theorem EnumerationDeclaration.valueEntries_eq_map_some (declaration : EnumerationDeclaration)
+theorem enumerationDeclaration_valueEntries_eq_map_some (declaration : EnumerationDeclaration)
     (holeless : declaration.tokenlessPositions = []) :
     declaration.valueEntries = declaration.storedTokens.map some := by
   unfold EnumerationDeclaration.valueEntries
@@ -54,7 +54,7 @@ theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
         ∀ token ∈ category.tokens, ExecutableDeclaration.blank token = false) :
     declaration.notifications .defaultBmp = [] := by
   obtain ⟨holeless, trimmedNodup, arity⟩ := declaration.validate_ok_shape valid
-  have entries := declaration.valueEntries_eq_map_some holeless
+  have entries := enumerationDeclaration_valueEntries_eq_map_some declaration holeless
   have unrepeated : ∀ tokens : List String, tokens.Nodup → EnumerationDeclaration.duplicated tokens = [] := by
     intro tokens nodup
     simp only [EnumerationDeclaration.duplicated, List.filter_eq_nil_iff, decide_eq_true_eq]

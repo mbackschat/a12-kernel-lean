@@ -367,7 +367,7 @@ example : labels .other = [] := by
 
 /- Law 7, the count of labelled values: once one value carries a label and another does not, every
    declared locale reports. A label in any locale makes a value carry labels, an undeclared one included,
-   so a value labelled only for `fr_FR` beside an unlabelled one draws the count and, lacking a text for the
+   so a value labelled only for "fr_FR" beside an unlabelled one draws the count and, lacking a text for the
    declared locale, the display class; kernel 30.8.1 counted a declared locale's label only and admitted it
    (ec-1, ec-twin, ec-empty, ec-2loc; the `ec-undecl` row is superseded; a12-dmkits
    `CheckerDeclarationAdmissionAgreementTest` at 1124b523f, kernel 31.1.1). -/
@@ -394,7 +394,7 @@ example :
    many locales fall short; a value that does not carry is not asked, and partial labelling beside a
    second locale draws both classes (ed-blank, ed-bi, ed-tri, ed-half, ec-2loc-partial, ec-2loc-de,
    dd-incomplete). A value labelled only for an undeclared locale is asked for the declared one too, so
-   every value labelled for `fr_FR` alone draws the display class where kernel 30.8.1 admitted it
+   every value labelled for "fr_FR" alone draws the display class where kernel 30.8.1 admitted it
    (`ed-undecl` superseded; a12-dmkits `CheckerDeclarationAdmissionAgreementTest` at 1124b523f, kernel
    31.1.1). -/
 example :
@@ -438,7 +438,7 @@ example :
 /- Law 7, a tab or pipe in a value token, a counted label text or a category token is one notification
    per distinct text in its own class, and a space is admitted (ev-tab, ev-pipe, ev-space, ev-both, ev-two,
    ed-tab, ecat-tab, ecat-tab2, ev-dup-tab, ev-tab-label-both). These classes read the labels of the declared
-   locales only, so a tab in an `fr_FR` label draws none of them; that kernel 31.1.1 does not read an undeclared
+   locales only, so a tab in an "fr_FR" label draws none of them; that kernel 31.1.1 does not read an undeclared
    locale's text for them is unmeasured. The `ed-tab-undecl` model now draws the display class instead, as
    every value is labelled for an undeclared locale alone. -/
 example :

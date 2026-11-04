@@ -75,11 +75,11 @@ structure MessageGroupInput where
   repetitionIndex : Nat
   deriving Repr, DecidableEq
 
-/-- One form-pointer parameter, the Kernel's `Vordruckzeile` and `Vordruckname` terminals applied to a
-field. What either **renders** is unmeasured, so the bytes are caller-supplied exactly as a name or a
-value input's are. It keeps its own record rather than folding into `text` because the two are not
-interchangeable to a reader of the plan: a form pointer is a resolved parameter position, and an
-Explain consumer that cannot tell it from authored text loses the parameter. -/
+/-- One form-pointer parameter, the Kernel's `Vordruckzeile` terminal applied to a field. What it
+**renders** is unmeasured, so the bytes are caller-supplied exactly as a name or a value input's are. It
+keeps its own record rather than folding into `text` because the two are not interchangeable to a reader
+of the plan: a form pointer is a resolved parameter position, and an Explain consumer that cannot tell it
+from authored text loses the parameter. -/
 structure MessageFormPointerInput where
   text : String
   deriving Repr, DecidableEq

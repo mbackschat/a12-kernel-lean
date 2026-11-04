@@ -14,7 +14,7 @@ private def keywords : MessageParameterKeywords := {
 
 private def terminals : MessageNameTerminals := {
   baseYear := "BaseYear", valueSuffix := "value"
-  formLine := "Vordruckzeile", formName := "Vordruckname" }
+  formLine := "Vordruckzeile" }
 
 private def decoded (source : String) : DecodedMessageName :=
   decodeMessageName keywords terminals (ParameterToken.ofParameter keywords source)

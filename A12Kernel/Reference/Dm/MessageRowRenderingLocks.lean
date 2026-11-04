@@ -95,7 +95,7 @@ private def inputs (document : Document) : ValidationMessageInputs := {
     displayValue := document.rawCells cell
     defaultDisplay := if [11, 12, 14, 15, 17].contains cell.field then "0" else "" }
   fieldStoredToken := document.rawCells
-  formPointer := fun _ _ => "" }
+  formPointer := fun _ => "" }
 
 private def rule (group : GroupPath) (name errorEntity condition : String) : DmRule :=
   { group, name, errorCode := name, severity := "ERROR", errorEntityRelPath := errorEntity, condition }

@@ -36,7 +36,7 @@ def isMessageNameCharacter (character : Char) : Bool :=
 `reserved` but not in `exempt` is a keyword and never a name; `ruleGroup`, `rootGroup` and the
 `retired` terminals open the group position's keyword alternatives, and the `offset` terminals among
 the retired ones take a signed offset. An exempt word may stand inside a dotted name, and may end one
-unless it is in `exemptNonFinal`, which is the value suffix and the two form-pointer terminals.
+unless it is in `exemptNonFinal`, which is the value suffix and the form-line terminal.
 `forTerminal` opens a semantic-index key in either position. The caller supplies the language's
 spellings. -/
 structure MessageParameterKeywords where
@@ -417,7 +417,6 @@ structure MessageNameTerminals where
   baseYear : String
   valueSuffix : String
   formLine : String
-  formName : String
   deriving Repr, DecidableEq
 
 /-- What a name-position field carries after its entity spec. A category name is one token. -/
@@ -427,17 +426,11 @@ inductive MessageFieldSuffix where
   | category (name : String)
   deriving Repr, DecidableEq
 
-/-- Which form-pointer terminal a parameter ends on. -/
-inductive MessageFormPointer where
-  | line
-  | name
-  deriving Repr, DecidableEq
-
 /-- The name-position alternative the parser chose, whose own check runs where its rule ends. -/
 inductive MessageNameForm where
   | field (entity : MessageEntitySpec) (suffix : MessageFieldSuffix)
       (key : Option MessageKeyHead)
-  | formPointer (entity : MessageEntitySpec) (pointer : MessageFormPointer)
+  | formPointer (entity : MessageEntitySpec)
   | baseYear (offset : Int)
   | indexField (entity : MessageEntitySpec) (suffix : MessageFieldSuffix)
   deriving Repr, DecidableEq
@@ -489,7 +482,7 @@ parser's decision reads the whole spec and the token or two after it before any 
 fault inside that window answers first: `$Nope x$`, `$Nope/$` and `$Nope.Vordruckzeile x$` draw the
 syntax class where `$Nope For$` and `$Nope->Band x$` draw the entity's. The window ends at the end of
 the text, an arrow, a key, or a value suffix followed by either, and on a form-pointer terminal
-followed by the end of the text; a dotted continuation that fails after a value or pointer terminal
+followed by the end of the text; a dotted continuation that fails after a value or form-line terminal
 is still inside it. After the window the field's suffix, then its key, then its own check, and only
 then the end of the text answer in that order
 ([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-parameter-decoder)). -/
@@ -537,10 +530,9 @@ where
               if key == keywords.forTerminal then decodeFieldTail keywords entity .value after
               else refusedName .unexpected
           | _ => refusedName (continuationFault keywords after)
-        else if word == terminals.formLine || word == terminals.formName then
-          let pointer := if word == terminals.formLine then MessageFormPointer.line else .name
+        else if word == terminals.formLine then
           match after with
-          | [] => { events := [.resolve entity], form := some (.formPointer entity pointer) }
+          | [] => { events := [.resolve entity], form := some (.formPointer entity) }
           | _ => refusedName (continuationFault keywords after)
         else refusedName (continuationFault keywords (.dot :: .name word false :: after))
     | .openParenthesis :: after =>

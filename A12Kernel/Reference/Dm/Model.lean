@@ -72,6 +72,9 @@ structure DmComputation where
   alternatives : List DmAlternative
   errorCodesToSuppress : List String
   roundingMode : String := "Exact"
+  /-- The authored message per locale, kept for the model build's read of an undeclared locale's text. A
+  member the reader cannot bind is left out, which no row measures for a computation. -/
+  messages : List (String × String) := []
   deriving Repr, Inhabited
 
 structure DmModel where
@@ -506,6 +509,7 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         targetRelPath := (str? body "computedFieldRelPath").getD ""
         commonPrecondition := str? body "commonPrecondition"
         roundingMode := roundingMode.getD "Exact"
+        messages := (localizedTextMember body "errorMessage").toOption.getD []
         errorCodesToSuppress := ((body.getObjValAs? (Array String) "errorCodesToSuppress").toOption.getD #[]).toList } }
   | other => modify fun state => { state with refusals := state.refusals.push (path ++ [name], s!"element {other}") }
 
@@ -566,7 +570,7 @@ private def readModelCore (json : Json)
   let content := frame.content
   bindLocalizedTextMembers content
   bindModelMembers frame
-  discard <| builtHeaderLocales json
+  let declaredLocales := (← builtHeaderLocales json).map (·.key)
   -- A check-only frame shape builds a model whose check fails, and the runtime route refuses such a
   -- model before evaluating it (model frame check route checkpoint, 2026-10-29; for an unsupported
   -- condition language, the peer letter of 2026-10-30a).
@@ -583,6 +587,11 @@ private def readModelCore (json : Json)
   if let some id := ModelConsistency.repeatedTypeDefinitionId? (typeDefinitions.map (·.1)) then
     throw s!"type definition id {id} is repeated"
   let ((), state) ← (roots.toList.forM (readElement [] [])).run { legalCharset, typeDefinitions }
+  -- Kernel 31.1.1's code generation reads an undeclared locale's message text after the check has passed
+  -- (a12-dmkits `ErrorTextLocaleScopeLawsTest` at `1124b523f`, KF659), so such a text can leave no model.
+  if (state.rules.toList.map (·.messages) ++ state.computations.toList.map (·.messages)).any
+      (undeclaredLocaleBuildFailure declaredLocales) then
+    throw "the model build refuses an undeclared locale's message text that no declared text spells"
   let fieldId (group : GroupPath) (name : String) : Option FieldId :=
     (state.fields.find? fun field => field.groupPath == group && field.name == name).map (·.id)
   let baseYear ← intMember? info "baseYear"

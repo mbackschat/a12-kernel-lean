@@ -141,7 +141,7 @@ private def inputs : ValidationMessageInputs := {
   fieldName := fun _ => { providerResult := none, modelLabel := none, debugDisplay := "unused" }
   fieldValue := fun _ => { displayValue := some "wrong", defaultDisplay := "wrong-default" }
   fieldStoredToken := fun _ => some "wrong"
-  formPointer := fun _ _ => "unused" }
+  formPointer := fun _ => "unused" }
 
 private def rendered (row : Nat) (token : Option String)
     (parallel : Option String := none) : Option String := do

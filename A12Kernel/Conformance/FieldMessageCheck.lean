@@ -22,16 +22,52 @@ private def check (declared : List String) (carrier : FieldMessageCarrier)
 
 private def both : List String := ["en_US", "de_DE"]
 
-/- One class per field, from the first declared locale whose text fails: the declared order decides,
-   the written order does not, and a locale alone defective still reports. -/
+/- Every declared locale reports its own text's class, in the order the model declares the locales: the
+   declared order decides, the written order does not, and a locale alone defective still reports
+   (the peer's two-by-two and its entry-order rows). Kernel 30.8.1 reported the first failing locale only.
+   Locked: a12-dmkits FieldTypeMessageTextLawsTest at 1124b523f, kernel 31.1.1. -/
 example :
-    check both .stringPattern [("en_US", "a\tb"), ("de_DE", "a\nb")] = ["INVALID_CHARACTERS"] ∧
+    check both .stringPattern [("en_US", "a\tb"), ("de_DE", "a\nb")] =
+      ["INVALID_CHARACTERS", "INVALID_LINEBREAK"] ∧
     check ["de_DE", "en_US"] .stringPattern [("en_US", "a\tb"), ("de_DE", "a\nb")] =
-      ["INVALID_LINEBREAK"] ∧
+      ["INVALID_LINEBREAK", "INVALID_CHARACTERS"] ∧
     check ["de_DE", "en_US"] .stringPattern [("de_DE", "a\nb"), ("en_US", "a\tb")] =
-      ["INVALID_LINEBREAK"] ∧
-    check both .stringPattern [("de_DE", "a\nb"), ("en_US", "a\tb")] = ["INVALID_CHARACTERS"] ∧
+      ["INVALID_LINEBREAK", "INVALID_CHARACTERS"] ∧
+    check both .stringPattern [("de_DE", "a\nb"), ("en_US", "a\tb")] =
+      ["INVALID_CHARACTERS", "INVALID_LINEBREAK"] ∧
     check both .stringPattern [("en_US", "ab"), ("de_DE", "a\tb")] = ["INVALID_CHARACTERS"] := by
+  native_decide
+
+private def cp (value : Nat) : String := String.singleton (Char.ofNat value)
+
+private def lone : String := String.singleton loneSurrogateStandIn
+
+/- The peer's character-gate grid on a field type's own message, row for row: the line break first, then the
+   encoding, then `\p{C}`, each withholding the gates after it, so the lone surrogate is `WRONG_ENCODING`
+   unless a line separator stands beside it. A supplementary scalar outside `\p{C}` draws no class here; its
+   codeless refusal is the notification layer's. Kernel 30.8.1 asked the encoding before the line break.
+   Locked: a12-dmkits ErrorTextCharacterGateLawsTest at 1124b523f, kernel 31.1.1. -/
+example :
+    ([("plain", "plain", []), ("U+2028", "a" ++ cp 0x2028 ++ "b", ["INVALID_LINEBREAK"]),
+      ("U+2029", "a" ++ cp 0x2029 ++ "b", ["INVALID_LINEBREAK"]), ("line feed", "a\nb", ["INVALID_LINEBREAK"]),
+      ("tab", "a\tb", ["INVALID_CHARACTERS"]), ("U+0085", "a" ++ cp 0x0085 ++ "b", ["INVALID_CHARACTERS"]),
+      ("U+200B", "a" ++ cp 0x200B ++ "b", ["INVALID_CHARACTERS"]),
+      ("U+00AD", "a" ++ cp 0x00AD ++ "b", ["INVALID_CHARACTERS"]),
+      ("U+FEFF", "a" ++ cp 0xFEFF ++ "b", ["INVALID_CHARACTERS"]),
+      ("U+200E", "a" ++ cp 0x200E ++ "b", ["INVALID_CHARACTERS"]),
+      ("U+E000", "a" ++ cp 0xE000 ++ "b", ["INVALID_CHARACTERS"]),
+      ("U+0378", "a" ++ cp 0x0378 ++ "b", ["INVALID_CHARACTERS"]),
+      ("U+00A0", "a" ++ cp 0x00A0 ++ "b", []),
+      ("lone surrogate", "a" ++ lone ++ "b", ["WRONG_ENCODING"]),
+      ("supplementary private use", "a" ++ cp 0xF0000 ++ "b", ["INVALID_CHARACTERS"]),
+      ("supplementary outside C", "a" ++ cp 0x1F600 ++ "b", []),
+      ("U+E0001", "a" ++ cp 0xE0001 ++ "b", ["INVALID_CHARACTERS"]),
+      ("U+2028 beside tab", "a\tb" ++ cp 0x2028 ++ "c", ["INVALID_LINEBREAK"]),
+      ("line feed beside lone surrogate", "a\nb" ++ lone ++ "c", ["INVALID_LINEBREAK"]),
+      ("tab beside lone surrogate", "a\tb" ++ lone ++ "c", ["WRONG_ENCODING"])].all
+      fun (_, text, expected) =>
+        check ["en_US"] .stringPattern [("en_US", text)] == expected &&
+        check ["en_US"] .enumerationInvalidValue [("en_US", text)] == expected) := by
   native_decide
 
 /- The later of two entries for one locale is asked, an undeclared locale never is, and an empty

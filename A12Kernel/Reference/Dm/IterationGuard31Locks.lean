@@ -197,7 +197,7 @@ example : catalogue.validate.isOk = true := by native_decide
 
 private def ITEM : GroupPath := ["Item"]
 
-/-- Locked: a12-dmkits FirstFilledOperandShapeLawsTest (`eachShapesClass_onEveryGroupShape_andBesideASecondDefect`,
+/-- Locked: a12-dmkits FirstFilledOperandShapeLawsTest ("eachShapesClass_onEveryGroupShape_andBesideASecondDefect",
 `theGroupShapesKeepTheirClassOnARuleThatIteratesTheRepetition` and `theMarkerOutsideAFilterAnswersAheadOfEveryShape`,
 the rows that read no empty group) at 1124b523f, kernel 31.1.1. A group's filter draws the group's class
 once the walk passes it, an unstarred one the walk's class where the rule does not iterate it, and a
@@ -234,7 +234,7 @@ private def firstFilledRows : List (String × String × String) :=
 
 example : mismatches catalogue ITEM true firstFilledRows = [] := by native_decide
 
-/-- Locked: a12-dmkits FirstFilledOperandShapeLawsTest (`anUnstarredRepetitionOrAnIndexMovesTheClass_andNothingElseDoes`,
+/-- Locked: a12-dmkits FirstFilledOperandShapeLawsTest ("anUnstarredRepetitionOrAnIndexMovesTheClass_andNothingElseDoes",
 the rows that read no empty group) at 1124b523f, kernel 31.1.1. An index answers first where it
 resolves to no index field and binds the level where it does; inside a filter the bare shapes keep their
 classes, except that a marked group carrying its own filter has left the outer filter's scope. -/

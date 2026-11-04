@@ -13,8 +13,8 @@ The model check reads them as one field, not one text at a time
 - the locales are asked **in the order the model declares them**, whatever order the entries are
   written in, and a locale the model does not declare is never asked;
 - of two entries for one locale the **later** is asked;
-- the texts meet the pattern message's lexical and parameter gates, and only the **first** failing
-  locale reports;
+- the texts meet the pattern message's lexical and parameter gates, and **every** declared locale whose
+  text fails reports its own class, in declared order (kernel 30.8.1 reported the first only);
 - a required field's own text meets no gate, and a field whose messages the declaration walk withholds
   is never reached;
 - a String's pattern and its message require each other, and a message counts only as non-blank
@@ -24,11 +24,11 @@ The model check reads them as one field, not one text at a time
   ([`kf318`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf318));
 - a String message answering one declared locale and not another, a blank text counting as
   unanswered, draws `MVK_ERROR_MESSAGE_FOR_LANGUAGE_MISSING` on either arm;
-- a text carrying a lone surrogate meets the encoding gate first: `WRONG_ENCODING` stands in place of
-  the character or parameter class that text would otherwise draw, one per field from the first failing
-  declared locale (rows `we-s`, `we-e`, [spec/11](../../spec/11-messages-and-custom.md)). A JSON file
-  cannot carry a lone surrogate through a parser that replaces it, so the model reader rewrites each to
-  `loneSurrogateStandIn` before parsing and this gate reads that scalar.
+- a text carrying a lone surrogate meets the encoding gate after the line break: `WRONG_ENCODING` stands
+  in place of the character or parameter class that text would otherwise draw (rows `we-s`, `we-e`,
+  [spec/11](../../spec/11-messages-and-custom.md)). A JSON file cannot carry a lone surrogate through a
+  parser that replaces it, so the model reader rewrites each to `loneSurrogateStandIn` before parsing and
+  the shared gates read that scalar.
 
 Each text's gates are [`StringPatternMessage`](StringPatternMessage.lean)'s; this module owns only
 which texts are asked, the pairing classes and the locale class.
@@ -55,24 +55,20 @@ def FieldMessageEntry.askedFor? (entries : List FieldMessageEntry) (locale : Str
     Option String :=
   (entries.filter (·.locale == locale)).getLast?.map (·.text)
 
-/-- The scalar the model reader writes in place of a lone UTF-16 surrogate, the last Unicode scalar. The
-reader reads an authored `U+10FFFF` as `U+10FFFE`, so this scalar stands for a lone surrogate alone. -/
-def loneSurrogateStandIn : Char := Char.ofNat 0x10FFFF
-
 /-- A text's named class under the pattern message's gates. An empty text draws none here: whether
 a message is there at all is the presence rule's question below. -/
 private def fieldMessageTextDiagnostic? (tokens : StringPatternMessageTokens) (text : String) :
     Option KernelStaticDiagnostic :=
-  if text.toList.contains loneSurrogateStandIn then some .wrongEncoding
-  else match elaborateStringPatternMessageTemplate tokens text with
-    | .ok _ | .error .emptyTemplate => none
-    | .error error => error.namedStringPatternDiagnostic?
+  match elaborateStringPatternMessageTemplate tokens text with
+  | .ok _ | .error .emptyTemplate => none
+  | .error error => error.namedStringPatternDiagnostic?
 
 /-- Blank as the rows measure it, on spaces and a tab; the other whitespace characters Lean counts
 are unmeasured. -/
 private def blankFieldMessage (text : String) : Bool := text.all Char.isWhitespace
 
-/-- Every class one field's messages draw, in the order text, locale, pairing. `reached` is false for
+/-- Every class one field's messages draw, in the order text, locale, pairing: one text class for each
+declared locale whose text fails, in declared order. `reached` is false for
 a field whose messages the declaration walk withholds. The presence and locale rules are measured on a String alone;
 an Enumeration's or a required field's message meets neither here, which no row measures, and no
 row orders a text class against the locale class. -/
@@ -82,7 +78,7 @@ def fieldMessageDiagnostics (tokens : StringPatternMessageTokens)
   if !reached || carrier == .required then []
   else
     let asked := declaredLocales.filterMap (FieldMessageEntry.askedFor? entries)
-    let textClass := asked.findSome? (fieldMessageTextDiagnostic? tokens)
+    let textClasses := asked.filterMap (fieldMessageTextDiagnostic? tokens)
     let answered := declaredLocales.filter fun locale =>
       (FieldMessageEntry.askedFor? entries locale).any (!blankFieldMessage ·)
     let isString := carrier == .stringPattern || carrier == .stringNoPattern
@@ -91,6 +87,6 @@ def fieldMessageDiagnostics (tokens : StringPatternMessageTokens)
       | .stringPattern => if answered.isEmpty then [.errorMessageAndPatternInvalid] else []
       | .stringNoPattern => if answered.isEmpty then [] else [.errorMessageAndNoPattern]
       | _ => []
-    textClass.toList ++ (if languageMissing then [.errorMessageForLanguageMissing] else []) ++ pairing
+    textClasses ++ (if languageMissing then [.errorMessageForLanguageMissing] else []) ++ pairing
 
 end A12Kernel

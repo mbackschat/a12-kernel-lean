@@ -9,13 +9,13 @@ lookup and needs no model or condition. The tokens are spelled in the model's **
 `field` and `field.value` in English and `Feld` and `Feld.Wert` in German, whatever locale the message
 is written for ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates)).
 
-**The parameters are the pieces Java's `split` returns**, which drops trailing empty pieces: an empty
-dollar pair inside the text or at its start is an invalid parameter, while one at its very end, or
-alone, names no parameter and is admitted (same inbound). That is not the rule path's literal-dollar
-escape, and an admitted trailing pair renders verbatim: `Cost $$` renders `Cost $$` and `$$` renders `$$`
-on both runtime strategies
-([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-field-message-render)), so this module keeps the
-pair's dollars as literal text.
+**An empty dollar pair names no parameter and is skipped wherever it stands**: at the start, inside the
+text, at the end or alone ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-26n-field-message-gates);
+kernel 31.1.1, a12-dmkits `FieldTypeMessageTextLawsTest` at `1124b523f`, where kernel 30.8.1 refused every one
+but a trailing pair as an invalid parameter). That is not the rule path's literal-dollar escape, and a
+skipped pair keeps its dollars as literal text: the trailing pair renders verbatim on both runtime strategies
+(`Cost $$` renders `Cost $$`, [inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-field-message-render)),
+and a pair inside the text is given the same account, which no row measures.
 
 Rendering lowers caller-selected bytes directly as opaque text: this producer applies neither the rule
 path's provider/label cascade nor its empty-display default, and it never reclassifies the established
@@ -48,9 +48,12 @@ private def stringPatternTextPart (value : String) :
     List CheckedStringPatternMessagePart :=
   if value.isEmpty then [] else [.text value]
 
+/-- One parameter piece: an empty pair is skipped, keeping its dollars as text, and any other piece is one of
+the two tokens or an invalid parameter. -/
 private def parseStringPatternParameter (tokens : StringPatternMessageTokens) (parameter : String) :
     Except ValidationMessageTemplateError CheckedStringPatternMessagePart :=
-  if parameter == tokens.field then .ok .fieldName
+  if parameter.isEmpty then .ok (.text "$$")
+  else if parameter == tokens.field then .ok .fieldName
   else if parameter == tokens.fieldValue then .ok .fieldValue
   else .error (.invalidParameter parameter)
 
@@ -65,23 +68,12 @@ private def parseStringPatternSegments (tokens : StringPatternMessageTokens) :
       pure (stringPatternTextPart text ++ [parameterPart] ++
         (← parseStringPatternSegments tokens rest))
 
-/-- The dollar-split pieces with Java's trailing empty pieces dropped, beside the dollars those
-dropped pieces leave unconsumed: every separator among the kept pieces, and the one closing a kept
-final parameter, is consumed. -/
-private def javaSplitPieces (source : String) (segments : List String) : List String × Nat :=
-  let kept := (segments.reverse.dropWhile String.isEmpty).reverse
-  let consumed :=
-    if kept.isEmpty then 0 else kept.length - 1 + (if kept.length % 2 == 0 then 1 else 0)
-  (kept, source.toList.count '$' - consumed)
-
 /-- Check a field's pattern message against the tokens of the model's condition language. -/
 def elaborateStringPatternMessageTemplate (tokens : StringPatternMessageTokens) (source : String) :
     Except ValidationMessageTemplateError
       CheckedStringPatternMessageTemplate :=
   withMessageRepertoire source do
-    let (pieces, trailingDollars) := javaSplitPieces source (← validateMessageTemplateSource source)
-    let parts ← parseStringPatternSegments tokens pieces
-    pure { source, parts := parts ++ stringPatternTextPart (String.ofList (List.replicate trailingDollars '$')) }
+    pure { source, parts := ← parseStringPatternSegments tokens (← validateMessageTemplateSource source) }
 
 /-- Exact replacement bytes selected by the caller for the owning field. Provider invocation and empty-value fallback precede this boundary and remain outside the supported fragment. -/
 structure StringPatternMessageInputs where
