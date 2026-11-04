@@ -1,14 +1,16 @@
 import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.CheckedIndexPreliminary
 import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Elaboration.WhollyRelevantGroups
 
 /-! # `NumberOfFilledGroups` under partial validation
 
 The count is decided on the counted group's own instances, in four steps, and each step is what a
 neighbouring coverage separates:
 
-1. The counted group's own identifiers settle the extent: those at or above the group and every
-   relevant descendant cut back to its depth, wildcard-reduced, must wildcard every reopened level.
+1. The counted group's wholly relevant instances settle the extent (kernel 31.1.1,
+   `ValidationRelevanceScope.whollyRelevantGroups`): inside the iteration subtree they must wildcard
+   every reopened level.
 2. The first declared instance must be fully relevant and free of errors.
 3. Every declared instance the document lacks must be fully relevant: the walk covers declared
    rows, not held ones.

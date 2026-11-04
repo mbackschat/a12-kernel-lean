@@ -62,17 +62,6 @@ def projectOntoTarget? (entity : RelevantEntityPattern)
         (targetPath.drop entity.path.length).map fun _ => .all
     }
 
-/-- Cut one identifier below `groupPath` back to that group's depth, keeping its coordinates there.
-    An identifier at or above the group is `projectOntoTarget?`'s, and malformed index arity never
-    becomes coverage. -/
-def cutBackTo? (entity : RelevantEntityPattern)
-    (groupPath : List String) : Option RelevantEntityPattern :=
-  if entity.indices.length != entity.path.length ||
-      !groupPath.isPrefixOf entity.path then
-    none
-  else
-    some { path := groupPath, indices := entity.indices.take groupPath.length }
-
 private def indexVectorEncompasses :
     List RelevanceIndex → List RelevanceIndex → Bool
   | [], [] => true
@@ -212,28 +201,6 @@ def coversAggregateExtent (scope : ValidationRelevanceScope) (model : FlatModel)
   | .full => true
   | .partialSet entities =>
       reducedUniversalCovers (aggregateExtentPatterns entities model targetPath boundLevels outer)
-        model reopenedLevels
-
-/-- The counted group's own identifiers for `NumberOfFilledGroups`: the relevant identifiers at or
-    above the group together with every relevant descendant cut back to the group's depth
-    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-kf464-partial-group-count)). -/
-def groupCountPatterns (entities : List RelevantEntityPattern)
-    (model : FlatModel) (groupPath : List String)
-    (boundLevels : List RepeatableLevel) (outer : Env) :
-    List RelevantEntityPattern :=
-  retainedExtentPatterns entities model boundLevels outer fun entity =>
-    (entity.projectOntoTarget? groupPath).orElse fun _ => entity.cutBackTo? groupPath
-
-/-- The group count's extent gate is the reduced-universal test over the counted group's own
-    identifiers, so a concrete coordinate left at a starred level makes the count undecidable even
-    when every instance is wholly covered. -/
-def coversGroupCountExtent (scope : ValidationRelevanceScope) (model : FlatModel)
-    (groupPath : List String) (boundLevels reopenedLevels : List RepeatableLevel)
-    (outer : Env) : Bool :=
-  match scope with
-  | .full => true
-  | .partialSet entities =>
-      reducedUniversalCovers (groupCountPatterns entities model groupPath boundLevels outer)
         model reopenedLevels
 
 /-- Wildcard-only extent policy for missing-key lookup and legacy adapters: concrete siblings do not cancel a qualifying wildcard. Value counts take `coversValueCountExtent`. Partial list quantifiers use `coversDeclaredFieldExtent` to combine concrete coverage (spec/10 §5). -/

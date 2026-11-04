@@ -150,20 +150,24 @@ private def decided (count : Nat) : PartialValidationFilledGroupCountResult :=
   .evaluated (.value count)
 
 /- Each decided carrier answers the full-validation count of two, and each undecided one stays
-   non-relevant rather than collapsing to a smaller count. The pairs name the step they separate:
-   rows 1 and 2 against `NumberOfFilledFields`, which asks `Lot` itself, settle the extent by the
-   group's own identifiers; rows 3 and 4 leave a concrete row at the starred level; rows 7 and 8, 9
-   and 10 move the first instance's relevance and error; rows 5 and 6 leave a declared instance the
-   document lacks open; and row 11 makes a fixed group its own erroneous first instance. -/
+   non-relevant rather than collapsing to a smaller count. Kernel 31.1.1 decides the extent on the
+   counted group's wholly relevant instances. Rows 2, 4 and 7 are the three rows a12-dmkits
+   `PartialGroupCountRelevanceDiffTest` and `PartialDeclaredListExtentDiffTest` lock at `1124b523f`
+   (KF667): `Seal` named concretely in every row leaves `Batches*/Seal` without a wildcard of its own;
+   every slot named concretely in both rows folds into `Batches`' wildcard; and a first batch only
+   partly covered leaves `Batches*` undecided. The other rows keep their 30.8.1 values, derived from
+   the same mechanism and unmeasured on 31.1.1: rows 5 and 6 leave declared batches uncovered, rows 8
+   to 10 move the first instance's relevance and error, and row 11 makes a fixed group its own
+   erroneous first instance. -/
 example :
     rows.map (fun (capacity, fault, entities) => counts capacity fault entities) =
       [ some [decided 2, decided 2, .nonRelevant],
-        some [decided 2, decided 2, .nonRelevant],
         some [decided 2, .nonRelevant, .nonRelevant],
+        some [decided 2, .nonRelevant, .nonRelevant],
+        some [decided 2, .nonRelevant, .nonRelevant],
+        some [.nonRelevant, decided 2, .nonRelevant],
+        some [.nonRelevant, decided 2, .nonRelevant],
         some [.nonRelevant, .nonRelevant, .nonRelevant],
-        some [.nonRelevant, decided 2, .nonRelevant],
-        some [.nonRelevant, decided 2, .nonRelevant],
-        some [decided 2, .nonRelevant, .nonRelevant],
         some [.nonRelevant, .nonRelevant, .nonRelevant],
         some [.nonRelevant, .nonRelevant, .nonRelevant],
         some [decided 2, decided 2, .nonRelevant],
@@ -175,7 +179,7 @@ example :
    `== 2` rule and its undecided rows are UNKNOWN, never a smaller count that would not fire. -/
 example :
     rows.map (fun (capacity, fault, entities) => sealRule capacity fault entities) =
-      [ some (some true), some (some true), some none, some none, some (some true),
+      [ some (some true), some none, some none, some none, some (some true),
         some (some true), some none, some none, some none, some (some true), some (some true),
         some (some true) ] := by
   native_decide
@@ -329,11 +333,13 @@ example : laterInstanceCounts .weightRow2 =
 private def laterPartialCoverage : List RelevantEntityPattern :=
   [every lot, every code, every ["Item", "Label"], every ["Item", "Stamp"]] ++ atRows weight [1]
 
+/- Unmeasured on 31.1.1, derived from the wholly-relevant extent (KF667): `Weight` named at the first
+   batch only leaves the second batch partly covered, so neither batch count is decided whatever the
+   second batch holds, where 30.8.1 counted its visible content. The fixed pair stays decided. -/
 example : counts 2 .withoutCodeRow2 laterPartialCoverage =
-    some [decided 2, .nonRelevant, decided 2] := by native_decide
-
-example : counts 2 .none laterPartialCoverage =
-    some [decided 2, decided 2, decided 2] := by native_decide
+      some [.nonRelevant, .nonRelevant, decided 2] ∧
+    counts 2 .none laterPartialCoverage = some [.nonRelevant, .nonRelevant, decided 2] := by
+  native_decide
 
 example : counts 2 .withoutCodeRow2 (everyField.map every) =
     some [decided 2, decided 2, decided 2] := by native_decide

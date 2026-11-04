@@ -228,6 +228,7 @@ import A12Kernel.Elaboration.FullDateFirstFilledComputation
 import A12Kernel.Elaboration.TimeFirstFilledComputation
 import A12Kernel.Elaboration.StarGroup
 import A12Kernel.Elaboration.PartialGroupCount
+import A12Kernel.Elaboration.WhollyRelevantGroups
 import A12Kernel.Elaboration.StarNumber
 import A12Kernel.Elaboration.NumberEntityValueList
 import A12Kernel.Elaboration.TokenEntityValueList
