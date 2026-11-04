@@ -33,10 +33,13 @@ theorem enumerationDeclaration_notifications_nodup (charset : LegalCharset)
   · exact List.nodup_nil
   · exact eraseDups_nodup_of_length_le _ _ (Nat.le_refl _)
 
-/-- A declaration the first-refusal validator admits, under the default charset and without supplementary scalars in its stored tokens, display texts, category tokens or default, raises no notification. The collection therefore never rejects what the validator admitted unless the model restricts its characters or the declaration holds a supplementary-plane scalar. -/
+/-- A declaration the first-refusal validator admits, under the default charset and without supplementary scalars in its stored tokens, display texts, category tokens or default, and whose category names and tokens are none of them blank, raises no notification. The validator refuses an empty category name or token but admits a blank one, which kernel 31.1.1 states as a class of its own (`MVK_NAME_MISSING`, `MVK_MISSING_CATEGORY_VALUE`), so the filled hypothesis is what keeps the collection from rejecting what the validator admitted. It still never does so unless the model restricts its characters, the declaration holds a supplementary-plane scalar, or a name or token is blank. -/
 theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
     (declaration : EnumerationDeclaration) (valid : declaration.validate = .ok ())
-    (noSupplementary : declaration.containsSupplementaryScalar = false) :
+    (noSupplementary : declaration.containsSupplementaryScalar = false)
+    (filled : ∀ category ∈ declaration.categories,
+      ExecutableDeclaration.blank category.name = false ∧
+        ∀ token ∈ category.tokens, ExecutableDeclaration.blank token = false) :
     declaration.notifications .defaultBmp = [] := by
   obtain ⟨trimmedNodup, arity⟩ := declaration.validate_ok_shape valid
   have unrepeated : ∀ tokens : List String, tokens.Nodup → EnumerationDeclaration.duplicated tokens = [] := by
@@ -49,28 +52,43 @@ theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
   have noTrimmedDuplicates : declaration.duplicatedTrimmedTokens = [] := unrepeated _ trimmedNodup
   have emptyBlocks : declaration.invalidCharacterNotifications .defaultBmp = [] ∧
       declaration.supplementaryNotifications = [] ∧
+      declaration.categoryNameNotifications = [] ∧
       declaration.shortfallNotifications = [] ∧
       declaration.surplusNotifications = [] ∧
       declaration.categoryDuplicateNotifications = [] ∧
       declaration.internalDuplicateNotifications = [] ∧
       declaration.repeatedValueNotifications = [] := by
-    refine ⟨rfl, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    refine ⟨rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · simp [EnumerationDeclaration.supplementaryNotifications, noSupplementary]
+    · have unblank : ¬ (declaration.categories.any fun category =>
+          ExecutableDeclaration.blank category.name) = true := by
+        simp only [List.any_eq_true, not_exists, not_and, Bool.not_eq_true]
+        intro category member
+        exact (filled category member).1
+      simp [EnumerationDeclaration.categoryNameNotifications, unblank]
     · simp only [EnumerationDeclaration.shortfallNotifications, List.flatMap_eq_nil_iff]
       intro category member
-      simp [arity category member]
+      have declared := (List.mem_filter.mp member).1
+      simp only [List.map_eq_nil_iff, List.filter_eq_nil_iff, List.mem_mapIdx]
+      rintro ⟨value, token⟩ ⟨index, bound, same⟩
+      simp only [Prod.mk.injEq] at same
+      obtain ⟨-, rfl⟩ := same
+      have inside : index < category.tokens.length := by rw [arity category declared]; exact bound
+      rw [List.getElem?_eq_getElem inside]
+      simp [(filled category declared).2 _ (List.getElem_mem inside)]
     · simp only [EnumerationDeclaration.surplusNotifications, List.flatMap_eq_nil_iff]
       intro category member
-      simp [arity category member]
+      have declared := (List.mem_filter.mp member).1
+      simp [List.drop_eq_nil_of_le (Nat.le_of_eq (arity category declared))]
     · simp [EnumerationDeclaration.categoryDuplicateNotifications, noTrimmedDuplicates]
     · simp [EnumerationDeclaration.internalDuplicateNotifications, noTrimmedDuplicates]
     · simp [EnumerationDeclaration.repeatedValueNotifications, noDuplicates]
-  obtain ⟨invalid, supplementary, shortfall, surplus, categoryDuplicate, internalDuplicate,
+  obtain ⟨invalid, supplementary, categoryName, shortfall, surplus, categoryDuplicate, internalDuplicate,
     repeated⟩ := emptyBlocks
   unfold EnumerationDeclaration.notifications
   split
   · rfl
-  · simp [invalid, supplementary, shortfall, surplus, categoryDuplicate, internalDuplicate,
+  · simp [invalid, supplementary, categoryName, shortfall, surplus, categoryDuplicate, internalDuplicate,
       repeated]
 
 end A12Kernel

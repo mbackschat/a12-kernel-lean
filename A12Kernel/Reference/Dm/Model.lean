@@ -173,11 +173,11 @@ def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclarat
     let stored ← entry.getObjValAs? String "value"
     pure ((← localizedTextMember entry "label").map fun (locale, display) =>
       ({ stored, locale, display } : EnumerationDisplayFact))
-  let categories ← ((body.getObjValAs? (Array Json) "categories").toOption.getD #[]).toList.mapM
-    fun category => do
-      let name ← category.getObjValAs? String "name"
-      let tokens ← category.getObjValAs? (Array String) "values"
-      pure ({ name, tokens := tokens.toList } : EnumerationCategoryDeclaration)
+  -- A blank token past the values is no token (peer KF660), so it never counts toward the arity the
+  -- declaration is validated for; one inside the values is the notification's to report.
+  let categories := (← boundCategories body).map fun category =>
+    { category with tokens := category.tokens.take values.length ++
+        (category.tokens.drop values.length).filter fun token => !ExecutableDeclaration.blank token }
   pure { storedTokens := values, displayFacts := displayFacts.flatten, categories, defaultStoredToken }
 
 /-- The notifications the Kernel raises for a field's ordinary Enumeration declaration, empty for any other field type and for a body this reader cannot parse (`readFieldType` reports that failure). -/
@@ -193,6 +193,19 @@ private def fieldEnumerationNotifications (charset : LegalCharset) (fieldJson : 
           | .ok declaration => declaration.notifications charset
           | .error _ => []
       | _ => []
+
+/-- The defect of a field's Enumeration that leaves no model, read on the field after its type definition is
+resolved as the declaration walk reads it: no value to enumerate, or two categories keyed by one name (kernel
+31.1.1, a12-dmkits `EnumDeclarationShapeLawsTest` and `CheckerEmptyMemberAgreementTest` at `1124b523f`). -/
+private def enumerationBuildFailure? (fieldJson : Json) : Except String (Option String) := do
+  let some fieldType := (fieldJson.getObjVal? "fieldType").toOption | pure none
+  unless (fieldType.getObjValAs? String "type").toOption == some "EnumerationType" do return none
+  let body := (fieldType.getObjVal? "EnumerationType").toOption.getD (Json.mkObj [])
+  if enumerationDeclaresNoValues body then
+    return some "an Enumeration declaring no values leaves no model"
+  if categoryNamesCollide (← boundCategories body) then
+    return some "an Enumeration whose categories share a name leaves no model"
+  pure none
 
 /-- The declaration of one field from its DM field type. -/
 def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
@@ -439,6 +452,8 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         | .error reason => do
             modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
             return
+      let failure ← StateT.lift (enumerationBuildFailure? body)
+      if let some reason := failure then throw reason
       let id := state.fields.size
       let notifications := fieldEnumerationNotifications state.legalCharset body
       if notifications.isEmpty then

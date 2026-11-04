@@ -157,13 +157,15 @@ private structure Row where
   append : List Json := []
   typeDefinitions : Option (List Json) := none
   language : Option String := none
+  /-- Whether the header names a model to import, which the host would expand before the check. -/
+  imports : Bool := false
   observed : List String
 
 private def withMember (json : Json) (key : String) (change : Json → Json) : Json :=
   json.setObjVal! key (change (json.getObjValD key))
 
 private def modelOf (row : Row) : Json :=
-  withMember baseModel "content" fun content =>
+  let model := withMember baseModel "content" fun content =>
     let content := withMember content "modelRoot" fun root =>
       withMember root "rootGroups" fun
         | .arr groups => .arr (groups.modify 0 fun form =>
@@ -178,6 +180,10 @@ private def modelOf (row : Row) : Json :=
     | some code => withMember content "modelConfig" fun config =>
         config.setObjVal! "conditionLanguage" (Json.mkObj [("code", .str code)])
     | none => content
+  if row.imports then
+    withMember model "header" fun header => header.setObjVal! "modelReferences"
+      (Json.arr #[Json.mkObj [("purpose", "typeDefinitions"), ("reference", "library")]])
+  else model
 
 /-! ## Comparing with the observation -/
 
@@ -326,8 +332,9 @@ categories, the resolved reference and a computed-field path that is set build a
 are not capture rows: they replay the peer measurement of a12-dmkits `1124b523f`,
 `CheckerConverterSentenceAgreementTest` (kernel 31.1.1), except the enumeration rows, which keep the
 a12-dmkits `fecf8552` measurement, `CheckerBasicSentenceAgreementTest` (kernel 30.8.1), recorded at
-`docs/sources/inbound-handbacks.md#src-inbound-2026-10-27`: the account of an Enumeration's categories on
-kernel 31.1.1 is another step's. The rows that vary a declaration's `variantFilter` are not replayed, since
+`docs/sources/inbound-handbacks.md#src-inbound-2026-10-27`: kernel 31.1.1 builds no model from them either
+(Locked: a12-dmkits `EnumDeclarationShapeLawsTest` at `1124b523f`; [the declaration-shape
+locks](DeclarationShapeLocks.lean) hold their whole class set). The rows that vary a declaration's `variantFilter` are not replayed, since
 that member is retired. -/
 private def conversionFailureRows : List (String × Row) := [
   ("cf-computed-field-set", { append := [computationEl "/Form/C" "C" "../Total" ["1"]], observed := [] }),
@@ -442,40 +449,54 @@ example : outcomeOf "b-typedef-id-empty" = some (.checked [
     { path := ["Td"], kind := .idEmpty }]) := by
   native_decide
 
-/-! ## Type definitions in id order, and a repeated id
+/-! ## Type definitions in declared or id order, and a repeated id
 
 Peer KF647 (a12-dmkits `ceabf655`, `CheckerBasicSentenceOrderAgreementTest`) and a local `model check`
 probe of 2026-10-29 ([inbound 2026-10-29](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-29)),
-which compare the Kernel's sentences in order, each naming its definition. -/
+both kernel 30.8.1, which always sorted, compare the Kernel's sentences in order, each naming its definition.
+Kernel 31.1.1 states them as declared unless the model has something to expand (the same peer test at
+`1124b523f`, Letter E §3a; [the declaration-shape locks](DeclarationShapeLocks.lean) hold the whole cluster),
+and an `imports` row stands for a model whose header names a library the host would expand. -/
 
 /-- The definitions each name-empty notification names, in order, for definitions with empty names. -/
-private def namedDefinitions (ids : List String) : Option (List String) :=
-  (checkModelConsistency (modelOf { typeDefinitions := some (ids.map (typedefEl · "" stringType)), observed := [] })).toOption.bind
+private def namedDefinitions (ids : List String) (imports : Bool := false) : Option (List String) :=
+  let definitions := ids.map fun id => typedefEl id "" stringType
+  (checkModelConsistency (modelOf { typeDefinitions := some definitions, imports := imports, observed := [] })).toOption.bind
     fun | .checked notifications => some (notifications.filterMap fun notification =>
             if notification.kind == .typeDefinitionNameEmpty then notification.path.head? else none)
         | .notBuilt _ _ => none
 
-/-- Declared `Beta`, `""` named `Alpha` and `Gamma`: the id-empty sentence of `Alpha` first, then the two
-name sentences (peer row, whose model also held a field with an empty name that the retired variant filter
-deleted). -/
+/-- Declared `Beta`, `""` named `Alpha` and `Gamma`, nothing to expand: the sentences in declaration order,
+`Beta`'s name sentence, then the id-empty sentence of `Alpha`, then `Gamma`'s name sentence (peer row, whose
+model also held a field with an empty name that the retired variant filter deleted; kernel 30.8.1 stated
+`Alpha`'s sentence first). -/
 private def peerDefinitionRow : Row where
   typeDefinitions := [typedefEl "Beta" "" stringType, typedefEl "" "Alpha" stringType, typedefEl "Gamma" "" stringType]
   observed := []
 
 example : (checkModelConsistency (modelOf peerDefinitionRow)).toOption = some (.checked [
-      { path := ["Alpha"], kind := .idEmpty }, { path := ["Beta"], kind := .typeDefinitionNameEmpty },
+      { path := ["Beta"], kind := .typeDefinitionNameEmpty }, { path := ["Alpha"], kind := .idEmpty },
       { path := ["Gamma"], kind := .typeDefinitionNameEmpty }]) := by
   native_decide
 
-/-- The walk sorts the ids by UTF-16 code unit (local probe: `Beta`, `Zeta`, `alpha` from `Zeta`,
-`alpha`, `Beta`; peer KF647's lock: a Latin-1 capital after every ASCII letter), whatever the declaration
-order (peer probes). -/
+/-- A model that imports a library has its definitions sorted by UTF-16 code unit (local probe: `Beta`,
+`Zeta`, `alpha` from `Zeta`, `alpha`, `Beta`; peer KF647's lock: a Latin-1 capital after every ASCII letter;
+Letter E: `Beta`, `Delta`, `Gamma` from `Gamma`, `Beta`, `Delta`), whatever the declaration order (peer
+probes). Those probes measured a model with nothing to expand on kernel 30.8.1, so the first three rows are
+restated with an import; only the last two inputs are 31.1.1 measurements. -/
 example :
-    namedDefinitions ["Zeta", "alpha", "Beta"] = some ["Beta", "Zeta", "alpha"] ∧
-    namedDefinitions ["Beta", "Gamma", "Alpha"] = some ["Alpha", "Beta", "Gamma"] ∧
-    namedDefinitions ["Gamma", "Alpha", "Beta"] = some ["Alpha", "Beta", "Gamma"] ∧
-    namedDefinitions ["deductible", "Prämie", "Coverage", "Überschuss"] =
+    namedDefinitions ["Zeta", "alpha", "Beta"] (imports := true) = some ["Beta", "Zeta", "alpha"] ∧
+    namedDefinitions ["Beta", "Gamma", "Alpha"] (imports := true) = some ["Alpha", "Beta", "Gamma"] ∧
+    namedDefinitions ["Gamma", "Alpha", "Beta"] (imports := true) = some ["Alpha", "Beta", "Gamma"] ∧
+    namedDefinitions ["Gamma", "Beta", "Delta"] (imports := true) = some ["Beta", "Delta", "Gamma"] ∧
+    namedDefinitions ["deductible", "Prämie", "Coverage", "Überschuss"] (imports := true) =
       some ["Coverage", "Prämie", "deductible", "Überschuss"] := by
+  native_decide
+
+/-- Without anything to expand the same four definitions are stated as declared (Letter E §3a). -/
+example :
+    namedDefinitions ["deductible", "Prämie", "Coverage", "Überschuss"] =
+      some ["deductible", "Prämie", "Coverage", "Überschuss"] := by
   native_decide
 
 /-- Two definitions sharing an id, the empty one or `Beta`, leave no model in both readers (peer rows). -/

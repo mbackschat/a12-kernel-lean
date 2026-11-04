@@ -226,10 +226,13 @@ private def P : String := "codeless:date-range-format-invalid"
 private def S : String := "codeless:date-range-separator-invalid"
 
 /- A range is judged on its composed format: a composite that trims to nothing is the missing class
-   alone, an omitted separator being `/`; the separator notification trims its value while the pair
-   allowlist does not; a supplementary scalar draws the repertoire notification alone. -/
+   alone, an omitted separator being `/`, and an empty member composing as an absent one, so the pair of two
+   empty members is the range-format class where kernel 30.8.1 drew the missing class and a blank pair, which
+   is not empty, still draws it (Locked: a12-dmkits `DateRangePairAdmissionLawsTest` at `1124b523f`, kernel
+   31.1.1; [the declaration-shape locks](DeclarationShapeLocks.lean)); the separator notification trims its
+   value while the pair allowlist does not; a supplementary scalar draws the repertoire notification alone. -/
 example :
-    range (some "") (some "") = ["MVK_FORMAT_DATE_RANGE_MISSING"] ∧
+    range (some "") (some "") = [P] ∧
     range (some " ") (some "\t") = ["MVK_FORMAT_DATE_RANGE_MISSING"] ∧
     range (some "") none = [P] ∧ range none none = [P] ∧
     range (some "dd.MM.yyyy") (some ".") = [P, S] ∧ range (some "dd.MM.yyyy") (some "\u00A0") = [P, S] ∧

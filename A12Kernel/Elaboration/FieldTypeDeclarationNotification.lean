@@ -15,7 +15,7 @@ The input is a small read-model of the field's body after type-definition resolu
 
 **A member out of range binds nothing.** Each range-checked member is read as unbounded, admitted or refused. A refused member draws its own codeless range notification and every law that reads the member is silent (`r-silence`, `ml-unknown`, `mm-c-oor`, `h-oor`), so a defect that is already named is never named a second time under another class.
 
-**A model with a field the Kernel cannot build has no other notification.** Two hint-list entries for one locale and an Enumeration declaring no values (an absent or empty `values`) each give `FieldTypeJudgement.modelNotBuilt`, which replaces every notification of every field.
+**A model with a field the Kernel cannot build has no other notification.** Two hint-list entries for one locale, an Enumeration declaring no values (an absent or empty `values`) and an Enumeration whose categories share a name (`categoryNamesCollide`) each give `FieldTypeJudgement.modelNotBuilt`, which replaces every notification of every field.
 
 Choices no row separates, recorded where they are made: a declared but refused integer count is not replaced by the amount-derived one; two label entries for one value and locale are both counted; a repeated hint-list locale is judged whether or not the model declares it; the label texts of every declared locale are pooled for the tab, pipe and line-break classes, and a text shared by two locales is one notification.
 
@@ -529,20 +529,27 @@ private def dateFragmentNotifications (declaration : DateFragmentTypeDeclaration
     youngerThan1900Check := declaration.youngerThan1900Check }
 
 /-- A DateRange is judged on the format the Kernel composes, `format ++ separator ++ format`, an absent
-format composing as the text `null` and an absent separator as `/`: a composite that trims to nothing is
-`MVK_FORMAT_DATE_RANGE_MISSING` alone; otherwise a `(format, separator)` pair off the allowlist draws
+format composing as the text `null` and an absent separator as `/`, and an empty member as an absent one
+(kernel 31.1.1, whose expand copy drops it; peer KF658, `DateRangePairAdmissionLawsTest` at `1124b523f`): a
+composite that trims to nothing is `MVK_FORMAT_DATE_RANGE_MISSING` alone, which a blank pair still draws and
+the pair of two empty members no longer does; otherwise a `(format, separator)` pair off the allowlist draws
 the range-format notification (`tb-range-*`), and a separator that trims to anything but `-` or `/` the
-separator notification beside it. A supplementary scalar in either member draws the repertoire
-notification alone ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21),
+separator notification beside it. The allowlist asks the members as written, so an empty separator beside
+`yyyy-MM-dd` is off it on the model as authored, which the peer observes only after the expansion has
+dropped it. That a mixed pair of one empty member and one blank one composes the same way is the peer
+checker's reading, which no row here separates. A supplementary scalar in either member draws the
+repertoire notification alone ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21),
 §2.8, peer KF581). The year interpretation and the 1900 flag are accepted on every admitted pair and add
 nothing. -/
 private def dateRangeNotifications (declaration : DateRangeTypeDeclaration) :
     List FieldTypeNotification :=
   let separator := declaration.separator.getD "/"
   let format := declaration.format.getD "null"
+  let composed (member default : String) := if member.isEmpty then default else member
+  let composite := composed format "null" ++ composed separator "/" ++ composed format "null"
   if hasSupplementaryScalar format || hasSupplementaryScalar separator then
     [.declared .supplementaryCharacter]
-  else if (javaTrim (format ++ separator ++ format)).isEmpty then [.declared .dateRangeFormatMissing]
+  else if (javaTrim composite).isEmpty then [.declared .dateRangeFormatMissing]
   else
     raiseIf (!({ format := declaration.format.getD "", separator } :
       DateRangeDeclarationPolicy).admitted) .dateRangeFormatInvalid ++
@@ -629,7 +636,7 @@ def FieldTypeDeclaration.judge (compilePattern : StringPatternCompiler) (context
       else .notifications (dateFragmentNotifications declaration).eraseDups
   | .dateRange declaration => .notifications (dateRangeNotifications declaration).eraseDups
   | .enumeration declaration =>
-      if declaration.values.isEmpty then .modelNotBuilt
+      if declaration.values.isEmpty || categoryNamesCollide declaration.categories then .modelNotBuilt
       else .notifications (enumerationNotifications context declaration).eraseDups
   | .other => .notifications []
 

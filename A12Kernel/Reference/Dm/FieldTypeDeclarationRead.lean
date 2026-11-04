@@ -97,9 +97,7 @@ private def readEnumeration (body : Json) : Except String EnumerationTypeDeclara
     values := ← (← arrayMembers body "values").mapM fun entry => do
       pure { token := ← entry.getObjValAs? String "value"
              labels := (← localizedTextMember entry "label").map fun (locale, text) => { locale, text } }
-    categories := ← (← arrayMembers body "categories").mapM fun category => do
-      pure { name := ← category.getObjValAs? String "name"
-             tokens := ((category.getObjValAs? (Array String) "values").toOption.getD #[]).toList }
+    categories := ← boundCategories body
     sValue
     messages := ← readMessages body }
 

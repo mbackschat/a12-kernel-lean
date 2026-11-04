@@ -12,6 +12,9 @@ validation-model converter drops included, and records only whether that convers
 member reads as the empty text, which the check then reports; a field whose type is absent is a read
 error, since no capture measures it.
 
+Whether the model has something to expand is read from the header's references and the groups' `includeConfig`
+members, the only part of an expansion the type-definition order depends on (`ConsistencyModel.expands`).
+
 It is an input adapter, differentially tested by the model-consistency captures rather than proved.
 -/
 
@@ -42,7 +45,7 @@ private def readConsistencyFieldType (fieldType : Json) : Except String Consiste
         (← decimalMember? body "minValue") (← decimalMember? body "maxValue"))
   | "StringType" => pure (.string (← booleanMember? body "noValueValidation") (← booleanMember? body "lineBreaksPermitted"))
   | "EnumerationType" =>
-      pure (.enumeration ((← members body "categories").map (text · "name")))
+      pure (.enumeration ((← boundCategories body).map (·.name)) (!enumerationDeclaresNoValues body))
   | "TypeDefType" => pure (.typeDefinition (text body "typeDefinitionId"))
   | other => pure (.other other)
 
@@ -84,6 +87,21 @@ private partial def readElement (definitions : List (String × Json))
         ((← members body "computationAlternatives").map (text · "operation")))
   | other => throw s!"element {other}"
 
+/-- Whether any group at or below `element` carries an `includeConfig` that is not `null`, a mount the host
+expands before the model is checked. `fuel` bounds the nesting depth. -/
+private def mountsBelow : Nat → Json → Except String Bool
+  | 0, _ => throw "model elements nest deeper than the model is long"
+  | fuel + 1, element => do
+      let some kind := (element.getObjValAs? String "type").toOption | pure false
+      if kind != "Group" then return false
+      let body ← elementBody element kind
+      match body.getObjVal? "includeConfig" with
+      | .ok .null | .error _ => pure ()
+      | .ok _ => return true
+      for child in ← groupElements body do
+        if ← mountsBelow fuel child then return true
+      pure false
+
 /-- Read the model the consistency check judges. An absent condition language is en_US. -/
 def readConsistencyModel (json : Json) : Except String ConsistencyModel := do
   let frame ← bindModelFrame json
@@ -100,7 +118,9 @@ def readConsistencyModel (json : Json) : Except String ConsistencyModel := do
     conditionLanguage := frame.conditionLanguage.getD "en_US"
     declaredLocales := ← headerLocales json
     frameCheckFailure? := frame.checkFailure?
-    validationModelUnbuilt := (convertModel frame).unbuilt }
+    validationModelUnbuilt := (convertModel frame).unbuilt
+    expands := !frame.modelReferences.isEmpty ||
+      (← rootGroups.anyM (mountsBelow (frame.content.compress.length + 1))) }
 
 /-- Read the model and run the consistency check. -/
 def checkModelConsistency (json : Json) : Except String ModelConsistencyOutcome := do

@@ -17,7 +17,8 @@ A model that cannot be built yields no notification at all: a conversion that bu
 the first element, in walk order, with one of the other `ModelBuildFailure` defects, stops the check. A
 group's index or sort spelling is one of them when it leaves no model (`NominationFailure`, a sort name
 written empty included); an index written empty is not, and draws a class of its own in check 6 (peer
-KF653, a12-dmkits `1124b523f`, kernel 31.1.1). An
+KF653, a12-dmkits `1124b523f`, kernel 31.1.1). So is a field whose Enumeration declares no values, or two
+categories of one name, the empty name and an absent one reading as one key (peer KF654, KF660). An
 empty or blank name, a type-definition reference with no id and a computation with no computed-field path
 are not such defects on kernel 31.1.1: its converter states a sentence and goes on without the declaration
 (the validation-model converter, `Reference/Dm/ModelConversion.lean`), while this basic check still walks
@@ -38,10 +39,12 @@ in it, so a class is never interleaved with another check's:
 
 A declaration's `variantFilter` and a rule's `variantErrorMessages` are retired (DM 29.1) and read past
 as an unknown member is, so no element is deleted and every check walks every element.
-The walk visits type definitions first, sorted by id case-sensitively, then elements depth-first, a
-group before its children. Within one check the notifications follow the walk. Two type definitions
-sharing an id leave the model unbuilt before any element is judged (peer KF647 and a local probe,
-`docs/sources/inbound-handbacks.md#src-inbound-2026-10-29`).
+The walk visits the model's own type definitions first, as declared when the model has nothing to expand and
+sorted by id case-sensitively, by UTF-16 code unit, when it has (`ConsistencyModel.expands`; a12-dmkits
+`CheckerBasicSentenceOrderAgreementTest` at `1124b523f`, kernel 31.1.1, where 30.8.1 always sorted), then
+elements depth-first, a group before its children. Within one check the notifications follow the walk. Two
+type definitions sharing an id leave the model unbuilt before any element is judged (peer KF647 and a local
+probe, `docs/sources/inbound-handbacks.md#src-inbound-2026-10-29`).
 
 The captures fix identifier uniqueness before emptiness and value limits before the bound check; the
 remaining registration order, the raw (possibly `-1`) maximum fraction digits as the limit input, a
@@ -64,7 +67,8 @@ namespace A12Kernel
 inductive ConsistencyFieldType where
   | number (minFractionalDigits maxFractionalDigits : Int) (minValue maxValue : Option Rat)
   | string (noValueValidation lineBreaksPermitted : Bool)
-  | enumeration (categoryNames : List String)
+  /-- An Enumeration as the check reads it: its category names as bound, and whether it declares a value. -/
+  | enumeration (categoryNames : List String) (hasValues : Bool)
   /-- A reference to a declared type definition, unresolved. -/
   | typeDefinition (id : String)
   | other (typeName : String)
@@ -119,6 +123,10 @@ structure ConsistencyModel where
   frameCheckFailure? : Option FrameCheckFailure := none
   /-- Whether the validation-model converter builds no model from the authored one. -/
   validationModelUnbuilt : Bool := false
+  /-- Whether the model has something to expand before its check: a header entry naming a model to import, or
+  a group carrying an `includeConfig` that is not `null` (a12-dmkits Letter E §4, source-read). The check then
+  walks the type definitions by id; otherwise in declared order. -/
+  expands : Bool := false
 
 /-- A notification class of the consistency check. Every class is an ERROR. -/
 inductive ModelConsistencyClass where
@@ -208,6 +216,8 @@ inductive ModelBuildFailure where
   /-- The validation-model converter builds no model (`convertModel`'s `unbuilt`). -/
   | validationModelUnbuilt
   | enumerationCategoryNameDuplicated
+  /-- A field whose Enumeration, resolved through its type definition, declares no value. -/
+  | enumerationValuesMissing
   /-- A group's index or sort spelling that leaves no model, the empty sort name apart. -/
   | nomination (failure : NominationFailure)
   | sortFieldNameEmpty
@@ -258,15 +268,17 @@ def asField? : ConsistencyElement → Option ConsistencyField
   | _ => none
 
 /-- The declaration defect that stops the Kernel building the model: an Enumeration declaring two categories
-of one name. It is judged on the declared type, so a type definition's own categories are outside it. -/
+of one name, judged on the declared type, so a type definition's own categories are outside it, or no value at
+all, judged on the type the field resolves to as the declaration walk judges it. -/
 def conversionFailure? : ConsistencyElement → Option ModelBuildFailure
   | .field f =>
-      match f.declared with
-      | .enumeration categoryNames =>
-          if categoryNames.eraseDups.length < categoryNames.length then
-            some .enumerationCategoryNameDuplicated
-          else none
-      | _ => none
+      let repeatedCategoryName := match f.declared with
+        | .enumeration categoryNames _ => decide (categoryNames.eraseDups.length < categoryNames.length)
+        | _ => false
+      if repeatedCategoryName then some .enumerationCategoryNameDuplicated
+      else match f.effective with
+        | some (.enumeration _ false) => some .enumerationValuesMissing
+        | _ => none
   | _ => none
 
 /-- Whether the element is a group or a computation, the kinds a multi-select group may not nest. -/
@@ -346,10 +358,14 @@ def firstBuildFailure? (model : ConsistencyModel) : Option (List String × Model
         model.entries.findSome? fun (path, element) =>
           (buildFailure? groupPaths.contains path element).map (path, ·)
 
-/-- The type definitions in the order the checks walk them: by id, compared by UTF-16 code unit (a
-local probe of 2026-10-29 and peer KF647's Latin-1 row). Supplementary-plane ids are unmeasured. -/
+/-- The type definitions in the order the checks walk them: as declared for a model with nothing to expand,
+and otherwise by id, compared by UTF-16 code unit (a local probe of 2026-10-29 and peer KF647's Latin-1 row,
+the declared order a12-dmkits `CheckerBasicSentenceOrderAgreementTest` at `1124b523f`, kernel 31.1.1).
+Supplementary-plane ids are unmeasured. -/
 def orderedTypeDefinitions (model : ConsistencyModel) : List ConsistencyTypeDefinition :=
-  model.typeDefinitions.mergeSort fun first second => !(utf16Units second.id < utf16Units first.id)
+  if model.expands then
+    model.typeDefinitions.mergeSort fun first second => !(utf16Units second.id < utf16Units first.id)
+  else model.typeDefinitions
 
 /-- Check 1. Every occurrence of an identifier shared with another element is reported. -/
 def idUniquenessNotifications (model : ConsistencyModel) : List ModelConsistencyNotification :=
@@ -425,7 +441,7 @@ def attachmentGroupNotifications (model : ConsistencyModel) :
 /-- Whether the effective type is an Enumeration or a String, the two a multi-select field may have. An
 unresolvable reference is neither. -/
 private def isSelectableType : Option ConsistencyFieldType → Bool
-  | some (.enumeration _) | some (.string ..) => true
+  | some (.enumeration ..) | some (.string ..) => true
   | _ => false
 
 /-- Check 4 for one multi-select group. Exactly one direct field child is required; its requiredness,
@@ -483,7 +499,7 @@ def boundFormalNotifications (model : ConsistencyModel) :
         pure (notifications ++ classes.eraseDups.map (notification path))
     | _ => pure notifications
 
-/-- Check 6: type definitions first, in id order, then each element's empty identifier and empty name followed
+/-- Check 6: type definitions first, in the walk's order, then each element's empty identifier and empty name followed
 by the class its kind adds. A rule's missing error code and an Enumeration's duplicated values belong to
 other owners. Emptiness is `isEmpty`, so a one-space name draws nothing, while the converter states its own
 sentence for every blank name; a group's index field is judged alike, a blank spelling that is not empty

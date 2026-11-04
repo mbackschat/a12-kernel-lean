@@ -28,17 +28,18 @@ private def string : String := "{\"type\":\"StringType\"}"
 private def read (json : Option Json) : Option DmModel :=
   json.bind fun json => (readModel json).toOption
 
-/- A kept field's refusals by the model reader: a duplicated Enumeration value and an empty Enumeration
-   domain are refused, while an inverted fractional pair is not. An unknown type leaves no model at all,
-   since binding refuses it before the field is read (a12-dmkits `FieldTypeBindingLawsTest` at `1124b523f`,
-   kernel 31.1.1). -/
+/- A kept field's refusals by the model reader: a duplicated Enumeration value is refused, while an inverted
+   fractional pair is not. An unknown type leaves no model at all, since binding refuses it before the field
+   is read (a12-dmkits `FieldTypeBindingLawsTest` at `1124b523f`, kernel 31.1.1), and so does an Enumeration
+   with an empty domain, where kernel 30.8.1 and this reader refused only the field (Locked: a12-dmkits
+   `EnumDeclarationShapeLawsTest` at `1124b523f`; [the declaration-shape locks](DeclarationShapeLocks.lean)). -/
 example :
     let refusals (body : String) := (read (model (field "Value" string ++ "," ++ field "B" body))).map
       (·.refusals.length)
     refusals "{\"type\":\"NoSuchType\"}" = none ∧
       refusals "{\"type\":\"EnumerationType\",\"EnumerationType\":{\"values\":[{\"value\":\"a\"},{\"value\":\"a\"}]}}" =
         some 1 ∧
-      refusals "{\"type\":\"EnumerationType\",\"EnumerationType\":{\"values\":[]}}" = some 1 ∧
+      refusals "{\"type\":\"EnumerationType\",\"EnumerationType\":{\"values\":[]}}" = none ∧
       refusals "{\"type\":\"NumberType\",\"NumberType\":{\"minFractionalDigits\":3,\"maxFractionalDigits\":2}}" =
         some 0 := by
   native_decide

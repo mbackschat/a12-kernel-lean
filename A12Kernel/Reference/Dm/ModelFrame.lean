@@ -44,6 +44,9 @@ structure ModelFrame where
   config : Json
   /-- The declared locale entries, empty when absent or `null`. -/
   locales : Array Json
+  /-- The header's `modelReferences` entries, empty when absent or `null`: a model naming one is expanded
+  before its check (peer Letter E §4, source-read). -/
+  modelReferences : Array Json
   typeDefinitions : Array Json
   rootGroups : Array Json
   /-- The supported-character entries, a `null` entry as `none`. -/
@@ -54,7 +57,8 @@ structure ModelFrame where
   conditionLanguage : Option String
   checkFailure? : Option FrameCheckFailure
 
-private def scalarText? : Json → Except String (Option String)
+/-- A scalar as the text the Kernel binds it to; `none` for `null` and for a container. -/
+def scalarText? : Json → Except String (Option String)
   | .str text => pure (some text)
   | .bool value => pure (some (toString value))
   | .num number =>
@@ -125,7 +129,8 @@ def bindModelFrame (json : Json) : Except String ModelFrame := do
   for key in ["id", "modelVersion", "locales"] do requireMember header key
   let version ← frameText header "modelVersion"
   let locales ← frameList header "locales"
-  for key in ["labels", "annotations", "modelReferences"] do discard <| frameList header key
+  for key in ["labels", "annotations"] do discard <| frameList header key
+  let modelReferences := (← frameList header "modelReferences").getD #[]
   let info? ← frameObject content "modelInfo"
   let info := info?.getD (Json.mkObj [])
   discard <| frameText info "name" (nonNull := true)
@@ -155,6 +160,7 @@ def bindModelFrame (json : Json) : Except String ModelFrame := do
     else none
   pure {
     header := header, content := content, info := info, config := config, locales := locales.getD #[]
+    modelReferences
     typeDefinitions := typeDefinitions, rootGroups := rootGroups, supportedCharacters := supportedCharacters
     timeZone := timeZone, conditionLanguage := conditionLanguage, checkFailure? := failure }
 

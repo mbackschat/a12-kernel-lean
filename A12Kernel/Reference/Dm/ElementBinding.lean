@@ -1,4 +1,5 @@
 import Lean.Data.Json
+import A12Kernel.Elaboration.Enumeration
 import A12Kernel.Reference.Dm.MemberBinding
 import A12Kernel.Reference.Dm.ModelFrame
 
@@ -26,9 +27,12 @@ recursively, and binds:
   and every string bind. A number or Boolean name binds as its text as the other text members of the model
   do, an assumption no measurement settles for element names.
 
+* an Enumeration's categories (`boundCategories`): a `name` that is `null`, an object or an array, and a token
+  that is an object or an array, leave no model, while an absent or empty name and a `null` or empty token are
+  values the readers judge.
+
 A member the Kernel does not know is read past, so the pass never refuses one. It binds no row-key
-nomination or enumeration category: the readers that judge those do. A present empty member is a value,
-judged by its own reader.
+nomination: the readers that judge those do. A present empty member is a value, judged by its own reader.
 -/
 
 namespace A12Kernel.Dm
@@ -72,6 +76,37 @@ def groupElements (body : Json) : Except String (List Json) :=
   | .ok (.arr children) => pure children.toList
   | .ok other => throw s!"group elements {other.compress} is no list"
 
+/-- The categories of an `EnumerationType` body as the Kernel's reader binds them, in declared order. A name
+binds as a text member does, so an absent one is the empty name, which reads as the same null key as `""`, and
+a `null`, an object or an array leaves no model (a12-dmkits `CheckerEmptyMemberAgreementTest` at `1124b523f`,
+kernel 31.1.1). A token list that is absent or `null` is empty, and each token binds as a string: a number or
+a Boolean as its text, `null` as the empty token, which is no token as a blank one is not (peer KF660,
+`CheckerCategoryTokenAgreementTest`), and an object or an array leaves no model. A `categories` member that
+is no list binds no category, as the readers have always read it. -/
+def boundCategories (body : Json) : Except String (List EnumerationCategoryDeclaration) := do
+  let entries : List Json := match body.getObjVal? "categories" with
+    | .ok (.arr entries) => entries.toList
+    | _ => []
+  entries.mapM fun entry => do
+    let .obj _ := entry | throw s!"category {entry.compress} is no object"
+    let name := (← frameText entry "name" (nonNull := true)).getD ""
+    let tokens ← match ← frameList entry "values" with
+      | none => pure []
+      | some tokens => tokens.toList.mapM fun
+          | .null => pure ""
+          | token => do
+              let some text ← scalarText? token | throw s!"category token {token.compress} is no string"
+              pure text
+    pure { name, tokens }
+
+/-- Whether an `EnumerationType` body declares no value: `values` absent or an empty list. A `null` list reads
+as absent, as the other list members of the model do, which no measurement settles. -/
+def enumerationDeclaresNoValues (body : Json) : Bool :=
+  match body.getObjVal? "values" with
+  | .error _ | .ok .null => true
+  | .ok (.arr entries) => entries.isEmpty
+  | .ok _ => false
+
 /-- The integer members of a field type's body, by type name, each with whether it is a primitive `int`
 (`true`) or a boxed `Integer`. Every other member of those bodies is read by its own law. -/
 def fieldTypeIntegerMembers : String → List (String × Bool)
@@ -114,6 +149,7 @@ def bindFieldType (fieldType : Json) : Except String Unit := do
   for (key, primitive) in fieldTypeIntegerMembers typeName do
     discard <| if primitive then primitiveIntMember? body key else intMember? body key
   if typeName == "StringType" then bindHintList body
+  if typeName == "EnumerationType" then discard <| boundCategories body
 
 /-- A rule's severity: absent, or exactly one of the three names. -/
 private def bindSeverity (rule : Json) : Except String Unit :=

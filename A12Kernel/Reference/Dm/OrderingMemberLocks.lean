@@ -369,12 +369,12 @@ private def typeRows : List (String × Json × Verdict) :=
 
 example : failures typeRows = [] := by native_decide
 
-/-- An Enumeration naming a value table and declaring no values leaves no model, whatever role its field
-plays: ordering nothing, as the index and as a sort key. Only the declaration walk reads that law; the
-consistency check and the model reader have no counterpart for an Enumeration without values, so this
-cluster does not assert them. -/
+/-- An Enumeration naming a value table and declaring no values leaves no model in all three readers, whatever
+role its field plays: ordering nothing, as the index and as a sort key (kernel 31.1.1 reads the consistency
+check and the model reader alike; they refused no model for it on 30.8.1). -/
 example : [byIndex, bySort, none].all (fun member =>
-    (walkOf (typed "{\"type\":\"EnumerationType\",\"EnumerationType\":{\"tableName\":\"Colours\"}}" member)).isNone) =
+    verdictOf (typed "{\"type\":\"EnumerationType\",\"EnumerationType\":{\"tableName\":\"Colours\"}}" member) ==
+      .noModel) =
   true := by
   native_decide
 
