@@ -335,7 +335,7 @@ private def FlatModel.resolveHavingStringInEnvironment (model : FlatModel)
 
 private def havingTextOperand (declaration : FlatFieldDecl)
     (projectionRef : EnumerationProjectionRef) :
-    Except CorrelationElabError (FlatTextFieldOperand × DirectComparableField) := do
+    Except CorrelationElabError FlatTextFieldOperand := do
   match projectionRef with
   | .stored =>
       match declaration.toTextFieldComparison? with
@@ -382,9 +382,7 @@ private def FlatModel.resolveHavingFieldsInEnvironment (model : FlatModel)
       | _, _ => pure ()
     let leftOperand ← havingTextOperand leftDecl left.projectionRef
     let rightOperand ← havingTextOperand rightDecl right.projectionRef
-    match classifyDirectFieldComparison leftOperand.2 rightOperand.2 with
-    | .accepted => pure (some (.textFields equality leftOperand.1 rightOperand.1))
-    | .rejected error => throw (.text (.enumerationComparability leftDecl.path rightDecl.path error))
+    pure (some (.textFields equality leftOperand rightOperand))
 
 private def FlatModel.resolveHavingTemporalOperand (model : FlatModel)
     (declaringGroup : GroupPath) (outerLevels : List RepeatableLevel) :

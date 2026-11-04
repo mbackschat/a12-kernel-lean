@@ -132,9 +132,7 @@ def FlatModel.admitsHavingTemporalOperands (model : FlatModel) (op : TemporalCom
 def FlatModel.admitsHavingSimpleComparison (model : FlatModel)
     (leftScope rightScope : List RepeatableLevel) : FlatComparison → Bool
   | .textFields _ left right =>
-      match model.directComparableIn? leftScope left, model.directComparableIn? rightScope right with
-      | some leftProfile, some rightProfile => directFieldComparisonAllowed leftProfile rightProfile
-      | _, _ => false
+      model.admitsTextOperandIn leftScope left && model.admitsTextOperandIn rightScope right
   | comparison@(.boolean _ _ _) | comparison@(.confirm _ _)
       | comparison@(.booleanFields _ _ _) =>
       let shape := match comparison with
@@ -212,7 +210,7 @@ def CorrelatedHavingLeaf.wellFormedForEnvironments (model : FlatModel)
             (.number field : FlatField).matchesDecl declaration && declaration.repetitionBoundBy scope
       | .token operand values =>
           !values.isEmpty && match operand with
-          | .string _ => model.directComparableIn? scope operand == some .plainString
+          | .string _ => model.admitsTextOperandIn scope operand
           | .enumeration operand => (model.checkedEnumerationOperandIn? scope operand).any fun checked =>
               values.all (checked.declaration.literalAllowed checked.projection)
   | .dateValidity _ source => source.wellFormedForEnvironments model candidateLevels outerLevels

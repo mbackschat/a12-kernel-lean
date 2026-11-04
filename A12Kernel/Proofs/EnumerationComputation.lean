@@ -10,14 +10,13 @@ theorem checkedEnumerationComputationTarget_field_exact
     target.field = target.targetOperand.field.id := by
   rfl
 
-/-- Compatibility certifies the whole selected source domain, not merely the runtime token that happened to be read. -/
+/-- Compatibility certifies the whole selected source domain, not merely the runtime token that happened to be read. Display labels are no part of it on kernel 31.1.1, so this containment is the whole gate. -/
 theorem enumerationCompatibility_coversSelectedDomain
     (source target : CheckedEnumerationProjection)
     (compatible : source.compatibleWithTarget target = true) :
     source.selectedTokens.all (fun token =>
-      target.declaration.literalAllowed target.projection token) = true := by
-  simp [CheckedEnumerationProjection.compatibleWithTarget] at compatible
-  simpa using compatible.1
+      target.declaration.literalAllowed target.projection token) = true :=
+  compatible
 
 /-- A checked operation exposes the exact source-to-target compatibility certificate established before runtime. -/
 theorem checkedEnumerationComputation_source_allowed

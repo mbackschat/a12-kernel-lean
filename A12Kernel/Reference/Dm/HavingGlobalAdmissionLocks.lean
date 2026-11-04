@@ -46,7 +46,7 @@ example : result ordinary == ("MVK_SEMANTIC_INDEX_NOT_ALLOWED", "MVK_SEMANTIC_IN
       ("MVK_SEMANTIC_INDEX_NOT_ALLOWED", "MVK_SEMANTIC_INDEX_NOT_ALLOWED") := by native_decide
 
 example : result parallelBody == ("MVK_PARALLEL_ITERATION_NOT_ALLOWED", "MVK_PARALLEL_ITERATION_NOT_ALLOWED") ∧
-    result parallelOwner == ("MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED", "MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED") ∧
+    result parallelOwner == ("MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED", "MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED") ∧
     result ("RepetitionNotUnique(Rows/N) And FieldFilled(Parties/N) And " ++ ordinary) ==
       ("MVK_PARALLEL_ITERATION_NOT_ALLOWED", "MVK_PARALLEL_ITERATION_NOT_ALLOWED") ∧
     result ("RepetitionNotUnique(Rows/N) And " ++ parallelOwner) ==
@@ -64,7 +64,7 @@ example : [parallelBody, parallelBody.replace "FieldFilled($Parties/N)" "GroupFi
         ("MVK_PARALLEL_ITERATION_NOT_ALLOWED", "MVK_PARALLEL_ITERATION_NOT_ALLOWED")) = true := by native_decide
 
 example : result (parallelOwner.replace marked "FieldFilled(Parties/Lines/Qty)") ==
-    ("MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED", "MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED") := by native_decide
+    ("MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED", "MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED") := by native_decide
 
 private def computationResult (common own operation : String) : String :=
   match lowerComputation model .english {
@@ -90,7 +90,7 @@ example : result (plain ++ " And Length(Raw) > 2") ==
 example : result (ordinary ++ " And Length(Raw) > 2") ==
     ("MVK_SEMANTIC_INDEX_NOT_ALLOWED", "MVK_SEMANTIC_INDEX_NOT_ALLOWED") ∧
     result (parallelOwner ++ " And Length(Raw) > 2") ==
-      ("MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED", "MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED") ∧
+      ("MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED", "MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED") ∧
     result (plain ++ " And Length(Raw) > 2 And FieldFilled(Missing)") ==
       ("MVK_INVALID_ENTITY", "MVK_INVALID_ENTITY") := by native_decide
 

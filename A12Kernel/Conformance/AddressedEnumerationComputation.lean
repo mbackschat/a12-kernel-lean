@@ -203,8 +203,7 @@ example :
         (.field (.direct (bare "Incompatible"))) =
           some (.ordinary (.sourceOutsideTargetDomain incompatible.path target.path)) ∧
       errorOf target.id ["Form", "Rows"]
-        (.field (.direct (bare "Displayed"))) =
-          some (.ordinary (.sourceIncompatible displayed.path target.path)) ∧
+        (.field (.direct (bare "Displayed"))) = none ∧
       errorOf target.id ["Form", "Rows"]
         (.field (.direct (child "DeepSource"))) =
           some (.scopeMismatch target.path deepSource.path) ∧
@@ -221,8 +220,9 @@ example :
         some .errorSemanticIndexOrCategoryForErrorField := by
   native_decide
 
-/- A plain String and a display-compatible token outside the target's domain are the calculation's own
-refusal on a repeatable target, as on a fixed one; a display miss keeps no class. -/
+/- A plain String and a token outside the target's domain are the calculation's own refusal on a
+repeatable target, as on a fixed one; a labelled source over the target's tokens is admitted (display
+labels play no part; a12-dmkits EnumComputationSourceLawsTest at 1124b523f, kernel 31.1.1). -/
 example :
     errorOf target.id ["Form", "Rows"] (.field (.direct (bare "Label"))) =
         some (.ordinary (.stringSource label.path target.path)) ∧

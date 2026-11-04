@@ -4,6 +4,8 @@ import A12Kernel.Conformance.FieldCopyComparison
 /-! # A rule condition's refusal classes on the plain comparison
 
 Every expected class below is a retained Kernel row of the [condition-class grid](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection),
+except the String/Enumeration pairs over a labelled Enumeration, which are kernel 31.1.1's: display labels
+decide no comparison, so they are admitted where the retained rows drew the display classes. The grid is
 run on the [field-copy grid's](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)
 eleven-kind model, which this module shares. Each row is `FieldFilled(Note2) And <comparison>` from
 `/Order`. `none:` names the refusal arm this fragment projects to no class, deliberately: a same-kind
@@ -43,13 +45,15 @@ private def classOf := classOn model
 /- Two fields compared under `==`: one kind arm over the pair answers in either order, the walk a
 copied field meets, except that two Confirm fields draw the Confirm class, which the equality operator
 narrows ([`kf383`](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf383)); two temporal fields
-of different families meet the format question; and a String and an Enumeration meet the display
-arm. A field is compared with its twin on the diagonal. -/
+of different families meet the format question; and a String and an Enumeration, labelled or not,
+are admitted. The `Labelled` row and column are kernel 31.1.1's, where display labels decide no
+comparison (a12-dmkits `EnumDisplayComparabilityLawsTest` at `1124b523f`); the retained 30.8.1 rows drew
+the display class there. A field is compared with its twin on the diagonal. -/
 example :
     fields.map (fun left => fields.map fun right =>
       classOf (.compareFields .equal (onOrder left) (onOrder (if left == right then right ++ "2" else right)))) =
     [
-      ["admitted", "TO_ENUM_OR_STRING", "TO_ENUM_OR_STRING", "TO_DATE", "TO_DATE", "TO_DATE", "TO_DATE_RANGE", "TO_YESNO", "TO_YES", "admitted", "ENUM_TO_STRING"],
+      ["admitted", "TO_ENUM_OR_STRING", "TO_ENUM_OR_STRING", "TO_DATE", "TO_DATE", "TO_DATE", "TO_DATE_RANGE", "TO_YESNO", "TO_YES", "admitted", "admitted"],
       ["TO_ENUM_OR_STRING", "none:temporalOperandKindMismatch", "none:temporalOperandKindMismatch", "TO_DATE", "TO_DATE", "TO_DATE", "TO_DATE_RANGE", "TO_YESNO", "TO_YES", "TO_ENUM_OR_STRING", "TO_ENUM_OR_STRING"],
       ["TO_ENUM_OR_STRING", "none:temporalOperandKindMismatch", "none:temporalOperandKindMismatch", "TO_DATE", "TO_DATE", "TO_DATE", "TO_DATE_RANGE", "TO_YESNO", "TO_YES", "TO_ENUM_OR_STRING", "TO_ENUM_OR_STRING"],
       ["TO_DATE", "TO_DATE", "TO_DATE", "admitted", "TO_DATE", "TO_DATE", "TO_DATE", "TO_YESNO", "TO_YES", "TO_DATE", "TO_DATE"],
@@ -58,8 +62,8 @@ example :
       ["TO_DATE_RANGE", "TO_DATE_RANGE", "TO_DATE_RANGE", "TO_DATE", "TO_DATE", "TO_DATE", "none:temporalOperandKindMismatch", "TO_YESNO", "TO_YES", "TO_DATE_RANGE", "TO_DATE_RANGE"],
       ["TO_YESNO", "TO_YESNO", "TO_YESNO", "TO_YESNO", "TO_YESNO", "TO_YESNO", "TO_YESNO", "none:temporalOperandKindMismatch", "TO_YES", "TO_YESNO", "TO_YESNO"],
       ["TO_YES", "TO_YES", "TO_YES", "TO_YES", "TO_YES", "TO_YES", "TO_YES", "TO_YES", "TO_YES", "TO_YES", "TO_YES"],
-      ["admitted", "TO_ENUM_OR_STRING", "TO_ENUM_OR_STRING", "TO_DATE", "TO_DATE", "TO_DATE", "TO_DATE_RANGE", "TO_YESNO", "TO_YES", "admitted", "ENUM_TO_STRING"],
-      ["ENUM_TO_STRING", "TO_ENUM_OR_STRING", "TO_ENUM_OR_STRING", "TO_DATE", "TO_DATE", "TO_DATE", "TO_DATE_RANGE", "TO_YESNO", "TO_YES", "ENUM_TO_STRING", "admitted"]] := by
+      ["admitted", "TO_ENUM_OR_STRING", "TO_ENUM_OR_STRING", "TO_DATE", "TO_DATE", "TO_DATE", "TO_DATE_RANGE", "TO_YESNO", "TO_YES", "admitted", "admitted"],
+      ["admitted", "TO_ENUM_OR_STRING", "TO_ENUM_OR_STRING", "TO_DATE", "TO_DATE", "TO_DATE", "TO_DATE_RANGE", "TO_YESNO", "TO_YES", "admitted", "admitted"]] := by
   native_decide
 
 /- A field against a String, a Number, a date, `True` and `False` literal: the literal ladder, where a
@@ -116,11 +120,11 @@ example :
       ["TO_DATE", "TO_DATE", "TO_YESNO", "TO_YES", "TO_DATE", "admitted", "TO_DATE", "TO_DATE"] := by
   native_decide
 
-/- An Enumeration literal it does not declare, two Enumerations whose labels conflict, and `Length` on
-a Number. -/
+/- An Enumeration literal it does not declare, two Enumerations whose labels conflict (admitted, as
+display labels decide no comparison), and `Length` on a Number. -/
 example :
     classOf (.compare .equal (onOrder "Plain") (.string "PENDING")) = "INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON" ∧
-      classOf (.compareFields .equal (onOrder "Plain") (onOrder "Swapped")) = "ENUM_TO_STRING" ∧
+      classOf (.compareFields .equal (onOrder "Plain") (onOrder "Swapped")) = "admitted" ∧
       classOf (.compareFields .equal (onOrder "Plain") (onOrder "Wide")) = "admitted" ∧
       classOf (.lengthCompare .greater (onOrder "Qty") { value := 2, authoredScale := 0 }) = "NO_STRING" ∧
       classOf (.lengthCompare .greater (onOrder "Note") { value := 2, authoredScale := 0 }) = "admitted" := by
@@ -214,7 +218,7 @@ example :
         classOf (.compareTextFields .equal (.direct (onOrder left)) (.direct (onOrder right)))) =
       pairs.map (fun (left, right) => classOf (.compareFields .equal (onOrder left) (onOrder right))) ∧
     classOf (.compareTextFields .equal (.direct (onOrder "Note")) (.direct (onOrder "Labelled"))) =
-      "ENUM_TO_STRING" ∧
+      "admitted" ∧
     (classOf (.compareTextFields .equal (.category (onOrder "Plain") "Band") (.direct (onOrder "Note")))).startsWith "none:" := by
   native_decide
 

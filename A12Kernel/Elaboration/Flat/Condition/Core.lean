@@ -36,22 +36,20 @@ def FlatModel.admitsStringValueField (model : FlatModel)
         declaration.toStringValueField? == some field
   | .error _ => false
 
-/-- Re-derive one direct textual operand's static profile from the exact model declaration retained by checked core admission. -/
-def FlatModel.directComparableIn? (model : FlatModel) (scope : List RepeatableLevel)
-    (operand : FlatTextFieldOperand) : Option DirectComparableField :=
+/-- Re-derive one direct textual operand from the exact model declaration retained by checked core admission. -/
+def FlatModel.admitsTextOperandIn (model : FlatModel) (scope : List RepeatableLevel)
+    (operand : FlatTextFieldOperand) : Bool :=
   match model.lookupUniqueId operand.field.id with
-  | .error _ => none
+  | .error _ => false
   | .ok declaration =>
-      if declaration.repetitionBoundBy scope &&
-          operand.field.matchesDecl declaration then
-        declaration.textComparisonProfileFor? operand
-      else
-        none
+      declaration.repetitionBoundBy scope &&
+        operand.field.matchesDecl declaration &&
+        declaration.resolvesTextOperand operand
 
-/-- The nonrepeatable instance of direct textual comparison admission. -/
-def FlatModel.directComparableFor? (model : FlatModel)
-    (operand : FlatTextFieldOperand) : Option DirectComparableField :=
-  model.directComparableIn? [] operand
+/-- The nonrepeatable instance of direct textual operand admission. -/
+def FlatModel.admitsTextOperandFor (model : FlatModel)
+    (operand : FlatTextFieldOperand) : Bool :=
+  model.admitsTextOperandIn [] operand
 
 /-- Reconstruct the proof-bearing Enumeration projection retained by an operand whose reading scope binds every repeatable level of the exact model declaration. -/
 def FlatModel.checkedEnumerationOperandIn? (model : FlatModel)
@@ -98,9 +96,7 @@ inductive FlatTokenOperandKind where
 def FlatModel.tokenOperandKind? (model : FlatModel) :
     FlatTextFieldOperand → Option FlatTokenOperandKind
   | operand@(.string _) =>
-      match model.directComparableFor? operand with
-      | some .plainString => some .string
-      | _ => none
+      if model.admitsTextOperandFor operand then some .string else none
   | .enumeration operand =>
       if (model.checkedEnumerationOperand? operand).isSome then
         some .enumeration
@@ -138,15 +134,13 @@ def FlatModel.admitsNumberOperandList (model : FlatModel)
 Other comparison families have no admission through this gate. -/
 def FlatModel.admitsTextComparisonIn (model : FlatModel) (scope : List RepeatableLevel) :
     FlatComparison → Bool
-  | .string _ field _ => model.directComparableIn? scope (.string field) == some .plainString
+  | .string _ field _ => model.admitsTextOperandIn scope (.string field)
   | .enumeration _ operand expected =>
       match model.checkedEnumerationOperandIn? scope operand with
       | some checked => checked.declaration.literalAllowed checked.projection expected
       | none => false
   | .textFields _ left right =>
-      match model.directComparableIn? scope left, model.directComparableIn? scope right with
-      | some leftProfile, some rightProfile => directFieldComparisonAllowed leftProfile rightProfile
-      | _, _ => false
+      model.admitsTextOperandIn scope left && model.admitsTextOperandIn scope right
   | _ => false
 
 /-- Reuse the stored-range input certificate and component-set gate for each independently scoped operand. -/
@@ -188,9 +182,7 @@ def FlatModel.tokenOperandListKindIn? (model : FlatModel) (scope : List Repeatab
     (operands : List FlatTextFieldOperand) : Option FlatTokenOperandKind :=
   if scope.isEmpty then model.tokenOperandListKind? operands else
   let kindOf : FlatTextFieldOperand → Option FlatTokenOperandKind
-    | operand@(.string _) => match model.directComparableIn? scope operand with
-      | some .plainString => some .string
-      | _ => none
+    | operand@(.string _) => if model.admitsTextOperandIn scope operand then some .string else none
     | .enumeration operand => if (model.checkedEnumerationOperandIn? scope operand).isSome then
         some .enumeration else none
   match operands with
@@ -218,7 +210,7 @@ def FlatModel.admitsNumberOperandListIn (model : FlatModel) (scope : List Repeat
         (FlatField.number operand).matchesDecl declaration
     | .error _ => false
 
-/-- Text comparisons retain their existing type/profile admission under an ordinary row binding, and
+/-- Text comparisons retain their existing operand admission under an ordinary row binding, and
 Boolean and Confirm comparisons their kind pairing with each field read at the bound row; other
 comparison families keep their established admission. -/
 def FlatModel.admitsComparisonIn (model : FlatModel) (scope : List RepeatableLevel)

@@ -346,18 +346,18 @@ theorem admitsField_has_unique_matching_declaration (model : FlatModel) (field :
       cases nonrepeatable : declaration.repeatableScope.isEmpty <;>
         cases matching : field.matchesDecl declaration <;> simp_all
 
-/-- A resolved direct textual profile is available only for a field admitted by the shared typed-field gate. -/
+/-- A direct textual operand admitted at the nonrepeatable scope belongs to a field admitted by the shared typed-field gate. -/
 theorem directComparableProfile_admitsField (model : FlatModel)
-    (operand : FlatTextFieldOperand) (profile : DirectComparableField)
-    (resolved : model.directComparableFor? operand = some profile) :
+    (operand : FlatTextFieldOperand)
+    (admitted : model.admitsTextOperandFor operand = true) :
     model.admitsField operand.field = true := by
-  unfold FlatModel.directComparableFor? FlatModel.directComparableIn? at resolved
+  unfold FlatModel.admitsTextOperandFor FlatModel.admitsTextOperandIn at admitted
   unfold FlatModel.admitsField
-  split at resolved <;> simp_all [FlatFieldDecl.repetitionBoundBy]
+  split at admitted <;> simp_all [FlatFieldDecl.repetitionBoundBy]
   rename_i lookup declaration lookupEq
   cases scope : declaration.repeatableScope <;> simp_all
   rename_i head tail
-  exact (resolved.1.1 head).1 rfl
+  exact (admitted.1.1 head).1 rfl
 
 /-- A reconstructed checked Enumeration operand necessarily passes the shared typed-field gate. -/
 theorem checkedEnumerationOperand_admitsField (model : FlatModel)
@@ -423,9 +423,9 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
       exact admitted.2 field member
   | string op target expected =>
       rcases List.mem_singleton.mp member with rfl
-      apply directComparableProfile_admitsField model (.string target) .plainString
+      apply directComparableProfile_admitsField model (.string target)
       simpa [FlatModel.admitsComparison, FlatModel.admitsTextComparisonIn,
-        FlatModel.directComparableFor?] using admitted
+        FlatModel.admitsTextOperandFor] using admitted
   | stringLength op target expected =>
       rcases List.mem_singleton.mp member with rfl
       exact admitsStringValueField_admitsField model target (by
@@ -445,16 +445,12 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
       | some checked =>
           exact checkedEnumerationOperand_admitsField model operand checked resolved
   | textFields op left right =>
-      change (match model.directComparableFor? left, model.directComparableFor? right with
-        | some leftProfile, some rightProfile => directFieldComparisonAllowed leftProfile rightProfile
-        | _, _ => false) = true at admitted
-      generalize leftEq : model.directComparableFor? left = leftProfile at admitted
-      generalize rightEq : model.directComparableFor? right = rightProfile at admitted
-      cases leftProfile <;> cases rightProfile <;> simp_all
+      change (model.admitsTextOperandFor left && model.admitsTextOperandFor right) = true at admitted
+      rw [Bool.and_eq_true] at admitted
       simp [FlatComparison.fields] at member
       rcases member with rfl | rfl
-      · exact directComparableProfile_admitsField model left _ leftEq
-      · exact directComparableProfile_admitsField model right _ rightEq
+      · exact directComparableProfile_admitsField model left admitted.1
+      · exact directComparableProfile_admitsField model right admitted.2
   | dateRange op left right =>
       simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
       exact admitted.2 field member

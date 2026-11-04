@@ -77,9 +77,9 @@ private def enumModel : FlatModel := { fields := [enumDecl] }
 private def projected : HavingStringRef := {
   origin := .inner
   operand := (enumDecl.toEnumerationTextFieldComparison? (.category "Label")).getD
-    (.string { id := 1 }, .plainString) |>.1 }
+    (.string { id := 1 }) }
 private def stored : HavingStringRef := {
-  projected with operand := (enumDecl.toTextFieldComparison?).getD (.string { id := 1 }, .plainString) |>.1 }
+  projected with operand := (enumDecl.toTextFieldComparison?).getD (.string { id := 1 }) }
 private def tokenWellFormed (source : A12Kernel.HavingCollectionCount) := source.wellFormed enumModel [] []
 example : tokenWellFormed (.tokenValue "keep" [.direct stored, .direct projected]) = true ∧
     tokenWellFormed (.tokenValue "keep" [.direct projected, .direct projected]) = false ∧

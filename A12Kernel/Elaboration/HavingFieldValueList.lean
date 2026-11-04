@@ -30,10 +30,10 @@ private def tokenReferencesWellFormed (model : FlatModel)
       -- tokens (spec/06 §B.3), so only group extents require the stored comparison here.
       (match slot with
         | .extent (.group _) _ | .extent (.starredGroup _ _) _ =>
-            declaration.toTextFieldComparison?.any (fun (operand, _) => operand == ref.operand)
+            declaration.toTextFieldComparison?.any (· == ref.operand)
         | _ => true) &&
       match ref.operand with
-      | .string _ => model.directComparableIn? declaration.repeatableScope ref.operand == some .plainString
+      | .string _ => model.admitsTextOperandIn declaration.repeatableScope ref.operand
       | .enumeration operand => (model.checkedEnumerationOperandIn? declaration.repeatableScope operand).isSome)) &&
   references.all (fun ref => references.head?.any fun first =>
     match first.operand, ref.operand with
@@ -78,7 +78,7 @@ private def membershipText (operand : ResolvedHavingDirectFieldOperand model) :
   let profile := match operand.form with
     | .stored => operand.declaration.toTextFieldComparison?
     | .projected category => operand.declaration.toEnumerationTextFieldComparison? (.category category)
-  let some (field, _) := profile | throw .incoherentCore
+  let some field := profile | throw .incoherentCore
   pure { origin := operand.origin, operand := field }
 
 

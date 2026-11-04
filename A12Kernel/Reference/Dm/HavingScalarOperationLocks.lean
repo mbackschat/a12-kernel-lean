@@ -78,7 +78,7 @@ example : [false, true].all (fun row =>
     result "FieldValueAsNumber(Rows/Choice->Label) > 0" row == ("admitted", "admitted")) = true := by native_decide
 
 example : [false, true].all (fun row =>
-    let forbidden := KernelStaticDiagnostic.disallowedConstructInFilterCondition.kernelCode
+    let forbidden := KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
     let unbound := KernelStaticDiagnostic.noWildcard.kernelCode
     let outer := KernelStaticDiagnostic.invalidOuterIteration.kernelCode
     let preceding := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "
@@ -111,42 +111,43 @@ example : [false, true].all (fun row =>
     result "{[Rows/Choice For \"keep\"]} + [Rows/Text] == \"x\"" row fixture == (indexed, indexed) &&
     result "[Rows/Text] + {{[Rows/Choice For \"keep\"]}} == \"x\"" row fixture == (indexed, indexed) &&
     result "{[Rows/Choice]} + [Missing] == \"x\"" row fixture == ("MVK_INVALID_ENTITY", "MVK_INVALID_ENTITY") &&
-    result "{[Rows/Choice] + [Rows/Text]} == [Missing]" row fixture == (addition, addition) &&
+    result "{[Rows/Choice] + [Rows/N]} == [Missing]" row fixture == (addition, addition) &&
+    result "{[Rows/Choice] + [Rows/Text]} == [Missing]" row fixture == ("MVK_INVALID_ENTITY", "MVK_INVALID_ENTITY") &&
     result "{[Rows/Choice]} + [Rows/N] == \"x\"" row fixture == (addition, addition) &&
     result "FirstFilledValue(Rows/Choice,Rows/Choice For \"keep\") + \"x\" == \"x\"" row fixture ==
       (indexed, indexed)) = true := by native_decide
 
 example : [false, true].all (fun row =>
     let preceding := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "
-    let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION" else "MVK_NO_WILDCARD"
+    let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION" else "MVK_NO_WILDCARD"
     result (preceding ++ "{[Rows/Choice]} + [Rows/Text] == \"x\"") row (displayModel true) == (expected, expected) &&
     result (preceding ++ "{[$Rows/Choice]} + [Rows/Text] == \"x\"") row (displayModel true) ==
       ("MVK_INVALID_OUTER_ITERATION", "MVK_INVALID_OUTER_ITERATION")) = true := by native_decide
 
+-- Display labels play no part in a concatenation inside a `Having` body: a labelled Enumeration joins
+-- immediate or braced. Derived from a12-dmkits ArithmeticOperandKindLawsTest at 1124b523f, kernel 31.1.1
+-- (the letter's Having body was not re-measured).
 example : [false, true].all (fun row =>
-    let addition := KernelStaticDiagnostic.noStringOrNumberForAdd.kernelCode
     result "{[Rows/Choice]} + [Rows/Text] == \"x\"" row (displayModel true) == ("admitted", "admitted") &&
     result "[Rows/Text] + {{[Rows/Choice]}} == \"x\"" row (displayModel true) == ("admitted", "admitted") &&
-    result "[Rows/Choice] + [Rows/Text] == \"x\"" row (displayModel true) == (addition, addition) &&
-    result "{[Rows/Choice] + [Rows/Text]} == \"x\"" row (displayModel true) == (addition, addition) &&
+    result "[Rows/Choice] + [Rows/Text] == \"x\"" row (displayModel true) == ("admitted", "admitted") &&
+    result "{[Rows/Choice] + [Rows/Text]} == \"x\"" row (displayModel true) == ("admitted", "admitted") &&
     result "[Rows/Choice] + [Rows/Text] == \"x\"" row (displayModel false) == ("admitted", "admitted")) = true := by native_decide
 
 example : [false, true].all (fun row =>
     let indexed := KernelStaticDiagnostic.semanticIndexNotAllowed.kernelCode
-    let addition := KernelStaticDiagnostic.noStringOrNumberForAdd.kernelCode
     let fixture := displayModel true
     result "RangeAsString(Rows/Text For \"keep\", 1, 2) + {[Rows/Choice]} == \"x\"" row fixture == (indexed, indexed) &&
     result "{{[Rows/Choice]}} + RangeAsString(Rows/Text For \"keep\", 1, 2) == \"x\"" row fixture == (indexed, indexed) &&
-    result "{RangeAsString(Rows/Text For \"keep\", 1, 2) + [Rows/Choice]} == \"x\"" row fixture == (addition, addition) &&
-    result "{[Rows/Choice]} + [Rows/Choice For \"keep\"] == \"x\"" row fixture == (addition, addition)) = true := by native_decide
+    result "{RangeAsString(Rows/Text For \"keep\", 1, 2) + [Rows/Choice]} == \"x\"" row fixture == (indexed, indexed) &&
+    result "{[Rows/Choice]} + [Rows/Choice For \"keep\"] == \"x\"" row fixture == (indexed, indexed)) = true := by native_decide
 
 example : [false, true].all (fun remapped => (displayModel remapped).validate.isOk) = true ∧
     [false, true].all (fun row =>
-      let addition := KernelStaticDiagnostic.noStringOrNumberForAdd.kernelCode
       let indexed := KernelStaticDiagnostic.semanticIndexNotAllowed.kernelCode
       result "RangeAsString(Rows/Text, 1, 2) + [Rows/Choice] == \"x\"" row (displayModel false) == ("admitted", "admitted") &&
       result "RangeAsString(Rows/Text For \"keep\", 1, 2) + [Rows/Choice] == \"x\"" row (displayModel false) == (indexed, indexed) &&
-      result "RangeAsString(Rows/Text, 1, 2) + [Rows/Choice] == \"x\"" row (displayModel true) == (addition, addition)) = true := by native_decide
+      result "RangeAsString(Rows/Text, 1, 2) + [Rows/Choice] == \"x\"" row (displayModel true) == ("admitted", "admitted")) = true := by native_decide
 
 example : [false, true].all (fun row =>
     let number := KernelStaticDiagnostic.noNumber.kernelCode

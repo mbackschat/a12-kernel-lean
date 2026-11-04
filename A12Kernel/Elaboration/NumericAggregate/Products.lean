@@ -77,9 +77,9 @@ def elaborateNumericProductAggregate (model : FlatModel) (declaringGroup : Group
       if left.groupPath != right.groupPath then throw (.differentGroups left.groupPath right.groupPath)
       -- Operand by operand from the left, as measured for an unkeyed pair (spec/07 §3.8, inbound
       -- 2026-10-18); that a key leaves the order unchanged is assumed, not measured.
-      if authored.leftHaving.isSome then throw .wildcardAtLowestLevelRequired
+      if authored.leftHaving.isSome then throw .wildcardAtLowestRepeatableLevelRequired
       requireKeyedProductLowestStar left
-      if authored.rightHaving.isSome then throw .wildcardAtLowestLevelRequired
+      if authored.rightHaving.isSome then throw .wildcardAtLowestRepeatableLevelRequired
       requireKeyedProductLowestStar right
       let left ← certifyKeyedProductOperand left
       let right ← certifyKeyedProductOperand right

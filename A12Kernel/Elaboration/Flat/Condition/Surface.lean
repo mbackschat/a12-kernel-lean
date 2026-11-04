@@ -42,17 +42,14 @@ def elaborateBooleanLiteralCore (declaration : FlatFieldDecl)
   | .confirm, .boolean false => throw (.illegalConfirmLiteral declaration.path)
   | kind, literal => throw (.literalKindMismatch declaration.path kind.surfaceKind literal.kind)
 
-/-- Preserve the shared direct-field profile gate for fixed and row-bound text comparisons. -/
+/-- Share the equality-only operator gate of fixed and row-bound direct text-field comparisons. Display
+labels decide no comparison on kernel 31.1.1, so two resolved operands always compare. -/
 def finishTextFieldComparison (op : SurfaceComparisonOp)
-    (leftPath rightPath : List String)
-    (left right : FlatTextFieldOperand × DirectComparableField) :
-    Except ElabError FlatCondition := do
+    (left right : FlatTextFieldOperand) : Except ElabError FlatCondition := do
   let equality ← match op.toEquality? with
     | some equality => pure equality
     | none => throw (.unsupportedOperator op)
-  match classifyDirectFieldComparison left.2 right.2 with
-  | .accepted => pure (.compare (.textFields equality left.1 right.1))
-  | .rejected error => throw (.enumerationComparability leftPath rightPath error)
+  pure (.compare (.textFields equality left right))
 
 /-- Resolve one direct nonrepeatable stored/category Enumeration operand with its exact checked projection and runtime core. -/
 def elaborateEnumerationFieldOperand (model : FlatModel)
@@ -322,20 +319,20 @@ private def checkScalarLiteralSubjectRead (model : FlatModel) (declaringGroup wr
 
 private def elaborateTextFieldOperand (model : FlatModel)
     (declaringGroup writtenGroup : GroupPath) : SurfaceTextFieldOperand →
-      Except ElabError (List String × FlatTextFieldOperand × DirectComparableField)
+      Except ElabError FlatTextFieldOperand
   | .direct reference => do
       -- A raw String is refused by the read's gate, so no raw declaration reaches the kind arm.
       let declaration ← (model.resolveFieldValueRead declaringGroup reference writtenGroup).mapError .resolve
       match declaration.toTextFieldComparison? with
-      | some (operand, profile) => pure (declaration.path, operand, profile)
+      | some operand => pure operand
       | none =>
           throw (.textFieldOperandKindMismatch declaration.path
             declaration.policy.kind.surfaceKind)
   | surface@(.category reference _) => do
       discard <| (model.resolveCategoryRead declaringGroup reference writtenGroup).mapError .resolve
-      let (path, _, operand) ←
+      let (_, _, operand) ←
         elaborateEnumerationFieldOperand model declaringGroup surface writtenGroup
-      pure (path, .enumeration operand, .category)
+      pure (.enumeration operand)
 
 private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatCondition
@@ -348,12 +345,9 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
         (model.resolveNonrepeatableFieldUnchecked declaringGroup reference writtenGroup)).mapError .resolve
       pure (.fieldNotFilled declaration.toPresenceField)
   | .compareTextFields op leftReference rightReference => do
-      let (leftPath, leftOperand, leftProfile) ←
-        elaborateTextFieldOperand model declaringGroup writtenGroup leftReference
-      let (rightPath, rightOperand, rightProfile) ←
-        elaborateTextFieldOperand model declaringGroup writtenGroup rightReference
-      finishTextFieldComparison op leftPath rightPath
-        (leftOperand, leftProfile) (rightOperand, rightProfile)
+      let leftOperand ← elaborateTextFieldOperand model declaringGroup writtenGroup leftReference
+      let rightOperand ← elaborateTextFieldOperand model declaringGroup writtenGroup rightReference
+      finishTextFieldComparison op leftOperand rightOperand
   | .enumerationValueList quantifier surfaces values => do
       let operands ←
         elaborateEnumerationLiteralFieldList model declaringGroup writtenGroup surfaces values
@@ -419,9 +413,8 @@ private def elaborateCore (model : FlatModel) (declaringGroup writtenGroup : Gro
           .compare <$> elaborateTemporalFieldPair model.hasBaseYear op.toTemporal left right
       | leftKind, rightKind =>
           match left.toTextFieldComparison?, right.toTextFieldComparison? with
-          | some (leftOperand, leftProfile), some (rightOperand, rightProfile) =>
-              finishTextFieldComparison op left.path right.path
-                (leftOperand, leftProfile) (rightOperand, rightProfile)
+          | some leftOperand, some rightOperand =>
+              finishTextFieldComparison op leftOperand rightOperand
           | _, _ =>
               throw (.temporalOperandKindMismatch left.path right.path
                 leftKind.surfaceKind rightKind.surfaceKind)

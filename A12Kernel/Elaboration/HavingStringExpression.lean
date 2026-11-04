@@ -4,8 +4,8 @@ import A12Kernel.Elaboration.ScalarComparisonAdmission
 
 namespace A12Kernel
 
-/-- A selector contributes a String result; the immediate-field display restriction does not
-propagate into its selected declarations (CheckOperationImpl.checkWithoutDisplayValues). -/
+/-- A selector contributes a String result whose selected declarations pass the same operand gate as
+an immediate field. -/
 private def sourceAdmitted (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel)
     (source : HavingStringSource) : Bool :=
   source.presenceSlots.all (·.wellFormedForEnvironments model candidateLevels outerLevels) &&
@@ -16,25 +16,24 @@ private def sourceAdmitted (model : FlatModel) (candidateLevels outerLevels : Li
         slots.all fun slot => slot.references.all fun
           | .text ref => (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
               match ref.operand with
-              | .string _ => (admitStringExpressionField declaration true).isOk
+              | .string _ => (admitStringExpressionField declaration).isOk
               | .enumeration operand => match operand.projection with
-                  | .stored => (admitStringExpressionField declaration true).isOk
+                  | .stored => (admitStringExpressionField declaration).isOk
                   | .category _ => true
           | _ => false
 
-private def expressionAdmitted (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel)
-    (allowStoredEnumeration : Bool := false) : StringExpr HavingStringSource → Bool
+private def expressionAdmitted (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel) :
+    StringExpr HavingStringSource → Bool
   | .literal _ => true
-  | .group body => expressionAdmitted model candidateLevels outerLevels true body
-  | .concat left right => expressionAdmitted model candidateLevels outerLevels false left &&
-      expressionAdmitted model candidateLevels outerLevels false right
+  | .group body => expressionAdmitted model candidateLevels outerLevels body
+  | .concat left right => expressionAdmitted model candidateLevels outerLevels left &&
+      expressionAdmitted model candidateLevels outerLevels right
   | expression =>
       expression.fields.all (sourceAdmitted model candidateLevels outerLevels) &&
       match expression with
       | .field (.firstFilled _) => true
       | .field (.field ref) => (model.lookupUniqueId ref.field).toOption.any fun declaration =>
-          declaration.fieldValueReadRefusal?.isNone && ((admitStringExpressionField declaration).isOk ||
-            (allowStoredEnumeration && (declaration.toEnumerationTextFieldComparison? .stored).isSome))
+          declaration.fieldValueReadRefusal?.isNone && (admitStringExpressionField declaration).isOk
       | .category (.field ref) projection => (model.lookupUniqueId ref.field).toOption.any fun declaration =>
           declaration.enumeration.any fun enumeration =>
             enumeration.categories.any fun category => stringCategory? declaration category.name == some projection
@@ -46,16 +45,16 @@ private def expressionAdmitted (model : FlatModel) (candidateLevels outerLevels 
 
 private def operandsAdmitted (model : FlatModel) (candidateLevels outerLevels : List RepeatableLevel)
     (left right : StringExpr HavingStringSource) : Bool :=
-  expressionAdmitted model candidateLevels outerLevels true left &&
-    expressionAdmitted model candidateLevels outerLevels true right
+  expressionAdmitted model candidateLevels outerLevels left &&
+    expressionAdmitted model candidateLevels outerLevels right
 
 private def comparisonOperand (model : FlatModel) :
     StringExpr HavingStringSource → Option ScalarComparisonOperand
   | .literal text => some { type := .stringLike, literal := some (.inl text) }
-  | .group source => (comparisonOperand model source).map fun operand => { operand with directField := false }
+  | .group source => comparisonOperand model source
   | .field (.field ref) => (model.lookupUniqueId ref.field).toOption.map fun declaration =>
-      { type := NumericOperandType.ofDeclaration declaration, directField := true }
-  | .category _ projection => some { type := .enumeration .category projection.categoryTokens, directField := true }
+      { type := NumericOperandType.ofDeclaration declaration }
+  | .category _ projection => some { type := .enumeration projection.categoryTokens }
   | _ => some { type := .stringLike }
 
 /-- `CheckOpUtils.isConstant` classifies authored literals and their braces, not expressions

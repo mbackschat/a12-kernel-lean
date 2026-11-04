@@ -37,7 +37,7 @@ def elaborateHavingUniqueness (model : FlatModel) (declaringGroup : GroupPath)
       let some field := operand.declaration.toNumberField? | throw .incoherentCore
       pure { origin := operand.origin, field })
   | .string | .enumeration => return .token (← checked.mapM fun slot => slot.mapM fun operand => do
-      let some (field, _) := operand.declaration.toTextFieldComparison? | throw .incoherentCore
+      let some field := operand.declaration.toTextFieldComparison? | throw .incoherentCore
       pure { origin := operand.origin, operand := field })
   | .temporal =>
       let operands ← checked.mapM fun slot => slot.mapM fun operand => do
@@ -54,7 +54,7 @@ def HavingUniqueness.wellFormedForEnvironments (source : HavingUniqueness) (mode
     | .token slots =>
       let operands := slots.flatMap (·.references)
       operands.all fun ref => (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
-        declaration.toTextFieldComparison?.any (fun (operand, _) => operand == ref.operand) &&
+        declaration.toTextFieldComparison?.any (· == ref.operand) &&
           operands.head?.any (fun first => match first.operand, ref.operand with
             | .string _, .string _ | .enumeration _, .enumeration _ => true
             | _, _ => false)

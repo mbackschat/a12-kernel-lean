@@ -5,27 +5,26 @@ namespace BoundTextComparison
 
 private def operand (model : FlatModel) (declaringGroup bindingGroup : GroupPath)
     (surface : SurfaceTextFieldOperand) :
-    Except ElabError (FlatFieldDecl × FlatTextFieldOperand × DirectComparableField) := do
+    Except ElabError (FlatFieldDecl × FlatTextFieldOperand) := do
   let declaration ← (model.resolveBoundRuleOperand declaringGroup bindingGroup true surface).mapError .resolve
   let resolved := match surface.projectionRef with
     | .stored => declaration.toTextFieldComparison?
     | projection => declaration.toEnumerationTextFieldComparison? projection
-  let some (core, profile) := resolved
+  let some core := resolved
     | throw (.textFieldOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind)
-  pure (declaration, core, profile)
+  pure (declaration, core)
 
 private def fields (model : FlatModel) (declaringGroup bindingGroup : GroupPath)
     (operator : SurfaceComparisonOp) (left right : SurfaceTextFieldOperand) : Except ElabError FlatConditionLeaf := do
-  let (leftDecl, left, leftProfile) ← operand model declaringGroup bindingGroup left
-  let (rightDecl, right, rightProfile) ← operand model declaringGroup bindingGroup right
-  let .leaf condition ← finishTextFieldComparison operator leftDecl.path rightDecl.path
-    (left, leftProfile) (right, rightProfile) | throw .incoherentCore
+  let (_, left) ← operand model declaringGroup bindingGroup left
+  let (_, right) ← operand model declaringGroup bindingGroup right
+  let .leaf condition ← finishTextFieldComparison operator left right | throw .incoherentCore
   pure condition
 
 private def literal (model : FlatModel) (declaringGroup bindingGroup : GroupPath)
     (operator : SurfaceComparisonOp) (source : SurfaceTextFieldOperand)
     (expected : String) : Except ElabError FlatConditionLeaf := do
-  let (declaration, core, _) ← operand model declaringGroup bindingGroup source
+  let (declaration, core) ← operand model declaringGroup bindingGroup source
   match core with
   | .string field =>
       let some equality := operator.toEquality? | throw (.unsupportedOperator operator)
@@ -35,7 +34,7 @@ private def literal (model : FlatModel) (declaringGroup bindingGroup : GroupPath
         | throw .incoherentCore
       pure condition
 
-/-- Reuse direct text comparison profiles and literal-domain checks with ordinary row-bound reads.
+/-- Reuse direct text comparison operands and literal-domain checks with ordinary row-bound reads.
 The fixed comparison account in spec/06 and spec/10 also owns empty/formally-invalid observations. -/
 def elaborate (model : FlatModel) (declaringGroup bindingGroup : GroupPath) :
     SurfaceCondition → Except ElabError FlatConditionLeaf

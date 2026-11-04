@@ -11,18 +11,6 @@ theorem checkedEnumeration_wellFormed
   checked.wellFormed
 
 @[simp]
-theorem checkedEnumeration_displayFacts_exact
-    (checked : CheckedEnumerationDeclaration) :
-    checked.displayProfile.facts = checked.declaration.displayFacts := by
-  rfl
-
-@[simp]
-theorem checkedEnumeration_directComparableField_exact
-    (checked : CheckedEnumerationDeclaration) :
-    checked.directComparableField = .enumeration checked.displayProfile := by
-  rfl
-
-@[simp]
 theorem checkedEnumeration_storedProjection_exact
     (checked : CheckedEnumerationDeclaration) :
     checked.storedProjection = .stored := by

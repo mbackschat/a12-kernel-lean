@@ -6,11 +6,10 @@ import A12Kernel.Elaboration.ScalarComparisonAdmission
 namespace A12Kernel.Dm
 
 def rawScalarComparisonOperand (type : NumericOperandType) : Expr → ScalarComparisonOperand
-  | .braces body | .parens body => { rawScalarComparisonOperand type body with directField := false }
+  | .braces body | .parens body => rawScalarComparisonOperand type body
   | .string text => { type, literal := some (.inl text) }
   | .constant "True" => { type, literal := some (.inr true) }
   | .constant "False" => { type, literal := some (.inr false) }
-  | .value _ => { type, directField := true }
   | _ => { type }
 
 /-- Scalar temporal extrema compare component sets after model Base Year supplementation

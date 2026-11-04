@@ -187,7 +187,7 @@ def checkRawMembershipFields (model : FlatModel) (scalar : Bool)
 private def rawEnumerationLiteralAllowed (model : FlatModel) (declaration : FlatFieldDecl)
     (category : Option String) (value : String) : Bool :=
   let projection := category.map EnumerationProjectionRef.category |>.getD .stored
-  (declaration.toEnumerationTextFieldComparison? projection).any fun (operand, _) => match operand with
+  (declaration.toEnumerationTextFieldComparison? projection).any fun operand => match operand with
     | .enumeration operand => (model.checkedEnumerationOperandIn? declaration.repeatableScope operand).any fun checked =>
         checked.declaration.literalAllowed checked.projection value
     | _ => false
@@ -345,7 +345,7 @@ def rawProductType (model : FlatModel)
       let position := group.path.length - 1
       let starred := position >= offset && (reference.path.segments[position - offset]?).any (·.star)
       if !foundStar && capacity > 1 && (!starred || reference.filter.isSome) then
-        refuse "Having" KernelStaticDiagnostic.wildcardAtLowestLevelRequired.kernelCode
+        refuse "Having" KernelStaticDiagnostic.wildcardAtLowestRepeatableLevelRequired.kernelCode
       if foundStar && starred then
         refuse "Having" KernelStaticDiagnostic.wildcardOnlyAtLowestLevelAllowed.kernelCode
       foundStar := foundStar || starred

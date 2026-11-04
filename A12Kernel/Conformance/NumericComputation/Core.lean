@@ -498,7 +498,7 @@ example :
    operation's typing, whose `Abs` demands a Number. -/
 example :
     checkedErrorOf (surfaceField ["Root"] "Wrong") =
-        some (.copyComparison target.path wrong.path (.kindArm .text)) ∧
+        some (.copyComparison target.path wrong.path .text) ∧
       checkedErrorOf (.abs (surfaceField ["Root"] "Wrong")) =
         some (.operationNode (some .noNumber)) ∧
       checkedErrorOf (surfaceField ["Root", "Rows"] "Repeated") =

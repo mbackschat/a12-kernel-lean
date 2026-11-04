@@ -6,7 +6,7 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Checked ordinary Enumeration computation targets
 
-This capsule checks the narrow ordinary closed-Enumeration computation surface separately from general String expressions. Literal, direct Enumeration, and category sources reuse the existing checked projection and exact-token computation result. Target-domain and direct-display compatibility are static obligations; runtime evaluation adds no second token reader or target-result type.
+This capsule checks the narrow ordinary closed-Enumeration computation surface separately from general String expressions. Literal, direct Enumeration, and category sources reuse the existing checked projection and exact-token computation result. Target-domain compatibility is the static obligation; runtime evaluation adds no second token reader or target-result type.
 -/
 
 namespace A12Kernel
@@ -26,17 +26,10 @@ inductive CheckedEnumerationComputationSource (model : FlatModel) where
 
 namespace CheckedEnumerationProjection
 
-/-- Every possible projected source token must belong to the target domain. A direct stored-Enumeration source additionally preserves display remapping compatibility; an explicit category has already selected its target-visible token domain and bypasses that direct-display gate. -/
+/-- Every possible projected source token must belong to the target domain. Display labels play no part on kernel 31.1.1 (a12-dmkits `EnumComputationSourceLawsTest` at `1124b523f`). -/
 def compatibleWithTarget (source target : CheckedEnumerationProjection) : Bool :=
-  let domainFits := source.selectedTokens.all fun token =>
+  source.selectedTokens.all fun token =>
     target.declaration.literalAllowed target.projection token
-  let displayFits := match source.projectionRef with
-    | .stored =>
-        directFieldComparisonAllowed
-          source.declaration.directComparableField
-          target.declaration.directComparableField
-    | .category _ => true
-  domainFits && displayFits
 
 end CheckedEnumerationProjection
 
@@ -71,13 +64,11 @@ inductive EnumerationComputationElabError where
   | targetKindMismatch (path : List String) (actual : SurfaceScalarKind)
   | source (error : ElabError)
   | literalOutsideTarget (targetPath : List String) (literal : String)
-  | sourceIncompatible (sourcePath targetPath : List String)
-  | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
-  /-- A String the generated comparison admits into an unlabelled target, which the calculation then
+  | copyComparison (targetPath sourcePath : List String) (arm : CopyComparisonKindArm)
+  /-- A String the generated comparison admits into an Enumeration target, which the calculation then
       refuses. -/
   | stringSource (sourcePath targetPath : List String)
-  /-- An Enumeration whose display the comparison admits, reading a token the target does not
-      declare. -/
+  /-- An Enumeration source reading a token the target does not declare. -/
   | sourceOutsideTargetDomain (sourcePath targetPath : List String)
   | targetSelfReference (field : FieldId)
   | targetSelfReferenceAtDirectField (field : FieldId)
@@ -94,9 +85,9 @@ The calculation's own refusals are `calculationRefusal?`'s. The others are this 
 routing, or gates whose Kernel class was never observed, so they claim none. -/
 def diagnostic? : EnumerationComputationElabError → Option KernelStaticDiagnostic
   | .literalOutsideTarget _ _ => some .invalidStringConstantForEnumComparison
-  | .copyComparison _ _ refusal => some refusal.diagnostic
+  | .copyComparison _ _ arm => some arm.diagnostic
   | .resolve _ | .targetKindMismatch _ _ | .source _
-  | .sourceIncompatible _ _ | .stringSource _ _ | .sourceOutsideTargetDomain _ _
+  | .stringSource _ _ | .sourceOutsideTargetDomain _ _
   | .targetSelfReference _
   | .targetSelfReferenceAtDirectField _
   | .targetSelfReferenceAtCompatibleCategory _
@@ -185,9 +176,9 @@ structure CheckedEnumerationComputationOperation (model : FlatModel) where
 
 /-- The comparison the computation generates between its target and a directly copied stored field,
 asked after the target's read and then the copied field's read. The comparison answers ahead of the
-calculation, so where a wider source's display fails too, the display class is the one drawn
+calculation
 ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
-A category read skips the display arm and has no spelling on another kind's target here. -/
+A category read has no spelling on another kind's target here. -/
 private def FlatModel.checkEnumerationCopyComparison (model : FlatModel)
     (declaringGroup : GroupPath) (targetField : FieldId) :
     SurfaceEnumerationComputationSource → Except EnumerationComputationElabError Unit
@@ -198,8 +189,8 @@ private def FlatModel.checkEnumerationCopyComparison (model : FlatModel)
           (.source ∘ .resolve)
         match target.copyComparisonRefusal? source, target.policy.kind,
             source.toTextFieldComparison? with
-        | some refusal, _, _ => throw (.copyComparison target.path source.path refusal)
-        | none, .enumeration, some (_, .plainString) =>
+        | some arm, _, _ => throw (.copyComparison target.path source.path arm)
+        | none, .enumeration, some (.string _) =>
             throw (.stringSource source.path target.path)
         | _, _, _ => pure ()
   | _ => pure ()
@@ -259,8 +250,7 @@ def elaborateEnumerationComputation
       match source with
       | .literal token =>
           throw (.literalOutsideTarget target.path token)
-      -- The display arm has already answered for a stored source, and a category read has none, so
-      -- what remains is the domain.
+      -- A source the generated comparison admitted can only miss on the domain.
       | .field sourcePath _ _ _ =>
           throw (.sourceOutsideTargetDomain sourcePath target.path)
 

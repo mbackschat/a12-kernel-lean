@@ -25,6 +25,10 @@ private def result (body : String) (row : Bool) : String × String :=
 
 example : model.validate.isOk = true := by native_decide
 
+-- Display labels decide no comparison inside a `Having` body either: a labelled Enumeration meets a
+-- String, an identity-labelled one and a conflicting labelling in either order and under `!=`. Derived
+-- from a12-dmkits EnumDisplayComparabilityLawsTest at 1124b523f, kernel 31.1.1 (the letter's Having body
+-- was not re-measured).
 private def admitted (index : String) : List String := [
   "[Rows/Flag" ++ index ++ "] == True",
   "{[Rows/Flag" ++ index ++ "]} == {True}", "{[Rows/Flag" ++ index ++ "]} == {[Rows/OtherFlag]}",
@@ -39,7 +43,11 @@ private def admitted (index : String) : List String := [
   "[Rows/Labelled" ++ index ++ "] == {[Rows/Tag]}",
   "[Rows/Labelled" ++ index ++ "] == FirstFilledValue(Rows/Tag,Rows/Choice)",
   "[Rows/Choice->Label" ++ index ++ "] == [Rows/Labelled]",
-  "{[Rows/Labelled" ++ index ++ "]} + \"x\" == \"not-a-token\""]
+  "{[Rows/Labelled" ++ index ++ "]} + \"x\" == \"not-a-token\"",
+  "[Rows/Labelled" ++ index ++ "] == [Rows/Tag]", "[Rows/Tag] == [Rows/Labelled" ++ index ++ "]",
+  "[Rows/Labelled" ++ index ++ "] != [Rows/Tag]",
+  "[Rows/Labelled" ++ index ++ "] == [Rows/Identity]", "[Rows/Labelled" ++ index ++ "] == [Rows/Conflict]",
+  "[Rows/Tag] == {[Rows/Labelled" ++ index ++ "]}", "[Rows/Conflict] == {[Rows/Labelled" ++ index ++ "]}"]
 
 example : [false, true].all (fun row => (admitted "").all fun body =>
     result body row == ("admitted", "admitted")) = true := by native_decide
@@ -56,12 +64,7 @@ private def refused (index : String) : List (String × String) := [
   ("[Rows/Choice" ++ index ++ "] == \"missing\"", "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON"),
   ("{\"missing\"} == {[Rows/Labelled" ++ index ++ "]}", "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON"),
   ("[Rows/Labelled->Label" ++ index ++ "] == \"a\"", "MVK_INVALID_STRING_CONSTANT_FOR_ENUM_COMPARISON"),
-  ("[Rows/Labelled" ++ index ++ "] == [Rows/Tag]", "MVK_INVALID_COMPARE_ENUM_TO_STRING"),
-  ("[Rows/Labelled" ++ index ++ "] == [Rows/Identity]", "MVK_INVALID_COMPARE_ENUM_TO_STRING"),
-  ("[Rows/Labelled" ++ index ++ "] == [Rows/Conflict]", "MVK_INVALID_COMPARE_ENUM_TO_ENUM"),
   ("[Rows/Choice" ++ index ++ "] == [Rows/N]", "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"),
-  ("[Rows/Tag] == {[Rows/Labelled" ++ index ++ "]}", "MVK_INVALID_COMPARE_ENUM_TO_STRING"),
-  ("[Rows/Conflict] == {[Rows/Labelled" ++ index ++ "]}", "MVK_INVALID_COMPARE_ENUM_TO_ENUM"),
   ("[Rows/N] == [Rows/Flag" ++ index ++ "]", "MVK_INVALID_COMPARE_TO_YESNO"),
   ("False == {[Rows/Yes" ++ index ++ "]}", "MVK_INVALID_COMPARE_TO_YES"),
   ("True == [Rows/N" ++ index ++ "]", "MVK_INCONSISTENT_TYPES_COMPARED")]
@@ -81,7 +84,7 @@ example : [false, true].all (fun row =>
     let preceding := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "
     ["[Rows/Flag] == True", "[Rows/Choice] == \"a\""].all (fun body =>
       result (preceding ++ body) row ==
-        (if row then ("MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION")
+        (if row then ("MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION", "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION")
          else ("MVK_NO_WILDCARD", "MVK_NO_WILDCARD"))) &&
     ["[$Rows/Flag] == True", "[$Rows/Choice] == \"a\""].all (fun body =>
       result (preceding ++ body) row == ("MVK_INVALID_OUTER_ITERATION", "MVK_INVALID_OUTER_ITERATION"))) = true := by native_decide
@@ -111,7 +114,7 @@ private def scopeCases : List (String × String × String) := [
   ("[Rows/Due] < [Rows/Due]", "admitted", "admitted"),
   ("[Rows/N] == [Rows/Scaled]", "MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES"),
   ("[Rows/N] < [Rows/Scaled]", "admitted", "admitted"),
-  ("[Other/N] > 0", "MVK_INVALID_ITERATION_IN_FILTER_CONDITION", "MVK_INVALID_ITERATION_IN_FILTER_CONDITION"),
+  ("[Other/N] > 0", "MVK_INVALID_ITERATION_IN_SET_EXPRESSION", "MVK_INVALID_ITERATION_IN_SET_EXPRESSION"),
   ("[$Other/N] > 0", "MVK_NO_WILDCARD", "MVK_NO_WILDCARD"),
   ("[$Rows/N] > 0", "MVK_NO_WILDCARD", "MVK_NO_ITERATION_FOR_WILDCARD"),
   ("[$Rows/N] == [Rows/Scaled]", "MVK_NO_WILDCARD", "MVK_INVALID_COMPARE_DEC_PLACES"),

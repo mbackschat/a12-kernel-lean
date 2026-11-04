@@ -298,7 +298,22 @@ def deferred : List (String × String) :=
     "pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus",
     "pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus-abs",
     "pattern-and-key-resolver-classes/obs-review.json#pv-unique",
-    "pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus"].map (·, "host pattern compiler, SG7"))
+    "pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus"].map (·, "host pattern compiler, SG7")) ++
+  -- Kernel 30.8.1 rows whose class was the display-label comparison kernel 31.1.1 retired (Letter B §5d,
+  -- `docs/sources/inbound-handbacks.md`): Lean answers with what the comparison no longer withholds.
+  (["condition-class-projection-2026-10-01/obs-pairs.json#FNotexLabelled",
+    "condition-class-projection-2026-10-01/obs-pairs.json#FPlainxLabelled",
+    "condition-class-projection-2026-10-01/obs-pairs.json#FLabelledxNote",
+    "condition-class-projection-2026-10-01/obs-pairs.json#FLabelledxPlain",
+    "condition-class-projection-2026-10-01/obs.json#O12",
+    "k22-static-s4-2026-10-24/obs.json#va5",
+    "k22-static-s4-2026-10-24/obs.json#va6",
+    "k22-static-s4-2026-10-24/obs.json#va7",
+    "k22-static-s4-2026-10-24/obs.json#va9",
+    "k22-static-s4-2026-10-24/obs.json#va12",
+    "k22-static-s4-2026-10-24/obs.json#va18",
+    "parser-index-and-iteration-classes/obs4.json#D17",
+    "parser-index-and-iteration-classes/obsc.json#F04"].map (·, "kernel 31.1.1 display-label retirement"))
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with
@@ -429,9 +444,22 @@ private def Outcome.ofDetail? : Option String → Outcome
   | some detail => .diverges detail
   | none => .agrees
 
-/-- The Kernel's codes on one row, without the instrument's own `RK_` refusals. -/
+/-- A retained kernel 30.8.1 code under the name kernel 31.1.1 gives it. These four codes were renamed with
+their trigger kept on every row a12-dmkits locks (Letter B §5e, `docs/sources/inbound-handbacks.md`); the
+retained lowest-level code was drawn only by `SumOfProducts`, whose class 31.1.1 renamed, while the old name
+now belongs to `SumOfTerms`. -/
+private def kernel31Code : String → String
+  | "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION" => "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION"
+  | "MVK_INVALID_ITERATION_IN_FILTER_CONDITION" => "MVK_INVALID_ITERATION_IN_SET_EXPRESSION"
+  | "MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED" =>
+      "MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED"
+  | "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" => "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED"
+  | code => code
+
+/-- The Kernel's codes on one row, without the instrument's own `RK_` refusals, under their 31.1.1 names. -/
 private def kernelCodes (observation : Json) : List String :=
   ((observation.getObjValAs? (Array String) "codes").toOption.getD #[]).toList.filter (!·.startsWith "RK_")
+    |>.map kernel31Code
 
 /-- The Kernel's verdict on one row, `none` when the instrument stopped before the Kernel answered.
 A row's `valid` decides; a computation preview reports only `ok` for an admitted spec, and a failed

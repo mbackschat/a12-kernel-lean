@@ -68,11 +68,18 @@ private def copyRefusal (targetName source : String) (identityLabels : Bool := f
         (fun _ => error.calculationRefusal?.map (·.catalogKey))).getD "unclassified"
   pure ((lowerComputation dm.flat .english definition).isOk, code)
 
+-- Display labels play no part on kernel 31.1.1: a labelled source is copied like an unlabelled one.
+-- Locked: a12-dmkits EnumIntoTextComputationLawsTest and EnumComputationSourceLawsTest at 1124b523f.
 example : copyRefusal "BareOut" "Plain" = some (true, "admitted") := by native_decide
-example : copyRefusal "BareOut" "Labelled" = some (false, "MVK_INVALID_COMPARE_ENUM_TO_STRING") := by native_decide
-example : copyRefusal "EnumOut" "Labelled" = some (false, "MVK_INVALID_COMPARE_ENUM_TO_STRING") := by native_decide
+example : copyRefusal "BareOut" "Labelled" = some (true, "admitted") := by native_decide
+example : copyRefusal "EnumOut" "Labelled" = some (true, "admitted") := by native_decide
 example : copyRefusal "BareOut" "Labelled" true = some (true, "admitted") := by native_decide
 example : copyRefusal "EnumOut" "Text" = some (false, "MVK_ERROR_INVALID_ENUM_CALCULATION") := by native_decide
+-- A labelled target takes the calculation's class for a String and admits an unlabelled Enumeration:
+-- the generated comparison no longer answers first, so the display class is gone. Derived from that
+-- mechanism, unmeasured on 31.1.1 (the peer's labelled-target row is a FirstFilledValue of unlabelled operands).
+example : copyRefusal "Labelled" "Text" = some (false, "MVK_ERROR_INVALID_ENUM_CALCULATION") := by native_decide
+example : copyRefusal "Labelled" "Plain" = some (true, "admitted") := by native_decide
 
 private def firstFilledRun (operation text token : String) : Option (List String) := do
   let dm ← model
@@ -99,6 +106,7 @@ private def firstFilledCarrierModel : Option DmModel := do
   let text ← dm.flat.fields.find? (·.name == "Text")
   let choice ← dm.flat.fields.find? (·.name == "Labelled")
   let domain ← choice.enumeration
+  let plain ← dm.flat.fields.find? (·.name == "Plain")
   let choice := { choice with enumeration := some { domain with categories := [{ name := "Label", tokens := ["K", "D"] }] } }
   let fixed (prototype : FlatFieldDecl) (id : FieldId) (name : String) :=
     { prototype with id, name, groupPath := ["Form"] }
@@ -107,7 +115,8 @@ private def firstFilledCarrierModel : Option DmModel := do
   pure { dm with
     flat := {
       fields := [fixed text 1 "Text", fixed choice 2 "Choice", fixed choice 3 "Choice2",
-        fixed text 4 "Out", fixed choice 5 "EnumOut", row text 6 "Out", row choice 7 "EnumOut"]
+        fixed text 4 "Out", fixed choice 5 "EnumOut", row text 6 "Out", row choice 7 "EnumOut",
+        fixed plain 8 "Plain", fixed plain 9 "Plain2"]
       repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 2 }] }
     computations := [] }
 
@@ -171,6 +180,16 @@ example : ["EnumOut", "Rows/EnumOut"].all (fun target =>
 example : ["EnumOut", "Rows/EnumOut"].all (fun target =>
     carrierRun target "FirstFilledValue(Choice,Choice2)" "" "A" "9" ==
       some (if target == "EnumOut" then ["value A"] else ["value A", "value A"])) = true := by native_decide
+
+-- Labels play no part in a `FirstFilledValue` operand's compatibility: a labelled operand beside an
+-- unlabelled one into an unlabelled target, and two unlabelled operands into a labelled target, are
+-- admitted on both carriers. Locked: a12-dmkits EnumComputationSourceLawsTest
+-- (`labelsPlayNoPartInAFirstFilledValueOperand`) at 1124b523f, kernel 31.1.1.
+example : (carrierRefusal "Plain" "FirstFilledValue(Plain2,Choice)" == some "admitted" &&
+    carrierStepRefusal "Plain" "FirstFilledValue(Plain2,Choice)" == some "admitted" &&
+    carrierRefusal "Plain" "FirstFilledValue(Choice,Plain2)" == some "admitted" &&
+    carrierRefusal "EnumOut" "FirstFilledValue(Plain,Plain2)" == some "admitted" &&
+    carrierStepRefusal "EnumOut" "FirstFilledValue(Plain,Plain2)" == some "admitted") = true := by native_decide
 
 example : ["EnumOut", "Rows/EnumOut"].all (fun target =>
     carrierRefusal target "FirstFilledValue(/Form/Rows*/Out)" == some "MVK_ERROR_INVALID_ENUM_CALCULATION" &&

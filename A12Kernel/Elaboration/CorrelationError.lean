@@ -118,7 +118,7 @@ comparison ends, so an ordering side is judged only against a partner that was r
 
 The scope classes separate cleanly: a filter with no unmarked reference into a reopened level
 reports `noIterationForWildcard`, a **different repeatable group's** unmarked field reference
-reports `invalidIterationInFilterCondition`, and a star written *inside* the filter reports
+reports `invalidIterationInSetExpression`, and a star written *inside* the filter reports
 `noWildcardsAllowed`. A marked reference to a level no host iteration binds meets the repetition
 walk instead, `SurfaceCorrelatedHaving.unboundOuterReference?`, because it requires a captured host
 binding ([fixed-reference checkpoint](../../docs/sources/having-filter-probes.md#src-fixed-repetition-having)
@@ -127,7 +127,7 @@ The remaining arms are this project's own narrow-route boundaries, its
 resolution routing, or unreachable by construction, and claim nothing. -/
 def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .repetitionNotUnique error => error.diagnostic?
-  | .disallowedConstructInFilter => some .disallowedConstructInFilterCondition
+  | .disallowedConstructInFilter => some .disallowedConstructInSetExpression
   | .comparisonEntry diagnostic => some diagnostic
   | .temporalPartPrecision _ _ => some .invalidDateType
   | .dateRange diagnostic => some diagnostic
@@ -158,7 +158,7 @@ def diagnostic? : CorrelationElabError → Option KernelStaticDiagnostic
   | .fieldOutsideEnvironment .outer _ _ _ | .repetitionOutsideEnvironment .outer _ _ _ =>
       some .noWildcard
   | .fieldOutsideEnvironment .inner _ _ _ | .repetitionOutsideEnvironment .inner _ _ _ =>
-      some .invalidIterationInFilterCondition
+      some .invalidIterationInSetExpression
   | .wildcardOnRuleGroup | .wildcardWithParentNavigation _ =>
       some .noWildcardsAllowed
   | .equalityScaleMismatch _ _ _ _ | .literalScaleMismatch _ _ _ => some .invalidCompareDecimalPlaces

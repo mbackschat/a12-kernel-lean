@@ -87,7 +87,8 @@ theorem copyComparisonKindArm_comm (target source : SurfaceScalarKind) :
   cases target <;> cases source <;> rfl
 
 /-- The kind pairs no kind arm refuses: two of one kind, two temporal kinds, which meet the date arm's
-format questions, and a String with an Enumeration, which meet the display arm. -/
+format questions, and a String with an Enumeration, which no arm refuses because display labels play no
+part on kernel 31.1.1. -/
 def copyComparisonKindUnrefused : SurfaceScalarKind → SurfaceScalarKind → Bool
   | .temporal _, .temporal _ => true
   | .string, .enumeration | .enumeration, .string => true

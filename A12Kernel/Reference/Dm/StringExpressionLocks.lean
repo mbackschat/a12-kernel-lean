@@ -102,7 +102,14 @@ example : messages "RangeAsString(S,1,2) + FieldValueAsString(N) == \"ab1.5\"" =
 example : messages "[S] + \"x\" != \"\"" = some 0 := by native_decide
 
 example : admitted "[E] + \"x\" == \"ax\"" = true := by native_decide
-example : admitted "[L] + \"x\" == \"bx\"" = false := by native_decide
+-- A labelled Enumeration joins a concatenation immediate or braced, as an unlabelled one does: display
+-- labels play no part. Locked: a12-dmkits ArithmeticOperandKindLawsTest and
+-- KeyedEnumerationConcatenationLawsTest at 1124b523f, kernel 31.1.1.
+example : admitted "[L] + \"x\" == \"bx\"" = true := by native_decide
+-- A labelled Enumeration meets a string-valued function in either order and under `!=`. Locked:
+-- a12-dmkits EnumDisplayComparabilityLawsTest (`RangeAsString(Holder, 1, 3)` row) at 1124b523f, kernel 31.1.1.
+example : admitted "[L] == RangeAsString(S,1,2)" = true ∧ admitted "RangeAsString(S,1,2) == [L]" = true ∧
+    admitted "[L] != RangeAsString(S,1,2)" = true := by native_decide
 example : admitted "RangeAsString(E,1,1) + \"x\" == \"ax\"" = false := by native_decide
 example : admitted "[L->Kind] + \"x\" == \"otherx\"" = true := by native_decide
 example : [false, true].all (fun repeated =>
@@ -117,7 +124,7 @@ example : [false, true].all (fun repeated =>
       some (List.replicate (if repeated then 2 else 1) "value 1.5ab") &&
     messages "[S] + {{[L]}} == \"abb\"" repeated == some (if repeated then 2 else 1)) = true := by native_decide
 
-example : admitted "{[L] + [S]} == \"bab\"" = false := by native_decide
+example : admitted "{[L] + [S]} == \"bab\"" = true := by native_decide
 
 private def partialVerdicts (condition : String) (repeated : Bool)
     (scope : ValidationRelevanceScope) : Option (List Verdict) := do

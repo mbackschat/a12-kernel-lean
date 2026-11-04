@@ -25,9 +25,9 @@ inductive KernelStaticDiagnostic where
   | invalidTypeForComparison
   /-- A filter leaf reads a field that no iteration in scope binds — measured with an absolute root-level field inside a starred operand's filter. The message names a wildcard because the filter's own binding comes from the star it qualifies. -/
   | noIterationForWildcard
-  | disallowedConstructInFilterCondition
+  | disallowedConstructInSetExpression
   /-- A filter leaf reads a **different** repeatable group's field without a star. Distinct from the class above: the field is repeatable rather than root-level, so an iteration exists and is the wrong one. -/
-  | invalidIterationInFilterCondition
+  | invalidIterationInSetExpression
   /-- Operands drawn from two different comparability categories, each individually admissible. -/
   | varyingTypesNotAllowed
   /-- `FirstFilledValue` received the measured homogeneous two-Confirm operand expansion. -/
@@ -76,7 +76,11 @@ inductive KernelStaticDiagnostic where
   /-- The measured `SumOfProducts` operand writes stars at more than one repeatable level. A sole star at the lowest level remains the admitted spelling. -/
   | wildcardOnlyAtLowestLevelAllowed
   /-- The measured `SumOfProducts` pair adds `Having` to either otherwise-admissible starred operand. This is the carrier's exact refusal; ordinary aggregate lists retain their separate filtered-star route. -/
+  | wildcardAtLowestRepeatableLevelRequired
+  /-- Kernel 31.1.1's `SumOfTerms` entity class: the iteration entity is an unstarred repeatable group. -/
   | wildcardAtLowestLevelRequired
+  /-- Kernel 31.1.1's `SumOfTerms` term class: a term that does not iterate the lowest starred wildcard. -/
+  | noIterationForLowestWildcard
   /-- The measured `SumOfProducts` pair consists of two Number fields below no repeatable level at all. -/
   | repeatableLevelRequired
   /-- A star was written on a **nonrepeatable** group operand, which has no level to reopen. The opposite arm of the class above, and a separate class rather than a shared wildcard refusal. -/
@@ -399,10 +403,6 @@ inductive KernelStaticDiagnostic where
   | invalidConst
   /-- A count-of-value field list mixes kinds where the operator requires string-like operands. Reached after the constant clears the class above, which is what orders the two: a temporal constant against the same list never gets here. -/
   | noStringOrEnum
-  /-- A display-bearing Enumeration compared with a plain String or an effectively textless Enumeration. Identity-only labels remain textless under the direct-comparability gate. -/
-  | invalidCompareEnumToString
-  /-- Two display-bearing Enumerations disagree on a shared-locale stored/display association in either direction. -/
-  | invalidCompareEnumToEnum
   /-- Authored temporal text fails recognition before an extractor's own operand gate. -/
   | invalidDateString
   /-- A direct constant occupies an operand position that forbids it. The enclosing operator identifies the gate. -/
@@ -423,7 +423,7 @@ inductive KernelStaticDiagnostic where
   | parallelIterationInvalid
   /-- A filtered reference itself joins a parallel group, before the body/index global gates
   (ParserService.checkNormalRule). -/
-  | parallelIterationForFilteredEntityNotAllowed
+  | parallelIterationForPathWithAsterisksNotAllowed
   /-- More than one repetition-uniqueness leaf in a complete rule (spec/07 §6). -/
   | invalidCombinationOfRepetitionNotUnique
   /-- Two groups related by parallel iteration whose declared index fields differ in base type. Distinct from the missing-index class: both groups **have** an index here, and only their types disagree. -/
@@ -489,9 +489,9 @@ def kernelCode : KernelStaticDiagnostic → String
   | .invalidTypesForComparison => "MVK_INVALID_TYPES_FOR_COMPARISON"
   | .invalidTypeForComparison => "MVK_INVALID_TYPE_FOR_COMPARISON"
   | .noIterationForWildcard => "MVK_NO_ITERATION_FOR_WILDCARD"
-  | .disallowedConstructInFilterCondition => "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION"
-  | .invalidIterationInFilterCondition =>
-      "MVK_INVALID_ITERATION_IN_FILTER_CONDITION"
+  | .disallowedConstructInSetExpression => "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION"
+  | .invalidIterationInSetExpression =>
+      "MVK_INVALID_ITERATION_IN_SET_EXPRESSION"
   | .varyingTypesNotAllowed => "MVK_VARYING_TYPES_NOT_ALLOWED"
   | .noBoolyAllowed => "MVK_NO_BOOLY_ALLOWED"
   | .invalidCompareToYes => "MVK_INVALID_COMPARE_TO_YES"
@@ -511,8 +511,10 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noWildcard => "MVK_NO_WILDCARD"
   | .wildcardOnlyAtLowestLevelAllowed =>
       "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED"
-  | .wildcardAtLowestLevelRequired =>
-      "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED"
+  | .wildcardAtLowestRepeatableLevelRequired =>
+      "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED"
+  | .wildcardAtLowestLevelRequired => "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED"
+  | .noIterationForLowestWildcard => "MVK_NO_ITERATION_FOR_LOWEST_WILDCARD"
   | .repeatableLevelRequired => "MVK_REPEATABLE_LEVEL_REQUIRED"
   | .invalidWildcard => "MVK_INVALID_WILDCARD"
   | .noWildcardsGAllowed => "MVK_NO_WILDCARDS_G_ALLOWED"
@@ -681,8 +683,6 @@ def kernelCode : KernelStaticDiagnostic → String
   | .noStringOrNumberForAdd => "MVK_NO_STRING_OR_NUMBER_FOR_ADD"
   | .invalidConst => "MVK_INVALID_CONST"
   | .noStringOrEnum => "MVK_NO_STRING_OR_ENUM"
-  | .invalidCompareEnumToString => "MVK_INVALID_COMPARE_ENUM_TO_STRING"
-  | .invalidCompareEnumToEnum => "MVK_INVALID_COMPARE_ENUM_TO_ENUM"
   | .invalidDateString => "MVK_INVALID_DATE_STRING"
   | .noConst => "MVK_NO_CONST"
   | .paramSizeInvalidTwo => "MVK_PARAMSIZE_INVALID_2"
@@ -692,7 +692,7 @@ def kernelCode : KernelStaticDiagnostic → String
   | .notInSamePath => "MVK_NOT_IN_SAME_PATH"
   | .parallelIterationNotAllowed => "MVK_PARALLEL_ITERATION_NOT_ALLOWED"
   | .parallelIterationInvalid => "MVK_PARALLEL_ITERATION_INVALID"
-  | .parallelIterationForFilteredEntityNotAllowed => "MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED"
+  | .parallelIterationForPathWithAsterisksNotAllowed => "MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED"
   | .invalidCombinationOfRepetitionNotUnique => "MVK_INVALID_COMBINATION_OF_REPETITON_NOT_UNIQUE"
   | .indexTypeInconsistent => "MVK_INDEX_TYPE_INCONSISTENT"
   | .invalidFieldInParameter => "INVALID_FIELD_IN_PARAMETER"
@@ -726,7 +726,7 @@ def all : List KernelStaticDiagnostic :=
   [.invalidStringConstantForEnumComparison,
     .onlyStringEnumNumberDateAllowed, .onlyStringEnumNumberAllowed,
     .invalidTypesForComparison, .invalidTypeForComparison,
-    .noIterationForWildcard, .invalidIterationInFilterCondition, .disallowedConstructInFilterCondition,
+    .noIterationForWildcard, .invalidIterationInSetExpression, .disallowedConstructInSetExpression,
     .numberAndNonNumber, .onlyStringEnumNumberCmpDateAllowed,
     .varyingTypesNotAllowed, .noBoolyAllowed, .invalidCompareToYes,
     .invalidCompareToYesNo,
@@ -734,8 +734,8 @@ def all : List KernelStaticDiagnostic :=
     .paramSizeInvalidN, .paramSizeInvalidFN,
     .paramSizeInvalidGN, .paramSizeInvalid1, .paramSizeInvalid2, .duplicateParam1, .duplicateParam2,
     .differentGroups, .noWildcard, .wildcardOnlyAtLowestLevelAllowed,
-    .wildcardAtLowestLevelRequired, .repeatableLevelRequired,
-    .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
+    .wildcardAtLowestRepeatableLevelRequired, .wildcardAtLowestLevelRequired, .noIterationForLowestWildcard,
+    .repeatableLevelRequired, .invalidWildcard, .noWildcardsGAllowed, .noWildcardsAllowed,
     .noGroupsAllowed, .noStringOrEnumOrExtEnum, .noEmpty, .dateFormatsNotCompatible,
     .dateAndNonDate,
     .invalidEntity, .rootGroupReferenced, .rootGroupWithOtherParameters,
@@ -790,10 +790,10 @@ def all : List KernelStaticDiagnostic :=
     .indexForErrorTextInvalid,
     .missingYear, .noDigitPattern, .onlyConstantsUsed, .extractOpNotAllowedForFourParamDateConstruct,
     .nonNumeric, .noDateConstant, .noTypeYesOrYesNo, .noTypeYesNo, .invalidType, .invalidInterval, .noNumberForCalc, .noStringOrNumberForAdd,
-    .invalidCompareEnumToString, .invalidCompareEnumToEnum, .invalidDateString, .noConst,
+    .invalidDateString, .noConst,
     .paramSizeInvalidTwo, .pointInA12Model,
-    .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .parallelIterationNotAllowed, .parallelIterationInvalid, .parallelIterationForFilteredEntityNotAllowed,
-    .invalidCombinationOfRepetitionNotUnique,
+    .notInRuleGroup, .noFieldsAllowed, .notInSamePath, .parallelIterationNotAllowed, .parallelIterationInvalid,
+    .parallelIterationForPathWithAsterisksNotAllowed, .invalidCombinationOfRepetitionNotUnique,
     .indexTypeInconsistent,
     .invalidFieldInParameter, .illegalSemanticIndex, .conditionNoBaseYear, .noString,
     .errorEmptyPrecondition, .errorIndexAsCalculatedField, .enumValueWithInvalidCharacter,

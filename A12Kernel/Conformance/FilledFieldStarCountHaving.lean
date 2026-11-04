@@ -544,7 +544,7 @@ example : countWith? (some flagOrTagFilled) [
    resolution and then fails the filter's scope gate, so one in-scope conjunct beside it admits the
    whole condition, while a field inside a **sibling repeatable** group needs an iteration the filter
    cannot supply and is refused whatever else the condition carries. The Kernel reports
-   `MVK_NO_ITERATION_FOR_WILDCARD` for the first and `MVK_INVALID_ITERATION_IN_FILTER_CONDITION` for
+   `MVK_NO_ITERATION_FOR_WILDCARD` for the first and `MVK_INVALID_ITERATION_IN_SET_EXPRESSION` for
    the second, and a star inside the filter condition — the spelling that would supply the missing
    iteration — is itself refused `MVK_NO_WILDCARDS_ALLOWED`
    ([checkpoint](../../docs/sources/having-filter-probes.md#src-filter-scope-versus-iteration-gates)).
@@ -610,7 +610,7 @@ example : siblingError? (.and (filledAt ["Form", "Other"] "Fee") (filledAt ["For
    refused whatever else the condition carries, while `$` clears the iteration gate and leaves the
    satisfiable scope gate. Narrowed at reviewed a12-dmkits `ede777e55`
    ([reconciliation](../../docs/sources/computation-placement-and-constant-probes.md#src-2026-09-05-second-reconciliation)).
-   The Kernel codes are `MVK_INVALID_ITERATION_IN_FILTER_CONDITION` for the refusals below and
+   The Kernel codes are `MVK_INVALID_ITERATION_IN_SET_EXPRESSION` for the refusals below and
    `MVK_NO_ITERATION_FOR_WILDCARD` for the scope gate; a marker with no enclosing iteration to
    capture draws `MVK_NO_WILDCARD` instead, which this error algebra reaches through the same arm
    with an **empty** available-environment payload — the two Kernel codes are one arm here, told

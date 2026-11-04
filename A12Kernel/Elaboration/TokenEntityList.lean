@@ -44,11 +44,10 @@ structure CheckedTokenField (model : FlatModel) where
   declaration : FlatFieldDecl
   projectionRef : EnumerationProjectionRef
   operand : FlatTextFieldOperand
-  profile : DirectComparableField
   /-- Whether the consumer admits a raw String member (`toTokenFieldComparison?`). -/
   admitRaw : Bool := false
   operandOwned :
-    declaration.toTokenFieldComparison? projectionRef admitRaw = some (operand, profile)
+    declaration.toTokenFieldComparison? projectionRef admitRaw = some operand
   admitted : model.ownsField operand.field = true
 
 /-- One starred String or stored/category Enumeration declaration with its exact optional checked filter. -/
@@ -56,11 +55,9 @@ structure CheckedTokenStarSource (model : FlatModel) where
   source : CheckedStarFieldPath model
   projectionRef : EnumerationProjectionRef
   operand : FlatTextFieldOperand
-  profile : DirectComparableField
   admitRaw : Bool := false
   operandOwned :
-    source.declaration.toTokenFieldComparison? projectionRef admitRaw =
-      some (operand, profile)
+    source.declaration.toTokenFieldComparison? projectionRef admitRaw = some operand
   declaringGroup : GroupPath
   bindingGroup : GroupPath := declaringGroup
   filter : Option (CheckedStarHaving model source bindingGroup)
@@ -248,7 +245,7 @@ end TokenEntityElabError
 
 private def checkedTokenOperand? (declaration : FlatFieldDecl)
     (projectionRef : EnumerationProjectionRef) (admitRaw : Bool) :
-    Option (FlatTextFieldOperand × DirectComparableField) :=
+    Option FlatTextFieldOperand :=
   declaration.toTokenFieldComparison? projectionRef admitRaw
 
 def certifyDirectTokenOperand (model : FlatModel)
@@ -271,13 +268,12 @@ def certifyDirectTokenOperand (model : FlatModel)
           else
             throw (.fieldKindMismatch declaration.path
               declaration.policy.kind.surfaceKind)
-  | some (operand, profile) =>
+  | some operand =>
       if hAdmitted : model.ownsField operand.field = true then
         pure {
           declaration
           projectionRef
           operand
-          profile
           admitRaw
           operandOwned := hOperand
           admitted := hAdmitted }
@@ -305,7 +301,7 @@ def certifyStarTokenOperand (declaringGroup : GroupPath)
           else
             throw (.fieldKindMismatch source.declaration.path
               source.declaration.policy.kind.surfaceKind)
-  | some (operand, profile) => do
+  | some operand => do
       let filter ← match having with
         | none => pure none
         | some authored =>
@@ -315,7 +311,6 @@ def certifyStarTokenOperand (declaringGroup : GroupPath)
         source
         projectionRef
         operand
-        profile
         admitRaw
         operandOwned := hOperand
         declaringGroup

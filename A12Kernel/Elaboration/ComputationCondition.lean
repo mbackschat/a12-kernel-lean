@@ -150,7 +150,7 @@ private def textGuardError : ElabError → ComputationConditionElabError
 
 private def FlatModel.resolveComputationTextOperand (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (surface : SurfaceTextFieldOperand) :
-    Except ElabError (FlatFieldDecl × FlatTextFieldOperand × DirectComparableField) := do
+    Except ElabError (FlatFieldDecl × FlatTextFieldOperand) := do
   let declaration ← (do
     let declaration ← displaceGroupRead
       (model.resolveComputationOperandUnchecked declaringGroup targetGroup surface.reference)
@@ -160,26 +160,23 @@ private def FlatModel.resolveComputationTextOperand (model : FlatModel)
   let resolved := match surface.projectionRef with
     | .stored => declaration.toTextFieldComparison?
     | projection => declaration.toEnumerationTextFieldComparison? projection
-  let some (operand, profile) := resolved
+  let some operand := resolved
     | throw (.textFieldOperandKindMismatch declaration.path declaration.policy.kind.surfaceKind)
-  pure (declaration, operand, profile)
+  pure (declaration, operand)
 
 private def FlatModel.elaborateComputationTextGuard (model : FlatModel)
     (declaringGroup targetGroup : GroupPath) (op : SurfaceComparisonOp)
     (left : SurfaceTextFieldOperand) (right : Sum SurfaceTextFieldOperand String) :
     Except ElabError ComputationCondition := do
-  let (declaration, leftOperand, leftProfile) ←
+  let (declaration, leftOperand) ←
     model.resolveComputationTextOperand declaringGroup targetGroup left
-  let right : Sum (FlatFieldDecl × FlatTextFieldOperand × DirectComparableField) String ←
+  let right : Sum (FlatFieldDecl × FlatTextFieldOperand) String ←
     match right with
     | .inl operand => Sum.inl <$> model.resolveComputationTextOperand declaringGroup targetGroup operand
     | .inr literal => pure (.inr literal)
   let some equality := op.toEquality? | throw (.unsupportedOperator op)
   let comparison ← match right with
-    | .inl (rightDeclaration, rightOperand, rightProfile) =>
-        match classifyDirectFieldComparison leftProfile rightProfile with
-        | .accepted => pure (FlatComparison.textFields equality leftOperand rightOperand)
-        | .rejected error => throw (.enumerationComparability declaration.path rightDeclaration.path error)
+    | .inl (_, rightOperand) => pure (FlatComparison.textFields equality leftOperand rightOperand)
     | .inr expected => match leftOperand with
         | .string field => pure (.string equality field expected)
         | .enumeration operand =>

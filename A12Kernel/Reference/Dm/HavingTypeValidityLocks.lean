@@ -368,7 +368,7 @@ private def otherGroup : FlatModel := { (model {}) with
   repeatableGroups := (model {}).repeatableGroups ++ [{ level := 20, path := ["Form", "Other"], repeatability := some 2 }] }
 
 example : admission "[Rows/N] > 0 And Valid(Other/Tag, \"Code\")" otherGroup =
-    .refused (some .invalidIterationInFilterCondition) := by native_decide
+    .refused (some .invalidIterationInSetExpression) := by native_decide
 
 example : HavingFixture.referencesFor "Valid(Tag, \"Code\")" = some (true, false) ∧
     HavingFixture.referencesFor "[N] > 0 And Invalid($Tag, \"Code\")" = some (true, true) := by native_decide

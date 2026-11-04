@@ -98,7 +98,7 @@ example : [false, true].all (fun row =>
 example : [false, true].all (fun row =>
     let preceding := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "
     (numericSources "Rows/Stamp").all (fun source =>
-      let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION" else "MVK_NO_WILDCARD"
+      let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION" else "MVK_NO_WILDCARD"
       result (preceding ++ source ++ " > 0") row == (expected, expected)) &&
     (numericSources "$Rows/Stamp").all (fun source =>
       result (preceding ++ source ++ " > 0") row == ("MVK_INVALID_OUTER_ITERATION", "MVK_INVALID_OUTER_ITERATION"))) = true := by native_decide
@@ -190,7 +190,7 @@ example : [false, true].all (fun row =>
 
 example : [false, true].all (fun row =>
     let preceding := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "
-    let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION" else "MVK_NO_WILDCARD"
+    let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION" else "MVK_NO_WILDCARD"
     units.all (fun (unit, field) =>
       result (preceding ++ "YearFromDate(Add" ++ unit ++ "(Rows/" ++ field ++ ",1)) > 0") row == (expected, expected) &&
       result (preceding ++ "DifferenceIn" ++ unit ++ "(Rows/" ++ field ++ ",Rows/" ++ field ++ ") > 0") row == (expected, expected)) &&
@@ -287,7 +287,7 @@ example : [false, true].all (fun row =>
 
 private def constructorExitCases (row : Bool) : List (String × String) :=
   let preceding := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "
-  let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION" else "MVK_NO_WILDCARD"
+  let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION" else "MVK_NO_WILDCARD"
   (constructors "").map (fun body => (preceding ++ body, expected)) ++ [
     (preceding ++ "Time($Rows/Part) == \"08:00:00\"", "MVK_INVALID_OUTER_ITERATION"),
     ("Time(HoursFromTime(AddHours(Rows/Stamp,Sum(Rows*/N Having FieldFilled(Rows/N)))),Rows/Part) == \"08:00:00\"", expected),
@@ -371,7 +371,7 @@ example : [false, true].all (fun row =>
     ["DateRange(Rows/Calendar,Rows/Calendar) == [Rows/Span]",
       "Valid(Date(Rows/Part,\"03\",\"2024\"))", "Invalid(Date(Rows/Part,\"03\",\"2024\"))"].all (fun body =>
         result (preceding ++ body) row rangeModel ==
-          (if row then ("MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION")
+          (if row then ("MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION", "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION")
            else ("MVK_NO_WILDCARD", "MVK_NO_WILDCARD"))) &&
     ["DateRange($Rows/Calendar,Rows/Calendar) == [Rows/Span]",
       "Valid(Date($Rows/Part,\"03\",\"2024\"))", "Invalid(Date($Rows/Part,\"03\",\"2024\"))"].all (fun body =>

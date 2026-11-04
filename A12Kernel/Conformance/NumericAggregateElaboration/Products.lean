@@ -134,10 +134,10 @@ example :
         some "MVK_DIFFERENT_GROUPS" ∧
       productDiagnosticCode? aggregateStar (productStar "Price")
           (leftHaving := some productHaving) =
-        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        some "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       productDiagnosticCode? aggregateStar (productStar "Price")
           (rightHaving := some productHaving) =
-        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        some "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       productDiagnosticCode? aggregateStar (productStar "Price") = none ∧
       productDiagnosticCode? packagedWeightStar packagedWeightStar = none ∧
       productDiagnosticCode? (nestedProductStar false) (nestedProductStar false)
@@ -154,7 +154,7 @@ example :
     productDiagnosticCode? (nestedProductStar true)
         (plainProductPath ["Form", "Totals"] "Carried") = some "MVK_DIFFERENT_GROUPS" ∧
       productDiagnosticCode? (nestedProductStar true) (nestedProductStar true)
-          (leftHaving := some productHaving) = some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+          (leftHaving := some productHaving) = some "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       productDiagnosticCode? (nestedProductStar true) (nestedProductStar true) ["Form", "Totals"] =
         some "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ∧
       productDiagnosticCode? (nestedProductStar true) (nestedProductStar true) ["Form", "Rows"] =
@@ -193,7 +193,7 @@ example :
           ["Form", "Totals"] (writtenGroup := ["Form"]) = some "MVK_DIFFERENT_GROUPS" ∧
       productDiagnosticCode? (nestedProductStar true) (nestedProductStar true) ["Form", "Totals"]
           (leftHaving := some productHaving) (writtenGroup := ["Form"]) =
-        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" := by
+        some "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" := by
   native_decide
 
 /- **An unstarred operand on a level the rule binds draws the lowest-star class, with or without a
@@ -205,15 +205,15 @@ example :
     let plain := plainProductPath ["Form", "Rows"]
     let relative (field : String) : SurfaceStarFieldPath := { base := .relative 0, groups := [], field }
     productDiagnosticCode? (plain "Amount") (productStar "Price") (writtenGroup := ["Form", "Rows"]) =
-        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        some "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       productDiagnosticCode? (productStar "Price") (plain "Amount") (writtenGroup := ["Form", "Rows"]) =
-        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        some "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       productDiagnosticCode? (plain "Amount") (plain "Price") (writtenGroup := ["Form", "Rows"]) =
-        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        some "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       productDiagnosticCode? (relative "Amount") (productStar "Price") ["Form", "Rows"] =
-        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        some "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       productDiagnosticCode? (relative "Amount") (relative "Price") ["Form", "Rows"] =
-        some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        some "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       productDiagnosticCode? (plain "Amount") (plainProductPath ["Form"] "UnsignedA")
           (writtenGroup := ["Form", "Rows"]) = some "MVK_DIFFERENT_GROUPS" ∧
       productDiagnosticCode? (plain "Amount") (productStar "Price") = some "MVK_NO_WILDCARD" ∧
@@ -228,7 +228,7 @@ example :
     productDiagnosticCode? (nestedProductStar true) (nestedProductStar true)
         (rightHaving := some productHaving) = some "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ∧
       productDiagnosticCode? (nestedProductStar true) (nestedProductStar true)
-        (leftHaving := some productHaving) = some "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" := by
+        (leftHaving := some productHaving) = some "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" := by
   native_decide
 
 /- The five external classes remain independently enumerable rather than collapsing static
@@ -239,8 +239,8 @@ example :
       KernelStaticDiagnostic.noWildcard.kernelCode = "MVK_NO_WILDCARD" ∧
       KernelStaticDiagnostic.wildcardOnlyAtLowestLevelAllowed.kernelCode =
         "MVK_WILDCARD_ONLY_AT_LOWEST_LEVEL_ALLOWED" ∧
-      KernelStaticDiagnostic.wildcardAtLowestLevelRequired.kernelCode =
-        "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+      KernelStaticDiagnostic.wildcardAtLowestRepeatableLevelRequired.kernelCode =
+        "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       KernelStaticDiagnostic.repeatableLevelRequired.kernelCode =
         "MVK_REPEATABLE_LEVEL_REQUIRED" := by
   native_decide

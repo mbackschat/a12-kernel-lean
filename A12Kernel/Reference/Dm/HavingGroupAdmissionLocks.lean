@@ -93,7 +93,7 @@ example : [false, true].all (fun row =>
     result "NumberOfFilledGroups(Rows/Lines*) > 0" row == admitted) = true := by native_decide
 
 example : [false, true].all (fun row =>
-    let forbidden := KernelStaticDiagnostic.disallowedConstructInFilterCondition.kernelCode
+    let forbidden := KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
     let unbound := KernelStaticDiagnostic.noWildcard.kernelCode
     let outer := KernelStaticDiagnostic.invalidOuterIteration.kernelCode
     let preceding := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "

@@ -8,7 +8,7 @@ private def diagnostic (filter : String) :=
 
 example : ["RepetitionNotUnique(Rows/N)", "RepetitionNotUnique(Rows/N, Rows/Tag)",
     "RepetitionNotUnique(Rows/N @From Rows)"].all (fun filter =>
-    diagnostic filter == some .disallowedConstructInFilterCondition &&
+    diagnostic filter == some .disallowedConstructInSetExpression &&
     HavingFixture.admissions HavingFixture.model filter == (false, false)) = true := by native_decide
 
 example : diagnostic "RepetitionNotUnique(Expected)" = some .repeatableGroupMissing ∧
@@ -41,7 +41,7 @@ example : [.boolean, .confirm, .enumeration, .dateRange,
     .temporal .time (TemporalComponents.ofFormat "HH:mm:ss")].all (fun kind =>
     (typedModel kind).validate.isOk &&
     HavingFixture.filterDiagnostic? (typedModel kind) "RepetitionNotUnique(Rows/Tag)" ==
-      some .disallowedConstructInFilterCondition) = true := by native_decide
+      some .disallowedConstructInSetExpression) = true := by native_decide
 
 example : HavingFixture.filterDiagnostic? (typedModel .enumeration)
     "RepetitionNotUnique(Rows, Rows/Tag->Label)" = some .categoryNotAllowed ∧
@@ -62,11 +62,11 @@ example : rawModel.validate.isOk = true ∧
 example : HavingFixture.filterDiagnostic? HavingFixture.model "RepetitionNotUnique($Rows/N @From $Rows)"
       (bindingGroup := ["Form", "Rows"]) = some .noIterationForWildcard ∧
     HavingFixture.filterDiagnostic? HavingFixture.model "RepetitionNotUnique($Rows/N @From Rows)"
-      (bindingGroup := ["Form", "Rows"]) = some .disallowedConstructInFilterCondition ∧
+      (bindingGroup := ["Form", "Rows"]) = some .disallowedConstructInSetExpression ∧
     HavingFixture.filterDiagnostic? HavingFixture.model "RepetitionNotUnique($Rows/N, Rows/N)"
-      (bindingGroup := ["Form", "Rows"]) = some .disallowedConstructInFilterCondition ∧
+      (bindingGroup := ["Form", "Rows"]) = some .disallowedConstructInSetExpression ∧
     HavingFixture.filterDiagnostic? HavingFixture.model "WiederholungNichtEindeutig(Rows/N @Von Rows)" .german =
-      some .disallowedConstructInFilterCondition := by native_decide
+      some .disallowedConstructInSetExpression := by native_decide
 
 private def branchedModel : FlatModel := { HavingFixture.model with
   fields := HavingFixture.model.fields ++ [
@@ -81,9 +81,9 @@ private def branchedModel : FlatModel := { HavingFixture.model with
 example : branchedModel.validate.isOk = true ∧
     HavingFixture.filterDiagnostic? branchedModel "RepetitionNotUnique(Rows/N, Other/N)" = some .notInSamePath ∧
     HavingFixture.filterDiagnostic? branchedModel "RepetitionNotUnique(Other/N @From Rows)" = some .entityNotInGroup ∧
-    HavingFixture.filterDiagnostic? branchedModel "RepetitionNotUnique(Other/N)" = some .invalidIterationInFilterCondition ∧
-    HavingFixture.filterDiagnostic? branchedModel "RepetitionNotUnique(Rows/A/N, Rows/B/N)" = some .disallowedConstructInFilterCondition ∧
-    HavingFixture.filterDiagnostic? branchedModel "RepetitionNotUnique(Rows/A/N, Rows/B/N @From Rows)" = some .disallowedConstructInFilterCondition := by native_decide
+    HavingFixture.filterDiagnostic? branchedModel "RepetitionNotUnique(Other/N)" = some .invalidIterationInSetExpression ∧
+    HavingFixture.filterDiagnostic? branchedModel "RepetitionNotUnique(Rows/A/N, Rows/B/N)" = some .disallowedConstructInSetExpression ∧
+    HavingFixture.filterDiagnostic? branchedModel "RepetitionNotUnique(Rows/A/N, Rows/B/N @From Rows)" = some .disallowedConstructInSetExpression := by native_decide
 
 example : diagnostic "RepetitionNotUnique(Rows->Label)" = some .noGroupsAllowed ∧
     diagnostic "RepetitionNotUnique(Rows/N, Rows/N, Rows->Label)" = some .noGroupsAllowed := by native_decide
@@ -146,8 +146,8 @@ private def orderedCases : List (String × String) := [
   ("RepetitionNotUnique(Rows/Raw @From Rows*/N Having FieldFilled(Rows/N))", "MVK_INVALID_RAW_TYPE"),
   ("RepetitionNotUnique(Rows/N @From Rows*/N Having FieldFilled(Rows/N))", "MVK_NO_FIELDS_ALLOWED"),
   ("RepetitionNotUnique(Rows/N, Rows/N @From Rows*/N Having [Rows/N] > [Rows/Tag])", "MVK_INVALID_TYPE_FOR_COMPARISON"),
-  ("RepetitionNotUnique(Rows/N)", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION"),
-  ("RepetitionNotUnique(Rows/N @From Rows)", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION"),
+  ("RepetitionNotUnique(Rows/N)", "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION"),
+  ("RepetitionNotUnique(Rows/N @From Rows)", "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION"),
   ("RepetitionNotUnique(Rows/N For \"keep\")", "MVK_SEMANTIC_INDEX_NOT_ALLOWED"),
   ("RepetitionNotUnique(Rows/N @From Rows For \"keep\")", "MVK_SEMANTIC_INDEX_NOT_ALLOWED"),
   ("RepetitionNotUnique(Rows/N For \"keep\", Missing)", "MVK_INVALID_ENTITY"),
@@ -174,7 +174,7 @@ example : [false, true].all (fun row => orderedCases.all (fun (body, expected) =
 
 example : [false, true].all (fun row =>
     let preceding := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "
-    let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION" else "MVK_NO_WILDCARD"
+    let expected := if row then "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION" else "MVK_NO_WILDCARD"
     indexedResult (preceding ++ "RepetitionNotUnique(Rows/N @From Rows)") row == (expected, expected) &&
     indexedResult "RepetitionNotUnique(Rows*/N Having FieldFilled(Rows/N), Rows/N)" row ==
       (if row then ("MVK_NO_WILDCARDS_ALLOWED", "MVK_NO_WILDCARDS_ALLOWED") else ("MVK_NO_WILDCARD", "MVK_NO_WILDCARD")) &&
@@ -202,9 +202,9 @@ private def policyModel : FlatModel := { indexedModel with
 example : policyModel.validate.isOk = true := by native_decide
 
 private def policyCases : List (String × String) := [
-  ("RepetitionNotUnique(Rows/Tag)", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION"),
-  ("RepetitionNotUnique(Rows/Tag @From Rows)", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION"),
-  ("RepetitionNotUnique(Payments/PayRef)", "MVK_INVALID_ITERATION_IN_FILTER_CONDITION"),
+  ("RepetitionNotUnique(Rows/Tag)", "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION"),
+  ("RepetitionNotUnique(Rows/Tag @From Rows)", "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION"),
+  ("RepetitionNotUnique(Payments/PayRef)", "MVK_INVALID_ITERATION_IN_SET_EXPRESSION"),
   ("RepetitionNotUnique(Insured)", "MVK_NO_GROUPS_ALLOWED"),
   ("RepetitionNotUnique(Rows*/Tag)", "MVK_NO_WILDCARDS_ALLOWED"),
   ("RepetitionNotUnique(Payments*/PayRef)", "MVK_NO_WILDCARDS_ALLOWED"),

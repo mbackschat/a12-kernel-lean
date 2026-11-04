@@ -196,7 +196,7 @@ example :
 
 /- This vocabulary is disjoint from the reported static-diagnostic and never-reported vocabularies,
    so a consumer switching over all three keeps them apart. The load-bearing pair is
-   `MVK_INVALID_ITERATION` against the consistency gate's `MVK_INVALID_ITERATION_IN_FILTER_CONDITION`:
+   `MVK_INVALID_ITERATION` against the consistency gate's `MVK_INVALID_ITERATION_IN_SET_EXPRESSION`:
    one is a prefix of the other, and they arrive from different services on different questions, so a
    consumer matching by prefix conflates a dyn-enum refusal with a parser one. -/
 example :
@@ -204,8 +204,8 @@ example :
         KernelStaticDiagnostic.all.all (·.kernelCode != d.catalogKey) &&
           A12Kernel.UnraisedDiagnostic.all.all (·.catalogKey != d.catalogKey)) = true ∧
       DynEnumRefusal.targetIteration.catalogKey ≠
-        KernelStaticDiagnostic.invalidIterationInFilterCondition.kernelCode ∧
-      KernelStaticDiagnostic.invalidIterationInFilterCondition.kernelCode.startsWith
+        KernelStaticDiagnostic.invalidIterationInSetExpression.kernelCode ∧
+      KernelStaticDiagnostic.invalidIterationInSetExpression.kernelCode.startsWith
         DynEnumRefusal.targetIteration.catalogKey = true := by
   native_decide
 

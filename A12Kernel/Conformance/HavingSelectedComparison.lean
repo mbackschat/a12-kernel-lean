@@ -39,7 +39,7 @@ private def enumRef (projected : Bool) : HavingSelectedRef := .text {
   origin := .inner
   operand := match enumField.toEnumerationTextFieldComparison?
     (if projected then .category "Label" else .stored) with
-    | some (operand, _) => operand
+    | some operand => operand
     | none => .string { id := 1 } }
 private def group : HavingEntityExtent := .group {
   path := ["Form", "Values"], origin := .path, boundRepeatableScope := [] }

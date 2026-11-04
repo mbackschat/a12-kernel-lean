@@ -127,17 +127,6 @@ example : isAccepted complete := by native_decide
 private def checkedComplete : CheckedEnumerationDeclaration :=
   { declaration := complete, wellFormed := by rfl }
 
-example : checkedComplete.displayProfile.hasEffectiveDisplay := by native_decide
-
-private def identityLabels : EnumerationDeclaration :=
-  declaration ["A", "B"]
-    [display "en" "A" "A", display "en" "B" "B"]
-
-private def checkedIdentityLabels : CheckedEnumerationDeclaration :=
-  { declaration := identityLabels, wellFormed := by rfl }
-
-example : !checkedIdentityLabels.displayProfile.hasEffectiveDisplay := by native_decide
-
 example : checkedComplete.storedProjection.tokenFor? "B" = some "B" := by native_decide
 
 example : checkedComplete.categoryTokenFor? "Kind" "B" = some "Shared" := by native_decide

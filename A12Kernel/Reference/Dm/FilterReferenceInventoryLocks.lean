@@ -32,24 +32,24 @@ example : model.validate.isOk = true ∧
     walk "Rows*/N" "Sum(Rows*/Lines*/Qty) > 0 And [Rows/N] > 1" = some none := by native_decide
 
 example : walk "Rows*/N" "Sum(Rows*/Lines/Qty) > 0 And [Rows/N] > 1" =
-      some (some .invalidIterationInFilterCondition) ∧
+      some (some .invalidIterationInSetExpression) ∧
     walk "Rows*/Lines*/Qty" "Sum(Rows*/Lines/Qty) > 0 And [Rows/Lines/Qty] > 1" =
       some (some .noWildcard) := by native_decide
 
 example : walk "Rows*/N" "FieldFilled(Rows/N For \"keep\")" = some (some .semanticIndexNotAllowed) ∧
     walk "Rows*/N" "FieldFilled($Rows/N For \"keep\") And FieldFilled(Rows/N)" = some none ∧
     walk "Rows*/N" "FieldFilled($Rows/N For Parties/Tag) And FieldFilled(Rows/N)" =
-      some (some .invalidIterationInFilterCondition) := by native_decide
+      some (some .invalidIterationInSetExpression) := by native_decide
 
 example : walk "Rows*/N" "Sum(Rows*/N Having [Parties/Tag] == \"keep\") > 0 And [Rows/N] > 1" =
-      some (some .invalidIterationInFilterCondition) ∧
+      some (some .invalidIterationInSetExpression) ∧
     walk "Rows*/N" "Sum(Rows*/N Having [Rows/N] > 0) > 0 And [Rows/N] > 1" =
-      some (some .disallowedConstructInFilterCondition) := by native_decide
+      some (some .disallowedConstructInSetExpression) := by native_decide
 
 example : walk "Rows*/N" "RepetitionNotUnique(Rows/N @From Parties)" =
-      some (some .invalidIterationInFilterCondition) ∧
+      some (some .invalidIterationInSetExpression) ∧
     walk "Rows*/N" "RepetitionNotUnique(Rows/N @From Rows)" =
-      some (some .disallowedConstructInFilterCondition) := by native_decide
+      some (some .disallowedConstructInSetExpression) := by native_decide
 
 /- A key over a fixed group's index has no repetition level, yet the walk refuses it as it refuses a
 repeatable group's key, where its group sits on the read's path
@@ -77,7 +77,7 @@ private def admission (body : String) (fixture : FlatModel := model) : Option St
 example : admission "FieldFilled(Rows/N)" = some "admitted" ∧
     admission "Sum(Rows*/N) > 0" = some KernelStaticDiagnostic.noIterationForWildcard.kernelCode ∧
     admission "RepetitionNotUnique(Rows/N)" =
-      some KernelStaticDiagnostic.disallowedConstructInFilterCondition.kernelCode := by native_decide
+      some KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode := by native_decide
 
 example : ["And", "Or"].all (fun connective =>
     admission ("[Rows/Tag] > \"keep\" " ++ connective ++ " FieldFilled(Rows/N For \"keep\")") ==
@@ -104,7 +104,7 @@ example : ["And", "Or"].all (fun connective =>
 
 example : ["And", "Or"].all (fun connective =>
     admission ("[Parties/Tag] == \"keep\" " ++ connective ++ " FieldFilled(Rows/N For \"keep\")") ==
-      some KernelStaticDiagnostic.invalidIterationInFilterCondition.kernelCode &&
+      some KernelStaticDiagnostic.invalidIterationInSetExpression.kernelCode &&
     admission ("FieldFilled(Rows/N For \"keep\") " ++ connective ++ " [Parties/Tag] == \"keep\"") ==
       some KernelStaticDiagnostic.semanticIndexNotAllowed.kernelCode) = true := by native_decide
 
@@ -410,10 +410,10 @@ private def filteredKeyCases : List (String × KernelStaticDiagnostic) := [
   ("Rows*/Tag Having [$Rows/Tag] > \"keep\"", .semanticIndexKeyInvalidIteration),
   ("Rows*/Tag Having FieldFilled(Rows/Tag For Missing)", .invalidEntity),
   ("Rows*/Tag Having FieldFilled(Rows/Tag For Rows)", .semanticIndexKeyNotField),
-  ("Rows*/Tag Having RepetitionNotUnique(Rows/Tag)", .disallowedConstructInFilterCondition),
+  ("Rows*/Tag Having RepetitionNotUnique(Rows/Tag)", .disallowedConstructInSetExpression),
   ("$Rows*/Tag Having FieldFilled(Expected)", .invalidOuterIteration),
   ("$Rows*/Tag Having [Rows/Tag] > \"keep\"", .invalidTypeForComparison),
-  ("Rows*/Tag Having FieldFilled(Parties/Tag)", .invalidIterationInFilterCondition),
+  ("Rows*/Tag Having FieldFilled(Parties/Tag)", .invalidIterationInSetExpression),
   ("Rows*/Tag Having FieldFilled(Expected)", .noIterationForWildcard),
   ("Rows*/Tag Having [Rows/Tag] > \"keep\"", .invalidTypeForComparison),
   ("Expected Having FieldFilled(Expected)", .wildcardsRequired),
@@ -424,7 +424,7 @@ private def filteredKeyCases : List (String × KernelStaticDiagnostic) := [
   ("$Rows*/Tag Having FieldFilled(Rows/Tag)", .invalidOuterIteration),
   ("Rows Having [Missing] > 0", .noGroupsAllowed),
   ("Rows*/Tag->Missing Having FieldFilled(Rows/Tag)", .noEnumeration),
-  ("Rows*/Tag->Missing Having FieldFilled(Parties/Tag)", .invalidIterationInFilterCondition),
+  ("Rows*/Tag->Missing Having FieldFilled(Parties/Tag)", .invalidIterationInSetExpression),
   ("Missing*/Tag Having [Expected] > \"keep\"", .invalidEntity)]
 
 example : ["FieldFilled", "FieldNotFilled"].all (fun operator => filteredKeyCases.all fun (key, diagnostic) =>
@@ -448,8 +448,8 @@ example : capturedKeyBodyLeaves.all (fun leaf =>
       (KernelStaticDiagnostic.semanticIndexKeyStarred.kernelCode, KernelStaticDiagnostic.semanticIndexKeyStarred.kernelCode)) = true := by native_decide
 
 private def productFilterCases : List (String × KernelStaticDiagnostic) := [
-  ("Rows*/N Having FieldFilled(Rows/N), Rows*/N", .wildcardAtLowestLevelRequired),
-  ("Rows*/N, Rows*/N Having FieldFilled(Rows/N)", .wildcardAtLowestLevelRequired),
+  ("Rows*/N Having FieldFilled(Rows/N), Rows*/N", .wildcardAtLowestRepeatableLevelRequired),
+  ("Rows*/N, Rows*/N Having FieldFilled(Rows/N)", .wildcardAtLowestRepeatableLevelRequired),
   ("Rows*/N Having FieldFilled(Rows/N For Expected), Rows*/N", .semanticIndexNotAllowed),
   ("Rows*/N, Rows*/N Having FieldFilled(Rows/N For Expected)", .semanticIndexNotAllowed),
   ("Missing, Rows*/N Having FieldFilled(Rows/N For Expected)", .invalidEntity),
@@ -468,8 +468,8 @@ example : bothReaders "SumOfProducts(Rows*/N, Rows*/N)" "admitted" = true ∧
 example : let operation := "SumOfProducts(Rows*/N Having FieldFilled(Rows/N) And FieldFilled($Rows/Tag), Rows*/N)"
     bothReaders operation KernelStaticDiagnostic.noWildcard.kernelCode = true ∧
     readerResults operation rowBoundModel true =
-      (KernelStaticDiagnostic.wildcardAtLowestLevelRequired.kernelCode,
-       KernelStaticDiagnostic.wildcardAtLowestLevelRequired.kernelCode) := by native_decide
+      (KernelStaticDiagnostic.wildcardAtLowestRepeatableLevelRequired.kernelCode,
+       KernelStaticDiagnostic.wildcardAtLowestRepeatableLevelRequired.kernelCode) := by native_decide
 
 private def selectorModel (kind : FieldKind) : FlatModel :=
   let enum := if kind == .enumeration then
@@ -544,7 +544,7 @@ example : nestedFillOperators.all (fun operator => [false, true].all fun row =>
 
 example : nestedFillOperators.all (fun operator => [false, true].all fun row =>
     let nested := operator ++ "(Rows*/N Having FieldFilled(Rows/N))"
-    let forbidden := KernelStaticDiagnostic.disallowedConstructInFilterCondition.kernelCode
+    let forbidden := KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
     let unbound := KernelStaticDiagnostic.noWildcard.kernelCode
     nestedFillResults ("FieldFilled(Rows/N) And " ++ nested) row == (forbidden, forbidden) &&
     nestedFillResults (nested ++ " And FieldFilled(Rows/N)") row ==
@@ -566,7 +566,7 @@ private def nestedAggregateOperators : List String := ["Sum", "MinValue", "MaxVa
 
 example : nestedAggregateOperators.all (fun operator => [false, true].all fun row =>
     let aggregate := operator ++ "(Rows*/N Having FieldFilled(Rows/N))"
-    let forbidden := KernelStaticDiagnostic.disallowedConstructInFilterCondition.kernelCode
+    let forbidden := KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
     let unbound := KernelStaticDiagnostic.noWildcard.kernelCode
     let invalid := KernelStaticDiagnostic.invalidOuterIteration.kernelCode
     nestedFillResults ("FieldFilled(Rows/N) And " ++ aggregate ++ " > 0") row == (forbidden, forbidden) &&
@@ -615,7 +615,7 @@ example : readerResults "Sum(Rows*/N Having FieldFilled($Rows/N) And FieldFilled
 example : [false, true].all (fun row =>
     let nested := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "
     let badType := KernelStaticDiagnostic.invalidTypeForComparison.kernelCode
-    let forbidden := KernelStaticDiagnostic.disallowedConstructInFilterCondition.kernelCode
+    let forbidden := KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
     nestedFillResults (nested ++ "[Expected] > \"keep\"") row == (badType, badType) &&
     nestedFillResults (nested ++ "[Expected] == \"keep\"") row == (forbidden, forbidden)) = true := by native_decide
 
@@ -661,7 +661,7 @@ private def nestedCountOperators : List String := ["NumberOfFilledFields", "Numb
 
 example : nestedCountOperators.all (fun operator => [false, true].all fun row =>
     let nested := operator ++ "(Rows*/N Having FieldFilled(Rows/N))"
-    let forbidden := KernelStaticDiagnostic.disallowedConstructInFilterCondition.kernelCode
+    let forbidden := KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
     let unbound := KernelStaticDiagnostic.noWildcard.kernelCode
     let outer := KernelStaticDiagnostic.invalidOuterIteration.kernelCode
     let missing := KernelStaticDiagnostic.invalidEntity.kernelCode
@@ -766,7 +766,7 @@ private def rawListResults (operator arguments : String) (fixture : FlatModel) (
   readerResults ("Sum(Rows*/N Having " ++ operator ++ "(" ++ arguments ++ ") + [Missing] > [Rows/N For \"keep\"])") fixture row
 
 example : [false, true].all (fun row =>
-    let forbidden := KernelStaticDiagnostic.disallowedConstructInFilterCondition.kernelCode
+    let forbidden := KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
     let unbound := KernelStaticDiagnostic.noWildcard.kernelCode
     let outer := KernelStaticDiagnostic.invalidOuterIteration.kernelCode
     let selector := "FirstFilledValue(Rows*/N Having FieldFilled(Rows/N))"
@@ -791,7 +791,7 @@ example : [false, true].all (fun row =>
     rawListResults "FirstFilledValue" "DateA, DateB" (countTemporalModel true "yyyy-MM-dd") row == (missing, missing)) = true := by native_decide
 
 example : [false, true].all (fun row =>
-    let required := KernelStaticDiagnostic.wildcardAtLowestLevelRequired.kernelCode
+    let required := KernelStaticDiagnostic.wildcardAtLowestRepeatableLevelRequired.kernelCode
     let group := KernelStaticDiagnostic.differentGroups.kernelCode
     let missing := KernelStaticDiagnostic.invalidEntity.kernelCode
     let number := KernelStaticDiagnostic.noNumber.kernelCode
@@ -826,7 +826,7 @@ example : selectorProfileModel.validate.isOk = true ∧
 example : [false, true].all (fun row =>
     let fixture := { rowBoundModel with fields := rowBoundModel.fields.map fun field => if field.id == 8 then
       { field with policy := { kind := .number { scale := 2, signed := true } } } else field }
-    let forbidden := KernelStaticDiagnostic.disallowedConstructInFilterCondition.kernelCode
+    let forbidden := KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
     readerResults "Sum(Rows*/N Having FirstFilledValue(Rows*/N Having FieldFilled(Rows/N), Rows*/RowOut) == 0.12)"
       fixture row == (forbidden, forbidden)) = true := by native_decide
 
@@ -853,7 +853,7 @@ example : [false, true].all (fun row =>
     let overlap := KernelStaticDiagnostic.duplicateParam2.kernelCode
     let number := KernelStaticDiagnostic.noNumber.kernelCode
     let duplicate := KernelStaticDiagnostic.duplicateParam1.kernelCode
-    let star := KernelStaticDiagnostic.wildcardAtLowestLevelRequired.kernelCode
+    let star := KernelStaticDiagnostic.wildcardAtLowestRepeatableLevelRequired.kernelCode
     rawListResults "Sum" "Rows For \"keep\", Rows/N For \"keep\"" rowBoundModel row == (overlap, overlap) &&
     rawListResults "Sum" "Rows For \"keep\", Rows/N For \"drop\"" rowBoundModel row == (number, number) &&
     rawListResults "SumOfProducts" "Rows/N For \"keep\", Rows/N For \"keep\"" rowBoundModel row == (duplicate, duplicate) &&

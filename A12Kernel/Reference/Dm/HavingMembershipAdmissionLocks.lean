@@ -118,7 +118,7 @@ example : rawModel.validate.isOk = true ∧ [false, true].all (fun row =>
       result (op ++ "(Rows/Tag In Rows/Text, Rows/Tag)") row rawModel == (duplicate, duplicate))) = true := by native_decide
 
 example : [false, true].all (fun row =>
-    let forbidden := KernelStaticDiagnostic.disallowedConstructInFilterCondition.kernelCode
+    let forbidden := KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
     let unbound := KernelStaticDiagnostic.noWildcard.kernelCode
     let outer := KernelStaticDiagnostic.invalidOuterIteration.kernelCode
     let preceding := "AtLeastOneFieldFilled(Rows*/N Having FieldFilled(Rows/N)) And "

@@ -115,15 +115,13 @@ example :
           some (.poison .declaredConstraint) := by
   native_decide
 
-/- Complete selected-domain containment and direct display compatibility are independent static gates:
-   the display is the generated comparison's and the domain the calculation's. Neither row fails both,
-   so the order between them is locked on the field-copy grid, where a wider Enumeration into a
-   labelled target draws the display class. -/
+/- Complete selected-domain containment is the only static gate on a direct Enumeration source, the
+   calculation's own: display labels play no part, so a labelled source over the target's tokens is
+   admitted. Locked: a12-dmkits EnumComputationSourceLawsTest at 1124b523f, kernel 31.1.1. -/
 example :
     errorOf (.field (.direct (bare "Wider"))) =
         some (.sourceOutsideTargetDomain wider.path target.path) ∧
-      errorOf (.field (.direct (bare "Displayed"))) =
-        some (.copyComparison target.path displayed.path (.displayArm .displayClassMismatch)) := by
+      errorOf (.field (.direct (bare "Displayed"))) = none := by
   native_decide
 
 /- A category whose projected tokens leave the target's domain draws the calculation's class, as the
@@ -136,7 +134,7 @@ example :
         EnumerationComputationElabError.calculationRefusal?) = some .invalidEnumCalculation := by
   native_decide
 
-/- A category source is checked by its projected token domain and bypasses direct display remapping.
+/- A category source is checked by its projected token domain.
    A stored token outside the source's own domain has no category to project, and the read poisons
    rather than answering EMPTY, exactly like the direct read above
    ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-category-read-poison)). -/

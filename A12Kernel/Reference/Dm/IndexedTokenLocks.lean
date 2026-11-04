@@ -382,12 +382,18 @@ example : evaluate true "FirstFilledValue(Rows/Children*/Value For Key)" true no
     evaluate true "FirstFilledValue(Rows/Children*/Value For Key,Ref)" true none
     { tokenTarget := true, children := [] } = some (.inr "value A") := by native_decide
 
-example : [({ distinctEnumerationDomain := true } : Scenario), { displaySecond := true },
+example : [({ distinctEnumerationDomain := true } : Scenario),
     { mixedTokenKinds := true }].all (fun scenario =>
       evaluate true "FirstFilledValue(Rows/Body For Key)" true none { scenario with tokenTarget := true } == none) = true ∧
     evaluate true "FirstFilledValue(Rows/Body For Key)" true none
       { tokenTarget := true, distinctEnumerationDomain := true, wideTarget := true, firstA := "", secondB := "C" } =
         some (.inr "value C") := by native_decide
+
+-- A labelled selected operand beside an unlabelled one is admitted into an unlabelled target: display
+-- labels play no part in a `FirstFilledValue` operand. Locked: a12-dmkits EnumComputationSourceLawsTest
+-- (`labelsPlayNoPartInAFirstFilledValueOperand`) at 1124b523f, kernel 31.1.1; the keyed selection is derived.
+example : evaluate true "FirstFilledValue(Rows/Body For Key)" true none
+    { tokenTarget := true, displaySecond := true } = some (.inr "value A") := by native_decide
 
 private def selectedEnumerationSource : Option (CheckedEnumerationFirstFilledSource (model true) []) := do
   let parsed ← (parseText .english "FirstFilledValue(Rows/Body For Key)").toOption
@@ -674,7 +680,6 @@ example : ["RangeAsString([Rows/Body/A For Key],1,1) + \"!\"", "RangeAsString(Ro
     (fun expression => (evaluate false expression true none
       { tokenTarget := true, stringExpressionTarget := true }).isNone) = true ∧
     (evaluate true "RangeAsString(Rows/Body/A For Key,1,1) + \"!\"" false).isNone = true ∧
-    (evaluate true "[Rows/Body/B For Key] + \"!\" == \"B!\"" false none { displaySecond := true }).isNone = true ∧
     (evaluate false "[Rows/TextOut For Key] + \"!\"" true none
       { tokenTarget := true, stringExpressionTarget := true, rowTarget := true }).isNone = true := by native_decide
 
@@ -693,12 +698,16 @@ example : ["[Rows/Body/A ->Kind For Key] == [Rows/Body/B For Key]",
       evaluate true condition false none { category := true, displaySecond := true } == some (.inl .notFired) &&
       evaluate true "1" true (some condition) { category := true, displaySecond := true } == some (.inr "cleared")) = true := by native_decide
 
+-- A labelled keyed cell joins a concatenation immediate or braced, and a braced whole addition passes.
+-- Locked: a12-dmkits KeyedEnumerationConcatenationLawsTest at 1124b523f, kernel 31.1.1.
 example : evaluate true "{[Rows/Body/B For Key]} + \"!\" == \"B!\"" false none
+      { displaySecond := true } = some (.inl (.fired .value)) ∧
+    evaluate true "[Rows/Body/B For Key] + \"!\" == \"B!\"" false none
       { displaySecond := true } = some (.inl (.fired .value)) ∧
     evaluate true "\"!\" + {{[Rows/Body/B For Key]}}" true none
       { displaySecond := true, tokenTarget := true, stringExpressionTarget := true } = some (.inr "value !B") ∧
-    (evaluate true "{[Rows/Body/B For Key] + \"!\"} == \"B!\"" false none
-      { displaySecond := true }).isNone = true := by native_decide
+    evaluate true "{[Rows/Body/B For Key] + \"!\"} == \"B!\"" false none
+      { displaySecond := true } = some (.inl (.fired .value)) := by native_decide
 
 private def silent : Option (Sum Verdict String) → Bool
   | some (.inl (.fired _)) | none => false

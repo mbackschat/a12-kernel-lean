@@ -20,8 +20,10 @@ exponent's derived scale answers before a power on its left (`c15`, `Y25`). A ca
 a wrapper asks no division gate of its own (`c10`, `e2`), while each operand is checked at its own nodes
 (`c01`, `c11`) and a division above the call counts any operand's division (`g1`, `g2`); the
 `walkRows` below separate the call's walk itself. A lone unsortable leader is refused (`Y03` to `Y12`). The
-kind rows lock what the typing walk reads off a declaration: the remapped Enumeration is refused as a direct addition operand
-(`B02`, `B03`, `B07`), an extrema call compares component sets rather than kinds (`X10` to `X14`), the
+kind rows lock what the typing walk reads off a declaration: a labelled Enumeration is a string-like
+addition operand like any other, so its concatenation meets the Number target as a String does
+(`B02`, `B03`, `B07`; display labels play no part on kernel 31.1.1, derived from a12-dmkits
+`ArithmeticOperandKindLawsTest` at `1124b523f`, unmeasured on this carrier), an extrema call compares component sets rather than kinds (`X10` to `X14`), the
 first offending follower decides a chain (`X26`, `X27`), a declaration refused as an operand answers
 at its position in the walk (`B21`, `B25`), and a Custom declaration is string-like (`K02`, `K08`).
 -/
@@ -202,12 +204,12 @@ private def rows : List (String × Expr × Option String) := [
     ("C04", pw (f "N") (litd (3/2) 1), some "MVK_INVALID_NUMBER_FOR_EXP"),
     ("C05", pw (pw (f "N") (lit 2)) (lit 2), some "MVK_TOO_MANY_POW_FOR_CALC"),
     ("B01", f "EL", some "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"),
-    ("B02", add (f "EL") (f "S"), some "MVK_NO_STRING_OR_NUMBER_FOR_ADD"),
-    ("B03", add (f "EL") (f "EL"), some "MVK_NO_STRING_OR_NUMBER_FOR_ADD"),
+    ("B02", add (f "EL") (f "S"), some "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"),
+    ("B03", add (f "EL") (f "EL"), some "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"),
     ("B04", sub (f "EL") (f "N"), some "MVK_NO_NUMBER_FOR_CALC"),
     ("B05", ab (f "EL"), some "MVK_NO_NUMBER"),
     ("B06", mx [f "EL", f "N"], some "MVK_NOT_SORTABLE"),
-    ("B07", add (f "S") (f "EL"), some "MVK_NO_STRING_OR_NUMBER_FOR_ADD"),
+    ("B07", add (f "S") (f "EL"), some "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"),
     ("B08", f "CF", some "MVK_INVALID_COMPARE_TO_YES"),
     ("B09", add (f "CF") (f "N"), some "MVK_NO_STRING_OR_NUMBER_FOR_ADD"),
     ("B10", add (f "CF") (f "S"), some "MVK_NO_STRING_OR_NUMBER_FOR_ADD"),
@@ -357,24 +359,29 @@ private def enumAddition (label : String) : Option NumericOperandType × Option 
   | .error (.node diagnostic) => (none, diagnostic)
   | .error (.operand _) => (none, none)
 
+/- Identity labels and display labels join a concatenation alike. Locked: a12-dmkits
+   ArithmeticOperandKindLawsTest at 1124b523f, kernel 31.1.1. -/
 example : enumAddition "1" = (some .stringLike, none) ∧
-    enumAddition "One" = (none, some .noStringOrNumberForAdd) := by native_decide
+    enumAddition "One" = (some .stringLike, none) := by native_decide
 
-private def groupedEnumerationRows : List (AuthoredNumericExpr NumericOperandType ×
+/- An Enumeration declared without a domain joins a concatenation grouped or not, since labels play no
+   part (derived from the same mechanism, unmeasured on 31.1.1); Boolean and subtraction stay refused. -/
+private def enumerationAdditionRows : List (AuthoredNumericExpr NumericOperandType ×
     Option NumericOperandType × Option KernelStaticDiagnostic) :=
   let enumeration := AuthoredNumericExpr.atom (.other .enumeration)
   let string := AuthoredNumericExpr.atom .stringLike
   let boolean := AuthoredNumericExpr.atom (.other .boolean)
-  [(.binary .add (.group enumeration) string, some .stringLike, none),
+  [(.binary .add enumeration string, some .stringLike, none),
+   (.binary .add (.group enumeration) string, some .stringLike, none),
    (.binary .add string (.group (.group enumeration)), some .stringLike, none),
    (.binary .add (.group enumeration) (.group enumeration), some .stringLike, none),
    (.group enumeration, some (.other .enumeration), none),
-   (.group (.binary .add enumeration string), none, some .noStringOrNumberForAdd),
-   (.binary .add (.group enumeration) enumeration, none, some .noStringOrNumberForAdd),
+   (.group (.binary .add enumeration string), some .stringLike, none),
+   (.binary .add (.group enumeration) enumeration, some .stringLike, none),
    (.binary .add (.group boolean) string, none, some .noStringOrNumberForAdd),
    (.binary .subtract (.group enumeration) string, none, some .noNumberForCalc)]
 
-example : groupedEnumerationRows.all (fun (tree, expected, diagnostic) =>
+example : enumerationAdditionRows.all (fun (tree, expected, diagnostic) =>
     match checkNumericOperationNodes (fun type => (.ok type : Except Unit NumericOperandType)) tree with
     | .ok type => expected == some type && diagnostic.isNone
     | .error (.node actual) => expected.isNone && actual == diagnostic

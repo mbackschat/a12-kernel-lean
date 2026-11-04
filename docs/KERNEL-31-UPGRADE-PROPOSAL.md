@@ -79,7 +79,7 @@ Every kernel observation comes from a12-dmkits' `:adapter:kernelProbe`, and the 
 
 ### G6 — Static legality needs more than code renames
 
-- **Enumeration relaxations open a semantic question.** Lean currently rejects these comparisons ([`EnumerationComparability.lean`](../A12Kernel/Conformance/EnumerationComparability.lean) lines 27–32, [`LiteralComparisonDiagnostic.lean`](../A12Kernel/Elaboration/LiteralComparisonDiagnostic.lean) line 213). Under 31 they are admitted, so the comparison needs a runtime meaning, not a different code.
+- **Enumeration relaxations open a semantic question.** Lean currently rejects these comparisons (`Conformance/EnumerationComparability.lean` lines 27–32 at `e7539f69`, since retired by batch `M4–M6`, [`LiteralComparisonDiagnostic.lean`](../A12Kernel/Elaboration/LiteralComparisonDiagnostic.lean) line 213). Under 31 they are admitted, so the comparison needs a runtime meaning, not a different code.
 - **A constructor is named after a code whose meaning moves.** `.wildcardAtLowestLevelRequired` mirrors `MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED`; rename it after its meaning when first touched, and let the per-release code table carry the string.
 - **Possible partial-validation change (⚠ unverified).** The filter → set-expression refactor makes the rule that partial validation first skips filtered rules ([`spec/10-validation-and-polarity.md`](../spec/10-validation-and-polarity.md) line 140) a re-measurement candidate. The peer inventory does not mention it.
 - **`SumOfTerms`** belongs with the shared aggregate mechanism that owns `SumOfProducts`.

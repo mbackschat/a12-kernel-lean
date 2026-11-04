@@ -208,7 +208,7 @@ private def categoryLiteralDomains : FlatModel := { categoryModel with fields :=
 
 private def categoryLiteralCertificate (value : String) : Option Bool := do
   let declaration ← (categoryLiteralDomains.lookupUniqueId 3).toOption
-  let (operand, _) ← declaration.toEnumerationTextFieldComparison? (.category "Label")
+  let operand ← declaration.toEnumerationTextFieldComparison? (.category "Label")
   pure ((HavingFieldValueList.tokenLiterals [.direct { origin := .inner, operand }] [value]).wellFormedForEnvironments
     (.quantified .atLeastOne) categoryLiteralDomains [10] [])
 
@@ -232,7 +232,7 @@ private def offPathLiteralModel : FlatModel := { model with
 
 example : membershipDiagnostic offPathLiteralModel
     "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, Other/Text In \"keep\")" =
-      some (some .invalidIterationInFilterCondition) ∧
+      some (some .invalidIterationInSetExpression) ∧
     membershipDiagnostic offPathLiteralModel
     "AtLeastOneFieldValueIncludedInValueList(Rows/Tag, Other/Text In \"keep\") And [Rows/N] == \"bad\"" =
       some (some .invalidCompareToEnumOrString) := by native_decide

@@ -217,15 +217,57 @@ example : textEnumCore.evalSelected
 example : (elaborate fieldModel ["Order"] (.compareFields .equal
     (fieldPath "Display") (fieldPath "Compatible"))).isOk = true := by native_decide
 
-example : errorOf (elaborate fieldModel ["Order"] (.compareFields .equal
-    (fieldPath "Text") (fieldPath "Display"))) = some
-      (.enumerationComparability ["Order", "Text"] ["Order", "Display"]
-        .displayClassMismatch) := by native_decide
+/- Display labels decide no comparison: a labelled Enumeration meets a String, a textless Enumeration,
+   identity labels and a conflicting labelling in either order and under `!=`.
+   Locked: a12-dmkits EnumDisplayComparabilityLawsTest at 1124b523f, kernel 31.1.1. -/
+private def storedEnum (id : FieldId) : FlatTextFieldOperand :=
+  .enumeration { field := { id }, projectionRef := .stored, projection := .stored }
 
-example : errorOf (elaborate fieldModel ["Order"] (.compareFields .equal
-    (fieldPath "Display") (fieldPath "Conflict"))) = some
-      (.enumerationComparability ["Order", "Display"] ["Order", "Conflict"]
-        .displayMapConflict) := by native_decide
+private def admittedPair (equality : EqualityOp) (left right : FlatTextFieldOperand) :
+    Option FlatCondition :=
+  some (.compare (.textFields equality left right))
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Text") (fieldPath "Display"))) =
+      admittedPair .equal (.string { id := 10 }) (storedEnum 22) := by native_decide
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Display") (fieldPath "Text"))) =
+      admittedPair .equal (storedEnum 22) (.string { id := 10 }) := by native_decide
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .notEqual
+    (fieldPath "Display") (fieldPath "Text"))) =
+      admittedPair .notEqual (storedEnum 22) (.string { id := 10 }) := by native_decide
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Display") (fieldPath "Conflict"))) =
+      admittedPair .equal (storedEnum 22) (storedEnum 24) := by native_decide
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Conflict") (fieldPath "Display"))) =
+      admittedPair .equal (storedEnum 24) (storedEnum 22) := by native_decide
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Code") (fieldPath "Display"))) =
+      admittedPair .equal (storedEnum 20) (storedEnum 22) := by native_decide
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Display") (fieldPath "Code"))) =
+      admittedPair .equal (storedEnum 22) (storedEnum 20) := by native_decide
+
+example : coreOf (elaborate fieldModel ["Order"] (.compareFields .equal
+    (fieldPath "Identity") (fieldPath "Display"))) =
+      admittedPair .equal (storedEnum 21) (storedEnum 22) := by native_decide
+
+-- A category read of a labelled Enumeration against a String field and against a stored field with a
+-- conflicting labelling, in either order.
+example : (elaborate fieldModel ["Order"] (.compareTextFields .equal
+    (.category (fieldPath "CategoryPeer") "Kind") (.direct (fieldPath "Text")))).isOk = true ∧
+    (elaborate fieldModel ["Order"] (.compareTextFields .equal
+    (.direct (fieldPath "Text")) (.category (fieldPath "CategoryPeer") "Kind"))).isOk = true ∧
+    (elaborate fieldModel ["Order"] (.compareTextFields .equal
+    (.category (fieldPath "CategoryPeer") "Kind") (.direct (fieldPath "Conflict")))).isOk = true := by
+  native_decide
 
 example : errorOf (elaborate fieldModel ["Order"] (.compareFields .less
     (fieldPath "Text") (fieldPath "Code"))) = some (.unsupportedOperator .less) := by
@@ -253,7 +295,7 @@ example : verdictOf (elaborateAndEvalFull builtinStringPatternCompiler "en_US" f
     some (.fired .value) := by native_decide
 
 example : (elaborate fieldModel ["Order"] (.compareFields .equal
-    (fieldPath "Code") (fieldPath "CategoryPeer"))).isOk = false := by native_decide
+    (fieldPath "Code") (fieldPath "CategoryPeer"))).isOk = true := by native_decide
 
 example : coreOf (elaborate fieldModel ["Order"] (.compareTextFields .equal
     categoryCode (.direct (fieldPath "Text")))) = some (.compare (.textFields .equal

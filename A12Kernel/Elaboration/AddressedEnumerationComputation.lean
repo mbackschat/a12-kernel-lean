@@ -208,7 +208,7 @@ private def checkAddressedEnumerationSource
             -- [row-target batch](../../evidence/kernel-30.8.1/captures/k22-static-s3-2026-10-24/)).
             match target.declaration.copyComparisonRefusal? declaration,
                 declaration.toTextFieldComparison? with
-            | none, some (_, .plainString) =>
+            | none, some (.string _) =>
                 throw (.ordinary (.stringSource declaration.path target.declaration.path))
             | _, _ =>
                 throw (.ordinary (.source
@@ -250,16 +250,10 @@ def checkAddressedEnumerationComputation
     match source with
     | .literal token =>
         throw (.ordinary (.literalOutsideTarget target.declaration.path token))
-    -- A stored read whose display the generated comparison admits, and a category read, which has
-    -- no display arm, miss on the domain, the calculation's own refusal (rows `ud6` and `ud7` of
-    -- k22-static-s3-2026-10-24, `va4` and `va13` of k22-static-s4-2026-10-24); a display miss is
-    -- unmeasured.
-    | .field _ _ declaration operand _ _ _ _ _ _ _ _ _ =>
-        match operand.projectionRef, target.declaration.copyComparisonRefusal? declaration with
-        | .stored, none | .category _, _ => throw (.ordinary
-            (.sourceOutsideTargetDomain declaration.path target.declaration.path))
-        | .stored, some _ => throw (.ordinary
-            (.sourceIncompatible declaration.path target.declaration.path))
+    -- A stored or category read that misses the target's domain draws the calculation's own refusal
+    -- (rows `ud6` and `ud7` of k22-static-s3-2026-10-24, `va4` and `va13` of k22-static-s4-2026-10-24).
+    | .field _ _ declaration _ _ _ _ _ _ _ _ _ _ =>
+        throw (.ordinary (.sourceOutsideTargetDomain declaration.path target.declaration.path))
 
 inductive AddressedEnumerationComputationFault where
   | targetRows (cause : ActualRowEnvironmentError)

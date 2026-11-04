@@ -208,13 +208,16 @@ private def displayModel (both : Bool) (conflict : Bool := false) : FlatModel :=
         { locale := "en_US", stored := "2", display := if conflict && field.id == 3 then "one" else "two" }] } }
     else field }
 
+-- Display labels decide no comparison: a labelled Enumeration beside an unlabelled one, and a
+-- conflicting labelling, are admitted at a row binding too. Locked: a12-dmkits
+-- EnumDisplayComparabilityLawsTest at 1124b523f, kernel 31.1.1; the row-bound carrier is derived.
 example : (mixedModel .enumeration).validate.isOk = true ∧
     run .string "[Rows/A] == [Rows/B]" (candidate := mixedModel .enumeration) = some first ∧
     [FieldKind.number { scale := 0, signed := true }, .boolean].all (fun kind =>
       (mixedModel kind).validate.isOk && !admitted .string "[Rows/A] == [Rows/B]" (mixedModel kind)) = true ∧
     [displayModel false, displayModel true true, displayModel true].all (·.validate.isOk) = true ∧
-    !admitted .enumeration "[Rows/A] == [Rows/B]" (displayModel false) ∧
-    !admitted .enumeration "[Rows/A] == [Rows/B]" (displayModel true true) ∧
+    admitted .enumeration "[Rows/A] == [Rows/B]" (displayModel false) ∧
+    admitted .enumeration "[Rows/A] == [Rows/B]" (displayModel true true) ∧
     admitted .enumeration "[Rows/A] == [Rows/B]" (displayModel true) ∧
     admitted .enumeration "[Rows/A -> Swap] == [Rows/B]" (displayModel false) := by native_decide
 

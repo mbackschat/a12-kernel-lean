@@ -13,8 +13,8 @@ class while `[S] - [Nope]` draws the unknown name's
 
 A node first types its operands' results, as [`spec/04` §4.1](../../../spec/04-numbers-and-decimals.md#41-arithmetic-operand-kinds)
 states for `+`. Addition admits two Numbers or two string-like sides, a concatenation that types as a
-String, and refuses a mixed pair; a grouped Enumeration bypasses the direct display-remapping gate
-([source-derived boundary](../../../spec/06-strings-and-enumerations.md#string-concatenation), externally unverified); subtraction, multiplication, division and power demand two Numbers;
+String, and refuses a mixed pair; an Enumeration joins whatever display labels it declares, immediate
+or braced (a12-dmkits `ArithmeticOperandKindLawsTest` at `1124b523f`, kernel 31.1.1); subtraction, multiplication, division and power demand two Numbers;
 `Abs` demands a Number; and an extrema call's first operand must be sortable and fixes the family
 every later operand must join ([`kf263`](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf263)). A
 well-typed operator or power then asks its own authoring gates, measured in this order
@@ -30,14 +30,14 @@ claim no class.
 namespace A12Kernel
 
 /-- The result type one operand or operation contributes to the walk. A Number carries its derived
-scale, which a power's exponent gate reads. Enumeration retains its selected domain and display
-profile until a String-producing operation consumes it ([`spec/06`](../../../spec/06-strings-and-enumerations.md));
+scale, which a power's exponent gate reads. Enumeration retains its selected domain until a
+String-producing operation consumes it ([`spec/06`](../../../spec/06-strings-and-enumerations.md));
 a temporal side keeps its components, which the extrema compare. DateRange retains its exact
 component set for comparison without BaseYear supplementation (spec/05 §8). -/
 inductive NumericOperandType where
   | number (scale : NumericScaleSummary)
   | stringLike
-  | enumeration (profile : DirectComparableField) (tokens : List String)
+  | enumeration (tokens : List String)
   | temporal (kind : TemporalKind) (components : TemporalComponents)
   | dateRange (components : TemporalComponents)
   | other (kind : SurfaceScalarKind)
@@ -52,7 +52,7 @@ def ofDeclaration (declaration : FlatFieldDecl) : NumericOperandType :=
   | .string => .stringLike
   | .enumeration =>
       match declaration.enumeration with
-      | some source => .enumeration (.enumeration { facts := source.displayFacts }) source.storedTokens
+      | some source => .enumeration source.storedTokens
       | none => .other .enumeration
   | .temporal kind components => .temporal kind components
   | .boolean => .other .boolean
@@ -139,19 +139,10 @@ private def divisionGate {Atom Error : Type} (node : AuthoredNumericExpr Atom) :
     Except (NumericOperationNodeFault Error) Unit :=
   if node.divisionGateRefuses then throw (.node (some .tooManyDivisionsInRegion)) else pure ()
 
-private def isStringAdditionOperand {Atom : Type} (expression : AuthoredNumericExpr Atom) :
-    NumericOperandType → Bool
-  | .stringLike => true
-  | .enumeration profile _ =>
-      match profile with
-      | .category | .plainString => true
-      | .enumeration display => !display.hasEffectiveDisplay || (match expression with | .group _ => true | _ => false)
-  | .other .enumeration =>
-      -- CheckOperationImpl.checkWithoutDisplayValues inspects only an immediate field read;
-      -- grouping exempts this addition gate while retaining the operand's Enumeration type.
-      match expression with
-      | .group _ => true
-      | _ => false
+/-- Whether `+` concatenates this operand. An Enumeration of any labelling joins, one without a
+declaration included (derived from the label-free mechanism; unmeasured on 31.1.1). -/
+private def isStringAdditionOperand : NumericOperandType → Bool
+  | .stringLike | .enumeration _ | .other .enumeration => true
   | _ => false
 
 /-- Walk every node in post-order, each operand typed by `atomType`. -/
@@ -171,7 +162,7 @@ private def walkNumericNode {Atom Error : Type} (atomType : Atom → Except Erro
           | _, .number leftScale, .number rightScale =>
               pure (.number (NumericScaleSummary.binary op leftScale rightScale))
           | .add, _, _ =>
-              if isStringAdditionOperand left leftType && isStringAdditionOperand right rightType then
+              if isStringAdditionOperand leftType && isStringAdditionOperand rightType then
                 pure .stringLike
               else throw (.node (some .noStringOrNumberForAdd))
           | _, _, _ => throw (.node (some .noNumberForCalc))

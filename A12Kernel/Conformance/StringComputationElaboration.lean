@@ -418,7 +418,7 @@ example :
 example : [StringExpr.field (bare "Source"), .group (.field (bare "Source")),
     .group (.group (.field (bare "Source")))].all (fun expression =>
       operationErrorOf (elaborateStringComputationOperation model ["Form"] amount.id expression) ==
-        some (.copyComparison amount.path source.path (.kindArm .text))) = true := by native_decide
+        some (.copyComparison amount.path source.path .text)) = true := by native_decide
 
 /- Raw and registered-custom String targets require their own target semantics and fail before the ordinary target operation is constructed. -/
 example :

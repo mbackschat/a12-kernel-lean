@@ -7,7 +7,7 @@ import A12Kernel.Semantics.FirstFilledValue
 
 /-! # Checked Enumeration-target `FirstFilledValue`
 
-This capsule adds the aggregate source admitted by the ordinary closed-Enumeration target gate. The common field-list shape owns cardinality and repeated-operand precedence; exact stored/category projections own domain and display compatibility; the shared first-filled scan owns value, empty, and target-poison behavior; and the computation-phase `Having` traversal preserves filter poison plus the runtime iterator's one-kept-candidate lookahead.
+This capsule adds the aggregate source admitted by the ordinary closed-Enumeration target gate. The common field-list shape owns cardinality and repeated-operand precedence; exact stored/category projections own domain compatibility; the shared first-filled scan owns value, empty, and target-poison behavior; and the computation-phase `Having` traversal preserves filter poison plus the runtime iterator's one-kept-candidate lookahead.
 
 A self-read is classified by its **reading mode** rather than by the authored shape around it. Measured compatible stored-direct lists of two or three fields project the ordinary Kernel self-reference class in every target position; a compatible two-entry list carrying a category projection of the target projects the distinct category-target class in either operand order, whatever the other entry reads — another projection, a plain read of a different field, or a plain read of the same field. Wider, incompatible, starred, and filtered shapes retain the local refusal without an external class.
 -/

@@ -672,8 +672,8 @@ private def FlatModel.checkNumericCopyComparison (model : FlatModel) (declaringG
         let source ←
           (model.resolveComputationFieldValueRead declaringGroup target.groupPath reference).mapError
             .resolve
-        if let some refusal := target.copyComparisonRefusal? source then
-          throw (.copyComparison target.path source.path refusal)
+        if let some arm := target.copyComparisonRefusal? source then
+          throw (.copyComparison target.path source.path arm)
   | _ => pure ()
 
 /-- Resolve and check the complete numeric computation surface, including checked entity-list atoms and the distinct row-aligned `SumOfProducts` source, through the one shared numeric expression tree. -/

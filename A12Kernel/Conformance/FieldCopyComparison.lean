@@ -10,7 +10,9 @@ serves as the target, so the diagonal is the admitted same-kind control. Every e
 is that model's measured row, a root computation copying one field into another
 ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
 Each carrier is asked both ways: a source of another kind into its own target kind, and its own
-kind copied into a target of another kind. -/
+kind copied into a target of another kind. The seven rows that drew a display class on kernel 30.8.1
+are kernel 31.1.1's: display labels play no part, so the labelled and conflicting sources are admitted
+and the domain or the calculation answers instead. -/
 
 namespace A12Kernel.Conformance.FieldCopyComparison
 
@@ -95,19 +97,21 @@ private def date := "MVK_INVALID_COMPARE_TO_DATE"
 private def range := "MVK_INVALID_COMPARE_TO_DATE_RANGE"
 private def yesNo := "MVK_INVALID_COMPARE_TO_YESNO"
 private def yes := "MVK_INVALID_COMPARE_TO_YES"
-private def display := "MVK_INVALID_COMPARE_ENUM_TO_STRING"
 private def ok := "admitted"
 private def places := "MVK_INVALID_COMPARE_DEC_PLACES"
-private def enumEnum := "MVK_INVALID_COMPARE_ENUM_TO_ENUM"
 private def enumCalc := "MVK_ERROR_INVALID_ENUM_CALCULATION"
 
-/-- Every retained row copying one field into another, as (target, source, measured verdict), in the
-    capture's order ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)). -/
+/-- Every retained row copying one field into another, as (target, source, verdict), in the
+    capture's order ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
+    Rows `Note2`/`Labelled` and `Plain2`/`Labelled` are locked: a12-dmkits `EnumIntoTextComputationLawsTest`
+    and `EnumComputationSourceLawsTest` at 1124b523f, kernel 31.1.1. Rows `Note2`/`Swapped`,
+    `Labelled2`/`Note`, `Labelled2`/`Plain`, `Labelled2`/`Swapped` and `Labelled2`/`Wide` are derived
+    from that mechanism, unmeasured on 31.1.1. -/
 private def grid : List (String × String × String) :=
   [("Note2", "Note", ok), ("Note2", "Qty", text), ("Note2", "Amount", text),
     ("Note2", "Due", date), ("Note2", "At", date), ("Note2", "Window", range),
     ("Note2", "Flag", yesNo), ("Note2", "Signed", yes), ("Note2", "Plain", ok),
-    ("Note2", "Labelled", display), ("Qty2", "Note", text), ("Qty2", "Qty", ok),
+    ("Note2", "Labelled", ok), ("Qty2", "Note", text), ("Qty2", "Qty", ok),
     ("Qty2", "Amount", places), ("Qty2", "Due", date), ("Qty2", "At", date),
     ("Qty2", "Window", range), ("Qty2", "Flag", yesNo), ("Qty2", "Signed", yes),
     ("Qty2", "Plain", text), ("Qty2", "Labelled", text), ("Amount2", "Note", text),
@@ -133,10 +137,10 @@ private def grid : List (String × String × String) :=
     ("Signed2", "Plain", yes), ("Signed2", "Labelled", yes), ("Plain2", "Note", enumCalc),
     ("Plain2", "Qty", text), ("Plain2", "Amount", text), ("Plain2", "Due", date),
     ("Plain2", "At", date), ("Plain2", "Window", range), ("Plain2", "Flag", yesNo),
-    ("Plain2", "Signed", yes), ("Plain2", "Plain", ok), ("Plain2", "Labelled", display),
-    ("Labelled2", "Note", display), ("Labelled2", "Qty", text), ("Labelled2", "Amount", text),
+    ("Plain2", "Signed", yes), ("Plain2", "Plain", ok), ("Plain2", "Labelled", ok),
+    ("Labelled2", "Note", enumCalc), ("Labelled2", "Qty", text), ("Labelled2", "Amount", text),
     ("Labelled2", "Due", date), ("Labelled2", "At", date), ("Labelled2", "Window", range),
-    ("Labelled2", "Flag", yesNo), ("Labelled2", "Signed", yes), ("Labelled2", "Plain", display),
+    ("Labelled2", "Flag", yesNo), ("Labelled2", "Signed", yes), ("Labelled2", "Plain", ok),
     ("Labelled2", "Labelled", ok), ("Stamp2", "Note", date), ("Stamp2", "Qty", date),
     ("Stamp2", "Amount", date), ("Stamp2", "Due", date), ("Stamp2", "At", date),
     ("Stamp2", "Window", date), ("Stamp2", "Flag", yesNo), ("Stamp2", "Signed", yes),
@@ -144,8 +148,8 @@ private def grid : List (String × String × String) :=
     ("Note2", "Stamp", date), ("Qty2", "Stamp", date), ("Amount2", "Stamp", date),
     ("Due2", "Stamp", date), ("At2", "Stamp", date), ("Window2", "Stamp", date),
     ("Flag2", "Stamp", yesNo), ("Signed2", "Stamp", yes), ("Plain2", "Stamp", date),
-    ("Labelled2", "Stamp", date), ("Labelled2", "Swapped", enumEnum), ("Plain2", "Wide", enumCalc),
-    ("Labelled2", "Wide", display), ("Wide", "Plain", ok), ("Note2", "Swapped", display)]
+    ("Labelled2", "Stamp", date), ("Labelled2", "Swapped", ok), ("Plain2", "Wide", enumCalc),
+    ("Labelled2", "Wide", enumCalc), ("Wide", "Plain", ok), ("Note2", "Swapped", ok)]
 
 
 /-- The kind arms against the measured grid: each arm claims its kind on either side, in the walk's
@@ -167,14 +171,12 @@ example :
 private def kindOf (name : String) : SurfaceScalarKind :=
   ((model.fields.find? (·.name == name)).map (·.policy.kind.surfaceKind)).getD .string
 
-/-- A row neither side of which is of the carrier's kind, whose two kinds meet no kind arm, and which
-    the display arm does not refuse: two fields of one other family, which the scale rule, the format
-    question or the Enumeration calculation decides on that family's own carrier. Every carrier reads a
-    copy through the shared comparison, so each answers the display arm's refusals too. -/
+/-- A row neither side of which is of the carrier's kind and whose two kinds meet no kind arm: two
+    fields of one other family, which the scale rule, the format question or the Enumeration
+    calculation decides on that family's own carrier. -/
 private def outside (own : SurfaceScalarKind) (row : String × String × String) : Bool :=
   kindOf row.1 != own && kindOf row.2.1 != own &&
-    (copyComparisonKindArm? (kindOf row.1) (kindOf row.2.1)).isNone &&
-    row.2.2 != display && row.2.2 != enumEnum
+    (copyComparisonKindArm? (kindOf row.1) (kindOf row.2.1)).isNone
 
 private def refuses (carrier : String → String → String) (row : String × String × String) : Bool :=
   carrier row.1 row.2.1 == "refused"
@@ -188,19 +190,21 @@ example :
 
 /- Where each carrier claims no class, exactly. The String, Number and Enumeration carriers answer
    every row one side of which is their kind, and every row whose kinds meet an arm; the rest are
-   another family's. The exceptions are named: an unlabelled Enumeration into a String is admitted by
-   the Kernel and now supported by the String carrier, while the Enumeration carrier still owns
-   Enumeration targets alone; a String into an unlabelled Enumeration draws the calculation's
-   class, which the Enumeration carrier owns. The full-Date carrier answers only a full-Date target, a
-   clock or instant source through its format gate. -/
+   another family's. The exceptions are named: an Enumeration into a String, labelled or not, is
+   admitted by the Kernel and supported by the String carrier, while the Enumeration carrier still
+   owns Enumeration targets alone; a String into an Enumeration target, labelled or not, draws the
+   calculation's class, which the Enumeration carrier owns. The full-Date carrier answers only a
+   full-Date target, a clock or instant source through its format gate. -/
 example :
-    let unlabelledIntoText := ("Note2", "Plain")
-    let textIntoUnlabelled := ("Plain2", "Note")
+    let enumerationIntoText := fun (row : String × String × String) =>
+      kindOf row.1 == .string && kindOf row.2.1 == .enumeration
+    let textIntoEnumeration := fun (row : String × String × String) =>
+      kindOf row.1 == .enumeration && kindOf row.2.1 == .string
     grid.all (fun row => refuses stringCopy row ==
-      (outside .string row || (row.1, row.2.1) == textIntoUnlabelled)) ∧
+      (outside .string row || textIntoEnumeration row)) ∧
     grid.all (fun row => refuses numberCopy row == outside .number row) ∧
     grid.all (fun row => refuses enumerationCopy row ==
-      (outside .enumeration row || (row.1, row.2.1) == unlabelledIntoText)) ∧
+      (outside .enumeration row || enumerationIntoText row)) ∧
     grid.all (fun row => refuses fullDateCopy row == (row.1 != "Due2")) := by
   native_decide
 

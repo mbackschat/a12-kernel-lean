@@ -163,14 +163,14 @@ example : [false, true].all (fun parallel => decide (
     conditionRefusal { parallelIteration := parallel, parallelFilterBody := true } (.leaf true) =
       some .parallelIterationNotAllowed ∧
     conditionRefusal { parallelIteration := parallel, parallelFilteredEntity := true } (.leaf true) =
-      some .parallelIterationForFilteredEntityNotAllowed ∧
+      some .parallelIterationForPathWithAsterisksNotAllowed ∧
     conditionRefusal { parallelIteration := parallel } (.leaf true) = none)) = true := by native_decide
 
 private def precedenceRows : List (FilterRuleFacts × KernelStaticDiagnostic) := [
   ({ repetitionNotUniqueCount := 2, parallelIteration := true, parallelFilteredEntity := true,
      parallelFilterBody := true, filterUsesIndex := true, rawLength := true }, .parallelIterationNotAllowed),
   ({ repetitionNotUniqueCount := 2, parallelFilteredEntity := true,
-     parallelFilterBody := true, filterUsesIndex := true, rawLength := true }, .parallelIterationForFilteredEntityNotAllowed),
+     parallelFilterBody := true, filterUsesIndex := true, rawLength := true }, .parallelIterationForPathWithAsterisksNotAllowed),
   ({ repetitionNotUniqueCount := 2, parallelFilterBody := true, filterUsesIndex := true,
      rawLength := true }, .parallelIterationNotAllowed),
   ({ repetitionNotUniqueCount := 2, filterUsesIndex := true, rawLength := true }, .semanticIndexNotAllowed),
@@ -231,7 +231,7 @@ example : filterBodyRefusal [filterRead [filterLevel .iteration true true]] fals
     filterBodyRefusal [filterRead [filterLevel .iteration true true] true] false = some .noIterationForWildcard := by decide
 
 example : filterBodyRefusal [filterRead [filterLevel .wildcard, filterLevel .iteration false]] false =
-      some .invalidIterationInFilterCondition ∧
+      some .invalidIterationInSetExpression ∧
     filterBodyRefusal [filterRead [filterLevel .wildcard, filterLevel .iteration true true]] false =
       some .noWildcard ∧
     filterBodyRefusal [filterRead [filterLevel .iteration true true, filterLevel .semanticIndex]] false =
@@ -240,7 +240,7 @@ example : filterBodyRefusal [filterRead [filterLevel .wildcard, filterLevel .ite
 example : filterBodyRefusal [filterRead [filterLevel .semanticIndex] true,
       filterRead [filterLevel .iteration true true]] false = none ∧
     filterBodyRefusal [filterRead [filterLevel .semanticIndex] true,
-      filterRead [filterLevel .iteration false]] false = some .invalidIterationInFilterCondition ∧
+      filterRead [filterLevel .iteration false]] false = some .invalidIterationInSetExpression ∧
     filterBodyRefusal [filterRead [filterLevel .wildcard],
       filterRead [filterLevel .iteration true true]] false = none := by decide
 
@@ -254,9 +254,9 @@ example : filterBodyRefusal [filterRead [filterLevel .fixed, filterLevel .unspec
 example : filterBodyRefusal [filterRead [filterLevel .semanticIndex],
       filterRead [filterLevel .iteration false]] true = some .semanticIndexNotAllowed ∧
     filterBodyRefusal [filterRead [filterLevel .iteration false],
-      filterRead [filterLevel .semanticIndex]] true = some .invalidIterationInFilterCondition ∧
+      filterRead [filterLevel .semanticIndex]] true = some .invalidIterationInSetExpression ∧
     filterBodyRefusal [] true = some .noIterationForWildcard ∧
     filterBodyRefusal [filterRead [filterLevel .iteration true true]] true =
-      some .disallowedConstructInFilterCondition := by decide
+      some .disallowedConstructInSetExpression := by decide
 
 end A12Kernel.Conformance.IterationLegality

@@ -1,13 +1,19 @@
 import A12Kernel.Semantics.Enumeration
-import A12Kernel.Elaboration.EnumerationComparability
 import A12Kernel.Semantics.String
 
 /-! # A12Kernel.Elaboration.Enumeration — checked ordinary closed declarations
 
-This capsule checks the shared declaration facts needed by stored-token comparison, localized display comparability, and positional category projection. It admits only ordinary closed Enumerations. Table-backed, open, dynamic, partial, and extensible forms remain outside.
+This capsule checks the shared declaration facts needed by stored-token comparison, localized display texts, and positional category projection. It admits only ordinary closed Enumerations. Table-backed, open, dynamic, partial, and extensible forms remain outside.
 -/
 
 namespace A12Kernel
+
+/-- One resolved localized stored/display association from a legal ordinary Enumeration declaration. Display texts are rendered in messages and checked as declarations, but decide no comparison, computation source or concatenation on kernel 31.1.1. -/
+structure EnumerationDisplayFact where
+  locale : String
+  stored : String
+  display : String
+  deriving Repr, DecidableEq
 
 /-- One named category vector in the same declaration order as the stored-token domain. -/
 structure EnumerationCategoryDeclaration where
@@ -15,7 +21,7 @@ structure EnumerationCategoryDeclaration where
   tokens : List String
   deriving Repr, DecidableEq
 
-/-- The normalized ordinary closed declaration. Display facts are flat so the existing comparability profile consumes them without another representation. -/
+/-- The normalized ordinary closed declaration. -/
 structure EnumerationDeclaration where
   storedTokens : List String
   displayFacts : List EnumerationDisplayFact := []
@@ -216,14 +222,6 @@ theorem CheckedEnumerationDeclaration.defaultStoredToken_admitted
     repeat' split at valid
     all_goals contradiction
   · simpa using named
-
-def CheckedEnumerationDeclaration.displayProfile
-    (checked : CheckedEnumerationDeclaration) : ResolvedEnumerationDisplay :=
-  { facts := checked.declaration.displayFacts }
-
-def CheckedEnumerationDeclaration.directComparableField
-    (checked : CheckedEnumerationDeclaration) : DirectComparableField :=
-  .enumeration checked.displayProfile
 
 /-- The ordinary runtime projection reads the exact checked stored token. -/
 def CheckedEnumerationDeclaration.storedProjection

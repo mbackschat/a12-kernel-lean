@@ -172,8 +172,8 @@ def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclarat
     | some _ => throw "EnumerationType sValue must be a string"
   let entries := (← body.getObjValAs? (Array Json) "values").toList
   let values ← entries.mapM (·.getObjValAs? String "value")
-  -- Copy admission compares effective display mappings (spec/09 §1); discarding labels
-  -- here would turn a remapped Enumeration into an unlabelled one before that check.
+  -- Labels stay attached to their stored token: messages render them and the declaration checks read
+  -- them, although no comparison, copy or concatenation does (kernel 31.1.1).
   let displayFacts ← entries.mapM fun entry => do
     let stored ← entry.getObjValAs? String "value"
     pure ((← localizedTextMember entry "label").map fun (locale, display) =>

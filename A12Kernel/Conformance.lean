@@ -214,7 +214,6 @@ import A12Kernel.Conformance.DateTimeSubdayThenDayShiftEvaluation
 import A12Kernel.Conformance.DocumentTemporalCoherence
 import A12Kernel.Conformance.Elaboration
 import A12Kernel.Conformance.Enumeration
-import A12Kernel.Conformance.EnumerationComparability
 import A12Kernel.Conformance.EnumerationComputation
 import A12Kernel.Conformance.EnumerationComputationResult
 import A12Kernel.Conformance.EnumerationElaboration

@@ -188,7 +188,7 @@ def aggregateFields? (pair : CheckedParallelFieldPair model) (operands : List Pa
 /-- The operands' stored String or Enumeration projections, or none when any operand has none. -/
 def tokenOperands? (pair : CheckedParallelFieldPair model) (operands : List ParallelFieldOperand) :
     Option (List FlatTextFieldOperand) :=
-  operands.mapM fun operand => ((pair.declaration operand).toTokenFieldComparison? .stored).map (·.1)
+  operands.mapM fun operand => ((pair.declaration operand).toTokenFieldComparison? .stored)
 
 /-- Two or more distinct String or Enumeration fields, the operand list a distinct count and a
 uniqueness test take over a joined pair (joined-carrier-limits capture, rows `d01b`, `d03` and `d04`,

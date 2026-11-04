@@ -67,13 +67,13 @@ example : [CorrelationElabError.fieldOutsideGroup .inner ["Probe", "Amount"] ["P
     .fieldOutsideEnvironment .inner ["Probe", "Other", "OtherVal"] [] [0],
     .wildcardOnRuleGroup].map CorrelationElabError.diagnostic? =
     [ some .noIterationForWildcard
-    , some .invalidIterationInFilterCondition
+    , some .invalidIterationInSetExpression
     , some .noWildcardsAllowed ] := by
   native_decide
 
 example : (CorrelationElabError.repetitionOutsideEnvironment .inner
     ["Probe", "Other"] [10] 20).diagnostic? =
-    some .invalidIterationInFilterCondition := by native_decide
+    some .invalidIterationInSetExpression := by native_decide
 
 /- The scale gate is the filter's too, and it is a live pair rather than a one-sided refusal: the
    same literal is admitted against a declaration whose scale fits. -/
@@ -87,10 +87,10 @@ example : (CorrelationElabError.equalityScaleMismatch ["Probe", "Rows", "RowVal"
    are different Kernel constants reached by different gates. -/
 example : [KernelStaticDiagnostic.invalidTypeForComparison,
     .invalidTypesForComparison, .noIterationForWildcard,
-    .invalidIterationInFilterCondition].map KernelStaticDiagnostic.kernelCode =
+    .invalidIterationInSetExpression].map KernelStaticDiagnostic.kernelCode =
     ["MVK_INVALID_TYPE_FOR_COMPARISON", "MVK_INVALID_TYPES_FOR_COMPARISON",
       "MVK_NO_ITERATION_FOR_WILDCARD",
-      "MVK_INVALID_ITERATION_IN_FILTER_CONDITION"] := by
+      "MVK_INVALID_ITERATION_IN_SET_EXPRESSION"] := by
   native_decide
 
 /- **The class survives the wrapping carrier**, which is the whole point of projecting it once. Two

@@ -348,44 +348,40 @@ def toPresenceField (declaration : FlatFieldDecl) : FlatField :=
       .temporal { id := declaration.id, kind, components }
   | .dateRange => .dateRange { id := declaration.id }
 
-/-- Resolve one exact stored/category projection from a legal Enumeration declaration for direct textual comparison. Category access is statically exempt from display-remapping compatibility. -/
+/-- Resolve one exact stored/category projection from a legal Enumeration declaration for direct textual comparison. Display labels play no part on kernel 31.1.1, so the operand alone is the whole static result. -/
 def toEnumerationTextFieldComparison? (declaration : FlatFieldDecl)
     (projectionRef : EnumerationProjectionRef) :
-    Option (FlatTextFieldOperand × DirectComparableField) :=
+    Option FlatTextFieldOperand :=
   match declaration.policy.kind, declaration.enumeration with
   | .enumeration, some source =>
       match elaborateEnumeration source with
       | .ok checked =>
           match checked.resolveProjection projectionRef with
           | .ok projection =>
-              let profile := match projectionRef with
-                | .stored => checked.directComparableField
-                | .category _ => .category
               some (.enumeration {
                 field := { id := declaration.id }
                 projectionRef
-                projection }, profile)
+                projection })
           | .error _ => none
       | .error _ => none
   | _, _ => none
 
-/-- Resolve one legal direct String/Enumeration declaration to its stored-value runtime operand and independent static-comparability profile. -/
+/-- Resolve one legal direct String/Enumeration declaration to its stored-value runtime operand. -/
 def toTextFieldComparison? (declaration : FlatFieldDecl) :
-    Option (FlatTextFieldOperand × DirectComparableField) :=
+    Option FlatTextFieldOperand :=
   match declaration.toStringValueField?, declaration.policy.kind,
       declaration.enumeration with
-  | some field, .string, none => some (.string field, .plainString)
+  | some field, .string, none => some (.string field)
   | none, .enumeration, some _ => declaration.toEnumerationTextFieldComparison? .stored
   | _, _, _ => none
 
-def textComparisonProfileFor? (declaration : FlatFieldDecl)
-    (operand : FlatTextFieldOperand) : Option DirectComparableField :=
-  let resolved := match operand with
+/-- Whether this declaration resolves to exactly this direct textual operand. -/
+def resolvesTextOperand (declaration : FlatFieldDecl)
+    (operand : FlatTextFieldOperand) : Bool :=
+  (match operand with
     | .string _ => declaration.toTextFieldComparison?
     | .enumeration operand =>
-        declaration.toEnumerationTextFieldComparison? operand.projectionRef
-  resolved.bind fun (checkedOperand, profile) =>
-    if checkedOperand == operand then some profile else none
+        declaration.toEnumerationTextFieldComparison? operand.projectionRef) == some operand
 
 end FlatFieldDecl
 
@@ -797,8 +793,6 @@ inductive ElabError where
       (projectionRef : EnumerationProjectionRef)
   | duplicateStringValueListField (path : List String)
   | duplicateNumberValueListField (path : List String)
-  | enumerationComparability (leftPath rightPath : List String)
-      (error : EnumerationComparabilityError)
   | incoherentCore
   deriving Repr, DecidableEq
 

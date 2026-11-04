@@ -15,7 +15,7 @@ private def HavingSelectedRef.profile? (reference : HavingSelectedRef) (model : 
   if declaration.fieldValueReadRefusal?.isSome then none else
     match reference with
     | .text reference =>
-        if declaration.textComparisonProfileFor? reference.operand |>.isSome then some .text else none
+        if declaration.resolvesTextOperand reference.operand then some .text else none
     | .boolean _ field => if declaration.policy.kind == .boolean && declaration.id == field.id then some .boolean else none
     | .dateRange _ field => do
         let (_, _, format) ← model.dateRangeSourceProfile field
@@ -44,7 +44,7 @@ def HavingSelectedOperand.wellFormed (operand : HavingSelectedOperand) (model : 
             match slot, reference with
             | .extent (.group _) _, .text ref | .extent (.starredGroup _ _) _, .text ref =>
                 (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
-                  declaration.toTextFieldComparison?.any (fun (operand, _) => operand == ref.operand)
+                  declaration.toTextFieldComparison?.any (· == ref.operand)
             | _, _ => true
     | _ => true
 
@@ -68,7 +68,7 @@ def resolveHavingSelectedReference (reference : ResolvedHavingDirectFieldOperand
   let profile := match reference.form with
     | .stored => reference.declaration.toTextFieldComparison?
     | .projected category => reference.declaration.toEnumerationTextFieldComparison? (.category category)
-  let some (operand, _) := profile | throw .numericExpressionUnsupported
+  let some operand := profile | throw .numericExpressionUnsupported
   pure (.text { origin := reference.origin, operand })
 
 def elaborateHavingSelectedComparison (model : FlatModel) (declaringGroup : GroupPath)

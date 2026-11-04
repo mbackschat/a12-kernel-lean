@@ -20,12 +20,12 @@ private def tokenSlotsMatch (model : FlatModel) (slots : List (HavingFieldListSl
     (model.lookupUniqueId ref.field.id).toOption.any fun declaration =>
       let projectionAllowed := (match slot with
         | .direct _ | .extent (.starField _ _) _ => expected.isSome
-        | _ => false) || declaration.toTextFieldComparison?.any (fun (operand, _) => operand == ref.operand)
+        | _ => false) || declaration.toTextFieldComparison?.any (· == ref.operand)
       projectionAllowed &&
       (match ref.operand with
-        | .string _ => declaration.toTextFieldComparison?.any (fun (operand, _) => operand == ref.operand)
+        | .string _ => declaration.toTextFieldComparison?.any (· == ref.operand)
         | .enumeration operand => declaration.toEnumerationTextFieldComparison? operand.projectionRef
-            |>.any (fun (resolved, _) => resolved == ref.operand)) &&
+            |>.any (· == ref.operand)) &&
         expected.all (declaration.allowsTokenValueCountLiteral ref.operand)
 
 def HavingCollectionCount.wellFormed (source : HavingCollectionCount) (model : FlatModel)
@@ -58,7 +58,7 @@ private def tokenSlots (checked : List (HavingFieldListSlot (ResolvedHavingDirec
     let profile := match ref.form with
       | .stored => ref.declaration.toTextFieldComparison?
       | .projected category => ref.declaration.toEnumerationTextFieldComparison? (.category category)
-    let some (operand, _) := profile | throw .numericExpressionUnsupported
+    let some operand := profile | throw .numericExpressionUnsupported
     pure ({ origin := ref.origin, operand } : HavingStringRef)
   if !((checked.flatMap (·.references)).zip (slots.flatMap (·.references))).all
       (fun (resolved, ref) => expected.all (resolved.declaration.allowsTokenValueCountLiteral ref.operand)) then

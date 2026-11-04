@@ -19,7 +19,7 @@ example : customs.all (fun custom =>
 example : customs.all (fun custom => ["And", "Or"].all fun operator => [false, true].all fun reverse =>
     ["FieldFilled(Rows/N)", "FieldNotFilled(Rows/N)"].all fun sibling =>
       let filter := combine custom sibling operator reverse
-      diagnostic filter == some "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION" &&
+      diagnostic filter == some "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION" &&
       HavingFixture.admissions HavingFixture.model filter == (false, false)) = true := by native_decide
 
 example : customs.all (fun custom => ["And", "Or"].all fun operator => [false, true].all fun reverse =>
@@ -29,7 +29,7 @@ example : customs.all (fun custom => ["And", "Or"].all fun operator => [false, t
 
 example : ["And", "Or"].all (fun first => ["And", "Or"].all fun second =>
     diagnostic (combine (combine "CustomCondition Check" "FieldFilled(Expected)" first false)
-      "FieldFilled(Rows/N)" second false) == some "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION" &&
+      "FieldFilled(Rows/N)" second false) == some "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION" &&
     diagnostic (combine (combine "FieldFilled(Rows/N)" "CustomCondition Check" first false)
       "[Rows/Tag] > \"keep\"" second false) == some "MVK_INVALID_TYPE_FOR_COMPARISON") = true := by native_decide
 
@@ -48,11 +48,11 @@ private def otherGroupModel : FlatModel := { HavingFixture.model with
 example : ["And", "Or"].all (fun operator => [false, true].all fun reverse =>
     HavingFixture.filterDiagnostic? otherGroupModel
       (combine "CustomCondition Check" "FieldFilled(Other/N) And FieldFilled(Rows/N)" operator reverse) ==
-        some .invalidIterationInFilterCondition) = true ∧
+        some .invalidIterationInSetExpression) = true ∧
     HavingFixture.filterDiagnostic? HavingFixture.model "ApplikationsBedingung Pruefung" .german =
       some .noIterationForWildcard ∧
     HavingFixture.filterDiagnostic? HavingFixture.model
       "FeldAngegeben(Rows/N) Und ApplikationsBedingung 'Wahr'" .german =
-        some .disallowedConstructInFilterCondition := by native_decide
+        some .disallowedConstructInSetExpression := by native_decide
 
 end A12Kernel.Dm.HavingForbiddenLocks

@@ -56,7 +56,7 @@ inductive NumericProductAggregateElabError where
   declaring group, so the declaring group binds none of it. -/
   | levelOutsideRuleGroup (path : List String) (unbound : UnboundOperandLevel)
   | wildcardOnlyAtLowestLevel (path : List String)
-  | wildcardAtLowestLevelRequired
+  | wildcardAtLowestRepeatableLevelRequired
   | repeatableLevelRequired
   | incompatibleTopology
   | keyed (error : KeyedEntityExtentError)
@@ -69,7 +69,7 @@ def NumericProductAggregateElabError.diagnostic? :
   | .noWildcard _ => some .noWildcard
   | .levelOutsideRuleGroup _ unbound => unbound.diagnostic?
   | .wildcardOnlyAtLowestLevel _ => some .wildcardOnlyAtLowestLevelAllowed
-  | .wildcardAtLowestLevelRequired => some .wildcardAtLowestLevelRequired
+  | .wildcardAtLowestRepeatableLevelRequired => some .wildcardAtLowestRepeatableLevelRequired
   | .repeatableLevelRequired => some .repeatableLevelRequired
   | .source (.path (.containmentBelowStar unbound)) => unbound.diagnostic?
   | .source _ | .incompatibleTopology | .keyed _ => none
@@ -176,10 +176,10 @@ repeatable level may be starred, a level the declaring scope binds counted too. 
 private def NumericProductOperandRead.requireLowestStar (having : Option SurfaceCorrelatedHaving) :
     NumericProductOperandRead model declaringGroup → Except NumericProductAggregateElabError Unit
   | operand => do
-      if having.isSome then throw .wildcardAtLowestLevelRequired
+      if having.isSome then throw .wildcardAtLowestRepeatableLevelRequired
       match operand with
       | .fixed _ => pure ()
-      | .unstarredBound _ => throw .wildcardAtLowestLevelRequired
+      | .unstarredBound _ => throw .wildcardAtLowestRepeatableLevelRequired
       | .starred source _ =>
           if source.path.firstStar + 1 = source.path.axes.length then pure ()
           else throw (.wildcardOnlyAtLowestLevel source.declaration.path)
@@ -194,7 +194,7 @@ private def NumericProductOperandRead.toShape :
       | none => throw (.source (.fieldNotNumber declaration.path))
   -- `requireLowestStar` refuses this arm before the Number question; the class is repeated only to
   -- keep the function total.
-  | .unstarredBound _ => throw .wildcardAtLowestLevelRequired
+  | .unstarredBound _ => throw .wildcardAtLowestRepeatableLevelRequired
   | .starred source hBound =>
       match hField : source.declaration.toNumberField? with
       | none => throw (.source (.fieldNotNumber source.declaration.path))

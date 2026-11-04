@@ -42,7 +42,7 @@ inductive StringComputationElabError where
   | rawStringValue (path : List String)
   | invalidRange (start finish : Nat)
   | targetKindMismatch (path : List String) (actual : SurfaceScalarKind)
-  | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
+  | copyComparison (targetPath sourcePath : List String) (arm : CopyComparisonKindArm)
   | rawStringTarget (path : List String)
   | targetSelfReference (field : FieldId)
   /-- The group a target-less expression is judged in repeats, so its hypothetical target is a row
@@ -66,7 +66,7 @@ def targetDiagnostic? :
     StringComputationElabError → Option KernelStaticDiagnostic
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | .rawStringTarget _ => some .rawTypeOperandInvalid
-  | .copyComparison _ _ refusal => some refusal.diagnostic
+  | .copyComparison _ _ arm => some arm.diagnostic
   | _ => none
 
 end StringComputationElabError
@@ -82,18 +82,18 @@ def admitStringComputationValueField
       else
         throw (.fieldKindMismatch declaration.path declaration.policy.kind.surfaceKind)
 
-/-- Immediate concatenation fields require no effective display remapping; a grouped operand keeps
-its stored-token read without that restriction (spec/06 Part A §7). Range keeps its stricter gate. -/
-def admitStringExpressionField (declaration : FlatFieldDecl) (allowStoredEnumeration : Bool := false) :
+/-- A concatenation field is a String value or an Enumeration's stored-token read, whatever display
+labels the Enumeration declares (a12-dmkits `KeyedEnumerationConcatenationLawsTest` at `1124b523f`,
+kernel 31.1.1). Range keeps its stricter gate. -/
+def admitStringExpressionField (declaration : FlatFieldDecl) :
     Except StringComputationElabError FieldId := do
-  if let some (_, .enumeration display) := declaration.toEnumerationTextFieldComparison? .stored then
-    if allowStoredEnumeration || !display.hasEffectiveDisplay then return declaration.id
+  if (declaration.toEnumerationTextFieldComparison? .stored).isSome then return declaration.id
   admitStringComputationValueField declaration
 
 /-- Resolve the declared category once so evaluation and consumers retain its positional mapping. -/
 def stringCategory? (declaration : FlatFieldDecl) (name : String) :
     Option ResolvedEnumerationCategory := do
-  let (.enumeration operand, _) ← declaration.toEnumerationTextFieldComparison? (.category name)
+  let .enumeration operand ← declaration.toEnumerationTextFieldComparison? (.category name)
     | none
   let .category mapping := operand.projection | none
   pure mapping
@@ -102,10 +102,10 @@ def stringCategory? (declaration : FlatFieldDecl) (name : String) :
 copied field is a field-value read, so its gates refuse a raw String ahead of this carrier's own
 refusal. -/
 def elaborateStringValueField (model : FlatModel) (declaringGroup targetGroup : GroupPath)
-    (reference : SurfaceFieldPath) (allowStoredEnumeration : Bool := false) : Except StringComputationElabError FieldId := do
+    (reference : SurfaceFieldPath) : Except StringComputationElabError FieldId := do
   let declaration ←
     (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve
-  admitStringExpressionField declaration allowStoredEnumeration
+  admitStringExpressionField declaration
 
 /-- Admit one already-resolved Number declaration as a `FieldValueAsString` operand. -/
 def admitNumberAsStringField
@@ -124,13 +124,13 @@ def elaborateNumberAsStringField (model : FlatModel)
     (model.resolveComputationEntityRead declaringGroup targetGroup reference).mapError .resolve
   admitNumberAsStringField declaration
 
-/-- Require the same textual kind and display gates after nonrepeatable resolution. -/
+/-- Require the same textual kind gate after nonrepeatable resolution. -/
 private def FlatModel.admitsStringComputationOperand (model : FlatModel)
-    (fieldId : FieldId) (allowStoredEnumeration : Bool := false) : Bool :=
+    (fieldId : FieldId) : Bool :=
   match model.lookupUniqueId fieldId with
   | .ok declaration =>
       declaration.repeatableScope.isEmpty &&
-        (admitStringExpressionField declaration allowStoredEnumeration).toOption == some fieldId
+        (admitStringExpressionField declaration).toOption == some fieldId
   | .error _ => false
 
 /-- Whether one runtime coercion leaf is the exact nonrepeatable Number declaration in the model. -/
@@ -147,11 +147,10 @@ private def FlatModel.admitsNumberAsStringOperand (model : FlatModel)
 namespace StringExpr
 
 /-- Certify every resolved leaf against the same model and nonrepeatable scope. -/
-def wellFormedBool (model : FlatModel) (expression : StringExpr FieldId)
-    (allowStoredEnumeration : Bool := false) : Bool :=
+def wellFormedBool (model : FlatModel) (expression : StringExpr FieldId) : Bool :=
   match expression with
   | StringExpr.field fieldId =>
-      model.admitsStringComputationOperand fieldId allowStoredEnumeration
+      model.admitsStringComputationOperand fieldId
   | .category fieldId projection =>
       (model.lookupUniqueId fieldId).toOption.any fun declaration =>
         declaration.repeatableScope.isEmpty &&
@@ -166,7 +165,7 @@ def wellFormedBool (model : FlatModel) (expression : StringExpr FieldId)
           field.repeatableScope.isEmpty && field.toStringValueField?.isSome)
   | StringExpr.concat left right =>
       left.wellFormedBool model && right.wellFormedBool model
-  | .group body => body.wellFormedBool model true
+  | .group body => body.wellFormedBool model
 
 def WellFormed (expression : StringExpr FieldId) (model : FlatModel) : Prop :=
   expression.wellFormedBool model = true
@@ -214,11 +213,11 @@ structure CheckedStringComputationOperation (model : FlatModel) where
 
 /-- Resolve one authored String-expression tree without evaluating or reordering it. The caller supplies a validated model; each field still passes through the shared target-scope path resolver. -/
 def elaborateStringExprCore (model : FlatModel) (declaringGroup targetGroup : GroupPath)
-    (expression : StringExpr SurfaceFieldPath String) (allowStoredEnumeration : Bool := false) :
+    (expression : StringExpr SurfaceFieldPath String) :
     Except StringComputationElabError (StringExpr FieldId) :=
   match expression with
   | StringExpr.field reference => do
-      pure (.field (← elaborateStringValueField model declaringGroup targetGroup reference allowStoredEnumeration))
+      pure (.field (← elaborateStringValueField model declaringGroup targetGroup reference))
   | .category reference name => do
       let declaration ←
         (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve
@@ -236,7 +235,7 @@ def elaborateStringExprCore (model : FlatModel) (declaringGroup targetGroup : Gr
       if !validStringRange start finish then
         throw (.invalidRange start finish)
       pure (.range (← admitStringComputationValueField declaration) start finish)
-  | .group body => .group <$> elaborateStringExprCore model declaringGroup targetGroup body true
+  | .group body => .group <$> elaborateStringExprCore model declaringGroup targetGroup body
   | StringExpr.concat left right => do
       pure (.concat
         (← elaborateStringExprCore model declaringGroup targetGroup left)
@@ -273,7 +272,7 @@ asked after the target's read and then the copied field's read, as the Kernel as
 ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
 A wider expression is not typed here: the rows measure a whole-expression copy. A pair the comparison
 admits falls through to this carrier's expression gates, including the stored-token leaf for an
-unlabelled Enumeration copied into a String. -/
+Enumeration copied into a String. -/
 private def FlatModel.checkStringCopyComparison (model : FlatModel) (declaringGroup : GroupPath)
     (target : FlatFieldDecl) : StringExpr SurfaceFieldPath String → Except StringComputationElabError Unit
   | .field reference => do
@@ -281,8 +280,8 @@ private def FlatModel.checkStringCopyComparison (model : FlatModel) (declaringGr
         let source ←
           (model.resolveComputationFieldValueRead declaringGroup target.groupPath reference).mapError
             .resolve
-        if let some refusal := target.copyComparisonRefusal? source then
-          throw (.copyComparison target.path source.path refusal)
+        if let some arm := target.copyComparisonRefusal? source then
+          throw (.copyComparison target.path source.path arm)
   | .group body => model.checkStringCopyComparison declaringGroup target body
   | _ => pure ()
 

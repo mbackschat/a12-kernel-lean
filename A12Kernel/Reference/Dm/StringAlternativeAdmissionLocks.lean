@@ -89,7 +89,7 @@ example : coreRefusal [(none, field "Input"), (none, field "Out")]
 example : coreRefusal [(none, field "Input"), (some (.fieldFilled 99), field "Input")] =
     some (.table (.guardNotAdmitted 2)) := by native_decide
 example : coreRefusal [(none, field "Input"), (none, field "N")] =
-    some (.operation 2 (.copyComparison ["Form", "Out"] ["Form", "N"] (.kindArm .text))) :=
+    some (.operation 2 (.copyComparison ["Form", "Out"] ["Form", "N"] .text)) :=
   by native_decide
 example : (coreRefusal [(none, field "Out"), (none, field "Input")]).bind (·.diagnostic?) =
     some .errorEmptyPrecondition := by native_decide

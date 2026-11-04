@@ -164,7 +164,7 @@ private def full : Json := staffing
 -- rule declared inside the error side's group (`y1`), after `RepetitionNotUnique` beside the join
 -- (`x1`, `x2`, and `x0`, the joined-carrier-limits capture's `d06`).
 example : admission = some [
-    "y1 ParallelAdmission MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED",
+    "y1 ParallelAdmission MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED",
     "y2 admitted",
     "q01 admitted",
     "q02 admitted",
@@ -179,9 +179,9 @@ example : admission = some [
     "r03 admitted",
     "r04 admitted",
     "r05 admitted",
-    "q05 ParallelAdmission MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED",
+    "q05 ParallelAdmission MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED",
     "q07 ParallelAdmission MVK_NO_WILDCARD",
-    "q10 ParallelAdmission MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED",
+    "q10 ParallelAdmission MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED",
     "q11 admitted",
     "q12 admitted",
     "x0 ParallelAdmission MVK_PARALLEL_ITERATION_NOT_ALLOWED",

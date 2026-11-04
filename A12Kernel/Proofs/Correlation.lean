@@ -137,7 +137,7 @@ theorem correlatedHaving_admission_swap (model : FlatModel)
     well-formedness is a leaf **conjunction**, so a leaf whose reference resolves in neither
     environment keeps the whole condition refused however much is added beside it. The Kernel draws
     those two refusals apart — `MVK_NO_ITERATION_FOR_WILDCARD` for the first and
-    `MVK_INVALID_ITERATION_IN_FILTER_CONDITION` for the second — and an in-scope conjunct admits a
+    `MVK_INVALID_ITERATION_IN_SET_EXPRESSION` for the second — and an in-scope conjunct admits a
     condition refused by the first while leaving one refused by the second refused
     ([checkpoint](../../docs/sources/having-filter-probes.md#src-filter-scope-versus-iteration-gates)).
     This generalizes those measured rows from two shapes to every condition: a consumer repairing a

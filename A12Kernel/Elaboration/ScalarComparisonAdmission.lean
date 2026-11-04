@@ -2,13 +2,11 @@ import A12Kernel.Elaboration.NumericComputation.OperationTyping
 
 namespace A12Kernel
 
-/-- Comparison gates distinguish literal values and immediate field syntax from an operation's
-result policy. Grouping preserves policy and constantness but clears immediate-field syntax
-(CheckVergleichsBedingungImpl; spec/06 Part B). -/
+/-- Comparison gates distinguish literal values from an operation's result policy. Grouping
+preserves policy and constantness. -/
 structure ScalarComparisonOperand where
   type : NumericOperandType
   literal : Option (Sum String Bool) := none
-  directField : Bool := false
 
 private def ScalarComparisonOperand.booleanLiteral? (source : ScalarComparisonOperand) : Option Bool :=
   source.literal.bind fun | .inr value => some value | _ => none
@@ -20,22 +18,16 @@ private def NumericOperandType.isText : NumericOperandType → Bool
   | .stringLike | .enumeration .. => true
   | _ => false
 
+/-- An Enumeration side opposite a written-out value must be one of its tokens; opposite another
+operand its display labels decide nothing (kernel 31.1.1). -/
 private def checkEnumerationSide (left right : ScalarComparisonOperand) : Except KernelStaticDiagnostic Unit := do
-  let .enumeration profile tokens := left.type | return
+  let .enumeration tokens := left.type | return
   if let some (.inl literal) := right.literal then
     if !tokens.contains literal then throw .invalidStringConstantForEnumComparison
-  else
-    let other ← match right.type with
-      | .enumeration profile _ => pure (some profile)
-      | .stringLike => pure (if right.directField then some .plainString else none)
-      | _ => pure none
-    if let some other := other then
-      if let some diagnostic := (classifyDirectFieldComparison profile other).diagnostic? then throw diagnostic
 
 /-- Complete Boolean/Confirm and textual comparison gates after comparison entry. `false`
 leaves Number, temporal and DateRange continuation with their existing owners. Constants do not
-acquire a Boolean declaration's kind gate; selectors' String results carry no Enumeration domain
-(CheckVergleichsBedingungImpl; CheckEntityListenUtils.treatEnumAsString). -/
+acquire a Boolean declaration's kind gate; selectors' String results carry no Enumeration domain. -/
 def checkScalarComparison (op : SurfaceComparisonOp) (left right : ScalarComparisonOperand) :
     Except KernelStaticDiagnostic Bool := do
   let leftKind := left.type.surfaceKind

@@ -423,12 +423,13 @@ example : (do
       } := by
   native_decide
 
-/- Whole-domain containment and direct display compatibility are independent per-source gates; categories bypass the latter. -/
+/- Whole-domain containment is the only per-source gate: display labels play no part, so a labelled
+   operand over the target's tokens is admitted. Locked: a12-dmkits EnumComputationSourceLawsTest at
+   1124b523f, kernel 31.1.1. -/
 example :
     errorOf (source (direct "Wider") [direct "Compatible"]) =
         some (.sourceIncompatible wider.path target.path) ∧
-      errorOf (source (direct "Displayed") [direct "Compatible"]) =
-        some (.sourceIncompatible displayed.path target.path) ∧
+      errorOf (source (direct "Displayed") [direct "Compatible"]) = none ∧
       errorOf (source (category "Projected" "Target") [direct "Compatible"]) =
         none := by
   native_decide

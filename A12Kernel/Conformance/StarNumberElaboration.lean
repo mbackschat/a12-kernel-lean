@@ -479,7 +479,7 @@ private def offPathDiagnostic? (origin : HavingOrigin) : Option KernelStaticDiag
   | _ => none
 
 example : offPathDiagnostic? .outer = some .noWildcard ∧
-    offPathDiagnostic? .inner = some .invalidIterationInFilterCondition := by native_decide
+    offPathDiagnostic? .inner = some .invalidIterationInSetExpression := by native_decide
 
 private def bodyDiagnostic? (having : SurfaceCorrelatedHaving) : Option KernelStaticDiagnostic :=
   match havingErrorOf amount.groupPath (source) having with
@@ -498,10 +498,10 @@ example :
     bodyDiagnostic? (.compareNumbers .equal sibling (surfaceNumber .inner amount.groupPath "Paid")) =
         some .invalidCompareDecimalPlaces ∧
       bodyDiagnostic? (.compareNumbers .equal sibling (surfaceNumber .inner amount.groupPath "Amount")) =
-        some .invalidIterationInFilterCondition ∧
+        some .invalidIterationInSetExpression ∧
       bodyDiagnostic? (.compareStrings .equal
           { origin := .inner, field := absoluteField otherName.groupPath "Name" } "x") =
-        some .invalidIterationInFilterCondition := by
+        some .invalidIterationInSetExpression := by
   native_decide
 
 /- The peer's other two sibling rows, `Parties/Name` against `Parties/Count`. The ordering draws the

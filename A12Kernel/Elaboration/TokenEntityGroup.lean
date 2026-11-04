@@ -31,11 +31,11 @@ Kernel admits a raw member there on rules and computations and refuses it in com
 counts and uniqueness lists (k22-static-s4-2026-10-24, `raw-members`). -/
 def FlatFieldDecl.toTokenFieldComparison? (declaration : FlatFieldDecl)
     (projectionRef : EnumerationProjectionRef) (admitRaw : Bool := false) :
-    Option (FlatTextFieldOperand × DirectComparableField) :=
+    Option FlatTextFieldOperand :=
   match projectionRef with
   | .stored =>
       if admitRaw && declaration.isRawString then
-        some (.string { id := declaration.id, rawPlaceholder := true }, .plainString)
+        some (.string { id := declaration.id, rawPlaceholder := true })
       else declaration.toTextFieldComparison?
   | .category _ =>
       declaration.toEnumerationTextFieldComparison? projectionRef
@@ -49,14 +49,14 @@ structure CheckedTokenExpansionSlot where
 /-- Admit one declaration into a group's token expansion, in the stored form a group slot can author. `none` covers every reason the token family cannot read a declaration — a Number or temporal kind, a BOOLEAN or CONFIRM kind, a raw String, an Enumeration without a declaration — and the certificate below turns any such `none` into a refusal of the whole slot rather than a silent omission. -/
 def FlatFieldDecl.toStoredTokenSlot? (declaration : FlatFieldDecl) :
     Option CheckedTokenExpansionSlot :=
-  (declaration.toTokenFieldComparison? .stored).map fun (operand, _) =>
+  (declaration.toTokenFieldComparison? .stored).map fun operand =>
     { declaration, operand }
 
 /-- A selected column may additionally author a category; a group slot never can. -/
 def FlatFieldDecl.toTokenSlot? (declaration : FlatFieldDecl) :
     EnumerationProjectionRef → Option CheckedTokenExpansionSlot
   | .stored => declaration.toStoredTokenSlot?
-  | projectionRef@(.category _) => (declaration.toTokenFieldComparison? projectionRef).map fun (operand, _) =>
+  | projectionRef@(.category _) => (declaration.toTokenFieldComparison? projectionRef).map fun operand =>
       { declaration, operand }
 
 /-- One authored group-scope slot certified as String/Enumeration-valued.

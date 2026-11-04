@@ -127,7 +127,7 @@ inductive NumericComputationElabError where
   /-- The operation's post-order node check refused it, its typing or one of its authoring gates, with
   the class of the node that failed first, `none` where that node's class is not measured. -/
   | operationNode (diagnostic : Option KernelStaticDiagnostic)
-  | copyComparison (targetPath sourcePath : List String) (refusal : CopyComparisonRefusal)
+  | copyComparison (targetPath sourcePath : List String) (arm : CopyComparisonKindArm)
   | lengthOperandNotEvaluatedString (path : List String)
   | rangeOperandNotString (path : List String)
   | invalidStringRange (start finish : Nat)
@@ -201,7 +201,7 @@ def targetDiagnostic? :
   | .semanticIndex error => error.diagnostic?
   | .indexedString error => error.diagnostic?
   | .operationScaleMismatch _ _ => some .invalidCompareDecimalPlaces
-  | .copyComparison _ _ refusal => some refusal.diagnostic
+  | .copyComparison _ _ arm => some arm.diagnostic
   | .operationNode diagnostic => diagnostic
   | .targetSelfReference _ => some .errorReferenceToCalculatedField
   -- A row target's placement, measured on this carrier with a Number and a String copy and a

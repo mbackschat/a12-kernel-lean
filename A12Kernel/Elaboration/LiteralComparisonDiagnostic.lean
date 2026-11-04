@@ -168,11 +168,12 @@ Boolean the Boolean class, and so on down the order. Measured on every pair of e
 spanning all nine kinds, each copied into each from a root computation
 ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
 
-`none` leaves three questions to the arms that follow, which this function is not given: two
+`none` leaves two questions to the arms that follow, which this function is not given: two
 temporal fields meet the date arm's **format** questions, never a kind test, so a TIME field
-declaring a complete-date format copies into a Date target; a String against an Enumeration, or two
-Enumerations, meet the display arm; two Numbers meet the scale rule. Unlike a rule's `==`, the
-generated `!=` admits a Confirm against a Confirm. -/
+declaring a complete-date format copies into a Date target; two Numbers meet the scale rule. A String
+against an Enumeration, or two Enumerations, are admitted outright, whatever display labels either
+declares (kernel 31.1.1). Unlike a rule's `==`, the generated `!=` admits a Confirm against a
+Confirm. -/
 def copyComparisonKindArm? : SurfaceScalarKind → SurfaceScalarKind → Option CopyComparisonKindArm
   | .confirm, .confirm => none
   | .confirm, _ | _, .confirm => some .confirm
@@ -197,32 +198,13 @@ def ruleComparisonKindArm? (left right : SurfaceScalarKind) : Option CopyCompari
   | .confirm, .confirm => some .confirm
   | _, _ => copyComparisonKindArm? left right
 
-/-- Why a computation's generated comparison refuses a directly copied field: a kind arm, or the
-display arm between a String and an Enumeration or two Enumerations. -/
-inductive CopyComparisonRefusal where
-  | kindArm (arm : CopyComparisonKindArm)
-  | displayArm (error : EnumerationComparabilityError)
-  deriving Repr, DecidableEq
-
-def CopyComparisonRefusal.diagnostic : CopyComparisonRefusal → KernelStaticDiagnostic
-  | .kindArm arm => arm.diagnostic
-  | .displayArm error => error.diagnostic
-
 /-- The refusal the generated comparison draws for a field copied into a target, once both reads
-passed, or `none` where its kind and display arms pass the pair. A display-map conflict between two
-labelled Enumerations draws `MVK_INVALID_COMPARE_ENUM_TO_ENUM` and a labelled against an unlabelled
-side `MVK_INVALID_COMPARE_ENUM_TO_STRING`, measured on this carrier too. The format and scale
-questions stay with the carrier. -/
+passed, or `none` where its kind arm passes the pair. Display labels play no part on kernel 31.1.1, so
+a labelled side against a String or an Enumeration of another labelling passes
+(a12-dmkits `EnumDisplayComparabilityLawsTest` at `1124b523f`; this carrier's pairs are derived from
+that mechanism). The format and scale questions stay with the carrier. -/
 def FlatFieldDecl.copyComparisonRefusal? (target source : FlatFieldDecl) :
-    Option CopyComparisonRefusal :=
-  match copyComparisonKindArm? target.policy.kind.surfaceKind source.policy.kind.surfaceKind with
-  | some arm => some (.kindArm arm)
-  | none =>
-      match target.toTextFieldComparison?, source.toTextFieldComparison? with
-      | some (_, targetProfile), some (_, sourceProfile) =>
-          match classifyDirectFieldComparison targetProfile sourceProfile with
-          | .accepted => none
-          | .rejected error => some (.displayArm error)
-      | _, _ => none
+    Option CopyComparisonKindArm :=
+  copyComparisonKindArm? target.policy.kind.surfaceKind source.policy.kind.surfaceKind
 
 end A12Kernel

@@ -55,15 +55,15 @@ private def computationClassOf (group : List String) (target operation : String)
 the lowest-star class; an error field outside `Items` leaves the missing star. -/
 example :
     classOf ["Order"] "../Items/Count" "SumOfProducts(Items/Count, Items*/UnitWeight) > 0" =
-        "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       classOf ["Order"] "../Items/Count" "SumOfProducts(Items*/UnitWeight, Items/Count) > 0" =
-        "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       classOf ["Order"] "../Items/Count" "SumOfProducts(Items/Count, Items/UnitWeight) > 0" =
-        "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       classOf ["Order", "Items"] "../Count" "SumOfProducts(Count, /Order/Items*/UnitWeight) > 0" =
-        "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       classOf ["Order", "Items"] "../Count" "SumOfProducts(Count, UnitWeight) > 0" =
-        "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       classOf ["Order"] "../Code" "SumOfProducts(Items/Count, Items*/UnitWeight) > 0" =
         "MVK_NO_WILDCARD" ∧
       classOf ["Order"] "../Items/Count" "SumOfProducts(Items*/Count, Items*/UnitWeight) > 0" =
@@ -84,9 +84,9 @@ example :
 or in `Items`, the lowest-star class; at `/Order/LineTotal`, the missing star. -/
 example :
     computationClassOf ["Order"] "../Items/StockQty" "SumOfProducts(Items/Count, Items*/UnitWeight)" =
-        "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       computationClassOf ["Order", "Items"] "../StockQty" "SumOfProducts(Count, /Order/Items*/UnitWeight)" =
-        "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" ∧
+        "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED" ∧
       computationClassOf ["Order"] "../LineTotal" "SumOfProducts(Items/Count, Items*/UnitWeight)" =
         "MVK_NO_WILDCARD" := by
   native_decide

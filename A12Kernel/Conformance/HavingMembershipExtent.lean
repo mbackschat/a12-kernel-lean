@@ -170,7 +170,7 @@ private def certificateModel : FlatModel := {
   repeatableGroups := [{ level := 10, path := ["Form", "Rows"], repeatability := some 3 }] }
 private def certificate (shape : Nat) (projected literalMembers : Bool) : Option Bool := do
   let declaration ← (certificateModel.lookupUniqueId (if shape == 0 then 1 else 2)).toOption
-  let (operand, _) ← declaration.toEnumerationTextFieldComparison? (if projected then .category "Label" else .stored)
+  let operand ← declaration.toEnumerationTextFieldComparison? (if projected then .category "Label" else .stored)
   let reference : HavingStringRef := { origin := .inner, operand }
   let selection : StarPath := { axes := [{ level := 10, repeatability := some 3 }], firstStar := 0 }
   let slot := match shape with
@@ -179,7 +179,7 @@ private def certificate (shape : Nat) (projected literalMembers : Bool) : Option
     | 2 => .extent (.starredGroup ["Form", "Rows"] selection) [reference]
     | _ => .direct reference
   let outside ← (certificateModel.lookupUniqueId 3).toOption
-  let (member, _) ← outside.toEnumerationTextFieldComparison? .stored
+  let member ← outside.toEnumerationTextFieldComparison? .stored
   let source := if literalMembers then HavingFieldValueList.tokenLiterals [slot] [if projected then "y" else "x"]
     else .token [slot] [.direct { origin := .inner, operand := member }]
   pure (source.wellFormedForEnvironments (.quantified .atLeastOne) certificateModel [10] [])

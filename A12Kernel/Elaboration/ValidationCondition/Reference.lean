@@ -263,7 +263,7 @@ private def havingStringReferencePointer (source : CheckedStarFieldPath model)
     Except ReferenceProjectionError MessagePointer := do
   let declaration ← match model.lookupUniqueId reference.field.id with
     | .ok declaration =>
-        if (declaration.textComparisonProfileFor? reference.operand).isSome then
+        if declaration.resolvesTextOperand reference.operand then
           pure declaration
         else
           throw (.incoherentHavingField reference.field.id)

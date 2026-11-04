@@ -100,7 +100,7 @@ example : [false, true].all (fun row =>
     ["FieldValuesNotUnique(Rows/N,Rows/Other)", "DateRangesOverlap(Rows/A,Rows/B)",
       "AtLeastOneDateRangeOverlaps(Rows/A In Rows/B)"].all (fun body =>
         result (preceding ++ body) row ==
-          (if row then ("MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION")
+          (if row then ("MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION", "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION")
            else ("MVK_NO_WILDCARD", "MVK_NO_WILDCARD"))) &&
     ["FieldValuesNotUnique($Rows/N,Rows/Other)", "DateRangesOverlap($Rows/A,Rows/B)",
       "AtLeastOneDateRangeOverlaps($Rows/A In Rows/B)"].all (fun body =>
@@ -111,7 +111,7 @@ example : [false, true].all (fun row =>
       "DateRangesOverlap(Rows*/A Having FieldFilled(Rows/N),Rows/B)",
       "AtLeastOneDateRangeOverlaps(Rows/A In Rows*/B Having FieldFilled(Rows/N),Rows/B)"].all fun body =>
         result body row ==
-          (if row then ("MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION", "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION")
+          (if row then ("MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION", "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION")
            else ("MVK_NO_WILDCARD", "MVK_NO_WILDCARD"))) = true := by native_decide
 
 private def yearlessModel : FlatModel := { model with fields := model.fields.map fun field =>

@@ -38,10 +38,9 @@ theorem checkedTokenEntityGroup_expansion_complete
 /-- A resolved Enumeration token operand carries exactly the projection that was asked for, so no slot can silently read a different category than the one it authored. -/
 theorem enumerationTextFieldComparison_projectionRef
     {declaration : FlatFieldDecl} {projectionRef : EnumerationProjectionRef}
-    {operand : FlatTextFieldOperand} {profile : DirectComparableField}
+    {operand : FlatTextFieldOperand}
     (owned :
-      declaration.toEnumerationTextFieldComparison? projectionRef =
-        some (operand, profile)) :
+      declaration.toEnumerationTextFieldComparison? projectionRef = some operand) :
     operand.projectionRef? = some projectionRef := by
   unfold FlatFieldDecl.toEnumerationTextFieldComparison? at owned
   split at owned
@@ -55,8 +54,7 @@ theorem enumerationTextFieldComparison_projectionRef
 /-- A slot that authors no read form reads its declaration in the stored form. String carries no Enumeration projection at all, and the Enumeration arm resolves the stored one by the law above. -/
 theorem textFieldComparison_projectionRef_stored
     {declaration : FlatFieldDecl} {operand : FlatTextFieldOperand}
-    {profile : DirectComparableField}
-    (owned : declaration.toTextFieldComparison? = some (operand, profile)) :
+    (owned : declaration.toTextFieldComparison? = some operand) :
     operand.projectionRef? = none ∨
       operand.projectionRef? = some .stored := by
   unfold FlatFieldDecl.toTextFieldComparison? at owned
@@ -82,7 +80,7 @@ theorem checkedTokenEntityGroup_projections_stored
   obtain ⟨declaration, _, owned⟩ := List.mem_filterMap.mp selected
   simp only [FlatFieldDecl.toStoredTokenSlot?, FlatFieldDecl.toTokenFieldComparison?,
     Option.map_eq_some_iff] at owned
-  obtain ⟨⟨resolved, _⟩, comparison, rebuilt⟩ := owned
+  obtain ⟨resolved, comparison, rebuilt⟩ := owned
   have operandOwned : slot.operand = resolved := by
     rw [← rebuilt]
   rw [← projected]

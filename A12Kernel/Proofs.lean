@@ -154,7 +154,6 @@ import A12Kernel.Proofs.DateTimeSubdayShiftDifferenceEvaluation
 import A12Kernel.Proofs.DateTimeSubdayThenDayShiftEvaluation
 import A12Kernel.Proofs.Elaboration
 import A12Kernel.Proofs.Enumeration
-import A12Kernel.Proofs.EnumerationComparability
 import A12Kernel.Proofs.EnumerationComputation
 import A12Kernel.Proofs.EnumerationComputationResult
 import A12Kernel.Proofs.EnumerationDeclarationNotification

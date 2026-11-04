@@ -179,7 +179,7 @@ checks. The filtered owner's parallelism is distinct from parallelism in its bod
 (ParserService.checkNormalRule; spec/07 §3). -/
 def FilterRuleFacts.refusal? (facts : FilterRuleFacts) : Option KernelStaticDiagnostic :=
   if facts.repetitionNotUniqueCount > 0 && facts.parallelIteration then some .parallelIterationNotAllowed
-  else if facts.parallelFilteredEntity then some .parallelIterationForFilteredEntityNotAllowed
+  else if facts.parallelFilteredEntity then some .parallelIterationForPathWithAsterisksNotAllowed
   else if facts.parallelFilterBody then some .parallelIterationNotAllowed
   else if facts.filterUsesIndex then some .semanticIndexNotAllowed
   else if facts.repetitionNotUniqueCount > 1 then some .invalidCombinationOfRepetitionNotUnique
@@ -225,7 +225,7 @@ def filterIndexScan : List FilterIndexLevel → Bool → Except KernelStaticDiag
       | .semanticIndex => throw .semanticIndexNotAllowed
       | .wildcard => filterIndexScan rest true
       | .iteration =>
-          if !level.onFilteredPath then throw .invalidIterationInFilterCondition
+          if !level.onFilteredPath then throw .invalidIterationInSetExpression
           if outerWildcard then throw .noWildcard
           let later ← filterIndexScan rest outerWildcard
           pure (level.reopensFilteredLevel || later)
@@ -248,6 +248,6 @@ def filterBodyRefusal (references : List FilterIndexedReference) (forbiddenConst
   match filterReferenceWalk references with
   | .error diagnostic => some diagnostic
   | .ok false => some .noIterationForWildcard
-  | .ok true => if forbiddenConstruct then some .disallowedConstructInFilterCondition else none
+  | .ok true => if forbiddenConstruct then some .disallowedConstructInSetExpression else none
 
 end A12Kernel

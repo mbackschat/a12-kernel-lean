@@ -1,13 +1,12 @@
 import A12Kernel.Elaboration.RawString
 import A12Kernel.Elaboration.LiteralComparisonDiagnostic
-import A12Kernel.Elaboration.EnumerationComparability
 
 /-! # The Kernel class of a flat rule condition's refusal
 
 One projection for the flat condition elaborator's refusals, measured on the plain rule comparison
 [checkpoint](../../docs/sources/diagnostic-class-vocabulary-and-sweeps.md#src-condition-class-projection).
 Most arms delegate to the mechanism that already carries the measured table — the resolver's classes,
-the literal ladder, the rule comparison's kind arm, and the Enumeration display arm — and the few that
+the literal ladder and the rule comparison's kind arm — and the few that
 answer with one constant are single measured rows.
 
 The projection answers only for a condition built from the **measured shapes**: a comparison under `==`,
@@ -46,7 +45,6 @@ private def armDiagnostic? : ElabError → Option KernelStaticDiagnostic
   | .baseYearNotDeclared => some .conditionNoBaseYear
   | .baseYearScaleMismatch _ _ => some .invalidCompareDecimalPlaces
   | .lengthOperandKindMismatch _ _ => some .noString
-  | .enumerationComparability _ _ error => some error.diagnostic
   | .enumerationOperand _ (.invalidLiteral _) => some .invalidStringConstantForEnumComparison
   | error@(.rawStringLength _) | error@(.rawStringLengthBound _) => error.rawStringDiagnostic?
   -- Named rather than wildcarded, so a new refusal must be classified: the rest are this fragment's

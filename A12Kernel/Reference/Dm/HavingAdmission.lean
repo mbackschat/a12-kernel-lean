@@ -575,7 +575,7 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
       if let some category := reference.category then
         let some source := declaration.enumeration.bind (fun source => source.categories.find? (·.name == category)) |
           refuse "Having" "unresolved category result"
-        return (.enumeration .category source.tokens, state)
+        return (.enumeration source.tokens, state)
       pure (type, state)
   | .call "CurrentRepetition" [argument] none none => do
       let (reads, state) ← admitFieldList model group bindingGroup inFilter insideSemanticIndexKey admission [argument]

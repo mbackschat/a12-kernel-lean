@@ -51,20 +51,16 @@ private def certifyBoundStringExpression (model : FlatModel) (rowGroup : GroupPa
       pure checked
 
 private def elaborateSelectedStringCore (model : FlatModel) (declaringGroup rowGroup : GroupPath)
-    (expression : SurfaceSelectedStringExpression) (allowStoredEnumeration : Bool := false) :
+    (expression : SurfaceSelectedStringExpression) :
     Except StringComputationElabError (StringExpr (ResolvedStringSource model)) := do
   let direct (source : StringExpr SurfaceFieldPath String) :=
     (·.mapSources Sum.inl) <$> elaborateStringExprCore model declaringGroup rowGroup source
   let selected source := (elaborateSemanticIndexSource model declaringGroup source
     (some (model.repeatableScopeForGroupPath rowGroup))).mapError StringComputationElabError.indexed
-  let admitField (declaration : FlatFieldDecl) :=
-    if allowStoredEnumeration && (declaration.toEnumerationTextFieldComparison? .stored).isSome then
-      pure declaration.id
-    else admitStringExpressionField declaration
   match expression with
   | .field (.inl path) => do
       let declaration ← (model.resolveComputationFieldValueRead declaringGroup rowGroup path).mapError .resolve
-      pure (.field (.inl (← admitField declaration)))
+      pure (.field (.inl (← admitStringExpressionField declaration)))
   | .category (.inl path) name => direct (.category path name)
   | .fieldValueAsString (.inl path) => direct (.fieldValueAsString path)
   | .range (.inl path) start finish => direct (.range path start finish)
@@ -72,7 +68,7 @@ private def elaborateSelectedStringCore (model : FlatModel) (declaringGroup rowG
   | .field (.inr authored) =>
       let source ← selected authored
       if let some error := source.targetDeclaration.fieldValueReadRefusal? then throw (.resolve error)
-      discard <| admitField source.targetDeclaration
+      discard <| admitStringExpressionField source.targetDeclaration
       pure (.field (.inr source))
   | .category (.inr authored) name =>
       let source ← selected authored
@@ -87,7 +83,7 @@ private def elaborateSelectedStringCore (model : FlatModel) (declaringGroup rowG
       let source ← selected authored
       discard <| admitNumberAsStringField source.targetDeclaration
       pure (.fieldValueAsString (.inr source))
-  | .group body => .group <$> elaborateSelectedStringCore model declaringGroup rowGroup body true
+  | .group body => .group <$> elaborateSelectedStringCore model declaringGroup rowGroup body
   | .concat left right => pure (.concat
       (← elaborateSelectedStringCore model declaringGroup rowGroup left)
       (← elaborateSelectedStringCore model declaringGroup rowGroup right))
@@ -173,13 +169,8 @@ def elaborateSelectedStringExpressionComparison (model : FlatModel) (declaringGr
     (operator : EqualityOp) (left right : SurfaceSelectedStringExpression) :
     Except StringComputationElabError (CheckedStringExpressionComparison model) := do
   discard <| model.validate.mapError StringComputationElabError.resolve
-  let isCategory : SurfaceSelectedStringExpression → Bool
-    | .category .. => true
-    | _ => false
-  -- spec/06 §B.1 gives direct category comparisons a separate domain/display gate;
-  -- the bypass does not propagate into concatenation or other expression nodes.
-  let resolvedLeft ← elaborateSelectedStringCore model declaringGroup rowGroup left (isCategory right.ungroup)
-  let resolvedRight ← elaborateSelectedStringCore model declaringGroup rowGroup right (isCategory left.ungroup)
+  let resolvedLeft ← elaborateSelectedStringCore model declaringGroup rowGroup left
+  let resolvedRight ← elaborateSelectedStringCore model declaringGroup rowGroup right
   let validLiteral : StringExpr (ResolvedStringSource model) → StringExpr (ResolvedStringSource model) → Bool
     | .category _ projection, .literal text | .literal text, .category _ projection =>
         projection.categoryTokens.contains text

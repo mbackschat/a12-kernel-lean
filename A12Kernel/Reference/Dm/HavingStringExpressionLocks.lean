@@ -113,7 +113,9 @@ example : [false, true].all (fun display =>
       some (.fired .omission, ["value 9"])) = true ∧
     run "[Rows/Tag] + \"!\" == \"keep!\"" "9" "keep" "keep" "drop" (enumerationModel false) =
       some (.fired .omission, ["value 9"]) ∧
-    HavingFixture.admissions (enumerationModel true) "[Rows/Tag] + \"!\" == \"keep!\"" = (false, false) ∧
+    -- A labelled Enumeration joins an immediate concatenation as an unlabelled one does (derived from
+    -- a12-dmkits ArithmeticOperandKindLawsTest at 1124b523f, kernel 31.1.1; the Having body was not re-measured).
+    HavingFixture.admissions (enumerationModel true) "[Rows/Tag] + \"!\" == \"keep!\"" = (true, true) ∧
     [false, true].all (fun display => HavingFixture.admissions (enumerationModel display)
       "RangeAsString(Rows/Tag,1,1) + \"!\" == \"k!\"" == (false, false)) = true := by native_decide
 
