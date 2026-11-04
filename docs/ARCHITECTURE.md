@@ -29,7 +29,8 @@ Dependencies point downward through that list. A semantic module never imports e
 
 [`ValidationRelevance.lean`](../A12Kernel/Elaboration/ValidationRelevance.lean) owns relevance patterns, coordinate coverage and group relevance independently of authored star-path lowering. [`StarPath.lean`](../A12Kernel/Elaboration/StarPath.lean) consumes that boundary; declared-slot coverage partitions the input patterns while runtime group traversal retains its separate topology and short-circuit policy.
 
-Every semantic meaning is version-scoped. [`Basic.lean`](../A12Kernel/Basic.lean) records kernel 30.8.1; the reference adapter advertises its separate normalized semantics identity. Before a second kernel behavior version or stable multi-version library API makes the current unversioned meaning ambiguous, migrate the semantic namespace to the reserved `A12Kernel.V30_8_1` shape rather than hiding a parallel evaluator behind the current names.
+<a id="one-kernel-version-per-theory"></a>
+Every semantic meaning is version-scoped, and one theory targets one kernel version. [`Basic.lean`](../A12Kernel/Basic.lean) records it as `kernelVersion`, kernel 31.1.1 since the owner-decided migration, and the retained bundles keep the version they were captured on as `retainedEvidenceKernelVersion`; the reference adapter advertises its separate normalized semantics identity. An earlier version's account is a frozen tag, not a parallel namespace or evaluator. Supporting two versions at once is an owner decision; it would add a release selector, injected as the model-zone rules are, carrying only the mechanisms measured to differ, introduced at the first measured divergence. The [kernel upgrade playbook](KERNEL-UPGRADE-PLAYBOOK.md) owns the routine that moves the theory to the next version.
 
 ## Core representation decisions
 

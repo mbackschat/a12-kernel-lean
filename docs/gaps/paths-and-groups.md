@@ -107,6 +107,7 @@ Selected-overlap implementation and assurance live in the [shared overlap owner]
 - `consumer-gated`: normalized public `.fieldOutsideEnvironment` becomes generic `incoherentCore`, losing a Kernel class available internally. A new published diagnostic needs an Explain/Analyze consumer and a [protocol](../PROTOCOL.md) decision; D18 excludes this transport extension.
 - `reopen-when`: an adopted Explain/Analyze consumer requires the public diagnostic distinction.
 - `calibration-31`: kernel 31.1.1 changed the value-list quantifiers' guard test, which the peer reads as equivalent on every authorable shape without measuring it. So `NoFieldValueIncludedInValueList` over a filtered list whose body reads a `$`-marked field of another group (row `f-list` of the [guard lock](../../A12Kernel/Reference/Dm/IterationGuardLocks.lean)) keeps its kernel 30.8.1 source-read admission, unmeasured on 31.1.1; one rule-check row settles it.
+- `calibration-31-partial`: partial validation's skip of every rule containing a filter ([spec/10 §5.2](../../spec/10-validation-and-polarity.md) step 2) is measured on kernel 30.8.1 only. Kernel 31.1.1 renamed the filter codes for set expressions, so whether it still skips every filtered rule first is a row for the first 31.1.1 calibration batch.
 - `route-state`: discovery-required
 
 <a id="sg19--repetition-reference-binding"></a>
