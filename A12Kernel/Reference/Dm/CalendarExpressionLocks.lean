@@ -392,7 +392,8 @@ private def stampRuleRefusal (format : String) (baseYear : Option Int) : Option 
   | .error refusal => some refusal.detail
 
 -- A component-omitting Date argument completes to its earliest day, a yearless one in the Base
--- Year; the completed Berlin label `2024-03-31T02:30:00` is a spring gap and clears. Without a Base
+-- Year; the completed Berlin label `2024-03-31T02:30:00` is a spring gap and lands one gap later,
+-- at 03:30 (spec/05 §3.3 and §5). Without a Base
 -- Year a yearless argument is refused in a rule condition, the year-bearing ones admitted
 -- ([DateTime component completion](../../../docs/sources/temporal-constant-and-base-year-probes.md#src-datetime-component-completion)).
 example :
@@ -400,19 +401,19 @@ example :
       (fun (format, source) => completedStamp format source "12:30:00") =
       [some "value 2024-01-01T12:30:00", some "value 2024-03-01T12:30:00", some "value 2024-03-01T12:30:00",
         some "value 2024-03-31T12:30:00"] ∧
-    completedStamp "MM-dd" "03-31" "02:30:00" (zone := "Europe/Berlin") = some "cleared" ∧
+    completedStamp "MM-dd" "03-31" "02:30:00" (zone := "Europe/Berlin") = some "value 2024-03-31T03:30:00" ∧
     completedStamp "MM" "03" "02:30:00" (zone := "Europe/Berlin") = some "value 2024-03-01T02:30:00" ∧
     ["yyyy", "yyyy-MM", "MM", "MM-dd"].map (stampRuleRefusal · none) =
       [none, none, some "MVK_WRONG_DATE_FORMAT_FOR_OP", some "MVK_WRONG_DATE_FORMAT_FOR_OP"] ∧
     ["MM", "MM-dd"].map (stampRuleRefusal · (some 2024)) = [none, none] := by native_decide
 
 -- The yearless argument's year is the Base Year, not the clock's: under Base Year 2023 at a 2026 clock,
--- Berlin clears `03-26`, 2023's spring-gap day, and stores `03-29`, 2026's (peer letter of
+-- Berlin lands `03-26`, 2023's spring-gap day, at 03:30 and stores `03-29`, 2026's, as written (peer letter of
 -- [2026-10-30e](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-30e)).
 example :
     let stamp := fun (format source : String) =>
       completedStamp format source "02:30:00" (some 2023) "Europe/Berlin" 1791108000000
-    stamp "MM-dd" "03-26" = some "cleared" ∧ stamp "MM-dd" "03-29" = some "value 2023-03-29T02:30:00" ∧
+    stamp "MM-dd" "03-26" = some "value 2023-03-26T03:30:00" ∧ stamp "MM-dd" "03-29" = some "value 2023-03-29T02:30:00" ∧
       stamp "MM" "03" = some "value 2023-03-01T02:30:00" ∧ stamp "yyyy" "2022" = some "value 2022-01-01T02:30:00" := by
   native_decide
 

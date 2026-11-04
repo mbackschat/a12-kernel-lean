@@ -104,8 +104,7 @@ private def oldSource : DocumentData :=
   source oldValue.text (.parsed (.temporal
     (.dateTime { epochMillis := 0 }
       { year := 2025, month := 6, day := 23 }
-      { hour := 9, minute := 59, second := 59, valid := by decide }
-      .storedGregorian)))
+      { hour := 9, minute := 59, second := 59, valid := by decide })))
 
 private def view? (input : DocumentData)
     (outcome : DateTimeTargetOutcome)
@@ -220,8 +219,7 @@ example : (do
         (.parsed (.temporal
           (.dateTime { epochMillis := 7200000 }
             { year := 2025, month := 6, day := 23 }
-            { hour := 11, minute := 0, second := 0, valid := by decide }
-            .storedGregorian)))).cells
+            { hour := 11, minute := 0, second := 0, valid := by decide })))).cells
     }
     let applied ← view.applyToChecked checked |>.toOption
     pure (applied target.id, applied other.id)) =

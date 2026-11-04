@@ -13,7 +13,7 @@ private def dateLiteral (year : Option Int) (month day : Nat) : SurfaceDateDiffe
 private def literalDateCell (year : Int) (month day : Nat) : RawCell :=
   let parts : DateParts := { year, month, day }
   match CalendarDayDifferenceOperand.ofParts .utc parts with
-  | .value _ instant => .parsed (.temporal (.date { instant, parts, basis := .storedGregorian }))
+  | .value _ instant => .parsed (.temporal (.date { instant, parts }))
   | _ => .rejected .malformed
 
 /- The retained Base-Year ladder separates authored year presence from runtime completion; swapping
@@ -226,7 +226,7 @@ example :
         some (.fired .value) := by
   native_decide
 
-/- Field/Base-Year differences reuse the decoded Date payload and admit both scale-0 wrappers. DateTime and legacy-hybrid payloads stay fail-closed. -/
+/- Field/Base-Year differences reuse the decoded Date payload and admit both scale-0 wrappers. A DateTime source stays refused statically. -/
 example :
     let mixed := dateDifference .months (.baseYear .direct) (dateOperand "NoYear")
     let reverse := dateDifference .months (dateOperand "NoYear") (.baseYear .direct)
@@ -250,20 +250,17 @@ example :
         (temporalRaw 11 (.rejected .malformed)) true baseYearModel = some .unknown ∧
       errorOf (comparison .equal
         (dateDifference .years (dateOperand "DateTime") (.baseYear .direct)) 0)
-        baseYearModel = some (.incompatibleTemporalSource ["Order", "DateTime"]) ∧
-      verdictOf (comparison .equal mixed 1)
-        (temporalRaw 11 (.parsed (dateValue 2020 2 29 .legacyHybrid))) true
-        baseYearModel = some .unknown := by
+        baseYearModel = some (.incompatibleTemporalSource ["Order", "DateTime"]) := by
   native_decide
 
-/- Checked calendar-day differences retain exact instants and model-zone selection instead of reusing Date-only periods or elapsed-time division. -/
+/- Checked calendar-day differences read the model zone's wall clocks from the exact instants: 30 to 31 March 2024 at noon is one wall day under Berlin although 23 instant hours elapse, and zero under UTC (spec/05 §2.5, a12-dmkits `CalendarStepDifferenceInDaysDiffTest`). -/
 example :
     let spring := dayDifference
       (dateOperand "DateTime") (dateOperand "LaterDateTime")
     let springInput := temporalPairRaw
-      (.parsed (berlinDateTimeValue 2024 3 30 2 30 0
+      (.parsed (berlinDateTimeValue 2024 3 30 12 0 0
         (by native_decide) (by native_decide)))
-      (.parsed (berlinDateTimeValue 2024 3 31 1 45 0
+      (.parsed (berlinDateTimeValue 2024 3 31 12 0 0
         (by native_decide) (by native_decide)))
     verdictOf (comparison .equal spring 1) springInput true berlinModel =
         some (.fired .value) ∧

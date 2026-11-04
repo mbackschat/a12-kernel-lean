@@ -62,17 +62,17 @@ private def invalidCommonFormalInputError? :
 
 namespace FailedFormalInputExecution
 
-private def unsupportedCalendarOperation :
+private def monthDifferenceOperation (start : SurfaceDateDifferenceOperand) :
     Except NumericComputationElabError
       (CheckedNumericComputationOperation crossGroupModel) :=
   elaborateNumericComputationOperation crossGroupModel ["Rules"]
     crossGroupTarget.id (.atom (.dateDifference .months
-      (.baseYear .direct)
+      start
       (.field (absolutePath ["Input"] "StartDate"))))
 
-private def table? : Option (GeneratedComputationTable
+private def table? (start : SurfaceDateDifferenceOperand) : Option (GeneratedComputationTable
     (CheckedNumericComputationOperation crossGroupModel) (CheckedComputationCondition crossGroupModel)) := do
-  let first ← unsupportedCalendarOperation.toOption
+  let first ← (monthDifferenceOperation start).toOption
   let second ← crossGroupNumberOperation.toOption
   pure {
     targetField := crossGroupTarget.id
@@ -95,8 +95,7 @@ private def prepared : PreparedFlatStringContext crossGroupModel
   (prepareFlatStringContext evaluationWorld builtinStringPatternCompiler
     crossGroupModel).toOption.get (by native_decide)
 
-private def inputWithBasis? (basis : DateCalendarBasis) :
-    Option (CheckedDocument crossGroupModel) :=
+private def input? : Option (CheckedDocument crossGroupModel) :=
   (checkDocument prepared "en_US" {
     instantiatedRows := []
     cells := [
@@ -110,21 +109,16 @@ private def inputWithBasis? (basis : DateCalendarBasis) :
         stored := "2020-02-29"
         raw := .parsed
           (A12Kernel.Conformance.NumericComputation.Support.dateValue
-            2020 2 29 basis)
+            2020 2 29)
       }
     ]
   }).toOption
 
-private def input? : Option (CheckedDocument crossGroupModel) :=
-  inputWithBasis? .legacyHybrid
-
-private def successfulInput? : Option (CheckedDocument crossGroupModel) :=
-  inputWithBasis? .storedGregorian
-
 def observed? : Option (List ComputationFormalInputFinding) := do
-  let table ← table?
+  let table ← table? .today
   let input ← input?
-  match table.executeNumericResultWithFormalInputs evaluationWorld input with
+  match table.executeNumericResultWithFormalInputs
+      A12Kernel.Conformance.NumericComputation.Support.undecodableClock input with
   | .error (.execution findings
       (.execution (.operation .unsupportedDateCalendar))) => some findings
   | .error _ | .ok _ => none
@@ -138,8 +132,8 @@ private structure SuccessfulObservation where
   deriving Repr, DecidableEq
 
 def successful? : Option SuccessfulObservation := do
-  let table ← table?
-  let input ← successfulInput?
+  let table ← table? (.baseYear .direct)
+  let input ← input?
   let view ← (table.executeNumericResultWithFormalInputs
     evaluationWorld input).toOption
   pure {
@@ -652,14 +646,14 @@ example :
   native_decide
 
 /- Generated whole-call execution retains the call-global malformed source even
-   though first selection reaches only the legacy-calendar row that fails. -/
+   though first selection reaches only the row whose `Today` clock decodes to no calendar date. -/
 example : FailedFormalInputExecution.observed? = some [{
     address := { field := crossGroupSource.id, path := [] }
     cause := .malformed
   }] := by
   native_decide
 
-/- The same admitted call on a supported calendar preserves the exact CellAddr
+/- The same admitted call with a Base-Year operand preserves the exact CellAddr
    result and independently retains the unreached malformed dependency. -/
 example : FailedFormalInputExecution.successful? = some {
     findings := [(crossGroupSource.id, FormalCause.malformed)]

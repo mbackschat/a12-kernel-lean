@@ -368,8 +368,7 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
 private def dateValue (year month day : Nat) : TemporalValue :=
   .date {
     instant := { epochMillis := 0 }
-    parts := { year := (year : Int), month, day }
-    basis := .storedGregorian }
+    parts := { year := (year : Int), month, day } }
 
 /-- One placed temporal cell whose stored text and decoded value are supplied independently, so a
     case can hold the decoded value fixed while varying the text. -/
@@ -525,32 +524,33 @@ example :
 
    This is an internal payload separator, not a Kernel-authored document witness. Computed cells
    also store model-format text, and `concreteProfile_resolveLocal_injective` makes label and instant
-   equality coincide on the concrete profiles for values obtained from that text
+   equality coincide for values obtained from text whose label the zone attains; a stored spring-gap
+   label folds with the label after the gap, and the Kernel's count for that pair is unmeasured on 31.1.1
    ([store checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computed-value-is-not-retained-past-its-store)). -/
 example :
     count? "Stamp1" "Stamp2"
         [temporalCell 29 "2024-03-05T12:30:00"
             (.dateTime { epochMillis := 1709641800000 }
-              { year := 2024, month := 3, day := 5 } noonHalf .storedGregorian),
+              { year := 2024, month := 3, day := 5 } noonHalf),
           temporalCell 30 "2024-03-05T12:30:00"
             (.dateTime { epochMillis := 1709641800000 }
-              { year := 2024, month := 3, day := 5 } noonHalf .storedGregorian)] =
+              { year := 2024, month := 3, day := 5 } noonHalf)] =
       some (.value 1 .fixed) ∧
     count? "Stamp1" "Stamp2"
         [temporalCell 29 "2024-03-05T12:30:00"
             (.dateTime { epochMillis := 1709641800000 }
-              { year := 2024, month := 3, day := 5 } noonHalf .storedGregorian),
+              { year := 2024, month := 3, day := 5 } noonHalf),
           temporalCell 30 "2024-03-05T13:30:00"
             (.dateTime { epochMillis := 1709645400000 }
-              { year := 2024, month := 3, day := 5 } afternoonHalf .storedGregorian)] =
+              { year := 2024, month := 3, day := 5 } afternoonHalf)] =
       some (.value 2 .fixed) ∧
     count? "Stamp1" "Stamp2"
         [temporalCell 29 "2024-10-27T02:15:00"
             (.dateTime { epochMillis := 1729988100000 }
-              { year := 2024, month := 10, day := 27 } overlapQuarter .storedGregorian),
+              { year := 2024, month := 10, day := 27 } overlapQuarter),
           temporalCell 30 "2024-10-27T02:15:00"
             (.dateTime { epochMillis := 1729991700000 }
-              { year := 2024, month := 10, day := 27 } overlapQuarter .storedGregorian)] =
+              { year := 2024, month := 10, day := 27 } overlapQuarter)] =
       some (.value 2 .fixed) := by
   native_decide
 

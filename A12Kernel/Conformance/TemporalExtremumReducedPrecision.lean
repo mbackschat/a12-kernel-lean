@@ -76,7 +76,6 @@ private def admittedIn? (model : FlatModel) (names : List String) :
 private def dateValue (year month day : Nat) : DateValue where
   instant := { epochMillis := 0 }
   parts := { year, month, day }
-  basis := .storedGregorian
 
 private def dateCell (year month day : Nat) : RawCell :=
   .parsed (.temporal (.date (dateValue year month day)))

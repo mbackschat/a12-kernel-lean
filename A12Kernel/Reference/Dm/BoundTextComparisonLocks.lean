@@ -66,7 +66,7 @@ example : partialVerdicts .string "[Rows/A] == [Rows/B]" .full =
       (.partialSet [{ path := ["Form", "Rows", "A"], indices := [.all, .all, .all] }]) =
     some [some .unknown, some .unknown] := by native_decide
 
-example : run .string "GroupFilled(Rows) And ([Rows/A] == \"1\" Or Now < \"31.03.2024T02:30:00\")"
+example : run .string "GroupFilled(Rows) And ([Rows/A] == \"1\" Or Now < \"29.02.1500T10:00:00\")"
     [("1", "1"), ("1", "1")] { (model .string) with timeZoneId := "Europe/Berlin" } =
     some ["Form/Rows/A"] := by native_decide
 
@@ -240,7 +240,7 @@ example :
       (rule "[/Form/Rows/A] == [/Form/Rows/B]") with
       group := ["Form", "Side"], errorEntityRelPath := "../../Rows/A" }) = true := by native_decide
 
-example : run .string "[A] == \"1\" And (GroupFilled(Rows) And ([Rows/A] == \"1\" Or Now < \"31.03.2024T02:30:00\"))"
+example : run .string "[A] == \"1\" And (GroupFilled(Rows) And ([Rows/A] == \"1\" Or Now < \"29.02.1500T10:00:00\"))"
     [("1", "1"), ("1", "1")] { (model .string) with timeZoneId := "Europe/Berlin" } = some [] := by native_decide
 
 end A12Kernel.Dm.BoundTextComparisonLocks

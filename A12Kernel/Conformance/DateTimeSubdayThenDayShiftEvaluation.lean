@@ -55,11 +55,12 @@ private def sourceCell (label : LocalDateTime)
   address := { field := 1, path := [] }
   stored := "DateTime"
   raw := .parsed (.temporal (.dateTime instant
-    label.date.civil.parts label.time .storedGregorian))
+    label.date.civil.parts label.time))
 }
 
 /- Elapsed arithmetic runs first; the calendar landing then consumes its exact instant
-   and source offset. Ordinary carry, a gap, and an overlap all retain milliseconds. -/
+   and source offset. Ordinary carry, a gap landing one gap later, and an overlap landing at the
+   source's offset all retain milliseconds (spec/05 §5). -/
 example : (do
     let evaluate (sourceLabel : LocalDateTime) (millisecond : Int)
         (hours days : Rat) := do
@@ -85,8 +86,8 @@ example : (do
           ((LocalDateTime.ofYmdHms? 2024 6 17 1 30 0).get (by native_decide))
           { epochMillis := 1718580600777 } false,
         ValueAsDateTimeResult.value
-          ((LocalDateTime.ofYmdHms? 2024 3 31 1 30 0).get (by native_decide))
-          { epochMillis := 1711845000333 } false,
+          ((LocalDateTime.ofYmdHms? 2024 3 31 3 30 0).get (by native_decide))
+          { epochMillis := 1711848600333 } false,
         ValueAsDateTimeResult.value
           ((LocalDateTime.ofYmdHms? 2024 10 27 2 30 0).get (by native_decide))
           { epochMillis := 1729989000444 } false) := by
@@ -179,8 +180,8 @@ example : (do
           ((LocalDateTime.ofYmdHms? 2024 6 17 1 30 0).get (by native_decide))
           { epochMillis := 1718580600777 } false,
         ValueAsDateTimeResult.value
-          ((LocalDateTime.ofYmdHms? 2024 3 31 1 30 0).get (by native_decide))
-          { epochMillis := 1711845000333 } false,
+          ((LocalDateTime.ofYmdHms? 2024 3 31 3 30 0).get (by native_decide))
+          { epochMillis := 1711848600333 } false,
         ValueAsDateTimeResult.value
           ((LocalDateTime.ofYmdHms? 2024 10 27 2 30 0).get (by native_decide))
           { epochMillis := 1729989000444 } false) := by

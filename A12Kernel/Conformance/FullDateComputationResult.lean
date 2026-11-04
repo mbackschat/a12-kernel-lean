@@ -105,8 +105,7 @@ private def source (stored : String) (raw : RawCell) : DocumentData :=
 private def oldSource : DocumentData :=
   source oldDate.text (.parsed (.temporal (.date {
     instant := { epochMillis := 0 }
-    parts := { year := 2024, month := 4, day := 6 }
-    basis := .storedGregorian })))
+    parts := { year := 2024, month := 4, day := 6 } })))
 
 private def view? (input : DocumentData) (outcome : FullDateTargetOutcome)
     (messages : List FormalCause := []) :
@@ -221,8 +220,7 @@ example : (do
       cells := oldSource.cells ++ (sourceAt other.id otherDate.text
         (.parsed (.temporal (.date {
           instant := { epochMillis := 172800000 }
-          parts := { year := 2024, month := 4, day := 8 }
-          basis := .storedGregorian })))).cells
+          parts := { year := 2024, month := 4, day := 8 } })))).cells
     }
     let applied ← view.applyToChecked checked |>.toOption
     pure (applied target.id, applied other.id)) =

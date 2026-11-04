@@ -67,12 +67,17 @@ example : generated .now 13 = some none ∧
     generated (.timeFromDateTime stamp) 1 (.rejected .malformed) = some none := by
   native_decide
 
+/-- A Julian leap day names no instant under Berlin (spec/05 §5), the unresolvable DateTime literal this row reads; a spring-gap label resolves one gap later. -/
+private def noInstantLabel : LegacyCalendarLabel :=
+  { parts := { year := 1500, month := 2, day := 29 }
+    time := (TimeOfDay.ofHms? 10 0 0).get (by decide) }
+
 private def differenceStops (phase : Phase) (unit : TemporalOperationUnit)
     (source : SurfaceScalarTemporalExpression) (cell : CheckedCell) : Bool :=
   let project (source : SurfaceScalarTemporalExpression) :=
     if unit == .months || unit == .years then .dateFromDateTime source else source
   match elaborateTemporalNumericOperation model ["Form"] (.difference unit (project source)
-      (project (.dateTimeLiteral (.ofLocal ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by decide)))))) with
+      (project (.dateTimeLiteral noInstantLabel))) with
   | .error _ => false
   | .ok checked =>
       match checked.evalResult phase { read := fun _ => cell } with

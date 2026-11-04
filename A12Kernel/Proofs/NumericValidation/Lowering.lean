@@ -485,7 +485,7 @@ theorem numericValidation_dateDifference_literal_delegates
     (operand : NumericOperand)
     (evaluated : DateDifferenceOperand.evaluate unit
       (left.validationOperand context) (right.validationOperand context) =
-        .ok operand) :
+        operand) :
     ({ op, left := .atom (.dateDifference unit left right),
         right := .literal literal } : NumericComparison).evalSelected context =
       op.eval operand (.value literal.value .fixed) := by

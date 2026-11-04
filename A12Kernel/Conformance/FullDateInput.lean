@@ -34,7 +34,6 @@ private def utcDate? (year : Int) (month day : Nat) : Option RawCell := do
   pure (.parsed (.temporal (.date {
     instant := localDateTime.resolveUtc
     parts := full.civil.parts
-    basis := .storedGregorian
   })))
 
 example :
@@ -99,14 +98,14 @@ example :
     let berlin := value? "Europe/Berlin"
     (utc.bind fun raw => match raw with
       | .parsed (.temporal (.date value)) => some value
-      | _ => none).map (fun value => (value.parts, value.basis, value.instant)) =
+      | _ => none).map (fun value => (value.parts, value.instant)) =
         some ({ year := 2024, month := 1, day := 1 },
-          .storedGregorian, { epochMillis := 1704067200000 }) ∧
+          { epochMillis := 1704067200000 }) ∧
     (berlin.bind fun raw => match raw with
       | .parsed (.temporal (.date value)) => some value
-      | _ => none).map (fun value => (value.parts, value.basis, value.instant)) =
+      | _ => none).map (fun value => (value.parts, value.instant)) =
         some ({ year := 2024, month := 1, day := 1 },
-          .storedGregorian, { epochMillis := 1704063600000 }) := by native_decide
+          { epochMillis := 1704063600000 }) := by native_decide
 
 example : classifyResult? (dateField "yyyy-MM-dd") "Europe/Paris" "2024-01-01" =
     some (.inl (.unsupportedZone "Europe/Paris")) := by native_decide

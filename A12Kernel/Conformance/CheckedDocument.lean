@@ -112,12 +112,10 @@ private def rangeChecked?
 private def rangeValue : DateRangeValue :=
   { start := {
       instant := { epochMillis := 1704067200000 }
-      parts := { year := 2024, month := 1, day := 1 }
-      basis := .storedGregorian }
+      parts := { year := 2024, month := 1, day := 1 } }
     finish := {
       instant := { epochMillis := 1706659200000 }
-      parts := { year := 2024, month := 1, day := 31 }
-      basis := .storedGregorian } }
+      parts := { year := 2024, month := 1, day := 31 } } }
 
 private def overLimitRows : DocumentData :=
   { instantiatedRows := [row1, row2, row3]

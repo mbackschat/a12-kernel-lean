@@ -282,7 +282,7 @@ example : temporalRead "DateType" none "2024-05-06" =
     temporalRead "DateTimeType" none "2024-05-06T12:30:45" =
       temporalRead "DateTimeType" (some "yyyy-MM-dd'T'HH:mm:ss") "2024-05-06T12:30:45" ∧
     (match temporalRead "DateTimeType" none "2024-05-06T12:30:45" with
-      | some (.parsed (.temporal (.dateTime _ date clock _))) =>
+      | some (.parsed (.temporal (.dateTime _ date clock))) =>
           date == { year := 2024, month := 5, day := 6 } &&
           (clock.hour, clock.minute, clock.second) == (12, 30, 45)
       | _ => false) = true := by native_decide

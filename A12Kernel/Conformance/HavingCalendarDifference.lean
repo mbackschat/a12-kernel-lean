@@ -15,9 +15,9 @@ private def atoms : List HavingNumericAtom :=
   [.dateDifference .months (.field (reference .inner 1)) (.field (reference .outer 2)),
    .dateDifference .years (.field (reference .inner 1)) (.field (reference .outer 2)),
    .dayDifference .utc (.field (reference .inner 1)) (.field (reference .outer 2))]
-private def dateCell (basis : DateCalendarBasis) : CheckedCell := {
+private def dateCell : CheckedCell := {
   rawPresent := true, findings := [], parsed := some (.temporal (.date {
-    instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 }, basis })) }
+    instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 } })) }
 private def emptyCell : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
 private def invalid : CheckedCell := { rawPresent := true, parsed := none, findings := [.malformed] }
 private def frame : CorrelationFrame := { innerEnv := [(10, 1)], outerEnv := [(10, 2)] }
@@ -33,13 +33,14 @@ private def resolving (context : CorrelationContext) : ResolvingCorrelationConte
   storedTextUnavailable := fun _ => "stored text unavailable"
   typeValidityValueFailure := "type validity value failure", groupUnavailable := fun _ => "group unavailable" }
 
+/- Every runtime date is proleptic, so two present date cells never raise a calendar fault (spec/05 §2.7). An empty operand still yields zero without inspecting the other, and a formally invalid first operand poisons. Unmeasured on 31.1.1. -/
 example : atoms.all (fun atom =>
-    atom.readComputation (pair (dateCell .legacyHybrid) (dateCell .storedGregorian)) frame == .error () &&
-    atom.readComputationResolving (resolving (pair (dateCell .legacyHybrid) (dateCell .storedGregorian))) frame == .error "calendar" &&
-    atom.readValidation (pair (dateCell .legacyHybrid) (dateCell .storedGregorian)) frame == .error () &&
-    atom.readComputation (pair (dateCell .legacyHybrid) emptyCell) frame == .ok (.value 0) &&
-    atom.readComputation (pair emptyCell (dateCell .legacyHybrid)) frame == .ok (.value 0) &&
-    atom.readComputation (pair invalid (dateCell .legacyHybrid)) frame == .ok (.poison .malformed)) = true := by native_decide
+    atom.readComputation (pair dateCell dateCell) frame == .ok (.value 0) &&
+    atom.readComputationResolving (resolving (pair dateCell dateCell)) frame == .ok (.value 0) &&
+    atom.readValidation (pair dateCell dateCell) frame == .ok (.value 0 .fixed) &&
+    atom.readComputation (pair dateCell emptyCell) frame == .ok (.value 0) &&
+    atom.readComputation (pair emptyCell dateCell) frame == .ok (.value 0) &&
+    atom.readComputation (pair invalid dateCell) frame == .ok (.poison .malformed)) = true := by native_decide
 
 example : atoms.all (fun atom => atom.readComputationResolving {
     read := fun _ id => if id == 1 then .ok invalid else .error "captured read"
@@ -53,25 +54,6 @@ private def condition (atom : HavingNumericAtom) : CorrelatedHaving := .leaf (.n
   op := .ordinary .equal, left := .atom atom, right := .literal { value := 0, authoredScale := 0 } })
 private def holds : CorrelatedHaving := .presence .filled { origin := .inner, field := 3 }
 private def fails : CorrelatedHaving := .presence .notFilled { origin := .inner, field := 3 }
-private def faulty : CorrelationContext := pair (dateCell .legacyHybrid) (dateCell .storedGregorian)
-
-example : atoms.all (fun atom =>
-    CorrelatedHaving.evalComputationIn (.or holds (condition atom)) faulty frame == .ok .holds &&
-    CorrelatedHaving.evalComputationIn (.and fails (condition atom)) faulty frame == .ok .notTrue &&
-    CorrelatedHaving.evalComputationIn (.and holds (condition atom)) faulty frame == .error .calendarUnavailable &&
-    CorrelatedHaving.evalComputationIn (.or fails (condition atom)) faulty frame == .error .calendarUnavailable) = true := by native_decide
-
-private def scanContext : CorrelationContext := {
-  read := fun env id => dateCell (if id == 1 && env == [(10, 2)] then .legacyHybrid else .storedGregorian) }
-
-example : atoms.all (fun atom =>
-    (condition atom).scanComputation scanContext [] (fun (_ : Unit) _ => Sum.inr true)
-      [[(10, 1)], [(10, 2)]] () == .error .calendarUnavailable &&
-    (condition atom).scanComputation scanContext [] (fun (_ : Unit) _ => Sum.inr true)
-      [[(10, 1)], [(10, 3)], [(10, 2)]] () == .ok (.terminated true) &&
-    (match scanFilteredComputationFirstFilled (condition atom) scanContext [] (fun _ => ValueListCell.present (kind := .number) 1)
-      [[(10, 1)], [(10, 2)]] false {} with | .error .calendarUnavailable => true | _ => false)) = true := by native_decide
-
 example : atoms.all (fun atom => CorrelatedHaving.fieldIds (condition atom) == [1, 2] &&
     CorrelatedHaving.markedFieldIds (condition atom) == [2]) = true := by native_decide
 
@@ -86,7 +68,7 @@ example : staticAtoms.all (fun atom => atom.origins == [.outer] &&
     CorrelatedHaving.fieldIds (condition atom) == [2] &&
     CorrelatedHaving.markedFieldIds (condition atom) == [2] &&
     atom.readComputationResolving {
-      read := fun env id => if env == frame.outerEnv && id == 2 then .ok (dateCell .storedGregorian) else .error "unexpected read"
+      read := fun env id => if env == frame.outerEnv && id == 2 then .ok dateCell else .error "unexpected read"
       stringExpressionUnavailable := "String expression unavailable"
       bindingError := fun _ => "binding", unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure"
       worldUnavailable := "world unavailable"
@@ -110,8 +92,9 @@ private def clockAtoms : List HavingNumericAtom :=
    .dateDifference .years (.today .utc) (.field (reference .inner 1)),
    .dayDifference .utc (.field (reference .inner 1)) (.today .utc)]
 
+/- A missing clock is the structural calendar fault: it is reached only when its operand is read, so `or`/`and` short-circuit past it and a scan reports it from the first row that reads it. -/
 example : clockAtoms.all (fun atom =>
-    let noClock := pair (dateCell .storedGregorian) (dateCell .storedGregorian)
+    let noClock := pair dateCell dateCell
     let clock := { noClock with world := some { now := { epochMillis := 0 } } }
     atom.readComputation noClock frame == .error () &&
     atom.readValidationResolving (resolving noClock) frame == .error "calendar" &&
@@ -121,16 +104,21 @@ example : clockAtoms.all (fun atom =>
     CorrelatedHaving.markedFieldIds (condition atom) == [] &&
     CorrelatedHaving.evalComputationIn (.or holds (condition atom)) noClock frame == .ok .holds &&
     CorrelatedHaving.evalComputationIn (.and fails (condition atom)) noClock frame == .ok .notTrue &&
-    CorrelatedHaving.evalComputationIn (.and holds (condition atom)) noClock frame == .error .calendarUnavailable) = true := by native_decide
+    CorrelatedHaving.evalComputationIn (.and holds (condition atom)) noClock frame == .error .calendarUnavailable &&
+    CorrelatedHaving.evalComputationIn (.or fails (condition atom)) noClock frame == .error .calendarUnavailable &&
+    (condition atom).scanComputation noClock [] (fun (_ : Unit) _ => Sum.inr true)
+      [[(10, 1)], [(10, 2)]] () == .error .calendarUnavailable &&
+    (match scanFilteredComputationFirstFilled (condition atom) noClock [] (fun _ => ValueListCell.present (kind := .number) 1)
+      [[(10, 1)], [(10, 2)]] false {} with | .error .calendarUnavailable => true | _ => false)) = true := by native_decide
 
 example : clockAtoms.all (fun atom =>
-    atom.readComputation (pair emptyCell (dateCell .storedGregorian)) frame == .error () &&
-    atom.readComputation (pair invalid (dateCell .storedGregorian)) frame ==
+    atom.readComputation (pair emptyCell dateCell) frame == .error () &&
+    atom.readComputation (pair invalid dateCell) frame ==
       (match atom with | .dateDifference .years _ _ => .error () | _ => .ok (.poison .malformed)) &&
-    atom.readValidation (pair invalid (dateCell .storedGregorian)) frame == .error () &&
-    atom.readComputation { (pair emptyCell (dateCell .storedGregorian)) with
+    atom.readValidation (pair invalid dateCell) frame == .error () &&
+    atom.readComputation { (pair emptyCell dateCell) with
       world := some { now := { epochMillis := 0 } } } frame == .ok (.value 0) &&
-    atom.readComputation { (pair invalid (dateCell .storedGregorian)) with
+    atom.readComputation { (pair invalid dateCell) with
       world := some { now := { epochMillis := 0 } } } frame == .ok (.poison .malformed)) = true := by native_decide
 
 private def subdayClock (unit : DateTimeSubdayUnit) (origin : HavingOrigin := .inner)
@@ -141,7 +129,7 @@ private def subdayClock (unit : DateTimeSubdayUnit) (origin : HavingOrigin := .i
 
 private def instantCell : CheckedCell := {
   rawPresent := true, findings := [], parsed := some (.temporal (.dateTime
-    { epochMillis := 1000 } { year := 1970, month := 1, day := 1 } { hour := 0, minute := 0, second := 1, valid := by decide } .storedGregorian)) }
+    { epochMillis := 1000 } { year := 1970, month := 1, day := 1 } { hour := 0, minute := 0, second := 1, valid := by decide })) }
 
 example : [DateTimeSubdayUnit.hours, .minutes, .seconds].all (fun unit =>
     let atom := subdayClock unit

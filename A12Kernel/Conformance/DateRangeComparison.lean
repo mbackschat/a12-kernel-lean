@@ -153,8 +153,7 @@ private def checkedModelNoBase : FlatModel := {
 private def dateValue (epochMillis : Int)
     (year : Int) (month day : Nat) : DateValue := {
   instant := { epochMillis }
-  parts := { year, month, day }
-  basis := .storedGregorian }
+  parts := { year, month, day } }
 
 private def dateRaw (value : DateValue) : RawCell :=
   .parsed (.temporal (.date value))
@@ -293,18 +292,15 @@ private def storedChangedValue : DateRangeValue := {
 
 private def yearValue (year : Int) : DateValue := {
   instant := { epochMillis := 0 }
-  parts := { year, month := 1, day := 1 }
-  basis := .storedGregorian }
+  parts := { year, month := 1, day := 1 } }
 
 private def yearMonthValue (year : Int) (month : Nat) : DateValue := {
   instant := { epochMillis := 0 }
-  parts := { year, month, day := 1 }
-  basis := .storedGregorian }
+  parts := { year, month, day := 1 } }
 
 private def monthDayValue (year : Int) (month day : Nat) : DateValue := {
   instant := { epochMillis := 0 }
-  parts := { year, month, day }
-  basis := .storedGregorian }
+  parts := { year, month, day } }
 
 private def monthDayEndpoint (month day : Nat) :
     DateRangeConstructionEndpointValue :=
@@ -312,7 +308,7 @@ private def monthDayEndpoint (month day : Nat) :
 
 private def berlinDateValue? (year : Int) (month day : Nat) : Option DateValue := do
   let instant ← ModelZone.concreteResolveLocal? "Europe/Berlin" year month day 0 0 0
-  pure { instant, parts := { year, month, day }, basis := .storedGregorian }
+  pure { instant, parts := { year, month, day } }
 
 private def berlinRangeValue? (year : Int)
     (startMonth startDay finishMonth finishDay : Nat) : Option DateRangeValue := do
@@ -734,7 +730,7 @@ example :
 
 /- The checked route certifies all four declarations, reads one immutable document, and retains every exact endpoint beside the equality verdict. -/
 example : ((checkedResult? .equal
-    (dateRaw { startValue with basis := .legacyHybrid }) (dateRaw finishValue)
+    (dateRaw startValue) (dateRaw finishValue)
     (dateRaw startValue) (dateRaw finishValue)).map fun result =>
       (result.left.start, result.left.finish,
         result.right.start, result.right.finish, result.verdict)) =

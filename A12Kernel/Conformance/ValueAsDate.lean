@@ -398,12 +398,12 @@ example :
       (modelWith) 0 .firstDay .months .left).toOption.get (by native_decide)
     let last := (elaborateValueAsDateDifference
       (modelWith) 0 .lastDay .months .left).toOption.get (by native_decide)
-    (first.evaluateRaw Phase.validation
-        (.parsed "00.02.2024") other).toOption =
-        some (.operand (.value 1 .fixed)) ∧
-      (last.evaluateRaw Phase.validation
-        (.parsed "00.02.2024") other).toOption =
-        some (.operand (.value 0 .fixed)) := by
+    first.evaluateRaw Phase.validation
+        (.parsed "00.02.2024") other =
+        .operand (.value 1 .fixed) ∧
+      last.evaluateRaw Phase.validation
+        (.parsed "00.02.2024") other =
+        .operand (.value 0 .fixed) := by
   native_decide
 
 /- Authored operand placement changes the sign and the first reached formal cause. -/
@@ -413,31 +413,31 @@ example :
       (modelWith) 0 .firstDay .months .left).toOption.get (by native_decide)
     let right := (elaborateValueAsDateDifference
       (modelWith) 0 .firstDay .months .right).toOption.get (by native_decide)
-    (left.evaluateRaw Phase.computation
-        (.parsed "00.02.2024") other).toOption =
-        some (.operand (.value 1 .fixed)) ∧
-      (right.evaluateRaw Phase.computation
-        (.parsed "00.02.2024") other).toOption =
-        some (.operand (.value (-1) .fixed)) ∧
-      (left.evaluateRaw Phase.computation
-        (.rejected .malformed) (.unavailable .computedDependency)).toOption =
-        some (.operand (.unknown .malformed)) ∧
-      (right.evaluateRaw Phase.computation
-        (.rejected .malformed) (.unavailable .computedDependency)).toOption =
-        some (.operand (.unknown .computedDependency)) := by
+    left.evaluateRaw Phase.computation
+        (.parsed "00.02.2024") other =
+        .operand (.value 1 .fixed) ∧
+      right.evaluateRaw Phase.computation
+        (.parsed "00.02.2024") other =
+        .operand (.value (-1) .fixed) ∧
+      left.evaluateRaw Phase.computation
+        (.rejected .malformed) (.unavailable .computedDependency) =
+        .operand (.unknown .malformed) ∧
+      right.evaluateRaw Phase.computation
+        (.rejected .malformed) (.unavailable .computedDependency) =
+        .operand (.unknown .computedDependency) := by
   native_decide
 
-/- Cause-free unknown-year non-relevance precedes empty substitution, while ordinary empty still masks an unsupported present calendar. -/
+/- Cause-free unknown-year non-relevance precedes empty substitution, while ordinary empty substitutes symmetric zero beside a present operand. -/
 example :
     let checked := (elaborateValueAsDateDifference
       (modelWith (dayOptionalSource .yearOptional))
       0 .lastDay .years .left).toOption.get (by native_decide)
-    (checked.evaluateRaw Phase.validation
-        (.parsed "00.00.0000") .empty).toOption =
-        some .nonRelevant ∧
-      (checked.evaluateRaw Phase.validation
-        .empty .unsupportedCalendar).toOption =
-        some (.operand (.value 0 .both)) ∧
+    checked.evaluateRaw Phase.validation
+        (.parsed "00.00.0000") .empty =
+        .nonRelevant ∧
+      checked.evaluateRaw Phase.validation
+        .empty (.value { year := 2024, month := 1, day := 1 }) =
+        .operand (.value 0 .both) ∧
       ValueAsDateDifferenceResult.nonRelevant.evalFixedRight
         .equal 0 = .unknown ∧
       (ValueAsDateDifferenceResult.operand (.value 1 .fixed)).evalFixedRight
@@ -475,15 +475,17 @@ example :
         .nonRelevant := by
   native_decide
 
-/- Missing input and a present-but-unresolvable Berlin wall label remain different no-value reasons. -/
+/- Missing input is a missing no-value, while a present Berlin spring-gap label moves forward by the gap to a value: 02:30 on 2024-03-31 is the instant of 03:30 (spec/05 §3.5, §5; a12-dmkits `DateTimeComponentCompletionDiffTest`). -/
 example :
     let gapClock := (time? 2 30 0).get (by native_decide)
     let checked := (elaborateValueAsDateTime
       (modelWith) 0 .firstDay).toOption.get (by native_decide)
     checked.evaluateRaw Phase.validation
         .empty (.value gapClock) = .noValue true ∧
-      checked.evaluateRaw Phase.validation
-        (.parsed "31.03.2024") (.value gapClock) = .noValue false ∧
+      (match checked.evaluateRaw Phase.validation
+          (.parsed "31.03.2024") (.value gapClock) with
+        | .value _ { epochMillis := 1711848600000 } false => true
+        | _ => false) = true ∧
       ValueAsDateTimeResult.nonRelevant.evalFixedRight
         .equal { epochMillis := 0 } = .unknown := by
   native_decide

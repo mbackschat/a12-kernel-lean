@@ -5,10 +5,10 @@ import A12Kernel.Semantics.DateTimeDayDifference
 /-! # Checked constructed-Date differences
 
 This capsule evaluates checked constructed-Date day, month, and year differences under
-UTC/GMT and the pinned Berlin profile. Direct `Date(...)` operands resolve their wall
-labels freshly. The bounded mixed form accepts one already-evaluated checked shift in
-either authored operand position and feeds its exact instant directly into the existing
-calendar-difference mechanism.
+UTC/GMT and the pinned Berlin profile through one profile-generic instant mechanism
+(spec/05 §2.4, §2.5, §2.7). Direct `Date(...)` operands resolve their wall labels freshly.
+The bounded mixed form accepts one already-evaluated checked shift in either authored
+operand position and feeds its exact instant directly into the same difference.
 
 The mixed form is not a general temporal expression tree. DateTime operands, arbitrary
 recursive lowering, other model zones, repeatable placement, and target storage remain
@@ -27,7 +27,7 @@ inductive ConstructedDateDifferenceFault where
 
 namespace ModelZone.ConcreteProfile
 
-/-- Static constructed-Date difference support for one selected profile and unit. Both implemented profiles now own all three independently closed mechanisms. -/
+/-- Static constructed-Date difference support for one selected profile and unit. Both implemented profiles accept all three units through the one profile-generic difference. -/
 def admitsConstructedDateDifference :
     ConcreteProfile → DateShiftUnit → Bool
   | .utc, _ => true
@@ -47,48 +47,30 @@ structure CheckedConstructedDateDifference (model : FlatModel) where
 
 namespace CheckedConstructedDateDifference
 
-/-- Resolve one constructed-Date label at its hybrid-calendar midnight under the pinned Berlin profile. -/
-private def resolveBerlin? (parts : DateParts) :
-    Option (LegacyCalendarLabel × Instant) := do
-  let label := LegacyCalendarLabel.midnight parts
-  pure (label, ← ModelZone.ConcreteProfile.europeBerlin.resolveCalendarLabel? label)
-
-/-- Apply one Berlin difference to two already resolved values. -/
-private def differenceBerlinResolved?
-    (unit : DateShiftUnit)
-    (firstLocal : LegacyCalendarLabel) (firstInstant : Instant)
-    (secondLocal : LegacyCalendarLabel) (secondInstant : Instant) : Option Int :=
+/-- Apply one profile-generic difference to two exact instants. -/
+def differenceInstants? (profile : ModelZone.ConcreteProfile)
+    (unit : DateShiftUnit) (first second : Instant) : Option Int :=
   match unit with
-  | .days =>
-      EuropeBerlinLegacyProfile.differenceResolvedInDays?
-        firstLocal firstInstant secondLocal secondInstant
-  | .months =>
-      EuropeBerlinLegacyProfile.differenceResolvedInMonths?
-        firstLocal firstInstant secondLocal secondInstant
-  | .years =>
-      EuropeBerlinLegacyProfile.differenceResolvedInYears?
-        firstLocal firstInstant secondLocal secondInstant
+  | .days => profile.differenceResolvedInDays? first second
+  | .months => profile.differenceResolvedInMonths? first second
+  | .years => profile.differenceResolvedInYears? first second
 
-/-- Apply one independently closed Berlin difference to two freshly constructed labels. -/
-private def differenceBerlin?
+/-- Apply one difference to two freshly constructed labels, each resolved once at its
+    proleptic midnight with the earlier offset where the midnight repeats. -/
+private def differenceFresh?
+    (profile : ModelZone.ConcreteProfile)
     (unit : DateShiftUnit) (first second : DateParts) : Option Int := do
-  let (firstLocal, firstInstant) ← resolveBerlin? first
-  let (secondLocal, secondInstant) ← resolveBerlin? second
-  differenceBerlinResolved?
-    unit firstLocal firstInstant secondLocal secondInstant
+  let firstInstant ← profile.resolveCalendarLabel? (LegacyCalendarLabel.midnight first)
+  let secondInstant ← profile.resolveCalendarLabel? (LegacyCalendarLabel.midnight second)
+  differenceInstants? profile unit firstInstant secondInstant
 
-/-- Delegate one resolved pair to the profile- and unit-specific completed-calendar owner. -/
+/-- Delegate one resolved pair to the profile-generic difference of its fresh midnights. -/
 def differenceResolved? (profile : ModelZone.ConcreteProfile)
     (unit : DateShiftUnit)
     (first second : DateConstructionResult) :
     Option ConstructedDateNumericResult :=
-  match profile, unit with
-  | .utc, .days => first.differenceLegacyDays? second
-  | .utc, .months => first.differenceLegacy? .months second
-  | .utc, .years => first.differenceLegacy? .years second
-  | .europeBerlin, unit =>
-      DateConstructionResult.differenceWith?
-        (differenceBerlin? unit) first second
+  DateConstructionResult.differenceWith?
+    (differenceFresh? profile unit) first second
 
 /-- Evaluate the first constructed Date before the second with one explicit optional world, preserve the first reached formal cause, and reuse the established reason-bearing numeric result. -/
 def evaluate (checked : CheckedConstructedDateDifference model)
@@ -127,53 +109,30 @@ namespace CheckedConstructedDateShift
 private inductive DifferenceOperand where
   | unavailable (cause : FormalCause)
   | noValue (notGiven : Bool)
-  | exact (instant : Instant) (parts : DateParts) (notGiven : Bool)
+  | exact (instant : Instant) (notGiven : Bool)
 
 namespace DifferenceOperand
 
 def ofValue : ConstructedDateValue → DifferenceOperand
   | .unavailable cause => .unavailable cause
   | .noValue notGiven => .noValue notGiven
-  | .value instant parts notGiven => .exact instant parts notGiven
+  | .value instant _ notGiven => .exact instant notGiven
 
 def notGiven : DifferenceOperand → Bool
-  | .noValue notGiven | .exact _ _ notGiven => notGiven
+  | .noValue notGiven | .exact _ notGiven => notGiven
   | .unavailable _ => false
 
-def parts? : DifferenceOperand → Option DateParts
-  | .exact _ parts _ => some parts
-  | .unavailable _ | .noValue _ => none
-
-def berlinResolved? : DifferenceOperand → Option (LegacyCalendarLabel × Instant)
-  | .exact instant _ _ =>
-      (ModelZone.ConcreteProfile.europeBerlin.calendarLabel? instant).map
-        (·, instant)
+def instant? : DifferenceOperand → Option Instant
+  | .exact instant _ => some instant
   | .unavailable _ | .noValue _ => none
 
 end DifferenceOperand
 
 private def differenceValueOperands?
     (profile : ModelZone.ConcreteProfile) (unit : DateShiftUnit)
-    (first second : DifferenceOperand) : Option Int :=
-  match profile with
-  | .utc => do
-      let firstParts ← first.parts?
-      let secondParts ← second.parts?
-      match unit with
-      | .days =>
-          DateParts.LegacyHybrid.differenceInDays?
-            firstParts secondParts
-      | .months =>
-          DateDifferenceUnit.betweenLegacy?
-            .months firstParts secondParts
-      | .years =>
-          DateDifferenceUnit.betweenLegacy?
-            .years firstParts secondParts
-  | .europeBerlin => do
-      let (firstLocal, firstInstant) ← first.berlinResolved?
-      let (secondLocal, secondInstant) ← second.berlinResolved?
-      CheckedConstructedDateDifference.differenceBerlinResolved?
-        unit firstLocal firstInstant secondLocal secondInstant
+    (first second : DifferenceOperand) : Option Int := do
+  CheckedConstructedDateDifference.differenceInstants? profile unit
+    (← first.instant?) (← second.instant?)
 
 private def differenceOperands?
     (profile : ModelZone.ConcreteProfile) (unit : DateShiftUnit)

@@ -300,7 +300,7 @@ private def repeatableTemporalPartStructuralFailure? :
   let data := repeatableTemporalPartData innerDateTime.id
     "2024-06-25T05:21:07"
     (some (.parsed (.temporal (.dateTime { epochMillis := 0 }
-      temporalDateParts temporalClock .storedGregorian))))
+      temporalDateParts temporalClock))))
   let document ← (checkDocument prepared "en_US" data).toOption
   let context : AddressedValidationEvaluationContext ordinaryIterationModel := {
     scalar := {
@@ -323,7 +323,7 @@ private def repeatableTemporalConsumerSnapshot? :
   let data := repeatableTemporalPartData innerDateTime.id
     "2024-06-25T05:21:07"
     (some (.parsed (.temporal (.dateTime { epochMillis := 0 }
-      temporalDateParts temporalClock .storedGregorian))))
+      temporalDateParts temporalClock))))
   let prepared ←
     (prepareFlatStringContext defaultWorld builtinStringPatternCompiler
       ordinaryIterationModel).toOption
@@ -351,8 +351,7 @@ example :
       (.date .day) (.ordinary .equal) 25 "2024-06-25"
       (some (.parsed (.temporal (.date {
         instant := { epochMillis := 0 }
-        parts := temporalDateParts
-        basis := .storedGregorian })))) ==
+        parts := temporalDateParts })))) ==
       expectedRepeatableTemporalSnapshot (.fired .value)
         (some (MessagePointer.ofCellAddr {
           field := innerDate.id
@@ -370,7 +369,7 @@ example :
     (repeatableTemporalPartSnapshot? "InnerDateTime" innerDateTime.id
       (.date .quarter) (.ordinary .equal) 2 "2024-06-25T05:21:07"
       (some (.parsed (.temporal (.dateTime { epochMillis := 0 }
-        temporalDateParts temporalClock .storedGregorian)))) ==
+        temporalDateParts temporalClock)))) ==
       expectedRepeatableTemporalSnapshot (.fired .value)
         (some (MessagePointer.ofCellAddr {
           field := innerDateTime.id

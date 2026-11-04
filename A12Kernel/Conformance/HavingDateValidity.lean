@@ -41,7 +41,7 @@ private def yearSource : HavingDateComponents := { source with
 private def yearContext (stored : Option String) : CorrelationContext := {
   read := fun _ id => if id == 1 then number 29 else if id == 2 then number 2 else {
     rawPresent := true, findings := [], parsed := some (.temporal (.date {
-      instant := { epochMillis := 0 }, parts := { year := 2024, month := 1, day := 1 }, basis := .storedGregorian })) }
+      instant := { epochMillis := 0 }, parts := { year := 2024, month := 1, day := 1 } })) }
   storedText := fun env _ => if env == frame.outerEnv then stored else some "2024" }
 example : observed ((validity yearSource).evalComputationRead .valid (yearContext (some "2023")).asResolving frame) = .inr .notTrue ∧
     observed ((validity yearSource).evalComputationRead .valid (yearContext (some "2024")).asResolving frame) = .inr .holds ∧
@@ -104,11 +104,11 @@ example : observed (dateExpression.evaluate .validation (context required).asRes
 example : observed (dateExpression.evaluate .computation (context (number 29)).asResolving frame) =
       .inr (.value (.date {
         instant := { epochMillis := 1709164800000 }
-        parts := { year := 2024, month := 2, day := 29 }, basis := .legacyHybrid }) true) ∧
+        parts := { year := 2024, month := 2, day := 29 } }) true) ∧
     observed ((dateExpression { source with profile := .europeBerlin }).evaluate .computation (context (number 29)).asResolving frame) =
       .inr (.value (.date {
         instant := { epochMillis := 1709161200000 }
-        parts := { year := 2024, month := 2, day := 29 }, basis := .legacyHybrid }) true) ∧
+        parts := { year := 2024, month := 2, day := 29 } }) true) ∧
     observed ((dateExpression collapsedOrigin).evaluate .computation (context (number 29)).asResolving frame) =
       .inr (.value .noValue true) ∧
     yearPart.fieldOrigins = [(.inner, 1), (.inner, 2), (.outer, 3)] := by native_decide

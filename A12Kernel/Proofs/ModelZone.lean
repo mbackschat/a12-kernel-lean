@@ -73,26 +73,24 @@ theorem baseYearRangeOperand_unsupported
   simp [FlatTemporalOperand.resolve,
     FlatContext.resolveLocalDateComparisonOperand, World.resolveLocal?, unsupported]
 
-/-- **Fresh-label resolution is injective on every concrete profile**, so within one model zone a
-wall label and the exact instant it resolves to determine each other.
+/-- **Fresh-label resolution is injective on the labels a concrete profile attains**, so within one
+model zone an attained wall label and the exact instant it resolves to determine each other.
 
-    Both arms hold for their own reason. UTC resolves every label and is injective because the label
-    is its own coordinate; Europe/Berlin recovers the offset from the resolved instant and reduces to
-    the same coordinate law. A wider profile added later must carry its own instance of this proof —
-    a resolver that selected an offset without checking it is in force at the resulting instant
-    could map two labels onto one instant, and then the two identities below would come apart.
+    UTC attains every label, which is its own coordinate. Europe/Berlin recovers the offset in force
+    from the resolved instant and reduces to the same coordinate law. A label inside a spring gap is
+    excluded: under kernel 31.1.1 it resolves one gap later, onto the instant of the label after the
+    gap, so `2024-03-31T02:30` and `03:30` share one instant (spec/05 §5).
 
-    **Why a consumer cares.** Any value read out of a *cell* has its instant derived from a stored
-    wall label, because A12's document form carries a model-format string with no offset and a
-    computed value is rendered into that same text before it is stored. So for cell-sourced values,
-    comparing exact instants and comparing decoded labels are the **same** relation, and an operator
-    such as the temporal distinct count returns the same answer under either account. The two come
-    apart only for a value that *retains* an instant a label never produced — a constructed or
-    shifted DateTime compared in flight — which is exactly where this project's extrema fixtures
-    keep the exact-instant distinction. -/
+    **Why a consumer cares.** A value read out of a *cell* has its instant derived from a stored wall
+    label. For cell-sourced values whose labels the zone attains, comparing exact instants and
+    comparing decoded labels are the same relation. They come apart for a stored gap label and its
+    successor, which fold to one instant, and for a value that *retains* an instant a label never
+    produced — a constructed or shifted DateTime compared in flight. -/
 theorem concreteProfile_resolveLocal_injective
     (profile : ModelZone.ConcreteProfile)
     {left right : LocalDateTime} {instant : Instant}
+    (leftAttained : profile.attains left = true)
+    (rightAttained : profile.attains right = true)
     (leftResolved : profile.resolveLocal? left = some instant)
     (rightResolved : profile.resolveLocal? right = some instant) :
     left = right := by
@@ -103,6 +101,12 @@ theorem concreteProfile_resolveLocal_injective
       exact localDateTime_resolveUtc_injective _ _
         (leftResolved.trans rightResolved.symm)
   | europeBerlin =>
-      exact berlinLegacy_resolveLocal_injective leftResolved rightResolved
+      simp only [ModelZone.ConcreteProfile.attains, Bool.not_eq_true', List.isEmpty_eq_false_iff]
+        at leftAttained rightAttained
+      simp only [ModelZone.ConcreteProfile.resolveLocal?, EuropeBerlinLegacyProfile.resolveLocal?,
+        EuropeBerlinLegacyProfile.resolvePreferring?] at leftResolved rightResolved
+      have walls := berlin_resolveWall_injective_attained leftAttained rightAttained
+        leftResolved rightResolved
+      exact localDateTime_resolveUtc_injective _ _ (instant_eq_of_epochMillis walls)
 
 end A12Kernel

@@ -54,7 +54,6 @@ private def configuredMonthDayModel (baseYear : Int) : FlatModel := {
 private def dateValue (epochMillis : Int) (year month day : Nat) : DateValue := {
   instant := { epochMillis }
   parts := { year, month, day }
-  basis := .storedGregorian
 }
 
 private def january : DateRangeValue := {
@@ -172,8 +171,7 @@ example :
       january with
       start := {
         january.start with
-        instant := { epochMillis := january.start.instant.epochMillis + 1 }
-        basis := .legacyHybrid } }
+        instant := { epochMillis := january.start.instant.epochMillis + 1 } } }
     altered.select .start == altered.start &&
       altered.select .finish == altered.finish &&
       altered.select .start != january.start := by
@@ -526,8 +524,7 @@ example :
       .left .before januaryMidpoint).toOption.get (by native_decide)
     let altered : DateValue := {
       january.start with
-      instant := { epochMillis := january.start.instant.epochMillis + 1 }
-      basis := .legacyHybrid }
+      instant := { epochMillis := january.start.instant.epochMillis + 1 } }
     (comparison.evaluateSelected (.value altered)).toOption = some {
       selected := .value altered
       verdict := .fired .value
@@ -578,8 +575,7 @@ example :
       .year).toOption.get (by native_decide)
     let altered : DateValue := {
       january.start with
-      instant := { epochMillis := january.start.instant.epochMillis + 1 }
-      basis := .legacyHybrid }
+      instant := { epochMillis := january.start.instant.epochMillis + 1 } }
     let empty := (checkOne "" .presentEmpty).toOption.get (by native_decide)
     let invalid := (checkOne "garbage"
       (.rejected .dateRangeSeparator)).toOption.get (by native_decide)

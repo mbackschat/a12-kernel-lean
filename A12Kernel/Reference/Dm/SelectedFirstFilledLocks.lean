@@ -689,8 +689,8 @@ private def filterFailureOutcomes (profile : Profile) (repeated : Bool) (guarded
     (input profile { allows := ["1", "0"] })).toOption
   let document ← (checkDocument prepared "en_US" raw.data).toOption
   let operation := if repeated then
-      "FirstFilledValue(Children*/Value Having [Children/Allow] > 0 And [$Allow] > 0 And Now > \"31.03.2024T02:30:00\")"
-    else "FirstFilledValue(Rows*/Value Having [Rows/Allow] > 0 And Now > \"31.03.2024T02:30:00\")"
+      "FirstFilledValue(Children*/Value Having [Children/Allow] > 0 And [$Allow] > 0 And Now > \"29.02.1500T10:00:00\")"
+    else "FirstFilledValue(Rows*/Value Having [Rows/Allow] > 0 And Now > \"29.02.1500T10:00:00\")"
   let constant := match profile with
     | .boolean => "True"
     | .date => "Today"
@@ -699,8 +699,8 @@ private def filterFailureOutcomes (profile : Profile) (repeated : Bool) (guarded
   let computation := if guarded then
       { definition constant repeated repeated with
         commonPrecondition := some (if repeated then
-          "Sum(Children*/Allow Having [Children/Allow] > 0 And [$Allow] > 0 And Now > \"31.03.2024T02:30:00\") > 0"
-          else "Sum(Rows*/Allow Having [Rows/Allow] > 0 And Now > \"31.03.2024T02:30:00\") > 0") }
+          "Sum(Children*/Allow Having [Children/Allow] > 0 And [$Allow] > 0 And Now > \"29.02.1500T10:00:00\") > 0"
+          else "Sum(Rows*/Allow Having [Rows/Allow] > 0 And Now > \"29.02.1500T10:00:00\") > 0") }
     else definition operation repeated repeated
   let (_, step) ← (lowerComputation model .english computation).toOption
   match step with

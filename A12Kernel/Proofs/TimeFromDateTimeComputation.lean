@@ -11,11 +11,10 @@ theorem timeFromDateTimeComputation_value
     (operation : CheckedTimeFromDateTimeComputation model)
     (input : CheckedDocument model)
     (instant : Instant) (date : DateParts) (clock : TimeOfDay)
-    (basis : DateCalendarBasis)
     (read : input.read {
       field := operation.source.source.id, path := [] } = .ok cell)
     (observed : observeCell .computation cell =
-      .value (.temporal (.dateTime instant date clock basis))) :
+      .value (.temporal (.dateTime instant date clock))) :
     operation.evaluateOutcome input =
       .ok (.accepted (operation.target.format.render clock)) := by
   have sourceRead :

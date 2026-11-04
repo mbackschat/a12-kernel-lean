@@ -99,8 +99,7 @@ private def temporalCell (value : Value) : CheckedCell :=
 private def temporalDate (month : Nat) : CheckedCell :=
   temporalCell (.temporal (.date {
     instant := (DateParts.LegacyHybrid.midnightInstant? { year := 2024, month, day := 1 }).getD { epochMillis := 0 },
-    parts := { year := 2024, month, day := 1 },
-    basis := .storedGregorian }))
+    parts := { year := 2024, month, day := 1 } }))
 
 private def temporalEval (dm : FlatModel) (text : String)
     (first second : CheckedCell) : Option Verdict := do
@@ -143,7 +142,7 @@ private def clockValue : TimeOfDay := ⟨12, 30, 0, by decide, by decide, by dec
 
 private def temporalStamp (instant : Int) : CheckedCell :=
   temporalCell (.temporal (.dateTime { epochMillis := instant }
-    { year := 2024, month := 10, day := 27 } clockValue .storedGregorian))
+    { year := 2024, month := 10, day := 27 } clockValue))
 
 example :
     temporalEval (temporalProfile .time TemporalComponents.time "HH:mm:ss")

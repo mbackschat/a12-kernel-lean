@@ -113,9 +113,9 @@ private def cell (field : FieldId) (stored : String) (raw : RawCell) :
 /-- The same wall label as `momentField` carries, shifted by an exact millisecond remainder. -/
 private def momentWithMillis (text : String) (remainder : Int) : RawCell :=
   match canonicalMoment text with
-  | .parsed (.temporal (.dateTime instant parts clock basis)) =>
+  | .parsed (.temporal (.dateTime instant parts clock)) =>
       .parsed (.temporal (.dateTime
-        { epochMillis := instant.epochMillis + remainder } parts clock basis))
+        { epochMillis := instant.epochMillis + remainder } parts clock))
   | other => other
 
 /- A document built the way a real one is: every placed value derived from its own stored text. Empty
@@ -177,13 +177,12 @@ example :
   native_decide
 
 /- A fully known partial text and a fragment are compared with the model-zone cell their date takes, by
-instant and calendar basis as a complete Date is, not by date parts alone: the right parts at the epoch
-under the legacy basis are incoherent on both. -/
+instant as a complete Date is, not by date parts alone: the right parts at the epoch are incoherent on
+both. -/
 example :
     let misplaced (year month day : Nat) : RawCell := .parsed (.temporal (.date {
       instant := { epochMillis := 0 }
-      parts := { year := (year : Int), month, day }
-      basis := .legacyHybrid }))
+      parts := { year := (year : Int), month, day } }))
     coherent? [cell 3 "2024-06-15" (misplaced 2024 6 15)] = some false ∧
     coherent? [cell 7 "2024-06" (misplaced 2024 6 1)] = some false := by
   native_decide

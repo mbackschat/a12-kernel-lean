@@ -81,8 +81,12 @@ example : run "Date(DayFromDate(Rows/Stamp),MonthFromDate(Rows/Stamp),YearFromDa
     run "Date(Rows/Day,MonthFromDate(EndOfDateRange(BaseYear)),YearFromDate(BaseYear)) == \"29.12.2024\"" "2" =
       some (.fired .omission, ["value 2"]) := by native_decide
 
+-- Locked by `ConstructedDateCalendarDiffTest`: 29 February 1500 is no date on the proleptic runtime
+-- calendar and 29 February 1600 is (spec/05 §2.7), so only the second filter keeps its row.
 example : run "DayFromDate(Date(\"29\",\"02\",$OuterYear)) == 29 And FieldFilled(Rows/N)" "14" (outerYear := "1500") =
-    some (.fired .omission, ["value 14"]) := by native_decide
+      some (.notFired, ["value 0"]) ∧
+    run "DayFromDate(Date(\"29\",\"02\",$OuterYear)) == 29 And FieldFilled(Rows/N)" "14" (outerYear := "1600") =
+      some (.fired .omission, ["value 14"]) := by native_decide
 
 private def accepted (filter : String) (fixture : FlatModel := model) : Bool :=
   ((parseText .english ("Sum(Rows*/N Having " ++ filter ++ ") > 0")).toOption.bind fun parsed =>

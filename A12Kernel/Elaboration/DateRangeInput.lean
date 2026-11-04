@@ -295,13 +295,13 @@ month-only endpoints can precede the storage floor (KF276). -/
 private def completedParts (startYear finishYear : Int) :
     DateRangeCellValue → Except BaseFormalCause (DateParts × DateParts)
   | .yearlessMonth start finish => do
-      let lastDay ← requireDateRangeFormat (DateParts.LegacyHybrid.daysInMonth? finishYear finish)
+      let lastDay ← requireDateRangeFormat (DateParts.daysInMonth? finishYear finish)
       pure ({ year := startYear, month := start, day := 1 },
         { year := finishYear, month := finish, day := lastDay })
   | .yearlessMonthDay start finish => do
       let left : DateParts := { year := startYear, month := start.month, day := start.day }
       let right : DateParts := { year := finishYear, month := finish.month, day := finish.day }
-      if DateParts.LegacyHybrid.isReal left && DateParts.LegacyHybrid.isReal right then
+      if left.isReal && right.isReal then
         pure (left, right)
       else throw .dateRangeFormat
   | .exact _ => throw .dateRangeFormat
@@ -363,7 +363,7 @@ def DateRangeInputFormat.parseBasicEndpoints (format : DateRangeInputFormat)
             pure ({ year := leftYear, month := left.month, day := left.day },
               { year := rightYear, month := right.month, day := right.day })
         | .exact _ => throw .dateRangeFormat
-  if DateParts.LegacyHybrid.isReal pair.1 && DateParts.LegacyHybrid.isReal pair.2 then
+  if pair.1.isReal && pair.2.isReal then
     pure pair
   else throw .dateRangeFormat
 

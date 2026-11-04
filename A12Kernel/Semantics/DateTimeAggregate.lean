@@ -39,7 +39,7 @@ namespace CellObservation
 def asDateTimeExtremumOperand :
     CellObservation → SimpleComparisonOperand Instant
   | .empty => .notEvaluated
-  | .value (.temporal (.dateTime instant _ _ _)) => .value instant true
+  | .value (.temporal (.dateTime instant _ _)) => .value instant true
   | .value _ => .unknown .malformed
   | .unknown cause => .unknown cause
   | .poison cause => .unknown cause

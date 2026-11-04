@@ -5,8 +5,8 @@ import A12Kernel.Semantics.BerlinLegacyCalendarArithmetic
 
 This capsule evaluates direct and bounded recursively composed nonrepeatable
 `AddDays(DateTime, Number)` forms under UTC/GMT and the pinned Berlin profile. It reuses
-the shared checked DateTime source and numeric amount boundary, but applies a calendar
-`DAY_OF_MONTH` mutation rather than elapsed sub-day arithmetic. The source exact instant
+the shared checked DateTime source and numeric amount boundary, but applies the model zone's
+calendar-day shift (`shiftCalendar?`) rather than elapsed sub-day arithmetic. The source exact instant
 is decoded under the selected profile before the mutation, and the result retains the
 landing label, exact instant, milliseconds, and omission provenance. One such result can
 feed one further day shift without label reconstruction. The reached-result step is also
@@ -59,24 +59,6 @@ def elaborateNowDateTimeDayShift
 
 namespace CheckedDateTimeDayShift
 
-/-- Apply one UTC calendar-day mutation, preserving the selected exact instant for zero
-    and retaining its millisecond remainder for a nonzero landing. -/
-def utcLanding? (sourceLocal : LocalDateTime)
-    (sourceInstant : Instant) (offset : Int) :
-    Option (LocalDateTime × Instant) := do
-  if offset = 0 then
-    pure (sourceLocal, sourceInstant)
-  else
-    let nextDate ← sourceLocal.date.addDays? offset
-    let next : LocalDateTime := {
-      date := nextDate
-      time := sourceLocal.time
-    }
-    pure (next, {
-      epochMillis :=
-        next.resolveUtc.epochMillis + sourceInstant.epochMillis % 1000
-    })
-
 /-- Apply one reached numeric amount under a certified concrete profile. Arithmetic
     domain failure produces no value; a reached value uses Java signed-32-bit narrowing
     and retains directional fillability as DateTime omission provenance. -/
@@ -91,13 +73,9 @@ def applyProfileAmount (profile : ModelZone.ConcreteProfile)
       if offset = 0 then
         pure (.value sourceLocal sourceInstant notGiven)
       else
-        let landing :=
-          match profile with
-          | .utc => utcLanding? sourceLocal sourceInstant offset
-          | .europeBerlin => do
-              let (label, landing) ← EuropeBerlinLegacyProfile.calendarDayLanding?
-                (.ofLocal sourceLocal) sourceInstant offset
-              pure (← label.toLocal?, landing)
+        let landing := do
+          let (label, landing) ← profile.shiftCalendar? .days sourceInstant offset
+          pure (← label.toLocal?, landing)
         match landing with
         | some (shifted, shiftedInstant) =>
             pure (.value shifted shiftedInstant notGiven)
@@ -161,7 +139,7 @@ def evaluateObservation (profile : ModelZone.ConcreteProfile)
       | .error unavailable => throw (mapFault (.amountUnavailable unavailable))
       | .ok _ => pure (.noValue true)
   | .unknown cause | .poison cause => pure (.unavailable cause)
-  | .value (.temporal (.dateTime instant _ _ _)) =>
+  | .value (.temporal (.dateTime instant _ _)) =>
       match profile.localDateTime? instant with
       | none => throw (mapFault (.sourceOutsideProfile instant))
       | some sourceLocal =>

@@ -105,8 +105,7 @@ private def date (row : Nat) (stored : String) (year month day : Nat) : Classifi
   { address := { field := idOf "D", path := [row] }, stored
     raw := .parsed (.temporal (.date {
       instant := { epochMillis := 0 }
-      parts := { year := (year : Int), month, day }
-      basis := .storedGregorian })) }
+      parts := { year := (year : Int), month, day } })) }
 
 private def seeds (row : Nat) (inner : List Nat) : List ClassifiedCellInput :=
   ["TLEN", "TDAY", "TTOK", "TBOOL"].map (num · [row] 99) ++

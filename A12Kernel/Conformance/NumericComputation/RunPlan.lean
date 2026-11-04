@@ -96,11 +96,10 @@ private def inputCell (field : FieldId) (stored : String) (amount : Rat) :
     ClassifiedCellInput :=
   { address := { field, path := [] }, stored, raw := .parsed (.num amount) }
 
-/-- A stored Date cell whose calendar provenance selects whether a month/year difference can decode it at all. -/
-private def dateInput (basis : DateCalendarBasis) : ClassifiedCellInput :=
+private def dateInput : ClassifiedCellInput :=
   { address := { field := dateId, path := [] }
     stored := "2020-02-29"
-    raw := .parsed (dateValue 2020 2 29 basis) }
+    raw := .parsed (dateValue 2020 2 29) }
 
 private def dateTimeInput (epochMillis : Int) : ClassifiedCellInput :=
   { address := { field := dateTimeId, path := [] }
@@ -123,12 +122,12 @@ private def runOutcomes?
 
 private def runFault?
     (tables : List (Option (CheckedNumericComputationTable model)))
-    (cells : List ClassifiedCellInput := []) :
+    (cells : List ClassifiedCellInput := []) (world : World := executionWorld) :
     Option NumericComputationRunFault := do
   let checked ← collectTables? tables
   let run ← (certifyNumericComputationRun checked).toOption
   let input ← checkedDocument cells
-  match run.execute executionWorld input with
+  match run.execute world input with
   | .error fault => some fault
   | .ok _ => none
 
@@ -442,22 +441,21 @@ example :
 The faulting table is second in supplied order, so its retained label separates
 the failing table's own target from the run's first target; reversing the order
 keeps that same label, which separates table identity from position in the other
-direction. The Gregorian rows are the positive control: the identical plan over a
-decodable calendar payload runs to completion, so neither fault row is a fixture
-that merely fails to compute. -/
+direction. The fault is a `Today` whose clock decodes to no calendar date; the
+decodable clock of 2020-01-31 is the positive control: the identical plan runs to completion, so
+neither fault row is a fixture that merely fails to compute. -/
 example :
-    let months := surfaceDateDifference .months
-      (.baseYear .direct) (surfaceDateOperand "Date")
+    let months := surfaceDateDifference .months .today (surfaceDateOperand "Date")
     let producer := table? sourceId (literal 2) (.fieldNotFilled wrongId)
     let faulting := table? laterId months (.fieldNotFilled wrongId)
-    runFault? [producer, faulting] [dateInput .legacyHybrid] =
+    runFault? [producer, faulting] [dateInput] undecodableClock =
         some (.evaluation laterId .unsupportedDateCalendar) ∧
-      (runFault? [producer, faulting] [dateInput .legacyHybrid]).map
+      (runFault? [producer, faulting] [dateInput] undecodableClock).map
           NumericComputationRunFault.target = some laterId ∧
-      runFault? [faulting, producer] [dateInput .legacyHybrid] =
+      runFault? [faulting, producer] [dateInput] undecodableClock =
         some (.evaluation laterId .unsupportedDateCalendar) ∧
-      runFault? [producer, faulting] [dateInput .storedGregorian] = none ∧
-      runOutcomes? [producer, faulting] [dateInput .storedGregorian] =
+      runFault? [producer, faulting] [dateInput] (worldAt 1580428800000) = none ∧
+      runOutcomesAt? 1580428800000 [producer, faulting] [dateInput] =
         some [
           (sourceId, .accepted { unscaled := 2, scale := 0 }),
           (laterId, .accepted { unscaled := 1, scale := 0 })] := by

@@ -467,8 +467,7 @@ private def constructionRowVerdicts? (start finish stored : SurfaceFieldPath)
 
 private def dateValue (epochMillis : Int) (year : Int)
     (month day : Nat) : DateValue :=
-  { instant := { epochMillis }, parts := { year, month, day }
-    basis := .storedGregorian }
+  { instant := { epochMillis }, parts := { year, month, day } }
 
 private def constructionCell (field : FieldId) (path : List Nat)
     (stored : String) (value : DateValue) : ClassifiedCellInput := {

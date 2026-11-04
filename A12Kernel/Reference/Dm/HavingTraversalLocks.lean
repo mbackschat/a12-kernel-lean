@@ -19,7 +19,7 @@ private def fixture : FlatModel := {
 
 private def filledRow : Json := Json.mkObj [("N", "7"), ("Tag", "2024-03-31T01:30:00")]
 
-private def filter : String := "[Rows/N] > 0 Or [Rows/Tag] == \"31.03.2024T02:30:00\""
+private def filter : String := "[Rows/N] > 0 Or [Rows/Tag] == \"29.02.1500T10:00:00\""
 
 private def run (rows : Array Json) (siblings : Array Json := #[])
     (readSibling : Bool := false) (operationHead : String := "Sum(Rows*/N")
@@ -31,8 +31,8 @@ private def run (rows : Array Json) (siblings : Array Json := #[])
 
 private def blanks : Array Json := #[Json.mkObj [], Json.mkObj [], Json.mkObj []]
 
--- KF528, peer 40a510808: the gap label separates visiting an absent coordinate from
--- skipping it. The sibling is unread by this computation, so its extent affects validation only.
+-- KF528, peer 40a510808: the unresolvable label (the Julian leap day, which Europe/Berlin cannot read;
+-- spec/05 §5) separates visiting an absent coordinate from skipping it. The sibling is unread by this computation, so its extent affects validation only.
 example : run #[filledRow] = some (.fired .omission, ["value 7"]) ∧
     run #[filledRow, Json.mkObj [], Json.mkObj []] = some (.fired .value, []) := by
   native_decide
@@ -80,7 +80,7 @@ private def shipment (items : Nat) : Json := Json.mkObj [("Items", Json.arr (Arr
 
 private def runNested (shipments : Array Json) (siblings : Array Json := #[])
     (expected : String := "14") : Option (Verdict × List String) :=
-  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"31.03.2024T02:30:00\""
+  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"29.02.1500T10:00:00\""
   runModel nested condition false "" "" ""
     (extra := [("Shipments", Json.arr shipments), ("Sibling", Json.arr siblings)])
     (operationOverride := some ("Sum(Shipments*/Items*/N Having " ++ condition ++ ")"))
@@ -196,7 +196,7 @@ private def sparseNested : FlatModel := { nested with
 
 private def runSparseNested (firstRows : Nat) (operator : String := "Sum")
     (expected : String := toString ((firstRows + 1) * 7)) : Option (Verdict × List String) :=
-  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"31.03.2024T02:30:00\""
+  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"29.02.1500T10:00:00\""
   runModel sparseNested condition false "" "" ""
     (extra := [("Shipments", Json.arr #[shipment firstRows, shipment 1])])
     (operationOverride := some (operator ++ "(Shipments*/Items*/N Having " ++ condition ++ ")"))
@@ -217,7 +217,7 @@ private def sparseTyped (base : FlatModel) : FlatModel := { base with
   repeatableGroups := sparseNested.repeatableGroups }
 
 private def runSparseTyped (base : FlatModel) (head expected : String) (firstRows : Nat := 51) (validationOnly : Bool := false) : Option (Verdict × List String) :=
-  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"31.03.2024T02:30:00\""
+  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"29.02.1500T10:00:00\""
   let parent count := Json.mkObj [("Items", Json.arr (Array.replicate count typedRow))]
   let operation := head ++ " Having " ++ condition ++ ")"
   runModel (sparseTyped base) condition false "" "" ""
@@ -257,7 +257,7 @@ private def runSparseOverlap (yearless : Bool) (firstRows : Nat) (scalar : Bool 
     dateRangePolicy := some { format := if yearless then "MM-dd" else "yyyy-MM-dd", separator := "/" } },
     { id := 10, groupPath := ["Form"], name := "RootSpan", policy := { kind := .dateRange },
       dateRangePolicy := some { format := if yearless then "MM-dd" else "yyyy-MM-dd", separator := "/" } }] }
-  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"31.03.2024T02:30:00\""
+  let condition := "[Shipments/Items/N] > 0 Or [Shipments/Items/Tag] == \"29.02.1500T10:00:00\""
   let guard := (if scalar then "AtLeastOneDateRangeOverlaps(RootSpan In " else "DateRangesOverlap(") ++
     "Shipments*/Items*/Span Having " ++ condition ++ ")"
   let row (filled : Bool) := Json.mkObj [("N", "7"), ("Tag", "2024-03-31T01:30:00"),

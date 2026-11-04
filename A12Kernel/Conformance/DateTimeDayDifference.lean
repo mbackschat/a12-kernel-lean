@@ -2,12 +2,12 @@ import A12Kernel.Semantics.DateTimeDayDifference
 
 /-! # Model-zone calendar-day difference locks
 
-These cases exercise the concrete UTC and versioned Berlin profiles. They distinguish stateful legacy-calendar landings from elapsed-seconds or proleptic wall-label quotients, including historical gap/overlap behavior and bounded long-range seeding.
+These cases pin kernel 31.1.1's wall-clock day count (spec/05 §2.5) against the rows a12-dmkits locks at `1124b523f` (`CalendarStepDifferenceInDaysDiffTest`, `OverlapInstantInComputationDiffTest`). Each separates the wall-clock account from the elapsed-instant quotient or from kernel 30.8.1's stateful calendar-day steps.
 -/
 
 namespace A12Kernel.Conformance.DateTimeDayDifference
 
-open A12Kernel
+open A12Kernel ModelZone
 
 private def dateTime (year : Int) (month day hour minute second : Nat)
     (admissible :
@@ -15,183 +15,70 @@ private def dateTime (year : Int) (month day hour minute second : Nat)
     LocalDateTime :=
   (LocalDateTime.ofYmdHms? year month day hour minute second).get admissible
 
-/- An ordinary consecutive day with the same clock counts once. -/
+private def berlinDays (first second : LocalDateTime) : Option Int :=
+  ConcreteProfile.europeBerlin.differenceInDays? first second
+
+/- One wall day across the spring change counts once although only 23 instant hours elapse; the elapsed quotient answers 0. -/
 example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2024 3 29 12 0 0 (by native_decide))
-        (dateTime 2024 3 30 12 0 0 (by native_decide)) =
-      some 1 := by
+    berlinDays (dateTime 2024 3 30 12 0 0 (by native_decide))
+        (dateTime 2024 3 31 12 0 0 (by native_decide)) = some 1 := by
   native_decide
 
-/- Each counted step lands as `AddDays` does, its re-fit judged against the expected date: a source
-within the offset delta of midnight counts `1` across the autumn transition and `2` across the spring
-one, where judging the raw landing's own date counts `2` and `1`. Kernel values at a12-dmkits
-`ed58c513` ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-02-day-landing)). -/
+/- 23 h 15 m of wall clock is no whole day in either order, where kernel 30.8.1's adjusted landing counted 1; moving the endpoint to 01:29:59 changes nothing. -/
 example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2024 10 26 0 30 0 (by native_decide))
-        (dateTime 2024 10 28 0 0 0 (by native_decide)) =
-      some 1 ∧
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2024 3 29 23 30 0 (by native_decide))
-        (dateTime 2024 3 31 23 45 0 (by native_decide)) =
-      some 2 := by
+    berlinDays (dateTime 2024 3 30 2 30 0 (by native_decide))
+        (dateTime 2024 3 31 1 45 0 (by native_decide)) = some 0 ∧
+    berlinDays (dateTime 2024 3 31 1 45 0 (by native_decide))
+        (dateTime 2024 3 30 2 30 0 (by native_decide)) = some 0 ∧
+    berlinDays (dateTime 2024 3 30 2 30 0 (by native_decide))
+        (dateTime 2024 3 31 1 29 59 (by native_decide)) = some 0 := by
   native_decide
 
-/- A fresh local label in the spring gap is rejected. -/
+/- A gap endpoint reads as the label after the gap: `02:30` on the change day counts as `03:30`. -/
 example :
-    EuropeBerlinLegacyProfile.resolveLocal?
-        (dateTime 2024 3 31 2 30 0 (by native_decide)) =
-      none := by
+    berlinDays (dateTime 2024 3 30 2 30 0 (by native_decide))
+        (dateTime 2024 3 31 3 30 0 (by native_decide)) = some 1 ∧
+    berlinDays (dateTime 2024 3 30 2 30 0 (by native_decide))
+        (dateTime 2024 3 31 2 30 0 (by native_decide)) = some 1 := by
   native_decide
 
-/- The adjusted landing is before 01:45, so one calendar day fits even though fewer than 86,400 elapsed seconds fit. -/
+/- Long spans count wall days: kernel 30.8.1's stepping answered 369 and 7670. -/
 example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2024 3 30 2 30 0 (by native_decide))
-        (dateTime 2024 3 31 1 45 0 (by native_decide)) =
-      some 1 := by
+    berlinDays (dateTime 2023 4 1 2 30 0 (by native_decide))
+        (dateTime 2024 4 5 2 30 0 (by native_decide)) = some 370 ∧
+    berlinDays (dateTime 2003 3 31 2 30 0 (by native_decide))
+        (dateTime 2024 3 31 3 0 0 (by native_decide)) = some 7671 := by
   native_decide
 
-/- The source-offset rule affects the public count once a multi-day seed crosses both offset seasons. -/
+/- Under UTC two wall hours across midnight are no day, and authored order gives the sign. -/
 example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2023 4 1 2 30 0 (by native_decide))
-        (dateTime 2024 4 5 2 30 0 (by native_decide)) =
-      some 369 := by
+    ConcreteProfile.utc.differenceInDays? (dateTime 2024 5 1 23 0 0 (by native_decide))
+        (dateTime 2024 5 2 1 0 0 (by native_decide)) = some 0 ∧
+    ConcreteProfile.utc.differenceInDays? (dateTime 2024 5 1 12 0 0 (by native_decide))
+        (dateTime 2024 5 2 12 0 0 (by native_decide)) = some 1 ∧
+    ConcreteProfile.utc.differenceInDays? (dateTime 2024 5 2 12 0 0 (by native_decide))
+        (dateTime 2024 5 1 12 0 0 (by native_decide)) = some (-1) := by
   native_decide
 
-/- A long spring-gap span makes the completed-year qualifier observable: compute-time year resolution rejects the final whole-year candidate, and the lower seed's residual scan stops one day before the direction-selected account. -/
+/- Twenty-four instant hours across the autumn overlap end one wall hour short of a day, from `01:30` and from `00:30`; the same span in June is one day. -/
 example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2003 3 31 2 30 0 (by native_decide))
-        (dateTime 2024 3 31 3 0 0 (by native_decide)) =
-      some 7670 := by
+    let after (label : LocalDateTime) : Option Int := do
+      let start ← ConcreteProfile.europeBerlin.resolveLocal? label
+      ConcreteProfile.europeBerlin.differenceResolvedInDays? start
+        { epochMillis := start.epochMillis + 86400000 }
+    after (dateTime 2024 10 27 1 30 0 (by native_decide)) = some 0 ∧
+      after (dateTime 2024 10 27 0 30 0 (by native_decide)) = some 0 ∧
+      after (dateTime 2024 6 1 1 30 0 (by native_decide)) = some 1 := by
   native_decide
 
-/- Calendar field mutation preserves the source millisecond. The exact endpoint at the same whole-second label is therefore still too early for one complete day. -/
+/- Concrete profile selection distinguishes aliases from an unsupported legal zone before evaluation, and the String dispatch refuses the unsupported one rather than extrapolating Berlin. -/
 example :
-    (do
-      let firstLabel :=
-        dateTime 2024 6 1 2 30 0 (by native_decide)
-      let secondLabel :=
-        dateTime 2024 6 2 2 30 0 (by native_decide)
-      let first ← EuropeBerlinLegacyProfile.resolveLocal? firstLabel
-      let second ← EuropeBerlinLegacyProfile.resolveLocal? secondLabel
-      EuropeBerlinLegacyProfile.differenceResolvedInDays?
-        (.ofLocal firstLabel) { epochMillis := first.epochMillis + 500 }
-        (.ofLocal secondLabel) second) =
-      some 0 := by
-  native_decide
-
-example :
-    (do
-      let first ← EuropeBerlinLegacyProfile.resolveLocal?
-        (dateTime 2024 3 30 2 30 0 (by native_decide))
-      let second ← EuropeBerlinLegacyProfile.resolveLocal?
-        (dateTime 2024 3 31 1 45 0 (by native_decide))
-      pure ((second.epochMillis - first.epochMillis).tdiv 86400000)) =
-      some 0 := by
-  native_decide
-
-/- Moving the endpoint just before the adjusted landing counts no complete calendar day. -/
-example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2024 3 30 2 30 0 (by native_decide))
-        (dateTime 2024 3 31 1 29 59 (by native_decide)) =
-      some 0 := by
-  native_decide
-
-/- Authored operand order controls the sign. -/
-example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2024 3 31 1 45 0 (by native_decide))
-        (dateTime 2024 3 30 2 30 0 (by native_decide)) =
-      some (-1) := by
-  native_decide
-
-/- The second step retains the first landing's adjusted 01:30 clock, so two days fit before 02:00 on April 1. -/
-example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2024 3 30 2 30 0 (by native_decide))
-        (dateTime 2024 4 1 2 0 0 (by native_decide)) =
-      some 2 := by
-  native_decide
-
-/- The general profile closes the old finite-slice rejection. -/
-example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2024 3 30 12 0 0 (by native_decide))
-        (dateTime 2024 10 27 12 0 0 (by native_decide)) =
-      some 211 := by
-  native_decide
-
-/- The source carries its larger daylight offset into the overlap, choosing the earlier instant; fresh-label resolution would choose the later standard-time instant and count zero here. -/
-example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2024 10 26 2 30 0 (by native_decide))
-        (dateTime 2024 10 27 2 15 0 (by native_decide)) =
-      some 1 := by
-  native_decide
-
-/- The three-offset candidate set is load-bearing at the historical CEMT-to-CEST overlap: the source carries CEMT into the repeated target label. -/
-example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 1945 9 23 2 30 0 (by native_decide))
-        (dateTime 1945 9 24 2 15 0 (by native_decide)) =
-      some 1 := by
-  native_decide
-
-/- A 24-year interval exercises the whole-year × 365 seed plus six residual leap-day steps. -/
-example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2000 1 1 12 0 0 (by native_decide))
-        (dateTime 2024 1 1 12 0 0 (by native_decide)) =
-      some 8766 := by
-  native_decide
-
-/- An endpoint before the anniversary decrements the civil-year candidate before seeding. Using the raw four-year difference would start beyond this endpoint. -/
-example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2020 6 15 12 0 0 (by native_decide))
-        (dateTime 2024 6 10 12 0 0 (by native_decide)) =
-      some 1456 := by
-  native_decide
-
-/- The bulk lower-bound jump must not inherit a clock adjustment from an intervening spring gap. The legacy year landing clears this leap-to-nonleap February-28 clock, so the one-year seed is admitted; a naïve day-by-day scan would cross the 2000 spring gap and count 366 after changing 02:30 to 01:30. -/
-example :
-    EuropeBerlinLegacyProfile.differenceInDays?
-        (dateTime 2000 2 28 2 30 0 (by native_decide))
-        (dateTime 2001 2 28 2 0 0 (by native_decide)) =
-      some 365 := by
-  native_decide
-
-/- Concrete profile selection distinguishes aliases from an unsupported legal zone before evaluation. -/
-example :
-    ModelZone.ConcreteProfile.ofId? "UTC" =
-      some .utc ∧
-    ModelZone.ConcreteProfile.ofId? "GMT" =
-      some .utc ∧
-    ModelZone.ConcreteProfile.ofId? "Europe/Berlin" =
-      some .europeBerlin ∧
-    ModelZone.ConcreteProfile.ofId? "Pacific/Apia" =
-      none := by
-  native_decide
-
-/- The typed concrete-profile consumer preserves UTC without re-running string dispatch. -/
-example :
-    ModelZone.ConcreteProfile.differenceInDays? .utc
-        (dateTime 2024 3 30 2 30 0 (by native_decide))
-        (dateTime 2024 3 31 1 45 0 (by native_decide)) =
-      some 0 := by
-  native_decide
-
-/- The compatibility wrapper still refuses an unsupported profile rather than extrapolating Berlin. -/
-example :
-    ModelZone.concreteDifferenceInDays? "Pacific/Apia"
-        (dateTime 2011 12 29 12 0 0 (by native_decide))
-        (dateTime 2011 12 31 12 0 0 (by native_decide)) =
-      none := by
+    ConcreteProfile.ofId? "UTC" = some .utc ∧
+      ConcreteProfile.ofId? "GMT" = some .utc ∧
+      ConcreteProfile.ofId? "Europe/Berlin" = some .europeBerlin ∧
+      ConcreteProfile.ofId? "Europe/Paris" = none ∧
+      concreteDifferenceInDays? "Europe/Paris" (dateTime 2024 5 1 0 0 0 (by native_decide))
+        (dateTime 2024 5 2 0 0 0 (by native_decide)) = none := by
   native_decide
 
 end A12Kernel.Conformance.DateTimeDayDifference

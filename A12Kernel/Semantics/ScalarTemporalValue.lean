@@ -199,8 +199,8 @@ def shiftScalarTemporalValue (profile : ModelZone.ConcreteProfile) (unit : Tempo
       let some (label, shifted) := profile.shiftCalendar? unit instant (temporalShiftAmountToInt32 amount)
         | throw .calendarUnavailable
       match value with
-      | .date _ => pure (.date { instant := shifted, parts := label.parts, basis := .legacyHybrid })
-      | .yearless source _ carry => pure (.yearless { instant := shifted, parts := label.parts, basis := .legacyHybrid }
+      | .date _ => pure (.date { instant := shifted, parts := label.parts })
+      | .yearless source _ carry => pure (.yearless { instant := shifted, parts := label.parts }
           { month := label.parts.month, day := label.parts.day } (carry + (label.parts.year - source.parts.year)))
       | .instant _ => pure (.instant shifted)
       | _ => throw .calendarUnavailable
@@ -260,7 +260,7 @@ def ScalarTemporalConstructorOp.apply (operation : ScalarTemporalConstructorOp)
           let some label := profile.calendarLabel? instant | throw .calendarUnavailable
           let midnight := { label with time := { hour := 0, minute := 0, second := 0, valid := by decide } }
           let some instant := profile.resolveCalendarLabel? midnight | throw .dateTimeLabelUnresolved
-          pure (.value (.date { instant, parts := label.parts, basis := .legacyHybrid }) given)
+          pure (.value (.date { instant, parts := label.parts }) given)
       | .value .noValue given => pure (.value .noValue given)
       | .value .nonRelevant _ => pure (.value .nonRelevant true)
       | .notEvaluated => pure .notEvaluated
@@ -300,7 +300,7 @@ def projectScalarRangeBoundObservation (profile : ModelZone.ConcreteProfile)
 
 def ConstructedDateValue.asScalarTemporalOperand :
     ConstructedDateValue → SimpleComparisonOperand ScalarTemporalValue
-  | .value instant parts notGiven => .value (.date { instant, parts, basis := .legacyHybrid }) (!notGiven)
+  | .value instant parts notGiven => .value (.date { instant, parts }) (!notGiven)
   | .noValue notGiven => .value .noValue (!notGiven)
   | .unavailable cause => .unknown cause
 

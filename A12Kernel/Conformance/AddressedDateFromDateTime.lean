@@ -61,7 +61,7 @@ private def ancestorOperation? : Option (CheckedAddressedDateFromDateTime model)
 private def momentAt (day hour minute : Nat) : Option TemporalValue := do
   let wall ← LocalDateTime.ofYmdHms? 2024 6 day hour minute 0
   let instant ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? wall
-  pure (.dateTime instant wall.date.civil.parts wall.time .storedGregorian)
+  pure (.dateTime instant wall.date.civil.parts wall.time)
 
 private def sourceCell (row : Nat) (stored : String) (raw : RawCell) : ClassifiedCellInput :=
   { address := { field := source.id, path := [row] }, stored, raw }
@@ -103,12 +103,11 @@ private def accepted (text : String) (nonempty : text ≠ "" := by decide) : Ful
 
 private def dateAt (day : Nat) : Value :=
   match momentAt day 0 0 with
-  | some (.dateTime instant parts _ basis) =>
-      .temporal (.date { instant, parts, basis })
+  | some (.dateTime instant parts _) =>
+      .temporal (.date { instant, parts })
   | _ => .temporal (.date {
       instant := { epochMillis := 0 }
       parts := { year := 2024, month := 6, day }
-      basis := .storedGregorian
     })
 
 private def targetCell (row : Nat) (stored : String) (day : Nat) :

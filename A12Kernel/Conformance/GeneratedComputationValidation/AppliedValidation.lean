@@ -205,7 +205,7 @@ private def clockDocument? : Option (CheckedDocument crossGroupModel) := do
         address := { field := crossGroupDateTime.id, path := [] }
         stored := "1970-01-01T01:00:00"
         raw := .parsed (.temporal (.dateTime { epochMillis := 0 }
-          { year := 1970, month := 1, day := 1 } clock .storedGregorian))
+          { year := 1970, month := 1, day := 1 } clock))
       },
       numberCell crossGroupTarget.id 9
     ]

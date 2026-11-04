@@ -383,7 +383,7 @@ def evalFixedRight (result : ValueAsDateDifferenceResult)
 
 end ValueAsDateDifferenceResult
 
-/-- Structural refusal after both authored operands have been read and neither empty substitution nor non-relevance masks the unsupported calendar. -/
+/-- Structural refusal after both authored operands have been read and neither empty substitution nor non-relevance masks an unsupported calendar, raised by the calendar-day difference when a concrete endpoint resolves to no instant. -/
 inductive ValueAsDateDifferenceFault where
   | unsupportedCalendar
   deriving Repr, DecidableEq
@@ -399,13 +399,11 @@ namespace CheckedValueAsDateDifference
 private def evaluateAvailable (checked : CheckedValueAsDateDifference model)
     (sourceObservation : ValueAsDateObservation)
     (other : DateDifferenceOperand) :
-    Except ValueAsDateDifferenceFault ValueAsDateDifferenceResult :=
+    ValueAsDateDifferenceResult :=
   match sourceObservation, other with
-  | .nonRelevant, _ => pure .nonRelevant
+  | .nonRelevant, _ => .nonRelevant
   | .empty, _ | .date _, .empty =>
-      pure (.operand (.value 0 .both))
-  | .date _, .unsupportedCalendar =>
-      throw .unsupportedCalendar
+      .operand (.value 0 .both)
   | .date partialDate, .value otherDate =>
       let value :=
         match checked.placement with
@@ -413,40 +411,40 @@ private def evaluateAvailable (checked : CheckedValueAsDateDifference model)
             checked.unit.between partialDate.civil.parts otherDate
         | .right =>
             checked.unit.between otherDate partialDate.civil.parts
-      pure (.operand (.value value .fixed))
+      .operand (.value value .fixed)
   | .unavailable cause, _ | _, .unavailable cause =>
-      pure (.operand (.unknown cause))
+      .operand (.unknown cause)
 
-/-- Evaluate formal reads in authored order, then apply the runtime helper's non-relevant, empty, calendar, and completed-period precedence. -/
+/-- Evaluate formal reads in authored order, then apply the runtime helper's non-relevant, empty, and completed-period precedence. -/
 def evaluate (checked : CheckedValueAsDateDifference model)
     (phase : Phase)
     (cell : CheckedCell
       (AdmittedPartiallyKnownDate checked.source.policy.partialMode))
     (other : DateDifferenceOperand) :
-    Except ValueAsDateDifferenceFault ValueAsDateDifferenceResult :=
+    ValueAsDateDifferenceResult :=
   let sourceObservation :=
     checked.toCheckedValueAsDateSource.observe phase cell
   match checked.placement with
   | .left =>
       match sourceObservation with
-      | .unavailable cause => pure (.operand (.unknown cause))
+      | .unavailable cause => .operand (.unknown cause)
       | _ =>
           match other with
-          | .unavailable cause => pure (.operand (.unknown cause))
+          | .unavailable cause => .operand (.unknown cause)
           | _ => checked.evaluateAvailable sourceObservation other
   | .right =>
       match other with
-      | .unavailable cause => pure (.operand (.unknown cause))
+      | .unavailable cause => .operand (.unknown cause)
       | _ =>
           match sourceObservation with
-          | .unavailable cause => pure (.operand (.unknown cause))
+          | .unavailable cause => .operand (.unknown cause)
           | _ => checked.evaluateAvailable sourceObservation other
 
 /-- Check one exact stored-text partial source and preserve the already resolved ordinary operand. -/
 def evaluateRaw (checked : CheckedValueAsDateDifference model)
     (phase : Phase) (raw : RawCell String)
     (other : DateDifferenceOperand) :
-    Except ValueAsDateDifferenceFault ValueAsDateDifferenceResult :=
+    ValueAsDateDifferenceResult :=
   checked.evaluate phase
     (checked.toCheckedValueAsDateSource.checkSourceRaw raw) other
 

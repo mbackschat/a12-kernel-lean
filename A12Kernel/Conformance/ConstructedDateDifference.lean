@@ -1,6 +1,6 @@
 import A12Kernel.Elaboration.ConstructedDateDifferenceEvaluation
 
-/-! # Constructed-Date legacy-hybrid completed-period locks -/
+/-! # Constructed-Date difference locks (kernel 31.1.1) -/
 
 namespace A12Kernel.Conformance.ConstructedDateDifference
 
@@ -74,54 +74,27 @@ private def checkedShiftDifference? (unit : DateShiftUnit)
   else
     none
 
-/- The cutover-hole landing makes 15 October incomplete and 20 October complete from 10 September. -/
-example :
-    (constructed 1582 9 10).differenceLegacy? .months
-        (constructed 1582 10 15) = some (.value 0 false) ∧
-      (constructed 1582 9 10).differenceLegacy? .months
-        (constructed 1582 10 20) = some (.value 1 false) := by
-  native_decide
-
-/- The same landing separates complete years and months from the preceding October. -/
-example :
-    (constructed 1581 10 10).differenceLegacy? .years
-        (constructed 1582 10 15) = some (.value 0 false) ∧
-      (constructed 1581 10 10).differenceLegacy? .months
-        (constructed 1582 10 15) = some (.value 11 false) ∧
-      (constructed 1581 10 10).differenceLegacy? .years
-        (constructed 1582 10 20) = some (.value 1 false) ∧
-      (constructed 1581 10 10).differenceLegacy? .months
-        (constructed 1582 10 20) = some (.value 12 false) := by
-  native_decide
-
-/- Authored operand order is restored only after the nonnegative completed-period count. -/
-example :
-    (constructed 1582 10 20).differenceLegacy? .months
-        (constructed 1582 9 10) = some (.value (-1) false) ∧
-      (constructed 1582 10 20).differenceLegacy? .years
-        (constructed 1582 10 20) = some (.value 0 false) := by
-  native_decide
-
 /- Formal unavailability dominates missingness; otherwise incomplete and unreal both yield zero with distinct provenance. -/
 example :
-    DateConstructionResult.incomplete.differenceLegacy? .months
-        (constructed 1582 10 20) = some (.value 0 true) ∧
-      DateConstructionResult.unreal.differenceLegacy? .months
-        (constructed 1582 10 20) = some (.value 0 false) ∧
-      DateConstructionResult.incomplete.differenceLegacy? .years
-        .unknown = some .unavailable := by
+    CheckedConstructedDateDifference.differenceResolved? .utc .months
+        .incomplete (constructed 1582 10 20) = some (.value 0 true) ∧
+      CheckedConstructedDateDifference.differenceResolved? .utc .months
+        .unreal (constructed 1582 10 20) = some (.value 0 false) ∧
+      CheckedConstructedDateDifference.differenceResolved? .utc .years
+        .incomplete .unknown = some .unavailable := by
   native_decide
 
-/- The decoded proleptic counter says one month at the first cutover-side label; the constructed calendar says zero. -/
+/- The constructed calendar is the proleptic one the decoded counter uses, so the two agree at the former cutover: 10 September to 15 October 1582 is one whole month, where the hybrid calendar counted zero. 31.1.1 silently refuses the zero count (a12-dmkits `ConstructedDateCalendarDiffTest`, `monthAndYearArithmeticIgnoresTheFormerCutover`, CUTOVER_MONTH_BEFORE); the count one is derived. Unmeasured on 31.1.1. -/
 example :
     DateDifferenceUnit.months.between
         { year := 1582, month := 9, day := 10 }
         { year := 1582, month := 10, day := 15 } = 1 ∧
-      (constructed 1582 9 10).differenceLegacy? .months
-        (constructed 1582 10 15) = some (.value 0 false) := by
+      CheckedConstructedDateDifference.differenceResolved? .utc .months
+        (constructed 1582 9 10) (constructed 1582 10 15) =
+        some (.value 1 false) := by
   native_decide
 
-/- Widening the checked profile certificate leaves all three UTC/GMT legacy-hybrid branches unchanged. -/
+/- UTC/GMT reach day, month and year differences through the same profile-generic instant mechanism as Berlin. -/
 example :
     checkedDifference? "UTC" .days
         { year := 2024, month := 1, day := 1 }
@@ -203,7 +176,7 @@ example :
       some (.value (-366) false) := by
   native_decide
 
-/- Berlin months use their independently closed candidate loop; UTC keeps all three legacy-hybrid units. -/
+/- Both implemented profiles admit all three difference units. -/
 example :
     ModelZone.ConcreteProfile.admitsConstructedDateDifference
         .europeBerlin .months = true ∧

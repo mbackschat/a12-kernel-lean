@@ -181,8 +181,7 @@ private def readTyped (address : CellAddr) : Except CheckedDocumentError Checked
     else if address.field == 8 then
       whenDecl.checkRaw (.parsed (.temporal (.date {
         instant := { epochMillis := 0 }
-        parts := { year := 2021, month := 6, day := 1 }
-        basis := .storedGregorian })))
+        parts := { year := 2021, month := 6, day := 1 } })))
     else target.checkRaw (.parsed (.num 9)))
 
 example :
@@ -273,15 +272,13 @@ private def untilRef : SurfaceFieldPath := { base := .relative 0, groups := [], 
 private def dateAt (epochDay : Nat) (year month day : Nat) : CheckedCell :=
   whenDecl.checkRaw (.parsed (.temporal (.date {
     instant := { epochMillis := Int.ofNat (epochDay * 86400000) }
-    parts := { year := year, month := month, day := day }
-    basis := .storedGregorian })))
+    parts := { year := year, month := month, day := day } })))
 /-- A complete instant on 1970-01-01 at the given hour, for the sub-day family. -/
 private def instantAt (hour : Fin 24) : CheckedCell :=
   stampDecl.checkRaw (.parsed (.temporal (.dateTime
     { epochMillis := Int.ofNat (hour * 3600000) }
     { year := 1970, month := 1, day := 1 }
-    { hour := hour, minute := 0, second := 0, valid := by omega }
-    .storedGregorian)))
+    { hour := hour, minute := 0, second := 0, valid := by omega })))
 
 /-- `When` is 2021-06-01 and `Until` 2022-02-01, with `spoil` naming at most one of them as a
     rejected stored date so a single endpoint can be poisoned while the other stays clean. -/
@@ -451,8 +448,7 @@ private def metaScalar : SurfaceFieldPath :=
 private def calibratedDate (year month day : Nat) : CheckedCell :=
   calibratedWhen.checkRaw (.parsed (.temporal (.date {
     instant := { epochMillis := 0 }
-    parts := { year := year, month := month, day := day }
-    basis := .storedGregorian })))
+    parts := { year := year, month := month, day := day } })))
 private def emptyCell : CheckedCell := { rawPresent := false, parsed := none, findings := [] }
 
 /-- The three observed documents, as the reader each row's environment sees. -/

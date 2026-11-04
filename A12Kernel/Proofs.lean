@@ -91,7 +91,6 @@ import A12Kernel.Proofs.ConstructedDateComponents
 import A12Kernel.Proofs.ConstructedDateDay
 import A12Kernel.Proofs.ConstructedDateDifference
 import A12Kernel.Proofs.ConstructedDateEvaluation
-import A12Kernel.Proofs.ConstructedDateShift
 import A12Kernel.Proofs.Correlation
 import A12Kernel.Proofs.CorrelationEnvironment
 import A12Kernel.Proofs.CorrelationElaboration

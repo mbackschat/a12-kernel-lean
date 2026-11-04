@@ -124,8 +124,7 @@ private def prepared :
 private def dateValue (epochMillis : Int) (year month day : Nat) : Value :=
   .temporal (.date {
     instant := { epochMillis }
-    parts := { year, month, day }
-    basis := .storedGregorian })
+    parts := { year, month, day } })
 
 private structure SourceInput where
   row : Nat

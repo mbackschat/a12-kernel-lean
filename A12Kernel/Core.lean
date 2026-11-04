@@ -177,17 +177,10 @@ inductive TemporalKind where
   | dateTime
   deriving Repr, DecidableEq
 
-/-- Calendar provenance retained by date-bearing values. Stored parsed values use the proleptic Gregorian basis; constructed `Date(...)` descendants retain the legacy hybrid basis. -/
-inductive DateCalendarBasis where
-  | storedGregorian
-  | legacyHybrid
-  deriving Repr, DecidableEq
-
-/-- One universal decoded Date payload shared by scalar Date and both DateRange endpoints. Exact runtime identity remains separate from decoded local components and calendar provenance; consumer-specific projections own any stricter admission. -/
+/-- One universal decoded Date payload shared by scalar Date and both DateRange endpoints. Exact runtime identity remains separate from decoded local components; consumer-specific projections own any stricter admission. Every runtime date lives on the proleptic ISO calendar (spec/05 §2.7), so the value carries no calendar provenance. -/
 structure DateValue where
   instant : Instant
   parts : DateParts
-  basis : DateCalendarBasis
   deriving Repr, DecidableEq
 
 /-- Two ordered Date endpoints. Ordering validity and full-Date admission remain consumer-specific checks rather than construction invariants of the universal runtime value. -/
@@ -242,7 +235,6 @@ inductive TemporalValue where
   | date (value : DateValue)
   | time (instant : Instant) (parts : TimeOfDay)
   | dateTime (instant : Instant) (date : DateParts) (time : TimeOfDay)
-      (basis : DateCalendarBasis)
   deriving Repr, DecidableEq
 
 namespace TemporalValue
@@ -251,31 +243,25 @@ namespace TemporalValue
 def kind : TemporalValue → TemporalKind
   | .date _ => .date
   | .time _ _ => .time
-  | .dateTime _ _ _ _ => .dateTime
+  | .dateTime _ _ _ => .dateTime
 
 /-- Exact scalar instant identity used by direct comparison and instant arithmetic. -/
 def instant : TemporalValue → Instant
   | .date value => value.instant
   | .time instant _ => instant
-  | .dateTime instant _ _ _ => instant
+  | .dateTime instant _ _ => instant
 
 /-- Decoded date components when the payload is Date or DateTime. -/
 def dateParts? : TemporalValue → Option DateParts
   | .date value => some value.parts
   | .time _ _ => none
-  | .dateTime _ parts _ _ => some parts
+  | .dateTime _ parts _ => some parts
 
 /-- Decoded clock components when the payload is Time or DateTime. -/
 def time? : TemporalValue → Option TimeOfDay
   | .date _ => none
   | .time _ clock => some clock
-  | .dateTime _ _ clock _ => some clock
-
-/-- Date calendar provenance when the payload has a date component. -/
-def calendarBasis? : TemporalValue → Option DateCalendarBasis
-  | .date value => some value.basis
-  | .time _ _ => none
-  | .dateTime _ _ _ basis => some basis
+  | .dateTime _ _ clock => some clock
 
 end TemporalValue
 

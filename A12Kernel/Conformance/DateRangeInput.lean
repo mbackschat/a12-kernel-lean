@@ -40,7 +40,6 @@ private def yearMonthPolicy : DateRangeDeclarationPolicy := {
 private def dateValue (epochMillis : Int) (year month day : Nat) : DateValue := {
   instant := { epochMillis }
   parts := { year, month, day }
-  basis := .storedGregorian
 }
 
 private def january : DateRangeValue := {
@@ -695,9 +694,10 @@ example : [("dd.MM", "-", "01.06-01.09"), ("MM-dd", "/", "06-01/09-01")].all
           | .ok (.parsed (.dateRange (.exact _))) => true
           | _ => false))) = true := by native_decide
 
+/- Yearless completion reads the proleptic calendar (spec/05 §2.7), so a month-only range ending in February of Base Year 1500 ends on the 28th; the hybrid calendar's Julian February had 29 days. Unmeasured on 31.1.1. -/
 example : (match FlatModel.classifyRuntimeDateRange
     { fields := [], baseYear := some 1500, timeZoneId := "UTC" } { format := "MM", separator := "/" } "01/02" with
-  | .ok (.parsed (.dateRange (.exact range))) => range.finish.parts.day == 29
+  | .ok (.parsed (.dateRange (.exact range))) => range.finish.parts.day == 28
   | _ => false) = true := by native_decide
 
 end A12Kernel.Conformance.DateRangeInput

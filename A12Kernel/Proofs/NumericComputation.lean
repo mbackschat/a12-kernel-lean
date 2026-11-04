@@ -415,7 +415,7 @@ theorem readDateDifference_evaluated
     (leftOperand rightOperand : DateDifferenceOperand)
     (leftResolved : context.readDateDifferenceOperand left = .ok leftOperand)
     (rightResolved : context.readDateDifferenceOperand right = .ok rightOperand)
-    (evaluated : DateDifferenceOperand.evaluate unit leftOperand rightOperand = .ok operand) :
+    (evaluated : DateDifferenceOperand.evaluate unit leftOperand rightOperand = operand) :
     context.readNumericComputationAtom (.dateDifference unit left right) =
       .ok operand.toComputationResult := by
   cases leftOperand <;>

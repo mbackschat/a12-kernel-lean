@@ -259,9 +259,7 @@ def readNumericComputationAtomWith
       match pair with
       | .error cause => pure (.poison cause)
       | .ok (leftOperand, rightOperand) =>
-          match DateDifferenceOperand.evaluate unit leftOperand rightOperand with
-          | .error _ => throw .unsupportedDateCalendar
-          | .ok operand => pure operand.toComputationResult
+          pure (DateDifferenceOperand.evaluate unit leftOperand rightOperand).toComputationResult
   | .dateTimeDifference unit left right => do
       let pair ← readTemporalPair .computation (context.readDateTimeDifferenceOperand)
         (fun operand => match operand with | .unavailable cause => some cause | _ => none) left right

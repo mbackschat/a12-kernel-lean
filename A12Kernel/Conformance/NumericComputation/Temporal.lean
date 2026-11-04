@@ -75,16 +75,15 @@ example :
           (.rejected .malformed))) = some (.poison .malformed) := by
   native_decide
 
-/- Month/year differences reject DateTime statically and a legacy-hybrid field payload dynamically instead of applying the proleptic decoded-parts core. -/
+/- Month/year differences reject DateTime statically, and a `Today` whose clock decodes to no calendar date raises the structural calendar fault. Every present Date payload is proleptic, so a stored Date never does. Unmeasured on 31.1.1. -/
 example :
     checkedErrorOf (surfaceDateDifference .years
       (surfaceDateOperand "DateTime") (.baseYear .direct)) =
         some (.incompatibleTemporalSource ["Root", "DateTime"]) ∧
       checkedFaultOf
-        (surfaceDateDifference .months
-          (.baseYear .direct) (surfaceDateOperand "Date"))
-        (context (date := checkedTemporal .date TemporalComponents.fullDate
-          (.parsed (dateValue 2020 2 29 .legacyHybrid)))) =
+        (surfaceDateDifference .months .today (surfaceDateOperand "Date"))
+        { (context (date := checkedTemporal .date TemporalComponents.fullDate
+          (.parsed (dateValue 2020 2 29)))) with world := some undecodableClock } =
           some .unsupportedDateCalendar := by
   native_decide
 
@@ -94,10 +93,10 @@ example :
       (surfaceDateOperand "DateTime") (surfaceDateOperand "LaterDateTime")
     let springInput := context
       (dateTime := checkedTemporal .dateTime dateTimeComponents
-        (.parsed (berlinDateTimeValue 2024 3 30 2 30 0
+        (.parsed (berlinDateTimeValue 2024 3 30 12 0 0
           (by native_decide) (by native_decide))))
       (laterDateTime := checkedTemporal .dateTime dateTimeComponents
-        (.parsed (berlinDateTimeValue 2024 3 31 1 45 0
+        (.parsed (berlinDateTimeValue 2024 3 31 12 0 0
           (by native_decide) (by native_decide))))
     checkedResultOfIn berlinModel spring springInput = some (.value 1) ∧
       checkedResultOf spring springInput = some (.value 0) ∧

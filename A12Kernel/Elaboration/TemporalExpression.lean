@@ -470,7 +470,7 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
       | some world => .value (.instant world.now) true
       | none => .unknown .malformed)
   | .today profile => pure (match context.world.bind (fun world => profile.todayLabel? world.now) with
-      | some (parts, instant) => .value (.date { instant, parts, basis := .storedGregorian }) true
+      | some (parts, instant) => .value (.date { instant, parts }) true
       | none => .unknown .malformed)
   | .valueAsDate source =>
       readScalarValueAsDate phase source (context.read source.source.target.id)

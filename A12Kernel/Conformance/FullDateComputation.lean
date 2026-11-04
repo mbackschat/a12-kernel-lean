@@ -63,8 +63,7 @@ private def temporalRaw (year : Int) (month day : Nat) : RawCell :=
   | some instant =>
       .parsed (.temporal (.date {
         instant
-        parts := { year, month, day }
-        basis := .storedGregorian }))
+        parts := { year, month, day } }))
 
 /-- The same stored label in a **named zone**. A document belongs to one model, and a stored Date's
 retained instant is that model zone's local midnight, so a fixture reused across two zones needs one
@@ -79,8 +78,7 @@ private def temporalRawIn (zoneId : String) (year : Int) (month day : Nat) :
       | some instant =>
           .parsed (.temporal (.date {
             instant
-            parts := { year, month, day }
-            basis := .storedGregorian }))
+            parts := { year, month, day } }))
       | none => .rejected .malformed
   | _, _ => .rejected .malformed
 

@@ -112,8 +112,7 @@ private def temporalExpressionOutcome (source : SurfaceScalarTemporalExpression)
 -- Internal preservation lock: scalar transport must not reconstruct an exact Date from its label.
 example :
     let value : DateValue := {
-      instant := { epochMillis := 1 }, parts := { year := 1970, month := 1, day := 1 }
-      basis := .legacyHybrid }
+      instant := { epochMillis := 1 }, parts := { year := 1970, month := 1, day := 1 } }
     temporalExpressionOutcome (.field { base := .relative 0, groups := [], field := "IsoDate" })
       (fun _ => { rawPresent := true, parsed := some (.temporal (.date value)), findings := [] }) =
         some (.value (.date (value)) true) := by native_decide
@@ -144,8 +143,10 @@ example :
     temporalExpressionResult (.group .now) .now = some (.fired .value) ∧
       temporalExpressionResult (.group .now) (.group .now) = none := by native_decide
 
-private def berlinGap : LegacyCalendarLabel :=
-  .ofLocal ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide))
+/-- Under Berlin a Julian leap day before the cutover names no instant (spec/05 §5), so it is the unresolvable DateTime literal these rows read. A spring-gap label resolves one gap later and no longer fails. -/
+private def berlinNoInstant : LegacyCalendarLabel :=
+  { parts := { year := 1500, month := 2, day := 29 }
+    time := (TimeOfDay.ofHms? 10 0 0).get (by native_decide) }
 
 private def berlinTemporalResult (source : SurfaceScalarTemporalExpression) := do
   let checked ← (elaborateScalarTemporalExpression
@@ -159,16 +160,16 @@ private def berlinTemporalResult (source : SurfaceScalarTemporalExpression) := d
     | .ok _ => none)
 
 example :
-    berlinTemporalResult (.dateTimeLiteral berlinGap) = some (some .dateTimeLabelUnresolved) ∧
+    berlinTemporalResult (.dateTimeLiteral berlinNoInstant) = some (some .dateTimeLabelUnresolved) ∧
     berlinTemporalResult
-      (.subdayShift .seconds (.dateTimeLiteral berlinGap)
+      (.subdayShift .seconds (.dateTimeLiteral berlinNoInstant)
         (.literal { value := 1, authoredScale := 0 })) = some (some .dateTimeLabelUnresolved) ∧
-    berlinTemporalResult (.dateFromDateTime (.dateTimeLiteral berlinGap)) =
+    berlinTemporalResult (.dateFromDateTime (.dateTimeLiteral berlinNoInstant)) =
       some (some .dateTimeLabelUnresolved) ∧
-    berlinTemporalResult (.timeFromDateTime (.dateTimeLiteral berlinGap)) =
+    berlinTemporalResult (.timeFromDateTime (.dateTimeLiteral berlinNoInstant)) =
       some (some .dateTimeLabelUnresolved) ∧
     berlinTemporalResult (.combine .minimum (.subdayShift .seconds .now (.literal { value := 0, authoredScale := 0 }))
-        [.dateTimeLiteral berlinGap]) =
+        [.dateTimeLiteral berlinNoInstant]) =
       some (some .dateTimeLabelUnresolved) := by native_decide
 
 private def berlinComparisonResult (left right : SurfaceScalarTemporalExpression)
@@ -184,12 +185,12 @@ private def berlinComparisonResult (left right : SurfaceScalarTemporalExpression
 example :
     let field := SurfaceScalarTemporalExpression.field
       { base := .relative 0, groups := [], field := "Stamp" }
-    berlinComparisonResult field (.dateTimeLiteral berlinGap) true = some (.inr .unknown) ∧
-      berlinComparisonResult (.dateTimeLiteral berlinGap) field true =
+    berlinComparisonResult field (.dateTimeLiteral berlinNoInstant) true = some (.inr .unknown) ∧
+      berlinComparisonResult (.dateTimeLiteral berlinNoInstant) field true =
         some (.inl .dateTimeLabelUnresolved) ∧
-      berlinComparisonResult field (.dateTimeLiteral berlinGap) false =
+      berlinComparisonResult field (.dateTimeLiteral berlinNoInstant) false =
         some (.inl .dateTimeLabelUnresolved) ∧
-      berlinComparisonResult field (.dateTimeLiteral berlinGap) true .validation =
+      berlinComparisonResult field (.dateTimeLiteral berlinNoInstant) true .validation =
         some (.inl .dateTimeLabelUnresolved) := by native_decide
 
 /-- A repeatable row carrying a full-date field and a numeric guard, plus a **non**-repeatable `Sub`

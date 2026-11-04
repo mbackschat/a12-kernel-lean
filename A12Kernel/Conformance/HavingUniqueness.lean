@@ -41,7 +41,7 @@ private def temporalSource (ids : List FieldId) : A12Kernel.HavingUniqueness := 
   origin := .inner, field := { id, kind := .date, components := .fullDate } })
 private def temporalContext (same : Bool) : CorrelationContext := {
   read := fun _ _ => { rawPresent := true, findings := [], parsed := some (.temporal (.date {
-    instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 }, basis := .storedGregorian })) }
+    instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 } })) }
   storedText := fun _ id => if id == 3 then none else some (if same || id == 1 then "spelling A" else "spelling B") }
 
 -- Synthetic spellings separate the representation's text identity from decoded equality;

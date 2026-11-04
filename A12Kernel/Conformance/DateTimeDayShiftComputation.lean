@@ -50,7 +50,7 @@ private def instant : Instant :=
 
 private def temporalRaw : RawCell :=
   .parsed (.temporal (.dateTime instant
-    sourceLocal.date.civil.parts sourceLocal.time .storedGregorian))
+    sourceLocal.date.civil.parts sourceLocal.time))
 
 /-- The raw cell a certified DateTime declaration classifies `text` into, in the model's own zone.
 
@@ -155,10 +155,11 @@ private def old : StoredDateTime :=
   ⟨"1916-05-01T23:30:00", by decide⟩
 
 private def shifted : StoredDateTime :=
-  ⟨"1916-04-30T22:30:00", by decide⟩
+  ⟨"1916-05-01T00:30:00", by decide⟩
 
-/- The source-offset fallback preserves the target civil date before declaration-owned
-   rendering; the changed value survives result classification and exact application. -/
+/- A day landing in the evening gap of 30 April 1916 moves forward by the gap before
+   declaration-owned rendering; the changed value survives result classification and exact
+   application. The landing is derived from spec/05 §5; unmeasured on 31.1.1. -/
 example : (do
     let view ← view? (sourceData old.text old.text temporalRaw)
     let applied ← view.applyTo (destinationWith .absent) |>.toOption
@@ -261,9 +262,9 @@ example : (do
       secondView.withChanges.map
         (fun (entry : DateTimeComputedInstance) => entry.value.text))) =
     some (
-      .value { epochMillis := 1711845000777 },
-      ["2024-03-31T01:30:00"],
-      .presentValue ⟨"2024-03-31T01:30:00", by decide⟩,
+      .value { epochMillis := 1711848600777 },
+      ["2024-03-31T03:30:00"],
+      .presentValue ⟨"2024-03-31T03:30:00", by decide⟩,
       ["2024-10-27T02:30:00"]) := by
   native_decide
 
@@ -464,7 +465,7 @@ example : (do
     let raw : RawCell :=
       .parsed (.temporal (.dateTime
         { epochMillis := resolved.epochMillis + 777 }
-        sourceLabel.date.civil.parts sourceLabel.time .storedGregorian))
+        sourceLabel.date.civil.parts sourceLabel.time))
     let checked ←
       (checkDocument prepared "en_US"
         (fieldTwoDayData "2024-06-15T10:30:00" old.text raw
@@ -493,7 +494,7 @@ example : (do
       ModelZone.ConcreteProfile.europeBerlin.resolveLocal? sourceLabel
     let raw : RawCell :=
       .parsed (.temporal (.dateTime resolved
-        sourceLabel.date.civil.parts sourceLabel.time .storedGregorian))
+        sourceLabel.date.civil.parts sourceLabel.time))
     let checked ←
       (checkDocument prepared "en_US"
         (fieldTwoDayData "2024-06-15T10:30:00"

@@ -90,7 +90,7 @@ private def input? := document? rows [
   numberCell [2, 1] (-1),
   dateTimeCell source [1] "2024-03-30T02:30:00",
   dateTimeCell source [2] "1916-05-01T23:30:00",
-  dateTimeCell target [1, 1] "2024-03-31T01:30:00",
+  dateTimeCell target [1, 1] "2024-03-31T03:30:00",
   dateTimeCell target [1, 2] "2024-03-29T02:30:00"]
 
 private structure OutcomeSummary where
@@ -112,7 +112,7 @@ private def summarize (entry : AddressedDateTimeDayShiftComputationOutcome) :
     | .accepted _ | .errored _ _ | .noValue => none
 }
 
-/- Outer DateTime correlation and target-row Number reads retain exact coordinates. The values separate a Berlin spring gap, exact zero preservation, and the historical source-offset fallback from elapsed shifting. -/
+/- Outer DateTime correlation and target-row Number reads retain exact coordinates. The values separate a Berlin spring-gap landing one gap later, exact zero preservation, and the 1916 evening-gap landing from elapsed shifting; the 1916 row is derived from spec/05 §5 and unmeasured on 31.1.1. -/
 example :
     operation?.map (fun operation =>
       (operation.fieldDependencies,
@@ -126,11 +126,11 @@ example :
       let outcomes ← operation.execute input |>.toOption
       pure (outcomes.map summarize)) = some [
         { source := address source.id [1], target := address target.id [1, 1],
-          value := some "2024-03-31T01:30:00", poison := none },
+          value := some "2024-03-31T03:30:00", poison := none },
         { source := address source.id [1], target := address target.id [1, 2],
           value := some "2024-03-30T02:30:00", poison := none },
         { source := address source.id [2], target := address target.id [2, 1],
-          value := some "1916-04-30T22:30:00", poison := none }
+          value := some "1916-05-01T00:30:00", poison := none }
       ] := by
   native_decide
 
@@ -335,16 +335,16 @@ private def resultApplicationSummary? : Option ResultApplicationSummary := do
 /- Result classification stays relative to immutable source target cells. Separate-destination application consumes only retained exact-address actions. -/
 example : resultApplicationSummary? = some {
     values := [
-      (address target.id [1, 1], "2024-03-31T01:30:00"),
+      (address target.id [1, 1], "2024-03-31T03:30:00"),
       (address target.id [1, 2], "2024-03-30T02:30:00"),
-      (address target.id [2, 1], "1916-04-30T22:30:00")]
+      (address target.id [2, 1], "1916-05-01T00:30:00")]
     changes := [
       (address target.id [1, 2], "2024-03-30T02:30:00"),
-      (address target.id [2, 1], "1916-04-30T22:30:00")]
+      (address target.id [2, 1], "1916-05-01T00:30:00")]
     cleared := []
     row11 := .presentValue (stored "2000-01-01T06:00:00")
     row12 := .presentValue (stored "2024-03-30T02:30:00")
-    row21 := .presentValue (stored "1916-04-30T22:30:00")
+    row21 := .presentValue (stored "1916-05-01T00:30:00")
     unrelatedState := .presentValue (stored "1970-01-01T03:00:00")
   } := by
   native_decide

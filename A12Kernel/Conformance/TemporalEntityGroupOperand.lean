@@ -85,8 +85,7 @@ private def rows : List RowAddr :=
 private def dateValue (day : Nat) : TemporalValue :=
   .date {
     instant := { epochMillis := 0 }
-    parts := { year := 2024, month := 1, day }
-    basis := .storedGregorian }
+    parts := { year := 2024, month := 1, day } }
 
 private def cell (field : FieldId) (path : List Nat) (stored : String)
     (day : Nat) : ClassifiedCellInput :=

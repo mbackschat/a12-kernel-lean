@@ -15,8 +15,7 @@ private def checkedDateRawAt
     (epochMillis year : Int) (month day : Nat) : RawCell :=
   .parsed (.temporal (.date {
     instant := { epochMillis }
-    parts := { year, month, day }
-    basis := .storedGregorian }))
+    parts := { year, month, day } }))
 
 private def checkedDateRaw (year : Int) (month day : Nat) : RawCell :=
   checkedDateRawAt 0 year month day
@@ -24,8 +23,7 @@ private def checkedDateRaw (year : Int) (month day : Nat) : RawCell :=
 private def checkedDateTimeRawAtTime
     (epochMillis year : Int) (month day : Nat) (time : TimeOfDay) : RawCell :=
   .parsed (.temporal (.dateTime { epochMillis }
-    { year, month, day } time
-    .storedGregorian))
+    { year, month, day } time))
 
 private def midnight : TimeOfDay :=
   (TimeOfDay.ofHms? 0 0 0).get (by native_decide)

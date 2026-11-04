@@ -138,7 +138,7 @@ def ofAvailableComponents (day month year : Option Int) :
           year
           month := Int.toNat month
           day := Int.toNat day }
-        if DateParts.LegacyHybrid.isReal parts then
+        if DateParts.isReal parts then
           .real parts
         else
           .unreal
@@ -172,24 +172,6 @@ def numericPart (observation : ConstructedDateObservation)
   | .resolved result => .ok (result.numericPart part)
   | .unavailable cause => .error cause
 
-/-- Shift a resolved observation by default-cutover calendar days without losing a formal cause. -/
-def addLegacyDays? : ConstructedDateObservation → Int →
-    Option ConstructedDateObservation
-  | .resolved result, offset => (result.addLegacyDays? offset).map .resolved
-  | .unavailable cause, _ => some (.unavailable cause)
-
-/-- Shift a resolved observation by default-cutover calendar months without losing a formal cause. -/
-def addLegacyMonths? : ConstructedDateObservation → Int →
-    Option ConstructedDateObservation
-  | .resolved result, offset => (result.addLegacyMonths? offset).map .resolved
-  | .unavailable cause, _ => some (.unavailable cause)
-
-/-- Shift a resolved observation by default-cutover calendar years without losing a formal cause. -/
-def addLegacyYears? : ConstructedDateObservation → Int →
-    Option ConstructedDateObservation
-  | .resolved result, offset => (result.addLegacyYears? offset).map .resolved
-  | .unavailable cause, _ => some (.unavailable cause)
-
 end ConstructedDateObservation
 
 inductive ResolvedConstructedDateSource where
@@ -210,7 +192,7 @@ def ResolvedConstructedDateSource.fieldId? : ResolvedConstructedDateSource → O
   | _ => none
 
 /-- Clock acquisition and profile decoding remain separate capabilities, as in spec/05 §7. The
-clock decodes on the hybrid calendar, Julian before the 1582 cutover (2026-10-21 letter §1.2, KF576). -/
+clock decodes on the proleptic calendar, with no cutover before 1582 (spec/05 §2.7, §7). -/
 def projectConstructedDateClock (profile : ModelZone.ConcreteProfile) (part : DateNumericPart)
     (instant : Instant) (unavailable : ConstructedDateComponentFault) :
     Except ConstructedDateComponentFault CheckedConstructedDateComponent :=

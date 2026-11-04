@@ -33,12 +33,12 @@ label at classification. It is kept rather than defaulted so an impossible value
 fabricated date. -/
 def dateFromDateTime? (profile : ModelZone.ConcreteProfile) :
     TemporalValue → Option DateValue
-  | .dateTime _ parts _ basis => do
+  | .dateTime _ parts _ => do
       let civil ← CivilDate.ofParts? parts
       let full ← FullDate.ofCivil? civil
       let midnightLabel ← LocalDateTime.ofDateHms? full 0 0 0
       let midnight ← profile.resolveLocal? midnightLabel
-      pure { instant := midnight, parts := full.civil.parts, basis }
+      pure { instant := midnight, parts := full.civil.parts }
   | .date _ | .time _ _ => none
 
 end A12Kernel

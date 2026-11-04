@@ -130,7 +130,7 @@ example : ["AddSeconds", "AddDays"].all (fun shift =>
       some (["Order/NumericDep:value 1", "Order/NumericOut:value 0"], [[.value], [.value], [.value]]) &&
     numericReadback ("HoursFromTime(" ++ shift ++ "(Stamp,1/0))") "" "" ==
       some (["Order/NumericDep:value 1", "Order/NumericOut:value 0"], [[.omission], [.omission], [.omission]]) &&
-    numericReadback ("HoursFromTime(" ++ shift ++ "(Stamp,HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))))") "bad" "" ==
+    numericReadback ("HoursFromTime(" ++ shift ++ "(Stamp,HoursFromTime(TimeFromDateTime(\"29.02.1500T10:00:00\"))))") "bad" "" ==
       some (["Order/NumericDep:cleared", "Order/NumericOut:cleared"], [[.value], [.value], [.value]])) = true := by native_decide
 
 private def numericRows (expression : String) : Option (List String) := do
@@ -236,13 +236,13 @@ private def gapResult (targetField : FieldId) (text : String) (badSource : Bool 
   (step.run world (fun _ => none) document).toOption
 
 example :
-    gapResult 7 "\"31.03.2024T02:30:00\"" =
+    gapResult 7 "\"29.02.1500T10:00:00\"" =
         some (.valueError .dateTime, DocumentComputationReadBack.poison) ∧
-      gapResult 7 "AddSeconds(\"31.03.2024T02:30:00\", 1)" =
+      gapResult 7 "AddSeconds(\"29.02.1500T10:00:00\", 1)" =
         some (.valueError .dateTime, DocumentComputationReadBack.poison) ∧
-      gapResult 5 "DateFromDateTime(\"31.03.2024T02:30:00\")" =
+      gapResult 5 "DateFromDateTime(\"29.02.1500T10:00:00\")" =
         some (.valueError .fullDate, DocumentComputationReadBack.poison) ∧
-      gapResult 6 "TimeFromDateTime(\"31.03.2024T02:30:00\")" =
+      gapResult 6 "TimeFromDateTime(\"29.02.1500T10:00:00\")" =
         some (.valueError .time, DocumentComputationReadBack.poison) := by native_decide
 
 example :
@@ -255,11 +255,11 @@ example :
           messageType := .value
           payload := () } := by native_decide
 
-example : (match gapResult 7 "Min([Stamp2], \"31.03.2024T02:30:00\")" true with
+example : (match gapResult 7 "Min([Stamp2], \"29.02.1500T10:00:00\")" true with
     | some (.dateTime (.poison _), _) => true | _ => false) = true ∧
-    (match gapResult 7 "Max([Stamp2], \"31.03.2024T02:30:00\")" true with
+    (match gapResult 7 "Max([Stamp2], \"29.02.1500T10:00:00\")" true with
     | some (.dateTime (.poison _), _) => true | _ => false) = true ∧
-    (match gapResult 7 "Min(\"31.03.2024T02:30:00\", [Stamp2])" true with
+    (match gapResult 7 "Min(\"29.02.1500T10:00:00\", [Stamp2])" true with
     | some (.valueError .dateTime, _) => true | _ => false) = true := by native_decide
 
 private def runtimeModel : FlatModel := { model with
@@ -297,7 +297,7 @@ private def dependentRun (label : String) (seed : Bool) : Option (List String) :
   pure ((← (runComputations world prepared checked steps).toOption).map
     (fun result => result.pointer ++ ":" ++ result.outcome)).mergeSort
 
-example : dependentRun "31.03.2024T02:30:00" true = some [
+example : dependentRun "29.02.1500T10:00:00" true = some [
     "Order/First:cleared", "Order/Guard:cleared", "Order/Shift:cleared", "Order/Stamp2:value 2024-03-05T12:30:00",
     "Order/Stamp:cleared"] := by native_decide
 
@@ -315,16 +315,16 @@ private def validationRun (condition stamp : String) : Option (List Polarity) :=
   pure ((← (runRule world checked rule).toOption).map (·.messageType))
 
 example : ["", "bad", "2024-03-31T01:00:00", "2024-03-31T04:00:00"].all
-    (fun stamp => validationRun "[Stamp] < \"31.03.2024T02:30:00\"" stamp == some [.value]) := by native_decide
+    (fun stamp => validationRun "[Stamp] < \"29.02.1500T10:00:00\"" stamp == some [.value]) := by native_decide
 
-example : validationRun "[Stamp] < \"31.03.2024T02:30:00\" And FieldNotFilled(Stamp)"
+example : validationRun "[Stamp] < \"29.02.1500T10:00:00\" And FieldNotFilled(Stamp)"
       "2024-03-31T01:00:00" = some [.value] ∧
-    validationRun "FieldNotFilled(Stamp) And [Stamp] < \"31.03.2024T02:30:00\""
+    validationRun "FieldNotFilled(Stamp) And [Stamp] < \"29.02.1500T10:00:00\""
       "2024-03-31T01:00:00" = some [] ∧
     validationRun "[Stamp] < \"31.03.2024T01:30:00\"" "2024-03-31T01:00:00" = some [.value] ∧
     validationRun "[Stamp] < \"31.03.2024T01:30:00\"" "2024-03-31T04:00:00" = some [] := by native_decide
 
-example : validationRun "FieldNotFilled(Stamp) And [Stamp] < \"31.03.2024T02:30:00\""
+example : validationRun "FieldNotFilled(Stamp) And [Stamp] < \"29.02.1500T10:00:00\""
     "bad" = some [] := by native_decide
 
 
@@ -413,7 +413,7 @@ example : (do
       (lowerCondition rowModel ["Order"] false parsed.body (bindingGroup := ["Order", "Rows"])).isOk)) =
     some true := by native_decide
 
-example : runRows "[Stamp2] < \"31.03.2024T02:30:00\""
+example : runRows "[Stamp2] < \"29.02.1500T10:00:00\""
     [Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")], Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")]] false "Europe/Berlin" =
     some ["Order/Rows/Stamp2"] := by native_decide
 
@@ -422,7 +422,7 @@ private def delayedFailureRows : List Lean.Json :=
      Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")],
      Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")]]
 
-example : runRows "FieldFilled(Clock) And [Stamp2] < \"31.03.2024T02:30:00\""
+example : runRows "FieldFilled(Clock) And [Stamp2] < \"29.02.1500T10:00:00\""
     delayedFailureRows
     false "Europe/Berlin" = some ["Order/Rows/Stamp2"] := by native_decide
 
@@ -435,7 +435,7 @@ example : (do
     let dm := { rowDm with flat := { rowModel with timeZoneId := "Europe/Berlin" } }
     let world : World := { now := { epochMillis := 0 } }
     let rule ← (checkRule dm .english
-      (rowRule "FieldFilled(Clock) And [Stamp2] < \"31.03.2024T02:30:00\"")).toOption
+      (rowRule "FieldFilled(Clock) And [Stamp2] < \"29.02.1500T10:00:00\"")).toOption
     let input ← (readDocument dm (Lean.Json.mkObj [("Order", Lean.Json.mkObj [
       ("Rows", Lean.Json.arr delayedFailureRows.toArray)])])).toOption
     let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
@@ -447,27 +447,27 @@ example : (do
     some [([(10, 1)], none), ([(10, 2)], some "Order/Rows/Stamp2")] := by native_decide
 
 example : runRows
-    "FieldFilled(Stamp2) Or [Stamp2] < \"31.03.2024T02:30:00\""
+    "FieldFilled(Stamp2) Or [Stamp2] < \"29.02.1500T10:00:00\""
     (List.replicate 3 (Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")])) false "Europe/Berlin" =
     some ["Order/Rows/Stamp2"] := by native_decide
 
 example : runRows
-    "FieldFilled(Stamp2) Or (FieldFilled(Stamp2) And Now < \"31.03.2024T02:30:00\")"
+    "FieldFilled(Stamp2) Or (FieldFilled(Stamp2) And Now < \"29.02.1500T10:00:00\")"
     (List.replicate 3 (Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")])) false "Europe/Berlin" =
     some ["Order/Rows/Stamp2", "Order/Rows[2]/Stamp2", "Order/Rows[3]/Stamp2"] := by native_decide
 
 example : runRows
-    "GroupFilled(/Order/Rows) And (FieldFilled(Stamp2) Or (FieldFilled(Stamp2) And Now < \"31.03.2024T02:30:00\"))"
+    "GroupFilled(/Order/Rows) And (FieldFilled(Stamp2) Or (FieldFilled(Stamp2) And Now < \"29.02.1500T10:00:00\"))"
     (List.replicate 3 (Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00"), ("Clock", "01:00:00")])) false "Europe/Berlin" =
     some ["Order/Rows/Stamp2"] := by native_decide
 
 example : runRows
-    "(FieldNotFilled(Clock) Or Now < \"31.03.2024T02:30:00\") And FieldFilled(Stamp2) And FieldFilled(Clock)"
+    "(FieldNotFilled(Clock) Or Now < \"29.02.1500T10:00:00\") And FieldFilled(Stamp2) And FieldFilled(Clock)"
     [Lean.Json.mkObj [("Stamp2", "2024-03-31T01:00:00")]] false "Europe/Berlin" =
     some [] := by native_decide
 
 example : validationRun
-    "(FieldNotFilled(Stamp) Or Now < \"31.03.2024T02:30:00\") And FieldFilled(Stamp)"
+    "(FieldNotFilled(Stamp) Or Now < \"29.02.1500T10:00:00\") And FieldFilled(Stamp)"
     "" = some [] := by native_decide
 
 private def classificationEnabled (text : String) : Option Bool := do
@@ -480,7 +480,7 @@ example : classificationEnabled "GroupFilled(/Order)" = some false ∧
     classificationEnabled "FieldFilled(Stamp2)" = some false ∧
     classificationEnabled "FieldNotFilled(Stamp2)" = some true ∧
     classificationEnabled "[Amount] > 0" = some true ∧
-    classificationEnabled "Now < \"31.03.2024T02:30:00\"" = some false := by native_decide
+    classificationEnabled "Now < \"29.02.1500T10:00:00\"" = some false := by native_decide
 
 private def membershipClassification (text : String) : Option Bool := do
   let membershipModel : FlatModel := { fields := [
@@ -576,9 +576,9 @@ example : stored 7 "Min(Max(AddHours(Now,1), AddHours(Now,3)), AddHours(Now,2))"
     !operationAdmitted "Min(AddHours(Now,1), [Stamp2], [Stamp])" := by native_decide
 
 example : ["Min", "Max"].all (fun op =>
-    (match gapResult 7 (op ++ "(AddHours(Now,1), [Stamp2], \"31.03.2024T02:30:00\")") true with
+    (match gapResult 7 (op ++ "(AddHours(Now,1), [Stamp2], \"29.02.1500T10:00:00\")") true with
       | some (.dateTime (.poison _), _) => true | _ => false) &&
-    (match gapResult 7 (op ++ "(AddHours(Now,1), \"31.03.2024T02:30:00\", [Stamp2])") true with
+    (match gapResult 7 (op ++ "(AddHours(Now,1), \"29.02.1500T10:00:00\", [Stamp2])") true with
       | some (.valueError .dateTime, _) => true | _ => false)) = true := by native_decide
 
 example : runRows "Min([Stamp2], [Stamp], AddHours(Stamp,[Amount])) < [Stamp]"
@@ -655,10 +655,10 @@ private def gapTargetRow : Lean.Json := Lean.Json.mkObj [
   ("Clock", "01:00:00"), ("Amount", "1"), ("Day", "9")]
 
 example : temporalRows [("Day", "HoursFromTime(Stamp2)", none),
-    ("Stamp2", "Min([Stamp],\"31.03.2024T02:30:00\")", some "FieldNotFilled(Amount)")]
+    ("Stamp2", "Min([Stamp],\"29.02.1500T10:00:00\")", some "FieldNotFilled(Amount)")]
     [gapTargetRow] "Europe/Berlin" = some ["Order/Rows/Day:value 0", "Order/Rows/Stamp2:cleared"] ∧
     temporalRows [("Day", "HoursFromTime(Stamp2)", none),
-    ("Stamp2", "Min([Stamp],\"31.03.2024T02:30:00\")", some "FieldFilled(Amount)")]
+    ("Stamp2", "Min([Stamp],\"29.02.1500T10:00:00\")", some "FieldFilled(Amount)")]
     [gapTargetRow] "Europe/Berlin" = some ["Order/Rows/Day:cleared", "Order/Rows/Stamp2:cleared"] := by native_decide
 
 example : temporalAlternativeRows [("Stamp", [

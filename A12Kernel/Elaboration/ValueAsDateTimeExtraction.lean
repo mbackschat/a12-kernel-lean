@@ -117,7 +117,7 @@ def evaluateShiftedDateTimeObservation
       | .ok (.error reason) => .error (mapFault (.amountExpressionUnavailable reason))
       | .ok (.ok _) => .ok (.noValue true)
   | .unknown cause | .poison cause => .ok (.unavailable cause)
-  | .value (.temporal (.dateTime instant _ _ _)) =>
+  | .value (.temporal (.dateTime instant _ _)) =>
       match readAmount () with
       | .error error => .error error
       | .ok resolved =>
@@ -133,7 +133,7 @@ def ofDateTimeValueObservation :
     CellObservation Value → Option ValueAsDateTimeTimeOperand
   | .empty => some (.noValue true)
   | .unknown cause | .poison cause => some (.unavailable cause)
-  | .value (.temporal (.dateTime _ _ clock _)) => some (.value clock false)
+  | .value (.temporal (.dateTime _ _ clock)) => some (.value clock false)
   | .value _ => none
 
 /-- Shift one exact DateTime instant by the authored literal's Java-compatible integer amount, then project its model-zone whole-second clock. `none` is bounded profile failure, not a semantic no-value. -/

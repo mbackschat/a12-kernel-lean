@@ -72,7 +72,7 @@ private def clock (hour minute second : Nat) (valid : hour < 24 ∧ minute < 60 
   ⟨hour, minute, second, valid⟩
 
 private def dateTimeValue (millis : Int) (parts : DateParts) (time : TimeOfDay) : Value :=
-  .temporal (.dateTime { epochMillis := millis } parts time .storedGregorian)
+  .temporal (.dateTime { epochMillis := millis } parts time)
 
 private structure SourceInput where
   row : Nat

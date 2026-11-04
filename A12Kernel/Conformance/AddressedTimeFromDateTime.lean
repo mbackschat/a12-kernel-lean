@@ -145,7 +145,7 @@ example :
 private def momentAt (day hour minute : Nat) : Option TemporalValue := do
   let wall ← LocalDateTime.ofYmdHms? 2024 6 day hour minute 0
   let instant ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? wall
-  pure (.dateTime instant wall.date.civil.parts wall.time .storedGregorian)
+  pure (.dateTime instant wall.date.civil.parts wall.time)
 
 private def sourceCell (field : FieldId) (path : List Nat)
     (stored : String) (raw : RawCell) : ClassifiedCellInput := {

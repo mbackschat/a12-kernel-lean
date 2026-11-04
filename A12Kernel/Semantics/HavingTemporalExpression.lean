@@ -210,7 +210,7 @@ private def readAtom (profile : ModelZone.ConcreteProfile) (baseYear : Option In
               | .date date =>
                   let some instant := profile.resolveLocal? { date, time := { hour := 0, minute := 0, second := 0, valid := by decide } }
                     | throw context.unsupportedDateCalendar
-                  pure (.value (.date { instant, parts := date.civil.parts, basis := .storedGregorian }) true)
+                  pure (.value (.date { instant, parts := date.civil.parts }) true)
       | observation => pure (projectScalarTemporalObservationWith baseYear (some profile) reference.field observation)
   | .field reference => do
       let cell ← context.read (frame.envAt reference.origin) reference.field.id

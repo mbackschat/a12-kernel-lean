@@ -18,10 +18,9 @@ namespace A12Kernel
 
 /-- A present DateTime projects exactly its retained wall clock; neither exact instant identity nor the Date half enters the result. -/
 @[simp] theorem timeFromDateTime_projects_clock
-    (instant : Instant) (date : DateParts) (clock : TimeOfDay)
-    (basis : DateCalendarBasis) :
+    (instant : Instant) (date : DateParts) (clock : TimeOfDay) :
     ValueAsDateTimeTimeOperand.ofDateTimeValueObservation
-      (.value (.temporal (.dateTime instant date clock basis))) =
+      (.value (.temporal (.dateTime instant date clock))) =
         some (.value clock false) := by
   rfl
 

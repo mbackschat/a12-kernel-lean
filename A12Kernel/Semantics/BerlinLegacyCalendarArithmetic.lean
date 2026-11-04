@@ -1,106 +1,60 @@
 import A12Kernel.Semantics.DateShift
 import A12Kernel.Semantics.LegacyCalendarExpression
 
-/-! # Berlin legacy calendar arithmetic
+/-! # Model-zone completed-period differences
 
-This capsule owns the versioned Europe/Berlin legacy profile's three `GregorianCalendar` field mutations and completed month/year qualification over already decoded hybrid-calendar labels plus exact instants, so a label before the 1582 cutover steps on its Julian calendar as the Kernel's clock does (2026-10-21 letter §1.12, KF588). Month and year mutation use the calendar's sign-independent compute-time resolver. Day mutation instead carries the source instant's offset into the nominal target and re-fits only when doing so preserves the target civil date. Every field mutation preserves source milliseconds unless the legacy February-28 rule clears the clock.
+This capsule owns `DifferenceInMonths` and `DifferenceInYears` over exact instants in a concrete model-zone profile (spec/05 §2.4). The operands are ordered by instant; the year count starts from the difference of the decoded years and steps back once when the year shift from the earlier operand passes the later one; the month count starts from twelve times the year count and tests fresh month shifts from the earlier operand until one passes the later operand. Every landing is `shiftCalendar?`'s, so the 28-February corrections and the source-offset preference take part.
 
-The stateful residual day-count algorithm, profile dispatch, parsing, Date-versus-DateTime admission, empty and malformed operands, calendar identity outside the concrete profiles, numeric result storage, validation polarity, and a general model-zone interface remain separate.
+Parsing, Date-versus-DateTime admission, empty and malformed operands, numeric result storage and validation polarity remain with their consumers.
 -/
 
-namespace A12Kernel.EuropeBerlinLegacyProfile
+namespace A12Kernel.ModelZone.ConcreteProfile
 
-private def landing? (unit : DateShiftUnit) (instant : Instant) (offset : Int) :
-    Option (LegacyCalendarLabel × Instant) :=
-  ModelZone.ConcreteProfile.europeBerlin.shiftCalendar? unit instant offset
+/-- Whole completed years between ordered exact instants. -/
+def wholeYearsForward? (profile : ConcreteProfile) (earlier later : Instant) : Option Nat := do
+  let earlierLabel ← profile.calendarLabel? earlier
+  let laterLabel ← profile.calendarLabel? later
+  let candidate := Int.toNat (laterLabel.parts.year - earlierLabel.parts.year)
+  let (_, landing) ← profile.shiftCalendar? .years earlier candidate
+  pure (if later.epochMillis < landing.epochMillis then candidate - 1 else candidate)
 
-/-- Day target selection uses the same source-relative calendar mutation as expression shifts. -/
-def calendarDayTargetLanding? (current : LegacyCalendarLabel)
-    (currentInstant : Instant) (nextDate : DateParts) : Option (TimeOfDay × Instant) := do
-  let days := (← DateParts.LegacyHybrid.epochDay? nextDate) - (← DateParts.LegacyHybrid.epochDay? current.parts)
-  let (label, landing) ← landing? .days currentInstant days
-  if label.parts == nextDate then pure (label.time, landing) else none
-
-def calendarDayLanding? (current : LegacyCalendarLabel) (currentInstant : Instant) (days : Int) :
-    Option (LegacyCalendarLabel × Instant) := do
-  if days = 0 then pure (current, currentInstant) else do
-    let nextDate ← DateParts.LegacyHybrid.addDays? current.parts days
-    let (time, landing) ← calendarDayTargetLanding? current currentInstant nextDate
-    pure ({ parts := nextDate, time }, landing)
-
-def calendarMonthLanding? (current : LegacyCalendarLabel) (currentInstant : Instant) (months : Int) :
-    Option (LegacyCalendarLabel × Instant) :=
-  if months = 0 then some (current, currentInstant) else landing? .months currentInstant months
-
-def calendarYearLanding? (current : LegacyCalendarLabel) (currentInstant : Instant) (years : Int) :
-    Option (LegacyCalendarLabel × Instant) :=
-  if years = 0 then some (current, currentInstant) else landing? .years currentInstant years
-
-/-- Whole completed years between ordered exact instants, using the same final-landing rule as legacy calendar year addition. -/
-def wholeYearsForward? (earlier : LegacyCalendarLabel) (earlierInstant : Instant)
-    (later : LegacyCalendarLabel) (laterInstant : Instant) : Option Nat := do
-  let candidate :=
-    Int.toNat
-      (later.parts.year - earlier.parts.year)
-  let (_, landing) ←
-    calendarYearLanding? earlier earlierInstant (candidate : Int)
-  pure (if laterInstant.epochMillis < landing.epochMillis then
-    candidate - 1 else candidate)
-
-/-- Test fresh source-relative month candidates until the first landing passes the later instant. Each candidate is independent: an intermediate gap normalization must not be skipped by jumping to the final year/month coordinate. -/
-private def firstOvershootingMonth? (source : LegacyCalendarLabel)
-    (sourceInstant laterInstant : Instant) :
+/-- Test fresh month shifts from the earlier operand until the first passes the later instant. Each candidate is shifted from the source, never from the previous landing, because chained month shifts lose a clamped day. -/
+private def firstOvershootingMonth? (profile : ConcreteProfile) (source later : Instant) :
     Nat → Nat → Option Nat
   | 0, _ => none
   | fuel + 1, candidate => do
-      let (_, landing) ←
-        calendarMonthLanding? source sourceInstant (candidate : Int)
-      if laterInstant.epochMillis < landing.epochMillis then
+      let (_, landing) ← profile.shiftCalendar? .months source candidate
+      if later.epochMillis < landing.epochMillis then
         some (candidate - 1)
       else
-        firstOvershootingMonth? source sourceInstant laterInstant
-          fuel (candidate + 1)
+        firstOvershootingMonth? profile source later fuel (candidate + 1)
 
-/-- Whole completed months between ordered exact instants. Search starts at twelve times the completed-year lower bound and applies every candidate to a fresh source value. The civil month coordinate bounds the remaining search; profile or fuel failure stays explicit. -/
-def wholeMonthsForward? (earlier : LegacyCalendarLabel) (earlierInstant : Instant)
-    (later : LegacyCalendarLabel) (laterInstant : Instant) : Option Nat := do
-  let years ←
-    wholeYearsForward? earlier earlierInstant later laterInstant
+/-- Whole completed months between ordered exact instants. The decoded month coordinates bound the search; fuel exhaustion stays explicit. -/
+def wholeMonthsForward? (profile : ConcreteProfile) (earlier later : Instant) : Option Nat := do
+  let years ← profile.wholeYearsForward? earlier later
   let firstCandidate := 12 * years
-  let coordinateCandidate :=
-    Int.toNat
-      (later.parts.monthCoordinate -
-        earlier.parts.monthCoordinate)
+  let coordinateCandidate := Int.toNat
+    ((← profile.calendarLabel? later).parts.monthCoordinate -
+      (← profile.calendarLabel? earlier).parts.monthCoordinate)
   let lastCandidate := max firstCandidate coordinateCandidate + 1
-  firstOvershootingMonth? earlier earlierInstant laterInstant
-    (lastCandidate - firstCandidate + 1) firstCandidate
+  profile.firstOvershootingMonth? earlier later (lastCandidate - firstCandidate + 1) firstCandidate
 
-/-- Restore authored sign around one nonnegative completed-period calculation, ordering by exact instants rather than possibly repeated wall labels. -/
-def signedWholePeriods?
-    (forward :
-      LegacyCalendarLabel → Instant → LegacyCalendarLabel → Instant → Option Nat)
-    (first : LegacyCalendarLabel) (firstInstant : Instant)
-    (second : LegacyCalendarLabel) (secondInstant : Instant) : Option Int :=
-  if firstInstant.epochMillis < secondInstant.epochMillis then
-    (forward first firstInstant second secondInstant).map
-      (fun amount => (amount : Int))
-  else if secondInstant.epochMillis < firstInstant.epochMillis then
-    (forward second secondInstant first firstInstant).map
-      (fun amount => -(amount : Int))
+/-- Restore authored sign around one nonnegative completed-period count, ordering by exact instants. -/
+def signedWholePeriods? (forward : Instant → Instant → Option Nat) (first second : Instant) :
+    Option Int :=
+  if first.epochMillis < second.epochMillis then
+    (forward first second).map (fun amount => (amount : Int))
+  else if second.epochMillis < first.epochMillis then
+    (forward second first).map (fun amount => -(amount : Int))
   else
     some 0
 
-/-- Signed completed-month count for two already resolved Berlin values. Exact instants establish order before the fresh candidate landing is tested. -/
-def differenceResolvedInMonths? (first : LegacyCalendarLabel)
-    (firstInstant : Instant) (second : LegacyCalendarLabel)
-    (secondInstant : Instant) : Option Int :=
-  signedWholePeriods? wholeMonthsForward?
-    first firstInstant second secondInstant
+/-- Signed completed months from the first exact instant to the second. -/
+def differenceResolvedInMonths? (profile : ConcreteProfile) (first second : Instant) : Option Int :=
+  signedWholePeriods? profile.wholeMonthsForward? first second
 
-/-- Signed completed-year count for two already resolved Berlin values. Exact instants establish order before the nonnegative candidate is qualified. -/
-def differenceResolvedInYears? (first : LegacyCalendarLabel) (firstInstant : Instant)
-    (second : LegacyCalendarLabel) (secondInstant : Instant) : Option Int :=
-  signedWholePeriods? wholeYearsForward?
-    first firstInstant second secondInstant
+/-- Signed completed years from the first exact instant to the second. -/
+def differenceResolvedInYears? (profile : ConcreteProfile) (first second : Instant) : Option Int :=
+  signedWholePeriods? profile.wholeYearsForward? first second
 
-end A12Kernel.EuropeBerlinLegacyProfile
+end A12Kernel.ModelZone.ConcreteProfile

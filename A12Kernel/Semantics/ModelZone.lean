@@ -3,14 +3,14 @@ import A12Kernel.Semantics.ConstructedDateDay
 
 /-! # Versioned model-zone capability
 
-This capsule decodes an exact instant into its local label on the Julian–Gregorian hybrid calendar and independently resolves a label back to an instant through the selected zone profile. `Today` takes the label's date at the evaluation instant and resolves that date's midnight; the two steps stay separate because the offset at midnight can differ from the offset at the current instant. The Kernel builds its clock on a default-cutover `GregorianCalendar`, so a pinned instant before the 1582 cutover reads its Julian label (2026-10-21 letter §1.2, KF576).
+This capsule decodes an exact instant into its local label on the proleptic ISO calendar and independently resolves a label back to an instant through the selected zone profile, optionally preferring one offset. `Today` takes the label's date at the evaluation instant and resolves that date's midnight; the two steps stay separate because the offset at midnight can differ from the offset at the current instant. Kernel 31.1.1 reads its clock through `java.time`, so a pinned instant before the 1582 cutover reads its proleptic label (spec/05 §2.7, §7).
 
 Stored-value decoding through `localDateTime?` keeps the positive-era proleptic coordinate and the A12 full-Date floor, because a stored Date never lies below that floor. Other kernel-legal ids are outside these two concrete profiles.
 -/
 
 namespace A12Kernel
 
-/-- A calendar label before storage restrictions. Expression arithmetic may cross the stored-Date
+/-- A proleptic calendar label before storage restrictions. Expression arithmetic may cross the stored-Date
 floor or the four-digit year boundary (calendar-expression grid, 2026-10-04). -/
 structure LegacyCalendarLabel where
   parts : DateParts
@@ -28,14 +28,15 @@ def toLocal? (value : LegacyCalendarLabel) : Option LocalDateTime := do
 
 def atOffset? (instant : Instant) (offset : Int) : Option LegacyCalendarLabel := do
   let localSecond := instant.epochMillis / 1000 + offset
-  let parts ← DateParts.LegacyHybrid.ofEpochDay? (localSecond / 86400)
+  let date ← CivilDate.ofUnixEpochDay? (localSecond / 86400)
   let second := (localSecond % 86400).toNat
   let time ← TimeOfDay.ofHms? (second / 3600) ((second % 3600) / 60) (second % 60)
-  pure { parts, time }
+  pure { parts := date.parts, time }
 
-def candidate? (value : LegacyCalendarLabel) (offset millisecond : Int) : Option Instant := do
-  let day ← DateParts.LegacyHybrid.epochDay? value.parts
-  pure { epochMillis := (day * 86400 + value.time.secondsSinceMidnight - offset) * 1000 + millisecond }
+/-- The label's wall clock in milliseconds, counted as if it were UTC; `none` when the label names no real proleptic date. -/
+def wallMillis? (value : LegacyCalendarLabel) (millisecond : Int) : Option Int := do
+  let date ← CivilDate.ofParts? value.parts
+  pure ((date.unixEpochDay * 86400 + value.time.secondsSinceMidnight) * 1000 + millisecond)
 
 /-- The same date at local midnight. -/
 def midnight (parts : DateParts) : LegacyCalendarLabel :=
@@ -65,22 +66,23 @@ def calendarOffset? : ConcreteProfile → Instant → Option Int
   | .utc, _ => some 0
   | .europeBerlin, instant => EuropeBerlinLegacyProfile.offsetSecondsAt? instant
 
-/-- Decode the hybrid-calendar wall label at one exact instant. Millisecond identity remains in the input instant. -/
+/-- Decode the proleptic wall label at one exact instant. Millisecond identity remains in the input instant. -/
 def calendarLabel? (profile : ConcreteProfile) (instant : Instant) : Option LegacyCalendarLabel := do
   LegacyCalendarLabel.atOffset? instant (← profile.calendarOffset? instant)
 
-def calendarOffsets : ConcreteProfile → List Int
-  | .utc => [0]
-  | .europeBerlin => EuropeBerlinLegacyProfile.candidateOffsets
+/-- Resolve a label with a millisecond remainder, preferring one offset as `ZonedDateTime.ofLocal` does: a gap label lands one gap later, an overlap label at the preferred offset when valid there and otherwise at its earlier instant (spec/05 §5). -/
+def resolveLabel? (profile : ConcreteProfile) (label : LegacyCalendarLabel) (millisecond : Int)
+    (preferred : Option Int) : Option Instant := do
+  let wall ← label.wallMillis? millisecond
+  match profile with
+  | .utc => pure { epochMillis := wall }
+  | .europeBerlin => EuropeBerlinLegacyProfile.resolveWall? wall preferred
 
-/-- Fresh labels require an actual matching offset; the ascending candidate order retains the
-legacy later-instant overlap choice. Calendar mutation has a separate gap-normalizing resolver. -/
-def resolveCalendarLabel? (profile : ConcreteProfile) (label : LegacyCalendarLabel) : Option Instant := do
-  let offset ← profile.calendarOffsets.find? fun offset =>
-    (label.candidate? offset 0).bind profile.calendarOffset? == some offset
-  label.candidate? offset 0
+/-- A fresh label at a whole second, with no preferred offset. -/
+def resolveCalendarLabel? (profile : ConcreteProfile) (label : LegacyCalendarLabel) : Option Instant :=
+  profile.resolveLabel? label 0 none
 
-/-- `Today` as its hybrid-calendar date and that date's resolved midnight. The date is read at the evaluation instant's offset, the midnight under its own offset. -/
+/-- `Today` as its calendar date and that date's resolved midnight. The date is read at the evaluation instant's offset, the midnight under its own offset. -/
 def todayLabel? (profile : ConcreteProfile) (instant : Instant) : Option (DateParts × Instant) := do
   let label ← profile.calendarLabel? instant
   pure (label.parts, ← profile.resolveCalendarLabel? (LegacyCalendarLabel.midnight label.parts))
@@ -94,6 +96,13 @@ def resolveLocal? (profile : ConcreteProfile) (dateTime : LocalDateTime) :
   match profile with
   | .utc => some dateTime.resolveUtc
   | .europeBerlin => EuropeBerlinLegacyProfile.resolveLocal? dateTime
+
+/-- Whether the zone attains a wall label: every label under UTC, and under Berlin a label with a valid offset, so not one inside a spring gap. Resolution is injective exactly on attained labels. -/
+def attains (profile : ConcreteProfile) (dateTime : LocalDateTime) : Bool :=
+  match profile with
+  | .utc => true
+  | .europeBerlin =>
+      !(EuropeBerlinLegacyProfile.validOffsets dateTime.resolveUtc.epochMillis).isEmpty
 
 /-- Decode the local admitted DateTime wall label at one exact instant under this concrete profile. Millisecond identity remains in the input instant; the decoded label has the kernel's whole-second component domain. -/
 def localDateTime? (profile : ConcreteProfile) (instant : Instant) :

@@ -1,75 +1,28 @@
-import A12Kernel.Proofs.BerlinLegacyCalendarArithmetic
 import A12Kernel.Semantics.DateTimeDayDifference
 
-/-! # Concrete Berlin calendar-day difference laws
+/-! # Model-zone calendar-day difference laws
 
-These laws characterize the signed partial day-difference API over the pinned versioned Berlin profile. They do not claim correspondence for another zone or calendar basis.
+These laws hold for both concrete profiles because the day count is a truncated difference of decoded wall clocks. The nearest non-law: a day count is not the elapsed-instant quotient, since 24 instant hours across an autumn overlap count 0; the conformance module witnesses it.
 -/
 
-namespace A12Kernel
+namespace A12Kernel.ModelZone.ConcreteProfile
 
-/-- An already resolved Berlin value is zero calendar days from itself without re-resolving its possibly ambiguous local label. -/
-theorem berlin_differenceResolvedInDays_self
-    (dateTime : LegacyCalendarLabel) (instant : Instant) :
-    EuropeBerlinLegacyProfile.differenceResolvedInDays?
-        dateTime instant dateTime instant =
-      some 0 := by
-  simp [EuropeBerlinLegacyProfile.differenceResolvedInDays?]
+/-- A decodable instant is zero days from itself. -/
+theorem differenceResolvedInDays_self (profile : ConcreteProfile) (instant : Instant) :
+    profile.differenceResolvedInDays? instant instant =
+      (profile.wallMillisAt? instant).map fun _ => 0 := by
+  cases wall : profile.wallMillisAt? instant <;> simp [differenceResolvedInDays?, wall]
 
-/-- Swapping two already resolved Berlin operands negates the result while preserving their exact overlap identities. -/
-theorem berlin_differenceResolvedInDays_swap
-    (first : LegacyCalendarLabel) (firstInstant : Instant)
-    (second : LegacyCalendarLabel) (secondInstant : Instant) :
-    (EuropeBerlinLegacyProfile.differenceResolvedInDays?
-      first firstInstant second secondInstant).map (-·) =
-    EuropeBerlinLegacyProfile.differenceResolvedInDays?
-      second secondInstant first firstInstant := by
-  by_cases before : firstInstant.epochMillis < secondInstant.epochMillis
-  · have notAfter : ¬secondInstant.epochMillis < firstInstant.epochMillis := by
-      omega
-    simp [EuropeBerlinLegacyProfile.differenceResolvedInDays?,
-      before, notAfter]
-  · by_cases after : secondInstant.epochMillis < firstInstant.epochMillis
-    · simp [EuropeBerlinLegacyProfile.differenceResolvedInDays?,
-        before, after, Function.comp_def]
-    · simp [EuropeBerlinLegacyProfile.differenceResolvedInDays?,
-        before, after]
+/-- Swapping the operands negates the count, because truncation toward zero is odd. -/
+theorem differenceResolvedInDays_swap (profile : ConcreteProfile) (first second : Instant) :
+    (profile.differenceResolvedInDays? first second).map (-·) =
+      profile.differenceResolvedInDays? second first := by
+  cases firstWall : profile.wallMillisAt? first <;>
+    cases secondWall : profile.wallMillisAt? second <;>
+    simp [differenceResolvedInDays?, firstWall, secondWall]
+  rename_i firstMillis secondMillis
+  rw [← Int.neg_tdiv]
+  congr 1
+  omega
 
-/-- A Berlin label is zero calendar days from itself exactly when the profile admits it. -/
-theorem berlin_differenceInDays_self (dateTime : LocalDateTime) :
-    EuropeBerlinLegacyProfile.differenceInDays? dateTime dateTime =
-      (EuropeBerlinLegacyProfile.resolveLocal? dateTime).map fun _ => 0 := by
-  cases resolved : EuropeBerlinLegacyProfile.resolveLocal? dateTime <;>
-    simp [EuropeBerlinLegacyProfile.differenceInDays?,
-      EuropeBerlinLegacyProfile.differenceResolvedInDays?, resolved]
-
-/-- Swapping two Berlin operands negates the signed calendar-day result; gap inputs remain symmetrically rejected. -/
-theorem berlin_differenceInDays_swap
-    (first second : LocalDateTime) :
-    (EuropeBerlinLegacyProfile.differenceInDays? first second).map
-        (fun days => -days) =
-      EuropeBerlinLegacyProfile.differenceInDays? second first := by
-  cases firstResolved : EuropeBerlinLegacyProfile.resolveLocal? first with
-  | none =>
-      simp [EuropeBerlinLegacyProfile.differenceInDays?, firstResolved]
-  | some firstInstant =>
-      cases secondResolved : EuropeBerlinLegacyProfile.resolveLocal? second with
-      | none =>
-          simp [EuropeBerlinLegacyProfile.differenceInDays?, firstResolved,
-            secondResolved]
-      | some secondInstant =>
-          by_cases before : firstInstant.epochMillis < secondInstant.epochMillis
-          · have notAfter : ¬secondInstant.epochMillis < firstInstant.epochMillis := by
-              omega
-            simp [EuropeBerlinLegacyProfile.differenceInDays?, firstResolved,
-              EuropeBerlinLegacyProfile.differenceResolvedInDays?,
-              secondResolved, before, notAfter]
-          · by_cases after : secondInstant.epochMillis < firstInstant.epochMillis
-            · simp [EuropeBerlinLegacyProfile.differenceInDays?, firstResolved,
-                EuropeBerlinLegacyProfile.differenceResolvedInDays?,
-                secondResolved, before, after, Function.comp_def]
-            · simp [EuropeBerlinLegacyProfile.differenceInDays?, firstResolved,
-                EuropeBerlinLegacyProfile.differenceResolvedInDays?,
-                secondResolved, before, after]
-
-end A12Kernel
+end A12Kernel.ModelZone.ConcreteProfile

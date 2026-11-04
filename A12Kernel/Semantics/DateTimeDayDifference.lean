@@ -1,92 +1,32 @@
-import A12Kernel.Semantics.BerlinLegacyCalendarArithmetic
+import A12Kernel.Semantics.ModelZone
 
-/-! # Concrete model-zone calendar-day differences
+/-! # Model-zone calendar-day differences
 
-This capsule implements the resolved `DifferenceInDays` core for UTC and the versioned Europe/Berlin legacy profile. Berlin qualifies the kernel's whole-year candidate through the distinct `Calendar.YEAR` mutation, makes the `365 × whole-years` lower-bound day landing, then counts stateful residual day landings in authored operand order.
+This capsule implements kernel 31.1.1's `DifferenceInDays` core for the concrete UTC and Europe/Berlin profiles: whole days between the two operands' model-zone wall clocks, truncated toward zero (spec/05 §2.5). Each operand is decoded from its exact instant, so a gap label that resolved one gap later counts from where it landed, and the millisecond takes part in the truncation.
 
-The field mutations and completed month/year qualification are owned by `BerlinLegacyCalendarArithmetic`. Parsing, Date-versus-DateTime admission, empty and malformed operands, calendar identity outside the concrete profiles, numeric result storage, validation polarity, and a general model-zone interface remain separate.
+Parsing, Date-versus-DateTime admission, empty and malformed operands, numeric result storage and validation polarity remain with their consumers.
 -/
 
-namespace A12Kernel.EuropeBerlinLegacyProfile
+namespace A12Kernel.ModelZone.ConcreteProfile
 
-/-- Count consecutive profile landings that do not pass the later instant. Fuel is derived from the civil-date distance; exhaustion or an unresolved landing remains explicit absence rather than collapsing to the legitimate result zero. -/
-private def countResidualLandings :
-    Nat → LegacyCalendarLabel → Instant → Instant → Option Int
-  | 0, _, _, _ => none
-  | fuel + 1, current, currentInstant, later =>
-      match calendarDayLanding? current currentInstant 1 with
-      | none => none
-      | some (next, landing) =>
-          if landing.epochMillis ≤ later.epochMillis then
-            (countResidualLandings fuel next landing later).map (1 + ·)
-          else
-            some 0
+/-- The wall clock an exact instant shows in the model zone, in milliseconds counted as if it were UTC. -/
+def wallMillisAt? (profile : ConcreteProfile) (instant : Instant) : Option Int := do
+  (← profile.calendarLabel? instant).wallMillis? (instant.epochMillis % 1000)
 
-/-- Unsigned kernel day count over ordered operands: make one `365 × whole-years` calendar jump, then count stateful residual day landings. -/
-private def forwardDifferenceInDays? (earlier : LegacyCalendarLabel)
-    (earlierInstant : Instant) (later : LegacyCalendarLabel)
-    (laterInstant : Instant) : Option Int := do
-  let years ← wholeYearsForward? earlier earlierInstant later laterInstant
-  let seedDays := years * 365
-  let (seeded, seededInstant) ←
-    calendarDayLanding? earlier earlierInstant (seedDays : Int)
-  let fuel :=
-    Int.toNat
-      ((← DateParts.LegacyHybrid.epochDay? later.parts) - (← DateParts.LegacyHybrid.epochDay? seeded.parts)) + 1
-  let residual ←
-    countResidualLandings fuel seeded seededInstant laterInstant
-  pure (seedDays + residual)
+/-- Signed whole wall-clock days from the first resolved instant to the second. `none` only when an instant decodes to no proleptic label of the profile. -/
+def differenceResolvedInDays? (profile : ConcreteProfile) (first second : Instant) : Option Int := do
+  pure (((← profile.wallMillisAt? second) - (← profile.wallMillisAt? first)).tdiv 86400000)
 
-/-- Signed stateful calendar-day count for two already resolved Berlin values. The exact instants are authoritative in overlaps; their decoded local labels drive calendar landings. -/
-def differenceResolvedInDays? (first : LegacyCalendarLabel) (firstInstant : Instant)
-    (second : LegacyCalendarLabel) (secondInstant : Instant) : Option Int :=
-  if firstInstant.epochMillis < secondInstant.epochMillis then
-    forwardDifferenceInDays? first firstInstant second secondInstant
-  else if secondInstant.epochMillis < firstInstant.epochMillis then
-    (forwardDifferenceInDays? second secondInstant first firstInstant).map (-·)
-  else
-    some 0
+/-- Resolve two fresh labels, then count wall-clock days between where they landed. -/
+def differenceInDays? (profile : ConcreteProfile) (first second : LocalDateTime) : Option Int := do
+  profile.differenceResolvedInDays? (← profile.resolveLocal? first) (← profile.resolveLocal? second)
 
-/-- Signed stateful calendar-day count after both fresh labels resolve under the pinned Berlin profile. -/
-def differenceInDays? (first second : LocalDateTime) : Option Int := do
-  let firstInstant ← resolveLocal? first
-  let secondInstant ← resolveLocal? second
-  differenceResolvedInDays? (.ofLocal first) firstInstant (.ofLocal second) secondInstant
-
-end A12Kernel.EuropeBerlinLegacyProfile
+end A12Kernel.ModelZone.ConcreteProfile
 
 namespace A12Kernel.ModelZone
 
-/-- Signed UTC calendar-day count. With no offset transitions, this is exact whole-day truncation in authored operand order. -/
-def utcDifferenceInDays (first second : LocalDateTime) : Int :=
-  (second.resolveUtc.epochMillis - first.resolveUtc.epochMillis).tdiv 86400000
-
-namespace ConcreteProfile
-
-/-- Evaluate day difference from exact instants plus their already decoded local labels. UTC needs only instant identity; Berlin preserves the local state required by calendar stepping. -/
-def differenceResolvedInDays? (profile : ConcreteProfile)
-    (first : LegacyCalendarLabel) (firstInstant : Instant)
-    (second : LegacyCalendarLabel) (secondInstant : Instant) : Option Int :=
-  match profile with
-  | .utc =>
-      some ((secondInstant.epochMillis - firstInstant.epochMillis).tdiv 86400000)
-  | .europeBerlin =>
-      EuropeBerlinLegacyProfile.differenceResolvedInDays?
-        first firstInstant second secondInstant
-
-/-- Evaluate day difference after the caller has selected one of the concrete profiles. Fresh-label or internal profile failure remains distinct from unsupported id selection. -/
-def differenceInDays? (profile : ConcreteProfile)
-    (first second : LocalDateTime) : Option Int := do
-  let firstInstant ← profile.resolveLocal? first
-  let secondInstant ← profile.resolveLocal? second
-  profile.differenceResolvedInDays? (.ofLocal first) firstInstant (.ofLocal second) secondInstant
-
-end ConcreteProfile
-
-/-- Compatibility String dispatch for the currently implemented model-zone profiles. Unselected ids return `none`; Berlin behavior is never extrapolated to them. -/
-def concreteDifferenceInDays? (zoneId : String)
-    (first second : LocalDateTime) : Option Int :=
-  (ConcreteProfile.ofId? zoneId).bind
-    (·.differenceInDays? first second)
+/-- String dispatch for the concrete model-zone profiles. Unselected ids return `none`; Berlin behavior is never extrapolated to them. -/
+def concreteDifferenceInDays? (zoneId : String) (first second : LocalDateTime) : Option Int :=
+  (ConcreteProfile.ofId? zoneId).bind (·.differenceInDays? first second)
 
 end A12Kernel.ModelZone

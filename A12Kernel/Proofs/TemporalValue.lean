@@ -31,17 +31,17 @@ theorem dateRangeValue_toResolvedDateRange_of_endpoints
     value.toResolvedDateRange? = some { start, finish } := by
   simp [DateRangeValue.toResolvedDateRange?, startResolved, finishResolved]
 
-/-- Every successfully resolved stored Date retains the exact decoded components and stored-Gregorian provenance supplied by the input boundary. -/
+/-- Every successfully resolved stored Date retains the exact decoded components supplied by the input boundary. -/
 theorem resolveStoredDate_identity
     (profile : ModelZone.ConcreteProfile) (date : CivilDate)
     (value : DateValue)
     (resolved : profile.resolveStoredDate? date = some value) :
-    value.parts = date.parts ∧ value.basis = .storedGregorian := by
+    value.parts = date.parts := by
   unfold ModelZone.ConcreteProfile.resolveStoredDate? at resolved
   change (FullDate.ofCivil? date).bind (fun full =>
     (LocalDateTime.ofDateHms? full 0 0 0).bind (fun localDateTime =>
       (profile.resolveLocal? localDateTime).bind fun instant => some {
-        instant, parts := date.parts, basis := .storedGregorian })) = some value at resolved
+        instant, parts := date.parts })) = some value at resolved
   simp only [Option.bind_eq_some_iff, Option.some.injEq] at resolved
   rcases resolved with ⟨_, _, _, _, _, _, rfl⟩
   simp
@@ -50,11 +50,11 @@ theorem resolveStoredDate_identity
 theorem flatTemporalDateTime_projects_all_consumers
     (context : FlatContext) (field : FlatTemporalField)
     (instant : Instant) (date : DateParts) (time : TimeOfDay)
-    (basis : DateCalendarBasis) (datePart : DateNumericPart)
+    (datePart : DateNumericPart)
     (timePart : TimeNumericPart)
     (family : field.components.family? = some .dateTime)
     (observed : context.observeValidationAt field.id =
-      .value (.temporal (.dateTime instant date time basis))) :
+      .value (.temporal (.dateTime instant date time))) :
     context.resolveTemporalComparisonOperand field = .value instant true ∧
       context.resolveDateNumericOperand field datePart =
         .value (datePart.extract date) .fixed ∧

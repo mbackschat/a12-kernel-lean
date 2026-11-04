@@ -141,26 +141,26 @@ theorem baseYearDateDifference_finish_boundary (year : Int) :
     DateParts.Shift.monthLandingDay, before]
   omega
 
-/-- A left formal cause wins before any empty/default or unsupported-calendar branch is considered. -/
+/-- A left formal cause wins before any empty/default branch is considered. -/
 theorem dateDifferenceOperand_unavailable_left
     (unit : DateDifferenceUnit) (cause : FormalCause)
     (right : DateDifferenceOperand) :
     DateDifferenceOperand.evaluate unit (.unavailable cause) right =
-      .ok (.unknown cause) := by
+      .unknown cause := by
   rfl
 
-/-- Empty supplies symmetric numeric zero even when the other present operand uses a calendar outside the decoded-parts core. -/
-theorem dateDifferenceOperand_empty_unsupported_zero
-    (unit : DateDifferenceUnit) :
-    DateDifferenceOperand.evaluate unit .empty .unsupportedCalendar =
-      .ok (.value 0 .both) := by
+/-- Empty supplies symmetric numeric zero without consulting the other present operand. -/
+theorem dateDifferenceOperand_empty_zero
+    (unit : DateDifferenceUnit) (parts : DateParts) :
+    DateDifferenceOperand.evaluate unit .empty (.value parts) =
+      .value 0 .both := by
   rfl
 
 /-- Two supported decoded values delegate exactly to the selected completed-period counter. -/
 theorem dateDifferenceOperand_values_delegate
     (unit : DateDifferenceUnit) (first second : DateParts) :
     DateDifferenceOperand.evaluate unit (.value first) (.value second) =
-      .ok (.value (unit.between first second) .fixed) := by
+      .value (unit.between first second) .fixed := by
   rfl
 
 /-- A left formal cause wins before day-difference empty substitution or calendar support is consulted. -/
@@ -183,8 +183,7 @@ theorem calendarDayDifferenceOperand_values_delegate
     (profile : ModelZone.ConcreteProfile)
     (first : LegacyCalendarLabel) (firstInstant : Instant)
     (second : LegacyCalendarLabel) (secondInstant : Instant) (days : Int)
-    (evaluated : profile.differenceResolvedInDays?
-      first firstInstant second secondInstant = some days) :
+    (evaluated : profile.differenceResolvedInDays? firstInstant secondInstant = some days) :
     CalendarDayDifferenceOperand.evaluate profile
         (.value first firstInstant) (.value second secondInstant) =
       .ok (.value days .fixed) := by

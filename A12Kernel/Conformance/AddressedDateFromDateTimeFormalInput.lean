@@ -118,7 +118,7 @@ private def indexedSourceCell (row : Nat) : ClassifiedCellInput := {
   raw := .parsed (.temporal (.dateTime
     { epochMillis := 1718404200000 }
     { year := 2024, month := 6, day := 15 }
-    clock .storedGregorian))
+    clock))
 }
 
 private def indexedTargetCell (row : Nat) : ClassifiedCellInput := {
@@ -127,7 +127,6 @@ private def indexedTargetCell (row : Nat) : ClassifiedCellInput := {
   raw := .parsed (.temporal (.date {
     instant := { epochMillis := 1717200000000 }
     parts := { year := 2024, month := 6, day := 1 }
-    basis := .storedGregorian
   }))
 }
 

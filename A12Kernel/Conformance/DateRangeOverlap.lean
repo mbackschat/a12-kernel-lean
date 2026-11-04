@@ -30,8 +30,7 @@ private def january : ResolvedDateRange :=
 
 private def dateValue (date : FullDate) (epochMillis : Int) : DateValue :=
   { instant := { epochMillis }
-    parts := date.civil.parts
-    basis := .storedGregorian }
+    parts := date.civil.parts }
 
 private def januaryValue : DateRangeValue :=
   { start := dateValue jan1 1704067200000
@@ -41,14 +40,13 @@ private def januaryValue : DateRangeValue :=
 example : januaryValue.toResolvedDateRange? = some january := by
   native_decide
 
-/- A resolved comparison projection is intentionally narrower than the universal value: equal civil endpoints do not erase exact instant or calendar-basis identity from the source. -/
+/- A resolved comparison projection is intentionally narrower than the universal value: equal civil endpoints do not erase exact instant identity from the source. -/
 example :
     let changedIdentity : DateRangeValue := {
       januaryValue with
       start := {
         januaryValue.start with
-        instant := { epochMillis := januaryValue.start.instant.epochMillis + 1 }
-        basis := .legacyHybrid } }
+        instant := { epochMillis := januaryValue.start.instant.epochMillis + 1 } } }
     januaryValue != changedIdentity ∧
       januaryValue.toResolvedDateRange? = changedIdentity.toResolvedDateRange? := by
   native_decide

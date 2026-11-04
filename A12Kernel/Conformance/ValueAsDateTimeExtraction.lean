@@ -46,7 +46,7 @@ private def document? (model : FlatModel)
 
 private def dateTimeRaw (instant : Instant)
     (date : DateParts) (clock : TimeOfDay) : RawCell :=
-  .parsed (.temporal (.dateTime instant date clock .storedGregorian))
+  .parsed (.temporal (.dateTime instant date clock))
 
 private def extractionError?
     (result : Except ValueAsDateTimeExtractionElabError value) :
@@ -88,11 +88,11 @@ example :
     let date : DateParts := { year := 2024, month := 10, day := 27 }
     ValueAsDateTimeTimeOperand.ofDateTimeValueObservation
         (.value (.temporal (.dateTime
-          { epochMillis := 1729989000000 } date clock .storedGregorian))) =
+          { epochMillis := 1729989000000 } date clock))) =
         some (.value clock false) ∧
       ValueAsDateTimeTimeOperand.ofDateTimeValueObservation
         (.value (.temporal (.dateTime
-          { epochMillis := 1729992600000 } date clock .storedGregorian))) =
+          { epochMillis := 1729992600000 } date clock))) =
         some (.value clock false) := by
   native_decide
 

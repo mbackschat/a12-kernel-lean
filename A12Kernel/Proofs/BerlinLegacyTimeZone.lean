@@ -1,92 +1,103 @@
 import A12Kernel.Proofs.DateTime
 import A12Kernel.Semantics.BerlinLegacyTimeZone
 
-/-! # Versioned Europe/Berlin resolver laws -/
+/-! # Versioned Europe/Berlin resolver laws
+
+The non-law beside these laws: resolution is not injective under kernel 31.1.1. A spring-forward gap label resolves one gap later, to the instant of the label after the gap, so two labels share an instant; the conformance module witnesses that pair. Injectivity survives on the labels the zone attains, those with a valid offset.
+-/
 
 namespace A12Kernel
 
-/-- Whenever standard offset is valid for a fresh label, it wins over every larger overlap candidate. -/
-theorem berlinLegacy_resolve_prefers_3600
-    (dateTime : LocalDateTime)
-    (standardValid :
-      EuropeBerlinLegacyProfile.offsetSecondsAt?
-          (EuropeBerlinLegacyProfile.candidateInstant dateTime 3600) =
-        some 3600) :
-    EuropeBerlinLegacyProfile.resolveLocal? dateTime =
-      some (EuropeBerlinLegacyProfile.candidateInstant dateTime 3600) := by
-  simp [EuropeBerlinLegacyProfile.resolveLocal?,
-    EuropeBerlinLegacyProfile.selectedOffset?,
-    EuropeBerlinLegacyProfile.candidateOffsets,
-    standardValid]
+/-- A valid offset is the offset actually in force at the instant it names. This is the whole content of the validity filter, isolated so a consumer never unfolds the candidate list. -/
+theorem berlin_validOffset_in_force
+    {wallMillis offsetSeconds : Int}
+    (valid : offsetSeconds ∈ EuropeBerlinLegacyProfile.validOffsets wallMillis) :
+    EuropeBerlinLegacyProfile.offsetSecondsAt?
+        (EuropeBerlinLegacyProfile.candidateInstant wallMillis offsetSeconds) =
+      some offsetSeconds := by
+  simp only [EuropeBerlinLegacyProfile.validOffsets, List.mem_filter, beq_iff_eq] at valid
+  exact valid.2
 
-/-- Daylight offset wins when standard offset is invalid and both daylight and double-summer candidates are considered. -/
-theorem berlinLegacy_resolve_prefers_7200
-    (dateTime : LocalDateTime)
-    (standardInvalid :
-      EuropeBerlinLegacyProfile.offsetSecondsAt?
-          (EuropeBerlinLegacyProfile.candidateInstant dateTime 3600) ≠
-        some 3600)
-    (daylightValid :
-      EuropeBerlinLegacyProfile.offsetSecondsAt?
-          (EuropeBerlinLegacyProfile.candidateInstant dateTime 7200) =
-        some 7200) :
-    EuropeBerlinLegacyProfile.resolveLocal? dateTime =
-      some (EuropeBerlinLegacyProfile.candidateInstant dateTime 7200) := by
-  simp [EuropeBerlinLegacyProfile.resolveLocal?,
-    EuropeBerlinLegacyProfile.selectedOffset?,
-    EuropeBerlinLegacyProfile.candidateOffsets,
-    standardInvalid, daylightValid]
+/-- A label with exactly one valid offset resolves at it, whatever offset is preferred. -/
+theorem berlin_resolve_single
+    {wallMillis offsetSeconds : Int} (preferred : Option Int)
+    (single : EuropeBerlinLegacyProfile.validOffsets wallMillis = [offsetSeconds]) :
+    EuropeBerlinLegacyProfile.resolveWall? wallMillis preferred =
+      some (EuropeBerlinLegacyProfile.candidateInstant wallMillis offsetSeconds) := by
+  unfold EuropeBerlinLegacyProfile.resolveWall?
+  rw [single]
 
-/-- A resolved fresh label's selected offset is the offset actually in force at the instant it
-resolved to. That is the whole content of the candidate search's predicate, isolated here so a
-consumer never unfolds the candidate list to use it. -/
-theorem berlinLegacy_resolveLocal_offset_in_force
-    {dateTime : LocalDateTime} {instant : Instant} {offsetSeconds : Int}
-    (selected :
-      EuropeBerlinLegacyProfile.selectedOffset? dateTime = some offsetSeconds)
-    (resolved :
-      EuropeBerlinLegacyProfile.candidateInstant dateTime offsetSeconds =
-        instant) :
-    EuropeBerlinLegacyProfile.offsetSecondsAt? instant = some offsetSeconds := by
-  have predicate := List.find?_some selected
-  simp only [beq_iff_eq] at predicate
-  exact resolved ▸ predicate
+/-- A preferred offset that is valid for the label decides its resolution: in an overlap this is how a shift keeps its source's offset. -/
+theorem berlin_resolve_preferred_valid
+    {wallMillis offsetSeconds : Int}
+    (valid : offsetSeconds ∈ EuropeBerlinLegacyProfile.validOffsets wallMillis) :
+    EuropeBerlinLegacyProfile.resolveWall? wallMillis (some offsetSeconds) =
+      some (EuropeBerlinLegacyProfile.candidateInstant wallMillis offsetSeconds) := by
+  unfold EuropeBerlinLegacyProfile.resolveWall?
+  rcases offsets : EuropeBerlinLegacyProfile.validOffsets wallMillis with
+    _ | ⟨first, _ | ⟨second, rest⟩⟩
+  · rw [offsets] at valid
+    exact absurd valid List.not_mem_nil
+  · rw [offsets, List.mem_singleton] at valid
+    subst valid
+    rfl
+  · rw [offsets] at valid
+    have contains : (first :: second :: rest).contains offsetSeconds = true :=
+      List.contains_iff_mem.mpr valid
+    simp only [contains, ite_true]
 
-/-- **Fresh-label resolution is injective: two distinct wall labels never resolve to one instant.**
+/-- Outside a gap, resolution lands at one of the label's valid offsets, whatever offset is preferred. -/
+theorem berlin_resolveWall_lands_valid
+    {wallMillis : Int} {preferred : Option Int} {instant : Instant}
+    (attained : EuropeBerlinLegacyProfile.validOffsets wallMillis ≠ [])
+    (resolved : EuropeBerlinLegacyProfile.resolveWall? wallMillis preferred = some instant) :
+    ∃ offsetSeconds ∈ EuropeBerlinLegacyProfile.validOffsets wallMillis,
+      EuropeBerlinLegacyProfile.candidateInstant wallMillis offsetSeconds = instant := by
+  unfold EuropeBerlinLegacyProfile.resolveWall? at resolved
+  rcases offsets : EuropeBerlinLegacyProfile.validOffsets wallMillis with
+    _ | ⟨first, _ | ⟨second, rest⟩⟩
+  · exact absurd offsets attained
+  · rw [offsets] at resolved
+    exact ⟨first, List.mem_singleton_self _, Option.some.inj resolved⟩
+  · rw [offsets] at resolved
+    have fromMax : ∀ offsetSeconds,
+        (first :: second :: rest).max? = some offsetSeconds →
+        EuropeBerlinLegacyProfile.candidateInstant wallMillis offsetSeconds = instant →
+        ∃ selected ∈ first :: second :: rest,
+          EuropeBerlinLegacyProfile.candidateInstant wallMillis selected = instant :=
+      fun offsetSeconds isMax landed => ⟨offsetSeconds, List.max?_mem isMax, landed⟩
+    cases preferred with
+    | none =>
+        simp only [Option.map_eq_some_iff] at resolved
+        obtain ⟨offsetSeconds, isMax, landed⟩ := resolved
+        exact fromMax offsetSeconds isMax landed
+    | some preferredOffset =>
+        by_cases valid : (first :: second :: rest).contains preferredOffset = true
+        · simp only [valid, ite_true, Option.some.injEq] at resolved
+          exact ⟨preferredOffset, List.contains_iff_mem.mp valid, resolved⟩
+        · simp only [valid, Bool.false_eq_true, ite_false, Option.map_eq_some_iff] at resolved
+          obtain ⟨offsetSeconds, isMax, landed⟩ := resolved
+          exact fromMax offsetSeconds isMax landed
 
-    The reason is the lemma above rather than anything about the transition table — the offset is
-    recovered from the *instant*, so both labels are forced to the same offset and then to the same
-    UTC coordinate. It therefore survives any change to the pinned history, and it holds for the
-    overlap as well: a label inside the fall-back hour resolves to exactly one of its two candidate
-    instants, and the other is reachable only by a value that *retains* an instant rather than
-    deriving one from a label.
-
-    What it does **not** say is that resolution is total. A spring-forward gap label matches no
-    candidate and resolves to `none`, so the injection is partial and a gap label has no instant to
-    collide with. -/
-theorem berlinLegacy_resolveLocal_injective
-    {left right : LocalDateTime} {instant : Instant}
-    (leftResolved : EuropeBerlinLegacyProfile.resolveLocal? left = some instant)
-    (rightResolved :
-      EuropeBerlinLegacyProfile.resolveLocal? right = some instant) :
+/-- Two attained wall clocks that resolve to one instant are equal: the instant fixes the offset in force, and with it the wall clock. A gap label is excluded because it lands at the instant of a different label. -/
+theorem berlin_resolveWall_injective_attained
+    {left right : Int} {leftPreferred rightPreferred : Option Int} {instant : Instant}
+    (leftAttained : EuropeBerlinLegacyProfile.validOffsets left ≠ [])
+    (rightAttained : EuropeBerlinLegacyProfile.validOffsets right ≠ [])
+    (leftResolved : EuropeBerlinLegacyProfile.resolveWall? left leftPreferred = some instant)
+    (rightResolved : EuropeBerlinLegacyProfile.resolveWall? right rightPreferred = some instant) :
     left = right := by
-  simp only [EuropeBerlinLegacyProfile.resolveLocal?, Option.map_eq_some_iff]
-    at leftResolved rightResolved
-  obtain ⟨leftOffset, leftSelected, leftInstant⟩ := leftResolved
-  obtain ⟨rightOffset, rightSelected, rightInstant⟩ := rightResolved
-  have leftForce :=
-    berlinLegacy_resolveLocal_offset_in_force leftSelected leftInstant
-  have rightForce :=
-    berlinLegacy_resolveLocal_offset_in_force rightSelected rightInstant
-  have sameOffset : leftOffset = rightOffset := by
-    rw [leftForce] at rightForce
-    exact Option.some.injEq _ _ ▸ rightForce
-  subst sameOffset
-  have millis : left.resolveUtc.epochMillis = right.resolveUtc.epochMillis := by
-    have candidates := leftInstant.trans rightInstant.symm
-    simp only [EuropeBerlinLegacyProfile.candidateInstant, Instant.mk.injEq]
-      at candidates
-    omega
-  exact localDateTime_resolveUtc_injective _ _ (instant_eq_of_epochMillis millis)
+  obtain ⟨leftOffset, leftValid, leftLanded⟩ :=
+    berlin_resolveWall_lands_valid leftAttained leftResolved
+  obtain ⟨rightOffset, rightValid, rightLanded⟩ :=
+    berlin_resolveWall_lands_valid rightAttained rightResolved
+  have leftForce := berlin_validOffset_in_force leftValid
+  have rightForce := berlin_validOffset_in_force rightValid
+  rw [leftLanded] at leftForce
+  rw [rightLanded, leftForce, Option.some.injEq] at rightForce
+  subst rightForce
+  have candidates := leftLanded.trans rightLanded.symm
+  simp only [EuropeBerlinLegacyProfile.candidateInstant, Instant.mk.injEq] at candidates
+  omega
 
 end A12Kernel

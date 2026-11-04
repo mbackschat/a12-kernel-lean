@@ -1,5 +1,6 @@
 import A12Kernel.Semantics.ScalarTemporalValue
-import A12Kernel.Semantics.ConstructedDateDifference
+import A12Kernel.Semantics.BerlinLegacyCalendarArithmetic
+import A12Kernel.Semantics.DateDifference
 
 namespace A12Kernel
 
@@ -51,24 +52,9 @@ def scalarTemporalDifference? (profile : ModelZone.ConcreteProfile) (unit : Temp
   | .hours => pure (first.difference .hours second)
   | .minutes => pure (first.difference .minutes second)
   | .seconds => pure (first.difference .seconds second)
-  | .days =>
-      match profile with
-      | .utc => pure ((second.epochMillis - first.epochMillis).tdiv 86400000)
-      | .europeBerlin =>
-          let firstLabel ← profile.calendarLabel? first
-          let secondLabel ← profile.calendarLabel? second
-          profile.differenceResolvedInDays? firstLabel first secondLabel second
-  | .months | .years =>
-      match profile with
-      | .utc =>
-          let unit : DateDifferenceUnit := if unit == .months then .months else .years
-          unit.betweenLegacy? (← profile.calendarLabel? first).parts (← profile.calendarLabel? second).parts
-      | .europeBerlin =>
-          let firstLabel ← profile.calendarLabel? first
-          let secondLabel ← profile.calendarLabel? second
-          if unit == .months then
-            EuropeBerlinLegacyProfile.differenceResolvedInMonths? firstLabel first secondLabel second
-          else EuropeBerlinLegacyProfile.differenceResolvedInYears? firstLabel first secondLabel second
+  | .days => profile.differenceResolvedInDays? first second
+  | .months => profile.differenceResolvedInMonths? first second
+  | .years => profile.differenceResolvedInYears? first second
 
 /-- Operand evaluation precedes this joint observation. Missing payloads contribute zero, while a
 present payload with missing provenance retains its computed difference (spec/05 §2). -/

@@ -20,9 +20,8 @@ classifier measured for its own two causes; the interaction of a bad clock with 
 itself measured, so this order is inherited rather than separately established. The optional pre-1900
 check cannot arise here, because the policy gate already refuses it on a DateTime declaration.
 
-The date half's calendar reality and its `storedGregorian` provenance are the full-Date classifier's
-account, reused rather than restated: the same component parser, the same legacy-hybrid reality test,
-and the same stored basis. Wider formats, other zones, and repeatable addressing stay with their
+The date half's calendar reality is the full-Date classifier's account, reused rather than restated:
+the same component parser and the same legacy-hybrid reality test. Wider formats, other zones, and repeatable addressing stay with their
 existing owners. -/
 
 namespace A12Kernel
@@ -123,8 +122,7 @@ def DateTimeTargetFormat.classifyStoredIn (format : DateTimeTargetFormat)
                           | none => throw (.unresolvableDateTime parts clock)
                           | some instant =>
                               pure (.parsed (.temporal
-                                (.dateTime instant date.parts clock
-                                  .storedGregorian)))
+                                (.dateTime instant date.parts clock)))
         | _, _ => pure (.rejected .dateFormat)
 
 /-- Classify stored DateTime text under its certified declaration and the model's zone. Formal text

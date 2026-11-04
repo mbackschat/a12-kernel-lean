@@ -44,7 +44,7 @@ theorem fullDateComputation_field_poison
   rw [operandRead]
   rfl
 
-/-- A checked Date source transports its exact instant to the declaration-owned target; source text, decoded parts, and calendar basis cannot replace target policy. -/
+/-- A checked Date source transports its exact instant to the declaration-owned target; source text and decoded parts cannot replace target policy. -/
 theorem fullDateComputation_field_value
     (operation : CheckedFullDateComputation model)
     (world : World)

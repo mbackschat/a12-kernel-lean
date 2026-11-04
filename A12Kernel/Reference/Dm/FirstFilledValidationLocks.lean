@@ -206,9 +206,9 @@ example : run boolean "FirstFilledValue(Rows*/A Having FieldFilled(Rows/B)) == F
     run range "FirstFilledValue(Values) != [Fallback]" (some "2024-03-05/2024-04-06") none
       (some "2024-03-05/2024-04-07") = some (.fired .value) := by native_decide
 
-example : run stamp "FirstFilledValue(Values) < \"31.03.2024T02:30:00\"" (some "bad") none =
+example : run stamp "FirstFilledValue(Values) < \"29.02.1500T10:00:00\"" (some "bad") none =
       some (.fired .value) ∧
-    runOutcomes stamp "FirstFilledValue(A, B) < \"31.03.2024T02:30:00\"" none none none
+    runOutcomes stamp "FirstFilledValue(A, B) < \"29.02.1500T10:00:00\"" none none none
       [(some "2024-03-05T03:04:05", some "2024-03-05T03:04:05"),
        (some "2024-03-05T03:04:05", some "2024-03-05T03:04:05")] true =
       some [.fired .value] := by native_decide
@@ -247,7 +247,7 @@ private def localRead (unavailable : Bool) : Option Verdict := do
 
 example : localRead false = some (.fired .value) ∧ localRead true = some .unknown := by native_decide
 
-example : runOutcomes stamp "FirstFilledValue(Values) < \"31.03.2024T02:30:00\"" (some "bad") none
+example : runOutcomes stamp "FirstFilledValue(Values) < \"29.02.1500T10:00:00\"" (some "bad") none
       (partialScope := some .full) = some [.fired .value] ∧
     runOutcomes boolean "FirstFilledValue(Rows*/A Having FieldFilled(Rows/B)) == False" none none none
       [(some "false", some "true")] (partialScope := some .full) = some [] := by native_decide
@@ -405,9 +405,9 @@ private def traversalRun (prototype : FlatFieldDecl) (value : String) (width : N
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let document ← (checkDocument prepared "en_US" input.data).toOption
   let deciding := "Outer*/Inner*/V Having FieldFilled(Outer/Inner/Stamp)"
-  let failing := "Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\""
+  let failing := "Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"29.02.1500T10:00:00\""
   let source := match order with
-    | 0 => "Outer*/Inner*/V Having (FieldFilled(Outer/Inner/Stamp) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")"
+    | 0 => "Outer*/Inner*/V Having (FieldFilled(Outer/Inner/Stamp) Or [Outer/Inner/Stamp] == \"29.02.1500T10:00:00\")"
     | 1 => deciding ++ "," ++ failing
     | _ => failing ++ "," ++ deciding
   let condition := "FirstFilledValue(" ++ source ++ ") == " ++ counterpart
@@ -463,6 +463,6 @@ example : [true, false].all (fun validation =>
     traversalRun stamp "2024-03-31T01:30:00" 2 true false false validation
       (counterpart := "\"31.03.2024T01:30:00\"") == some 'T' &&
     traversalRun stamp "2024-03-31T01:30:00" 2 true false false validation
-      (counterpart := "\"31.03.2024T02:30:00\"") == some 'P') = true := by native_decide
+      (counterpart := "\"29.02.1500T10:00:00\"") == some 'P') = true := by native_decide
 
 end A12Kernel.Dm.FirstFilledValidationLocks

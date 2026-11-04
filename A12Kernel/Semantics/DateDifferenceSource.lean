@@ -43,7 +43,7 @@ inductive ResolvedDateDifferenceOperand (Field : Type := FlatTemporalField) (clo
 
 namespace ResolvedDateDifferenceOperand
 
-/-- Read the model-local hybrid-calendar day from this evaluation's clock, as required by spec/05 §7.
+/-- Read the model-local proleptic day from this evaluation's clock, as required by spec/05 §7.
 No instant is cached in the checked operand. -/
 def todayParts? (profile : ModelZone.ConcreteProfile) (world? : Option World) : Option DateParts := do
   let world ← world?

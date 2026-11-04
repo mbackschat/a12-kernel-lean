@@ -116,8 +116,8 @@ def HavingClockSource.admits (source : HavingClockSource) : TemporalNumericPart 
   | .date part => part.admittedBy false source.components
   | .time part => part.admittedBy source.components
 
-/-- Clock extraction follows the ordinary temporal source account: Today uses the resolved local hybrid-calendar date,
-while Now projects the legacy calendar label (spec/05 §7 and TemporalNumericPart.projectScalar).
+/-- Clock extraction follows the ordinary temporal source account: Today uses the resolved local proleptic date,
+while Now projects the proleptic calendar label (spec/05 §7 and TemporalNumericPart.projectScalar).
 Both decode the caller's exact clock, without caching a label or substituting zero. -/
 def HavingClockSource.numericPart? (source : HavingClockSource)
     (profile : ModelZone.ConcreteProfile) (world : Option World) (part : TemporalNumericPart) : Option Rat := do

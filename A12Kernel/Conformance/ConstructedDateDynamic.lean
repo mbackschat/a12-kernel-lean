@@ -203,7 +203,7 @@ private def berlinShiftSeparators? : Option Bool := do
           { year := 1916, month := 10, day := 1 } false),
         .ok (.value { epochMillis := -1680483600000 }
           { year := 1916, month := 10, day := 1 } false),
-        { epochMillis := -1680483600000 },
+        { epochMillis := -1680487200000 },
         .ok (.value { epochMillis := -1680573600000 }
           { year := 1916, month := 9, day := 30 } false),
         { epochMillis := -1680573600000 },
@@ -239,7 +239,7 @@ private def berlinMonthShiftSeparators? : Option Bool := do
   let ordinary ←
     berlinShift? 1916 berlinNormalSources .months 1
   pure (match forward, reverse, clampForward, clampReverse, ordinary with
-    | .ok (.value { epochMillis := -1680483600000 }
+    | .ok (.value { epochMillis := -1680487200000 }
           { year := 1916, month := 10, day := 1 } false),
         .ok (.value { epochMillis := -1680483600000 }
           { year := 1916, month := 10, day := 1 } false),
@@ -329,13 +329,13 @@ private def berlinFreshComparisonMatrix? :
     ← compareBerlinShiftWithFresh? ordinaryMonth .months 1 ordinary .equal,
     ← compareBerlinShiftWithFresh? ordinaryYear .years 1 ordinary .equal]
 
-/- Direct comparison consumes the retained shift instant and fresh-construction instant through the shared exact-instant comparator. The repeated-midnight rows lock false/true/true plus their inverse controls; ordinary midnight remains equal for every field mutation. -/
+/- Direct comparison consumes the retained shift instant and fresh-construction instant through the shared exact-instant comparator. A fresh construction takes the earlier repeated-midnight instant, so a day or month shift from a CEST source equals it while a year shift from a CET source does not (spec/05 §2.7, a12-dmkits `ConstructedDateInstantDiffTest`); the `!=` and `<` rows are their inverse controls, and ordinary midnight remains equal for every field mutation. -/
 example :
     berlinFreshComparisonMatrix? =
       some [
-        .notFired, .fired .value, .fired .value,
         .fired .value, .notFired, .notFired,
-        .fired .value, .notFired,
+        .fired .value, .notFired, .notFired,
+        .notFired, .fired .value,
         .fired .value, .fired .value, .fired .value] := by
   native_decide
 
@@ -419,12 +419,12 @@ example : berlinPreFloorConstructed? = some true := by
 example : berlinShiftSeparators? = some true := by
   native_decide
 
-/- Month mutation instead selects the later CET instant in both directions and clamps both end-of-month directions to the same leap-day target. Its compute-time policy is not the source-offset day mechanism. -/
+/- Month mutation keeps the source offset like a day shift: a CEST source lands on the earlier repeated-midnight instant and a CET source on the later one, and both end-of-month directions clamp to the same leap-day target. Only the forward row is locked by spec/05 §2.7; the backward row is derived from the same rule. Unmeasured on 31.1.1. -/
 example : berlinMonthShiftSeparators? = some true := by
   native_decide
 
-/- Year mutation also selects the later CET instant at the repeated midnight in both
-   directions. Its separate February rule promotes the non-leap 28th to the target leap
+/- Year mutation from a CET source keeps the later repeated-midnight instant in both
+   directions (spec/05 §2.7). Its separate February rule promotes the non-leap 28th to the target leap
    day; neither behavior can be inferred from day mutation. -/
 example : berlinYearShiftSeparators? = some true := by
   native_decide

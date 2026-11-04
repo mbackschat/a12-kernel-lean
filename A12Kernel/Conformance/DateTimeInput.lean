@@ -38,7 +38,7 @@ private def classify? (text : String) (zoneId : String := "UTC") :
     | .ok .presentEmpty => .presentEmpty
     | .ok .empty => .presentEmpty
     | .ok (.rejected cause) => .rejected cause
-    | .ok (.parsed (.temporal (.dateTime _ date clock _))) =>
+    | .ok (.parsed (.temporal (.dateTime _ date clock))) =>
         .admitted date.year date.month date.day
           clock.hour clock.minute clock.second
     | .ok (.parsed _) => .contextError
@@ -125,8 +125,8 @@ example :
       let berlin ← (checked.classifyStoredForModel "Europe/Berlin"
         "2024-06-15T12:00:00").toOption
       match utc, berlin with
-      | .parsed (.temporal (.dateTime utcInstant _ _ _)),
-        .parsed (.temporal (.dateTime berlinInstant _ _ _)) =>
+      | .parsed (.temporal (.dateTime utcInstant _ _)),
+        .parsed (.temporal (.dateTime berlinInstant _ _)) =>
           pure (utcInstant.epochMillis - berlinInstant.epochMillis)
       | _, _ => none) = some 7200000 := by
   native_decide

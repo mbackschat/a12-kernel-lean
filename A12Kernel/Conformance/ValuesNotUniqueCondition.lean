@@ -41,8 +41,7 @@ private def document? : Option (CheckedDocument model) := do
   let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
     builtinStringPatternCompiler model).toOption
   let date : RawCell := .parsed (.temporal (.date {
-    instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 }
-    basis := .storedGregorian }))
+    instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 } }))
   (checkDocument prepared "en_US" {
     instantiatedRows := []
     cells := [

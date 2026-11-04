@@ -4,8 +4,9 @@ import A12Kernel.Reference.Dm.EntryFrameFixture
 
 /-! # A computation call's formal-error channel and the reached temporal failure, through the reader
 
-A Number target summing two temporal extractions reads left to right: an unresolvable model-zone gap
-literal reached first ends the fold as a value failure and reports at the target, while a formally
+A Number target summing two temporal extractions reads left to right: a date-time label with no instant
+under the model zone (the Julian leap day under Europe/Berlin, [spec/05 §5](../../../spec/05-dates-and-time.md))
+reached first ends the fold as a value failure and reports at the target, while a formally
 invalid operand reached first poisons it silently. The channel beside the outcomes carries each
 selected operand's code and the reached failure; an unrecognized Enumeration token draws the String
 pattern class. Kernel oracle: the effects batch of the
@@ -31,7 +32,7 @@ private def computation (name target operation : String) (precondition : Option 
     ("computedFieldRelPath", Json.str s!"../{target}"), ("computationAlternatives", Json.arr #[alternative]),
     ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", "m")]])])]
 
-private def gap : String := "HoursFromTime(TimeFromDateTime(\"31.03.2024T02:30:00\"))"
+private def gap : String := "HoursFromTime(TimeFromDateTime(\"29.02.1500T10:00:00\"))"
 
 private def modelJson : Json :=
   let form := [field "Clock" (Json.mkObj [("type", "TimeType"), ("TimeType", Json.mkObj [("format", "HH:mm:ss")])]),
@@ -61,13 +62,13 @@ private def run (clock kind : String) : Option (List ComputedOutcome × List Com
 private def cleared (targets : List String) : List ComputedOutcome :=
   targets.map ({ pointer := s!"Form/{·}", outcome := "cleared" })
 
-/-- Both targets clear, but only the one whose gap is reached before the invalid `Clock` reports; the
+/-- Both targets clear, but only the one whose no-instant label is reached before the invalid `Clock` reports; the
 invalid operand and token report at their own cells. -/
 example : (run "bad" "Z" == some (cleared ["Left", "Right", "Hit"],
     [{ pointer := "Form/Clock", code := "datumFormatFalsch" }, { pointer := "Form/Kind", code := "stringFalschesMuster" },
       { pointer := "Form/Left", code := "berechnungsWertFehler" }])) = true := by native_decide
 
-/-- A valid `Clock` lets both orders reach the gap, and a computed instance carries no message. -/
+/-- A valid `Clock` lets both orders reach the label, and a computed instance carries no message. -/
 example : (run "10:00:00" "A" == some (cleared ["Left", "Right"] ++ [{ pointer := "Form/Hit", outcome := "value 1" }],
     [{ pointer := "Form/Left", code := "berechnungsWertFehler" },
       { pointer := "Form/Right", code := "berechnungsWertFehler" }])) = true := by native_decide

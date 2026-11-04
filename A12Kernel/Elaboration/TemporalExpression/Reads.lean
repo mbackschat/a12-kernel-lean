@@ -70,7 +70,7 @@ def resolvedScalarDate (profile : ModelZone.ConcreteProfile) (date : FullDate) :
     Option DateValue := do
   let instant ← profile.resolveLocal? {
     date, time := { hour := 0, minute := 0, second := 0, valid := by decide } }
-  pure { instant, parts := date.civil.parts, basis := .storedGregorian }
+  pure { instant, parts := date.civil.parts }
 
 def readScalarValueAsDate (phase : Phase) (source : CheckedZonedValueAsDateSource model)
     (cell : CheckedCell) (stored : Option String) :

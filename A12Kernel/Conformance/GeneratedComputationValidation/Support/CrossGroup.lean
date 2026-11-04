@@ -44,8 +44,7 @@ def crossGroupDatePartOutcome (target : Rat) : Option FlatRuleOutcome := do
       if field = crossGroupDate.id then
         .parsed (.temporal (.date {
           instant := { epochMillis := 1719292867000 }
-          parts := { year := 2024, month := 6, day := 25 }
-          basis := .storedGregorian }))
+          parts := { year := 2024, month := 6, day := 25 } }))
       else if field = crossGroupTarget.id then .parsed (.num target)
       else .empty }
   evalValidationRule? crossGroupModel rule raw
@@ -64,8 +63,7 @@ def crossGroupDayDifferenceOutcome
       if field = crossGroupDate.id then
         .parsed (.temporal (.date {
           instant
-          parts := { year := 2024, month := 1, day := 2 }
-          basis := .storedGregorian }))
+          parts := { year := 2024, month := 1, day := 2 } }))
       else if field = crossGroupTarget.id then .parsed (.num target)
       else .empty }
   evalValidationRule? crossGroupModel rule raw
@@ -80,8 +78,7 @@ def crossGroupNowDifferenceVerdict
       if field = crossGroupDateTime.id then
         .parsed (.temporal (.dateTime { epochMillis := 0 }
           { year := 1970, month := 1, day := 1 }
-          ((TimeOfDay.ofHms? 0 0 0).get (by native_decide))
-          .storedGregorian))
+          ((TimeOfDay.ofHms? 0 0 0).get (by native_decide))))
       else if field = crossGroupTarget.id then .parsed (.num target)
       else .empty }
   pure (comparison.evalFull

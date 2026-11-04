@@ -208,9 +208,11 @@ example : compute "Valid(Date(D, MonthFromDate(Now), YearFromDate(Now)))" [[("D"
     compute "FieldFilled(D) And Valid(Date(D, M, Y))" [[("Y", "bad")]] =
       some ["cleared", "value 1"] := by native_decide
 
-example : compute "Valid(Date(D, M, Y))" [[("D", "29"), ("M", "2"), ("Y", "1500")]] =
+-- Locked by `ConstructedDateCalendarDiffTest`: construction is proleptic, so the Julian leap day is no
+-- date and the cutover days 5 through 14 October 1582 are ordinary ones (spec/05 §2.7).
+example : compute "Invalid(Date(D, M, Y))" [[("D", "29"), ("M", "2"), ("Y", "1500")]] =
     some ["value 1", "value 2"] ∧
-    compute "Invalid(Date(D, M, Y))" [[("D", "10"), ("M", "10"), ("Y", "1582")]] =
+    compute "Valid(Date(D, M, Y))" [[("D", "10"), ("M", "10"), ("Y", "1582")]] =
       some ["value 1", "value 2"] := by native_decide
 
 example : [false, true].all (fun repeated =>

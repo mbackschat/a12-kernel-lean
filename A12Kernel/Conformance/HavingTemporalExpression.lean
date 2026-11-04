@@ -16,7 +16,7 @@ private def required : CheckedCell := { empty with findings := [.required] }
 private def stamp (millis : Int) : CheckedCell := {
   rawPresent := true, findings := [], parsed := some
     (.temporal (.dateTime { epochMillis := millis } { year := 1970, month := 1, day := 1 }
-    { hour := 0, minute := 0, second := 0, valid := by decide } .legacyHybrid)) }
+    { hour := 0, minute := 0, second := 0, valid := by decide })) }
 private def ref (id : FieldId := 1) (origin : HavingOrigin := .inner) : HavingTemporalRef :=
   { origin, field := { id, kind := .dateTime, components := TemporalComponents.now } }
 private def source (core : TemporalExpressionOf HavingTemporalAtom HavingTemporalOperation) :
@@ -65,7 +65,7 @@ private def mixed : HavingTemporalComparison := { operator := .after, left := re
 private def dated : ResolvingCorrelationContext CorrelationRuntimeFault := { base with
   world := some { now := { epochMillis := 0 } }
   read := fun _ _ => pure { rawPresent := true, findings := [], parsed := some (.temporal (.date {
-    instant := { epochMillis := 3600000 }, parts := { year := 1970, month := 1, day := 1 }, basis := .legacyHybrid })) } }
+    instant := { epochMillis := 3600000 }, parts := { year := 1970, month := 1, day := 1 } })) } }
 example : mixed.evalValidationRead dated frame = .ok (.fired .value) ∧
     mixed.evalComputationRead dated frame = .ok .holds := by native_decide
 
@@ -91,7 +91,7 @@ private def yearless := source (.atom (.field { origin := .inner, field := {
   id := 1, kind := .date, components := { TemporalComponents.fullDate with year := false } } }))
 private def completed := { yearless with baseYear := some 2024 }
 private def storedDate : CheckedCell := { rawPresent := true, findings := [], parsed := some (.temporal (.date {
-  instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 }, basis := .legacyHybrid })) }
+  instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 } })) }
 example : completed.wellFormed yearlessModel [10] [] = true ∧
     yearless.wellFormed yearlessModel [10] [] = false ∧
     (HavingNumericAtom.temporalExpressionPart (.date .year) completed).readComputationResolving
@@ -105,10 +105,10 @@ private def rangeCell (origin : HavingOrigin) : CheckedCell := {
   rawPresent := true, findings := [], parsed := some (.dateRange (.exact {
     start := {
       instant := { epochMillis := if origin == .inner then 0 else 3600000 }
-      parts := { year := 1970, month := 1, day := 1 }, basis := .legacyHybrid }
+      parts := { year := 1970, month := 1, day := 1 } }
     finish := {
       instant := { epochMillis := if origin == .inner then 86400000 else 90000000 }
-      parts := { year := 1970, month := 1, day := 2 }, basis := .legacyHybrid } })) }
+      parts := { year := 1970, month := 1, day := 2 } } })) }
 private def rangeContext : ResolvingCorrelationContext CorrelationRuntimeFault := { base with
   read := fun env _ => pure (rangeCell (if env == frame.innerEnv then .inner else .outer)) }
 private def rangeJoined := source (.apply (.constructor .dateTime) (rangeSource).core [.apply (.constructor .timeFromDateTime) (.atom .now) []])
@@ -117,8 +117,7 @@ example : [Phase.validation, .computation].all (fun phase =>
     [HavingOrigin.inner, .outer].all fun origin => [DateRangeBound.start, .finish].all fun bound =>
       let millis := (if origin == .inner then 0 else 3600000) + (if bound == .start then 0 else 86400000)
       (rangeSource origin bound).evaluate phase rangeContext frame == .ok (.value (.date {
-        instant := { epochMillis := millis }, parts := { year := 1970, month := 1, day := if bound == .start then 1 else 2 }
-        basis := .legacyHybrid }) true)) = true ∧
+        instant := { epochMillis := millis }, parts := { year := 1970, month := 1, day := if bound == .start then 1 else 2 } }) true)) = true ∧
     ((rangeSource .outer).references.map fun reference => (reference.origin, reference.fieldId)) = [(.outer, 1)] := by native_decide
 
 example : rangeJoined.evaluate .validation { base with read := fun _ _ => pure invalid } frame = .error .worldUnavailable ∧
@@ -246,8 +245,9 @@ example : repetitionAmount.origins = [.inner, .outer] ∧
     repetitionAmount.wellFormed shiftModel [10] [] = false ∧
     (HavingNumericAtom.temporalExpressionPart (.time .second) repetitionAmount).origins = [.inner, .outer] := by native_decide
 
+-- A missing clock is the calendar fault the shifted expression's amount raises in both phases.
 private def unsupportedCalendarAmount := shifted (.atom (.dayDifference .utc
-  (.field ref) (.field ref)))
+  (.field ref) (.today .utc)))
 example : unsupportedCalendarAmount.evaluate .validation base frame = .error .calendarUnavailable ∧
     unsupportedCalendarAmount.evaluate .computation base frame = .error .calendarUnavailable := by native_decide
 

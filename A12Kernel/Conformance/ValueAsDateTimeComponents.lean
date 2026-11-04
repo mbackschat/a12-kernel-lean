@@ -248,7 +248,7 @@ example :
         numberCell 2 "30" (.parsed (.num 30)),
         temporalCell 5 "2024-06-15T08:44:45"
           (.dateTime { epochMillis := 1718441085000 }
-            sourceDate dateTimeClock .storedGregorian)]
+            sourceDate dateTimeClock)]
       construction.evaluateComponentsRaw time .validation input
         (.parsed "00.02.2024") |>.toOption
     result = some (.value expectedLocal expectedInstant false) := by
@@ -343,7 +343,7 @@ example :
         (TimeComponentPrefix.hour component) .computation input |>.toOption
     let presentSource : RawCell Value := .parsed (.temporal
       (.dateTime sourceInstant sourceLocal.date.civil.parts
-        sourceLocal.time .storedGregorian))
+        sourceLocal.time))
     evaluate shiftedHourAmount (some presentSource)
         (some (.parsed (.num 0))) =
         some (.value ((TimeOfDay.ofHms? 3 0 0).get (by native_decide))) ∧

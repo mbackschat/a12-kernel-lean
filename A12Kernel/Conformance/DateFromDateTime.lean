@@ -33,7 +33,7 @@ private def momentAt (profile : ModelZone.ConcreteProfile)
     (year : Int) (month day hour minute second : Nat) : Option TemporalValue := do
   let wall ← label year month day hour minute second
   let instant ← profile.resolveLocal? wall
-  pure (.dateTime instant wall.date.civil.parts wall.time .storedGregorian)
+  pure (.dateTime instant wall.date.civil.parts wall.time)
 
 /-- The extracted date's components, which is what a comparison against a Date field reads. -/
 private def extractedParts? (profile : ModelZone.ConcreteProfile)
@@ -55,14 +55,6 @@ example :
 same date under the UTC profile, where no conversion could shift it either way. -/
 example :
     extractedParts? .utc (momentAt .utc 2024 6 15 0 30 0) = some (2024, 6, 15) := by
-  native_decide
-
-/- The time is dropped rather than retained, and the calendar provenance travels with the date. -/
-example :
-    (do
-      let moment ← momentAt berlin 2024 6 15 13 45 30
-      let extracted ← dateFromDateTime? berlin moment
-      pure extracted.basis) = some .storedGregorian := by
   native_decide
 
 /- **Internal, not measured.** The extracted Date's own instant is that date's *midnight* in the model
@@ -92,7 +84,7 @@ for a forged payload, since a checked DateTime cell carries a resolved instant b
 example :
     dateFromDateTime? berlin
         (.dateTime { epochMillis := 0 } { year := 1943, month := 2, day := 30 }
-          ⟨0, 0, 0, by decide⟩ .storedGregorian) = none := by
+          ⟨0, 0, 0, by decide⟩) = none := by
   native_decide
 
 /-! ## Static admission -/

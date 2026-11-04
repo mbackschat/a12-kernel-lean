@@ -6,8 +6,8 @@ namespace A12Kernel
 
 /-- A clean DateTime value retains exact instant identity before target-zone rendering. -/
 theorem dateTimeFirstFilledCellAt_value (addressed : CheckedAddressedCell) (instant : Instant)
-    (parts : DateParts) (clock : TimeOfDay) (basis : DateCalendarBasis)
-    (observed : observeCell .computation addressed.cell = .value (.temporal (.dateTime instant parts clock basis))) :
+    (parts : DateParts) (clock : TimeOfDay)
+    (observed : observeCell .computation addressed.cell = .value (.temporal (.dateTime instant parts clock))) :
     dateTimeFirstFilledCellAt addressed = .value instant := by
   simp [dateTimeFirstFilledCellAt, observed]
 

@@ -101,7 +101,7 @@ example : run [demand "A" "9" "2026-10-03"] [supply "A" "2"]
     some [("Staffing/Supply/Choice", "value 7")] := by native_decide
 
 -- These guard compositions are internal controls; the captured joined-operation matrix lives at
--- docs/sources/computation-scheduling-probes.md#src-parallel-numeric-operations.
+-- docs/sources/key-join-and-parallel-probes.md#src-parallel-numeric-operations.
 example : [
     ("Sum", "124", "125"), ("MinValue", "1", "2"),
     ("MaxValue", "122", "123"), ("NumberOfDifferentValues", "1", "2")].all

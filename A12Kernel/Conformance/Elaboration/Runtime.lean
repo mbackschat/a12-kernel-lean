@@ -28,11 +28,10 @@ private def temporalValue (kind : TemporalKind) (millis : Int) : Value :=
   match kind with
   | .date =>
       .temporal (.date {
-        instant, parts := temporalDateParts, basis := .storedGregorian })
+        instant, parts := temporalDateParts })
   | .time => .temporal (.time instant temporalClock)
   | .dateTime =>
-      .temporal (.dateTime instant temporalDateParts temporalClock
-        .storedGregorian)
+      .temporal (.dateTime instant temporalDateParts temporalClock)
 
 private def temporalRaw (kind : TemporalKind) : RawFlatContext where
   read id :=
@@ -274,8 +273,7 @@ private def crossKindRaw (hour day : Nat) : RawFlatContext where
       | none => .empty
     let date (day : Nat) : RawCell :=
       .parsed (.temporal (.date { instant := { epochMillis := day * 86400000 }
-                                  parts := { year := 2024, month := 3, day }
-                                  basis := .storedGregorian }))
+                                  parts := { year := 2024, month := 3, day } }))
     if id = 10 then clock 11
     else if id = 91 ∨ id = 92 then clock hour
     else if id = 8 then date 5

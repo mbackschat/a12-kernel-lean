@@ -2,11 +2,11 @@ import A12Kernel.Semantics.ConstructedDateShift
 import A12Kernel.Semantics.DateConstructionNumeric
 import A12Kernel.Semantics.CivilDateCoordinate
 
-/-! # Constructed-Date legacy-hybrid day coordinate
+/-! # Hybrid-calendar day coordinate
 
-This capsule supplies one bounded whole-day coordinate for the default October 1582 legacy-calendar cutover. Gregorian labels from 1582-10-15 onward reuse the existing civil coordinate; earlier labels use a four-year Julian cycle aligned so 1582-10-04 immediately precedes 1582-10-15. Day shift and difference then reuse the existing reason-bearing construction and numeric results.
+This capsule supplies one bounded whole-day coordinate for the default October 1582 legacy-calendar cutover, which static admission of a date constant still uses (spec/05 §1). Gregorian labels from 1582-10-15 onward reuse the existing civil coordinate; earlier labels use a four-year Julian cycle aligned so 1582-10-04 immediately precedes 1582-10-15.
 
-The coordinate models the cutover profile only. It does not claim another model-zone missing date, a wall-clock instant, checked authoring, DateTime, or target storage.
+Runtime day arithmetic no longer steps on this calendar (spec/05 §2.7), so the coordinate has no shift or difference consumer here. It does not claim another model-zone missing date, checked authoring, DateTime, or target storage.
 -/
 
 namespace A12Kernel
@@ -43,25 +43,6 @@ private def cutoverGregorianEpochDay : Int :=
       cutoverGregorian.month : Int) +
     (cutoverGregorian.day : Int) - 1 - 719162
 
-/-- Locate a day within one four-year Julian cycle. -/
-private def locateYear : Nat → Int → Nat → Option (Int × Nat)
-  | 0, _, _ => none
-  | fuel + 1, year, remaining =>
-      let yearLength :=
-        if DateParts.LegacyHybrid.isJulianLeapYear year then 366 else 365
-      if remaining < yearLength then some (year, remaining)
-      else locateYear fuel (year + 1) (remaining - yearLength)
-
-/-- Locate a one-based month/day in an already selected Julian year. -/
-private def locateMonth : Nat → Int → Nat → Nat → Option (Nat × Nat)
-  | 0, _, _, _ => none
-  | fuel + 1, year, month, remaining =>
-      match DateParts.LegacyHybrid.daysInMonth? year month with
-      | none => none
-      | some monthLength =>
-          if remaining < monthLength then some (month, remaining + 1)
-          else locateMonth fuel year (month + 1) (remaining - monthLength)
-
 end DayCoordinate
 
 /-- Whole-day coordinate whose adjacent cutover labels are 1582-10-04 and 1582-10-15. -/
@@ -83,55 +64,6 @@ def midnightInstant? (parts : DateParts) : Option Instant :=
   (epochDay? parts).map fun epochDay =>
     { epochMillis := epochDay * 86400000 }
 
-/-- Invert the bounded legacy-hybrid day coordinate. Coordinates before positive-era year one fail closed. -/
-def ofEpochDay? (epochDay : Int) : Option DateParts :=
-  if DayCoordinate.cutoverGregorianEpochDay ≤ epochDay then
-    (CivilDate.ofUnixEpochDay? epochDay).map (·.parts)
-  else
-    let absoluteDay :=
-      DayCoordinate.julianAbsoluteDay DayCoordinate.cutoverJulian +
-        (epochDay - (DayCoordinate.cutoverGregorianEpochDay - 1))
-    if absoluteDay < 0 then
-      none
-    else
-      let era := absoluteDay / 1461
-      let dayInEra := Int.toNat (absoluteDay % 1461)
-      match DayCoordinate.locateYear 4 (era * 4 + 1) dayInEra with
-      | none => none
-      | some (year, dayInYear) =>
-          match DayCoordinate.locateMonth 12 year 1 dayInYear with
-          | none => none
-          | some (month, day) => some { year, month, day }
-
-/-- Shift one real default-profile legacy label by a signed number of calendar days. -/
-def addDays? (source : DateParts) (offset : Int) : Option DateParts := do
-  let sourceDay ← epochDay? source
-  ofEpochDay? (sourceDay + offset)
-
-/-- Signed calendar-day steps from the first real default-profile legacy label to the second. -/
-def differenceInDays? (first second : DateParts) : Option Int := do
-  let firstDay ← epochDay? first
-  let secondDay ← epochDay? second
-  pure (secondDay - firstDay)
-
 end DateParts.LegacyHybrid
-
-namespace DateConstructionResult
-
-/-- Apply a default-cutover legacy day shift while retaining every constructed no-value reason. -/
-def addLegacyDays? (result : DateConstructionResult) (offset : Int) :
-    Option DateConstructionResult :=
-  match result with
-  | .real parts => (DateParts.LegacyHybrid.addDays? parts offset).map .real
-  | .incomplete => some .incomplete
-  | .unreal => some .unreal
-  | .unknown => some .unknown
-
-/-- Count default-cutover legacy calendar days without collapsing unavailable, incomplete, and unreal operands. -/
-def differenceLegacyDays? (first second : DateConstructionResult) :
-    Option ConstructedDateNumericResult :=
-  differenceWith? DateParts.LegacyHybrid.differenceInDays? first second
-
-end DateConstructionResult
 
 end A12Kernel

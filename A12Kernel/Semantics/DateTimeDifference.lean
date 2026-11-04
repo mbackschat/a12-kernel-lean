@@ -57,7 +57,7 @@ namespace DateTimeDifferenceOperand
 /-- Project only an exact DateTime instant; a forged Date, Time, or non-temporal payload remains a formal kind failure. -/
 def ofObservation : CellObservation Value → DateTimeDifferenceOperand
   | .empty => .empty
-  | .value (.temporal (.dateTime instant _ _ _)) => .value instant
+  | .value (.temporal (.dateTime instant _ _)) => .value instant
   | .value _ => .unavailable .malformed
   | .unknown cause | .poison cause => .unavailable cause
 

@@ -1,9 +1,9 @@
 import A12Kernel.Semantics.DateConstruction
 import A12Kernel.Semantics.DateShift
 
-/-! # Constructed-Date legacy-hybrid month/year shifts
+/-! # Hybrid Julian–Gregorian calendar reality
 
-This capsule applies already-converted integer month and year offsets to a reason-bearing `Date(...)` result under the default October 1582 hybrid-calendar cutover. It preserves the existing construction result rather than introducing a second Date representation. The concrete profile covers the historical cutover behavior shared by UTC, GMT, and the pinned Berlin model zone; other zone-local missing dates, numeric amount evaluation, DateTime, differences, and target storage remain separate.
+Kernel 31.1.1 computes every runtime date on the proleptic ISO calendar (spec/05 §2.7), but static admission of a date constant keeps the default October 1582 hybrid calendar (spec/05 §1). This capsule owns the hybrid month lengths and reality predicate that static admission and stored-text ingestion still consult; it carries no arithmetic, because no runtime consumer steps on that calendar any more.
 -/
 
 namespace A12Kernel
@@ -46,69 +46,6 @@ def isReal (parts : DateParts) : Bool :=
         decide (0 < parts.day ∧ parts.day ≤ lastDay) && !inCutoverGap parts
     | none => false
 
-/-- Admit a nominal field-preserving landing, normalizing a missing October 1582 label ten civil labels forward as lenient `GregorianCalendar.add` does. -/
-def normalizeTarget? (year : Int) (month day : Nat) : Option DateParts :=
-  let nominal : DateParts := { year, month, day }
-  let normalized :=
-    if DateParts.LegacyHybrid.inCutoverGap nominal then
-      { nominal with day := nominal.day + 10 }
-    else
-      nominal
-  if DateParts.LegacyHybrid.isReal normalized then some normalized else none
-
-/-- Shift one legacy-hybrid label by whole months, clamping only at the target month's final day before cutover-hole normalization. -/
-def addMonths? (source : DateParts) (offset : Int) : Option DateParts :=
-  if !DateParts.LegacyHybrid.isReal source then
-    none
-  else
-    let (targetYear, targetMonth) := DateParts.shiftedYearMonth source offset
-    match daysInMonth? targetYear targetMonth with
-    | none => none
-    | some targetLastDay =>
-        normalizeTarget? targetYear targetMonth
-          (DateParts.Shift.monthLandingDay source targetLastDay)
-
-/-- Shift one legacy-hybrid label by whole years. The February-28 promotion deliberately tests Gregorian leap status on both sides, including the Julian side of the cutover. -/
-def addYears? (source : DateParts) (offset : Int) : Option DateParts :=
-  if !DateParts.LegacyHybrid.isReal source then
-    none
-  else
-    let targetYear := source.year + offset
-    match daysInMonth? targetYear source.month with
-    | none => none
-    | some targetLastDay => do
-        let landing ← normalizeTarget? targetYear source.month
-          (min source.day targetLastDay)
-        if source.month == 2 && source.day == 28 &&
-            landing.month == 2 && landing.day == 28 &&
-            !DateParts.isLeapYear source.year &&
-            DateParts.isLeapYear targetYear then
-          normalizeTarget? targetYear 2 29
-        else
-          some landing
-
 end DateParts.LegacyHybrid
-
-namespace DateConstructionResult
-
-/-- Apply a default-profile legacy month shift to a constructed Date while retaining incomplete, unreal, and formally unavailable reasons. -/
-def addLegacyMonths? (result : DateConstructionResult) (offset : Int) :
-    Option DateConstructionResult :=
-  match result with
-  | .real parts => (DateParts.LegacyHybrid.addMonths? parts offset).map .real
-  | .incomplete => some .incomplete
-  | .unreal => some .unreal
-  | .unknown => some .unknown
-
-/-- Apply a default-profile legacy year shift to a constructed Date while retaining incomplete, unreal, and formally unavailable reasons. -/
-def addLegacyYears? (result : DateConstructionResult) (offset : Int) :
-    Option DateConstructionResult :=
-  match result with
-  | .real parts => (DateParts.LegacyHybrid.addYears? parts offset).map .real
-  | .incomplete => some .incomplete
-  | .unreal => some .unreal
-  | .unknown => some .unknown
-
-end DateConstructionResult
 
 end A12Kernel

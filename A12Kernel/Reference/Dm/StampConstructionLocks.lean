@@ -69,7 +69,7 @@ example :
     observed "Time(H)" "2024-03-31" "2024-03-00" "02:30:00" "" =
       some (.inr (.value .noValue false)) ∧
     observed "DateTime(D,T)" "2024-03-31" "2024-03-00" "02:30:00" "2" =
-      some (.inr (.value .noValue true)) ∧
+      some (.inr (.value (.instant { epochMillis := 1711848600000 }) true)) ∧
     observed "DateTime(D,T)" "" "2024-03-00" "02:30:00" "2" =
       some (.inr (.value .noValue false)) ∧
     observed "DateTime(ValueAsDate(P,FirstDay),T)" "2024-03-31" "0000-00-00" "02:30:00" "2" =
@@ -100,7 +100,7 @@ example : ["Min", "Max"].all (fun op =>
 
 -- A successful absent/non-relevant first argument still reaches the failing second argument.
 example : ["", "0000-00-00"].all (fun partialText =>
-    decide (observed "DateTime(ValueAsDate(P,FirstDay),TimeFromDateTime(\"31.03.2024T02:30:00\"))"
+    decide (observed "DateTime(ValueAsDate(P,FirstDay),TimeFromDateTime(\"29.02.1500T10:00:00\"))"
       "2024-03-31" partialText "02:30:00" "2" = some (.inl .dateTimeLabelUnresolved))) := by native_decide
 
 example : (do
@@ -124,11 +124,11 @@ private def run (source date partialText clock : String) (baseYear : Option Int 
 -- The guard distinguishes clean clearing from poisoned clearing; target order exercises scheduling.
 example :
     run "DateTime(D,T)" "2024-03-31" "2024-03-00" "02:30:00" =
-      some ["Form/After:value 1", "Form/Z:cleared"] ∧
+      some ["Form/After:cleared", "Form/Z:value 2024-03-31T03:30:00"] ∧
     run "DateTime(D,T)" "" "" "bad" =
       some ["Form/After:cleared", "Form/Z:cleared"] ∧
     run "AddHours(DateTime(D,T),1)" "2024-10-27" "2024-10-00" "02:30:00" =
-      some ["Form/After:cleared", "Form/Z:value 2024-10-27T03:30:00"] ∧
+      some ["Form/After:cleared", "Form/Z:value 2024-10-27T02:30:00"] ∧
     run "DateTime(ValueAsDate(P,LastDay),T)" "2024-03-31" "2024-02-00" "12:30:00" =
       some ["Form/After:cleared", "Form/Z:value 2024-02-29T12:30:00"] := by native_decide
 

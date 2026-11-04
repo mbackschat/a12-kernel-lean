@@ -93,7 +93,7 @@ private def temporalSource : A12Kernel.HavingUniqueness := .temporal [
   .extent extent [temporalRef 1], .direct (temporalRef 2)]
 private def temporalContext (duplicate : Bool) : ResolvingCorrelationContext CorrelationRuntimeFault :=
   { (context (fun _ _ => pure { rawPresent := true, findings := [], parsed := some (.temporal (.date {
-      instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 }, basis := .storedGregorian })) })
+      instant := { epochMillis := 0 }, parts := { year := 1970, month := 1, day := 1 } })) })
       (fun _ _ _ => pure rows)) with
     storedText := fun env field => if field == 2 then none
       else some (if duplicate || env == rows[0]! then "spelling A" else "spelling B") }

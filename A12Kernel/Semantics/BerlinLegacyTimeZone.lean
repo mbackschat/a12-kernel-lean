@@ -1,15 +1,15 @@
 import A12Kernel.Semantics.DateTime
 
-/-! # Versioned Europe/Berlin legacy timezone profile
+/-! # Versioned Europe/Berlin timezone profile
 
-This module implements the exact `europe-berlin-java-util-timezone-jdk21-tzdb2026a-v1` transition profile from `spec/05` §5.1. It owns UTC offset selection and fresh local-label resolution only. Model-zone dispatch, parsing, formal-cell projection, rendering, chained wall-day landing, and public protocol exposure remain separate.
+This module implements the exact `europe-berlin-java-time-jdk21-tzdb2026a-v1` profile from `spec/05` §5.1: local mean time until 1893, the transition table through 1997, and the EU recurrence after it. It owns UTC offset selection and local-label resolution with an optional preferred offset, the rule kernel 31.1.1 applies through `java.time` (spec/05 §5): a gap label resolves one gap later, an overlap label to the preferred offset when valid and otherwise to the earlier instant. Model-zone dispatch, parsing, formal-cell projection, rendering and public protocol exposure remain separate.
 -/
 
 namespace A12Kernel.EuropeBerlinLegacyProfile
 
-/-- Stable identity of the pinned legacy timezone account. -/
+/-- Stable identity of the pinned timezone account. -/
 def version : String :=
-  "europe-berlin-java-util-timezone-jdk21-tzdb2026a-v1"
+  "europe-berlin-java-time-jdk21-tzdb2026a-v1"
 
 /-- One UTC transition label and the offset taking effect at that instant. -/
 structure Transition where
@@ -17,6 +17,8 @@ structure Transition where
   month : Nat
   day : Nat
   hour : Nat
+  minute : Nat := 0
+  second : Nat := 0
   offsetSecondsAfter : Int
   deriving Repr, DecidableEq
 
@@ -24,9 +26,14 @@ private def transition (year : Int) (month day hour : Nat)
     (offsetSecondsAfter : Int) : Transition :=
   { year, month, day, hour, offsetSecondsAfter }
 
-/-- The complete ordered legacy transition table through 1997. -/
+/-- Local mean time, `+00:53:28`, the offset before the first table entry. -/
+def localMeanTimeOffsetSeconds : Int := 3208
+
+/-- The complete ordered transition table through 1997. Its first entry ends local mean time at the local midnight beginning 1 April 1893. -/
 def transitions : List Transition :=
-  [ transition 1916 4 30 22 7200
+  [ { year := 1893, month := 3, day := 31, hour := 23, minute := 6, second := 32,
+      offsetSecondsAfter := 3600 }
+  , transition 1916 4 30 22 7200
   , transition 1916 9 30 23 3600
   , transition 1917 4 16 1 7200
   , transition 1917 9 17 1 3600
@@ -93,7 +100,8 @@ def transitions : List Transition :=
 /-- UTC epoch second of a checked transition label. -/
 def Transition.epochSecond? (item : Transition) : Option Int :=
   (CivilDate.ofYmd? item.year item.month item.day).map fun date =>
-    date.unixEpochDay * 86400 + (item.hour : Int) * 3600
+    date.unixEpochDay * 86400 + (item.hour : Int) * 3600 + (item.minute : Int) * 60 +
+      (item.second : Int)
 
 private def historicalOffsetSecondsAt? :
     List Transition → Int → Int → Option Int
@@ -128,27 +136,43 @@ def offsetSecondsAt? (instant : Instant) : Option Int :=
   | none => none
   | some utcDate =>
       if utcDate.parts.year < 1998 then
-        historicalOffsetSecondsAt? transitions epochSecond 3600
+        historicalOffsetSecondsAt? transitions epochSecond localMeanTimeOffsetSeconds
       else
         recurringOffsetSecondsAt? utcDate.parts.year epochSecond
 
-/-- Every offset appearing in the pinned profile, ordered for overlap selection. -/
-def candidateOffsets : List Int := [3600, 7200, 10800]
+/-- Every offset appearing in the pinned profile. -/
+def candidateOffsets : List Int := [localMeanTimeOffsetSeconds, 3600, 7200, 10800]
 
-/-- Instant obtained by interpreting a wall label under one candidate offset. -/
-def candidateInstant (dateTime : LocalDateTime)
-    (offsetSeconds : Int) : Instant :=
-  { epochMillis :=
-      dateTime.resolveUtc.epochMillis + (-offsetSeconds * 1000) }
+/-- Instant obtained by reading a wall clock under one candidate offset. The wall clock is given as `wallMillis`, the label's milliseconds counted as if it were UTC. -/
+def candidateInstant (wallMillis offsetSeconds : Int) : Instant :=
+  { epochMillis := wallMillis - offsetSeconds * 1000 }
 
-/-- Smallest valid offset for a fresh local label. Ascending candidates implement the legacy smaller/after-offset overlap policy. -/
-def selectedOffset? (dateTime : LocalDateTime) : Option Int :=
-  candidateOffsets.find? fun offsetSeconds =>
-    offsetSecondsAt? (candidateInstant dateTime offsetSeconds) ==
-      some offsetSeconds
+/-- The offsets under which a wall clock names an instant carrying that same offset: none in a gap, two in an overlap. -/
+def validOffsets (wallMillis : Int) : List Int :=
+  candidateOffsets.filter fun offsetSeconds =>
+    offsetSecondsAt? (candidateInstant wallMillis offsetSeconds) == some offsetSeconds
 
-/-- Resolve a fresh Berlin wall label. Gaps have no matching candidate; overlaps select the smaller offset. -/
+/-- Resolve a wall clock preferring an offset, as `java.time`'s `ZonedDateTime.ofLocal` does. A single valid offset decides. In an overlap the preferred offset decides when valid there, and otherwise the earlier instant, which is the larger offset. A gap is read at the offset in force before it, so the label lands one gap later. Every candidate in a gap lands on one side of the transition, and a gap only ever raises the offset, so the offset before it is the smallest offset the candidates land on; transitions in this profile are weeks apart, beyond the candidates' two-hour spread. -/
+def resolveWall? (wallMillis : Int) (preferred : Option Int) : Option Instant :=
+  match validOffsets wallMillis with
+  | [] =>
+      (candidateOffsets.filterMap fun offsetSeconds =>
+          offsetSecondsAt? (candidateInstant wallMillis offsetSeconds)).min?.map
+        (candidateInstant wallMillis)
+  | [offsetSeconds] => some (candidateInstant wallMillis offsetSeconds)
+  | offsets =>
+      match preferred with
+      | some offsetSeconds =>
+          if offsets.contains offsetSeconds then some (candidateInstant wallMillis offsetSeconds)
+          else offsets.max?.map (candidateInstant wallMillis)
+      | none => offsets.max?.map (candidateInstant wallMillis)
+
+/-- Resolve a wall label preferring an offset; see `resolveWall?`. -/
+def resolvePreferring? (dateTime : LocalDateTime) (preferred : Option Int) : Option Instant :=
+  resolveWall? dateTime.resolveUtc.epochMillis preferred
+
+/-- Resolve a fresh Berlin wall label: a gap one gap later, an overlap at its earlier instant. -/
 def resolveLocal? (dateTime : LocalDateTime) : Option Instant :=
-  (selectedOffset? dateTime).map (candidateInstant dateTime)
+  resolvePreferring? dateTime none
 
 end A12Kernel.EuropeBerlinLegacyProfile

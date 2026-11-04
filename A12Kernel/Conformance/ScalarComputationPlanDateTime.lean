@@ -155,19 +155,20 @@ example :
   native_decide
 
 /- Berlin's repeated hour on 2024-10-27. A computed DateTime crosses the join as its rendering read back
-in the zone, where `02:30` is the second, standard-time occurrence: a sub-day shift landing on the first
-`02:30` is read three hours after `00:30`, and a day shift landing there is shifted from the second.
-Reading the exact instants would give `2` and `03:30` instead. A source `02:30` in the document is read
-at the second occurrence too, and a spring-forward row is unaffected. -/
+in the zone, where `02:30` is the first, daylight-time occurrence: a sub-day shift landing on the second
+`02:30` is read one hour after `01:30`, not two, and a stored `02:30` is read at the first occurrence too, so
+shifting it two hours reaches `03:30`. A day shift landing on `02:30` keeps the source offset, so from
+`2024-10-26T02:30` the hours are 26. A spring-forward row is unaffected. The rows are those of a12-dmkits
+`ComputedDateTimeJoinDiffTest` (d10, d08, d07, d11, d09). -/
 example :
     values? (inputs (dt0 := some (dateTimeCell dt0Id "2024-10-27T00:30:00")) (n0 := some (numberCell n0Id 0))) =
-      some ["0", "2024-10-27T00:30:00", "2024-10-27T02:30:00", "3", "0", "-"] ∧
+      some ["0", "2024-10-27T00:30:00", "2024-10-27T02:30:00", "2", "0", "-"] ∧
     values? (inputs (dt0 := some (dateTimeCell dt0Id "2024-10-26T02:30:00")) (n0 := some (numberCell n0Id 1))) =
-      some ["1", "2024-10-27T02:30:00", "2024-10-27T04:30:00", "27", "1", "-"] ∧
+      some ["1", "2024-10-27T02:30:00", "2024-10-27T03:30:00", "26", "1", "-"] ∧
     values? (inputs (dt0 := some (dateTimeCell dt0Id "2024-10-27T01:30:00")) (n0 := some (numberCell n0Id 0))) =
-      some ["0", "2024-10-27T01:30:00", "2024-10-27T02:30:00", "2", "0", "-"] ∧
+      some ["0", "2024-10-27T01:30:00", "2024-10-27T02:30:00", "1", "0", "-"] ∧
     values? (inputs (dt0 := some (dateTimeCell dt0Id "2024-10-27T02:30:00")) (n0 := some (numberCell n0Id 0))) =
-      some ["0", "2024-10-27T02:30:00", "2024-10-27T04:30:00", "2", "0", "-"] ∧
+      some ["0", "2024-10-27T02:30:00", "2024-10-27T03:30:00", "2", "0", "-"] ∧
     values? (inputs (dt0 := some (dateTimeCell dt0Id "2024-03-31T01:30:00")) (n0 := some (numberCell n0Id 0))) =
       some ["0", "2024-03-31T01:30:00", "2024-03-31T04:30:00", "2", "0", "-"] := by
   native_decide

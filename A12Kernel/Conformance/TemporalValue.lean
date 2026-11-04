@@ -12,12 +12,11 @@ private def dateParts : DateParts :=
   { year := 2024, month := 6, day := 25 }
 
 private def dateValue : DateValue :=
-  { instant, parts := dateParts, basis := .storedGregorian }
+  { instant, parts := dateParts }
 
 private def laterDateValue : DateValue :=
   { instant := { epochMillis := 1719379267000 }
-    parts := { year := 2024, month := 6, day := 26 }
-    basis := .legacyHybrid }
+    parts := { year := 2024, month := 6, day := 26 } }
 
 private def dateRangeValue : DateRangeValue :=
   { start := dateValue, finish := laterDateValue }
@@ -29,7 +28,7 @@ private def datePayload : TemporalValue :=
   .date dateValue
 
 private def dateTimePayload : TemporalValue :=
-  .dateTime instant dateParts clock .storedGregorian
+  .dateTime instant dateParts clock
 
 private def dateField : FlatTemporalField :=
   { id := 1, kind := .date
@@ -78,22 +77,19 @@ example :
       .unknown .malformed := by
   native_decide
 
-/- The closed constructors derive kind, retain the available component halves and calendar basis, and exclude unavailable projections. -/
+/- The closed constructors derive kind, retain the available component halves, and exclude unavailable projections. -/
 example :
     (TemporalValue.date dateValue).kind = .date ∧
       (TemporalValue.time instant clock).kind = .time ∧
-      (TemporalValue.dateTime instant dateParts clock .legacyHybrid).kind =
+      (TemporalValue.dateTime instant dateParts clock).kind =
         .dateTime ∧
-      (TemporalValue.dateTime instant dateParts clock .legacyHybrid).instant =
+      (TemporalValue.dateTime instant dateParts clock).instant =
         instant ∧
-      (TemporalValue.dateTime instant dateParts clock .legacyHybrid).dateParts? =
+      (TemporalValue.dateTime instant dateParts clock).dateParts? =
         some dateParts ∧
-      (TemporalValue.dateTime instant dateParts clock .legacyHybrid).time? =
+      (TemporalValue.dateTime instant dateParts clock).time? =
         some clock ∧
-      (TemporalValue.dateTime instant dateParts clock .legacyHybrid).calendarBasis? =
-        some .legacyHybrid ∧
       (TemporalValue.time instant clock).dateParts? = none ∧
-      (TemporalValue.time instant clock).calendarBasis? = none ∧
       (TemporalValue.date dateValue).time? = none := by
   native_decide
 
@@ -101,7 +97,6 @@ example :
 example :
     (TemporalValue.date dateValue).instant = dateValue.instant ∧
       (TemporalValue.date dateValue).dateParts? = some dateValue.parts ∧
-      (TemporalValue.date dateValue).calendarBasis? = some dateValue.basis ∧
       dateRangeValue.start = dateValue ∧
       dateRangeValue.finish = laterDateValue ∧
       Value.dateRange dateRangeValue != .temporal (.date dateValue) := by

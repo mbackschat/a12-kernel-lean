@@ -481,7 +481,9 @@ example : [("UTC", "31", "12", "4", "1969", "23"),
         false "" "" "" (clock := { epochMillis := -1 }) (ruleExpected := "14") ==
           some (.fired .omission, ["value 14"])) = true := by native_decide
 
-example : runModel model "[Rows/N] > 0 And DayFromDate(Now) == 4 And YearFromDate(Now) == 1582"
+-- The clock reads the proleptic calendar: 1582-10-14T00:00Z is 14 October, where kernel 30.8.1 read the
+-- Julian 4 October (`HybridCalendarClockDiffTest` locks 12:00Z under Europe/Berlin; spec/05 §2.7).
+example : runModel model "[Rows/N] > 0 And DayFromDate(Now) == 14 And YearFromDate(Now) == 1582"
     false "" "" "" (clock := { epochMillis := -12219379200000 }) (ruleExpected := "14") ==
       some (.fired .omission, ["value 14"]) := by native_decide
 
@@ -520,11 +522,11 @@ example :
     let today := HavingNumericAtom.clockPart .today .utc (.date .day)
     let now := HavingNumericAtom.clockPart .now .utc (.date .day)
     [today, now].all fun atom =>
-      (atom.readValidation (clockContext clock) clockFrame).toOption == some (.value 4 .fixed) &&
-      (atom.readComputation (clockContext clock) clockFrame).toOption == some (.value 4) &&
+      (atom.readValidation (clockContext clock) clockFrame).toOption == some (.value 14 .fixed) &&
+      (atom.readComputation (clockContext clock) clockFrame).toOption == some (.value 14) &&
       ((atom.readValidationResolving (clockResolving clock) clockFrame).toOption.bind (·.toOption)) ==
-        some (.value 4 .fixed) &&
-      (atom.readComputationResolving (clockResolving clock) clockFrame).toOption == some (.value 4)
+        some (.value 14 .fixed) &&
+      (atom.readComputationResolving (clockResolving clock) clockFrame).toOption == some (.value 14)
     := by native_decide
 
 example : (clockAtoms.zip [1, 4, 2, 2024, 1, 4, 2, 2024, 12, 34, 56]).all (fun (atom, expected) =>
@@ -581,8 +583,8 @@ example : ["Today == Today", "Now == Now", "{Today} == {Today}", "{Now} == {Now}
     (runModel model ("[Rows/N] > 0 And " ++ condition) false "" "" "").isNone) = true := by native_decide
 
 private def gapFilter (literalFirst : Bool) : String :=
-  if literalFirst then "\"31.03.2024T02:30:00\" < [Rows/Tag]"
-  else "[Rows/Tag] > \"31.03.2024T02:30:00\""
+  if literalFirst then "\"29.02.1500T10:00:00\" < [Rows/Tag]"
+  else "[Rows/Tag] > \"29.02.1500T10:00:00\""
 
 example : [false, true].all (fun first => ["", "bad", "2024-03-05T03:04:05"].all fun value =>
     (runModel dateTimes (gapFilter first) false "" value "2024-03-05T03:04:05") ==
@@ -667,10 +669,10 @@ example : ["==", "!=", "<", "<=", ">", ">="].all (fun op =>
   native_decide
 
 example : runModel { model with timeZoneId := "Europe/Berlin" }
-    "[Rows/N] > 0 Or Now > \"31.03.2024T02:30:00\"" false "" "" "" (ruleExpected := "14") =
+    "[Rows/N] > 0 Or Now > \"29.02.1500T10:00:00\"" false "" "" "" (ruleExpected := "14") =
       some (.fired .omission, ["value 14"]) ∧
     runModel { model with timeZoneId := "Europe/Berlin" }
-    "Now > \"31.03.2024T02:30:00\" Or [Rows/N] > 0" false "" "" "" (ruleExpected := "14") =
+    "Now > \"29.02.1500T10:00:00\" Or [Rows/N] > 0" false "" "" "" (ruleExpected := "14") =
       some (.fired .value, []) := by native_decide
 
 end A12Kernel.Dm.HavingCalendarLocks

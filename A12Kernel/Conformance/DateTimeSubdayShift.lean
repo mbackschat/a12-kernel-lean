@@ -71,7 +71,7 @@ private def document? (model : FlatModel)
 
 private def dateTimeRaw (instant : Instant)
     (date : DateParts) (clock : TimeOfDay) : RawCell :=
-  .parsed (.temporal (.dateTime instant date clock .storedGregorian))
+  .parsed (.temporal (.dateTime instant date clock))
 
 private def extractionError?
     (result : Except ValueAsDateTimeExtractionElabError value) :
@@ -449,9 +449,9 @@ example :
         some .amountExpressionNotDirectNumber := by
   native_decide
 
-/- Whole sub-day evaluation retains the earlier repeated-midnight instant; the existing
-   Time extractor is only its wall-clock projection, and fresh resolution selects the
-   distinct later sibling. -/
+/- Whole sub-day evaluation retains the later repeated-midnight instant a two-hour shift
+   reaches; the existing Time extractor is only its wall-clock projection, and fresh
+   resolution selects the distinct earlier sibling (spec/05 §5). -/
 example : (do
     let sourceLocal ← LocalDateTime.ofYmdHms? 1916 9 30 23 30 0
     let sourceInstant ←
@@ -464,7 +464,7 @@ example : (do
     }]
     let checked ←
       (elaborateShiftedDateTimeSource
-        modelWithShiftAmount 1 .hours (.literal 1)).toOption
+        modelWithShiftAmount 1 .hours (.literal 2)).toOption
     let whole ← checked.evaluate .computation input |>.toOption
     let time ← checked.readTime .computation input |>.toOption
     match whole with

@@ -158,7 +158,6 @@ private def preparedFor? (candidate : FlatModel) :
 private def dateValue (epochMillis : Int) (year month day : Nat) : DateValue := {
   instant := { epochMillis }
   parts := { year, month, day }
-  basis := .storedGregorian
 }
 
 private def exactRange (startMillis finishMillis : Int)

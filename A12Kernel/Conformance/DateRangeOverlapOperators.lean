@@ -452,7 +452,6 @@ private def prepared :
 private def dateValue (epochMillis : Int) (month day : Nat) : DateValue := {
   instant := { epochMillis }
   parts := { year := 2024, month, day }
-  basis := .storedGregorian
 }
 
 private def rangeValue (startMillis finishMillis : Int)

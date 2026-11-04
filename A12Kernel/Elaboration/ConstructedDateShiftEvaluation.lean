@@ -10,9 +10,9 @@ shift consumes the inner result's exact instant directly, and a Date comparison
 projects that same retained instant into the shared temporal comparison domain, so
 repeated-hour identity is never lost through label reconstruction.
 
-UTC/GMT retain the carried legacy-hybrid date identity. Pinned Berlin decodes each
-continuation source from its exact instant before applying the unit-specific field
-mutation. A general temporal-expression tree, DateTime operands, target storage, other
+Every profile decodes each continuation source from its exact instant before applying
+the unit-specific calendar mutation, so a descendant keeps its source offset (spec/05
+§2.7). A general temporal-expression tree, DateTime operands, target storage, other
 model zones, and shift-to-difference composition remain outside.
 -/
 

@@ -78,7 +78,6 @@ private def row (coordinate : Nat) : RowAddr := { group := 10, path := [coordina
 private def dateValue (year : Int) (month day : Nat) : DateValue := {
   instant := { epochMillis := 0 }
   parts := { year, month, day }
-  basis := .storedGregorian
 }
 
 private def cell (field coordinate : Nat) (stored : String) (raw : RawCell) :
@@ -167,7 +166,6 @@ private def exactDateValue (epochMillis : Int) (year : Int)
     (month day : Nat) : DateValue := {
   instant := { epochMillis }
   parts := { year, month, day }
-  basis := .storedGregorian
 }
 
 private def expectedRange : DateRangeValue := {

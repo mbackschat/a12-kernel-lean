@@ -128,7 +128,7 @@ private def nestedRun (operator : String) (firstRows : Nat) (blankTail : Bool :=
   let first := List.replicate firstRows (row (if earlyWitness then "1" else ""))
   let second := #[row "1"] ++ if blankTail then #[Lean.Json.mkObj []] else #[]
   run operator
-    "Parents*/Rows*/N Having (FieldFilled(Parents/Rows/Gate) Or [Parents/Rows/Gate] == \"31.03.2024T02:30:00\")"
+    "Parents*/Rows*/N Having (FieldFilled(Parents/Rows/Gate) Or [Parents/Rows/Gate] == \"29.02.1500T10:00:00\")"
     [] (a := "1") (fixture := nestedModel) (validation := validation)
     (extra := [("Parents", .arr #[parent first.toArray, parent second])])
 

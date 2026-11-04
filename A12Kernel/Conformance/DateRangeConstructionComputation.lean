@@ -110,7 +110,6 @@ private def dateValue (epochMillis : Int) (year : Int)
     (month day : Nat) : DateValue := {
   instant := { epochMillis }
   parts := { year, month, day }
-  basis := .storedGregorian
 }
 
 private def startValue := dateValue 1717200000000 2024 6 1
@@ -434,7 +433,6 @@ example :
           finish := .value (.exact {
             instant := { epochMillis := 1767139200000 }
             parts := { year := 2025, month := 12, day := 31 }
-            basis := .storedGregorian
           })
         }
         outcome := .accepted expectedYearStored
@@ -455,7 +453,6 @@ example :
           finish := .value (.exact {
             instant := { epochMillis := 1709164800000 }
             parts := { year := 2024, month := 2, day := 29 }
-            basis := .storedGregorian
           })
         }
         outcome := .accepted expectedYearMonthStored
@@ -484,7 +481,6 @@ example :
           finish := .value (.exact {
             instant := { epochMillis := 1709164800000 }
             parts := { year := 2024, month := 2, day := 29 }
-            basis := .storedGregorian
           })
         }
         outcome := .accepted expectedMonthStored

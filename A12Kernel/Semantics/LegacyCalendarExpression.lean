@@ -9,42 +9,41 @@ namespace ModelZone.ConcreteProfile
 Month-only input may complete below that floor under the Base Year (fragment-limit grid, 2026-10-04). -/
 def resolveCompletedDateParts? (profile : ConcreteProfile) (parts : DateParts) : Option DateValue := do
   let instant ← profile.resolveCalendarLabel? (LegacyCalendarLabel.midnight parts)
-  pure { instant, parts, basis := .storedGregorian }
+  pure { instant, parts }
 
-private def calendarComputeTime? (profile : ConcreteProfile) (label : LegacyCalendarLabel)
-    (millisecond : Int) : Option Instant := do
-  let actualOffset (offset : Int) := (label.candidate? offset millisecond).bind profile.calendarOffset?
-  let offset ← (profile.calendarOffsets.find? fun offset => actualOffset offset == some offset).orElse fun _ =>
-    profile.calendarOffsets.reverse.find? fun offset => (actualOffset offset).any (offset < ·)
-  label.candidate? offset millisecond
+private def isFebruary28 (parts : DateParts) : Bool :=
+  parts.month == 2 && parts.day == 28
 
-/-- Mutate the calendar behind an exact instant. Day shifts retain the source offset and refit only
-within the selected date; month/year shifts use compute-time resolution and the February clock reset.
-The basis is spec/05 calendar arithmetic and the retained Berlin discontinuity matrices. -/
+/-- `ZonedDateTime.plusDays`/`plusMonths`/`plusYears`: shift the label's proleptic date, keep its clock and millisecond, and resolve preferring the source offset. A year shift is a twelve-month shift, because both keep the month and clamp the day to the target month's length. -/
+private def plusDate? (profile : ConcreteProfile) (unit : DateShiftUnit) (label : LegacyCalendarLabel)
+    (offsetSeconds millisecond amount : Int) : Option Instant := do
+  let date ← CivilDate.ofParts? label.parts
+  let target ← match unit with
+    | .days => date.addDays? amount
+    | .months => date.addMonths? amount
+    | .years => date.addMonths? (12 * amount)
+  profile.resolveLabel? { label with parts := target.parts } millisecond (some offsetSeconds)
+
+/-- Shift the calendar behind an exact instant as kernel 31.1.1 does (spec/05 §2.3). The date moves on the proleptic calendar with the clock kept, and the source offset is preferred where the target label is ambiguous. Month and year shifts add the kernel's two 28-February corrections: from a leap year's 28 February onto a common year's, the clock resets to the landing date's midnight; a year shift from a common year's 28 February onto a leap year's moves on one more day. -/
 def shiftCalendar? (profile : ConcreteProfile) (unit : DateShiftUnit)
-    (instant : Instant) (offset : Int) : Option (LegacyCalendarLabel × Instant) := do
+    (instant : Instant) (amount : Int) : Option (LegacyCalendarLabel × Instant) := do
   let source ← profile.calendarLabel? instant
-  if offset == 0 then return (source, instant)
-  let parts ← match unit with
-    | .days => DateParts.LegacyHybrid.addDays? source.parts offset
-    | .months => DateParts.LegacyHybrid.addMonths? source.parts offset
-    | .years => DateParts.LegacyHybrid.addYears? source.parts offset
-  let clearClock := unit != .days && source.parts.month == 2 && source.parts.day == 28 &&
-    DateParts.isLeapYear source.parts.year && parts.month == 2 && parts.day == 28 &&
-    !DateParts.isLeapYear parts.year
-  let time := if clearClock then ({ hour := 0, minute := 0, second := 0, valid := by decide } : TimeOfDay) else source.time
-  let millisecond := if clearClock then 0 else instant.epochMillis % 1000
-  let nominal : LegacyCalendarLabel := { parts, time }
-  let landing ← match unit with
-    | .months | .years => profile.calendarComputeTime? nominal millisecond
-    | .days => do
-        let sourceOffset ← profile.calendarOffset? instant
-        let first ← nominal.candidate? sourceOffset millisecond
-        let actualOffset ← profile.calendarOffset? first
-        if actualOffset == sourceOffset then pure first else do
-          let refitted ← nominal.candidate? actualOffset millisecond
-          let label ← profile.calendarLabel? refitted
-          pure (if label.parts == parts then refitted else first)
+  if amount == 0 then return (source, instant)
+  let sourceOffset ← profile.calendarOffset? instant
+  let millisecond := instant.epochMillis % 1000
+  let shifted ← profile.plusDate? unit source sourceOffset millisecond amount
+  let shiftedLabel ← profile.calendarLabel? shifted
+  let sourceLeap := DateParts.isLeapYear source.parts.year
+  let shiftedLeap := DateParts.isLeapYear shiftedLabel.parts.year
+  let landing ←
+    if unit == .days || !(isFebruary28 source.parts && isFebruary28 shiftedLabel.parts) then
+      pure shifted
+    else if sourceLeap && !shiftedLeap then
+      profile.resolveCalendarLabel? (LegacyCalendarLabel.midnight shiftedLabel.parts)
+    else if unit == .years && !sourceLeap && shiftedLeap then
+      profile.plusDate? .days shiftedLabel (← profile.calendarOffset? shifted) millisecond 1
+    else
+      pure shifted
   pure (← profile.calendarLabel? landing, landing)
 
 end ModelZone.ConcreteProfile

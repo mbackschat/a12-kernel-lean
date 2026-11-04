@@ -198,7 +198,6 @@ private def readComponent (cell : CheckedCell) (bound : DateRangeBound)
 private def dateValue (epochMillis : Int) (year month day : Nat) : DateValue := {
   instant := { epochMillis }
   parts := { year, month, day }
-  basis := .storedGregorian
 }
 
 private def june2024 : DateValue := dateValue 1717200000000 2024 6 1

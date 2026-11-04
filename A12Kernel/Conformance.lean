@@ -130,11 +130,9 @@ import A12Kernel.Conformance.IndexKeyShape
 import A12Kernel.Conformance.KeyedStarNumberAggregate
 import A12Kernel.Conformance.EnumerationCategoryConstant
 import A12Kernel.Conformance.ConstructedDateComponents
-import A12Kernel.Conformance.ConstructedDateDay
 import A12Kernel.Conformance.ConstructedDateDifference
 import A12Kernel.Conformance.ConstructedDateDynamic
 import A12Kernel.Conformance.ConstructedDateEvaluation
-import A12Kernel.Conformance.ConstructedDateShift
 import A12Kernel.Conformance.Correlation
 import A12Kernel.Conformance.CorrelatedHavingNesting
 import A12Kernel.Conformance.CorrelationElaboration

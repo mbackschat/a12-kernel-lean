@@ -65,7 +65,7 @@ example :
         some 3 := by
   native_decide
 
-/- A fresh ambiguous 02:30 selects the standard-side instant, 120 minutes after fresh 01:30. -/
+/- A fresh ambiguous 02:30 takes the earlier, daylight-side offset, 60 minutes after fresh 01:30 (spec/05 §5; a12-dmkits `DstTimeZoneDiffTest`). -/
 example :
     (do
       let first ← EuropeBerlinLegacyProfile.resolveLocal?
@@ -73,10 +73,10 @@ example :
       let second ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 10 27 2 30 0 (by native_decide))
       pure (first.difference .minutes second)) =
-        some 120 := by
+        some 60 := by
   native_decide
 
-/- Chained instant arithmetic reaches daylight-side 02:30, still 60 minutes before fresh standard-side 02:30. -/
+/- Chained instant arithmetic reaches daylight-side 02:30, the instant a fresh 02:30 now resolves to as well, so the difference is zero (spec/05 §5). -/
 example :
     (do
       let first ← EuropeBerlinLegacyProfile.resolveLocal?
@@ -84,7 +84,7 @@ example :
       let second ← EuropeBerlinLegacyProfile.resolveLocal?
         (dateTime 2024 10 27 2 30 0 (by native_decide))
       pure ((first.shiftHours 1).difference .minutes second)) =
-        some 60 := by
+        some 0 := by
   native_decide
 
 /- Per-operation truncation means differences cannot be added after independently rounding each segment. -/

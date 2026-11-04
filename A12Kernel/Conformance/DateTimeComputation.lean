@@ -51,7 +51,7 @@ private def inputFor? (format : String)
         -- discriminator -- every case compares a computed result against it.
         stored := DateTimeTargetFormat.yearMonthDayTime.renderText targetLocal
         raw := .parsed (.temporal (.dateTime { epochMillis := 0 }
-          targetLocal.date.civil.parts targetLocal.time .storedGregorian)) }
+          targetLocal.date.civil.parts targetLocal.time)) }
     ]
   } |>.toOption
 

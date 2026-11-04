@@ -277,12 +277,11 @@ private def temporalCell (field : FieldId) (stored : String)
 private def dateValue (year : Int) (month day : Nat) : TemporalValue :=
   .date {
     instant := { epochMillis := 0 }
-    parts := { year, month, day }
-    basis := .storedGregorian }
+    parts := { year, month, day } }
 
 private def dateTimeValue (year : Int) (month day : Nat) : TemporalValue :=
   .dateTime { epochMillis := 0 } { year, month, day }
-    ((TimeOfDay.ofHms? 12 0 0).get (by native_decide)) .storedGregorian
+    ((TimeOfDay.ofHms? 12 0 0).get (by native_decide))
 
 /- Matching field-backed extractors compose with fixed components. Empty extraction stays
    incomplete, and a formal Day retains precedence over a later formal Year. -/
@@ -494,31 +493,20 @@ private def difference? (unit : DateShiftUnit)
   else
     none
 
-/- Checked execution preserves the default-cutover identity through all three literal
-   calendar shifts. -/
-example :
-    let source := evaluate? [
-      numberCell 1 "4" (.parsed (.num 4)),
-      numberCell 2 "10" (.parsed (.num 10)),
-      numberCell 3 "1582" (.parsed (.num 1582))]
-    source.bind (·.addLegacyDays? 1) =
-        some (.resolved (.real {
-          year := 1582, month := 10, day := 15 })) ∧
-      source.bind (·.addLegacyMonths? (-1)) =
-        some (.resolved (.real {
-          year := 1582, month := 9, day := 4 })) ∧
-      source.bind (·.addLegacyYears? 1) =
-        some (.resolved (.real {
-          year := 1583, month := 10, day := 4 })) := by
-  native_decide
-
-/- A present cutover-hole label is unreal, while an empty component is incomplete. -/
+/- Construction reality is the proleptic ISO calendar (spec/05 §2.7, §3.4; a12-dmkits
+   `ConstructedDateCalendarDiffTest`): 29 February 1500 is unreal and a former cutover-hole day is real,
+   while an empty component is incomplete. -/
 example :
     evaluate? [
+        numberCell 1 "29" (.parsed (.num 29)),
+        numberCell 2 "2" (.parsed (.num 2)),
+        numberCell 3 "1500" (.parsed (.num 1500))] ==
+          some (.resolved .unreal) ∧
+      evaluate? [
         numberCell 1 "10" (.parsed (.num 10)),
         numberCell 2 "10" (.parsed (.num 10)),
         numberCell 3 "1582" (.parsed (.num 1582))] ==
-          some (.resolved .unreal) ∧
+          some (.resolved (.real { year := 1582, month := 10, day := 10 })) ∧
       evaluate? [
         numberCell 1 "4" (.parsed (.num 4)),
         numberCell 3 "1582" (.parsed (.num 1582))] ==
@@ -531,14 +519,6 @@ example :
       numberCell 1 "bad" (.rejected .malformed),
       numberCell 2 "100" (.rejected .declaredConstraint)] =
         some (.unavailable .malformed) := by
-  native_decide
-
-/- Cause-free construction UNKNOWN cannot replace the checked wrapper: two formal causes
-   remain distinguishable after the same shift. -/
-example :
-    ConstructedDateObservation.addLegacyDays? (.unavailable .malformed) 1 ≠
-      ConstructedDateObservation.addLegacyDays?
-        (.unavailable .declaredConstraint) 1 := by
   native_decide
 
 /- Checked `Valid` and `Invalid` reuse the reason-bearing polarity table while retaining
@@ -554,9 +534,9 @@ example :
         numberCell 3 "1582" (.parsed (.num 1582))]) =
           some (.inr (.fired .omission)) ∧
       verdictSnapshot (invalidVerdict? [
-        numberCell 1 "10" (.parsed (.num 10)),
-        numberCell 2 "10" (.parsed (.num 10)),
-        numberCell 3 "1582" (.parsed (.num 1582))]) =
+        numberCell 1 "29" (.parsed (.num 29)),
+        numberCell 2 "2" (.parsed (.num 2)),
+        numberCell 3 "1500" (.parsed (.num 1500))]) =
           some (.inr (.fired .value)) ∧
       verdictSnapshot (validVerdict? [
         numberCell 1 "bad" (.rejected .malformed)]) =
@@ -576,9 +556,9 @@ example :
         numberCell 3 "1582" (.parsed (.num 1582))]) =
           some (.inr (.value 0 true)) ∧
       numericPartSnapshot (numericPart? .year [
-        numberCell 1 "10" (.parsed (.num 10)),
-        numberCell 2 "10" (.parsed (.num 10)),
-        numberCell 3 "1582" (.parsed (.num 1582))]) =
+        numberCell 1 "29" (.parsed (.num 29)),
+        numberCell 2 "2" (.parsed (.num 2)),
+        numberCell 3 "1500" (.parsed (.num 1500))]) =
           some (.inr (.value 0 false)) ∧
       numericPartSnapshot (numericPart? .quarter [
         numberCell 1 "100" (.rejected .declaredConstraint)]) =
@@ -594,7 +574,7 @@ example :
   constructor <;> rfl
 
 /- Fractional and wrapped field amounts both use Java signed-32-bit narrowing before the
-   legacy calendar shift. -/
+   calendar shift. -/
 example :
     let amount :=
       (elaborateTemporalFieldShiftAmount (dateModel "UTC") 4).toOption
@@ -679,9 +659,9 @@ example :
         numberCell 7 "1582" (.parsed (.num 1582))] =
           some (.numeric (.value 0 true)) ∧
       difference? .months [
-        numberCell 1 "10" (.parsed (.num 10)),
-        numberCell 2 "10" (.parsed (.num 10)),
-        numberCell 3 "1582" (.parsed (.num 1582)),
+        numberCell 1 "29" (.parsed (.num 29)),
+        numberCell 2 "2" (.parsed (.num 2)),
+        numberCell 3 "1500" (.parsed (.num 1500)),
         numberCell 5 "20" (.parsed (.num 20)),
         numberCell 6 "10" (.parsed (.num 10)),
         numberCell 7 "1582" (.parsed (.num 1582))] =

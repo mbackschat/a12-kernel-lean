@@ -72,7 +72,7 @@ private def moment : TemporalValue :=
     (by native_decide)
   let instant := ModelZone.ConcreteProfile.europeBerlin.resolveLocal? wall |>.get
     (by native_decide)
-  .dateTime instant wall.date.civil.parts wall.time .storedGregorian
+  .dateTime instant wall.date.civil.parts wall.time
 
 private def sourceCell (stored : String) (raw : RawCell) : ClassifiedCellInput := {
   address := { field := source.id, path := [] }

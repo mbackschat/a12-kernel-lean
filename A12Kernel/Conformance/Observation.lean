@@ -50,20 +50,18 @@ private def clock : TimeOfDay :=
 
 private def temporalValue (kind : TemporalKind) (instant : Instant) : Value :=
   match kind with
-  | .date => .temporal (.date { instant, parts := dateParts, basis := .storedGregorian })
+  | .date => .temporal (.date { instant, parts := dateParts })
   | .time => .temporal (.time instant clock)
   | .dateTime =>
-      .temporal (.dateTime instant dateParts clock .storedGregorian)
+      .temporal (.dateTime instant dateParts clock)
 
 private def dateRangeValue : DateRangeValue :=
   { start := {
       instant := { epochMillis := 100000 }
-      parts := { year := 2024, month := 6, day := 25 }
-      basis := .storedGregorian }
+      parts := { year := 2024, month := 6, day := 25 } }
     finish := {
       instant := { epochMillis := 200000 }
-      parts := { year := 2024, month := 6, day := 30 }
-      basis := .storedGregorian } }
+      parts := { year := 2024, month := 6, day := 30 } } }
 
 private def requiredEmpty : CheckedCell :=
   (formalCheck optionalNumber .empty).withFinding .required

@@ -52,7 +52,7 @@ private def sourceCell (row : Nat) : ClassifiedCellInput := {
   raw := .parsed (.temporal (.dateTime
     { epochMillis := 1718404200000 }
     { year := 2024, month := 6, day := 15 }
-    ⟨0, 30, 0, by decide⟩ .storedGregorian))
+    ⟨0, 30, 0, by decide⟩))
 }
 
 private def targetCell (row : Nat) : ClassifiedCellInput := {

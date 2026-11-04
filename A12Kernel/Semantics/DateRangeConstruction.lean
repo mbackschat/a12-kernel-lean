@@ -150,8 +150,7 @@ def evaluateObservationWith (format : DateRangeEndpointFormat)
               match instant? with
               | some instant => pure (.value (.exact {
                   instant
-                  parts := date.civil.parts
-                  basis := .storedGregorian }))
+                  parts := date.civil.parts }))
               | none => throw (dateUnavailable field value)
   | .value _ => throw (valueKind field)
   | .unknown cause => pure (.unknown cause)

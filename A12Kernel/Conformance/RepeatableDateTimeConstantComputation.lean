@@ -6,7 +6,7 @@ import A12Kernel.Elaboration.CheckedDocument
 The Kernel rows behind the placement and admission cases are the [cross-group carrier](../../docs/sources/computation-placement-and-constant-probes.md#src-cross-group-repeatable-constant-target)
 and [literal-composition](../../docs/sources/temporal-constant-and-base-year-probes.md#src-temporal-constant-literal-composition) checkpoints.
 The [zone-split checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-datetime-constant-zone-split) additionally fixes
-the stored text and the model-zone gap refusal on this exact carrier.
+the stored text and the model-zone gap landing on this exact carrier.
 -/
 
 namespace A12Kernel.Conformance.RepeatableDateTimeConstantComputation
@@ -65,7 +65,7 @@ private def rows (count : Nat) : Option (CheckedDocument model) :=
 private def marchFifth : LocalDateTime :=
   (LocalDateTime.ofYmdHms? 2024 3 5 12 30 0).get (by native_decide)
 
-/-- 02:30 on the Berlin spring-forward night: a wall label naming no instant at all. -/
+/-- 02:30 on the Berlin spring-forward night: a wall label inside the gap, resolved one gap later. -/
 private def gapLabel : LocalDateTime :=
   (LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide)
 
@@ -129,20 +129,10 @@ example : (run? ["Probe"] stamp.id 4).map (fun run =>
         outcome := .noValue }], []) := by
   native_decide
 
-/- A spring-forward gap label produces no computed outcome in the model zone. -/
+/- A spring-forward gap label resolves one gap later: the constant stores `03:30` in the target row, a value and no failure (spec/05 §5, §11 §4.1; a12-dmkits `DateTimeConstantZoneSplitDiffTest`). -/
 example : (outcome? ["Probe"] stamp.id gapLabel,
     (ModelZone.ConcreteProfile.resolveLocal? .europeBerlin gapLabel).isSome) =
-    (none, false) := by
-  native_decide
-
-/- The failure is retained once per in-capacity target row in the API-named residual channel, even
-   though a constant has no operands. It is not a poison outcome or a clear. -/
-example : (run? ["Probe"] stamp.id 2 gapLabel).map (fun run =>
-    (run.outcomes,
-      run.formalErrorsInOperands.map fun finding =>
-        (finding.targetField, finding.errorCode))) =
-    some ([], [({ field := stamp.id, path := [1] }, berechnungsWertFehler),
-      ({ field := stamp.id, path := [2] }, berechnungsWertFehler)]) := by
+    (some (.accepted (stored "2024-03-31T03:30:00")), true) := by
   native_decide
 
 /- Placement is containment: the target's own group and every ancestor admit it, and only a group the

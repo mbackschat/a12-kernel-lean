@@ -371,35 +371,6 @@ theorem constructedDateObservation_consumers_preserve_unavailable
     ConstructedDateObservation.invalidVerdict,
     ConstructedDateObservation.numericPart]
 
-/-- All three default-cutover shifts preserve a checked formal cause exactly. -/
-theorem constructedDateObservation_shifts_preserve_unavailable
-    (cause : FormalCause) (offset : Int) :
-    ConstructedDateObservation.addLegacyDays? (.unavailable cause) offset =
-        some (.unavailable cause) ∧
-      ConstructedDateObservation.addLegacyMonths? (.unavailable cause) offset =
-        some (.unavailable cause) ∧
-      ConstructedDateObservation.addLegacyYears? (.unavailable cause) offset =
-        some (.unavailable cause) := by
-  simp [ConstructedDateObservation.addLegacyDays?,
-    ConstructedDateObservation.addLegacyMonths?,
-    ConstructedDateObservation.addLegacyYears?]
-
-/-- Checked shift composition keeps the existing incomplete/unreal distinction. -/
-theorem constructedDateObservation_shifts_preserve_resolved_nonvalues
-    (offset : Int) :
-    ConstructedDateObservation.addLegacyDays? (.resolved .incomplete) offset =
-        some (.resolved .incomplete) ∧
-      ConstructedDateObservation.addLegacyMonths? (.resolved .unreal) offset =
-        some (.resolved .unreal) ∧
-      ConstructedDateObservation.addLegacyYears? (.resolved .incomplete) offset =
-        some (.resolved .incomplete) := by
-  simp [ConstructedDateObservation.addLegacyDays?,
-    ConstructedDateObservation.addLegacyMonths?,
-    ConstructedDateObservation.addLegacyYears?,
-    DateConstructionResult.addLegacyDays?,
-    DateConstructionResult.addLegacyMonths?,
-    DateConstructionResult.addLegacyYears?]
-
 /-- A reached source cause decides the generated source-before-amount composition without any hypothesis about the checked amount or its document cell. -/
 theorem checkedConstructedDateShift_source_unavailable
     (checked : CheckedConstructedDateShift model)
@@ -491,17 +462,6 @@ theorem checkedConstructedDateDifference_profiles_eq
     (profile : ModelZone.ConcreteProfile) (unit : DateShiftUnit) :
     profile.admitsConstructedDateDifference unit = true := by
   cases profile <;> cases unit <;> rfl
-
-/-- Widening the checked profile gate leaves all three UTC/GMT result branches definitionally unchanged. -/
-theorem checkedConstructedDateDifference_utc_unchanged
-    (unit : DateShiftUnit) (first second : DateConstructionResult) :
-    CheckedConstructedDateDifference.differenceResolved?
-        .utc unit first second =
-      match unit with
-      | .days => first.differenceLegacyDays? second
-      | .months => first.differenceLegacy? .months second
-      | .years => first.differenceLegacy? .years second := by
-  cases unit <;> rfl
 
 /-- Computation stops at the first shifted source's formal cause (spec/05 §2). -/
 theorem checkedConstructedDateShift_difference_first_unavailable

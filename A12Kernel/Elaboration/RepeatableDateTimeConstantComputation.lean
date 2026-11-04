@@ -19,8 +19,10 @@ Admission is static and the literal is upstream of this carrier, which takes an 
 `LocalDateTime`; `spec/12` owns the lexical rule.
 
 The constant remains a wall label for storage, but the model zone still validates that label at
-runtime. A resolvable label renders directly in the target format. A spring-forward gap produces no
-computed outcome and one `berechnungsWertFehler` residual at each in-capacity target row. The static
+runtime. A resolvable label renders the label of the instant it lands on, so a spring-gap label stores
+the label one gap later. A label naming no instant produces no computed outcome and one
+`berechnungsWertFehler` residual at each in-capacity target row; this carrier's `LocalDateTime` constant
+cannot express such a label, so that branch has no witness here. The static
 model verdict has a separate host-zone dependency upstream of this carrier
 ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-datetime-constant-zone-split)).
 
@@ -122,15 +124,14 @@ structure RepeatableDateTimeConstantComputationRun where
 
 namespace CheckedRepeatableDateTimeConstantComputation
 
-/-- Resolve the literal label in the model zone. A resolvable label stores in its authored local
-components; a gap has no computed outcome and is reported separately by `execute`. -/
+/-- Resolve the literal label in the model zone and store the label of the instant it lands on, so a
+spring-gap label stores the label one gap later (spec/05 §5). A label naming no instant has no computed
+outcome and is reported separately by `execute`. -/
 def outcome? (operation : CheckedRepeatableDateTimeConstantComputation model) :
-    Option DateTimeTargetOutcome :=
-  match operation.dateTimeTarget.profile.resolveLocal? operation.constant with
-  | none => none
-  | some _ =>
-      some (.accepted
-        (DateTimeTargetFormat.render operation.dateTimeTarget.format operation.constant))
+    Option DateTimeTargetOutcome := do
+  let profile := operation.dateTimeTarget.profile
+  let landed ← profile.localDateTime? (← profile.resolveLocal? operation.constant)
+  pure (.accepted (DateTimeTargetFormat.render operation.dateTimeTarget.format landed))
 
 /-- Attempt the constant once per **in-capacity** target row, in document order, and emit only a clear
 at each over-limit row. A group with no instantiated row yields neither outcome nor residual. -/

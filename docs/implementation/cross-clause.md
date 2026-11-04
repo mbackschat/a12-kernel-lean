@@ -445,7 +445,7 @@ These stable names help when a query crosses numbered clauses. Their capability 
 <a id="cap-berlin-legacy-calendar-arithmetic"></a>
 #### Berlin legacy calendar arithmetic
 
-- `owner-and-boundary`: [`BerlinLegacyCalendarArithmetic.lean`](../../A12Kernel/Semantics/BerlinLegacyCalendarArithmetic.lean) owns source-offset day mutation, compute-time month/year mutation, and completed month/year qualification over decoded labels plus exact instants. [`DateTimeDayDifference.lean`](../../A12Kernel/Semantics/DateTimeDayDifference.lean) alone owns the stateful day-count algorithm and concrete-profile dispatch; it is not elapsed-duration division.
+- `owner-and-boundary`: [`BerlinLegacyCalendarArithmetic.lean`](../../A12Kernel/Semantics/BerlinLegacyCalendarArithmetic.lean) owns the profile-generic completed month/year counts over exact instants, each landing taken from `shiftCalendar?` in [`LegacyCalendarExpression.lean`](../../A12Kernel/Semantics/LegacyCalendarExpression.lean). [`DateTimeDayDifference.lean`](../../A12Kernel/Semantics/DateTimeDayDifference.lean) owns the wall-clock day count; it is not elapsed-duration division.
 
 <a id="cap-addressed-numeric-placement-and-execution-seam"></a>
 #### Addressed numeric placement and execution seam

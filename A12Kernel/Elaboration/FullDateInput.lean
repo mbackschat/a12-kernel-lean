@@ -83,7 +83,7 @@ def ModelZone.ConcreteProfile.resolveStoredDate? (profile : ModelZone.ConcretePr
   let full ← FullDate.ofCivil? date
   let localDateTime ← LocalDateTime.ofDateHms? full 0 0 0
   let instant ← profile.resolveLocal? localDateTime
-  pure { instant, parts := date.parts, basis := .storedGregorian }
+  pure { instant, parts := date.parts }
 
 /-- Classify stored full-Date text under its certified declaration and one bounded model-zone profile. Formal text failures are successful classifications; only unsupported or unresolvable model context returns an error. -/
 def CheckedFullDateInputField.classifyStoredForModel

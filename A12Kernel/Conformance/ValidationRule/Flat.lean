@@ -135,7 +135,7 @@ private def rawEventDateTime (millis : Int) : RawFlatContext where
   read id :=
     if id = eventDateTime.id then
       .parsed (.temporal (.dateTime { epochMillis := millis }
-        temporalDateParts temporalClock .storedGregorian))
+        temporalDateParts temporalClock))
     else .empty
 
 private def worldAt (millis : Int) : World :=

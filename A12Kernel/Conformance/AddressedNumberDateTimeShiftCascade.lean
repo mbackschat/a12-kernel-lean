@@ -88,7 +88,7 @@ private def dateTimeCell (field : FieldId) (path : List Nat)
   cell field path text (.parsed (.temporal (.dateTime
     { epochMillis := hour * 3600000 }
     { year := 1970, month := 1, day := 1 }
-    (clock hour 0 0 ⟨valid, by decide, by decide⟩) .storedGregorian)))
+    (clock hour 0 0 ⟨valid, by decide, by decide⟩))))
 
 private def prepared : PreparedFlatStringContext model
     builtinStringPatternCompiler :=

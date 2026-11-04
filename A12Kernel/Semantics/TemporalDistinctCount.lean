@@ -104,11 +104,12 @@ def temporalDistinctCountCell
   | .instant, cell =>
       match observeCell phase cell with
       -- Exact instants preserve the distinction needed by in-flight temporal consumers. For this
-      -- field-list consumer, computed cells also store text, and injective fresh-label resolution
-      -- on the concrete profiles makes label and instant identity agree
+      -- field-list consumer, computed cells also store text, and fresh-label resolution is injective
+      -- on the labels the zone attains, so label and instant identity agree except for a stored
+      -- spring-gap label, which folds with the label after the gap
       -- ([store checkpoint](../../docs/sources/computation-placement-and-constant-probes.md#src-computed-value-is-not-retained-past-its-store),
       -- `concreteProfile_resolveLocal_injective`).
-      | .value (.temporal (.dateTime instant _ _ _)) => .present instant
+      | .value (.temporal (.dateTime instant _ _)) => .present instant
       | .value _ => .unknown .malformed
       | .empty => .empty
       | .unknown cause | .poison cause => .unknown cause

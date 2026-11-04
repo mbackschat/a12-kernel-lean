@@ -566,7 +566,7 @@ example :
         key with policy := { kind := .temporal .date dateComponents } }
       "2024-06-25"
       (.parsed (.temporal (.date {
-        instant, parts := dateParts, basis := .storedGregorian }))) &&
+        instant, parts := dateParts }))) &&
     duplicatesFor {
         key with policy := { kind := .temporal .time timeComponents } }
       "05:21:07" (.parsed (.temporal (.time instant clock))) &&
@@ -575,7 +575,7 @@ example :
         policy := { kind := .temporal .dateTime dateTimeComponents } }
       "2024-06-25T05:21:07"
       (.parsed (.temporal
-        (.dateTime instant dateParts clock .storedGregorian))) &&
+        (.dateTime instant dateParts clock))) &&
     duplicatesFor {
         key with
         policy := { kind := .dateRange }
@@ -584,12 +584,10 @@ example :
       (.parsed (.dateRange (.exact {
         start := {
           instant := dateMidnight
-          parts := dateParts
-          basis := .storedGregorian }
+          parts := dateParts }
         finish := {
           instant := dateMidnight
-          parts := dateParts
-          basis := .storedGregorian } }))) = true := by
+          parts := dateParts } }))) = true := by
   native_decide
 
 /- The shared model certificate rejects a raw/no-value String index before preliminary dispatch. -/

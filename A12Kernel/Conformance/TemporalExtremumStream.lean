@@ -144,7 +144,6 @@ private def admitted? (names : List String) :
 private def dateValue (year month day : Nat) : DateValue where
   instant := { epochMillis := 0 }
   parts := { year, month, day }
-  basis := .storedGregorian
 
 private def dateCell (year month day : Nat) : RawCell :=
   .parsed (.temporal (.date (dateValue year month day)))
@@ -321,7 +320,7 @@ private def stampCell (epochMillis : Int) (year month day hour minute second : N
   match TimeOfDay.ofHms? hour minute second with
   | some clock =>
       .parsed (.temporal
-        (.dateTime { epochMillis } { year, month, day } clock .storedGregorian))
+        (.dateTime { epochMillis } { year, month, day } clock))
   | none => .empty
 
 private def stampFoldOf (names : List String) (op : TemporalExtremumOp)

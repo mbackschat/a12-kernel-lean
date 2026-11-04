@@ -169,7 +169,7 @@ private def clockObservation? :
   | .unknown cause => some (.unknown cause)
   | .poison cause => some (.poison cause)
   | .value (.temporal (.time _ clock)) => some (.value clock)
-  | .value (.temporal (.dateTime _ _ clock _)) => some (.value clock)
+  | .value (.temporal (.dateTime _ _ clock)) => some (.value clock)
   | .value _ => none
 
 private def componentOfNumericOperand (field : FieldId) :

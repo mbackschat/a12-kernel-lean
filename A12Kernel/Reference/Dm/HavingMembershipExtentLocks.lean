@@ -298,7 +298,7 @@ private def traversalRun (condition : String) (width : Nat) (early blank outside
   | _ => none
 
 private def traversalStream :=
-  "Outer*/Inner*/V Having (FieldFilled(Outer/Inner/Stamp) Or [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\")"
+  "Outer*/Inner*/V Having (FieldFilled(Outer/Inner/Stamp) Or [Outer/Inner/Stamp] == \"29.02.1500T10:00:00\")"
 
 private def traversalMatrix (width : Nat) (early blank outside validation : Bool) (kind : Nat := 0) :=
   [traversalStream ++ " In Member", "Member In " ++ traversalStream].map fun operands =>
@@ -335,7 +335,7 @@ example : [1, 2].all (fun kind => [true, false].all fun validation =>
       literalTraversalMatrix width early blank outside validation kind == signature subjects) = true := by native_decide
 
 private def decidingStream := "Outer*/Inner*/V Having FieldFilled(Outer/Inner/Stamp)"
-private def failingStream := "Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"31.03.2024T02:30:00\""
+private def failingStream := "Outer*/Inner*/V Having [Outer/Inner/Stamp] == \"29.02.1500T10:00:00\""
 
 example : [0, 1, 2].all (fun kind => [true, false].all fun validation =>
     [(operators[0]!, false, 'T'), (operators[1]!, false, 'F'), (operators[2]!, true, 'T')].all

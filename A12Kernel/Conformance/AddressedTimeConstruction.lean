@@ -211,7 +211,7 @@ private def temporalCell (field : FieldId) (path : List Nat)
   address := address field path, stored, raw := .parsed (.temporal value) }
 
 private def dateTimeValue (hour minute second : Nat) (valid : hour < 24 ∧ minute < 60 ∧ second < 60) : TemporalValue :=
-  .dateTime { epochMillis := 0 } { year := 2024, month := 6, day := 1 } (clock hour minute second valid) .storedGregorian
+  .dateTime { epochMillis := 0 } { year := 2024, month := 6, day := 1 } (clock hour minute second valid)
 
 private def timeValue (hour minute second : Nat) (valid : hour < 24 ∧ minute < 60 ∧ second < 60) : TemporalValue :=
   .time { epochMillis := 0 } (clock hour minute second valid)

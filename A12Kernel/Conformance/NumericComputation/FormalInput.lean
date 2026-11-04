@@ -155,8 +155,7 @@ private def literal (value : Rat) : AuthoredNumericExpr SurfaceNumericAtom :=
   .literal { value, authoredScale := 0 }
 
 private def unsupportedCalendar : AuthoredNumericExpr SurfaceNumericAtom :=
-  surfaceDateDifference .months
-    (.baseYear .direct) (surfaceDateOperand "Date")
+  surfaceDateDifference .months .today (surfaceDateOperand "Date")
 
 private def rowFor? (guard : (CheckedComputationCondition probeModel))
     (expression : AuthoredNumericExpr SurfaceNumericAtom) : Option Row := do
@@ -181,10 +180,10 @@ private def malformedSource : ClassifiedCellInput := {
   raw := .rejected .declaredConstraint
 }
 
-private def legacyDate : ClassifiedCellInput := {
+private def storedDate : ClassifiedCellInput := {
   address := { field := dateId, path := [] }
   stored := "2020-02-29"
-  raw := .parsed (dateValue 2020 2 29 .legacyHybrid)
+  raw := .parsed (dateValue 2020 2 29)
 }
 
 private def inputWith? (cells : List ClassifiedCellInput) :
@@ -199,15 +198,15 @@ private def failureWith? (cells : List ClassifiedCellInput) :
   let run ← run?
   let input ← inputWith? cells
   match run.executeResultWithFormalInputs
-      { now := { epochMillis := 0 } } input with
+      A12Kernel.Conformance.NumericComputation.Support.undecodableClock input with
   | .error cause => some cause
   | .ok _ => none
 
 def failure? : Option NumericComputationFormalInputRunFault :=
-  failureWith? [malformedSource, legacyDate]
+  failureWith? [malformedSource, storedDate]
 
 def cleanFailure? : Option NumericComputationFormalInputRunFault :=
-  failureWith? [legacyDate]
+  failureWith? [storedDate]
 
 end FailedExecution
 

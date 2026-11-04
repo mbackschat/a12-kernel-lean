@@ -48,8 +48,7 @@ private def prepared : PreparedFlatStringContext model builtinStringPatternCompi
 private def dateValue (year month day : Nat) : RawCell :=
   .parsed (.temporal (.date {
     instant := { epochMillis := 0 }
-    parts := { year := (year : Int), month := month, day := day }
-    basis := .storedGregorian }))
+    parts := { year := (year : Int), month := month, day := day } }))
 
 /-- A precision-partial cell as the partial-Date classifier decides it: an admitted partially known
 value, a fully known one, or the classifier's own rejection. -/

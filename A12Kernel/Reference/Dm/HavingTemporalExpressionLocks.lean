@@ -162,8 +162,12 @@ example : run "{TimeFromDateTime(Rows/Tag)} == {TimeFromDateTime($Expected)}" "5
     accepted "TimeFromDateTime(Rows/Tag) == TimeFromDateTime($Expected)"
       { model with timeZoneId := "unsupported" } = false := by native_decide
 
-example : run "HoursFromTime(TimeFromDateTime(DateTime(Rows/Tag,$Expected))) == 0" "5"
-      "02:30:00" "2024-03-30" "2024-03-31" { splitModel with timeZoneId := "Europe/Berlin" } =
-      some (.fired .omission, ["value 5"]) := by native_decide
+-- The Berlin label 2024-03-31T02:30:00 is a spring gap and lands at 03:30 (spec/05 §3.3), where kernel
+-- 30.8.1 cleared it; the projection then reads hour 3. The ordinary 2024-03-30 rows keep hour 2. The
+-- projection of the landed instant is unmeasured on 31.1.1.
+example : (["3", "2"].zip ["5", "9"]).all (fun (hour, selected) =>
+    run ("HoursFromTime(TimeFromDateTime(DateTime(Rows/Tag,$Expected))) == " ++ hour) selected
+      "02:30:00" "2024-03-30" "2024-03-31" { splitModel with timeZoneId := "Europe/Berlin" } ==
+      some (.fired .omission, ["value " ++ selected])) = true := by native_decide
 
 end A12Kernel.Dm.HavingTemporalExpressionLocks

@@ -18,7 +18,7 @@ This is a deliberate assurance trade. The migrations ran the complete historical
 
 The [Number parallel-token capture](sources/key-join-and-parallel-probes.md#src-parallel-number-index-tokens) retains seven agreeing full-validation documents with message multiplicity preserved and catalog text removed. Its source checkpoint owns hashes and profile limits; it is raw calibration, not an additional compact replay bundle.
 
-The [parallel numeric operation capture](sources/computation-scheduling-probes.md#src-parallel-numeric-operations) retains six agreeing computation documents with redacted message text. Its source checkpoint owns exact identities and limits; it remains raw calibration rather than another typed compact bundle.
+The [parallel numeric operation capture](sources/key-join-and-parallel-probes.md#src-parallel-numeric-operations) retains six agreeing computation documents with redacted message text. Its source checkpoint owns exact identities and limits; it remains raw calibration rather than another typed compact bundle.
 
 The [String/Enumeration crossing capture](sources/computation-placement-and-constant-probes.md#src-string-enumeration-crossings) retains four agreeing computation documents and three static copy candidates. Its source checkpoint owns identities and limits; message text is redacted.
 

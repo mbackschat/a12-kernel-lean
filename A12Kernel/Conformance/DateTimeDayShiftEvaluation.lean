@@ -76,7 +76,7 @@ private def document? (checkedModel : FlatModel)
       address := { field := 1, path := [] }
       stored := "DateTime"
       raw := .parsed (.temporal (.dateTime instant
-        localDateTime.date.civil.parts localDateTime.time .storedGregorian))
+        localDateTime.date.civil.parts localDateTime.time))
     }]
   } |>.toOption
 
@@ -86,7 +86,7 @@ private def dateTimeCell (field : FieldId)
   address := { field, path := [] }
   stored := "DateTime"
   raw := .parsed (.temporal (.dateTime instant
-    localDateTime.date.civil.parts localDateTime.time .storedGregorian))
+    localDateTime.date.civil.parts localDateTime.time))
 }
 
 private def shift? (zoneId : String)
@@ -117,14 +117,14 @@ private def berlinLongRangeGap? : Option Bool := do
         { epochMillis := 1711848600000 } false),
       .ok (.value
         { date := reverseDate, time := reverseTime }
-        { epochMillis := 1711845000000 } false),
+        { epochMillis := 1711848600000 } false),
       .ok (.value utcResult
         { epochMillis := utcInstant } false) =>
         date.civil.parts == { year := 2024, month := 3, day := 31 } &&
           time.hour == 3 && time.minute == 30 && time.second == 0 &&
         reverseDate.civil.parts ==
           { year := 2024, month := 3, day := 31 } &&
-          reverseTime.hour == 1 && reverseTime.minute == 30 &&
+          reverseTime.hour == 3 && reverseTime.minute == 30 &&
           reverseTime.second == 0 &&
         utcResult.date.civil.parts ==
           { year := 2024, month := 6, day := 16 } &&
@@ -132,7 +132,7 @@ private def berlinLongRangeGap? : Option Bool := do
           utcInstant == utcLocal.resolveUtc.epochMillis + 86400000 + 777
     | _, _, _ => false)
 
-/- Calendar-day addition carries the distant source offset into the Berlin spring gap. Elapsed 24-hour shifting would land at a different local clock. -/
+/- Calendar-day addition lands a long-range wall label inside the Berlin spring gap one gap later, at 03:30 from either direction (spec/05 §5). Elapsed 24-hour shifting would land at a different local clock. The reverse row is derived; unmeasured on 31.1.1. -/
 example : berlinLongRangeGap? = some true := by
   native_decide
 
@@ -166,7 +166,7 @@ private def differenceSnapshot? :
   let springSource ← LocalDateTime.ofYmdHms? 2024 3 30 2 30 0
   let springInstant ←
     ModelZone.ConcreteProfile.europeBerlin.resolveLocal? springSource
-  let springLater ← LocalDateTime.ofYmdHms? 2024 3 31 1 45 0
+  let springLater ← LocalDateTime.ofYmdHms? 2024 3 31 2 30 0
   let springLaterInstant ←
     ModelZone.ConcreteProfile.europeBerlin.resolveLocal? springLater
   let springInput ← checkDocument prepared "en_US" {
@@ -194,7 +194,9 @@ private def differenceSnapshot? :
   pure (firstResult, secondResult, omittedResult)
 
 /- Mixed differences retain authored sign, and a value-carrying omitted shift amount
-   makes the Number result fillable instead of erasing that provenance. -/
+   makes the Number result fillable instead of erasing that provenance. The later endpoint's
+   gap label reads as 03:30, one wall day after 2024-03-30T02:30 (spec/05 §2.5,
+   a12-dmkits `CalendarStepDifferenceInDaysDiffTest`). -/
 example :
     differenceSnapshot? = some (
       .value 1 .fixed,
@@ -203,8 +205,9 @@ example :
   native_decide
 
 /- One checked dynamic day composition observes the world supplied to each call.
-   The spring-gap result is a calendar-day count, not elapsed milliseconds divided by
-   one day, and authored operand position controls its sign. -/
+   The result counts whole wall-clock days from the shifted label, and a landing in the spring
+   gap reads as 03:30, so the later world reaches 22 h 15 min of wall clock, zero days
+   (spec/05 §2.5; derived, unmeasured on 31.1.1). -/
 example : (do
     let otherLocal ← LocalDateTime.ofYmdHms? 2024 4 1 1 45 0
     let otherInstant ←
@@ -238,9 +241,9 @@ example : (do
       | _ => false
     pure (firstEarlier, firstLater, secondLater, elapsedUnderDay)) =
     some (
-      .value 2 .fixed,
       .value 1 .fixed,
-      .value (-1) .fixed,
+      .value 0 .fixed,
+      .value 0 .fixed,
       true) := by
   native_decide
 

@@ -23,18 +23,19 @@ theorem checkedRepeatableDateTimeConstantComputation_execute_ignoresDeclaringGro
     CheckedRepeatableDateTimeConstantComputation.outcome?,
     sameTarget, sameDeclaration, sameDateTimeTarget, sameConstant]
 
-/-- A label resolvable in the model zone produces the target-formatted accepted value. The resolved
-instant is used only as an admission witness; storage retains the authored local components. -/
+/-- A label resolvable in the model zone produces the target-formatted accepted value of the label
+its instant lands on, which is the authored label except across a spring gap. -/
 theorem checkedRepeatableDateTimeConstantComputation_outcome_resolvable
     {model : FlatModel}
     (operation : CheckedRepeatableDateTimeConstantComputation model)
-    (instant : Instant)
+    (instant : Instant) (landed : LocalDateTime)
     (resolves :
-      operation.dateTimeTarget.profile.resolveLocal? operation.constant = some instant) :
+      operation.dateTimeTarget.profile.resolveLocal? operation.constant = some instant)
+    (landing : operation.dateTimeTarget.profile.localDateTime? instant = some landed) :
     operation.outcome? =
       some (.accepted
-        (DateTimeTargetFormat.render operation.dateTimeTarget.format operation.constant)) := by
-  simp [CheckedRepeatableDateTimeConstantComputation.outcome?, resolves]
+        (DateTimeTargetFormat.render operation.dateTimeTarget.format landed)) := by
+  simp [CheckedRepeatableDateTimeConstantComputation.outcome?, resolves, landing]
 
 /-- A label unresolved in the model zone produces no computed outcome. The execution projection is
 locked separately by the carrier's addressed conformance cases. -/

@@ -45,7 +45,7 @@ private def input? (sourceLabel : LocalDateTime) (millisecond : Int)
         raw := match sourceRaw with
           | none => .parsed (.temporal (.dateTime
               { epochMillis := resolved.epochMillis + millisecond }
-              sourceLabel.date.civil.parts sourceLabel.time .storedGregorian))
+              sourceLabel.date.civil.parts sourceLabel.time))
           | some other => other },
       { address := { field := target.id, path := [] }
         -- The label a real document would carry, rather than a placeholder: this cell's raw classifies
@@ -54,7 +54,7 @@ private def input? (sourceLabel : LocalDateTime) (millisecond : Int)
         -- result against it, so any non-result label classifies the same way.
         stored := DateTimeTargetFormat.yearMonthDayTime.renderText sourceLabel
         raw := .parsed (.temporal (.dateTime resolved
-          sourceLabel.date.civil.parts sourceLabel.time .storedGregorian)) },
+          sourceLabel.date.civil.parts sourceLabel.time)) },
       { address := { field := dayAmount.id, path := [] }
         stored := match dayRaw with
           | .parsed (.num value) => toString value
@@ -305,7 +305,7 @@ example : (do
     pure ([hours.1, minutes.1, seconds.1, springResult.1, autumnResult.1],
       hours.2.withChanges.map (fun entry => entry.value.text), appliedText)) =
     some ([1718580600777, 1718580600777, 1718580600777,
-      1711845000333, 1729989000444],
+      1711848600333, 1729989000444],
       ["2024-06-17T01:30:00"], "2024-06-17T01:30:00") := by
   native_decide
 
@@ -389,7 +389,7 @@ example : (do
       ← evaluate autumn 444 .hours 1],
       view.withChanges.map (fun entry => entry.value.text), appliedText)) =
     some ([1718580600777, 1718667000333, 1718580600777,
-      1718580600777, 1711845000333, 1729989000444],
+      1718580600777, 1711848600333, 1729989000444],
       ["2024-06-17T01:30:00"], "2024-06-17T01:30:00") := by
   native_decide
 

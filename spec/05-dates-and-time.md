@@ -208,7 +208,7 @@ Sources: [fragment pair comparison](../docs/sources/temporal-constant-and-base-y
 
 **A shift yields a temporal value carrying its source's component set**: `AddDays` over a DateTime keeps the clock (`15T22:00 + 1 = 16T22:00`), and an extractor over a shift is admitted exactly where the source's set carries its component ([§9](#9-datetime-rides-the-date-format-definition--but-the-operand-gates-are-per-operator-)).
 
-Sources: [recursive temporal expression](../docs/sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression), [parallel numeric operations](../docs/sources/computation-scheduling-probes.md#src-parallel-numeric-operations), [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family).
+Sources: [recursive temporal expression](../docs/sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression), [parallel numeric operations](../docs/sources/key-join-and-parallel-probes.md#src-parallel-numeric-operations), [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family).
 
 ### 2.2 Shift amounts
 

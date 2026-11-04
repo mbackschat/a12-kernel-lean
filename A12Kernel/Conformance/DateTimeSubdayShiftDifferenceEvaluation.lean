@@ -36,7 +36,7 @@ private def dateTimeCell? (field : FieldId) (localDateTime : LocalDateTime)
     stored := "date-time"
     raw := .parsed (.temporal (.dateTime
       { epochMillis := instant.epochMillis + millisecond }
-      localDateTime.date.civil.parts localDateTime.time .storedGregorian))
+      localDateTime.date.civil.parts localDateTime.time))
   }
 
 private def input? (cells : List ClassifiedCellInput) :
@@ -72,8 +72,8 @@ example : (do
           .value (-9001) .fixed]) := by
   native_decide
 
-/- Exact shift chaining keeps the daylight-side repeated-hour instant instead of
-   re-resolving its 02:30 wall label to the standard-side sibling. -/
+/- Exact shift chaining keeps the daylight-side repeated-hour instant, which a stored 02:30
+   now reads as too (spec/05 §5, a12-dmkits `OverlapInstantInComputationDiffTest`): zero minutes apart. -/
 example : (do
     let first ← LocalDateTime.ofYmdHms? 2024 10 27 1 30 0
     let repeated ← LocalDateTime.ofYmdHms? 2024 10 27 2 30 0
@@ -84,7 +84,7 @@ example : (do
       (elaborateDateTimeSubdayShiftDifference model
         1 .hours (.literal 1) 2 .minutes .first).toOption
     operation.evaluate .validation input |>.toOption) =
-      some (.value 60 .fixed) := by
+      some (.value 0 .fixed) := by
   native_decide
 
 /- Authored first-cause order is retained. Arithmetic no-value becomes the existing
@@ -156,8 +156,8 @@ example : (do
         [.value 2 .fixed, .value 150 .fixed, .value 9000 .fixed]) := by
   native_decide
 
-/- Dynamic exact shifting retains the daylight-side repeated-hour instant before the
-   direct fresh DateTime supplies the standard-side sibling. -/
+/- Dynamic exact shifting retains the daylight-side repeated-hour instant, which the direct
+   fresh DateTime now equals. -/
 example : (do
     let nowLocal ← LocalDateTime.ofYmdHms? 2024 10 27 1 30 0
     let now ← ModelZone.ConcreteProfile.europeBerlin.resolveLocal? nowLocal
@@ -168,7 +168,7 @@ example : (do
       (elaborateShiftedNowDateTimeDifference model
         .hours (.literal 1) 2 .minutes .first).toOption
     operation.evaluate .validation { now } input |>.toOption) =
-      some (.value 60 .fixed) := by
+      some (.value 0 .fixed) := by
   native_decide
 
 /- Authored order decides whether a formal dynamic amount or the direct DateTime cause

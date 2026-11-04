@@ -537,29 +537,31 @@ example : ComputationCondition.evalSimpleComparison
     (.temporal .equal (.todayValue "UTC") (.literalValue { epochMillis := 1234 }))
     { read := fun _ => invalid, world := some injectedCalendar } = .holds := by native_decide
 
-private def gapLiteral : FlatTemporalOperand := .localDateTimeValue .europeBerlin
-  (.ofLocal ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide)))
+-- Under Berlin a Julian leap day before the cutover names no instant (spec/05 §5), the unresolvable literal these rows read.
+private def noInstantLiteral : FlatTemporalOperand := .localDateTimeValue .europeBerlin
+  { parts := { year := 1500, month := 2, day := 29 }
+    time := (TimeOfDay.ofHms? 10 0 0).get (by native_decide) }
 private def stampField : FlatTemporalOperand := .fieldValue
   { id := 1, kind := .dateTime, components := TemporalComponents.now }
-private def gapPair (literalFirst : Bool) : FlatComparison :=
-  if literalFirst then .temporal .before gapLiteral stampField
-  else .temporal .after stampField gapLiteral
+private def noInstantPair (literalFirst : Bool) : FlatComparison :=
+  if literalFirst then .temporal .before noInstantLiteral stampField
+  else .temporal .after stampField noInstantLiteral
 
 example : [false, true].all (fun first => [invalid, emptyRequired].all fun cell =>
-    (gapPair first).evalSimpleValidationReads (fun _ => .ok cell) (fun _ => .ok cell)
+    (noInstantPair first).evalSimpleValidationReads (fun _ => .ok cell) (fun _ => .ok cell)
       none (some "value failure") == .error "value failure") = true := by native_decide
 
-example : (gapPair false).evalSimpleComputationReads (fun _ => .ok invalid) (fun _ => .ok invalid)
+example : (noInstantPair false).evalSimpleComputationReads (fun _ => .ok invalid) (fun _ => .ok invalid)
       none (some "value failure") = .ok (.poison .malformed) ∧
-    (gapPair true).evalSimpleComputationReads (fun _ => .ok invalid) (fun _ => .ok invalid)
+    (noInstantPair true).evalSimpleComputationReads (fun _ => .ok invalid) (fun _ => .ok invalid)
       none (some "value failure") = .error "value failure" ∧
-    (gapPair false).evalSimpleComputationReads (fun _ => .ok emptyRequired) (fun _ => .ok emptyRequired)
+    (noInstantPair false).evalSimpleComputationReads (fun _ => .ok emptyRequired) (fun _ => .ok emptyRequired)
       none (some "value failure") = .error "value failure" := by native_decide
 
-private def gapCondition : CorrelatedHaving := .leaf (.simpleComparison .inner .inner (gapPair true))
-example : gapCondition.evalComputationIn { read := fun _ _ => emptyRequired } frame =
+private def noInstantCondition : CorrelatedHaving := .leaf (.simpleComparison .inner .inner (noInstantPair true))
+example : noInstantCondition.evalComputationIn { read := fun _ _ => emptyRequired } frame =
       .error .valueFailure ∧
-    gapCondition.scanComputation { read := fun _ _ => emptyRequired } []
+    noInstantCondition.scanComputation { read := fun _ _ => emptyRequired } []
       (fun (n : Nat) _ => Sum.inl (β := Unit) (n + 1)) [] 0 = .ok (.exhausted 0) := by native_decide
 
 end A12Kernel.Conformance.CorrelatedComparisonInputs

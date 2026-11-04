@@ -42,7 +42,7 @@ def checkDateTimeFirstFilledComputation
 /-- Project one checked DateTime cell to its exact instant before model-zone target rendering. -/
 def dateTimeFirstFilledCellAt (addressed : CheckedAddressedCell) : TemporalComputationResult :=
   match observeCell .computation addressed.cell with
-  | .value (.temporal (.dateTime instant _ _ _)) => .value instant
+  | .value (.temporal (.dateTime instant _ _)) => .value instant
   | .value _ => .poison .malformed
   | .empty => .noValue
   | .unknown cause | .poison cause => .poison cause

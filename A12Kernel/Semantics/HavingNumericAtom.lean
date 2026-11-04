@@ -118,16 +118,16 @@ private def readHavingSubdayDifference (phase : Phase)
   | .error cause => pure (.unknown cause)
   | .ok (first, second) => pure (DateTimeDifferenceOperand.evaluate unit first second)
 
-private def readHavingCalendarDifference (phase : Phase)
+private def readHavingCalendarDifference {Result : Type} (phase : Phase)
     (read : Env → FieldId → Except Error CheckedCell) (frame : CorrelationFrame)
     (readOperand : (HavingTemporalRef → Except Error CellObservation) →
       ResolvedDateDifferenceOperand HavingTemporalRef clock → Except Error Operand)
     (formalCause? : Operand → Option FormalCause)
-    (evaluate : Operand → Operand → Except Unit NumericOperand)
-    (left right : ResolvedDateDifferenceOperand HavingTemporalRef clock) : Except Error (Except Unit NumericOperand) := do
+    (unavailable : FormalCause → Result) (evaluate : Operand → Operand → Result)
+    (left right : ResolvedDateDifferenceOperand HavingTemporalRef clock) : Except Error Result := do
   let observe reference := observeCell phase <$> read (frame.envAt reference.origin) reference.field.id
   match ← readTemporalPair phase (readOperand observe) formalCause? left right with
-  | .error cause => pure (.ok (.unknown cause))
+  | .error cause => pure (unavailable cause)
   | .ok (first, second) => pure (evaluate first second)
 
 private def readHavingToday (world : Option World) (unavailable : Error)
@@ -171,14 +171,12 @@ def HavingNumericAtomOf.readArithmetic [SizeOf Temporal] (phase : Phase)
   | .dateDifference unit left right => do
       let result ← readHavingCalendarDifference phase context.read frame
         (readHavingDateOperand context.world context.unsupportedDateCalendar)
-        (fun | .unavailable cause => some cause | _ => none) (DateDifferenceOperand.evaluate unit) left right
-      match result with
-      | .ok operand => pure operand.toValidationArithmetic
-      | .error _ => unsupportedCalendar
+        (fun | .unavailable cause => some cause | _ => none) NumericOperand.unknown (DateDifferenceOperand.evaluate unit) left right
+      pure result.toValidationArithmetic
   | .dayDifference profile left right => do
       let result ← readHavingCalendarDifference phase context.read frame
         (readHavingDayOperand profile context.world context.unsupportedDateCalendar)
-        (fun | .unavailable cause => some cause | _ => none) (CalendarDayDifferenceOperand.evaluate profile) left right
+        (fun | .unavailable cause => some cause | _ => none) (fun cause => .ok (.unknown cause)) (CalendarDayDifferenceOperand.evaluate profile) left right
       match result with
       | .ok operand => pure operand.toValidationArithmetic
       | .error _ => unsupportedCalendar

@@ -159,9 +159,8 @@ theorem valueAsDateDifference_evaluate_left_unavailable
       checked.toCheckedValueAsDateSource.observe phase cell =
         .unavailable sourceCause) :
     checked.evaluate phase cell (.unavailable otherCause) =
-      .ok (.operand (.unknown sourceCause)) := by
+      .operand (.unknown sourceCause) := by
   rw [CheckedValueAsDateDifference.evaluate.eq_def, placement, observed]
-  rfl
 
 /-- When the ordinary Date is authored first, its formal cause wins before the partial-Date read can contribute its cause. -/
 theorem valueAsDateDifference_evaluate_right_unavailable
@@ -173,9 +172,8 @@ theorem valueAsDateDifference_evaluate_right_unavailable
     (placement : checked.placement = .right)
     :
     checked.evaluate phase cell (.unavailable otherCause) =
-      .ok (.operand (.unknown otherCause)) := by
+      .operand (.unknown otherCause) := by
   rw [CheckedValueAsDateDifference.evaluate.eq_def, placement]
-  rfl
 
 /-- Date-side formal unavailability stops construction before the direct Time observation can contribute another cause. -/
 theorem valueAsDateTime_evaluate_date_unavailable

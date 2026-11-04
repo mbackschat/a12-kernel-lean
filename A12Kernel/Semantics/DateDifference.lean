@@ -147,12 +147,11 @@ def between (unit : DateDifferenceUnit) (first second : DateParts) : Int :=
 
 end DateDifferenceUnit
 
-/-- One runtime date-difference operand after phase observation. Legacy-hybrid values stay explicit because the decoded Gregorian core is not valid for their cutover cases. -/
+/-- One runtime date-difference operand after phase observation. -/
 inductive DateDifferenceOperand where
   | empty
   | value (parts : DateParts)
   | unavailable (cause : FormalCause)
-  | unsupportedCalendar
   deriving Repr, DecidableEq
 
 namespace DateDifferenceOperand
@@ -160,26 +159,22 @@ namespace DateDifferenceOperand
 /-- Project one observed scalar Date. Static admission has already rejected DateTime. -/
 def ofObservation : CellObservation Value → DateDifferenceOperand
   | .empty => .empty
-  | .value (.temporal (.date date)) =>
-      match date.basis with
-      | .storedGregorian => .value date.parts
-      | .legacyHybrid => .unsupportedCalendar
+  | .value (.temporal (.date date)) => .value date.parts
   | .value _ => .unavailable .malformed
   | .unknown cause | .poison cause => .unavailable cause
 
-/-- Formal unavailability dominates emptiness; emptiness then yields the kernel's symmetric zero without inspecting the other present operand's calendar. -/
+/-- Formal unavailability dominates emptiness; emptiness then yields the kernel's symmetric zero. -/
 def evaluate (unit : DateDifferenceUnit)
-    (left right : DateDifferenceOperand) : Except Unit NumericOperand :=
+    (left right : DateDifferenceOperand) : NumericOperand :=
   match left, right with
-  | .unavailable cause, _ => pure (.unknown cause)
-  | _, .unavailable cause => pure (.unknown cause)
-  | .empty, _ | _, .empty => pure (.value 0 .both)
-  | .unsupportedCalendar, _ | _, .unsupportedCalendar => throw ()
-  | .value first, .value second => pure (.value (unit.between first second) .fixed)
+  | .unavailable cause, _ => .unknown cause
+  | _, .unavailable cause => .unknown cause
+  | .empty, _ | _, .empty => .value 0 .both
+  | .value first, .value second => .value (unit.between first second) .fixed
 
 end DateDifferenceOperand
 
-/-- One checked Date/DateTime operand for model-zone calendar-day difference. Exact instant identity remains paired with its decoded hybrid-calendar label, so an operand before the 1582 cutover steps on its Julian calendar (2026-10-21 letter §1.12, KF588). -/
+/-- One checked Date/DateTime operand for model-zone calendar-day difference. Exact instant identity remains paired with its decoded proleptic label (spec/05 §2.5, §2.7). -/
 inductive CalendarDayDifferenceOperand where
   | empty
   | value (label : LegacyCalendarLabel) (instant : Instant)
@@ -189,22 +184,17 @@ inductive CalendarDayDifferenceOperand where
 
 namespace CalendarDayDifferenceOperand
 
-/-- Project one observed stored-Gregorian Date or DateTime without re-resolving its exact instant. -/
+/-- Project one observed Date or DateTime without re-resolving its exact instant. -/
 def ofObservation : CellObservation Value → CalendarDayDifferenceOperand
   | .empty => .empty
   | .value (.temporal (.date date)) =>
-      match date.basis with
-      | .legacyHybrid => .unsupportedCalendar
-      | .storedGregorian => .value (LegacyCalendarLabel.midnight date.parts) date.instant
-  | .value (.temporal
-      (.dateTime instant parts time .storedGregorian)) =>
+      .value (LegacyCalendarLabel.midnight date.parts) date.instant
+  | .value (.temporal (.dateTime instant parts time)) =>
       .value { parts, time } instant
-  | .value (.temporal (.dateTime _ _ _ .legacyHybrid)) =>
-      .unsupportedCalendar
   | .value _ => .unavailable .malformed
   | .unknown cause | .poison cause => .unavailable cause
 
-/-- Resolve an admitted calendar endpoint at its hybrid-calendar midnight in its model-zone profile. -/
+/-- Resolve an admitted calendar endpoint at its proleptic midnight in its model-zone profile. -/
 def ofParts (profile : ModelZone.ConcreteProfile)
     (parts : DateParts) : CalendarDayDifferenceOperand :=
   let label := LegacyCalendarLabel.midnight parts
@@ -233,9 +223,8 @@ def evaluate (profile : ModelZone.ConcreteProfile)
   | _, .unavailable cause => pure (.unknown cause)
   | .empty, _ | _, .empty => pure (.value 0 .both)
   | .unsupportedCalendar, _ | _, .unsupportedCalendar => throw ()
-  | .value first firstInstant, .value second secondInstant =>
-      match profile.differenceResolvedInDays?
-          first firstInstant second secondInstant with
+  | .value _ firstInstant, .value _ secondInstant =>
+      match profile.differenceResolvedInDays? firstInstant secondInstant with
       | some days => pure (.value days .fixed)
       | none => throw ()
 

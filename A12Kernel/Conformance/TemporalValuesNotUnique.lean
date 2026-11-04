@@ -181,8 +181,7 @@ private def prepared :
 private def dateValue (year month day : Nat) : TemporalValue :=
   .date {
     instant := { epochMillis := 0 }
-    parts := { year := (year : Int), month, day }
-    basis := .storedGregorian }
+    parts := { year := (year : Int), month, day } }
 
 /-- One placed temporal cell: its stored text and its decoded value are supplied independently, so a
     case can hold the decoded value fixed while varying the text. -/

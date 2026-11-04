@@ -95,7 +95,7 @@ private def dateTimeValue (epochMillis : Int) (year : Int)
     (month day hour minute second : Nat)
     (valid : hour < 24 ∧ minute < 60 ∧ second < 60) : RawCell :=
   .parsed (.temporal (.dateTime { epochMillis } { year, month, day }
-    (clock hour minute second valid) .storedGregorian))
+    (clock hour minute second valid)))
 
 private def rows : List RowAddr := [
   { group := 10, path := [1] }, { group := 10, path := [2] },

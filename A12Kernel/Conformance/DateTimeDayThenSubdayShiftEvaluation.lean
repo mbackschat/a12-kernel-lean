@@ -55,7 +55,7 @@ private def sourceCell (label : LocalDateTime)
   address := { field := 1, path := [] }
   stored := "DateTime"
   raw := .parsed (.temporal (.dateTime instant
-    label.date.civil.parts label.time .storedGregorian))
+    label.date.civil.parts label.time))
 }
 
 /- Calendar mutation runs first and elapsed arithmetic consumes its exact landing.

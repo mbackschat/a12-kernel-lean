@@ -137,9 +137,15 @@ example : ["UTC", "GMT", "Europe/Berlin"].all (fun zone =>
     run { model with timeZoneId := zone }
       "DifferenceInDays(AddDays(Rows/Tag,1),Date(\"28\",\"02\",\"2024\")) == -1"
       "2024-02-28" "2024-02-27" == some (.fired .omission, ["value 9"])) = true ∧
+    -- spec/05 §2.5: 02:30 to 01:45 on the next Berlin wall clock is 23 h 15 m, so 0 whole days, where
+    -- kernel 30.8.1 counted calendar-day steps and answered 1. The second row, a day and 13 h 45 m
+    -- before the constant, is 1 and so selects the other row set.
+    run { model "yyyy-MM-dd'T'HH:mm:ss" with timeZoneId := "Europe/Berlin" }
+      "DifferenceInDays(AddHours(Rows/Tag,0),\"31.03.2024T01:45:00\") == 0"
+      "2024-03-30T02:30:00" "2024-03-29T12:00:00" = some (.fired .omission, ["value 9"]) ∧
     run { model "yyyy-MM-dd'T'HH:mm:ss" with timeZoneId := "Europe/Berlin" }
       "DifferenceInDays(AddHours(Rows/Tag,0),\"31.03.2024T01:45:00\") == 1"
-      "2024-03-30T02:30:00" "2024-03-30T04:30:00" = some (.fired .omission, ["value 9"]) ∧
+      "2024-03-30T02:30:00" "2024-03-29T12:00:00" = some (.notFired, ["value 5"]) ∧
     run { model "yyyy-MM-dd'T'HH:mm:ss" with timeZoneId := "Europe/Berlin" }
       "DifferenceInHours(AddHours(Rows/Tag,0),\"31.03.2024T12:00:00\") == 23"
       "2024-03-30T12:00:00" "2024-03-30T11:00:00" = some (.fired .omission, ["value 9"]) := by native_decide

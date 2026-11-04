@@ -71,13 +71,13 @@ example :
 example :
     run "[Z1] < [Z2]" [("Z1", "2024-03-31T01:00:00"), ("Z2", "2024-03-31T03:00:00")] =
       some ["Form/After:value 1", "Form/T:value 1"] ∧
-    run "[Z1] < \"31.03.2024T02:30:00\"" [] =
+    run "[Z1] < \"29.02.1500T10:00:00\"" [] =
       some ["Form/After:cleared", "Form/T:cleared"] := by native_decide
 
 example :
-    runOn "Text" "\"ok\"" "[Z1] < \"31.03.2024T02:30:00\"" [] =
+    runOn "Text" "\"ok\"" "[Z1] < \"29.02.1500T10:00:00\"" [] =
       some ["Form/After:cleared", "Form/Text:cleared"] ∧
-    runOn "Stamp" "\"05.03.2024T12:30:00\"" "[Z1] < \"31.03.2024T02:30:00\"" [] =
+    runOn "Stamp" "\"05.03.2024T12:30:00\"" "[Z1] < \"29.02.1500T10:00:00\"" [] =
       some ["Form/After:cleared", "Form/Stamp:cleared"] := by native_decide
 
 private def rich (target operation condition : String) :
@@ -98,13 +98,13 @@ private def rich (target operation condition : String) :
   | _ => none
 
 example :
-    rich "T" "1" "[Z1] < \"31.03.2024T02:30:00\"" =
+    rich "T" "1" "[Z1] < \"29.02.1500T10:00:00\"" =
       some (.inl (.supported (.invalidNoValue .calculationValue))) ∧
-    rich "Text" "\"ok\"" "[Z1] < \"31.03.2024T02:30:00\"" =
+    rich "Text" "\"ok\"" "[Z1] < \"29.02.1500T10:00:00\"" =
       some (.inr (.string .invalidNoValue)) ∧
-    rich "Stamp" "\"05.03.2024T12:30:00\"" "[Z1] < \"31.03.2024T02:30:00\"" =
+    rich "Stamp" "\"05.03.2024T12:30:00\"" "[Z1] < \"29.02.1500T10:00:00\"" =
       some (.inr (.valueError .dateTime)) ∧
-    rich "T" "1" "[B1] == True And [Z1] < \"31.03.2024T02:30:00\"" =
+    rich "T" "1" "[B1] == True And [Z1] < \"29.02.1500T10:00:00\"" =
       some (.inl (.supported .noValue)) := by native_decide
 
 private def diagnostic (condition : String) : Option KernelStaticDiagnostic := do
@@ -160,10 +160,10 @@ private def rowFailure (condition : String) (stamp : String := "") :
 -- repeated targets are Number, so this lock adds no String-row calibration claim.
 set_option synthInstance.maxSize 512 in
 example :
-    rowFailure "[Z1] < \"31.03.2024T02:30:00\"" =
+    rowFailure "[Z1] < \"29.02.1500T10:00:00\"" =
       some ([({ field := 10, path := [1] }, .valueError .string, .poison .computedDependency)],
         ["Form/Rows/After:cleared", "Form/Rows/Text:cleared"]) ∧
-    rowFailure "[Z1] < \"31.03.2024T02:30:00\"" "bad" =
+    rowFailure "[Z1] < \"29.02.1500T10:00:00\"" "bad" =
       some ([({ field := 10, path := [1] }, .string (.poison .dateFormat), .poison .computedDependency)],
         ["Form/Rows/After:cleared", "Form/Rows/Text:cleared"]) ∧
     rowFailure "[Z1] < \"31.03.2024T01:30:00\"" =

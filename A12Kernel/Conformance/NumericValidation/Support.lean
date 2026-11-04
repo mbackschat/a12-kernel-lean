@@ -190,10 +190,10 @@ def clock : TimeOfDay :=
   (TimeOfDay.ofHms? 5 21 7).get (by native_decide)
 
 def dateTimeValue : Value :=
-  .temporal (.dateTime instant dateParts clock .storedGregorian)
+  .temporal (.dateTime instant dateParts clock)
 
 def dateTimeValueAt (epochMillis : Int) : Value :=
-  .temporal (.dateTime { epochMillis } dateParts clock .storedGregorian)
+  .temporal (.dateTime { epochMillis } dateParts clock)
 
 def localDateTime (year : Int) (month day hour minute second : Nat)
     (admissible :
@@ -213,7 +213,7 @@ def berlinDateTimeValue
   .temporal (.dateTime
     ((EuropeBerlinLegacyProfile.resolveLocal?
       (localDateTime year month day hour minute second admissible)).get resolved)
-    point.date.civil.parts point.time .storedGregorian)
+    point.date.civil.parts point.time)
 
 def berlinDaylightFoldValue : Value :=
   let point := localDateTime 2024 10 27 2 15 0 (by native_decide)
@@ -221,12 +221,10 @@ def berlinDaylightFoldValue : Value :=
   let daylightInstant :=
     (EuropeBerlinLegacyProfile.resolveLocal? beforeFold).get
       (by native_decide) |>.shiftHours 1
-  .temporal (.dateTime daylightInstant point.date.civil.parts point.time
-    .storedGregorian)
+  .temporal (.dateTime daylightInstant point.date.civil.parts point.time)
 
-def dateValue (year : Int) (month day : Nat)
-    (basis : DateCalendarBasis := .storedGregorian) : Value :=
-  .temporal (.date { instant, parts := { year, month, day }, basis })
+def dateValue (year : Int) (month day : Nat) : Value :=
+  .temporal (.date { instant, parts := { year, month, day } })
 
 def temporalPairRaw (first second : RawCell) : RawFlatContext where
   read id :=

@@ -44,8 +44,9 @@ private def document?
     cells
   } |>.toOption
 
-/- Each call consumes its supplied world's exact instant. Long-range forward and
-   reverse landings retain the world's source offset and millisecond component. -/
+/- Each call consumes its supplied world's exact instant. A long-range landing inside the
+   Berlin spring gap moves forward by the gap from either direction and keeps the
+   millisecond component (spec/05 §5; the reverse row is derived, unmeasured on 31.1.1). -/
 example : (do
     let input ← document? []
     let evaluate (sourceLabel : LocalDateTime) (millisecond : Int)
@@ -73,8 +74,8 @@ example : (do
           ((LocalDateTime.ofYmdHms? 2024 3 31 3 30 0).get (by native_decide))
           { epochMillis := 1711848600777 } false,
         ValueAsDateTimeResult.value
-          ((LocalDateTime.ofYmdHms? 2024 3 31 1 30 0).get (by native_decide))
-          { epochMillis := 1711845000333 } false) := by
+          ((LocalDateTime.ofYmdHms? 2024 3 31 3 30 0).get (by native_decide))
+          { epochMillis := 1711848600333 } false) := by
   native_decide
 
 /- Dynamic calendar shifting reuses checked numeric semantics: fractional amounts

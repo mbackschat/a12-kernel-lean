@@ -46,7 +46,7 @@ private def input? (sourceLocal : LocalDateTime) (millisecond : Int)
   }
   let generatedRaw : RawCell :=
     .parsed (.temporal (.dateTime instant
-      sourceLocal.date.civil.parts sourceLocal.time .storedGregorian))
+      sourceLocal.date.civil.parts sourceLocal.time))
   let actualSourceRaw := sourceRaw.getD generatedRaw
   checkDocument prepared "en_US" {
     instantiatedRows := []

@@ -105,8 +105,9 @@ def equal : {kind : ValueListKind} →
   -- `DecidableEq` compares the components the proof is about, as `FullDate`'s does.
   | .timeOfDay, left, right => left == right
   -- Exact instants retain the overlap distinction needed by in-flight consumers. For cell-sourced
-  -- values on the concrete profiles, `concreteProfile_resolveLocal_injective` establishes agreement
-  -- with label equality; single-valued resolution alone would not establish that converse
+  -- values whose labels the zone attains, `concreteProfile_resolveLocal_injective` establishes
+  -- agreement with label equality; a stored spring-gap label and the label after the gap share one
+  -- instant and fold together here
   -- ([temporal distinct count](../../docs/implementation/strings-and-enumerations.md#cap-temporal-distinct-count)).
   | .instant, left, right => left == right
 

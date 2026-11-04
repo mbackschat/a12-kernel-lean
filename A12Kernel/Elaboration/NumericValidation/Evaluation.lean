@@ -42,11 +42,9 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
   | .fieldValueAsNumber source =>
       (source.observeOperand (context.fields.observeValidationAt source.fieldId)).toValidationArithmetic
   | .dateDifference unit left right =>
-      match DateDifferenceOperand.evaluate unit
+      (DateDifferenceOperand.evaluate unit
           (left.validationOperand context.fields)
-          (right.validationOperand context.fields) with
-      | .ok operand => operand.toValidationArithmetic
-      | .error _ => .error (.formal .malformed)
+          (right.validationOperand context.fields)).toValidationArithmetic
   | .dateTimeDifference unit left right =>
       (DateTimeDifferenceOperand.evaluate unit
         (context.fields.resolveDateTimeDifferenceOperand left)

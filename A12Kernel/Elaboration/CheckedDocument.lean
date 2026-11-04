@@ -268,14 +268,10 @@ private def temporalCellAgrees (canonical actual : RawCell) : Bool :=
   | .rejected expected, .rejected found => expected == found
   | .parsed (.temporal (.date expected)),
     .parsed (.temporal (.date found)) =>
-      expected.parts == found.parts && expected.basis == found.basis &&
-        sameSecond expected.instant found.instant
-  | .parsed (.temporal (.dateTime expectedInstant expectedDate expectedTime
-      expectedBasis)),
-    .parsed (.temporal (.dateTime foundInstant foundDate foundTime
-      foundBasis)) =>
+      expected.parts == found.parts && sameSecond expected.instant found.instant
+  | .parsed (.temporal (.dateTime expectedInstant expectedDate expectedTime)),
+    .parsed (.temporal (.dateTime foundInstant foundDate foundTime)) =>
       expectedDate == foundDate && expectedTime == foundTime &&
-        expectedBasis == foundBasis &&
         sameSecond expectedInstant foundInstant
   | .parsed (.temporal (.time expectedInstant expectedTime)),
     .parsed (.temporal (.time foundInstant foundTime)) =>
@@ -729,8 +725,8 @@ def stringComputationContext (checked : CheckedDocument model) :
   }
 
 /-- The cell a concrete date takes in the model zone, as the fragment read-back builds it, so a
-classifier-completed date is compared with an actual cell by instant and calendar basis as well as by
-parts, exactly as a complete Date is. -/
+classifier-completed date is compared with an actual cell by instant as well as by parts, exactly as a
+complete Date is. -/
 private def canonicalDateCell? (model : FlatModel) (date : CivilDate) : Option RawCell := do
   let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
   let value ← profile.resolveCompletedDateParts? date.parts

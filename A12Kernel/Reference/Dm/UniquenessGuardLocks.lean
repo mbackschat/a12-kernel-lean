@@ -217,7 +217,7 @@ private def traversalRun (source : FlatFieldDecl) (value : String) (width : Nat)
   let parent (rows : List Lean.Json) := Lean.Json.mkObj [("Rows", .arr rows.toArray)]
   let first := (List.range width).map fun i => row (if early || i + 1 == width then value else "")
   let outcomes ← run source
-    "FieldValuesNotUnique(Parents*/Rows*/A Having (FieldFilled(Parents/Rows/Keep) Or [Parents/Rows/Keep] == \"31.03.2024T02:30:00\"))"
+    "FieldValuesNotUnique(Parents*/Rows*/A Having (FieldFilled(Parents/Rows/Keep) Or [Parents/Rows/Keep] == \"29.02.1500T10:00:00\"))"
     value "" "" { nested := true, validation, parents := [parent first, parent [row value]] }
   match outcomes with
   | ["T"] | ["value 1", "value 2"] => pure 'T'
@@ -242,7 +242,7 @@ example : [(number 1 "A", "1"), (token, "A"), (enumeration, "A"), (date, "2024-0
 private def authoredPrefixRun (source : FlatFieldDecl) (value : String)
     (failureFirst validation : Bool) : Option (List String) :=
   let deciding := "Parents*/Rows*/A Having FieldFilled(Parents/Rows/Keep)"
-  let failing := "Parents*/Rows*/B Having [Parents/Rows/Keep] == \"31.03.2024T02:30:00\""
+  let failing := "Parents*/Rows*/B Having [Parents/Rows/Keep] == \"29.02.1500T10:00:00\""
   let operands := if failureFirst then failing ++ "," ++ deciding else deciding ++ "," ++ failing
   let row := Lean.Json.mkObj [("A", .str value), ("B", .str value),
     ("Keep", .str "2024-03-31T01:30:00")]

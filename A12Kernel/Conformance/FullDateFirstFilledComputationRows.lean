@@ -94,7 +94,6 @@ private def dateValue (epochMillis year : Int) (month day : Nat) : Value :=
   .temporal (.date {
     instant := { epochMillis }
     parts := { year, month, day }
-    basis := .storedGregorian
   })
 
 private def rows : List RowAddr := [
