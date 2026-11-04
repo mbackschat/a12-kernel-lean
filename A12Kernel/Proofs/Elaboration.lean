@@ -347,7 +347,7 @@ theorem admitsField_has_unique_matching_declaration (model : FlatModel) (field :
         cases matching : field.matchesDecl declaration <;> simp_all
 
 /-- A direct textual operand admitted at the nonrepeatable scope belongs to a field admitted by the shared typed-field gate. -/
-theorem directComparableProfile_admitsField (model : FlatModel)
+theorem admitsTextOperand_admitsField (model : FlatModel)
     (operand : FlatTextFieldOperand)
     (admitted : model.admitsTextOperandFor operand = true) :
     model.admitsField operand.field = true := by
@@ -423,7 +423,7 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
       exact admitted.2 field member
   | string op target expected =>
       rcases List.mem_singleton.mp member with rfl
-      apply directComparableProfile_admitsField model (.string target)
+      apply admitsTextOperand_admitsField model (.string target)
       simpa [FlatModel.admitsComparison, FlatModel.admitsTextComparisonIn,
         FlatModel.admitsTextOperandFor] using admitted
   | stringLength op target expected =>
@@ -449,8 +449,8 @@ theorem admitsComparison_fields_admitted (model : FlatModel)
       rw [Bool.and_eq_true] at admitted
       simp [FlatComparison.fields] at member
       rcases member with rfl | rfl
-      · exact directComparableProfile_admitsField model left admitted.1
-      · exact directComparableProfile_admitsField model right admitted.2
+      · exact admitsTextOperand_admitsField model left admitted.1
+      · exact admitsTextOperand_admitsField model right admitted.2
   | dateRange op left right =>
       simp [FlatModel.admitsComparison, List.all_eq_true] at admitted
       exact admitted.2 field member

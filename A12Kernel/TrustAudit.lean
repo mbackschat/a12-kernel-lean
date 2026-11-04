@@ -852,7 +852,7 @@ run_cmd do
 #print axioms A12Kernel.rawStringMaximumLength_noRuntime
 #print axioms A12Kernel.checkedRawStringMaximumLength_admissible
 #print axioms A12Kernel.admitsField_has_unique_matching_declaration
-#print axioms A12Kernel.directComparableProfile_admitsField
+#print axioms A12Kernel.admitsTextOperand_admitsField
 #print axioms A12Kernel.checkedEnumerationOperand_admitsField
 #print axioms A12Kernel.admitsComparison_fields_admitted
 #print axioms A12Kernel.admitsStringValueField_admitsField
