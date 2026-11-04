@@ -1063,6 +1063,17 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `oracle`: kernel 31.1.1 (`a12-kernel` `eec9134`), built and runtime, through in-process JUnit locks: the Kernel's expansion and model check for §1 and §3, its Document reader for §2. No document is evaluated.
 - `state`: Received and read on 2026-11-03. §2 is adopted by the [M7 record](#src-m7-runtime-values-adoption), §1 and §3 by the [M1–M3 record](#src-m1m3-declarations-adoption).
 
+<a id="src-inbound-2026-11-04"></a>
+## Reviewed November 4 peer answers on the 31.1.1 pin and calibration rows
+
+- `source`: a12-dmkits session message of 2026-11-04 answering this project's closing message at `f59378d6`; no file. It answers no ledger entry and acknowledges `SPEC-2026-11-04-01` as queued for its next measurement batch, which leaves that entry `pending`.
+- `revision`: a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, local to the peer checkout and not on its origin, a descendant of `7f82e971f`; read with `git` only. `PartialValidationFilterSkipDiffTest`, `SumOfTermsRuntimeLawsTest` and `CurrentRepetitionIterationGuardLawsTest` exist there with the rows the message names.
+- `oracle`: kernel 31.1.1, through the peer's targeted run of those locks at `e62c2059d` on 2026-11-04, kernel and interpreter asserted equal; reported by the peer, not run here, since the peer checkout was dirty.
+- `review`: A HIGH reconciliation on 2026-11-04 read each named row at `e62c2059d` and compared it with spec/10 §5.2 and the gap shards.
+- `adopted`: `partialValidationSkipsHavingRulesEvenWhenEveryFieldInstanceIsRelevant` (a correlated filter inside `AtLeastOneFieldFilled` fires on full validation and not on partial validation with every counted instance relevant) and `partialValidationSkipsAFilteredTermSum` (a filtered `SumOfTerms` rule is skipped while its unfiltered twin fires) become spec/10 §5.2's 31.1.1 measured scope. Lean already skips both.
+- `not-adopted`: `aRepetitionReadRefusesAtEveryLevelTheRuleIterates` holds the rows Lean already locks at `1124b523f` and no level-licensed outer group, so [SG19](../gaps/paths-and-groups.md#gap-sg19) stays open. No row answers [SG5](../gaps/numeric-and-temporal.md#gap-sg5)'s dividing computation or SG20's `f-list`. The message's claim that a launcher at `e62c2059d` reports kernel 31.1.1 rests on a build from the dirty `7f82e971f` tree; the pin record names the revision and the re-pin verifies it.
+- `sync`: spec/10 §5.2 gains a 31.1.1 measured scope as an inbound addition from a committed peer revision; no ledger entry is created.
+
 <a id="src-m7-runtime-values-adoption"></a>
 ## Adopted kernel 31.1.1 runtime values from a12-dmkits locks (batch M7)
 
