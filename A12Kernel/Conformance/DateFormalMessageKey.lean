@@ -34,11 +34,13 @@ example :
   native_decide
 
 /- A cutover label is an ordinary proleptic day on 31.1.1 (spec/05 §4), so it fails as a date below the
-   floor and no longer as the day's component. Which key 31.1.1 selects is unmeasured (spec/05 §4.2). -/
-example : date .full false .yearMonthDayDashes "1582-10-10" = some "DATUM" := by native_decide
+   floor and no longer as the day's component: row `d1-11` of the k22 message-key capture, re-run on kernel
+   31.1.1 under Europe/Berlin, where kernel 30.8.1 selected the day key. -/
+example : dateIn .europeBerlin .full false .yearMonthDayDashes "1582-10-10" = some "DATUM" := by native_decide
 
 /- Reality decides the class of a Julian leap day (spec/05 §4): real under UTC, so the floor's key, and
-   unreal under Europe/Berlin, so the 29 February component key, which is unmeasured on 31.1.1. -/
+   unreal under Europe/Berlin, so the 29 February component key, measured on kernel 31.1.1 by row `D1-2` of
+   the wider formal-key capture; the UTC half is unmeasured. -/
 example :
     dateIn .utc .full false .yearMonthDayDashes "1500-02-29" = some "DATUM" ∧
       dateIn .europeBerlin .full false .yearMonthDayDashes "1500-02-29" = some "DATUM_FEBRUAR_29_FEHLER" := by

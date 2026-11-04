@@ -18,8 +18,9 @@ does ([check route](../../../docs/sources/model-structure-and-declaration-probes
 Kernel 31.1.1 changes four rows (peer KF654, a12-dmkits `1124b523f`, 2026-11-02; locked at
 `ModelHeaderSlotLawsTest`, `WorkspaceBlankTextDiffTest` and `CheckerEmptyMemberAgreementTest`): a header
 with no `id`, or one written `null`, and a header with no `modelVersion` or no `locales`, leave no model,
-where kernel 30.8.1 admitted the `id` and built the other two to fail their check. The `null` version and
-the `null` locales are 30.8.1 rows that stay, unmeasured on 31.1.1.
+where kernel 30.8.1 admitted the `id` and built the other two to fail their check. A `null` version and
+`null` locales leave no model as well (derived-row capture of 2026-11-04, `mc-ver-null` and `mc-loc-null`),
+where 30.8.1 built both to fail their check.
 
 Three kinds of row are deliberately absent. Rows the Kernel answers with a class of its own: an absent
 `modelInfo.name`, a time zone it does not know and a version it refuses. A `modelVersion` written as an
@@ -109,10 +110,10 @@ private def rows : List (String × Json × Option Verdict) :=
   member ["content", "modelConfig", "decimalSeparator"] (some <| text true ·) ++
   member ["content", "modelConfig", "timeZone"] (fun shape => if scalar shape then none else some (text true shape)) ++
   member ["header", "modelVersion"] (fun shape =>
-    if shape == "absent" then some .noModel else if shape == "null" then some .checkOnly else none) ++
+    if shape == "absent" || shape == "null" then some .noModel else none) ++
   (["labels", "annotations", "modelReferences"].flatMap fun key => member ["header", key] (some <| list false ·)) ++
   member ["header", "locales"] (fun shape =>
-    some (if shape == "absent" then .noModel else if shape == "null" then .checkOnly else list false shape)) ++
+    some (if shape == "absent" || shape == "null" then .noModel else list false shape)) ++
   member ["content", "typeDefinitions"] (some <| list true ·) ++
   member ["content", "modelConfig", "supportedCharacters"] (some <| list true ·) ++
   member ["content", "modelRoot", "rootGroups"] (some <| list true ·) ++

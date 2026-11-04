@@ -15,11 +15,12 @@ checkpoint). A member it cannot bind leaves no model, a read failure here:
   the member is non-null.
 * An object member binds an object, and its absence where the member is optional.
 
-Five shapes cost only the entry's consistency check: no `modelInfo`, a `modelVersion` or `locales`
-written `null`, a `null` supported character, and a condition language naming a parsed locale other
-than the two supported, measured for the codes `supportedConditionLanguages` lists. The model builds and
-its check fails without a class, so they are a `FrameCheckFailure`, never a read failure. The `null`
-version and `null` locales are kernel 30.8.1's rows, unmeasured on 31.1.1 and kept.
+Three shapes cost only the entry's consistency check: no `modelInfo`, a `null` supported character, and
+a condition language naming a parsed locale other than the two supported, measured for the codes
+`supportedConditionLanguages` lists. The model builds and its check fails without a class, so they are a
+`FrameCheckFailure`, never a read failure. A `modelVersion` or `locales` written `null` leaves no model on
+kernel 31.1.1 (derived-row capture of 2026-11-04, rows `mc-ver-null` and `mc-loc-null`), where 30.8.1
+built it to fail its check.
 
 Kernel 31.1.1 reads a header with no `id`, no `modelVersion` or no `locales`, and one whose `id` is
 `null`, into a model it then cannot build (peer KF654, a12-dmkits `1124b523f`, `ModelHeaderSlotLawsTest`
@@ -42,7 +43,7 @@ structure ModelFrame where
   info : Json
   /-- The model configuration, empty when absent. -/
   config : Json
-  /-- The declared locale entries, empty when absent or `null`. -/
+  /-- The declared locale entries; an absent or `null` member leaves no model. -/
   locales : Array Json
   /-- The header's `modelReferences` entries, empty when absent or `null`: a model naming one is expanded
   before its check (peer Letter E §4, source-read). -/
@@ -127,8 +128,8 @@ def bindModelFrame (json : Json) : Except String ModelFrame := do
   for key in ["modelType", "description"] do discard <| frameText header key
   discard <| frameText header "id" (nonNull := true)
   for key in ["id", "modelVersion", "locales"] do requireMember header key
-  let version ← frameText header "modelVersion"
-  let locales ← frameList header "locales"
+  discard <| frameText header "modelVersion" (nonNull := true)
+  let locales ← frameList header "locales" (nonNull := true)
   for key in ["labels", "annotations"] do discard <| frameList header key
   let modelReferences := (← frameList header "modelReferences").getD #[]
   let info? ← frameObject content "modelInfo"
@@ -152,9 +153,7 @@ def bindModelFrame (json : Json) : Except String ModelFrame := do
     | none => pure #[]
     | some root => do pure ((← frameList root "rootGroups" (nonNull := true)).getD #[])
   let failure :=
-    if version.isNone then some .versionMissing
-    else if info?.isNone then some .modelInfoMissing
-    else if locales.isNone then some .localesMissing
+    if info?.isNone then some .modelInfoMissing
     else if supportedCharacters.contains none then some .supportedCharacterNull
     else if language.isSome && conditionLanguage.isNone then some .conditionLanguageUnsupported
     else none

@@ -143,12 +143,15 @@ private def withTokenless (storedTokens : List String) (tokenlessPositions : Lis
     (categories : List EnumerationCategoryDeclaration := []) : EnumerationDeclaration :=
   { storedTokens, tokenlessPositions, categories }
 
-/-- The entries are the stored tokens with a hole at each token-less position, and the checked declaration
-has none: an entry with no token is refused after every other check, an empty domain first. -/
+/-- The entries are the stored tokens with a hole at each token-less position. Without categories the hole is
+admitted and adds no stored value: kernel 31.1.1 refuses "Beta" and "X" there, and admits "A" and "C" (derived-row
+capture of 2026-11-04, `request-e.json`). Beside a category the hole is refused after every other check, since its
+runtime pairing is unmeasured, and an empty domain comes first. -/
 example :
     (withTokenless ["A", "B"] [1]).valueEntries = [some "A", none, some "B"] ∧
     (withTokenless [] [0, 1]).valueEntries = [none, none] ∧
-    rejectsWith (withTokenless ["A", "B"] [1]) (.tokenlessEntry 1) ∧
+    isAccepted (withTokenless ["A", "C"] [1]) ∧
+    rejectsWith (withTokenless ["A", "B"] [1] [category "Band" ["x", "y"]]) (.tokenlessEntry 1) ∧
     rejectsWith (withTokenless [] [0, 1]) .emptyStoredDomain := by
   native_decide
 

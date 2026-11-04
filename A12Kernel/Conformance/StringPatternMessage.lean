@@ -118,8 +118,9 @@ example :
 /- **Every empty pair is skipped, wherever it stands**: at the start, inside the text, at the end or alone,
    it names no parameter and is admitted (kernel 30.8.1 refused all but the last two as `INVALID_PARAMETER`).
    An admitted pair keeps its dollars as literal text, which the trailing pair measures on both runtime
-   strategies (`Cost $$` renders `Cost $$`, [inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-field-message-render));
-   what a pair inside the text renders is unmeasured and is given the same account. A wrong name beside a
+   strategies (`Cost $$` renders `Cost $$`, [inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-field-message-render)),
+   and a pair inside the text keeps them too (`cost $$ in capitals`, derived-row capture of 2026-11-04,
+   kernel 31.1.1, both strategies). A wrong name beside a
    skipped pair is still refused. Locked: a12-dmkits FieldTypeMessageTextLawsTest
    (`whatThePatternsMessageMayCarryBeyondItsCharacters`, `howTheTextIsCutAndWhichEntryIsExamined`) at
    1124b523f, kernel 31.1.1. `$$$$` and `$$ $field$ $$` are derived from it, unmeasured. -/
@@ -131,6 +132,7 @@ example :
     stringPatternRender? "Cost $$" = some { text := "Cost $$" } ∧
     stringPatternRender? "$$" = some { text := "$$" } ∧
     stringPatternRender? "capitals only $$" = some { text := "capitals only $$" } ∧
+    stringPatternRender? "cost $$ in capitals" = some { text := "cost $$ in capitals" } ∧
     stringPatternRender? "$field$$$" = some { text := "Code$$" } ∧
     stringPatternRender? "a $$ b $field$" = some { text := "a $$ b Code" } := by
   native_decide

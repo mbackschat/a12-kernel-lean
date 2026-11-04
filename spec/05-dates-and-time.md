@@ -230,9 +230,9 @@ Sources: [recursive temporal expression](../docs/sources/temporal-and-message-pr
 - **`AddYears` maps the last day of February to the last day of February**, correcting *into* a leap year: `AddYears("28.02.2023", 1) = 29.02.2024`, and `28.02.1999 + 1 year = 29.02.2000`, not the plain `28.02.2000`.
 - **`AddMonths` preserves the day number and clamps** an end-of-month overflow to the shorter month's last day, never carrying into the next month: `AddMonths("28.02.2011", 12) = 28.02.2012`; `31.01.2008 + 1 month = 29.02.2008`.
 
-The two therefore disagree across a leap-year boundary, so an age check built on either is wrong around leap days. `AddDays` keeps the source's millisecond; whether a month or year shift keeps it, and whether the leap-to-nonleap February-28 correction clears the clock, as kernel 30.8.1 did, is unmeasured on 31.1.1.
+The two therefore disagree across a leap-year boundary, so an age check built on either is wrong around leap days. `AddDays` keeps the source's millisecond. A month or year shift takes no clock-bearing operand: `AddMonths` and `AddYears` over `Now` or a DateTime field draw `MVK_WRONG_DATE_FORMAT_FOR_OP` on kernel 31.1.1, where `AddDays` over both is admitted. So whether such a shift keeps a millisecond, and whether the leap-to-nonleap February-28 correction clears the clock as kernel 30.8.1 did, have no witness known as of 31.1.1.
 
-Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family).
+Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family), [derived-row capture](../docs/sources/kernel-31-calibration-probes.md#src-kernel-31-derived-rows).
 
 ### 2.4 Completed-period differences
 
@@ -242,7 +242,9 @@ Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-prob
 DifferenceInMonths("31.01.2010", "30.03.2010")   -- 1, not 2
 ```
 
-Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family).
+**The count is of instants, not labels, so a repeated midnight can withhold the last period.** The added periods keep the earlier date's offset ([§2.7](#27-calendar-basis)), and a stored Date `1916-10-01` under `Europe/Berlin` is the CEST instant of its repeated midnight. From `1915-10-01` and from `1916-04-01`, both CET, the last period lands on the later CET instant, past it: `DifferenceInYears` is 0 and `DifferenceInMonths` 5, where a label count answers 1 and 6. From the CEST `1916-09-01` the month lands on it, and `DifferenceInMonths` is 1.
+
+Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-probes.md#src-calendar-expression-family), [derived-row capture](../docs/sources/kernel-31-calibration-probes.md#src-kernel-31-derived-rows).
 
 ### 2.5 Day differences
 
@@ -279,7 +281,7 @@ Sources: [calendar expression family](../docs/sources/temporal-runtime-fold-prob
 - **Month and year shifts and the completed-period differences across 1582 follow the proleptic calendar.** From `1582-09-10` the constructed 20 October is one whole month away, and from `1581-10-10` it is one year and 12 months away; a month shift from `1582-09-10` does not land on 20 October.
 - **The `AddYears` February-28 correction holds before the cutover too**: `1499-02-28 + 1 year = 1500-02-28`.
 - **A shift keeps its source's offset where the target label allows it, and a fresh construction takes the earlier offset** ([§5](#5-time-zones-and-the-sub-day-difference)). Under `Europe/Berlin` the repeated midnight of 1 October 1916 has a CEST and a CET instant: `Date("1", "10", "1916")` is the CEST one; `AddDays(Date("30", "9", "1916"), 1)` and `AddMonths(Date("1", "9", "1916"), 1)` start from CEST and equal it; `AddYears(Date("1", "10", "1915"), 1)`, and a day or month shift from a CET source such as `Date("1", "4", "1916")` plus 183 days, keep CET and do not.
-- A month or year landing in a gap is unmeasured on 31.1.1.
+- **A month or year landing in a gap moves forward by the gap, as a day landing does.** Under `Europe/Berlin` the midnight of 1 April 1893, when local mean time gave way to CET, is skipped: `AddMonths` from 1 March 1893 and `AddYears` from 1 April 1892 land on it, and `DifferenceInDays` from either to `1893-04-02T00:03:00` is 0, as it is from `AddDays(1893-03-31, 1)` and from the stored Date `1893-04-01`.
 
 The year components in these examples are fields: a quoted Year constant is bounded to 1800–2199 ([§3.1](#31-date)). Every other operation follows its own clause.
 
@@ -467,7 +469,7 @@ Sources: [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temp
 | DATE_FRAGMENT | as DATE: of the thirteen admitted formats the six year-free ones — `MM`, `MM-dd`, `MMdd`, `ddMM`, `dd.MM.`, `HH:mm:ss` — are refused | the seven year-bearing ones are admitted |
 | DATE_RANGE | exempt: every admitted `(format, separator)` pair takes the check, the year-free ones included ([§8.1](#81-declaration-and-stored-text)) | admitted |
 | TIME | the declaration does not declare the property: the reader passes over it, and it has no effect | — |
-| DATE_TIME | unmeasured on 31.1.1; kernel 30.8.1's reader refused the injected property | — |
+| DATE_TIME | the declaration does not declare the property: the reader passes over it, and an enabled check has no effect, so `1850-01-01T10:00:00` draws no finding (kernel 31.1.1; 30.8.1's reader refused the model) | — |
 
 The Kernel states the refusal in component terms — a date field lacking a year cannot carry the check — not kind terms. So the year co-requirement belongs to the DATE and DATE_FRAGMENT carriers, not to the check: a consumer gates the check on year presence there and must not model it as admitted-and-inert on those two kinds, while one enforcing the requirement on every temporal kind refuses the legal year-free range declarations.
 
@@ -498,9 +500,9 @@ Sources: [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-
 
 **A DateRange** missing its separator, or not split into two nonempty readable endpoints, selects `DATUM_BEREICH_FORMAT`. An unreal endpoint, the start read first, selects the start or end variant of the month, 29-February and day keys, a zero component the range's format key and the pre-1900 check `DATUM_BEREICH_DATUM_ADDITIONAL_CHECK`; an inverted range selects `DATUM_BEREICH_NICHT_GUELTIG`, and a start below the floor `DATUM_BEREICH_DATUM`.
 
-Measured scope, on kernel 30.8.1: which key 31.1.1 selects is unmeasured, including for labels whose reality changed with the calendar, such as `1582-10-10` and a Berlin `1500-02-29`. Measured on 30.8.1: the three fixed-width complete formats with one separator, the three partial precisions over `yyyy-MM-dd`, a `yyyy-MM-dd` range at `/`, the component-omitting formats, the clock and the date-time format; a Base Year below 1900 is unmeasured.
+Measured scope, on kernel 31.1.1 by re-running the kernel 30.8.1 rows: the three fixed-width complete formats with one separator, the three partial precisions over `yyyy-MM-dd`, a `yyyy-MM-dd` range at `/`, the component-omitting formats, the clock and the date-time format, every row selecting the key it selected on 30.8.1 except two labels whose reality changed with the calendar: under `Europe/Berlin` `1582-10-10` now draws `datumFalsch` with `DATUM` and `1500-02-29` `datumFormatFalsch` with `DATUM_FEBRUAR_29_FEHLER`. A Base Year below 1900 is unmeasured.
 
-Sources: [message keys](../docs/sources/domain-ingestion-probes.md#src-date-message-keys-k22), [formal keys, wider](../docs/sources/domain-ingestion-probes.md#src-k22-formal-keys-wider).
+Sources: [message keys](../docs/sources/domain-ingestion-probes.md#src-date-message-keys-k22), [formal keys, wider](../docs/sources/domain-ingestion-probes.md#src-k22-formal-keys-wider), [31.1.1 re-capture](../docs/sources/kernel-31-calibration-probes.md#src-kernel-31-recapture).
 
 ---
 
@@ -515,7 +517,7 @@ Sources: [message keys](../docs/sources/domain-ingestion-probes.md#src-date-mess
 **A wall label resolves to an instant by two laws, for stored text, constructions and constants alike:**
 
 - **A gap label moves forward by the gap.** A stored `2024-03-31T02:30:00` under Berlin is the instant of `03:30:00`, a value and not a formal error; so is a label in the 1945 double-summer gap.
-- **An overlap label takes the earlier offset.** In the 2024 autumn overlap that is CEST: `01:30 → 02:30` on `2024-10-27` is `DifferenceInMinutes = 60`. A historical CEMT→CEST overlap is unmeasured on 31.1.1.
+- **An overlap label takes the earlier offset.** In the 2024 autumn overlap that is CEST: `01:30 → 02:30` on `2024-10-27` is `DifferenceInMinutes = 60`. In the CEMT→CEST overlap of 29 June 1947 it is CEMT: `01:30 → 02:30` is 60 and `02:30 → 03:30` is 120.
 
 **Date-time comparison is instant-based, and a chained `AddHours`, `AddMinutes` or `AddSeconds` result keeps its exact instant.** From `01:30` on `2024-10-27`, `AddHours(DT0, 1) < AddHours(DT0, 2)` holds although both render `02:30`, `AddHours(DT0, 1)` equals a stored `02:30`, which now reads on the same daylight side, and `DifferenceInMinutes` of the pair is `60`. The other consumers of a kept instant are stated with their operators: the sub-day differences in [§2.8](#28-reading-operands), the projections in [§3.3](#33-datetimedate-time-and-the-datetime-projections) and the extrema in [§3.5](#35-reasons-and-their-composition).
 
@@ -534,17 +536,18 @@ Sources: [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temp
 | stored DateTime text | the instant one gap later | [above](#5-time-zones-and-the-sub-day-difference) |
 | `DateTime(date, time)` | the instant one gap later | [§3.5](#35-reasons-and-their-composition) |
 | a date-time constant at runtime, computation | the instant one gap later, stored per target row | [§11 §4.1](09-computations.md#41-temporal-constants) |
-| a date-time constant at runtime, validation | unmeasured on 31.1.1 | — |
+| a date-time constant at runtime, validation | the instant one gap later: `[S] == "31.03.2024T02:30:00"` fires for a stored `03:30:00` and not for `01:30:00` | — |
 | a date-time constant at static admission | admitted under a UTC host default zone, refused `MVK_INVALID_COMPARE_TO_DATE` under a Berlin host default | [§11 §4.1](09-computations.md#41-temporal-constants) |
 | `Date(...)` of a skipped whole local date | a real Date | [§3.4](#34-calendar-reality) |
 | an `AddDays` landing | the instant one gap later | [above](#5-time-zones-and-the-sub-day-difference) |
-| an `AddMonths` or `AddYears` landing | unmeasured on 31.1.1 | [§2.7](#27-calendar-basis) |
+| an `AddMonths` or `AddYears` landing | the instant one gap later | [§2.7](#27-calendar-basis) |
 | `AddHours`, `AddMinutes`, `AddSeconds` | instant arithmetic, resolving no label | [§2.6](#26-sub-day-arithmetic) |
-| a stored DATE or DateRange endpoint whose midnight is skipped | not stated | — |
+| a stored DATE whose midnight is skipped | the instant one gap later | [§2.7](#27-calendar-basis) |
+| a stored DateRange endpoint whose midnight is skipped | not stated | — |
 
-**A label with no instant at all is a Julian leap day before the cutover under `Europe/Berlin`.** A date-time constant `"29.02.1500T10:00:00"` is admitted, and at runtime in a computation it is a value failure: no value and one addressed `berechnungsWertFehler` per in-capacity target row.
+**A label with no instant at all is a Julian leap day before the cutover under `Europe/Berlin`.** A date-time constant `"29.02.1500T10:00:00"` and a Date constant `"29.02.1500"` are admitted. At runtime in a computation such a constant is a value failure: no value, one addressed `berechnungsWertFehler` per in-capacity target row, and a seeded target cleared. In validation it fails the rule with a VALUE message ([§10 §3](10-validation-and-polarity.md#3-every-fired-message-is-typed--value-vs-omission-)) whatever the other operand holds, empty, formally invalid or valued, with the constant on either side of a direct comparison and against `ValueAsDate(…, FirstDay)`.
 
-Measured on the pinned Berlin profile; the `Date(...)` row on `Pacific/Apia`.
+Measured on the pinned Berlin profile; the `Date(...)` row on `Pacific/Apia`. Sources: [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temporal-adoption), [derived-row capture](../docs/sources/kernel-31-calibration-probes.md#src-kernel-31-derived-rows).
 
 ### 5.1 Versioned `Europe/Berlin` profile
 

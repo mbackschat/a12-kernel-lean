@@ -53,8 +53,9 @@ theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
       ExecutableDeclaration.blank category.name = false ∧
         ∀ token ∈ category.tokens, ExecutableDeclaration.blank token = false) :
     declaration.notifications .defaultBmp = [] := by
-  obtain ⟨holeless, trimmedNodup, arity⟩ := declaration.validate_ok_shape valid
-  have entries := enumerationDeclaration_valueEntries_eq_map_some declaration holeless
+  obtain ⟨holes, stored, trimmedNodup, arity⟩ := declaration.validate_ok_shape valid
+  have fewHoles : ¬ 2 ≤ declaration.tokenlessPositions.length := by
+    rcases holes with holeless | ⟨single, _⟩ <;> simp_all
   have unrepeated : ∀ tokens : List String, tokens.Nodup → EnumerationDeclaration.duplicated tokens = [] := by
     intro tokens nodup
     simp only [EnumerationDeclaration.duplicated, List.filter_eq_nil_iff, decide_eq_true_eq]
@@ -80,7 +81,10 @@ theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
         intro category member
         exact (filled category member).1
       simp [EnumerationDeclaration.categoryNameNotifications, unblank]
-    · simp only [EnumerationDeclaration.shortfallNotifications, List.flatMap_eq_nil_iff]
+    · rcases holes with holeless | ⟨_, noCategories⟩
+      case inr => simp [EnumerationDeclaration.shortfallNotifications, EnumerationDeclaration.namedCategories, noCategories]
+      have entries := enumerationDeclaration_valueEntries_eq_map_some declaration holeless
+      simp only [EnumerationDeclaration.shortfallNotifications, List.flatMap_eq_nil_iff]
       intro category member
       have declared := (List.mem_filter.mp member).1
       simp only [List.filterMap_eq_nil_iff, List.mem_mapIdx, entries]
@@ -91,7 +95,10 @@ theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
         rw [arity category declared]; simpa using bound
       rw [List.getElem?_eq_getElem inside]
       simp [(filled category declared).2 _ (List.getElem_mem inside)]
-    · simp only [EnumerationDeclaration.surplusNotifications, List.flatMap_eq_nil_iff]
+    · rcases holes with holeless | ⟨_, noCategories⟩
+      case inr => simp [EnumerationDeclaration.surplusNotifications, EnumerationDeclaration.namedCategories, noCategories]
+      have entries := enumerationDeclaration_valueEntries_eq_map_some declaration holeless
+      simp only [EnumerationDeclaration.surplusNotifications, List.flatMap_eq_nil_iff]
       intro category member
       have declared := (List.mem_filter.mp member).1
       simp only [List.filterMap_eq_nil_iff, List.mem_mapIdx, entries]
@@ -103,8 +110,8 @@ theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
       simp [List.getElem?_eq_getElem inside]
     · simp [EnumerationDeclaration.categoryDuplicateNotifications, noTrimmedDuplicates]
     · simp [EnumerationDeclaration.internalDuplicateNotifications, noTrimmedDuplicates]
-    · simp [EnumerationDeclaration.repeatedValueNotifications, noDuplicates, holeless]
-    · simp [EnumerationDeclaration.valuesMissingNotifications, holeless]
+    · simp [EnumerationDeclaration.repeatedValueNotifications, noDuplicates, fewHoles]
+    · simp [EnumerationDeclaration.valuesMissingNotifications, List.isEmpty_iff, stored]
   obtain ⟨invalid, supplementary, categoryName, shortfall, surplus, categoryDuplicate, internalDuplicate,
     repeated, valuesMissing⟩ := emptyBlocks
   unfold EnumerationDeclaration.notifications

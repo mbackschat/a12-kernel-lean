@@ -1,0 +1,394 @@
+{
+ "route": "dmtool -m S31_DM.json batch ops-models.json, each diagnostic projected to its code or a named codeless class",
+ "producer": {
+  "dmtool": "0.14.0",
+  "source": "e62c2059d78f896a0b6304891c76c113966cd069 (clean)",
+  "kernel": "31.1.1 built and runtime"
+ },
+ "rows": [
+  {
+   "id": "mc-base",
+   "outcome": "read",
+   "valid": true,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "mc-ver-28.4.0",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "RK_MODEL_VERSION_INCOMPATIBLE"
+   ]
+  },
+  {
+   "id": "mc-ver-29.3.99",
+   "outcome": "read",
+   "valid": true,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "RK_MODEL_VERSION_SKEW"
+   ]
+  },
+  {
+   "id": "mc-ver-29.4.1",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "RK_MODEL_VERSION_INCOMPATIBLE"
+   ]
+  },
+  {
+   "id": "mc-ver-29.5.0",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "RK_MODEL_VERSION_INCOMPATIBLE"
+   ]
+  },
+  {
+   "id": "mc-ver-30.0.0",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "RK_MODEL_VERSION_INCOMPATIBLE"
+   ]
+  },
+  {
+   "id": "mc-ver-29.04.0",
+   "outcome": "read",
+   "valid": true,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "RK_MODEL_VERSION_SKEW"
+   ]
+  },
+  {
+   "id": "mc-ver-29.4",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:version-pattern",
+    "RK_MODEL_VERSION_INCOMPATIBLE"
+   ]
+  },
+  {
+   "id": "mc-ver-x",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:version-pattern",
+    "RK_MODEL_VERSION_INCOMPATIBLE"
+   ]
+  },
+  {
+   "id": "mc-ver-31.1.1",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "RK_MODEL_VERSION_INCOMPATIBLE"
+   ]
+  },
+  {
+   "id": "mc-ver-null",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:model-not-built"
+   ]
+  },
+  {
+   "id": "mc-loc-null",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:model-not-built"
+   ]
+  },
+  {
+   "id": "mc-efnr",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ]
+  },
+  {
+   "id": "mc-efnr-dup",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:duplicate-id",
+    "codeless:duplicate-id",
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ]
+  },
+  {
+   "id": "mc-efnr-dup-twin",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ]
+  },
+  {
+   "id": "mc-ct-group",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:model-not-built"
+   ]
+  },
+  {
+   "id": "mc-ct-own",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:model-not-built"
+   ]
+  },
+  {
+   "id": "mc-ct-rule",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:unresolved-computed-field"
+   ]
+  },
+  {
+   "id": "mc-ct-climb",
+   "outcome": "refused",
+   "valid": null,
+   "verification": null,
+   "codes": [
+    "RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "id": "mc-ct-slash",
+   "outcome": "refused",
+   "valid": null,
+   "verification": null,
+   "codes": [
+    "RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "id": "mc-ct-twin",
+   "outcome": "read",
+   "valid": true,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "mc-re-slash",
+   "outcome": "refused",
+   "valid": null,
+   "verification": null,
+   "codes": [
+    "RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "id": "mc-re-own",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:model-not-built"
+   ]
+  },
+  {
+   "id": "mc-time-blank",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:model-not-built"
+   ]
+  },
+  {
+   "id": "mc-dt-blank",
+   "outcome": "read",
+   "valid": true,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "mc-dt-1900",
+   "outcome": "read",
+   "valid": true,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "mc-time-1900",
+   "outcome": "read",
+   "valid": true,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "mc-lt-bind",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_ERROR_MESSAGE_MISSING",
+    "RULE_HAS_NO_ERRORTEXT"
+   ]
+  },
+  {
+   "id": "mc-code-bind",
+   "outcome": "refused",
+   "valid": null,
+   "verification": null,
+   "codes": [
+    "RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "id": "mc-frame-bind",
+   "outcome": "refused",
+   "valid": null,
+   "verification": null,
+   "codes": [
+    "RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "id": "mc-loc-parse",
+   "outcome": "refused",
+   "valid": null,
+   "verification": null,
+   "codes": [
+    "RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "id": "mc-loc-empty",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:model-not-built"
+   ]
+  },
+  {
+   "id": "mc-loc-twice",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:model-not-built"
+   ]
+  },
+  {
+   "id": "mc-dt-space",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:model-not-built"
+   ]
+  },
+  {
+   "id": "mc-time-empty",
+   "outcome": "read",
+   "valid": true,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "mc-date-empty",
+   "outcome": "read",
+   "valid": true,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  },
+  {
+   "id": "mc-efnr-dupx",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "codeless:duplicate-id",
+    "codeless:duplicate-id",
+    "MVK_ERROR_FIELD_NOT_REFERENCED"
+   ]
+  },
+  {
+   "id": "mc-lt-number",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_ERROR_MESSAGE_MISSING",
+    "RULE_HAS_NO_ERRORTEXT"
+   ]
+  },
+  {
+   "id": "mc-lt-object",
+   "outcome": "refused",
+   "valid": null,
+   "verification": null,
+   "codes": [
+    "RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "id": "mc-lt-null",
+   "outcome": "refused",
+   "valid": null,
+   "verification": null,
+   "codes": [
+    "RK_MODEL_INPUT_INVALID"
+   ]
+  },
+  {
+   "id": "mc-lt-empty",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_ERROR_MESSAGE_MISSING",
+    "RULE_HAS_NO_ERRORTEXT"
+   ]
+  },
+  {
+   "id": "mc-lt-emptylist",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_ERROR_MESSAGE_MISSING",
+    "RULE_HAS_NO_ERRORTEXT"
+   ]
+  },
+  {
+   "id": "mc-lt-computation",
+   "outcome": "read",
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_ERROR_MESSAGE_MISSING",
+    "RULE_HAS_NO_ERRORTEXT"
+   ]
+  }
+ ]
+}

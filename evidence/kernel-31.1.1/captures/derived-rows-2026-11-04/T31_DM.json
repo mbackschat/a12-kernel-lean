@@ -1,0 +1,912 @@
+{
+ "header": {
+  "id": "T31_DM",
+  "modelType": "document",
+  "modelVersion": "29.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "T31_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Ref1",
+        "name": "Ref1",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/G3",
+        "name": "G3",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/O1",
+        "name": "O1",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/O2",
+        "name": "O2",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/O3",
+        "name": "O3",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/S",
+        "name": "S",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/X93",
+        "name": "X93",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/M1",
+        "name": "M1",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/M2",
+        "name": "M2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/M3",
+        "name": "M3",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/MD",
+        "name": "MD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/B1",
+        "name": "B1",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/B2",
+        "name": "B2",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/B3",
+        "name": "B3",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/B4",
+        "name": "B4",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/PD",
+        "name": "PD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd",
+           "datePrecision": "DAY_OPTIONAL"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Y1850",
+        "name": "Y1850",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss",
+           "youngerThan1900Check": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Guard",
+        "name": "Guard",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NS3",
+        "name": "NS3",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NG1",
+        "name": "NG1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NG2",
+        "name": "NG2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NG4",
+        "name": "NG4",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NG5",
+        "name": "NG5",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TG3",
+        "name": "TG3",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NO1",
+        "name": "NO1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NO2",
+        "name": "NO2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NY1",
+        "name": "NY1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NM2",
+        "name": "NM2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/NM3",
+        "name": "NM3",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TNI",
+        "name": "TNI",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TGC",
+        "name": "TGC",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/K",
+        "name": "K",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Rows/N",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Rows/T",
+           "name": "T",
+           "Field": {
+            "fieldType": {
+             "type": "DateTimeType",
+             "DateTimeType": {
+              "format": "yyyy-MM-dd'T'HH:mm:ss"
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/v1",
+        "name": "v1",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "v1",
+         "errorCondition": "[S] == \"29.02.1500T10:00:00\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "v1"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/v1r",
+        "name": "v1r",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "v1r",
+         "errorCondition": "\"29.02.1500T10:00:00\" == [S]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "v1r"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/v2",
+        "name": "v2",
+        "Rule": {
+         "errorEntityRelPath": "../D",
+         "errorCode": "v2",
+         "errorCondition": "[D] < \"29.02.1500\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "v2"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/v2r",
+        "name": "v2r",
+        "Rule": {
+         "errorEntityRelPath": "../D",
+         "errorCode": "v2r",
+         "errorCondition": "\"29.02.1500\" > [D]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "v2r"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/v3",
+        "name": "v3",
+        "Rule": {
+         "errorEntityRelPath": "../PD",
+         "errorCode": "v3",
+         "errorCondition": "ValueAsDate(PD, FirstDay) == \"29.02.1500\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "v3"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/v4",
+        "name": "v4",
+        "Rule": {
+         "errorEntityRelPath": "../S",
+         "errorCode": "v4",
+         "errorCondition": "[S] == \"31.03.2024T02:30:00\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "v4"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/v5",
+        "name": "v5",
+        "Rule": {
+         "errorEntityRelPath": "../Guard",
+         "errorCode": "v5",
+         "errorCondition": "FieldFilled(Guard) And Sum(Rows*/N Having [Rows/N] > 0 And [Rows/T] == \"29.02.1500T10:00:00\") > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "v5"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/v6",
+        "name": "v6",
+        "Rule": {
+         "errorEntityRelPath": "../Guard",
+         "errorCode": "v6",
+         "errorCondition": "FieldFilled(Guard) And Sum(Rows*/N Having [Rows/T] == \"29.02.1500T10:00:00\" And [Rows/N] > 0) > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "v6"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/kms3",
+        "name": "kms3",
+        "Computation": {
+         "computedFieldRelPath": "../NS3",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInSeconds(AddDays(Now, 31), Ref1)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "kms3"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/kg1",
+        "name": "kg1",
+        "Computation": {
+         "computedFieldRelPath": "../NG1",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(AddMonths(B1, 1), X93)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "kg1"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/kg2",
+        "name": "kg2",
+        "Computation": {
+         "computedFieldRelPath": "../NG2",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(AddYears(B2, 1), X93)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "kg2"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/kg4",
+        "name": "kg4",
+        "Computation": {
+         "computedFieldRelPath": "../NG4",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(B3, X93)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "kg4"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/kg5",
+        "name": "kg5",
+        "Computation": {
+         "computedFieldRelPath": "../NG5",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInDays(AddDays(B4, 1), X93)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "kg5"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/kg3",
+        "name": "kg3",
+        "Computation": {
+         "computedFieldRelPath": "../TG3",
+         "computationAlternatives": [
+          {
+           "operation": "AddDays(G3, 1)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "kg3"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/ko1",
+        "name": "ko1",
+        "Computation": {
+         "computedFieldRelPath": "../NO1",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInMinutes(O1, O2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ko1"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/ko2",
+        "name": "ko2",
+        "Computation": {
+         "computedFieldRelPath": "../NO2",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInMinutes(O2, O3)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ko2"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/km1",
+        "name": "km1",
+        "Computation": {
+         "computedFieldRelPath": "../NY1",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInYears(M1, MD)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "km1"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/km2",
+        "name": "km2",
+        "Computation": {
+         "computedFieldRelPath": "../NM2",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInMonths(M2, MD)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "km2"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/km3",
+        "name": "km3",
+        "Computation": {
+         "computedFieldRelPath": "../NM3",
+         "computationAlternatives": [
+          {
+           "operation": "DifferenceInMonths(M3, MD)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "km3"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/kni",
+        "name": "kni",
+        "Computation": {
+         "computedFieldRelPath": "../TNI",
+         "computationAlternatives": [
+          {
+           "operation": "\"29.02.1500T10:00:00\""
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "kni"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/kgc",
+        "name": "kgc",
+        "Computation": {
+         "computedFieldRelPath": "../TGC",
+         "computationAlternatives": [
+          {
+           "operation": "\"31.03.2024T02:30:00\""
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "kgc"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/ksum",
+        "name": "ksum",
+        "Computation": {
+         "computedFieldRelPath": "../K",
+         "computationAlternatives": [
+          {
+           "operation": "Sum(Rows*/N Having [Rows/N] > 0 And [Rows/T] == \"29.02.1500T10:00:00\")"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ksum"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

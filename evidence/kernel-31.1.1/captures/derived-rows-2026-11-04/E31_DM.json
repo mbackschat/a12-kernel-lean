@@ -1,0 +1,111 @@
+{
+ "header": {
+  "id": "E31_DM",
+  "modelType": "document",
+  "modelVersion": "29.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "E31_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/E2",
+        "name": "E2",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {},
+            {
+             "value": "C"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Flag",
+        "name": "Flag",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/te",
+        "name": "te",
+        "Rule": {
+         "errorEntityRelPath": "../E2",
+         "errorCode": "te",
+         "errorCondition": "FieldFilled(Flag) And [E2] == \"A\"",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "te"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/tf",
+        "name": "tf",
+        "Rule": {
+         "errorEntityRelPath": "../E2",
+         "errorCode": "tf",
+         "errorCondition": "FieldFilled(Flag) And FieldFilled(E2)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "tf"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

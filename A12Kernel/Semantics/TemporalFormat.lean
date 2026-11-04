@@ -54,9 +54,9 @@ inductive TemporalTargetPolicyError where
   | emptyFormat
   | partialModeRequiresFullDate
   /-- The opt-in pre-1900 check on a declaration whose object carries no such property. The Kernel's
-  `TimeType` and `DateTimeType` have only a format and annotations at 30.8.1, so the shape is
-  rejected by the deserializer before any gate could find it inert — a schema fact rather than a
-  behavioural rule, which is why the arm reads as a kind test and is nonetheless right. -/
+  `TimeType` and `DateTimeType` declare only a format and annotations, and kernel 31.1.1's reader reads the
+  member past, so it stays inert (spec/01 §1.1); the DM reader therefore never builds this policy, and the
+  arm guards one constructed directly. -/
   | youngerThan1900RequiresDate
   /-- The opt-in pre-1900 check on a Date declaration whose format carries **no year**. The Kernel
   refuses the model with `MVK_ADDITIONAL_CHECK_INVALID`, and its own message keys on the components —

@@ -1,0 +1,21 @@
+{
+ "kernel": "31.1.1",
+ "producer": "e62c2059",
+ "route": "dmtool model check",
+ "model": "R11DC_DM.json",
+ "valid": false,
+ "diagnostics": [
+  {
+   "path": "/P/Ctb",
+   "code": "MVK_INVALID_COMPARE_DEC_PLACES"
+  },
+  {
+   "path": "/P/Cgb",
+   "code": "MVK_INVALID_COMPARE_DEC_PLACES"
+  },
+  {
+   "path": "/P/Cmb",
+   "code": "MVK_INVALID_COMPARE_DEC_PLACES"
+  }
+ ]
+}

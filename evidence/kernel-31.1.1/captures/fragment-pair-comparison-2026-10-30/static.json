@@ -1,0 +1,15 @@
+{
+ "route": "dmtool model check -m <model>, Kernel diagnostics projected to code",
+ "producer": {
+  "dmtool": "0.14.0",
+  "source": "e62c2059d78f896a0b6304891c76c113966cd069 (clean)",
+  "kernel": "31.1.1 built and runtime"
+ },
+ "models": {
+  "FragCmp_DM.json": {
+   "valid": true,
+   "verification": "KERNEL_CONFIRMED",
+   "codes": []
+  }
+ }
+}

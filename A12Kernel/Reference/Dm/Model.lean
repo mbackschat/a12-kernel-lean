@@ -190,7 +190,8 @@ def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclarat
   -- them, although no comparison, copy or concatenation does (kernel 31.1.1). The labels of an entry with
   -- no token have no stored token to attach to; the declaration walk reads them from the entry itself.
   let displayFacts ← entries.mapM fun entry => do
-    let some stored ← valueEntryToken entry | pure []
+    let some stored ← valueEntryToken entry
+      | pure []
     pure ((← localizedTextMember entry "label").map fun (locale, display) =>
       ({ stored, locale, display } : EnumerationDisplayFact))
   -- A blank token past the entries is no token (peer KF660), so it never counts toward the arity the
@@ -341,6 +342,11 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
   | "EnumerationType" =>
       let enumeration ← readEnumerationDeclaration body
       let _ ← enumeration.validate.mapError (fun error => s!"EnumerationType {repr error}")
+      -- The Kernel's check refuses a labelled entry without a token (spec/01 §1.3), so no evaluated model
+      -- holds one; the declaration walk still reads it to state the check's classes.
+      for entry in (← body.getObjValAs? (Array Json) "values") do
+        if (← valueEntryToken entry).isNone && !(← localizedTextMember entry "label").isEmpty then
+          throw "an Enumeration entry without a token carries a label"
       pure { base with
         policy := { kind := .enumeration }
         enumeration := some enumeration }
@@ -348,14 +354,17 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
       -- A body that is missing is the empty body, as on every type (kernel 31.1.1); one that is present
       -- and no object stays refused.
       if (fieldType.getObjVal? typeName).isOk then discard body.getObj?
+      -- The model is read as the Kernel's expand copy writes it, which drops an empty member, so an empty
+      -- `format` is the kind's default as an absent one is (derived-row capture of 2026-11-04, rows
+      -- `date-empty`, `dt-empty` and `time-empty`; peer KF658). The fragment's format has no default.
       let format ← if typeName == "DateFragmentType" then
           body.getObjValAs? String "formatOfFragment"
         else match body.getObjVal? "format" with
-          | .ok value => value.getStr?
-          | .error _ => pure (match typeName with
+          | .ok (.str "") | .error _ => pure (match typeName with
             | "TimeType" => "HH:mm:ss"
             | "DateTimeType" => "yyyy-MM-dd'T'HH:mm:ss"
             | _ => "yyyy-MM-dd")
+          | .ok value => value.getStr?
       -- The Date constructor the three kinds share refuses a Java-blank format, and a fragment an
       -- empty one; a blank but nonempty fragment format is unmeasured (2026-10-21 §2.12).
       if (typeName == "DateFragmentType" && format.isEmpty) ||
@@ -365,11 +374,16 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         | "TimeType" => .time
         | "DateTimeType" => .dateTime
         | _ => .date
+      -- Only a Date declares a precision, and a Time or DateTime no pre-1900 check: the reader reads past a
+      -- member the type body does not declare (spec/01 §1.1; kernel 31.1.1 rows `pp-*` of the declaration
+      -- capture and `Y1850` of the derived-row capture, whose check stays inert).
+      let partialSource := if typeName == "DateType" then str? body "datePrecision" else none
+      let youngerThan1900Check ← if typeName == "TimeType" || typeName == "DateTimeType" then pure false
+        else booleanMember? body "youngerThan1900Check"
       pure { base with
         policy := { kind := .temporal kind (TemporalComponents.ofFormat format) }
         temporalTargetPolicy := some {
-          format, partialMode := ← partialMode? (str? body "datePrecision")
-          youngerThan1900Check := ← booleanMember? body "youngerThan1900Check" } }
+          format, partialMode := ← partialMode? partialSource, youngerThan1900Check } }
   | "DateRangeType" =>
       let interpretationOfYear ← match str? body "interpretationOfYear" with
         | none => pure none

@@ -76,9 +76,9 @@ example :
 
 /-- An Enumeration's text renders the label and the stored value; it meets the String-pattern grammar,
 so `BaseYear`, another field, a category and a wrong case are refused, while an empty pair is skipped and
-a required field's text draws no class. Rows `n01`–`n07` and `q05`, `q06`, `q10`; the skipped pair is the
-String carrier's measured reading (a12-dmkits FieldTypeMessageTextLawsTest at 1124b523f, kernel 31.1.1)
-extended to this carrier unmeasured. -/
+a required field's text draws no class. Rows `n01`–`n07` and `q05`, `q06`, `q10`. Kernel 31.1.1 admits the
+skipped pair `n03` (its re-run of the capture's static check, 2026-11-05) and renders it verbatim, `Bad $$ in Z`
+(derived-row capture of 2026-11-04, both strategies). -/
 example :
     (enumerationMessageText? (enumeration "n01" "Enum $field$ end" "Label n01") english "en_US" "Z").toOption.join =
       some "Enum Label n01 end" ∧
@@ -87,6 +87,8 @@ example :
     (["Enum $BaseYear$", "Enum $Other$", "Enum $field->Cat$", "Enum $FIELD$"].map fun text =>
       (fieldMessageDiagnostics english ["en_US"] .enumerationInvalidValue [{ locale := "en_US", text }]).map
         (·.kernelCode)) = List.replicate 4 ["INVALID_PARAMETER"] ∧
+    (enumerationMessageText? (enumeration "e1" "Bad $$ in $field.value$") english "en_US" "Z").toOption.join =
+      some "Bad $$ in Z" ∧
     (["Enum $$ x", "$$ Enum"].all fun text =>
       (fieldMessageDiagnostics english ["en_US"] .enumerationInvalidValue [{ locale := "en_US", text }]).isEmpty) ∧
     (["Req $BaseYear$", "Req $Other$", "Req $field"].all fun text =>

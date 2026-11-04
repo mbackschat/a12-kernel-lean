@@ -316,7 +316,7 @@ private def tokenlessRows : List (String × Json × List String × Option Bool) 
    ("a value entry's member misspelled, beside a category",
     entriesModel ["{\"sValue\":\"BASIC\"}", "{\"sValue\":\"PLUS\"}"] [("Band", ["STANDARD"])],
     [valuesMissing, missingInternal, repeatedValue], some false),
-   ("one of two entries without a token, unlabelled", entriesModel [open_, tokenless], [], some false),
+   ("one of two entries without a token, unlabelled", entriesModel [open_, tokenless], [], some true),
    ("two of three entries without a token", entriesModel [open_, tokenless, tokenless], [repeatedValue], some false),
    ("one of two entries without a token, both labelled",
     entriesModel [entryText (some "OPEN") [("en_US", "Open")], entryText none [("en_US", "Closed")]],
@@ -444,11 +444,11 @@ private def listingFailures (rows : List (String × Json × List String)) : List
 
 example : listingFailures idRows = [] := by native_decide
 
-/- Recorded deviation, not a law. The peer's rule naming the second sharer keeps its error field at `Ref`
-   beside the condition `FieldFilled(Note)`, and the Kernel's check states the two id sentences alone, while
-   this account's rule check adds `MVK_ERROR_FIELD_NOT_REFERENCED`, a class the Kernel draws on other measured
-   carriers. Which carriers the Kernel's model check asks it on is the open discriminator, SG9 in
-   `docs/gaps/paths-and-groups.md`. -/
+/- A rule whose error field `Ref` its condition `FieldFilled(Note)` does not read, beside two fields sharing
+   one id: `dmtool model check` on kernel 31.1.1 states the two id sentences and `MVK_ERROR_FIELD_NOT_REFERENCED`,
+   with the shared id written `x` or as a path (derived-row capture of 2026-11-04, `mc-efnr-dupx` and
+   `mc-efnr-dup`). The peer's checker states the id sentences alone on its carrier (a12-dmkits
+   `CheckerDuplicateIdAgreementTest`), a route difference SG9 in `docs/gaps/paths-and-groups.md` records. -/
 example :
     listingOf (policy [("Code", "x"), ("Note", "x")] (rule := "FieldFilled(Note)")) =
       listing [(shared, "/Policy/Code"), (shared, "/Policy/Note"),

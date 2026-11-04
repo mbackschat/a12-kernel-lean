@@ -27,7 +27,9 @@ structure EnumerationDeclaration where
   storedTokens : List String
   /-- The positions, counted over every value entry, of the entries that declare no token. Kernel 31.1.1 reads past
   a misspelled `value` member, so such an entry keeps its position in the category pairing (a12-dmkits
-  `CheckerReaderBindingAgreementTest` at 1124b523f, KF655). The checked declaration has none: `validate` refuses it. -/
+  `CheckerReaderBindingAgreementTest` at 1124b523f, KF655). Such an entry adds no stored value, so the domain stays
+  `storedTokens` (derived-row capture of 2026-11-04, `request-e.json`). `validate` admits one such entry in a
+  declaration without categories, the one shape measured at runtime; two draw the repeated-value notification. -/
   tokenlessPositions : List Nat := []
   displayFacts : List EnumerationDisplayFact := []
   categories : List EnumerationCategoryDeclaration := []
@@ -38,7 +40,9 @@ structure EnumerationDeclaration where
 
 inductive EnumerationDeclarationError where
   | emptyStoredDomain
-  /-- A value entry declares no token; kernel 31.1.1 admits one such unlabelled entry, whose runtime meaning is unmeasured. -/
+  /-- A value entry declares no token beside a category, whose positional pairing with that entry is unmeasured at
+  runtime, or beside another such entry; one alone without categories kernel 31.1.1 admits, adding no stored
+  value. -/
   | tokenlessEntry (position : Nat)
   | duplicateStoredToken (token : String)
   | unknownDefaultStoredToken (token : String)
@@ -141,9 +145,9 @@ def EnumerationDeclaration.validate (declaration : EnumerationDeclaration) :
                     match invalidCategory? declaration.storedTokens.length declaration.categories 0 with
                     | some error => .error error
                     | none =>
-                        match declaration.tokenlessPositions with
-                        | position :: _ => .error (.tokenlessEntry position)
-                        | [] => .ok ()
+                        match declaration.tokenlessPositions, declaration.categories with
+                        | [], _ | [_], [] => .ok ()
+                        | position :: _, _ => .error (.tokenlessEntry position)
 
 private theorem firstDuplicate?_eq_none_nodup :
     ∀ tokens : List String, firstDuplicate? tokens = none → tokens.Nodup
@@ -180,10 +184,15 @@ private theorem invalidCategory?_eq_none_arity (expectedArity : Nat) :
                   exact invalidCategory?_eq_none_arity expectedArity remaining (index + 1)
                     none_ candidate later
 
-/-- A validated declaration has a token at every value entry, lists each stored token once even after Java's `trim` and gives every category exactly one token per stored token. Declaration-notification laws consume this shape instead of re-deriving it from the ordered refusal chain. -/
+/-- A validated declaration has a token at every value entry but at most one in a declaration without categories,
+holds a stored token, lists each stored token once even after Java's `trim` and gives every category exactly one
+token per stored token. Declaration-notification laws consume this shape instead of re-deriving it from the
+ordered refusal chain. -/
 theorem EnumerationDeclaration.validate_ok_shape (declaration : EnumerationDeclaration)
     (valid : declaration.validate = .ok ()) :
-    declaration.tokenlessPositions = [] ∧
+    (declaration.tokenlessPositions = [] ∨
+      declaration.tokenlessPositions.length = 1 ∧ declaration.categories = []) ∧
+    declaration.storedTokens ≠ [] ∧
     (declaration.storedTokens.map javaTrim).Nodup ∧
       ∀ category ∈ declaration.categories,
         category.tokens.length = declaration.storedTokens.length := by
@@ -192,10 +201,13 @@ theorem EnumerationDeclaration.validate_ok_shape (declaration : EnumerationDecla
   repeat' split at valid
   all_goals first
     | contradiction
-    | exact ⟨‹declaration.tokenlessPositions = []›,
+    | refine ⟨?_, by simpa using ‹¬declaration.storedTokens.isEmpty = true›,
         firstDuplicate?_eq_none_nodup _ ‹firstDuplicate? (declaration.storedTokens.map javaTrim) = none›,
         invalidCategory?_eq_none_arity _ _ _
           ‹invalidCategory? declaration.storedTokens.length declaration.categories 0 = none›⟩
+      first
+        | exact .inl ‹declaration.tokenlessPositions = []›
+        | exact .inr ⟨by simp [‹declaration.tokenlessPositions = [_]›], ‹declaration.categories = []›⟩
 
 /-- The proof-bearing declaration consumed by the existing resolved Enumeration boundaries. -/
 structure CheckedEnumerationDeclaration where

@@ -284,6 +284,12 @@ def captures : List (String × String × String) := [
   ("captures/typedef-resolves-to-base-kind/obs.json", "captures/typedef-resolves-to-base-kind/TdBase_DM.json", "captures/typedef-resolves-to-base-kind/ops.json"),
   ("captures/value-list-base-type-cross-pairs/observations-basetype.json", "captures/pattern-comparison-left-kind-gate/Probe4_DM.json", "captures/value-list-base-type-cross-pairs/ops-basetype.json")]
 
+/-- Batches first measured on the later kernel, whose models and requests sit beside their observations under
+the observed root. -/
+def nativeCaptures : List (String × String × String) := [
+  ("captures/derived-rows-2026-11-04/obs-rules.json", "captures/derived-rows-2026-11-04/S31_DM.json",
+    "captures/derived-rows-2026-11-04/ops-rules.json")]
+
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) :=
   (["comparison-entry-gates/observations.json#groupregex",
@@ -547,14 +553,14 @@ private def loadModel (path : System.FilePath) (added : List (String × Json) :=
   | .error message => throw (IO.userError s!"{path}: {message}")
 
 /-- Replay every batch and return the agreeing and skipped row counts. Models and requests are read under
-"inputs", observations under "observed": a later kernel's re-capture runs the frozen requests unchanged. -/
+"inputs", observations under "observed": a later kernel's re-capture runs the frozen requests unchanged. A
+native batch reads all three under "observed". -/
 def checkArtifacts (inputs observed : System.FilePath) : IO (Nat × Nat) := do
-  let root := inputs
   let mut agreeing := 0
   let mut skipped := 0
   let mut failures : Array String := #[]
   let mut deferredSeen : Array String := #[]
-  for (observations, modelPath, requests) in captures do
+  for (root, observations, modelPath, requests) in captures.map (inputs, ·) ++ nativeCaptures.map (observed, ·) do
     let (batchModel, batchLocales) ← loadModel (root / modelPath)
     let requestDir := (root / requests).parent.getD root
     -- A dry-run batch retains only each row's verdict and Kernel codes, keyed by row id, since the

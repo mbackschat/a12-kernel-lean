@@ -1,0 +1,246 @@
+{
+ "model": "B31_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "div-zero",
+   "documentInline": {
+    "Form": {
+     "E1": "Z",
+     "P": "abc",
+     "Flag": "on",
+     "Div": "0",
+     "Lines": [
+      {
+       "Amt": "10",
+       "Tag": "x"
+      },
+      {
+       "Amt": "3",
+       "Tag": "x"
+      }
+     ],
+     "Claims": [
+      {
+       "Amount": "10",
+       "Parts": [
+        {
+         "Qty": "2"
+        },
+        {
+         "Qty": "4"
+        }
+       ]
+      },
+      {
+       "Amount": "6",
+       "Parts": [
+        {
+         "Qty": "1"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Flag"
+    },
+    {
+     "path": "/Form/Lines"
+    },
+    {
+     "path": "/Form/Lines/Amt"
+    },
+    {
+     "path": "/Form/Lines/Tag"
+    },
+    {
+     "path": "/Form/Claims"
+    },
+    {
+     "path": "/Form/Claims/Amount"
+    },
+    {
+     "path": "/Form/Claims/Parts"
+    },
+    {
+     "path": "/Form/Claims/Parts/Qty"
+    },
+    {
+     "path": "/Form/Div"
+    },
+    {
+     "path": "/Form/TotalQ"
+    },
+    {
+     "path": "/Form/TotalD"
+    },
+    {
+     "path": "/Form/E1"
+    },
+    {
+     "path": "/Form/P"
+    }
+   ]
+  },
+  {
+   "name": "div-two",
+   "documentInline": {
+    "Form": {
+     "E1": "A",
+     "P": "ABC",
+     "Flag": "on",
+     "Div": "2",
+     "Lines": [
+      {
+       "Amt": "10",
+       "Tag": "x"
+      },
+      {
+       "Amt": "3",
+       "Tag": "x"
+      }
+     ],
+     "Claims": [
+      {
+       "Amount": "10",
+       "Parts": [
+        {
+         "Qty": "2"
+        },
+        {
+         "Qty": "4"
+        }
+       ]
+      },
+      {
+       "Amount": "6",
+       "Parts": [
+        {
+         "Qty": "1"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Flag"
+    },
+    {
+     "path": "/Form/Lines"
+    },
+    {
+     "path": "/Form/Lines/Amt"
+    },
+    {
+     "path": "/Form/Lines/Tag"
+    },
+    {
+     "path": "/Form/Claims"
+    },
+    {
+     "path": "/Form/Claims/Amount"
+    },
+    {
+     "path": "/Form/Claims/Parts"
+    },
+    {
+     "path": "/Form/Claims/Parts/Qty"
+    },
+    {
+     "path": "/Form/Div"
+    },
+    {
+     "path": "/Form/TotalQ"
+    },
+    {
+     "path": "/Form/TotalD"
+    },
+    {
+     "path": "/Form/E1"
+    },
+    {
+     "path": "/Form/P"
+    }
+   ]
+  },
+  {
+   "name": "div-empty",
+   "documentInline": {
+    "Form": {
+     "Flag": "on",
+     "Lines": [
+      {
+       "Amt": "10",
+       "Tag": "x"
+      },
+      {
+       "Amt": "3",
+       "Tag": "y"
+      }
+     ],
+     "Claims": [
+      {
+       "Amount": "12",
+       "Parts": [
+        {
+         "Qty": "9"
+        }
+       ]
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Form/Flag"
+    },
+    {
+     "path": "/Form/Lines"
+    },
+    {
+     "path": "/Form/Lines/Amt"
+    },
+    {
+     "path": "/Form/Lines/Tag"
+    },
+    {
+     "path": "/Form/Claims"
+    },
+    {
+     "path": "/Form/Claims/Amount"
+    },
+    {
+     "path": "/Form/Claims/Parts"
+    },
+    {
+     "path": "/Form/Claims/Parts/Qty"
+    },
+    {
+     "path": "/Form/Div"
+    },
+    {
+     "path": "/Form/TotalQ"
+    },
+    {
+     "path": "/Form/TotalD"
+    },
+    {
+     "path": "/Form/E1"
+    },
+    {
+     "path": "/Form/P"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,198 @@
+[
+ {
+  "id": "am-now",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/D",
+   "--group=/Form",
+   "--condition=DifferenceInDays(AddMonths(Now, 1), D) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "ay-now",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/D",
+   "--group=/Form",
+   "--condition=DifferenceInDays(AddYears(Now, 1), D) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "am-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/D",
+   "--group=/Form",
+   "--condition=DifferenceInDays(AddMonths(DT, 1), D) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "ay-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/D",
+   "--group=/Form",
+   "--condition=DifferenceInDays(AddYears(DT, 1), D) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "ad-dt",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/D",
+   "--group=/Form",
+   "--condition=DifferenceInDays(AddDays(DT, 1), D) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "ad-now",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/D",
+   "--group=/Form",
+   "--condition=DifferenceInDays(AddDays(Now, 1), D) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "am-d",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/D",
+   "--group=/Form",
+   "--condition=DifferenceInDays(AddMonths(D, 1), D) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "ay-d",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/D",
+   "--group=/Form",
+   "--condition=DifferenceInDays(AddYears(D, 1), D) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "cat-store",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/Value",
+   "--group=/Form",
+   "--condition=[Value] == \"a\"",
+   "--message=en_US=Bad $Store->$"
+  ]
+ },
+ {
+  "id": "cat-rows",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/Value",
+   "--group=/Form",
+   "--condition=[Value] == \"a\"",
+   "--message=en_US=Bad $Rows->$"
+  ]
+ },
+ {
+  "id": "cat-store-named",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/Value",
+   "--group=/Form",
+   "--condition=[Value] == \"a\"",
+   "--message=en_US=Bad $Store->Cat$"
+  ]
+ },
+ {
+  "id": "cat-value",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/Value",
+   "--group=/Form",
+   "--condition=[Value] == \"a\"",
+   "--message=en_US=Bad $Value->$"
+  ]
+ },
+ {
+  "id": "efnr",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/Value",
+   "--group=/Form",
+   "--condition=FieldFilled(Other)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "efnr-twin",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=S31_DM.json",
+   "--name=Probe",
+   "--code=P",
+   "--field=/Form/Value",
+   "--group=/Form",
+   "--condition=FieldFilled(Value)",
+   "--message=en_US=x"
+  ]
+ }
+]

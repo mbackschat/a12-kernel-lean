@@ -1,0 +1,902 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.14.0",
+  "kernel": {
+   "builtAgainst": "31.1.1",
+   "runtime": "31.1.1"
+  },
+  "source": {
+   "revision": "e62c2059d78f896a0b6304891c76c113966cd069",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "B31_DM.json",
+  "locale": "en_US"
+ },
+ "rows": [
+  {
+   "name": "div-zero",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "pmx",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "pmx",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag"
+       ]
+      },
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "pvu",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "pvu",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag"
+       ]
+      },
+      {
+       "code": "pvu0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pvu0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "Bad $$ in Z",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/P",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "cost $$ in capitals",
+       "referenced": [
+        "Form/P"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TotalD",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/TotalQ",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "partialMessages": [
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "pvu0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pvu0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "Bad $$ in Z",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/P",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "cost $$ in capitals",
+       "referenced": [
+        "Form/P"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "pmx",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "pmx",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag"
+       ]
+      },
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "pvu",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "pvu",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag"
+       ]
+      },
+      {
+       "code": "pvu0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pvu0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "Bad $$ in Z",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/P",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "cost $$ in capitals",
+       "referenced": [
+        "Form/P"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TotalD",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/TotalQ",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "partialMessages": [
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "pvu0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pvu0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/E1",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "Bad $$ in Z",
+       "referenced": [
+        "Form/E1"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stringFalschesMuster",
+       "field": "Form/P",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "cost $$ in capitals",
+       "referenced": [
+        "Form/P"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "div-two",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "pmx",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "pmx",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag"
+       ]
+      },
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "pvu",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "pvu",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag"
+       ]
+      },
+      {
+       "code": "pvu0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pvu0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "std",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "std",
+       "referenced": [
+        "/Form[1]/Claims[0]/Amount",
+        "Form/Div",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Amount",
+        "Form/Div"
+       ]
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TotalD",
+        "cleared": false,
+        "errored": false,
+        "value": "8"
+       },
+       {
+        "field": "Form/TotalQ",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "partialMessages": [
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "pvu0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pvu0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "std",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "std",
+       "referenced": [
+        "/Form[1]/Claims[0]/Amount",
+        "Form/Div",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Amount",
+        "Form/Div"
+       ]
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "pmx",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "pmx",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag"
+       ]
+      },
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "pvu",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "pvu",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag"
+       ]
+      },
+      {
+       "code": "pvu0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pvu0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "std",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "std",
+       "referenced": [
+        "/Form[1]/Claims[0]/Amount",
+        "Form/Div",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Amount",
+        "Form/Div"
+       ]
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TotalD",
+        "cleared": false,
+        "errored": false,
+        "value": "8"
+       },
+       {
+        "field": "Form/TotalQ",
+        "cleared": false,
+        "errored": false,
+        "value": "7"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "partialMessages": [
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "pvu0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pvu0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "std",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "std",
+       "referenced": [
+        "/Form[1]/Claims[0]/Amount",
+        "Form/Div",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Amount",
+        "Form/Div"
+       ]
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "div-empty",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "pmx",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "pmx",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag"
+       ]
+      },
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TotalD",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/TotalQ",
+        "cleared": false,
+        "errored": false,
+        "value": "9"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "partialMessages": [
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "pmx",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "pmx",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Lines[0]/Amt",
+        "/Form[1]/Lines[0]/Tag"
+       ]
+      },
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      }
+     ],
+     "computations": {
+      "outcomes": [
+       {
+        "field": "Form/TotalD",
+        "cleared": false,
+        "errored": false,
+        "value": "0"
+       },
+       {
+        "field": "Form/TotalQ",
+        "cleared": false,
+        "errored": false,
+        "value": "9"
+       }
+      ],
+      "formalErrorsInOperands": []
+     },
+     "partialMessages": [
+      {
+       "code": "pmx0",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "pmx0",
+       "referenced": [
+        "/Form[1]/Lines[0]/Amt",
+        "Form/Flag"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "stn",
+       "field": "Form/Flag",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "stn",
+       "referenced": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty",
+        "Form/Flag"
+       ],
+       "fillToFix": [
+        "/Form[1]/Claims[0]/Parts[0]/Qty"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -77,11 +77,9 @@ example :
       policyOf "dd.MM.yyyy" .date fullDate true = none := by
   native_decide
 
-/- The clock and stamp declarations refuse the guard for a different and stronger reason: their
-   Kernel declaration objects carry no such property at 30.8.1, so the shape is rejected by the
-   deserializer before any gate could find it inert. The arm reads as a kind test and is right, and
-   after the rule above it is redundant with a components check rather than load-bearing against
-   one — which is a reason to keep it, not to delete a true certificate. -/
+/- The clock and stamp declarations carry no such property: kernel 31.1.1's reader reads the member past and
+   the check stays inert (spec/01 §1.1), so the DM reader builds no such policy. A policy constructed with
+   the flag is incoherent, which this arm refuses. -/
 example :
     TemporalTargetPolicy.errorFor?
         { format := "HH:mm:ss", partialMode := .full,

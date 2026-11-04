@@ -1,0 +1,25 @@
+{
+ "kernel": "31.1.1",
+ "producer": "e62c2059",
+ "route": "dmtool model check",
+ "model": "R10S_DM.json",
+ "valid": false,
+ "diagnostics": [
+  {
+   "path": "/P/n04",
+   "code": "INVALID_PARAMETER"
+  },
+  {
+   "path": "/P/n05",
+   "code": "INVALID_PARAMETER"
+  },
+  {
+   "path": "/P/n06",
+   "code": "INVALID_PARAMETER"
+  },
+  {
+   "path": "/P/n07",
+   "code": "INVALID_PARAMETER"
+  }
+ ]
+}

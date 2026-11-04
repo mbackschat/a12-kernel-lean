@@ -1,0 +1,190 @@
+{
+ "header": {
+  "id": "S31_DM",
+  "modelType": "document",
+  "modelVersion": "29.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": {
+    "a": 1
+   },
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Value",
+        "name": "Value",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Other",
+        "name": "Other",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Ref",
+        "name": "Ref",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/DT",
+        "name": "DT",
+        "Field": {
+         "fieldType": {
+          "type": "DateTimeType",
+          "DateTimeType": {
+           "format": "yyyy-MM-dd'T'HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/D",
+        "name": "D",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/E",
+        "name": "E",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ],
+           "categories": [
+            {
+             "name": "Cat",
+             "values": [
+              "x",
+              "y"
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Store",
+        "name": "Store",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Store/X",
+           "name": "X",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Rows/N",
+           "name": "N",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

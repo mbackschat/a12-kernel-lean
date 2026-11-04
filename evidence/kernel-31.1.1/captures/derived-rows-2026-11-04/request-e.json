@@ -1,0 +1,54 @@
+{
+ "model": "E31_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "tok-a",
+   "documentInline": {
+    "Form": {
+     "E2": "A",
+     "Flag": "on"
+    }
+   }
+  },
+  {
+   "name": "tok-c",
+   "documentInline": {
+    "Form": {
+     "E2": "C",
+     "Flag": "on"
+    }
+   }
+  },
+  {
+   "name": "tok-label",
+   "documentInline": {
+    "Form": {
+     "E2": "Beta",
+     "Flag": "on"
+    }
+   }
+  },
+  {
+   "name": "tok-other",
+   "documentInline": {
+    "Form": {
+     "E2": "X",
+     "Flag": "on"
+    }
+   }
+  },
+  {
+   "name": "tok-empty",
+   "documentInline": {
+    "Form": {
+     "E2": "",
+     "Flag": "on"
+    }
+   }
+  }
+ ]
+}

@@ -86,8 +86,9 @@ example :
   native_decide
 
 /- `D1`, `D2` and `TD`: on a malformed complete date the pre-1900 check answers ahead of every
-   component and a zero part ahead of the check, and a Julian leap day of 1500 is real and below the
-   floor; the format decides, so a Time field declared `yyyy-MM-dd` reads the same keys. -/
+   component and a zero part ahead of the check; the format decides, so a Time field declared
+   `yyyy-MM-dd` reads the same keys. These rows run the UTC profile, where a Julian leap day of 1500 is real
+   and below the floor; the capture ran Europe/Berlin, whose 31.1.1 key for it `DateFormalMessageKey` locks. -/
 example :
     [("31.02.1850", "DATUM_ADDITIONAL_CHECK"), ("29.02.1899", "DATUM_ADDITIONAL_CHECK"), ("00.05.1850", "DATUM_FORMAT"),
       ("1.1.1850", "DATUM_FORMAT"), ("31.13.1850", "DATUM_ADDITIONAL_CHECK")].all

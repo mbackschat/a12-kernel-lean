@@ -1,0 +1,389 @@
+[
+ {
+  "id": "mc-base",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-base_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ver-28.4.0",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ver-28.4.0_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ver-29.3.99",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ver-29.3.99_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ver-29.4.1",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ver-29.4.1_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ver-29.5.0",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ver-29.5.0_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ver-30.0.0",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ver-30.0.0_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ver-29.04.0",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ver-29.04.0_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ver-29.4",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ver-29.4_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ver-x",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ver-x_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ver-31.1.1",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ver-31.1.1_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ver-null",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ver-null_DM.json"
+  ]
+ },
+ {
+  "id": "mc-loc-null",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-loc-null_DM.json"
+  ]
+ },
+ {
+  "id": "mc-efnr",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-efnr_DM.json"
+  ]
+ },
+ {
+  "id": "mc-efnr-dup",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-efnr-dup_DM.json"
+  ]
+ },
+ {
+  "id": "mc-efnr-dup-twin",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-efnr-dup-twin_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ct-group",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ct-group_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ct-own",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ct-own_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ct-rule",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ct-rule_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ct-climb",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ct-climb_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ct-slash",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ct-slash_DM.json"
+  ]
+ },
+ {
+  "id": "mc-ct-twin",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-ct-twin_DM.json"
+  ]
+ },
+ {
+  "id": "mc-re-slash",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-re-slash_DM.json"
+  ]
+ },
+ {
+  "id": "mc-re-own",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-re-own_DM.json"
+  ]
+ },
+ {
+  "id": "mc-time-blank",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-time-blank_DM.json"
+  ]
+ },
+ {
+  "id": "mc-dt-blank",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-dt-blank_DM.json"
+  ]
+ },
+ {
+  "id": "mc-dt-1900",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-dt-1900_DM.json"
+  ]
+ },
+ {
+  "id": "mc-time-1900",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-time-1900_DM.json"
+  ]
+ },
+ {
+  "id": "mc-lt-bind",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-lt-bind_DM.json"
+  ]
+ },
+ {
+  "id": "mc-code-bind",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-code-bind_DM.json"
+  ]
+ },
+ {
+  "id": "mc-frame-bind",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-frame-bind_DM.json"
+  ]
+ },
+ {
+  "id": "mc-loc-parse",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-loc-parse_DM.json"
+  ]
+ },
+ {
+  "id": "mc-loc-empty",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-loc-empty_DM.json"
+  ]
+ },
+ {
+  "id": "mc-loc-twice",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-loc-twice_DM.json"
+  ]
+ },
+ {
+  "id": "mc-dt-space",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-dt-space_DM.json"
+  ]
+ },
+ {
+  "id": "mc-time-empty",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-time-empty_DM.json"
+  ]
+ },
+ {
+  "id": "mc-date-empty",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-date-empty_DM.json"
+  ]
+ },
+ {
+  "id": "mc-efnr-dupx",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-efnr-dupx_DM.json"
+  ]
+ },
+ {
+  "id": "mc-lt-number",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-lt-number_DM.json"
+  ]
+ },
+ {
+  "id": "mc-lt-object",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-lt-object_DM.json"
+  ]
+ },
+ {
+  "id": "mc-lt-null",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-lt-null_DM.json"
+  ]
+ },
+ {
+  "id": "mc-lt-empty",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-lt-empty_DM.json"
+  ]
+ },
+ {
+  "id": "mc-lt-emptylist",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-lt-emptylist_DM.json"
+  ]
+ },
+ {
+  "id": "mc-lt-computation",
+  "verb": "model",
+  "args": [
+   "check",
+   "-m",
+   "models/mc-lt-computation_DM.json"
+  ]
+ }
+]

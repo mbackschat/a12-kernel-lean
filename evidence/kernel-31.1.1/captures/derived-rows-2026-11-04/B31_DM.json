@@ -1,0 +1,360 @@
+{
+ "header": {
+  "id": "B31_DM",
+  "modelType": "document",
+  "modelVersion": "29.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "B31_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/E1",
+        "name": "E1",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "B"
+            }
+           ],
+           "errorMessage": [
+            {
+             "locale": "en_US",
+             "text": "Bad $$ in $field.value$"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/P",
+        "name": "P",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {
+           "pattern": "[A-Z]+",
+           "errorMessage": [
+            {
+             "locale": "en_US",
+             "text": "cost $$ in capitals"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Flag",
+        "name": "Flag",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Div",
+        "name": "Div",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TotalQ",
+        "name": "TotalQ",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TotalD",
+        "name": "TotalD",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Lines",
+        "name": "Lines",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Lines/Amt",
+           "name": "Amt",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Lines/Tag",
+           "name": "Tag",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Claims",
+        "name": "Claims",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Claims/Amount",
+           "name": "Amount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Form/Claims/Parts",
+           "name": "Parts",
+           "Group": {
+            "repeatability": 3,
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Form/Claims/Parts/Qty",
+              "name": "Qty",
+              "Field": {
+               "fieldType": {
+                "type": "NumberType",
+                "NumberType": {
+                 "maxFractionalDigits": 0
+                }
+               }
+              }
+             }
+            ]
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/pmx",
+        "name": "pmx",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "pmx",
+         "errorCondition": "FieldFilled(Flag) And MaxValue(Lines*/Amt Having [Lines/Tag] == \"x\") > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "pmx"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/pmx0",
+        "name": "pmx0",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "pmx0",
+         "errorCondition": "FieldFilled(Flag) And MaxValue(Lines*/Amt) > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "pmx0"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/pvu",
+        "name": "pvu",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "pvu",
+         "errorCondition": "FieldFilled(Flag) And FieldValuesNotUnique(Lines*/Tag Having [Lines/Amt] > 0)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "pvu"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/pvu0",
+        "name": "pvu0",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "pvu0",
+         "errorCondition": "FieldFilled(Flag) And FieldValuesNotUnique(Lines*/Tag)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "pvu0"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/stn",
+        "name": "stn",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "stn",
+         "errorCondition": "FieldFilled(Flag) And SumOfTerms(Claims*/Parts*, [Claims/Parts/Qty]) > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "stn"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/std",
+        "name": "std",
+        "Rule": {
+         "errorEntityRelPath": "../Flag",
+         "errorCode": "std",
+         "errorCondition": "FieldFilled(Flag) And SumOfTerms(Claims*, [Claims/Amount] / [Div]) > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "std"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/ktq",
+        "name": "ktq",
+        "Computation": {
+         "computedFieldRelPath": "../TotalQ",
+         "computationAlternatives": [
+          {
+           "operation": "SumOfTerms(Claims*/Parts*, [Claims/Parts/Qty])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ktq"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/ktd",
+        "name": "ktd",
+        "Computation": {
+         "computedFieldRelPath": "../TotalD",
+         "computationAlternatives": [
+          {
+           "operation": "RoundDown(SumOfTerms(Claims*, [Claims/Amount] / [Div]), 0)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ktd"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

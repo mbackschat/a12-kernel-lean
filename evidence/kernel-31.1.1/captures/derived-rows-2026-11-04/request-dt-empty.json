@@ -1,0 +1,17 @@
+{
+ "model": "dt-empty_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "v0",
+   "documentInline": {
+    "Form": {
+     "T1": "2024-01-05T10:00:00"
+    }
+   }
+  }
+ ]
+}
