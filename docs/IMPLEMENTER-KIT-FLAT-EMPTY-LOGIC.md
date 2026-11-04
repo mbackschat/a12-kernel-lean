@@ -11,7 +11,7 @@
 | Reference semantics | `0.3.0` |
 | Protocol | `1` |
 | Manifest schema | `2` |
-| Kernel behavior | `30.8.1` |
+| Kernel behavior | `31.1.1`, indexed by retained kernel 30.8.1 observations ([evidence status](EVIDENCE.md#evolution)) |
 | Owning language sections | `§1` truth and verdict algebra, `§2` empty values and row eligibility, `§3` formal invalidity, `§12` validation polarity |
 | Observable result | `notFired`, `fired.value`, `fired.omission`, or `unknown` |
 | External evidence scope | Nine finite runtime observations; focused authored-message firing and polarity, not hidden kernel truth |

@@ -225,7 +225,7 @@
       "code": "errorGuardMismatch"
     }
   ],
-  "kernelBehaviorVersion": "30.8.1",
+  "kernelBehaviorVersion": "31.1.1",
   "knownExclusions": [
     "concreteDsl",
     "generalDmJson",

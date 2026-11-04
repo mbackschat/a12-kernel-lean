@@ -113,7 +113,7 @@ private def expectedDiagnostic (category code location : String)
     (details : Json := Json.mkObj []) : String :=
   (Json.mkObj [
     ("protocolVersion", toJson 1),
-    ("kernelBehaviorVersion", toJson "30.8.1"),
+    ("kernelBehaviorVersion", toJson "31.1.1"),
     ("outcome", toJson "error"),
     ("diagnostic", Json.mkObj [
       ("category", toJson category),
@@ -199,7 +199,7 @@ private def checkCorrelationDeterminism : IO Unit := do
 private def checkDuplicateMember : IO Unit := do
   let input := "{\"protocolVersion\":1,\"protocolVersion\":2}"
   let expected :=
-    "{\"diagnostic\":{\"at\":\"$\",\"category\":\"input\",\"code\":\"duplicateMember\",\"details\":{\"member\":\"protocolVersion\"}},\"kernelBehaviorVersion\":\"30.8.1\",\"outcome\":\"error\",\"protocolVersion\":1}\n"
+    "{\"diagnostic\":{\"at\":\"$\",\"category\":\"input\",\"code\":\"duplicateMember\",\"details\":{\"member\":\"protocolVersion\"}},\"kernelBehaviorVersion\":\"31.1.1\",\"outcome\":\"error\",\"protocolVersion\":1}\n"
   checkOutput "duplicate member" (← invoke input) expected
 
 private def checkEmptyInput : IO Unit := do
@@ -209,7 +209,7 @@ private def checkEmptyInput : IO Unit := do
 private def checkUnknownMember : IO Unit := do
   let input := "{\"unexpected\":true}"
   let expected :=
-    "{\"diagnostic\":{\"at\":\"$.unexpected\",\"category\":\"input\",\"code\":\"invalidShape\",\"details\":{\"member\":\"unexpected\",\"reason\":\"unknownMember\"}},\"kernelBehaviorVersion\":\"30.8.1\",\"outcome\":\"error\",\"protocolVersion\":1}\n"
+    "{\"diagnostic\":{\"at\":\"$.unexpected\",\"category\":\"input\",\"code\":\"invalidShape\",\"details\":{\"member\":\"unexpected\",\"reason\":\"unknownMember\"}},\"kernelBehaviorVersion\":\"31.1.1\",\"outcome\":\"error\",\"protocolVersion\":1}\n"
   checkOutput "unknown member" (← invoke input) expected
 
 private def checkNonCanonicalJsonNumber : IO Unit := do
@@ -263,10 +263,10 @@ private def checkChildRelativePath : IO Unit := do
 
 private def checkVersionAndOperationAssertions : IO Unit := do
   let base ← IO.FS.readFile "examples/reference-cli/empty-number-equals-zero.request.json"
-  let wrongKernel ← replaceRequired base "\"kernelBehaviorVersion\": \"30.8.1\""
-    "\"kernelBehaviorVersion\": \"30.9.0\""
+  let wrongKernel ← replaceRequired base "\"kernelBehaviorVersion\": \"31.1.1\""
+    "\"kernelBehaviorVersion\": \"30.8.1\""
   let kernelDetails := Json.mkObj [
-    ("received", toJson "30.9.0"), ("supported", toJson "30.8.1")]
+    ("received", toJson "30.8.1"), ("supported", toJson "31.1.1")]
   checkOutput "kernel behavior version mismatch" (← invoke wrongKernel)
     (expectedDiagnostic "protocol" "kernelBehaviorVersionMismatch"
       "$.kernelBehaviorVersion" kernelDetails)

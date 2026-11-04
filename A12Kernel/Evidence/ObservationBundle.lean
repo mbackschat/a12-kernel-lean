@@ -214,7 +214,7 @@ private def Bundle.fromJson (json : Json) : Except String Bundle := do
   let schemaVersion : Nat ← required json "schemaVersion" context
   if schemaVersion != 1 then throw s!"unsupported observation-bundle schema version {schemaVersion}"
   let kernelVersion : String ← required json "kernelVersion" context
-  if kernelVersion != A12Kernel.kernelVersion then
+  if kernelVersion != A12Kernel.retainedEvidenceKernelVersion then
     throw s!"unsupported kernel version '{kernelVersion}'"
   let familyJson : List Json ← required json "families" context
   if familyJson.isEmpty then throw "observation bundle must contain at least one family"

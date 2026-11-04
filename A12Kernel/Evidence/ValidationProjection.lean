@@ -117,8 +117,21 @@ private def diagnosticObservation
       pure (rejectionObservation "MVK_INVALID_ENTITY" "unknownField")
   | other => throw s!"private flat request produced unsupported diagnostic '{other.tag}'"
 
+/-- A retained protocol request as protocol v1 states it today: the kernel behaviour version it
+was captured under is replaced by the one the reference asserts, and nothing else changes. A frozen
+30.8.1 request is thereby replayed against the current theory instead of being refused as a version
+mismatch, and an agreeing replay still measures only the kernel the bundle names
+([`docs/EVIDENCE.md`](../../docs/EVIDENCE.md#evolution)). -/
+def currentRequest (input : Json) : Json :=
+  match input.getObjValAs? String "kernelBehaviorVersion" with
+  | .ok version =>
+      if version == A12Kernel.retainedEvidenceKernelVersion then
+        input.setObjVal! "kernelBehaviorVersion" (toJson A12Kernel.Reference.Support.kernelBehaviorVersion)
+      else input
+  | .error _ => input
+
 private def replayRequest (input : Json) : Except String Json := do
-  let response ← match A12Kernel.Reference.evaluateText input.compress with
+  let response ← match A12Kernel.Reference.evaluateText (currentRequest input).compress with
     | .ok response => pure response
     | .error failure => throw s!"reference evaluator failed internally: {repr failure}"
   match response with

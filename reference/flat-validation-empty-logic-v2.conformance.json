@@ -5,7 +5,7 @@
   "protocolVersion": 1,
   "operation": "flatValidation.evaluateFull",
   "manifestSchemaVersion": 2,
-  "kernelBehaviorVersion": "30.8.1",
+  "kernelBehaviorVersion": "31.1.1",
   "conformanceSchemaVersion": 2,
   "comparison": "structuralJson",
   "cases": [

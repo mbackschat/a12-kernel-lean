@@ -219,13 +219,11 @@ private def validateExpectedEvidenceScope (testCase : ConformanceCase)
 private def validateEvidenceLink (suite : ConformanceSuite)
     (testCase : ConformanceCase) (request response : Json) : IO Unit := do
   let bundle ← A12Kernel.Evidence.ValidationProjection.load testCase.evidence.projection
-  if bundle.kernelVersion != suite.kernelBehaviorVersion then
-    fail s!"case '{testCase.id}': evidence kernel version is '{bundle.kernelVersion}'"
   let evidenceCase ← match
       A12Kernel.Evidence.ValidationProjection.selectPublicCase bundle testCase.evidence.caseId with
     | .ok evidenceCase => pure evidenceCase
     | .error error => fail s!"case '{testCase.id}': {error}"
-  if evidenceCase.input != request then
+  if A12Kernel.Evidence.ValidationProjection.currentRequest evidenceCase.input != request then
     fail s!"case '{testCase.id}': normalized request differs from retained evidence input"
   let observed ← match
       A12Kernel.Evidence.ValidationProjection.publicObservationView evidenceCase.observed with

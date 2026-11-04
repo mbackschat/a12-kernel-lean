@@ -7,9 +7,15 @@ lives in `A12Kernel.Core` and the modules the staged build order
 namespace A12Kernel
 
 /-- The kernel version whose *observable behaviour* this specification tracks
-    (see `spec/SEMANTICS-MAP.md` §0). Bump only alongside a deliberate re-pin
-    against a newer `../a12-kernel`. -/
-def kernelVersion : String := "30.8.1"
+    (see `spec/SEMANTICS-MAP.md` §0), kernel 31.1.1 since the owner-decided migration of
+    2026-11-02 (`docs/PLAN.md`, kernel 31.1.1 migration). The 30.8.1 account is the tag
+    `kernel-30.8.1-final`. -/
+def kernelVersion : String := "31.1.1"
+
+/-- The kernel version the frozen retained bundles under `evidence/kernel-30.8.1` were
+    captured on. They are replayed against the theory of `kernelVersion` and are never
+    restamped on disk (`docs/EVIDENCE.md`, Evolution). -/
+def retainedEvidenceKernelVersion : String := "30.8.1"
 
 #eval kernelVersion
 

@@ -4,7 +4,7 @@
   "referenceSemanticsVersion": "0.3.0",
   "protocolVersion": 1,
   "manifestSchemaVersion": 2,
-  "kernelBehaviorVersion": "30.8.1",
+  "kernelBehaviorVersion": "31.1.1",
   "operation": "singleGroupCorrelation.firingRows",
   "supportManifest": "reference/supported-fragment-v2.json",
   "comparison": "structuralJson",

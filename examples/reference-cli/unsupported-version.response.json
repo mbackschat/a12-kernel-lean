@@ -1,6 +1,6 @@
 {
   "protocolVersion": 1,
-  "kernelBehaviorVersion": "30.8.1",
+  "kernelBehaviorVersion": "31.1.1",
   "outcome": "error",
   "diagnostic": {
     "category": "protocol",

@@ -12,7 +12,7 @@ The A12 Kernel evaluates business rules over complex form documents. Its semanti
 
 Those distinctions matter to anyone building an independent evaluator, importer, compiler, analyzer, rule-refactoring tool, verifier, or explanation system. Without a shared semantics, every consumer must rediscover the same behavior and can easily preserve the wrong thing.
 
-The primary target is eventual **100% semantic conformance with A12 Kernel 30.8.1** for its complete observable validation-and-computation language and required static legality. The project pursues that target through:
+The primary target is eventual **100% semantic conformance with A12 Kernel 31.1.1** (A12 2026.06-ext1; the 30.8.1 account is frozen at tag `kernel-30.8.1-final`) for its complete observable validation-and-computation language and required static legality. The project pursues that target through:
 
 - a canonical, language-neutral semantic account under [`spec/`](spec/);
 - executable Lean definitions that serve as a precise reference;
@@ -116,7 +116,7 @@ The semantic response is:
 
 ```json
 {
-  "kernelBehaviorVersion": "30.8.1",
+  "kernelBehaviorVersion": "31.1.1",
   "outcome": "ok",
   "protocolVersion": 1,
   "verdict": {
