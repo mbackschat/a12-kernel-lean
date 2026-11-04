@@ -267,14 +267,30 @@ example : semanticRows.filterMap (fun (label, json, statics, verdict) =>
     if (modelVerdict json).statics == statics && verdictOf json == verdict then none else some label) = [] := by
   native_decide
 
-/- Recorded deviation, not a law. An index resolving outside its group is declared and unusable: the Kernel
-   draws `MVK_INVALID_INDEX_FIELD` and, for a rule using a semantic index over it, `MVK_INDEX_FIELD_INVALID`
-   beside it, while the model reader keeps no index field for the group and the rule check refuses it as a
-   group declaring none. The flat model has no way to tell a declared index that names no field from none
-   declared, which is a change to its representation and not to the ordering reader. -/
+/-- An index naming no field of its group, here a spelling landing on the parent's field, is declared and
+unusable. The declaration draws its own class, and a rule using a semantic index over the group adds the
+condition-side class beside it, where an undeclared index draws the missing-index class; the same model with
+no such rule draws only the declaration's (Locked: a12-dmkits `GroupIndexAndSortReferenceLawsTest` at
+1124b523f, `whetherTheConditionSideIndexLookupIsReachable`, kernel 31.1.1). The model reader carries every
+group whose nomination names no direct child field as declaring an index; only the spelling above is
+measured, and the other spellings (empty, a missing name, a rule's name) take it by the same derivation,
+unmeasured on 31.1.1. -/
 example :
-    ((modelVerdict (semantic (some "../CustomerName"))).statics == ["refused ParallelAdmission MVK_NO_INDEX_FIELD"] &&
-      verdictOf (semantic (some "../CustomerName")) == cls [indexMissing]) = true := by
+    (modelVerdict (semantic (some "../CustomerName"))).statics == ["refused ParallelAdmission MVK_INDEX_FIELD_INVALID"] ∧
+    verdictOf (semantic (some "../CustomerName")) == cls [indexMissing] ∧
+    (modelVerdict (semantic (some "../CustomerName") (rule := false))).statics == [] ∧
+    verdictOf (semantic (some "../CustomerName") (rule := false)) == cls [indexMissing] := by
+  native_decide
+
+/-- The model reader carries a group's index as unresolved exactly where the declaration walk draws the
+invalid-index class, on every spelling of the index rows that leaves a model, the nonrepeatable group's
+included. -/
+example :
+    indexRows.all (fun (_, json, verdict) => match verdict with
+      | .classes codes =>
+          ((readModelWithAdmission json).toOption.map (·.flat.unresolvedIndexGroups.isEmpty)) ==
+            some !(codes.contains indexMissing)
+      | _ => true) = true := by
   native_decide
 
 /-! ## Both members defective at once

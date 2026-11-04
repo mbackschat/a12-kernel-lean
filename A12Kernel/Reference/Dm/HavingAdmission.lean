@@ -111,7 +111,9 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
     let chain := (List.range containingGroup.length).reverse.map fun depth => containingGroup.take (depth + 1)
     let indexPath := chain.map fun path =>
       let indexField := (model.semanticIndexGroupAt? path).bind (·.indexField)
-      ({ declaredNames := if indexField.isSome then 1 else 0
+      -- An index naming no field of its group is declared and unresolvable, which the walk settles on and the
+      -- name stage then refuses (a12-dmkits `GroupIndexAndSortReferenceLawsTest` at `1124b523f`, kernel 31.1.1).
+      ({ declaredNames := if indexField.isSome || model.unresolvedIndexGroups.contains path then 1 else 0
          nameResolvesToField := indexField.any fun id =>
            (model.lookupUniqueId id).toOption.any (·.groupPath == path) } : IndexDeclaringGroup)
     let selected ← match indexResolution indexPath, model.semanticIndexGroupForPath? containingGroup with

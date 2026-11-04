@@ -2,11 +2,12 @@ import Lean.Data.Json
 import A12Kernel.Reference.Dm.ComputationCheck
 import A12Kernel.Reference.Dm.EntryFrameFixture
 import A12Kernel.Reference.Dm.FieldTypeDeclarationRead
+import A12Kernel.Reference.Dm.LoneSurrogate
 import A12Kernel.Reference.Dm.ModelConsistencyRead
 
-/-! # What kernel 31.1.1 makes of an Enumeration's members, shared element ids, the type-definition order and an empty range pair
+/-! # What kernel 31.1.1 makes of an Enumeration's members, shared element ids, the type-definition order, an empty range pair and a Number bound
 
-Four settled readings of kernel 31.1.1, each locked on the carrier its peer oracle names. A row is one model
+Five settled readings of kernel 31.1.1, each locked on the carrier its peer oracle names. A row is one model
 with one declaration varied, and asserts what the readers draw together: the coded classes the declaration
 walk and the consistency check report, with their multiplicity and no class beyond them, or no model on all
 three. The model reader must keep its field exactly when no class is drawn; a row where the three readers
@@ -21,6 +22,8 @@ part is `split`, which no row expects.
 * The basic check walks a model's own type definitions as declared unless the model has something to expand,
   and by id in UTF-16 code-unit order when it has.
 * A range declaring the empty pair reads as the absent one.
+* A Number bound is judged by no magnitude its fractional digits allow, and a bound written as text or as a
+  number token of more than 1000 characters leaves no model.
 
 Locked: the a12-dmkits tests each cluster names, at 1124b523f, kernel 31.1.1.
 -/
@@ -457,6 +460,147 @@ example :
       temporal kind "format" none == [] &&
       ["", " ", "\t", "\u2003"].all fun format => temporal kind "format" (some format) == [modelNotBuiltLabel]) ∧
     temporal "DateFragmentType" "formatOfFragment" (some "") = [modelNotBuiltLabel] := by
+  native_decide
+
+/-! ## A Number bound judged by no magnitude
+
+Locked: a12-dmkits `CheckerNumberBoundMagnitudeAgreementTest` at 1124b523f, kernel 31.1.1 (peer KF582). Kernel
+31.1.0 deleted the rule that judged a bound by the magnitude its fractional digits allow, so the rows the rule
+was measured on draw only what the printed-bound check, the member ranges and the inversion draw. Each row is
+one Number field `Premium` with its bounds written, and asserts the whole label set of the declaration walk and
+the consistency check with its multiplicity, codeless classes included, while the model reader builds. The
+printed-bound class of two bounds is stated once, and a row reaching a member range keeps its class beside it. -/
+
+private def tooLong : String := ModelConsistencyClass.boundTotalDigitsTooLong.observedLabel
+private def signedZero : String := ModelConsistencyClass.boundSignedZero.observedLabel
+private def aboveScale : String := FieldTypeNotificationKind.memberAbove14.label
+private def signedMember : String := FieldTypeNotificationKind.memberSigned.label
+private def inverted : String := FieldTypeNotificationKind.minValueBiggerThanMaxValue.label
+
+/-- The whole label set of the walk and the check, which `verdictOf` narrows to the coded classes. -/
+private def allLabelsOf (json : Json) : Verdict :=
+  match walkOf json, consistencyOf json, builtOf json with
+  | none, none, none => .noModel
+  | some walk, some consistency, some _ => cls ((walk ++ consistency).map (·.1))
+  | walk, consistency, built =>
+      .split s!"walk {walk.isSome}, consistency {consistency.isSome}, model reader {built.isSome}"
+
+private def premiumModel (body : String) (typeDefinition : Bool := false) : Json :=
+  ({ elements := [fieldIn "/Policy/Number" "Number" string,
+       fieldIn "/Policy/Premium" "Premium"
+         (if typeDefinition then typed "TypeDefType" "{\"typeDefinitionId\":\"PremiumType\"}"
+          else typed "NumberType" body)]
+     typeDefinitions := if typeDefinition then
+       [Json.mkObj [("id", "PremiumType"), ("name", "PremiumType"), ("revision", "1"),
+         ("fieldType", typed "NumberType" body)]] else [] } : Carrier).json
+
+/-- The members of a Number body: the maximum fractional digits, the two bounds as written, then extras. -/
+private def bounds (places : Option Int) (lowest highest : Option String)
+    (extra : List (String × String) := []) : String :=
+  "{" ++ ",".intercalate (places.toList.map (fun count => s!"\"maxFractionalDigits\":{count}") ++
+    lowest.toList.map (fun bound => s!"\"minValue\":{bound}") ++
+    highest.toList.map (fun bound => s!"\"maxValue\":{bound}") ++
+    extra.map fun (key, value) => s!"\"{key}\":{value}") ++ "}"
+
+private def magnitudeRows : List (String × Json × Verdict) :=
+  let row (label : String) (body : String) (labels : List String) := (label, premiumModel body, cls labels)
+  [row "max 1e14 at scale 1" (bounds (some 1) none (some "1e14")) [],
+   row "max 99999999999999.9 at scale 1, the limit itself" (bounds (some 1) none (some "99999999999999.9")) [],
+   row "max 1e15 at scale 0" (bounds (some 0) none (some "1e15")) [tooLong],
+   row "max 999999999999999 at scale 0, the limit itself" (bounds (some 0) none (some "999999999999999")) [],
+   row "max 999999999999999.4 at scale 0, unrounded" (bounds (some 0) none (some "999999999999999.4")) [],
+   row "min 1e15 at scale 0, by absolute value" (bounds (some 0) (some "1e15") none) [tooLong],
+   row "min -1e15 at scale 0" (bounds (some 0) (some "-1e15") none) [tooLong],
+   row "min -999999999999999 at scale 0, the limit itself" (bounds (some 0) (some "-999999999999999") none) [],
+   row "max -1e15 at scale 0, signed" (bounds (some 0) none (some "-1e15")) [tooLong],
+   row "max 1e15, scale absent" (bounds none none (some "1e15")) [tooLong],
+   row "max 1e15 at scale -1" (bounds (some (-1)) none (some "1e15")) [tooLong],
+   row "max 9999999999999990 at scale -1, the limit itself" (bounds (some (-1)) none (some "9999999999999990")) [tooLong],
+   row "max 9999999999999991 at scale -1" (bounds (some (-1)) none (some "9999999999999991")) [tooLong],
+   row "max 10 at scale 14" (bounds (some 14) none (some "10")) [],
+   row "max 9.99999999999999 at scale 14, the limit itself" (bounds (some 14) none (some "9.99999999999999")) [],
+   row "max 2 at scale 15, outside its range" (bounds (some 15) none (some "2")) [aboveScale],
+   row "max 0.5 at scale 15" (bounds (some 15) none (some "0.5")) [aboveScale],
+   row "max 1 at scale 20" (bounds (some 20) none (some "1")) [aboveScale],
+   row "max 1e15 at scale -2" (bounds (some (-2)) none (some "1e15")) [tooLong, signedMember],
+   row "max 1e17 at scale -2" (bounds (some (-2)) none (some "1e17")) [tooLong, signedMember],
+   row "max 1e6 at scale 2 beside 3 integer places" (bounds (some 2) none (some "1e6") [("maxIntegerDigits", "3")]) [],
+   row "max 1e13 at scale 2, an amount" (bounds (some 2) none (some "1e13") [("trait", "\"amount\"")]) [],
+   row "max 9999999999999.99 at scale 2, an amount, the limit itself"
+     (bounds (some 2) none (some "9999999999999.99") [("trait", "\"amount\"")]) [],
+   row "both bounds at scale 0" (bounds (some 0) (some "-1e15") (some "1e15")) [tooLong],
+   row "min 1e15 over max 1 at scale 0" (bounds (some 0) (some "1e15") (some "1")) [tooLong],
+   row "min 1e14 over max 1 at scale 1, beside the inversion" (bounds (some 1) (some "1e14") (some "1")) [inverted],
+   row "max -0.4 beside min -1e15 at scale 0" (bounds (some 0) (some "-1e15") (some "-0.4")) [signedZero, tooLong],
+   row "max 999999999999.9995 at scale 3" (bounds (some 3) none (some "999999999999.9995")) [tooLong],
+   row "max 1e8 at scale 7" (bounds (some 7) none (some "1e8")) []]
+
+private def magnitudeFailures : List (String × Verdict) :=
+  magnitudeRows.filterMap fun (label, json, expected) =>
+    if allLabelsOf json == expected then none else some (label, allLabelsOf json)
+
+example : magnitudeFailures = [] := by native_decide
+
+/-- A definition's bound is judged through the field that resolves to it, which states the printed-bound class
+and no magnitude class: its maximum of 1e15 at no fractional digits (the type-definition test of the same
+peer class). -/
+example :
+    (allLabelsOf (premiumModel (bounds (some 0) none (some "1e15")) (typeDefinition := true)) == cls [tooLong]) = true := by
+  native_decide
+
+/-! ### The text a bound is read from
+
+Locked: a12-dmkits `ModelTextReadingDiffTest.aNumberBoundIsReadAsJavaReadsADecimal` at 1124b523f, kernel 31.1.1
+(peer KF593), the rows inside this reader's represented profile: a bound text reads as a decimal after Java's
+`trim`, the text `null` declares no bound, and text of more than 1000 characters leaves no model, as does a
+number token of that length, which every model file passes through `parseModelJson`. The three readers read the
+bound alike, or the model file does not parse. The rows beyond the profile, a bound or token exponent past
+this reader's range, are not locked. That the token limit reaches a number outside a bound is Jackson's one
+limit applied everywhere and is unmeasured here. -/
+
+private def boundFile (written : String) : String :=
+  "{\"header\":{\"id\":\"F\",\"modelVersion\":\"28.4.0\",\"locales\":[{\"code\":\"en_US\"}]},\"content\":" ++
+  "{\"modelInfo\":{\"name\":\"F\"},\"modelConfig\":{\"conditionLanguage\":{\"code\":\"en_US\"}},\"modelRoot\":" ++
+  "{\"rootGroups\":[{\"type\":\"Group\",\"id\":\"/Cover\",\"name\":\"Cover\",\"Group\":{\"elements\":[{\"type\":" ++
+  "\"Field\",\"id\":\"/Cover/Amount\",\"name\":\"Amount\",\"Field\":{\"fieldType\":{\"type\":\"NumberType\"," ++
+  "\"NumberType\":{\"maxFractionalDigits\":0,\"minValue\":" ++ written ++ "}}}}]}}]}}}"
+
+/-- Whether the model whose `minValue` is written as given is read: the file parses, and the walk, the
+consistency reader and the model reader each read the bound. `none` when they disagree. The model reader
+refuses a bound it cannot read with the member's name, which tells it from its profile limit on a bound
+outside the double range. -/
+private def reads? (written : String) : Option Bool :=
+  match parseModelJson (boundFile written) with
+  | .error _ => some false
+  | .ok json =>
+      let walk := (fieldTypeDeclarationNotifications json compile).toOption.isSome
+      let consistency := (readConsistencyModel json).toOption.isSome
+      let model := (readModelWithAdmission json).toOption.any fun read =>
+        !read.refusals.any (·.2.startsWith "minValue ")
+      if walk == consistency && consistency == model then some walk else none
+
+private def digits (count : Nat) : String := "".pushn '1' count
+
+private def textRows : List (String × String × Bool) :=
+  [("\"5\", the control", "\"5\"", true), ("\" 5 \"", "\" 5 \"", true), ("\"5.0\"", "\"5.0\"", true),
+   ("5", "5", true), ("a no-break space and 5", "\"\\u00A05\"", false),
+   ("an Arabic-Indic digit", "\"\\u0665\"", false), ("\"abc\"", "\"abc\"", false),
+   ("\"null\"", "\"null\"", true),
+   ("1000 digits as text", s!"\"{digits 1000}\"", true), ("1001 digits as text", s!"\"{digits 1001}\"", false),
+   ("a 1000-digit token", digits 1000, true), ("a 1001-digit token", digits 1001, false),
+   ("\"5.\"", "\"5.\"", true), ("\".5\"", "\".5\"", true), ("\"1e5\"", "\"1e5\"", true), ("\"+5\"", "\"+5\"", true)]
+
+private def textFailures : List (String × Option Bool) :=
+  textRows.filterMap fun (label, written, built) =>
+    if reads? written == some built then none else some (label, reads? written)
+
+example : textFailures = [] := by native_decide
+
+/-- A number token anywhere in the model file is held to the limit too: Jackson's one limit, applied beyond a
+bound. Unmeasured outside a bound. -/
+example :
+    (parseModelJson s!"[{digits 1000}]").isOk = true ∧ (parseModelJson s!"[{digits 1001}]").isOk = false ∧
+    (parseModelJson s!"\{\"baseYear\":{digits 1001}}").isOk = false := by
   native_decide
 
 end A12Kernel.Dm.DeclarationShapeLocks

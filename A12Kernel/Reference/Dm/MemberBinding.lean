@@ -27,7 +27,9 @@ and `RepeatabilityTextReadingDiffTest` at `1124b523f`, 2026-11-02):
 
 Lean's JSON parser folds an exponent into the value, so `1e0` and `1` parse alike. The model-file
 parser (`parseModelJson`) therefore first rewrites every exponent token as its plain decimal spelling
-(`respellExponentTokens`), which keeps a fraction digit and with it the token's kind. -/
+(`respellExponentTokens`), which keeps a fraction digit and with it the token's kind. The same pass refuses a
+number token, and `decimalMember?` a bound text, of more than `modelNumberLengthLimit` characters, which
+kernel 31.1.1's Jackson 3 refuses (a12-dmkits `ModelTextReadingDiffTest` at `1124b523f`, KF593). -/
 
 namespace A12Kernel.Dm
 
@@ -36,6 +38,13 @@ open Lean A12Kernel
 /-- The widest exponent `respellExponentTokens` writes out, as many zeros at most. A model carrying a wider one
 is refused as outside the represented profile: how the Kernel binds such a member is unmeasured. -/
 def modelNumberExponentBound : Nat := 100000
+
+/-- The longest number token, or Number bound text, kernel 31.1.1 reads: 1000 characters, measured on a Number
+bound (the text and the token of 1000 digits build, 1001 leave no model; a12-dmkits `ModelTextReadingDiffTest`
+at `1124b523f`). That the limit holds for a number token anywhere else in the model is Jackson's one limit
+applied everywhere, and is unmeasured beyond a bound. Whether the count is taken before or after Java's `trim`
+for text is unmeasured too. -/
+def modelNumberLengthLimit : Nat := 1000
 
 /-- A strict JSON number token with an exponent, respelled in plain decimal with at least one fraction
 digit (`1e0` as `1.0`, `1.5e-2` as `0.015`); `none` for every other token, which stays as written. -/
@@ -79,9 +88,17 @@ private def plainSpelling? (token : String) : Except String (Option String) :=
 private inductive ModelLexState where
   | plain | quoted | escaped | number
 
+/-- A number token as the JSON parser should see it: refused when longer than `modelNumberLengthLimit`
+characters, else respelled by `plainSpelling?`. -/
+private def respelledToken (token : String) : Except String String := do
+  if modelNumberLengthLimit < token.length then
+    throw s!"model number token of {token.length} characters exceeds the reader's limit"
+  pure ((← plainSpelling? token).getD token)
+
 /-- Model text with each exponent token respelled by `plainSpelling?`, so it parses with a fraction as
 its plain spelling does. Every other character, and every token that is no strict JSON number, passes
-through for the JSON parser to judge. -/
+through for the JSON parser to judge, except that a token past `modelNumberLengthLimit` characters refuses
+the model. -/
 def respellExponentTokens (text : String) : Except String String := do
   let mut state := ModelLexState.plain
   let mut token := ""
@@ -106,10 +123,10 @@ def respellExponentTokens (text : String) : Except String String := do
         if char.isDigit || char == '.' || char == 'e' || char == 'E' || char == '+' || char == '-' then
           token := token.push char
         else
-          output := output ++ ((← plainSpelling? token).getD token)
+          output := output ++ (← respelledToken token)
           output := output.push char
           state := if char == '"' then .quoted else .plain
-  if let .number := state then output := output ++ ((← plainSpelling? token).getD token)
+  if let .number := state then output := output ++ (← respelledToken token)
   pure output
 
 /-- A text member that reads as no value: blank after `trim`, or the text `null`. -/

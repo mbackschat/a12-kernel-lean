@@ -2,13 +2,15 @@ import A12Kernel.Semantics.NumericInput
 
 /-! # Number declaration bounds through binary64
 
-A Number declaration's `minValue` and `maxValue` are authored as exact decimals, but the Kernel
-carries them through Java `double` twice ([spec/04](../../spec/04-numbers-and-decimals.md)). The
-model consistency check compares the nearest double against a double limit, so a bound one digit past
-the limit can pass ([checkpoint](../../docs/sources/domain-ingestion-probes.md#src-number-declaration-bounds-k17)). Generated code then receives the bound as text printed from that double, and
-the runtime checks a stored value against that text, not against the authored decimal.
+A Number declaration's `minValue` and `maxValue` are authored as exact decimals, but the Kernel carries them
+through Java `double` twice ([spec/04](../../spec/04-numbers-and-decimals.md)). Generated code receives the bound
+as text printed from that double, the model consistency check judges that printed text, and the runtime checks a
+stored value against it, not against the authored decimal. Kernel 30.8.1 also compared the nearest double
+against a limit its declared fraction digits allow, so a bound one digit past the limit could pass
+([checkpoint](../../docs/sources/domain-ingestion-probes.md#src-number-declaration-bounds-k17)); kernel 31.1.0
+deleted that rule (peer KF582), and nothing here judges a bound by magnitude.
 
-This module owns the binary64 arithmetic both uses need, over exact rationals: correctly rounded
+This module owns the binary64 arithmetic the printed bound needs, over exact rationals: correctly rounded
 conversion, the shortest decimal that reads back to a double, and the two printed forms. Doubles
 outside the normal range are reported as beyond the represented profile rather than modelled.
 -/
@@ -139,20 +141,5 @@ runtime reads it. -/
 def printedValue? (authored : Rat) (minFractionalDigits maxFractionalDigits : Int) : Option Rat :=
   (printed? authored minFractionalDigits maxFractionalDigits).bind fun text =>
     (parseNumericFormalRead? text).map (·.value)
-
-/-- Java `Math.pow(10, 15 - m) - Math.pow(10, -m)` in double, the largest magnitude a bound may have at
-`m` fraction digits. Both powers are taken as the correctly rounded doubles. -/
-def maximumAllowed (maxFractionalDigits : Int) : Rat :=
-  let power (exponent : Int) := (nearest? (pow10 exponent)).getD 0
-  (nearest? (power (15 - maxFractionalDigits) - power (-maxFractionalDigits))).getD 0
-
-/-- Whether the model check refuses a `maxValue` (`minimum = false`) or a `minValue`: the authored
-bound's nearest double exceeds the double limit, a minimum by magnitude. A bound beyond the normal
-double range needs no rounding to decide: an overflow is an infinity, which exceeds the limit unless it
-is a negative maximum, and a subnormal magnitude is far below any limit. -/
-def exceedsLimit (authored : Rat) (maxFractionalDigits : Int) (minimum : Bool) : Bool :=
-  match nearest? authored with
-  | some value => maximumAllowed maxFractionalDigits < (if minimum then magnitude value else value)
-  | none => 1 ≤ magnitude authored && (minimum || 0 < authored)
 
 end A12Kernel.NumberBound

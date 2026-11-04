@@ -106,7 +106,8 @@ private def length? (json : Json) (key : String) : Except String (Option Nat) :=
 surrounding spaces trimmed, an optional sign, digits with an optional point and an optional exponent
 (rows `sb-str`, `sb-str-exp`, `sb-str-plus`, `sb-str-space`, `sb-str-frac`, while `sb-str-abc` is
 unreadable). Among the trimmed characters only a leading space is measured. An exponent beyond ±400 is
-refused as outside this reader's range, which is no Kernel class. -/
+refused as outside this reader's range, which is no Kernel class. The text's length limit is
+`decimalMember?`'s. -/
 private def boundText? (text : String) : Option Rat := do
   let trim (characters : List Char) := characters.dropWhile (·.toNat ≤ 0x20)
   let trimmed := (trim (trim text.toList).reverse).reverse
@@ -135,7 +136,10 @@ private def boundText? (text : String) : Option Rat := do
   pure (if negative then -magnitude else magnitude)
 
 /-- A DM decimal bound, written as a JSON number or as text `boundText?` reads; absent is `none`, and
-any other value refuses the declaration rather than dropping the bound. -/
+any other value refuses the declaration rather than dropping the bound. Text of more than
+`modelNumberLengthLimit` characters is refused as text no decimal reading takes (a12-dmkits
+`ModelTextReadingDiffTest` at `1124b523f`, kernel 31.1.1; the length of the text as written, not trimmed, is
+the unmeasured choice). -/
 def decimalMember? (json : Json) (key : String) : Except String (Option Rat) :=
   match json.getObjVal? key with
   | .ok (.num number) => pure (some (Rat.ofScientific number.mantissa.natAbs true number.exponent *
@@ -143,6 +147,7 @@ def decimalMember? (json : Json) (key : String) : Except String (Option Rat) :=
   | .ok (.str text) =>
       -- The text `null` binds as no bound (2026-10-21 §2.22).
       if javaTrim text == "null" then pure none else
+      if modelNumberLengthLimit < text.length then throw s!"{key} text of {text.length} characters" else
       match boundText? text with
       | some value => pure (some value)
       | none => throw s!"{key} {text}"
@@ -577,11 +582,18 @@ private def readModelCore (json : Json)
     { group with indexField := index }
   let nonrepeatableIndexFields := state.nonrepeatableIndexFields.toList.filterMap fun (path, nomination) =>
     (fieldId path (nominationShortName path nomination)).map (path, ·)
+  -- A nomination naming no direct child field is still a declared index (a12-dmkits
+  -- `GroupIndexAndSortReferenceLawsTest` at `1124b523f`, kernel 31.1.1), which a semantic index over its group
+  -- meets as an invalid one, so the flat model keeps it apart from the groups that declare none.
+  let unresolvedIndexGroups := (state.indexFields.toList.map (·.2) ++
+      state.nonrepeatableIndexFields.toList).filterMap fun (path, nomination) =>
+    if (fieldId path (nominationShortName path nomination)).isNone then some path else none
   let flat : FlatModel := {
     fields := state.fields.toList
     repeatableGroups := groups
     nonrepeatableIndexFields
     emptyNonrepeatableGroups := state.emptyNonrepeatableGroups.toList
+    unresolvedIndexGroups
     legalCharset
     fieldRefByShortNameAllowed := ← booleanMember? config "fieldRefByShortNameAllowed"
     baseYear

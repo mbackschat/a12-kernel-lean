@@ -23,7 +23,9 @@ peer and local rows of 2026-10-29. The captures' own rows that carried a `varian
 since that member is retired (DM 29.1) and read past, and the three capture rows whose declaration the
 converter now drops or repairs, an empty field name, an empty computed-field path and an empty
 type-definition reference, state kernel 31.1.1's account in `conversionFailureRows` instead of the
-capture's.
+capture's. Kernel 31.1.0 also deleted the value-limit rule the captures measured (peer KF582), so the capture
+rows that observed its classes are restated under kernel 31.1.1 or not replayed, as `numberLimitRows`,
+`boundOrderRows` and `derivedOrderRows` state.
 
 The captures record labels, not payloads, so the paths the check attaches are checked only by the
 examples at the end. Those pin this module's choice and no observation, except in the type-definition
@@ -191,8 +193,6 @@ private def notBuilt : String := "codeless:model-not-built"
 
 /-- The labels of the check's classes, as the captures spell them. -/
 private def idNotUnique : String := "codeless:id-not-unique"
-private def maxExceeded : String := "codeless:number-max-value-exceeded"
-private def minExceeded : String := "codeless:number-min-value-exceeded"
 private def missingField : String := "codeless:attachment-missing-field"
 private def requiredRules : String := "codeless:attachment-required-rules"
 private def contentConfig : String := "codeless:attachment-content-config"
@@ -230,23 +230,26 @@ private def disagreeing (rows : List (String × Row)) : List String :=
 example (kind : ModelConsistencyClass) : kind ∈ ModelConsistencyClass.all := by
   cases kind <;> simp [ModelConsistencyClass.all]
 
-/-- A bound past the limit its declared fraction digits allow raises a value-limit class, and one that
-also prints past the stored digit limit raises a formal class after it. A type definition's bounds are
-judged through the field that uses it, not on their own. -/
+/-- Kernel 31.1.0 deleted the rule that judged a bound by the magnitude its fractional digits allow (peer
+KF582), so a bound past that limit draws only the printed-bound class, and only when it also prints past the
+stored digit limit. The rows `v0-max`, `v0-min-neg`, `v0-min-pos`, `v0-both`, `v14-over` and `v-typedef` restate
+the capture's input under kernel 31.1.1, whose peer measurement is the same input: the 30.8.1 observation of
+each carried a magnitude class (Locked: a12-dmkits `CheckerNumberBoundMagnitudeAgreementTest` at 1124b523f;
+[the declaration-shape locks](DeclarationShapeLocks.lean) hold the whole class set of the three readers). The
+capture rows `v2-over`, `v2-fine-over` and `v14-fine-over` observed a magnitude class on an input the peer
+test does not measure, so they are not replayed. A type definition's bounds are judged through the field that
+uses it, not on their own. -/
 private def numberLimitRows : List (String × Row) := [
   ("v0-ok", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (maxValue := "999999999999999"))], observed := [] }),
-  ("v0-max", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (maxValue := "1000000000000000"))], observed := [maxExceeded, tooLong] }),
-  ("v0-min-neg", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (minValue := "-1000000000000000"))], observed := [minExceeded, tooLong] }),
-  ("v0-min-pos", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (minValue := "1000000000000000"))], observed := [minExceeded, tooLong] }),
-  ("v0-both", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (minValue := "-1000000000000000") (maxValue := "1000000000000000"))], observed := [maxExceeded, minExceeded, tooLong] }),
+  ("v0-max", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (maxValue := "1000000000000000"))], observed := [tooLong] }),
+  ("v0-min-neg", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (minValue := "-1000000000000000"))], observed := [tooLong] }),
+  ("v0-min-pos", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (minValue := "1000000000000000"))], observed := [tooLong] }),
+  ("v0-both", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (minValue := "-1000000000000000") (maxValue := "1000000000000000"))], observed := [tooLong] }),
   ("v2-ok", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (maxValue := "9999999999999.99"))], observed := [] }),
-  ("v2-over", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (maxValue := "10000000000000"))], observed := [maxExceeded] }),
   ("v2-fine", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (maxValue := "9999999999999.991"))], observed := [] }),
-  ("v2-fine-over", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (maxValue := "9999999999999.995"))], observed := [maxExceeded, tooLong] }),
   ("v14-ok", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "9.99999999999999"))], observed := [] }),
-  ("v14-fine-over", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "9.999999999999991"))], observed := [maxExceeded, tooLong] }),
-  ("v14-over", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "10"))], observed := [maxExceeded] }),
-  ("v-typedef", { append := [fieldEl "/Form/N" "N" (typedefType "BigTd")], typeDefinitions := [typedefEl "BigTd" "BigTd" (numberType (maxFractional := "0") (maxValue := "1000000000000000"))], observed := [maxExceeded, tooLong] }),
+  ("v14-over", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "10"))], observed := [] }),
+  ("v-typedef", { append := [fieldEl "/Form/N" "N" (typedefType "BigTd")], typeDefinitions := [typedefEl "BigTd" "BigTd" (numberType (maxFractional := "0") (maxValue := "1000000000000000"))], observed := [tooLong] }),
   ("v-typedef-unused", { typeDefinitions := [typedefEl "BigTd" "BigTd" (numberType (maxFractional := "0") (maxValue := "1000000000000000"))], observed := [] }),
   ("v-neg-fine", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (minValue := "-9999999999999.991"))], observed := [] })]
 
@@ -270,8 +273,8 @@ private def printedBoundRows : List (String × Row) := [
 
 example : disagreeing printedBoundRows = [] := by native_decide
 
-/-- Fraction-digit declarations draw codes this check does not own and no class of its own; a negative
-declared maximum still reaches the limit check unchanged. -/
+/-- Fraction-digit declarations draw codes this check does not own and no class of its own, a negative
+declared maximum included. -/
 private def declaredDigitsRows : List (String × Row) := [
   ("s-min-1", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (minFractional := "-1"))], observed := [] }),
   ("s-max-1", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "-1"))], observed := [] }),
@@ -283,17 +286,25 @@ private def declaredDigitsRows : List (String × Row) := [
 
 example : disagreeing declaredDigitsRows = [] := by native_decide
 
-/-- The maximum's formal class precedes the minimum's within a field, whichever bound is long and
-whichever a negative zero; a class both bounds of one field raise is reported once, but once per field
-across fields. -/
+/-- A class both bounds of one field raise is reported once, but once per field across fields; a bound that
+prints a negative zero draws its own class beside the other bound's. The capture rows `d1`, `d3` and `d4`
+observed a magnitude class and are not replayed as captures: `d4`'s remaining class is `v0-both`'s, and `d1`
+and `d3` are restated as `derivedOrderRows`. -/
 private def boundOrderRows : List (String × Row) := [
-  ("d1-min-negzero-max-long", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (minFractional := "14") (minValue := "-0.000000000000001") (maxValue := "10.00000000000001"))], observed := [maxExceeded, tooLong, signedZero] }),
   ("d2-two-fields-long", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "1.000000000000001")), fieldEl "/Form/M" "M" (numberType (maxFractional := "14") (maxValue := "2.000000000000001"))], observed := [tooLong, tooLong] }),
-  ("d3a-min-fifteen-max-negzero", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (minFractional := "2") (minValue := "1000000000000.001") (maxValue := "-0.0001"))], observed := [signedZero] }),
-  ("d3-min-long-max-negzero", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (minFractional := "2") (minValue := "-10000000000000.12") (maxValue := "-0.0001"))], observed := [minExceeded, signedZero, tooLong] }),
-  ("d4-min-long-max-long-distinct", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (minValue := "-10000000000000.12") (maxValue := "10000000000000.13"))], observed := [maxExceeded, minExceeded, tooLong] })]
+  ("d3a-min-fifteen-max-negzero", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (minFractional := "2") (minValue := "1000000000000.001") (maxValue := "-0.0001"))], observed := [signedZero] })]
 
 example : disagreeing boundOrderRows = [] := by native_decide
+
+/-- Unmeasured on kernel 31.1.1. The maximum's formal class precedes the minimum's within a field, whichever
+bound is long and whichever a negative zero: that order was observed on kernel 30.8.1 in the capture rows
+`d1` and `d3`, each with a magnitude class that 31.1.1 deleted. The sequences below are those rows' remaining
+classes, derived from the unchanged printed-bound check, with no 31.1.1 measurement of the two together. -/
+private def derivedOrderRows : List (String × Row) := [
+  ("d1-min-negzero-max-long", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (minFractional := "14") (minValue := "-0.000000000000001") (maxValue := "10.00000000000001"))], observed := [tooLong, signedZero] }),
+  ("d3-min-long-max-negzero", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (minFractional := "2") (minValue := "-10000000000000.12") (maxValue := "-0.0001"))], observed := [signedZero, tooLong] })]
+
+example : disagreeing derivedOrderRows = [] := by native_decide
 
 /-- Each occurrence of a shared identifier is reported, the empty identifier included; a field, a rule, a
 group and a computation share the namespace, the root group's identifier too. -/
@@ -398,7 +409,7 @@ example : disagreeing attachmentRows = [] := by native_decide
 The captures observe no paths; these pin the element paths the check attaches. -/
 
 private def rowNamed (id : String) : Option Row :=
-  ((numberLimitRows ++ boundOrderRows ++ identifierRows ++ emptinessRows ++ conversionFailureRows ++
+  ((numberLimitRows ++ boundOrderRows ++ derivedOrderRows ++ identifierRows ++ emptinessRows ++ conversionFailureRows ++
       multiSelectRows).find?
     (·.1 == id)).map (·.2)
 
@@ -440,7 +451,6 @@ example :
   native_decide
 
 example : outcomeOf "d3-min-long-max-negzero" = some (.checked [
-    { path := ["Form", "N"], kind := .numberMinValueExceeded },
     { path := ["Form", "N"], kind := .boundSignedZero },
     { path := ["Form", "N"], kind := .boundTotalDigitsTooLong }]) := by
   native_decide

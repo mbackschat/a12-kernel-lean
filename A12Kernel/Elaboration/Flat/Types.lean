@@ -462,6 +462,12 @@ structure FlatModel where
   deliberately ignore it, and `declaresEmptyGroup` is its one query
   ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-empty-declared-group)). -/
   emptyNonrepeatableGroups : List GroupPath := []
+  /-- The groups, repeatable or not, whose index nomination names no direct child field. Such a group still
+  declares an index, which it cannot supply: a rule using a semantic index over it draws the invalid-index
+  class where an undeclared index draws the missing-index class (a12-dmkits
+  `GroupIndexAndSortReferenceLawsTest` at `1124b523f`, kernel 31.1.1, measured for a spelling landing on
+  the parent's field). Neither `indexField` nor `nonrepeatableIndexFields` holds the group. -/
+  unresolvedIndexGroups : List GroupPath := []
   /-- Admitted full-input charset; computed target checks omit this baseline (spec/06 §A.2). -/
   legalCharset : LegalCharset := .defaultBmp
   fieldRefByShortNameAllowed : Bool := false

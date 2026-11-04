@@ -22,13 +22,14 @@ categories of one name, the empty name and an absent one reading as one key (pee
 empty or blank name, a type-definition reference with no id and a computation with no computed-field path
 are not such defects on kernel 31.1.1: its converter states a sentence and goes on without the declaration
 (the validation-model converter, `Reference/Dm/ModelConversion.lean`), while this basic check still walks
-the authored model. Otherwise six checks run in this registration order and their notifications concatenate
-in it, so a class is never interleaved with another check's:
+the authored model. Otherwise five checks run in this registration order and their notifications concatenate
+in it, so a class is never interleaved with another check's. Their numbers are those of spec/01 §1.2, whose
+second rule, the Number value limit, kernel 31.1.0 deleted (peer KF582, a12-dmkits
+`CheckerNumberBoundMagnitudeAgreementTest` at `1124b523f`): a bound is judged by no magnitude its fractional
+digits allow, and its number is not reused.
 
 1. Element identifier uniqueness, over every group, field, rule and computation; a type definition is
    outside it. The empty identifier is an ordinary identifier here.
-2. Number value limits: a declared maximum or minimum whose nearest binary64 exceeds the limit the
-   declared fraction digits allow (`NumberBound.exceedsLimit`), maximum first.
 3. Attachment groups: the required fields, the required rules and the `content` field's String
    configuration.
 4. Multi-select groups: repeatability, the single Enumeration or String field and its requiredness, and
@@ -46,11 +47,10 @@ elements depth-first, a group before its children. Within one check the notifica
 type definitions sharing an id leave the model unbuilt before any element is judged (peer KF647 and a local
 probe, `docs/sources/inbound-handbacks.md#src-inbound-2026-10-29`).
 
-The captures fix identifier uniqueness before emptiness and value limits before the bound check; the
-remaining registration order, the raw (possibly `-1`) maximum fraction digits as the limit input, a
-`content` field missing either String flag, the nested-element test regardless of the field count, and
-the first child named `content` of any kind are read from the Kernel's consistency rule sources at
-kernel 30.8.1, not separately measured ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-model-consistency-k17)).
+The captures fix identifier uniqueness before emptiness and the maximum's printed-bound class before the
+minimum's (kernel 30.8.1); the remaining registration order, a `content` field missing either String flag,
+the nested-element test regardless of the field count, and the first child named `content` of any kind are
+read from the Kernel's consistency rule sources at kernel 30.8.1, not separately measured ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-model-consistency-k17)).
 Two build failures in one model and the order across distinct duplicated identifiers are unmeasured;
 a label-only capture cannot separate the latter. The order of one element's classes in check 6 is
 unmeasured too: a peer measurement of a12-dmkits `1124b523f` (`CheckerConverterSentenceAgreementTest`,
@@ -131,8 +131,6 @@ structure ConsistencyModel where
 /-- A notification class of the consistency check. Every class is an ERROR. -/
 inductive ModelConsistencyClass where
   | idNotUnique
-  | numberMaxValueExceeded
-  | numberMinValueExceeded
   | attachmentMissingField
   | attachmentRequiredRules
   | attachmentContentConfig
@@ -171,7 +169,7 @@ namespace ModelConsistencyClass
 
 /-- Every class once, in declaration order. -/
 def all : List ModelConsistencyClass :=
-  [idNotUnique, numberMaxValueExceeded, numberMinValueExceeded, attachmentMissingField,
+  [idNotUnique, attachmentMissingField,
     attachmentRequiredRules, attachmentContentConfig, multiSelectRepeatableGroup,
     multiSelectRequiredField, multiSelectRequiredFlag, multiSelectIndexField, multiSelectFieldType,
     multiSelectOtherElements, boundTotalDigitsTooLong, boundSignedZero, idEmpty, errorConditionEmpty,
@@ -183,8 +181,6 @@ def all : List ModelConsistencyClass :=
 every other class is codeless and named by itself. -/
 def observedLabel : ModelConsistencyClass → String
   | idNotUnique => "codeless:id-not-unique"
-  | numberMaxValueExceeded => "codeless:number-max-value-exceeded"
-  | numberMinValueExceeded => "codeless:number-min-value-exceeded"
   | attachmentMissingField => "codeless:attachment-missing-field"
   | attachmentRequiredRules => "codeless:attachment-required-rules"
   | attachmentContentConfig => "codeless:attachment-content-config"
@@ -373,20 +369,6 @@ def idUniquenessNotifications (model : ConsistencyModel) : List ModelConsistency
   model.entries.flatMap fun (path, element) =>
     raiseIf (1 < ids.count element.id) path .idNotUnique
 
-/-- Whether the declared bound, if any, exceeds the limit its declared maximum fraction digits allow.
-The maximum fraction digits are the raw declared value, which may be negative. -/
-private def exceeds (bound : Option Rat) (maxFractionalDigits : Int) (minimum : Bool) : Bool :=
-  bound.any fun authored => NumberBound.exceedsLimit authored maxFractionalDigits minimum
-
-/-- Check 2. A type definition's own bounds are not checked, only the fields that resolve to them. -/
-def numberLimitNotifications (model : ConsistencyModel) : List ModelConsistencyNotification :=
-  model.fieldEntries.flatMap fun (path, field) =>
-    match field.effective with
-    | some (.number _ maxFractionalDigits minValue maxValue) =>
-        raiseIf (exceeds maxValue maxFractionalDigits false) path .numberMaxValueExceeded ++
-          raiseIf (exceeds minValue maxFractionalDigits true) path .numberMinValueExceeded
-    | _ => []
-
 /-- The field names an attachment group must declare. -/
 def attachmentRequiredFieldNames : List String :=
   ["original_filename", "internal_filename", "content", "attachment_id", "size", "mime_type",
@@ -540,7 +522,7 @@ def check (model : ConsistencyModel) : Except String ModelConsistencyOutcome :=
   | none => do
       let attachment ← attachmentGroupNotifications model
       let boundFormal ← boundFormalNotifications model
-      pure (.checked (supportedLanguageNotifications model ++ idUniquenessNotifications model ++ numberLimitNotifications model ++
+      pure (.checked (supportedLanguageNotifications model ++ idUniquenessNotifications model ++
         attachment ++ multiSelectGroupNotifications model ++ boundFormal ++
         emptinessNotifications model))
 
