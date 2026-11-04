@@ -12,7 +12,8 @@ Equality rows compare the readers' whole output, so a reader that treats a membe
 twin shows up whichever output carries the difference.
 
 Each cluster names the peer lock it mirrors. The elements outside this module are other steps': the
-included models and workspaces, the version value, name sentences and ordering members.
+included models and workspaces, the version value and ordering members. An element's name binds in the
+same pass, which [the converter locks](ConverterSentenceLocks.lean) state with the converter's sentences.
 -/
 
 namespace A12Kernel.Dm.ReaderBindingLocks

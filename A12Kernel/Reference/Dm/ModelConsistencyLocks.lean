@@ -15,10 +15,13 @@ the unbuilt-model label. Row `b-localized-null` is not replayed: the capture rec
 fault (`admitted: null`), not an observation of the Kernel. Peer KF646 has since measured that shape,
 which the [text-binding locks](LocalizedTextBindingLocks.lean) fix for this reader too.
 
-Two parts replay other measurements: `conversionFailureRows`, a peer measurement of the declaration
-build failures, and the type-definition section at the end, peer and local rows of 2026-10-29. The captures'
-own rows that carried a `variantFilter` are not replayed, since that member is retired (DM 29.1) and read
-past.
+Two parts replay other measurements: `conversionFailureRows`, a peer measurement of kernel 31.1.1 on the
+declarations its validation-model converter drops or repairs, and the type-definition section at the end,
+peer and local rows of 2026-10-29. The captures' own rows that carried a `variantFilter` are not replayed,
+since that member is retired (DM 29.1) and read past, and the three capture rows whose declaration the
+converter now drops or repairs, an empty field name, an empty computed-field path and an empty
+type-definition reference, state kernel 31.1.1's account in `conversionFailureRows` instead of the
+capture's.
 
 The captures record labels, not payloads, so the paths the check attaches are checked only by the
 examples at the end. Those pin this module's choice and no observation, except in the type-definition
@@ -198,6 +201,9 @@ private def conditionEmpty : String := "codeless:error-condition-empty"
 private def entityNotSet : String := "codeless:error-entity-not-set"
 private def operationEmpty : String := "codeless:computation-operation-empty"
 private def typedefNameEmpty : String := "codeless:typedef-name-empty"
+private def nameEmpty : String := "codeless:element-name-empty"
+private def typedefReferenceEmpty : String := "codeless:typedef-reference-empty"
+private def computedFieldEmpty : String := "codeless:computed-field-empty"
 
 /-- The capture's labels this check owns: codes other owners carry are dropped. -/
 private def projected (observed : List String) : List String :=
@@ -299,39 +305,45 @@ example : disagreeing identifierRows = [] := by native_decide
 /-- A defect that stops the build leaves no class; an empty identifier, condition, error entity,
 operation or type definition name is a class of its own. -/
 private def emptinessRows : List (String × Row) := [
-  ("b-field-name-empty", { append := [fieldEl "/Form/Nameless" "" (stringType)], observed := [notBuilt] }),
   ("b-error-entity-empty", { append := [ruleEl "/Form/R" "R" "" "FieldFilled(Value)"], observed := ["MVK_ERROR_FIELD_MISSING", "MVK_MISSING_ERROR_FIELD", entityNotSet] }),
   ("b-error-condition-empty", { append := [ruleEl "/Form/R" "R" "../Value" ""], observed := ["MVK_CONDITION_MISSING", "MVK_INCOMPLETE_INPUT", conditionEmpty] }),
-  ("b-computed-field-empty", { append := [computationEl "/Form/C" "C" "" ["1"]], observed := [notBuilt] }),
   ("b-operation-empty", { append := [computationEl "/Form/C" "C" "../Total" [""]], observed := ["MVK_INCOMPLETE_INPUT", operationEmpty] }),
   ("b-enum-dup-categories", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["b"])])], observed := [notBuilt] }),
   ("b-index-name-empty", { append := [groupEl "/Form/G" "G" 3 [fieldEl "/Form/G/K" "K" (stringType)] (indexFieldName := "")], observed := [notBuilt] }),
   ("b-sort-name-empty", { append := [groupEl "/Form/G" "G" 3 [fieldEl "/Form/G/K" "K" (stringType)] (sortFieldNames := [""])], observed := [notBuilt] }),
-  ("b-typedef-ref-empty", { append := [fieldEl "/Form/T" "T" (typedefType "")], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [notBuilt] }),
   ("b-typedef-id-empty", { typeDefinitions := [typedefEl "" "Td" (stringType)], observed := [idEmpty] }),
   ("b-typedef-name-empty", { typeDefinitions := [typedefEl "Td" "" (stringType)], observed := [typedefNameEmpty] })]
 
 example : disagreeing emptinessRows = [] := by native_decide
 
-/-- A declaration whose conversion fails leaves no model: an Enumeration declaring two categories of one
-name whether their values are equal or differ, a type-definition reference whose id is absent, and a
-rule, computation or field named empty or with one space, a blank name failing the build as an empty one
-does (KF626). The distinct categories, the resolved reference and a computed-field path that is set build
-and draw nothing. The rows are not capture rows: they replay the peer measurement of a12-dmkits
-`fecf8552`, `CheckerBasicSentenceAgreementTest` (BoundModel oracle, kernel 30.8.1), recorded at
-`docs/sources/inbound-handbacks.md#src-inbound-2026-10-27`; the rows that vary a declaration's
-`variantFilter` are not replayed, since that member is retired. -/
+/-- A declaration the validation-model converter drops or repairs no longer leaves the basic check without a
+model: it still walks the authored model, which draws an empty element name, an empty or absent
+type-definition reference and an empty computed-field path as classes of their own, while a blank name that
+is not empty draws none (the converter states its own sentence for it). An Enumeration declaring two
+categories of one name leaves no model, whether their values are equal or differ, and the distinct
+categories, the resolved reference and a computed-field path that is set build and draw nothing. The rows
+are not capture rows: they replay the peer measurement of a12-dmkits `1124b523f`,
+`CheckerConverterSentenceAgreementTest` (kernel 31.1.1), except the enumeration rows, which keep the
+a12-dmkits `fecf8552` measurement, `CheckerBasicSentenceAgreementTest` (kernel 30.8.1), recorded at
+`docs/sources/inbound-handbacks.md#src-inbound-2026-10-27`: the account of an Enumeration's categories on
+kernel 31.1.1 is another step's. The rows that vary a declaration's `variantFilter` are not replayed, since
+that member is retired. -/
 private def conversionFailureRows : List (String × Row) := [
   ("cf-computed-field-set", { append := [computationEl "/Form/C" "C" "../Total" ["1"]], observed := [] }),
+  ("cf-computed-field-empty", { append := [computationEl "/Form/C" "C" "" ["1"]], observed := [computedFieldEmpty] }),
   ("cf-enum-dup-equal", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["a"])])], observed := [notBuilt] }),
   ("cf-enum-distinct", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("L", ["b"])])], observed := [] }),
-  ("cf-typedef-ref-absent", { append := [fieldEl "/Form/T" "T" typedefTypeWithoutId], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [notBuilt] }),
+  ("cf-typedef-ref-absent", { append := [fieldEl "/Form/T" "T" typedefTypeWithoutId], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [typedefReferenceEmpty] }),
+  ("cf-typedef-ref-empty", { append := [fieldEl "/Form/T" "T" (typedefType "")], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [typedefReferenceEmpty] }),
   ("cf-typedef-ref-resolved", { append := [fieldEl "/Form/T" "T" (typedefType "Td")], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [] }),
-  ("cf-field-name-blank", { append := [fieldEl "/Form/N" " " (stringType)], observed := [notBuilt] }),
-  ("cf-rule-name-empty", { append := [ruleEl "/Form/R" "" "../Value" "FieldFilled(Value)"], observed := [notBuilt] }),
-  ("cf-rule-name-blank", { append := [ruleEl "/Form/R" " " "../Value" "FieldFilled(Value)"], observed := [notBuilt] }),
-  ("cf-computation-name-empty", { append := [computationEl "/Form/C" "" "../Total" ["1"]], observed := [notBuilt] }),
-  ("cf-computation-name-blank", { append := [computationEl "/Form/C" " " "../Total" ["1"]], observed := [notBuilt] })]
+  ("cf-field-name-empty", { append := [fieldEl "/Form/Nameless" "" (stringType)], observed := [nameEmpty] }),
+  ("cf-field-name-blank", { append := [fieldEl "/Form/N" " " (stringType)], observed := [] }),
+  ("cf-rule-name-empty", { append := [ruleEl "/Form/R" "" "../Value" "FieldFilled(Value)"], observed := [nameEmpty] }),
+  ("cf-rule-name-blank", { append := [ruleEl "/Form/R" " " "../Value" "FieldFilled(Value)"], observed := [] }),
+  ("cf-computation-name-empty", { append := [computationEl "/Form/C" "" "../Total" ["1"]], observed := [nameEmpty] }),
+  ("cf-computation-name-blank", { append := [computationEl "/Form/C" " " "../Total" ["1"]], observed := [] }),
+  ("cf-group-name-empty", { append := [groupEl "/Form/G" "" 1 [fieldEl "/Form/G/K" "K" (stringType)]], observed := [nameEmpty] }),
+  ("cf-group-name-blank", { append := [groupEl "/Form/G" " " 1 [fieldEl "/Form/G/K" "K" (stringType)]], observed := [] })]
 
 example : disagreeing conversionFailureRows = [] := by native_decide
 

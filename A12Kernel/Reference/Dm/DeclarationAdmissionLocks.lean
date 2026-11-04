@@ -22,7 +22,6 @@ example : (readModel (input "Ordinary" (some (.str "CODE")))).isOk = true := by 
 example : (readModel (input "Ordinary" none)).isOk = false := by native_decide
 example : (readModel (input "Ordinary" (some (.str "   ")))).isOk = false := by native_decide
 example : (readModel (input "Ordinary" (some .null))).isOk = false := by native_decide
-example : (readModel (input "" (some (.str "CODE")))).isOk = false := by native_decide
 example : (readModel (input "1Rule" (some (.str "CODE")))).isOk = false := by native_decide
 example : (readModel (input "Rule.Dot" (some (.str "CODE")))).isOk = false := by native_decide
 example : (readModel (input "Vk_VkRule" (some (.str "CODE")))).isOk = false := by native_decide
@@ -65,8 +64,6 @@ example : failure "Bad.Name" (some (.str "")) =
     some (findings "Bad.Name" [.nameContent, .missingCode, .emptyCode]) := by native_decide
 example : failure "vk_vk.Bad" (some (.str "CODE")) =
     some (findings "vk_vk.Bad" [.nameContent]) := by native_decide
-example : failure "" (some (.str "")) =
-    some (.declaration (.buildFailure ["Form", ""])) := by native_decide
 example : (match failure "Vk_VkRule" (some .null) with | some (.input _) => true | _ => false) = true := by
   native_decide
 example : failure "Ordinary" (some (Json.mkObj [])) =
@@ -83,8 +80,16 @@ example :
     failure "Ordinary" (some (toJson (-7 : Int))) = some (findings "Ordinary" [.codeContent]) := by
   native_decide
 
-/- A blank rule name that is not empty fails the build like an empty one (October 21 letter §2.11). -/
-example : failure "\t" (some (.str "CODE")) = some (.declaration (.buildFailure ["Form", "\t"])) := by
+/- A blank rule name, the empty name included, is no declaration failure on kernel 31.1.1: the converter drops
+   the rule and states one sentence at its group, which the model reader keeps as a refusal, so the rule
+   draws no admission class and is not in the model. Kernel 30.8.1 built no model on it. Locked: a12-dmkits
+   CheckerConverterSentenceAgreementTest at 1124b523f, kernel 31.1.1, rows `a rule named with a space`
+   and `a rule with no name`; [the converter locks](ConverterSentenceLocks.lean) state the whole set. -/
+example :
+    (["", "\t", " ", "\u2003"].all fun name =>
+      failure name (some (.str "")) = none ∧
+      ((readModel (input name (some (.str "CODE")))).toOption.map fun model =>
+        (model.rules.length, model.refusals)) = some (0, [(["Form"], "codeless:element-name-missing")])) = true := by
   native_decide
 
 private def checkedRule (name code : String) : Option (Bool × Option DeclarationAdmissionFailure) := do

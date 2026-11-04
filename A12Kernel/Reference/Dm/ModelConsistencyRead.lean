@@ -2,13 +2,15 @@ import Lean.Data.Json
 import A12Kernel.Elaboration.ModelConsistency
 import A12Kernel.Reference.Dm.ModelFrame
 import A12Kernel.Reference.Dm.Model
+import A12Kernel.Reference.Dm.ModelConversion
 
 /-! # Reading a DM-JSON model for the consistency check
 
-The consistency check judges the authored model, so this reader keeps every element. It reads only the
-facts `ModelConsistency` consumes. An absent identifier, name or text member reads as the
-empty text, which the check then reports; a field whose type is absent is a read error, since no capture
-measures it.
+The consistency check judges the authored model, so this reader keeps every element, a declaration the
+validation-model converter drops included, and records only whether that conversion builds a model
+(`convertModel`). It reads only the facts `ModelConsistency` consumes. An absent identifier, name or text
+member reads as the empty text, which the check then reports; a field whose type is absent is a read
+error, since no capture measures it.
 
 It is an input adapter, differentially tested by the model-consistency captures rather than proved.
 -/
@@ -61,7 +63,7 @@ private partial def readElement (definitions : List (String × Json))
   let kind ← element.getObjValAs? String "type"
   let body ← elementBody element kind
   let id := text element "id"
-  let name := text element "name"
+  let name := elementName element
   match kind with
   | "Group" =>
       -- A negative count reads as a single group and zero as zero, as this reader read them before.
@@ -95,7 +97,8 @@ def readConsistencyModel (json : Json) : Except String ConsistencyModel := do
       (text definition "id", definition)))
     conditionLanguage := frame.conditionLanguage.getD "en_US"
     declaredLocales := ← headerLocales json
-    frameCheckFailure? := frame.checkFailure? }
+    frameCheckFailure? := frame.checkFailure?
+    validationModelUnbuilt := (convertModel frame).unbuilt }
 
 /-- Read the model and run the consistency check. -/
 def checkModelConsistency (json : Json) : Except String ModelConsistencyOutcome := do

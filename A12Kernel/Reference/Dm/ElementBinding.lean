@@ -20,11 +20,15 @@ recursively, and binds:
 * the members the Kernel reads and never defaults: a rule's `errorCode`, `errorEntityRelPath` and
   `errorCondition`, a computation's `computedFieldRelPath` and a sort field's `name` leave no model when
   absent or `null`, and a hint entry's `locale` and `values` when absent; a rule's `severity` is absent
-  or exactly one of three names.
+  or exactly one of three names;
+* an element's `name` as a text member: an object or an array leaves no model (a12-dmkits
+  `CheckerConverterSentenceAgreementTest` at `1124b523f`, kernel 31.1.1), while an absent or `null` name
+  and every string bind. A number or Boolean name binds as its text as the other text members of the model
+  do, an assumption no measurement settles for element names.
 
-A member the Kernel does not know is read past, so the pass never refuses one. It binds no element name,
-row-key nomination or enumeration category: the readers that judge those do. A present empty member is a
-value, judged by its own reader.
+A member the Kernel does not know is read past, so the pass never refuses one. It binds no row-key
+nomination or enumeration category: the readers that judge those do. A present empty member is a value,
+judged by its own reader.
 -/
 
 namespace A12Kernel.Dm
@@ -38,6 +42,13 @@ private def requireValue (parent : Json) (key : String) : Except String Unit :=
   | .ok _ => pure ()
 
 private def elementKinds : List String := ["Group", "Field", "Rule", "Computation"]
+
+/-- The name an element declares, read as `bindModelMembers` binds it: an absent or `null` name is the
+empty name, which every reader then treats as blank. -/
+def elementName (element : Json) : String :=
+  match frameText element "name" with
+  | .ok (some name) => name
+  | _ => ""
 
 /-- The body an element's own kind names, bound as an object. A Group's missing or `null` body is an
 empty group; the other three kinds have no empty reading, and no kind binds another non-object body. An
@@ -114,6 +125,7 @@ private def bindSeverity (rule : Json) : Except String Unit :=
 private def bindElement : Nat → Json → Except String Unit
   | 0, _ => throw "model elements nest deeper than the model is long"
   | fuel + 1, element => do
+      discard <| frameText element "name"
       let some kind := (element.getObjValAs? String "type").toOption | pure ()
       let body ← elementBody element kind
       match kind with

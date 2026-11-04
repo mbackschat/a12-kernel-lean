@@ -3,11 +3,12 @@ import A12Kernel.Elaboration.ElementNameNotification
 import A12Kernel.Elaboration.FieldTypeDeclarationNotification
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Reference.Dm.Model
+import A12Kernel.Reference.Dm.ModelConversion
 
 /-! # Reading a DM-JSON model for the declaration notifications
 
 The Kernel's consistency check judges every element, so this reader walks every root group and nested
-group in document order and judges each element: a field's name and its type body
+group of the converted model (`convertModel`) in document order and judges each element: a field's name and its type body
 after its type definition is resolved per referencing field (a definition no field references draws
 nothing, and one that two fields reference draws its notifications at both), a group's name,
 repeatability, sort fields and row-key nominations, a rule's or computation's name and error code, and
@@ -19,15 +20,19 @@ element and type body for all three DM readers (`bindModelMembers`).
 The names above an element decide what it may report: a path class on a group or field name hands the
 group-path codeless notification to everything below it and withholds the path class, the `xml` group
 class and the field messages there, and a field carrying a path class of its own reports no type body.
-The result is a list of `(label, element path)` pairs. A model the Kernel cannot build, by an empty
-element name, a blank rule or computation name, a repeated hint-list locale, an Enumeration declaring
-no values, a repeated type-definition id, a declared locale with no language or declared twice, a row-key nomination that binds to no field, or a frame shape that costs only the check (`FrameCheckFailure`), yields the one unbuilt-model label and no path. The report is a multiset, so the walk order is not an observation.
+The result is a list of `(label, element path)` pairs, headed by the converter's sentences, which the
+Kernel states for each declaration it drops and which make that declaration's own defects, and the rules
+beneath a dropped group, draw nothing. A model the Kernel cannot build, by a conversion that builds no
+validation model, a repeated hint-list locale, an Enumeration declaring no values, a repeated
+type-definition id, a declared locale with no language or declared twice, a row-key nomination that binds
+to no field, or a frame shape that costs only the check (`FrameCheckFailure`), yields the one unbuilt-model
+label and no path. The report is a multiset, so the walk order is not an observation.
 
 It is an input adapter, differentially tested by the field-declaration capture rather than proved. A
 member of the wrong shape, a
 localized-text member that does not bind (`bindLocalizedTextMembers`), a header locale code the parser
-refuses (`headerLocales`), an
-unresolvable type definition, a repeatability past a signed 32-bit count (which the Kernel does not
+refuses (`headerLocales`), a
+type definition that is itself a type reference, a repeatability past a signed 32-bit count (which the Kernel does not
 read) and a row-key nomination in a model the flat validation refuses are read errors, never an empty
 report. A row-key nomination that binds to no declared field is not an error: the Kernel builds no
 model, so it yields the unbuilt-model label.
@@ -198,7 +203,7 @@ legal declaration whatever the field's own defects are). -/
 private partial def collectBinding (environment : WalkEnvironment) (scope : List RepeatableLevel)
     (path : GroupPath) (element : Json) : StateT BindingState (Except String) Unit := do
   let kind ← StateT.lift (element.getObjValAs? String "type")
-  let name := (element.getObjValAs? String "name").toOption.getD ""
+  let name := elementName element
   let body ← StateT.lift (elementBody element kind)
   match kind with
   | "Group" =>
@@ -283,13 +288,12 @@ private def rowKeyReports (environment : WalkEnvironment) (path : List String) (
 private partial def judgeElement (environment : WalkEnvironment) (above : PathAbove)
     (parent : List String) (element : Json) : Except String (List ElementReport) := do
   let kind ← element.getObjValAs? String "type"
-  let name := (element.getObjValAs? String "name").toOption.getD ""
+  let name := elementName element
   let body ← elementBody element kind
   let path := parent ++ [name]
   let annotated ← annotationsRepertoire element
   match kind with
   | "Group" =>
-      if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
       let isRoot := parent.isEmpty
       let judgement := groupName isRoot name
       let repeatability ← primitiveIntMember? body "repeatability"
@@ -306,7 +310,6 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
       pure ({ path, labels := collapseRepertoire (own ++ repertoireIf annotated) } :: rowKeys ++
         below.flatten)
   | "Field" =>
-      if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
       let judgement := fieldName environment.valueWord name
       let named := (judgement.reported above ++
         if above.countInvalid then [ElementNameKind.maxValuesInvalid] else []).map (·.label)
@@ -323,7 +326,6 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
           let walkRefused := raised.any fun notification => walkTextLabels.contains notification.label
           pure [{ path, labels := collapseRepertoire labels, walkRefused }]
   | "Rule" | "Computation" =>
-      if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
       let declaration : ExecutableDeclaration :=
         { group := parent, name, kind := if kind == "Rule" then .rule (ruleCode body) else .computation }
       if let .rule .unreadable := declaration.kind then throw s!"rule {name} has an unreadable errorCode"
@@ -333,9 +335,9 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
   | _ => pure []
 
 /-- The notifications every element's declaration raises, each as its capture label and the
-element path, or the one unbuilt-model label with an empty path: field types and bodies, element and
-group names, group declarations, rule and computation names, and the repertoire of element annotations
-and field messages. The Java pattern compilation is the host's and has no default: the closed ASCII
+element path, or the one unbuilt-model label with an empty path: the converter's sentences, field types and
+bodies, element and group names, group declarations, rule and computation names, and the repertoire of
+element annotations and field messages. The Java pattern compilation is the host's and has no default: the closed ASCII
 profiles of `builtinStringPatternCompiler` refuse Java-valid sources they cannot execute, which this
 check would report as invalid patterns. -/
 def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatternCompiler)
@@ -346,7 +348,8 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
   bindModelMembers frame
   let locales ← headerLocales json
   let (messageTokens, valueWord) ← languageProfile (frame.conditionLanguage.getD "en_US")
-  let roots := frame.rootGroups.toList
+  let converted := convertModel frame
+  let roots := converted.roots.toList
   let environment : WalkEnvironment := {
     definitions := frame.typeDefinitions.toList.map fun definition =>
       ((definition.getObjValAs? String "id").toOption.getD "", definition)
@@ -362,7 +365,7 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
   -- A check-only frame shape, a failing declared locale or a repeated type-definition id leaves no
   -- class, after the walk's read errors, since the Kernel reads a model before it builds or checks one
   -- (spec/01 §1.2; header locale codes checkpoint, peers KF647 and KF650).
-  if frame.checkFailure?.isSome || (declaredLocaleFailure? locales).isSome ||
+  if frame.checkFailure?.isSome || (declaredLocaleFailure? locales).isSome || converted.unbuilt ||
       (ModelConsistency.repeatedTypeDefinitionId? (environment.definitions.map (·.1))).isSome then
     return [(modelNotBuiltLabel, "")]
   -- The index and sort checks run only after an entity walk that refused nothing (2026-10-21 §2.16).
@@ -374,8 +377,8 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
   else if let some reason := reports.findSome? (·.refusal) then
     throw reason
   else
-    pure (reports.flatMap fun report =>
-      report.labels.map fun label => (label, "/" ++ "/".intercalate report.path))
+    pure (converted.sentences.map (fun (sentence, path) => (sentence.label, "/" ++ "/".intercalate path)) ++
+      reports.flatMap fun report => report.labels.map fun label => (label, "/" ++ "/".intercalate report.path))
 
 /-! ## Locks on the member coercions this reader depends on -/
 

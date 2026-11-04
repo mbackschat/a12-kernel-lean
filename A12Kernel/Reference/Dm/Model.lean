@@ -11,6 +11,7 @@ import A12Kernel.Reference.Dm.MemberBinding
 import A12Kernel.Reference.Dm.LocalizedTextBinding
 import A12Kernel.Reference.Dm.ModelFrame
 import A12Kernel.Reference.Dm.ElementBinding
+import A12Kernel.Reference.Dm.ModelConversion
 
 /-! # Reading a DM-JSON document model
 
@@ -21,7 +22,10 @@ condition and each computation's alternatives as authored text for the DSL reade
 It is an input adapter, differentially tested by the replay rather than proved. Every declaration it
 cannot map, a bound it cannot read and an index naming no field included, is kept with its reason in
 `DmModel.refusals` and its field left out of the model, and the replay refuses such a model whole
-rather than evaluating any rule against a guess. Field ids
+rather than evaluating any rule against a guess. The elements are those of the converted model
+(`convertModel`), whose sentences for the declarations it drops are refusals too, so the replay still
+refuses a model the Kernel's check refuses while the rules and computations are checked against exactly the
+model the Kernel generates from. Field ids
 follow depth-first declaration order, which is the order `FlatModel.fields` requires, and repeatable
 levels are numbered in the order their groups are reached.
 -/
@@ -368,8 +372,10 @@ def ruleCode (body : Json) : DeclarationStringValue :=
   | none | some .null | some (.arr _) | some (.obj _) => .unreadable
 
 /-- A field's body with a `TypeDefType` replaced by the inline definition it names, so every check
-reads the base kind, as the Kernel's effective type does (typedef base-kind checkpoint). A definition
-imported from another model is not in this one and is refused with an unknown id. -/
+reads the base kind, as the Kernel's effective type does (typedef base-kind checkpoint). A reference with
+no id, or naming a definition this model does not hold, an imported one included, is refused here: the
+converter has already replaced such a field by a String, so only the consistency reader, which reads the
+authored model, meets the refusal and reads it as an unresolved reference. -/
 def resolveTypeDefinition (definitions : List (String × Json)) (fieldJson : Json) :
     Except String Json := do
   let fieldType ← fieldJson.getObjVal? "fieldType"
@@ -388,15 +394,11 @@ def resolveTypeDefinition (definitions : List (String × Json)) (fieldJson : Jso
 private partial def readElement (path : GroupPath) (scope : List RepeatableLevel) (element : Json) :
     StateT ReadState (Except String) Unit := do
   let kind ← element.getObjValAs? String "type"
-  let name ← element.getObjValAs? String "name"
+  let name := elementName element
   let body ← StateT.lift (elementBody element kind)
   match kind with
   | "Group" =>
       let groupPath := path ++ [name]
-      -- A Java-blank element name fails the build (2026-10-21 §2.11).
-      if ExecutableDeclaration.blank name then
-        modify fun state => { state with refusals := state.refusals.push (groupPath, "blank group name") }
-        return
       -- An absent count is a single group, and one below one is `MVK_MAX_VALUES_INVALID`, read on as a
       -- single group (2026-10-21 §2.17); a `null` count binds no value and leaves no model on kernel 31.1.1.
       let count? ← StateT.lift (primitiveIntMember? body "repeatability")
@@ -429,9 +431,6 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
           emptyNonrepeatableGroups := state.emptyNonrepeatableGroups.push groupPath }
   | "Field" =>
       let state ← get
-      if ExecutableDeclaration.blank name then
-        modify fun state => { state with refusals := state.refusals.push (path ++ [name], "blank field name") }
-        return
       modify fun state => { state with fieldsSeen := state.fieldsSeen + 1 }
       let body ← match resolveTypeDefinition state.typeDefinitions body with
         | .ok resolved => pure resolved
@@ -546,9 +545,11 @@ private def readModelCore (json : Json)
   -- model before evaluating it (model frame check route checkpoint, 2026-10-29; for an unsupported
   -- condition language, the peer letter of 2026-10-30a).
   if let some failure := frame.checkFailure? then throw s!"model frame {repr failure} fails the consistency check"
+  let converted := convertModel frame
+  if converted.unbuilt then throw "the converter builds no validation model"
   let config := frame.config
   let info := frame.info
-  let roots := frame.rootGroups
+  let roots := converted.roots
   let legalCharset ← readSupportedCharacters (frame.supportedCharacters.filterMap id) graphemeClusters?
   let typeDefinitions ← frame.typeDefinitions.toList.mapM
     fun definition => do pure (← definition.getObjValAs? String "id", definition)
@@ -559,7 +560,8 @@ private def readModelCore (json : Json)
   let fieldId (group : GroupPath) (name : String) : Option FieldId :=
     (state.fields.find? fun field => field.groupPath == group && field.name == name).map (·.id)
   let baseYear ← intMember? info "baseYear"
-  let mut refusals := state.refusals.toList
+  let mut refusals := converted.sentences.map (fun (sentence, path) => (path, sentence.label)) ++
+    state.refusals.toList
   let groups := state.groups.toList.map fun group =>
     let index := (state.indexFields.find? (·.1 == group.level)).bind fun (_, path, nomination) =>
       fieldId path (nominationPath nomination).field

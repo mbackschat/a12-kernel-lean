@@ -93,9 +93,12 @@ private def readMetadata (mode band : Option Lean.Json) : Option (String × Opti
       ("computedFieldRelPath", Lean.Json.str "../Target"),
       ("computationAlternatives", Lean.Json.arr #[Lean.Json.mkObj
         ([("operation", Lean.Json.str "1")] ++ band.toList.map ("toleranceRangeOp", ·))])]))]
+  -- The target is declared: the converter drops a computation naming no field (kernel 31.1.1).
+  let target := Lean.Json.mkObj [("type", "Field"), ("name", "Target"),
+    ("Field", Lean.Json.mkObj [("fieldType", Lean.Json.mkObj [("type", "StringType")])])]
   let json := checkedEntryFrame <| Lean.Json.mkObj [("content", Lean.Json.mkObj [("modelRoot", Lean.Json.mkObj [
     ("rootGroups", Lean.Json.arr #[Lean.Json.mkObj [("type", "Group"), ("name", "Form"),
-      ("Group", Lean.Json.mkObj [("elements", Lean.Json.arr #[computation])])]])])])]
+      ("Group", Lean.Json.mkObj [("elements", Lean.Json.arr #[target, computation])])]])])])]
   let computation ← (← (readModel json).toOption).computations.head?
   pure (computation.roundingMode, (← computation.alternatives.head?).toleranceRangeOp)
 

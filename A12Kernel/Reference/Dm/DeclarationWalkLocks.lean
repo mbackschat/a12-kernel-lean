@@ -77,12 +77,17 @@ example :
       entry.startsWith "codeless:supplementary-character@") := by
   native_decide
 
-/- A Java-blank group, field or rule name fails the build, while a no-break space is an ordinary refused
-   name. -/
+/- A Java-blank group, field or rule name is dropped with its subtree and stated once at its holder, which
+   leaves every other element judged as before, while a no-break space is an ordinary refused name. Kernel
+   30.8.1 built no model on a blank name (Locked: a12-dmkits CheckerConverterSentenceAgreementTest at
+   1124b523f, kernel 31.1.1; the rows of [the converter locks](ConverterSentenceLocks.lean) state it in
+   full). -/
 example :
-    report "" (host (bin := " ")) = unbuilt ∧ report "" (host (bin := "\u2003")) = unbuilt ∧
-    report "" (host (code := "\t")) = unbuilt ∧
-    report "" (host (binElements := [field "Slot", rule "\n"])) = unbuilt ∧
+    report "" (host (bin := " ")) = ["codeless:element-name-missing@/Order/Part"] ∧
+    report "" (host (bin := "\u2003")) = ["codeless:element-name-missing@/Order/Part"] ∧
+    report "" (host (code := "\t")) = ["codeless:element-name-missing@/Order/Part"] ∧
+    report "" (host (binElements := [field "Slot", rule "\n"])) =
+      ["codeless:element-name-missing@/Order/Part/Bin"] ∧
     (report "/Order/Part/" (host (bin := "\u00A0"))).head? = some "MVK_PATH_INVALID@\u00A0" := by
   native_decide
 
@@ -99,7 +104,7 @@ private def coverageRules : List Json :=
   [Json.mkObj [("type", "Rule"), ("name", "AmountSet"), ("Rule", Json.mkObj [("errorEntityRelPath", "../Amount"),
       ("errorCode", "AMOUNT_SET"), ("errorCondition", "FieldFilled(Amount)"), ("severity", "ERROR")])],
    Json.mkObj [("type", "Computation"), ("name", "NoteFromAmount"), ("Computation", Json.mkObj [
-      ("computedFieldRelPath", "../Holder"), ("computationAlternatives", Json.arr #[Json.mkObj [("operation", "[Amount]")]])])]]
+      ("computedFieldRelPath", "../Amount"), ("computationAlternatives", Json.arr #[Json.mkObj [("operation", "[Amount]")]])])]]
 
 private def M : String := "MVK_MAX_VALUES_INVALID"
 

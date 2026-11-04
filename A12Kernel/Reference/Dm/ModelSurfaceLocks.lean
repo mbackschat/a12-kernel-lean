@@ -51,13 +51,18 @@ private def typedefField (id : String) : String :=
   field "T" ("{\"type\":\"TypeDefType\",\"TypeDefType\":{\"typeDefinitionId\":\"" ++ id ++ "\"}}")
 
 /- A type definition field is its definition's base kind, so it reads as that Number. An id naming no
-   definition of this model, as an imported one would, and a reference without an id are refused. -/
+   definition of this model, as an imported one would, and a reference without an id leave the field a
+   plain String and draw the converter's sentence as a refusal (kernel 31.1.1, where 30.8.1 built no model;
+   [the converter locks](ConverterSentenceLocks.lean) lock the whole set of classes). -/
 example :
     ((read (model (typedefField "NumTd") typedefs)).bind (·.flat.fields.head?)).map (·.policy.kind) =
         some (.number { scale := 2, signed := true }) ∧
-      (read (model (typedefField "Elsewhere") typedefs)).map (·.refusals.length) = some 1 ∧
-      (read (model (field "T" "{\"type\":\"TypeDefType\",\"TypeDefType\":{}}") typedefs)).map
-        (·.refusals.length) = some 1 := by
+      ((read (model (typedefField "Elsewhere") typedefs)).map fun dm =>
+        (dm.refusals, dm.flat.fields.map (·.policy.kind))) =
+        some ([(["Form", "T"], "codeless:type-definition-not-found")], [.string]) ∧
+      ((read (model (field "T" "{\"type\":\"TypeDefType\",\"TypeDefType\":{}}") typedefs)).map fun dm =>
+        (dm.refusals, dm.flat.fields.map (·.policy.kind))) =
+        some ([(["Form", "T"], "codeless:type-definition-not-found")], [.string]) := by
   native_decide
 
 /- The global flag reaches the declaration that partial validation reads (spec/10 §relevant set). -/
