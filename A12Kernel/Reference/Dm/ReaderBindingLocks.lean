@@ -134,6 +134,9 @@ private def booleanCarriers : List (String × List String) := [
   ("referenced definition positivesOnly", definitionPath 1 ["NumberType", "positivesOnly"]),
   ("unreferenced definition positivesOnly", definitionPath 0 ["NumberType", "positivesOnly"])]
 
+/-- Spellings no carrier binds. The peers measure them on a sample: most on `fieldRefByShortNameAllowed`
+(`ShortNameFlagSpellingLawsTest`) and the blank, `null` and empty texts on every carrier; applying the whole
+list to every carrier, and the tab-only text anywhere, is the one law's derivation, unmeasured. -/
 private def unbindableBooleans : List String :=
   ["null", "\"\"", "\" \"", "\"\\t\"", "\"null\"", "\" null\"", "\"yes\"", "\"1\"", "\"NULL\"", "\"FaLsE\"",
     "\"\\u00A0true\"", "\"\\u2003true\"", "0.5", "1.5", "{}", "[]"]
@@ -182,6 +185,7 @@ private def integerMembers : List IntMember := [
     path := definitionPath 0 ["NumberType", "minFractionalDigits"], visible := false },
   { label := "unreferenced definition maxFractionalDigits", primitive := true,
     path := definitionPath 0 ["NumberType", "maxFractionalDigits"], visible := false },
+  -- `baseYear` is boxed by the peer's source reading; no lock measures this carrier on kernel 31.1.1.
   { label := "modelInfo.baseYear", primitive := false, path := ["content", "modelInfo", "baseYear"] },
   { label := "NumberType.minLength", primitive := false, path := fieldTypePath amount ["NumberType", "minLength"] },
   { label := "NumberType.maxLength", primitive := false, path := fieldTypePath amount ["NumberType", "maxLength"] },
@@ -204,6 +208,8 @@ private def integerMembers : List IntMember := [
 
 private def noValueSpellings : List String := ["null", "\"\"", "\" \"", "\"null\"", "\" null \""]
 
+/-- Spellings no integer member binds. `"abc"` and `true` are measured on every carrier and `"NULL"` on
+`repeatability` only; the containers, and `"NULL"` on the other members, are derived, unmeasured. -/
 private def unbindableIntegers : List String := ["\"abc\"", "true", "{}", "[]", "\"NULL\""]
 
 private def integerRows : List (String × Bool) :=

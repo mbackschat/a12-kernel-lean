@@ -176,7 +176,7 @@ private def filter (members : List (String × Json)) : List (String × Json) :=
 /-- The twelve shapes of a `variantFilter` the retired member was written as. -/
 private def filterShapes : List (List (String × Json)) := [
   filter [("filterType", "ONLY"), ("variants", Json.arr #["v1"])],
-  filter [("filterType", "ONLY"), ("variants", Json.arr #["default"])],
+  filter [("filterType", "ONLY"), ("variants", Json.arr #[""])],
   filter [("filterType", "ONLY"), ("variants", Json.arr #[])],
   filter [("filterType", "ONLY")],
   filter [("filterType", "ALL_EXCEPT"), ("variants", Json.arr #["v1"])],

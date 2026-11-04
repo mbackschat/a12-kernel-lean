@@ -419,11 +419,14 @@ Locked: a12-dmkits `DateRangePairAdmissionLawsTest` and `TemporalDeclarationWith
 1124b523f, kernel 31.1.1, the rows the declaration reads on the model as authored. A range's declaration is
 judged on the format the Kernel composes from its members, an empty member composing as an absent one, so the
 pair of two empty members is the range-format sentence where kernel 30.8.1 drew the missing-format class, and a
-blank pair, which is not empty, still draws it. The allowlist asks the pair as written: a format admitted with
-`/` is not admitted with an empty separator on the authored model, while month alone is. A Date, Time or
-DateTime format that is empty or blank, and a fragment format that is empty, leave no model there. The rows
-the peer observes only after the expansion drops an empty member, which admit an empty separator beside every
-format `/` admits, belong to the host. -/
+blank pair, which is not empty, still draws it. The allowlist asks the pair as written: `yyyy-MM-dd` and
+`dd.MM.yyyy` with an empty separator draw the range-format sentence on the authored model, measured raw by
+a12-dmkits `ExpandCopyEmptyMemberLawsTest`. Month with an empty separator is admitted here as kernel 30.8.1
+admitted it as written; the peer's 31.1.1 row for it runs after the expansion, so the raw row is unmeasured on
+31.1.1. A Date format written empty or as one space leaves no model as written (measured raw); the tab and em
+space on a Date, and every empty or blank Time and DateTime format, are derived from that row and unmeasured
+as written on 31.1.1, the peer's rows for them running after the expansion. The rows the peer observes only
+after the expansion drops an empty member belong to the host. -/
 
 private def labelsOf (type : Json) : List String :=
   match fieldTypeDeclarationNotifications ({ elements := [fieldIn "/Policy/Ref" "Ref" type] } : Carrier).json compile with

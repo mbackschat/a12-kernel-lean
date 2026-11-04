@@ -156,9 +156,8 @@ private def lookup (role : RowFieldRole) (written : String)
    change to the parent's `Key` that `../Key` lands on changes nothing. A spelling landing on nothing is
    only a name, so `../Key` with no parent `Key` is admitted by the local one and a plain `Key` with no
    local one is unresolved, where kernel 30.8.1 left no model for both (a12-dmkits
-   `GroupIndexAndSortReferenceLawsTest` at `1124b523f`, kernel 31.1.1). The peer's two same-named siblings
-   told apart only by their variant filters are outside this model, which refuses two fields with one
-   path. -/
+   `GroupIndexAndSortReferenceLawsTest` at `1124b523f`, kernel 31.1.1). Two same-named siblings never
+   reach this model: the validation-model converter keeps the first and leaves the later one out. -/
 example : [RowFieldRole.indexField, .sortField].all (fun role =>
     [lookup role "Key",
       lookup role "Key" (own := none),

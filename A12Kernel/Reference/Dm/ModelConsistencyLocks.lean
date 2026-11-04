@@ -340,8 +340,10 @@ type-definition reference and an empty computed-field path as classes of their o
 is not empty draws none (the converter states its own sentence for it). An Enumeration declaring two
 categories of one name leaves no model, whether their values are equal or differ, and the distinct
 categories, the resolved reference and a computed-field path that is set build and draw nothing. The rows
-are not capture rows: they replay the peer measurement of a12-dmkits `1124b523f`,
-`CheckerConverterSentenceAgreementTest` (kernel 31.1.1), except the enumeration rows, which keep the
+are not capture rows. The empty element-name and computed-field rows that a12-dmkits
+`CheckerConverterSentenceAgreementTest` at `1124b523f` (kernel 31.1.1) measures replay it; the empty
+type-definition reference, the computation and group name rows and the bare rule-name rows, on this
+carrier, are derived from that test's account and unmeasured. The enumeration rows keep the
 a12-dmkits `fecf8552` measurement, `CheckerBasicSentenceAgreementTest` (kernel 30.8.1), recorded at
 `docs/sources/inbound-handbacks.md#src-inbound-2026-10-27`: kernel 31.1.1 builds no model from them either
 (Locked: a12-dmkits `EnumDeclarationShapeLawsTest` at `1124b523f`; [the declaration-shape
