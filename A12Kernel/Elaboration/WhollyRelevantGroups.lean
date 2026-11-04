@@ -12,12 +12,14 @@ judgment runs bottom-up from the deepest groups, and three rules shape it:
 - A repeatable sub-group contributes to its parent only through instances wildcarded at its own level;
   a fixed sub-group always contributes.
 - Concrete instances of a repeatable group naming every declared slot under one parent fold into that
-  level's wildcard when the capacity is at least two. A capacity-one or unbounded level never folds.
+  level's wildcard when the capacity is at least two. A capacity-one or unbounded level never folds; the
+  Kernel admits no such repeatable level, since repeatability `1` declares a fixed group and a star over
+  it is refused, so the guard only keeps the function total.
 
 A selection naming a group stands for every field below it. A group with no field below it, declared
-empty, is a member of its parent but never wholly relevant itself, so its parent never is either; that
-and the capacity-one boundary follow the kernel source read for this account and no measurement
-covers them.
+empty, is a member of its parent but never wholly relevant itself, so its parent never is either:
+measured on a counted repeatable level and on a counted fixed group by a12-dmkits
+"PartialWhollyRelevantBoundaryDiffTest" at "6fcdbfcdf", kernel 31.1.1.
 -/
 
 namespace A12Kernel

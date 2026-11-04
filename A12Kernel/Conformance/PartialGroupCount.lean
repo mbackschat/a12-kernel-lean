@@ -240,6 +240,57 @@ example :
       some [decided 2, decided 2, decided 3]] := by
   native_decide
 
+/-! ## The empty sub-group boundary
+
+a12-dmkits `PartialWhollyRelevantBoundaryDiffTest` at `6fcdbfcdf`, kernel 31.1.1 on both strategies,
+answering `SPEC-2026-11-04-01`: a declared fixed sub-group with no field below it keeps its parent from
+being wholly relevant, on a counted repeatable level and on a counted fixed group alike, while
+`GroupFilled` over that same fixed group is still decided, because presence asks one covered member and
+not the extent. One batch is held and every field is wildcarded. -/
+
+/-- `Batches` of a `Lot` and a fixed `Seal` of a `Code`, beside a fixed `Label` of a `Text` and a fixed
+    `Stamp` of a `Mark`, with an optional field-less `Note` in each batch or in `Label`. -/
+private def boundaryModel (emptyInBatch emptyInLabel : Bool) : FlatModel :=
+  { fields := [
+      { id := 1, groupPath := ["Item"], name := "Title", policy := { kind := .string } },
+      { id := 2, groupPath := ["Item", "Batches"], name := "Lot", policy := { kind := .string },
+        repeatableScope := [10] },
+      { id := 3, groupPath := ["Item", "Batches", "Seal"], name := "Code",
+        policy := { kind := .string }, repeatableScope := [10] },
+      { id := 4, groupPath := ["Item", "Label"], name := "Text", policy := { kind := .string } },
+      { id := 5, groupPath := ["Item", "Stamp"], name := "Mark", policy := { kind := .string } }]
+    repeatableGroups := [{ level := 10, path := ["Item", "Batches"], repeatability := some 2 }]
+    emptyNonrepeatableGroups := (if emptyInBatch then [["Item", "Batches", "Note"]] else []) ++
+      (if emptyInLabel then [["Item", "Label", "Note"]] else []) }
+
+/-- Whether each carrier is decided, in the peer's order: `NumberOfFilledGroups(Batches*) == 1`,
+    `NumberOfFilledGroups(Label, Stamp) == 2` and `GroupFilled(Label)`. Each is decided exactly when it
+    answers the value full validation gives it. -/
+private def boundaryDecided (emptyInBatch emptyInLabel : Bool) : Option (List Bool) := do
+  let model := boundaryModel emptyInBatch emptyInLabel
+  let prepared ← (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler model).toOption
+  let document ← (checkDocument prepared "en_US" {
+    instantiatedRows := [{ group := 10, path := [1] }]
+    cells := [text 1 [], text 2 [1], text 3 [1], text 4 [], text 5 []] }).toOption
+  let entities := [["Item", "Title"], ["Item", "Batches", "Lot"], ["Item", "Batches", "Seal", "Code"],
+    ["Item", "Label", "Text"], ["Item", "Stamp", "Mark"]].map every
+  let preliminary ← (document.applyPartialGeneratedPreliminaryForScope (.partialSet entities)).toOption
+  let batchesSource ← (elaborateStarredGroupSource model ["Item"] batches).toOption
+  let label ← (model.resolveFixedGroupReference ["Item"] (fixedGroup "Label")).toOption
+  let stamp ← (model.resolveFixedGroupReference ["Item"] (fixedGroup "Stamp")).toOption
+  let starred ← (CheckedGroupCountOperand.evaluatePartial [.starred batchesSource] preliminary []).toOption
+  let fixed ← (CheckedGroupCountOperand.evaluatePartial [.fixed label, .fixed stamp] preliminary []).toOption
+  let labelPresence ← (preliminary.groupPresenceInput ["Item", "Label"] [] false).toOption
+  pure [starred == decided 1, fixed == decided 2, labelPresence.derive.groupFilled == .fired .value]
+
+/- The control decides all three; an empty `Note` in each batch leaves only the starred count
+   undecided, and one in `Label` only the fixed count. -/
+example :
+    [boundaryDecided false false, boundaryDecided true false, boundaryDecided false true] =
+      [some [true, true, true], some [false, true, true], some [true, false, true]] := by
+  native_decide
+
 /-! ## `KF209`'s selections
 
 `Items` (max 50) of a `Tag` and a Number `Qty`, with two rows whose `Qty` the selections name and
