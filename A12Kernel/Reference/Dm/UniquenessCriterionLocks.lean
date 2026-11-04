@@ -61,7 +61,7 @@ private def criterion (name : String) (fields : List String) (text : Option Stri
     ("errorMessage", Json.arr (text.toList.map fun written =>
       Json.mkObj [("locale", "en_US"), ("text", .str written)]).toArray)]
 
-/-- The policy model declaring `en_US`, with these criteria, or without the member. -/
+/-- The policy model declaring "en_US", with these criteria, or without the member. -/
 private def modelWith (criteria : Option (List Json)) : Json :=
   checkedEntryFrame <| Json.mkObj [("content", Json.mkObj (
     [("modelConfig", Json.mkObj [("conditionLanguage", Json.mkObj [("code", "en_US")])]),

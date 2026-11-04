@@ -61,7 +61,7 @@ a label-only capture cannot separate the latter. The order of one element's clas
 unmeasured too: a peer measurement of a12-dmkits `1124b523f` (`CheckerConverterSentenceAgreementTest`,
 kernel 31.1.1) compares sets of classes.
 
-The criteria check is measured on one `en_US` model, so each declared locale needing a text, and the order of
+The criteria check is measured on one "en_US" model, so each declared locale needing a text, and the order of
 one criterion's refusals, are derived and unmeasured (`uniquenessCriterionNotifications`).
 
 Not claimed: type definitions' own bodies, a bound outside the normal double range (an error, not a
@@ -113,8 +113,8 @@ structure ConsistencyTypeDefinition where
   deriving Repr, DecidableEq
 
 /-- A frame shape the Kernel builds a model from but whose entry consistency check then fails without a
-class: no `header.modelVersion`, no `content.modelInfo`, `header.locales` absent or `null`, or a `null`
-supported character (peer KF650), and a condition language that parses as a locale other than "en_US"
+class: `header.modelVersion` or `header.locales` written `null` (kernel 30.8.1 rows; an absent one leaves no
+model on 31.1.1), no `content.modelInfo`, or a `null` supported character (peer KF650), and a condition language that parses as a locale other than "en_US"
 and "de_DE", measured for the codes the peer letter of 2026-10-30a lists. -/
 inductive FrameCheckFailure where
   | versionMissing

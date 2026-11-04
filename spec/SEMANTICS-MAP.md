@@ -38,7 +38,7 @@ A **document model** declares a *tree* ([data model §1](01-data-model.md#1-mode
 
 - **Groups** are the internal nodes; the root is a single group. A group is **non-repeatable** (at most once wherever its parent occurs) or **repeatable** (rows `1 … rowCount` within a declared `repeatability` bound).
 - **Fields** are the leaves. Each has a **type** (§2 below) and per-type configuration such as a Number's scale, a String's pattern and lengths, an Enumeration's value set or a Date's format and precision.
-- **Declarations meet static legality** before anything is evaluated: model consistency rules, declaration generation classes, variant filters and document uniqueness criteria ([data model §1.2](01-data-model.md#12-model-consistency-rules), [data model §1.3](01-data-model.md#13-declaration-generation-classes), [data model §1.4](01-data-model.md#14-variant-filters-and-where-a-filtered-declaration-is-seen), [data model §1.5](01-data-model.md#15-document-uniqueness-criteria)).
+- **Declarations meet static legality** before anything is evaluated: model consistency rules, the validation-model converter, declaration generation classes and document uniqueness criteria, while the retired variant members are read past ([data model §1.2](01-data-model.md#12-model-consistency-rules), [data model §1.3](01-data-model.md#13-declaration-generation-classes), [data model §1.4](01-data-model.md#14-retired-variant-members), [data model §1.5](01-data-model.md#15-document-uniqueness-criteria)).
 
 A **document** instantiates the model: repeatable groups are expanded into rows, and fields hold values or are empty. One field at one repetition context is a **cell** ([data model §2](01-data-model.md#2-document--an-instance-of-the-tree)).
 
@@ -117,7 +117,7 @@ The chapters are listed in file order. The `§n` column is the taxonomy number t
 
 | File | § | Area | In one line | Difficulty |
 |---|---|---|---|---|
-| [`01-data-model.md`](01-data-model.md) | — | Data model & call surface | the model tree and its declaration legality (repeatability, consistency rules, declaration generation classes, variant filters, document uniqueness criteria); documents, cells and repetition contexts; JSON reading; rules, computations and their message channels; `validateFull`, `validatePart` and compute → apply → validate | ★★☆☆☆ |
+| [`01-data-model.md`](01-data-model.md) | — | Data model & call surface | the model tree and its declaration legality (repeatability, member binding, consistency rules, the validation-model converter, declaration generation classes, retired variant members, document uniqueness criteria); documents, cells and repetition contexts; JSON reading; rules, computations and their message channels; `validateFull`, `validatePart` and compute → apply → validate | ★★☆☆☆ |
 | [`02-logic-and-formal-errors.md`](02-logic-and-formal-errors.md) | §1 | Truth values & logical evaluation | strong-Kleene `And`/`Or` with mandatory brackets; no generic `Not`; the three-state Boolean type; fill quantifiers and group scopes | ★★★☆☆ |
 | [`02-logic-and-formal-errors.md`](02-logic-and-formal-errors.md) | §3 | Formal errors & the "unknown" state | the third cell state and its producers; branch-scoped suppression; validation excludes, computation poisons | ★★★★★ |
 | [`03-empty-and-required.md`](03-empty-and-required.md) | §2 | Non-specified (empty) values | the per-kind default; operator overrides; all-empty aggregate identities; the row gate | ★★★★☆ |

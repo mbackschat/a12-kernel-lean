@@ -35,7 +35,6 @@ Sources: [target-scope checkpoint](../docs/sources/computation-placement-and-con
 - The graph is over **resolved fields**, so a circle closing through an aggregate over a repeatable group in one direction and an absolute read out of it in the other is refused like two sibling reads.
 - A **one-node** circle is a different class: a computation reading its own target draws `MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD` (§5.2), never the cycle class.
 - A back edge through a field no computation writes is admitted; ordinary input fields remain operands but are not computed-target nodes.
-- **A declaration a variant filter takes out is no node**: with `variantFilter` `ONLY` another variant on either computation of a two-computation circle, the model is admitted.
 - Every other class measured beside the cycle withholds it: another computation's text defect or member class, a rule's text defect, a structural path class, a missing error text.
 - `CurrentRepetition(group)` reads only the selected structural row coordinate: it contributes no contained-field dependency and must not be expanded into dependencies on every computed field below the group. Actual field reads remain ordinary edges, so a `First := Base` computation under `CurrentRepetition(group) > 0` may precede `Second := First` without the structural guard manufacturing a cycle.
 
