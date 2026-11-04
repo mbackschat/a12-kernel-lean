@@ -30,6 +30,9 @@ cd "$repository_root"
 export LC_ALL=C
 
 kernel_root="../a12-kernel"
+# The frozen bundle the population replay and the observed corpus read. A later kernel's bundle is a
+# new root, never a rewrite of this one (docs/KERNEL-UPGRADE-PLAYBOOK.md).
+evidence_root="evidence/kernel-30.8.1"
 report="docs/CONFORMANCE-COVERAGE.md"
 mode="update"
 
@@ -46,6 +49,20 @@ done
 if [[ ! -d "$kernel_root" ]]; then
   echo "the Kernel checkout ${kernel_root} is required for the refusal-class denominator" >&2
   echo "it is read-only input; this report never writes outside this repository" >&2
+  exit 1
+fi
+
+# The denominator is the vocabulary of the kernel this account targets, so a checkout at another
+# revision would mix two kernels' classes into one report without failing. The pin is read from its
+# owner, docs/SOURCES.md, rather than restated here.
+pinned_kernel="$(sed -n 's/.*at revision `\([0-9a-f]\{7,\}\)` of the `\.\.\/a12-kernel` checkout.*/\1/p' docs/SOURCES.md | head -1)"
+if [[ -z "$pinned_kernel" ]]; then
+  echo "docs/SOURCES.md no longer states the pinned ../a12-kernel revision in its expected sentence" >&2
+  exit 1
+fi
+checked_out_kernel="$(git -C "$kernel_root" rev-parse HEAD)"
+if [[ "$checked_out_kernel" != "$pinned_kernel"* ]]; then
+  echo "${kernel_root} is at ${checked_out_kernel}, not the revision ${pinned_kernel} docs/SOURCES.md pins" >&2
   exit 1
 fi
 
@@ -163,7 +180,13 @@ awk '
 # ZAHL_ZUVIELE_VORKOMMASTELLEN_* keys are four texts behind one observable `zahlZuvieleVorkommastellen`
 # — and conversely no bundle key names the code a `validateFull` consumer actually reads. Counting the
 # codes as their own catalog is what keeps the consumer-visible vocabulary in the denominator.
-formal_codes="$kernel_root/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_30_8/internal/util/IFormaleFehlerConstants.java"
+# The runtime package is named after the kernel release (`_30_8`, `_31_1`), so it is found, not named.
+runtime_packages=("$kernel_root"/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_*/)
+if [[ ${#runtime_packages[@]} -ne 1 || ! -d "${runtime_packages[0]}" ]]; then
+  echo "expected exactly one versioned runtime package under ${kernel_root}/kernel-rt; the Kernel layout has changed" >&2
+  exit 1
+fi
+formal_codes="${runtime_packages[0]}internal/util/IFormaleFehlerConstants.java"
 if [[ -f "$formal_codes" ]]; then
   grep -o '= *"[A-Za-z0-9_]*"' "$formal_codes" \
     | sed 's/= *"//; s/"$//' \
@@ -296,7 +319,7 @@ if ! lake build a12-kernel-replay >/dev/null; then
   echo "failed to build the population replay" >&2
   exit 1
 fi
-find evidence/kernel-30.8.1/captures -type f \( -name 'req*.json' -o -name 'request*.json' \) -print \
+find "$evidence_root/captures" -type f \( -name 'req*.json' -o -name 'request*.json' \) -print \
   | sort | while read -r request; do
     if grep -q '"rows"' "$request"; then echo "$request"; fi
   done > "$work/replay-requests"
@@ -345,7 +368,7 @@ today="$(date +%Y-%m-%d)"
 
 route_for() {
   case "$1" in
-    _30_8) echo 'runtime formal-error **texts** — a **document** probe (`:adapter:kernelProbe` → `validateFull`); finer than the code below, since art and sign pick the text' ;;
+    _[0-9]*_[0-9]*) echo 'runtime formal-error **texts** — a **document** probe (`:adapter:kernelProbe` → `validateFull`); finer than the code below, since art and sign pick the text' ;;
     runtime_formal_codes) echo 'runtime formal-error **codes** a `validateFull` consumer actually reads — same document probe' ;;
     vk_parser_error_messages) echo 'condition/DSL static legality — the fast `dmtool rule check` batch route' ;;
     vk_service_errortext_error_messages) echo 'message templates and parameters — the fast `rule check --message` batch route' ;;
@@ -523,7 +546,7 @@ printf '\n### Tier-1 divergences\n\n'
 if [[ -s "$work/replay-divergences" ]]; then
   printf '| request | row | rule or computation | outcomes |\n|---|---|---|---|\n'
   while IFS=$'\t' read -r divergence_request divergence_row divergence_member divergence_outcomes; do
-    printf '| `%s` | `%s` | `%s` | %s |\n' "${divergence_request#evidence/kernel-30.8.1/captures/}" \
+    printf '| `%s` | `%s` | `%s` | %s |\n' "${divergence_request#"$evidence_root"/captures/}" \
       "$divergence_row" "$divergence_member" "$divergence_outcomes"
   done < "$work/replay-divergences"
 else
