@@ -261,8 +261,8 @@ def validateMessageTemplateSource (source : String) :
   validateMessageTemplatePrefix source
   validateMessageTemplateSegments source
 
-/-- The pieces between a dollar pair of a message text, in order, empty ones included. -/
-private def messageParameterPieces : List String → List String
+/-- The pieces between a dollar pair of a message text split at each `$`, in order, empty ones included. -/
+def messageParameterPieces : List String → List String
   | _ :: piece :: rest => piece :: messageParameterPieces rest
   | _ => []
 

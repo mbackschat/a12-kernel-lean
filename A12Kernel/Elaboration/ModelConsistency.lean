@@ -536,11 +536,6 @@ private def criterionFieldNotifications (placed : List (String × ConsistencyFie
         raiseIf repeatable path .uniquenessCriterionFieldRepeatable ++
         raiseIf field.transient path .uniquenessCriterionFieldTransient
 
-/-- The segments of a `$`-delimited text that sit between a pair of dollars, which are its parameters. -/
-private def textParameters : List String → List String
-  | _ :: parameter :: rest => parameter :: textParameters rest
-  | _ => []
-
 /-- The refusals of one criterion's error text for one declared locale: no entry for the locale (the first
 entry of a locale is read when several are written, unmeasured), an unterminated `$`, which stops the
 parameters being read, or a parameter that is neither a field path of the criterion nor that path with a
@@ -558,7 +553,7 @@ private def criterionTextNotifications (path : List String) (criterion : Consist
       | .ok segments =>
           let named (parameter : String) :=
             criterion.fieldPaths.any fun fullName => parameter == fullName || parameter == fullName ++ ".value"
-          pure (raiseIf ((textParameters segments).any (!named ·)) path .uniquenessCriterionParameterInvalid)
+          pure (raiseIf ((messageParameterPieces segments).any (!named ·)) path .uniquenessCriterionParameterInvalid)
 
 /-- The notifications of one criterion: an empty name, a name another criterion carries, no field, each
 field's refusals in the written order, then each declared locale's text. The path is the criterion's name,
