@@ -604,7 +604,7 @@ example :
     directListSignature? monthTarget.id "DirectMonthEmptyFirst"
         ["DirectMonthEmptySecond"]
         [{ declaration := directMonthEmptyFirst
-           stored := "0609"
+           stored := "06/09"
            raw := .parsed (.dateRange (.yearlessMonth 6 9)) }] =
       some "VALUE|06/09" ∧
     directListSignature? target.id "DirectDottedFirst" ["DirectDottedSecond"]

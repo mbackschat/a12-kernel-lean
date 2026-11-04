@@ -171,15 +171,19 @@ def HavingNumericAtomOf.readArithmetic [SizeOf Temporal] (phase : Phase)
   | .dateDifference unit left right => do
       let result ← readHavingCalendarDifference phase context.read frame
         (readHavingDateOperand context.world context.unsupportedDateCalendar)
-        (fun | .unavailable cause => some cause | _ => none) NumericOperand.unknown (DateDifferenceOperand.evaluate unit) left right
-      pure result.toValidationArithmetic
+        (fun | .unavailable cause => some cause | _ => none) (fun cause => .ok (.unknown cause)) (DateDifferenceOperand.evaluate unit) left right
+      match result with
+      | .ok operand => pure operand.toValidationArithmetic
+      | .error .constantHasNoInstant => throw context.temporalValueFailure
+      | .error .unsupportedCalendar => unsupportedCalendar
   | .dayDifference profile left right => do
       let result ← readHavingCalendarDifference phase context.read frame
         (readHavingDayOperand profile context.world context.unsupportedDateCalendar)
         (fun | .unavailable cause => some cause | _ => none) (fun cause => .ok (.unknown cause)) (CalendarDayDifferenceOperand.evaluate profile) left right
       match result with
       | .ok operand => pure operand.toValidationArithmetic
-      | .error _ => unsupportedCalendar
+      | .error .constantHasNoInstant => throw context.temporalValueFailure
+      | .error .unsupportedCalendar => unsupportedCalendar
   | .dateTimeDifference unit left right => do
       pure ((← readHavingSubdayDifference phase context.read frame context.world context.unsupportedDateCalendar unit left right).toValidationArithmetic)
   | .product source => do

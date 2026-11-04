@@ -40,7 +40,7 @@ def NumericComputationAtom.numericComputationFault? :
         | .field source =>
             if unit.admittedBy true source.components then none
             else some (.fieldKindMismatch source.id)
-        | .baseYear _ _ | .literal _ _ | .today _ => none
+        | .baseYear _ _ | .literal _ _ _ | .today _ => none
       match fault? left with
       | some fault => some fault
       | none => fault? right
@@ -59,7 +59,7 @@ def NumericComputationAtom.numericComputationFault? :
         | .field source =>
             if CalendarDayDifference.admittedBy source.components then none
             else some (.fieldKindMismatch source.id)
-        | .baseYear _ _ | .literal _ _ | .today _ | .now _ _ => none
+        | .baseYear _ _ | .literal _ _ _ | .today _ | .now _ _ => none
       match fault? left with
       | some fault => some fault
       | none => fault? right

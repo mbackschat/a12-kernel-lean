@@ -54,7 +54,7 @@ def fullDateFirstFilledCellAt (format : FullDateTargetFormat)
   match observeCell .computation addressed.cell with
   | .value (.temporal (.date date)) => .value date.instant
   | .value (.partialDate text) =>
-      match firstFilledPartialDateResolution format text with
+      match firstFilledPartialDateResolution format profile text with
       | some (.date date) =>
           match profile.resolveCompletedDateParts? date.civil.parts with
           | some value => .value value.instant

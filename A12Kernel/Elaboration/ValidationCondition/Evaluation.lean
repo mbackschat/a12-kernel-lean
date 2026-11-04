@@ -603,6 +603,14 @@ def evalAddressed (context : AddressedValidationEvaluationContext model) :
           pure ((outcome?.map ValidationFillOutcome.asConservativeVerdict).getD .unknown)
       | .legacy _ _ | .partialView _ _ =>
           .error (.checkedDocumentRequired ((source.operands.head?.map (·.groupPath)).getD []))
+  -- A plain numeric comparison reads through the scalar resolver, which has no failure channel, so a
+  -- date constant without an instant fails here instead (spec/05 §1; `DifferenceInDays` under Europe/Berlin).
+  | leaf@(.numeric _ comparison) =>
+      if comparison.allRelevant context.directRelevant &&
+          (comparison.left.anyAtom context.scalar.differenceConstantFails ||
+            comparison.right.anyAtom context.scalar.differenceConstantFails) then
+        throw .temporalValueFailure
+      else pure (leaf.evalSelected context.scalar context.directRelevant)
   | leaf => pure (leaf.evalSelected context.scalar context.directRelevant)
 
 /-- Evaluate one reached leaf with the rule-owned current-row RNU result. Every other leaf delegates to the established addressed evaluator unchanged. -/

@@ -59,10 +59,10 @@ example : atoms.all (fun atom => CorrelatedHaving.fieldIds (condition atom) == [
 
 
 private def staticAtoms : List HavingNumericAtom :=
-  let literal : ResolvedDateDifferenceOperand HavingTemporalRef := .literal { year := some 1970, month := 1, day := 1 } 2023
+  let literal : ResolvedDateDifferenceOperand HavingTemporalRef := .literal { year := some 1970, month := 1, day := 1 } 2023 .utc
   [.dateDifference .months literal (.field (reference .outer 2)),
    .dateDifference .years (.field (reference .outer 2)) (.baseYear 1970 .direct),
-   .dayDifference .utc (.literal { year := some 1970, month := 1, day := 1 } 2023) (.field (reference .outer 2))]
+   .dayDifference .utc (.literal { year := some 1970, month := 1, day := 1 } 2023 .utc) (.field (reference .outer 2))]
 
 example : staticAtoms.all (fun atom => atom.origins == [.outer] &&
     CorrelatedHaving.fieldIds (condition atom) == [2] &&
@@ -79,7 +79,7 @@ example : staticAtoms.all (fun atom => atom.origins == [.outer] &&
 
 
 example : (HavingNumericAtom.dayDifference .utc (.baseYear 2024 .direct)
-    (.literal { year := none, month := 3, day := 1 } 2024)).readComputationResolving {
+    (.literal { year := none, month := 3, day := 1 } 2024 .utc)).readComputationResolving {
       read := fun _ _ => .error "unexpected read", bindingError := fun _ => "binding"
       stringExpressionUnavailable := "String expression unavailable"
       unsupportedDateCalendar := "calendar", temporalValueFailure := "value failure"

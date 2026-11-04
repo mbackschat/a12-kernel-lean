@@ -450,7 +450,7 @@ example : rangeRun "==" "yyyy" "yyyy" "2024/2025" "2024/2025" "2024/2026" =
       some (.fired .omission, ["value 9"]) ∧
     rangeRun "==" "yyyy-MM" "yyyy-MM" "2024-01/2024-02" "2024-01/2024-02" "2024-01/2024-03" =
       some (.fired .omission, ["value 9"]) ∧
-    rangeRun "==" "MM" "MM" "01/02" "0102" "0103" (some "") =
+    rangeRun "==" "MM" "MM" "01/02" "01/02" "01/03" (some "") =
       some (.fired .omission, ["value 9"]) := by native_decide
 
 private def fillOperators := ["AllFieldsFilled", "NoFieldFilled", "AtLeastOneFieldFilled",

@@ -202,7 +202,7 @@ private def readAtom (profile : ModelZone.ConcreteProfile) (baseYear : Option In
       let cell ← context.read (frame.envAt reference.origin) reference.field.id
       match observeCell phase cell with
       | .value (.partialDate text) =>
-          match classifyPartialDateStored source.format source.mode source.youngerThan1900Check text with
+          match classifyPartialDateStored source.format profile source.mode source.youngerThan1900Check text with
           | .presentEmpty => pure .notEvaluated
           | .rejected cause => pure (.unknown cause.toFormalCause)
           | .admitted value => match value.value.resolve source.endpoint with
@@ -231,10 +231,10 @@ private def readAtom (profile : ModelZone.ConcreteProfile) (baseYear : Option In
           else pure (components.finishValue observation).asScalarTemporalOperand
   | .timeLiteral value => pure (.value (.time value) true)
   | .dateTimeLiteral value => do
-      let some instant := profile.resolveCalendarLabel? value | throw context.temporalValueFailure
+      let some instant := profile.resolveStoredLabel? value | throw context.temporalValueFailure
       pure (.value (.instant instant) true)
   | .dateLiteral value yearPresent => do
-      let some date := profile.resolveCompletedDateParts? value | throw context.temporalValueFailure
+      let some date := profile.resolveConstantDateParts? value | throw context.temporalValueFailure
       pure (.value (if yearPresent || baseYear.isSome then .date date
         else .yearless date { month := date.parts.month, day := date.parts.day } 0) true)
   | .baseYearBound bound => do

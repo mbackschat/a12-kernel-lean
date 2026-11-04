@@ -84,7 +84,7 @@ private def list (names : List String) : SurfaceFirstFilledSource :=
 private def fragmentRaw (declaration : FlatFieldDecl) (text : String) : RawCell :=
   match certifyOmittingDateInputField declaration, ModelZone.ConcreteProfile.ofId? model.timeZoneId with
   | .ok checked, some profile =>
-      match checked.classifyStoredForModel model.baseYear text with
+      match checked.classifyStoredForModel profile model.baseYear text with
       | .admitted value =>
           match (value.earliestCivil? model.baseYearOrDefault).bind profile.resolveStoredDate? with
           | some date => .parsed (.temporal (.date date))

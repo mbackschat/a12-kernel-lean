@@ -8,10 +8,12 @@ Kernel 31.1.1 reads `Today`, `Now`, a date or date-time constant, a constructed 
 the proleptic ISO calendar, while static admission of a constant keeps the hybrid Julian–Gregorian
 calendar ([spec/05 §2.7 and §1](../../../spec/05-dates-and-time.md)). Each row runs
 `FieldFilled(Reference) And (…)` on a `/Policy` host whose stored values are `Inception` 2024-01-01,
-`Day` 29, `Month` 2, `Year` 1500 and the `MM` range `Season` `02/02`, and reads `fires`, `silent` or
-`refused`. The clock rows are locked by `HybridCalendarClockDiffTest` of a12-dmkits at its
-simplification revision `1124b523f`; the constant and Base Year rows follow the same account and are
-unmeasured on 31.1.1. -/
+`Day` 29, `Month` 2, `Year` 1500 and the `MM` range `Season` `02/02`, and reads `fires`, `silent`, `fails` (the rule's runtime
+failure) or `refused`. The clock rows are locked by `HybridCalendarClockDiffTest` and the stored-date and
+UTC constant rows named in their comments by `StoredDateCalendarDiffTest`, both of a12-dmkits at its
+simplification revision `1124b523f`; the Julian leap day rows under Europe/Berlin that reach a difference or
+a Date target, and the other constant and Base Year rows, follow the same account and are unmeasured on
+31.1.1. -/
 
 namespace A12Kernel.Dm.HybridCalendarLocks
 
@@ -37,7 +39,8 @@ private def policy (zone : String) (baseYear : Int) (conditions : List String) :
   let model ← (((parseModelJson text).map checkedEntryFrame).bind readModel).toOption
   if model.refusals.isEmpty then some model else none
 
-/-- Each condition's outcome under the model zone, Base Year and pinned clock. -/
+/-- Each condition's outcome under the model zone, Base Year and pinned clock: `fires` on its condition,
+`fails` when evaluation raised the rule's runtime failure instead, `silent` or `refused`. -/
 private def outcomes (zone : String) (baseYear : Int) (now : Int) (conditions : List String)
     (inception := "2024-01-01") : Option (List String) := do
   let model ← policy zone baseYear conditions
@@ -50,7 +53,8 @@ private def outcomes (zone : String) (baseYear : Int) (now : Int) (conditions : 
     match checkValidationRule model .english definition world with
     | .error _ => some "refused"
     | .ok checked => (runValidationRule world document checked).toOption.map fun messages =>
-        if messages.isEmpty then "silent" else "fires"
+        if messages.isEmpty then "silent"
+        else if messages.any (·.origin == .runtimeFailure) then "fails" else "fires"
 
 private def expect (zone : String) (baseYear now : Int) (rows : List (String × String)) : Bool :=
   outcomes zone baseYear now (rows.map (·.1)) == some (rows.map (·.2))
@@ -72,6 +76,75 @@ example : [(-12219336000000, 14, 10), (-12219249600000, 15, 10), (1750672800000,
       (s!"DayFromDate(Today) == {day}", "fires"), (s!"MonthFromDate(Today) == {month}", "fires"),
       (s!"DayFromDate(Now) == {day}", "fires"),
       ("Today < \"01.03.1500\"", "silent"), ("Today == \"10.03.1500\"", "silent")]) = true := by
+  native_decide
+
+/- A label real only on the Julian side resolves at runtime to its Julian instant under UTC, the proleptic
+   10 March 1500, and has no instant under Europe/Berlin, where reaching it fails the evaluation
+   (spec/05 §1). A clock one day later separates the two UTC readings from a failure that would fire on
+   every clock; the Berlin rows must not fire at all. -/
+example : expect "UTC" 2024 (-14825851200000) [
+    ("Today == \"29.02.1500\"", "fires"), ("Today == \"10.03.1500\"", "fires"), ("Today == \"09.03.1500\"", "silent"),
+    ("DifferenceInDays(\"29.02.1500\", \"10.03.1500\") == 0", "fires"),
+    ("DifferenceInDays(\"29.02.1500\", \"11.03.1500\") == 1", "fires")] = true := by
+  native_decide
+
+example : expect "UTC" 2024 (-14825764800000) [
+    ("Today == \"29.02.1500\"", "silent"), ("Today == \"10.03.1500\"", "silent"),
+    ("Today == \"11.03.1500\"", "fires")] = true := by
+  native_decide
+
+example : expect "Europe/Berlin" 2024 (-14825851200000) [
+    ("Today == \"29.02.1500\"", "fails"), ("Today == \"10.03.1500\"", "fires")] = true := by
+  native_decide
+
+/- Locked by `StoredDateCalendarDiffTest.aJulianLeapDayConstantIsAnEvaluationFaultUnderEuropeBerlin`: a
+   stored-date comparison with the Julian leap day fails under Europe/Berlin, and the labels beside the
+   cutover, `04.10.1582` and `15.10.1582`, compare as ordinary dates. -/
+example : expect "Europe/Berlin" 2024 0 [
+    ("[Inception] > \"29.02.1500\"", "fails"), ("[Inception] > \"04.10.1582\"", "fires"),
+    ("[Inception] > \"15.10.1582\"", "fires")] = true := by
+  native_decide
+
+/- Locked by `StoredDateCalendarDiffTest.aJulianLeapDayConstantIsItsJulianInstantUnderUtc`: under UTC the
+   constant `29.02.1500` is its Julian instant, 191319 days before `Inception`, where the proleptic
+   1 March would be 191328. -/
+example : expect "UTC" 2024 0 [
+    ("DifferenceInDays(\"29.02.1500\", Inception) == 191319", "fires"),
+    ("DifferenceInDays(\"29.02.1500\", Inception) == 191328", "silent")] = true := by
+  native_decide
+
+/- A date constant without an instant fails the evaluation of a difference it is an operand of, in either
+   position and for every unit, where a real label beside it counts normally: `28.02.1500` is 191329 days
+   from `Inception`. Derived from spec/05 §1, whose statement for the comparison carrier the lock above
+   measures. Unmeasured on 31.1.1. -/
+example : expect "Europe/Berlin" 2024 0 [
+    ("DifferenceInDays(\"29.02.1500\", Inception) == 191319", "fails"),
+    ("DifferenceInDays(Inception, \"29.02.1500\") == -191319", "fails"),
+    ("DifferenceInMonths(\"29.02.1500\", Inception) == 6285", "fails"),
+    ("DifferenceInYears(\"29.02.1500\", \"01.03.2024\") == 523", "fails"),
+    ("DifferenceInDays(\"28.02.1500\", Inception) == 191329", "fires")] = true := by
+  native_decide
+
+/- Under UTC month and year differences read the constant as its Julian instant, the proleptic 10 March
+   1500, as the day difference does: 6285 completed months to `Inception` where the written 29 February
+   would count 6286, and 523 completed years to 1 March 2024 where it would count 524. Derived from
+   spec/05 §1 and unmeasured on 31.1.1. -/
+example : expect "UTC" 2024 0 [
+    ("DifferenceInMonths(\"29.02.1500\", Inception) == 6285", "fires"),
+    ("DifferenceInMonths(\"29.02.1500\", Inception) == 6286", "silent"),
+    ("DifferenceInYears(\"29.02.1500\", \"01.03.2024\") == 523", "fires"),
+    ("DifferenceInYears(\"29.02.1500\", \"01.03.2024\") == 524", "silent")] = true := by
+  native_decide
+
+/- An empty `timeZone` reads as an absent one, which is UTC (spec/05 §5): the model carries `UTC`, and
+   `Now` reads hour 10 at 10:00Z where Europe/Berlin reads hour 12. -/
+example : (policy "" 2024 []).map (·.flat.timeZoneId) = some "UTC" ∧
+    expect "" 2024 1750672800000 [
+      ("HoursFromTime(TimeFromDateTime(Now)) == 10", "fires"),
+      ("HoursFromTime(TimeFromDateTime(Now)) == 12", "silent")] = true ∧
+    expect "Europe/Berlin" 2024 1750672800000 [
+      ("HoursFromTime(TimeFromDateTime(Now)) == 10", "silent"),
+      ("HoursFromTime(TimeFromDateTime(Now)) == 12", "fires")] = true := by
   native_decide
 
 /- The control: at 2025-06-23T10:00Z a stored date of that day equals `Today`. -/
@@ -97,15 +170,16 @@ example : expect "UTC" 2024 0 [
    and a 28-day February, so the constructed Julian leap day `Date(29, 2, 1500)` is unreal and compares
    with nothing (spec/05 §3.1; `ConstructedDateCalendarDiffTest` locks the unreality), while the real
    `Date("28", Month, Year)` equals its own constant and a yearless `28.02.` is one day from `01.03.`
-   (spec/05's omitted-year section: two days under a leap Base Year, one under 2023). The remaining
-   values are unmeasured on 31.1.1. An `MM` range ending in the Base Year's February is deliberately
-   absent: its endpoint still completes on the hybrid calendar. -/
+   (spec/05's omitted-year section: two days under a leap Base Year, one under 2023). The `MM` range
+   `Season` ends on that proleptic February's 28th. The remaining values are unmeasured on 31.1.1. -/
 example : expect "UTC" 1500 0 [
     ("DifferenceInDays(BaseYear, Inception) == 191387", "fires"),
     ("DifferenceInDays(BaseYear, Inception) == 191378", "silent"),
     ("Date(Day, Month, Year) == \"01.03.1500\"", "silent"),
     ("Date(Day, Month, Year) < \"01.03.1500\"", "silent"),
     ("Date(\"28\", Month, Year) == \"28.02.1500\"", "fires"),
+    ("EndOfDateRange(Season) == Date(\"28\", Month, Year)", "fires"),
+    ("EndOfDateRange(Season) == \"29.02.1500\"", "silent"),
     ("DifferenceInDays(\"28.02.\", \"01.03.\") == 1", "fires"),
     ("DifferenceInDays(\"28.02.\", \"01.03.\") == 2", "silent")] = true := by
   native_decide

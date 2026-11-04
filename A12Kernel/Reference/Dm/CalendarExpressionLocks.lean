@@ -201,7 +201,7 @@ example : ["3e8", "2e9"].all (fun year =>
       [[], ["Form/C:VALUE_ERROR"]])) := by native_decide
 
 example : extensibleComponents false ["+1"] 3 "2e8" = some (
-    ["Form/D:errored 200000000-02-01", "Form/T:value 01:00:00", "Form/N:cleared", "Form/H:value 1"],
+    ["Form/D:errored +200000000-02-01", "Form/T:value 01:00:00", "Form/N:cleared", "Form/H:value 1"],
     [[], ["Form/C:VALUE_ERROR"]]) := by native_decide
 
 example : [(".5", "1"), ("-0", "2")].all (fun (century, day) =>

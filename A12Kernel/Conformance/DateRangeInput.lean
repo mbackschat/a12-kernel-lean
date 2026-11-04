@@ -248,35 +248,37 @@ private def dayMonthDottedPolicy : DateRangeDeclarationPolicy := {
   separator := "-"
 }
 
-/- Every admitted declaration pair now selects exactly one stored-input profile, and the two lexical variants stay distinct from the slash-separated profiles that share their component shape. -/
+/- Static admission keeps the empty separator as a declared member, while the stored-input profile reads it as `/` (spec/05 §8.1), so `MM` with it is the slash-separated month fragment; the dotted variant stays distinct from the slash-separated profile that shares its component shape. -/
 example :
     (monthEmptyPolicy.error?, dayMonthDottedPolicy.error?) = (none, none) ∧
-      DateRangeInputFormat.ofPolicy? monthEmptyPolicy =
-        some .yearlessMonthConcatenated ∧
+      DateRangeInputFormat.ofPolicy? monthEmptyPolicy = some .yearlessMonth ∧
       DateRangeInputFormat.ofPolicy? dayMonthDottedPolicy =
         some .yearlessDayMonthDotted := by
   native_decide
 
-/- The empty separator halves its stored token and dotted endpoints read day before month; both retain an ordered yearless pair with no synthetic year or instant. -/
+/- An empty declared separator reads as `/` (spec/05 §8.1; kernel 30.8.1 split such a token at its midpoint instead): a token without the separator is the missing-separator failure, `06/09` is admitted as an ordered yearless pair with no synthetic year or instant, `09/06` is inverted and `13/09` has an unreadable endpoint. The dotted endpoints read day before month. -/
 example :
-    (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "0609").toOption =
+    ["0609", "061", "06109", "6"].map
+        (fun text => (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy text).toOption) =
+      List.replicate 4 (some (.rejected .dateRangeSeparator)) ∧
+      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "06/09").toOption =
         some (.parsed (.dateRange (.yearlessMonth 6 9))) ∧
+      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "09/06").toOption =
+        some (.rejected .dateRangeInvalid) ∧
+      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "13/09").toOption =
+        some (.rejected .dateRangeFormat) ∧
       (classifyStoredDateRangeForModel "UTC" none dayMonthDottedPolicy "01.06-30.09").toOption =
         some (.parsed (.dateRange (.yearlessMonthDay
           { month := 6, day := 1 } { month := 9, day := 30 }))) := by
   native_decide
 
-/- A token split would report the well-formed `0609` as missing its separator, so the missing-separator cause is unreachable under an empty separator while every other yearless precedence survives. The dotted profile keeps that cause because its separator is present. -/
+/- The rest of the yearless precedence follows the slash reading: equal endpoints are valid, a lone month lacks the separator, and a non-digit endpoint is unreadable. The dotted profile keeps the missing-separator cause because its separator is present. The three slash rows are derived from §8.1's rows and unmeasured on 31.1.1. -/
 example :
-    (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "0606").toOption =
+    (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "06/06").toOption =
         some (.parsed (.dateRange (.yearlessMonth 6 6))) ∧
-      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "0906").toOption =
-        some (.rejected .dateRangeInvalid) ∧
       (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "06").toOption =
-        some (.rejected .dateRangeFormat) ∧
-      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "06x9").toOption =
-        some (.rejected .dateRangeFormat) ∧
-      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "1309").toOption =
+        some (.rejected .dateRangeSeparator) ∧
+      (classifyStoredDateRangeForModel "UTC" none monthEmptyPolicy "06/x9").toOption =
         some (.rejected .dateRangeFormat) ∧
       (classifyStoredDateRangeForModel "UTC" none dayMonthDottedPolicy "01.06").toOption =
         some (.rejected .dateRangeSeparator) := by
@@ -666,14 +668,15 @@ example :
   native_decide
 
 -- KF276 separates formal-check completion from endpoint completion: pure month
--- patterns ignore Base Year for both date-position checks, but still enforce order.
+-- patterns ignore Base Year for both date-position checks, but still enforce order. The declared empty
+-- separator reads as `/` (spec/05 §8.1), so both declarations split the same text.
 example : ["/", ""].all (fun separator =>
     [1500, 1899, 1901].all (fun year => [false, true].all (fun flag =>
       let policy : DateRangeDeclarationPolicy := {
         format := "MM", separator, youngerThan1900Check := flag }
       let model : FlatModel := { fields := [], baseYear := some year, timeZoneId := "UTC" }
-      let good := model.classifyRuntimeDateRange policy ("06" ++ separator ++ "09")
-      let bad := model.classifyRuntimeDateRange policy ("09" ++ separator ++ "06")
+      let good := model.classifyRuntimeDateRange policy "06/09"
+      let bad := model.classifyRuntimeDateRange policy "09/06"
       (match good with
         | .ok (.parsed (.dateRange (.exact range))) => range.start.parts.year == year
         | _ => false) && (match bad with

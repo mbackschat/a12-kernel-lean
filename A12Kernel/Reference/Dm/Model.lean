@@ -293,11 +293,12 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         | some "TO" => pure (some .anchorFinish)
         | some other => throw s!"interpretationOfYear {other}"
       let format ← body.getObjValAs? String "format"
-      -- An absent separator reads as `/`: a format whose allowlisted pair uses `/` is admitted without
-      -- one (capture row `tb-range-fmtonly`), and the pair allowlist refuses any other. An absent
-      -- format stays refused.
+      -- An absent or empty separator reads as `/` (spec/05 §8.1): the model is read as the Kernel's
+      -- expansion copies it, so a format whose allowlisted pair uses `/` is admitted without one
+      -- (capture row `tb-range-fmtonly`), and the pair allowlist refuses any other. An absent format
+      -- stays refused. The declaration walk's own read of the member stays literal.
       let separator ← match body.getObjVal? "rangeSeparator" with
-        | .error _ | .ok .null => pure "/"
+        | .error _ | .ok .null | .ok (.str "") => pure "/"
         | .ok (.str value) => pure value
         | .ok other => throw s!"rangeSeparator {other.compress}"
       pure { base with
@@ -657,7 +658,8 @@ private def readModelCore (json : Json)
     legalCharset
     fieldRefByShortNameAllowed := ← booleanMember? config "fieldRefByShortNameAllowed"
     baseYear
-    timeZoneId := frame.timeZone.getD "UTC" }
+    -- An empty id reads as an absent one, which is UTC (spec/05 §5); a blank non-empty id is not empty.
+    timeZoneId := match frame.timeZone with | some "" | none => "UTC" | some zone => zone }
   refusals := refusals ++ nominationRefusals flat state
   pure ({
     flat

@@ -58,9 +58,9 @@ example :
     let literal : AuthoredDateLiteral := { year := none, month := 3, day := 1 }
     let admitted (anchor : Int) := NumericValidationAtom.admitted
       { model with baseYear := some 2023 } ["Order"] .sameGroup
-      (.dayDifference .utc (.literal literal anchor) (.literal literal anchor))
+      (.dayDifference .utc (.literal literal anchor .utc) (.literal literal anchor .utc))
     admitted 2023 = true ∧ admitted 2024 = false ∧
-      (.literal literal 2023 : ResolvedDateDifferenceOperand).references 11 = false := by
+      (.literal literal 2023 .utc : ResolvedDateDifferenceOperand).references 11 = false := by
   native_decide
 
 private def fullDateField : FlatFieldDecl := {

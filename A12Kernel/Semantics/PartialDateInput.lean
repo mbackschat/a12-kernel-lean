@@ -1,6 +1,7 @@
 import A12Kernel.Semantics.FullDateInputFormat
 import A12Kernel.Semantics.PartialDate
 import A12Kernel.Semantics.ConstructedDateShift
+import A12Kernel.Semantics.ModelZone
 import A12Kernel.Semantics.Observation
 
 namespace A12Kernel
@@ -17,9 +18,10 @@ inductive PartialDateInputCell (mode : TemporalPartialMode) where
 certificate required. This is the **single owner** of the decision: every consumer that reads a
 partial-Date cell routes here rather than repeating the ladder, so the measured cause cannot drift
 between two implementations of it. Every formal text failure is a successful classification carrying
-its cause; no model zone is consulted, because an admitted partial value denotes an interval and
-resolves to an instant only when an endpoint is selected. -/
-def classifyPartialDateStored (format : FullDateTargetFormat)
+its cause. The model zone's profile is consulted only to judge calendar reality (spec/05 §4), which
+is zone-dependent for a Julian leap day: an admitted partial value denotes an interval and resolves to an
+instant only when an endpoint is selected. -/
+def classifyPartialDateStored (format : FullDateTargetFormat) (profile : ModelZone.ConcreteProfile)
     (mode : TemporalPartialMode) (youngerThan1900Check : Bool) (text : String) :
     PartialDateInputCell mode :=
   if text.isEmpty then
@@ -67,7 +69,7 @@ where
   passed and its `none` can mean nothing but unreality. -/
   guardCompletion (earliest : DateParts)
       (build : Option PartiallyKnownDateValue) : PartialDateInputCell mode :=
-    if !DateParts.LegacyHybrid.isReal earliest then
+    if !profile.storedLabelReal earliest then
       .rejected .dateFormat
     else if decide (earliest.Before CivilDate.gregorianFloor.parts) ||
         (youngerThan1900Check &&

@@ -95,7 +95,7 @@ def FlatModel.admitsNumericComputationOperand
         | .field source =>
             model.admitsTemporalComputationOperand scope source
               (unit.admittedBy model.hasBaseYear source.components)
-        | .literal source year => source.admittedIn model year
+        | .literal source year profile => source.admittedIn model year profile
         | .baseYear year _ => model.baseYear == some year
         | .today profile => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
         | .now _ admitted => nomatch admitted
@@ -119,7 +119,7 @@ def FlatModel.admitsNumericComputationOperand
         | .field source =>
             model.admitsTemporalComputationOperand scope source
               (CalendarDayDifference.admittedBy source.components)
-        | .literal source year => source.admittedIn model year
+        | .literal source year profile => source.admittedIn model year profile
         | .baseYear year _ => model.baseYear == some year
         | .today profile | .now profile _ => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
       ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
@@ -478,8 +478,11 @@ def FlatModel.elaborateNumericComputationAtom
                   unit.admittedBy model.hasBaseYear source.components)
               pure (.field field)
           | .literal source =>
-              if source.valid then pure (.literal source model.baseYearOrDefault)
-              else throw .incompatibleDateDifference
+              match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+              | some profile =>
+                  if source.valid then pure (.literal source model.baseYearOrDefault profile)
+                  else throw .incompatibleDateDifference
+              | none => throw (.unsupportedCalendarProfile model.timeZoneId)
           | .baseYear source =>
               match model.baseYear with
               | some year => pure (.baseYear year source)
@@ -529,8 +532,11 @@ def FlatModel.elaborateNumericComputationAtom
                   CalendarDayDifference.admittedBy source.components)
               pure (.field field)
           | .literal source =>
-              if source.valid then pure (.literal source model.baseYearOrDefault)
-              else throw .incompatibleDateDifference
+              match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+              | some profile =>
+                  if source.valid then pure (.literal source model.baseYearOrDefault profile)
+                  else throw .incompatibleDateDifference
+              | none => throw (.unsupportedCalendarProfile model.timeZoneId)
           | .baseYear source =>
               match model.baseYear with
               | some year => pure (.baseYear year source)

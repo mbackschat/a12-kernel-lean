@@ -23,19 +23,18 @@ theorem checkedRepeatableDateTimeConstantComputation_execute_ignoresDeclaringGro
     CheckedRepeatableDateTimeConstantComputation.outcome?,
     sameTarget, sameDeclaration, sameDateTimeTarget, sameConstant]
 
-/-- A label resolvable in the model zone produces the target-formatted accepted value of the label
-its instant lands on, which is the authored label except across a spring gap. -/
+/-- A label resolvable in the model zone, whose landing the target can evaluate, produces that
+evaluation: the target-formatted value of the label its instant lands on, which is the authored label
+except across a spring gap or, under UTC, for a Julian leap day. -/
 theorem checkedRepeatableDateTimeConstantComputation_outcome_resolvable
     {model : FlatModel}
     (operation : CheckedRepeatableDateTimeConstantComputation model)
-    (instant : Instant) (landed : LocalDateTime)
+    (instant : Instant) (outcome : DateTimeTargetOutcome)
     (resolves :
-      operation.dateTimeTarget.profile.resolveLocal? operation.constant = some instant)
-    (landing : operation.dateTimeTarget.profile.localDateTime? instant = some landed) :
-    operation.outcome? =
-      some (.accepted
-        (DateTimeTargetFormat.render operation.dateTimeTarget.format landed)) := by
-  simp [CheckedRepeatableDateTimeConstantComputation.outcome?, resolves, landing]
+      operation.dateTimeTarget.profile.resolveStoredLabel? operation.constant = some instant)
+    (evaluates : operation.dateTimeTarget.evaluate (.value instant) = .ok outcome) :
+    operation.outcome? = some outcome := by
+  simp [CheckedRepeatableDateTimeConstantComputation.outcome?, resolves, evaluates, Except.toOption]
 
 /-- A label unresolved in the model zone produces no computed outcome. The execution projection is
 locked separately by the carrier's addressed conformance cases. -/
@@ -43,27 +42,28 @@ theorem checkedRepeatableDateTimeConstantComputation_outcome_unresolvable
     {model : FlatModel}
     (operation : CheckedRepeatableDateTimeConstantComputation model)
     (unresolved :
-      operation.dateTimeTarget.profile.resolveLocal? operation.constant = none) :
+      operation.dateTimeTarget.profile.resolveStoredLabel? operation.constant = none) :
     operation.outcome? = none := by
   simp [CheckedRepeatableDateTimeConstantComputation.outcome?, unresolved]
 
-/-- Where an exact instant maps to the constant's local label, both routes use the same renderer. -/
+/-- Where an exact instant maps to the constant's own label, the target renders that label and its
+stored-text check accepts it, so the carrier stores the authored label. -/
 theorem checkedRepeatableDateTimeConstantComputation_renderingAgreesWithResolvedInstant
     {model : FlatModel}
     (operation : CheckedRepeatableDateTimeConstantComputation model)
     (instant : Instant)
     (resolves :
-      operation.dateTimeTarget.profile.calendarLabel? instant =
-        some (LegacyCalendarLabel.ofLocal operation.constant))
+      operation.dateTimeTarget.profile.calendarLabel? instant = some operation.constant)
     (value : Value)
     (readable :
       operation.dateTimeTarget.format.classifyStoredIn operation.dateTimeTarget.profile
-        (operation.dateTimeTarget.format.render operation.constant).text = .ok (.parsed value)) :
+        (operation.dateTimeTarget.format.renderParts operation.constant.parts
+          operation.constant.time).text = .ok (.parsed value)) :
     operation.dateTimeTarget.evaluate (.value instant) =
       .ok (.accepted
-        (DateTimeTargetFormat.render operation.dateTimeTarget.format operation.constant)) := by
-  simp only [DateTimeTargetFormat.render] at readable ⊢
-  simp only [CheckedDateTimeFormatTarget.evaluate, resolves, LegacyCalendarLabel.ofLocal, readable]
+        (operation.dateTimeTarget.format.renderParts operation.constant.parts
+          operation.constant.time)) := by
+  simp only [CheckedDateTimeFormatTarget.evaluate, resolves, readable]
   rfl
 
 end A12Kernel

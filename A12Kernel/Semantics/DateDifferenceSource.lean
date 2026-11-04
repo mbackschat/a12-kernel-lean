@@ -34,7 +34,8 @@ accepts: `DifferenceInMonths` and `DifferenceInYears` refuse it with `MVK_WRONG_
 every route, as they refuse a DateTime field
 ([checkpoint](../../docs/sources/having-filter-probes.md#src-having-now-day-difference)). -/
 inductive ResolvedDateDifferenceOperand (Field : Type := FlatTemporalField) (clock : Bool := false) where
-  | literal (source : AuthoredDateLiteral) (anchorYear : Int)
+  /-- A date constant read in the model zone's profile, which decides what a Julian leap day the proleptic calendar lacks denotes when the constant is reached (spec/05 §1). -/
+  | literal (source : AuthoredDateLiteral) (anchorYear : Int) (profile : ModelZone.ConcreteProfile)
   | field (source : Field)
   | baseYear (year : Int) (source : BaseYearDateSource)
   | today (profile : ModelZone.ConcreteProfile)
@@ -52,11 +53,11 @@ def todayParts? (profile : ModelZone.ConcreteProfile) (world? : Option World) : 
 
 def fields : ResolvedDateDifferenceOperand Field clock → List Field
   | .field source => [source]
-  | .literal _ _ | .baseYear _ _ | .today _ | .now _ _ => []
+  | .literal _ _ _ | .baseYear _ _ | .today _ | .now _ _ => []
 
 def componentsWith (fieldComponents : Field → TemporalComponents) :
     ResolvedDateDifferenceOperand Field clock → TemporalComponents
-  | .literal source _ => source.components
+  | .literal source _ _ => source.components
   | .field source => fieldComponents source
   | .baseYear _ _ => TemporalComponents.baseYear
   | .today _ => TemporalComponents.fullDate
@@ -65,7 +66,7 @@ def componentsWith (fieldComponents : Field → TemporalComponents) :
 def readDateOperand [Monad m] (read : Field → m CellObservation)
     (today : ModelZone.ConcreteProfile → m DateDifferenceOperand) :
     ResolvedDateDifferenceOperand Field → m DateDifferenceOperand
-  | .literal source year => pure (.value (source.parts year))
+  | .literal source year profile => pure (.ofConstant profile (source.parts year))
   | .field source => DateDifferenceOperand.ofObservation <$> read source
   | .baseYear year source => pure (.value (source.parts year))
   | .today profile => today profile
@@ -76,7 +77,7 @@ def readDayOperand [Monad m] (profile : ModelZone.ConcreteProfile)
     (read : Field → m CellObservation) (today : ModelZone.ConcreteProfile → m CalendarDayDifferenceOperand)
     (now : ModelZone.ConcreteProfile → m CalendarDayDifferenceOperand) :
     ResolvedDateDifferenceOperand Field clock → m CalendarDayDifferenceOperand
-  | .literal source year => pure (.ofParts profile (source.parts year))
+  | .literal source year sourceProfile => pure (.ofConstant sourceProfile (source.parts year))
   | .field source => CalendarDayDifferenceOperand.ofObservation <$> read source
   | .baseYear year source => pure (.ofBaseYear profile year source)
   | .today sourceProfile => today sourceProfile

@@ -15,6 +15,34 @@ example :
       checkedResultOfIn { model with timeZoneId := "UTC" } expression input = some (.value 0) := by native_decide
 
 
+private def faultIn (sourceModel : FlatModel)
+    (expression : AuthoredNumericExpr SurfaceNumericAtom) : Option NumericComputationFault :=
+  match elaborateNumericComputationOperation sourceModel ["Root"] targetId expression with
+  | .error _ => none
+  | .ok checked => match checked.evaluate context with
+    | .ok _ => none
+    | .error fault => some fault
+
+/- A date constant the model zone gives no instant fails the computation when it is reached, as an operand
+   of a day, month or year difference alike (spec/05 §1). Under UTC the Julian leap day `29.02.1500` is its
+   Julian instant, the proleptic 10 March 1500, which reads zero days and months from that day. Derived from
+   §1's statement and unmeasured on 31.1.1. -/
+example :
+    let leapDay : SurfaceDateDifferenceOperand := .literal { year := some 1500, month := 2, day := 29 }
+    let march : SurfaceDateDifferenceOperand := .literal { year := some 1500, month := 3, day := 10 }
+    let berlin := { model with timeZoneId := "Europe/Berlin" }
+    faultIn berlin (surfaceDayDifference leapDay march) = some (.temporalExpression .dateTimeLabelUnresolved) ∧
+      faultIn berlin (surfaceDayDifference march leapDay) = some (.temporalExpression .dateTimeLabelUnresolved) ∧
+      faultIn berlin (surfaceDateDifference .months leapDay march) =
+        some (.temporalExpression .dateTimeLabelUnresolved) ∧
+      faultIn berlin (surfaceDateDifference .years march leapDay) =
+        some (.temporalExpression .dateTimeLabelUnresolved) ∧
+      faultIn { model with timeZoneId := "UTC" } (surfaceDayDifference leapDay march) = none ∧
+      checkedResultOfIn { model with timeZoneId := "UTC" } (surfaceDayDifference leapDay march) = some (.value 0) ∧
+      checkedResultOfIn { model with timeZoneId := "UTC" } (surfaceDateDifference .months leapDay march) =
+        some (.value 0) := by
+  native_decide
+
 example :
     let first : SurfaceDateDifferenceOperand := .literal { year := none, month := 2, day := 28 }
     let second : SurfaceDateDifferenceOperand := .literal { year := none, month := 3, day := 1 }

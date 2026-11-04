@@ -102,7 +102,7 @@ def DateTimeTargetFormat.classifyStoredIn (format : DateTimeTargetFormat)
     | some (dateText, timeText) =>
         -- Both halves are spelling questions and are settled first; only then does the date's position
         -- in time speak. A clock has no position of its own, which is why one floor test serves.
-        match format.dateHalf.parseLegacyParts? dateText,
+        match format.dateHalf.parseParts? profile dateText,
             decodeTimeLiteral? timeText with
         | some parts, some clock =>
             if decide (parts.Before CivilDate.gregorianFloor.parts) then

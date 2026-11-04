@@ -259,7 +259,10 @@ def readNumericComputationAtomWith
       match pair with
       | .error cause => pure (.poison cause)
       | .ok (leftOperand, rightOperand) =>
-          pure (DateDifferenceOperand.evaluate unit leftOperand rightOperand).toComputationResult
+          match DateDifferenceOperand.evaluate unit leftOperand rightOperand with
+          | .ok operand => pure operand.toComputationResult
+          | .error .constantHasNoInstant => throw (.temporalExpression .dateTimeLabelUnresolved)
+          | .error .unsupportedCalendar => throw .unsupportedDateCalendar
   | .dateTimeDifference unit left right => do
       let pair ← readTemporalPair .computation (context.readDateTimeDifferenceOperand)
         (fun operand => match operand with | .unavailable cause => some cause | _ => none) left right
@@ -275,7 +278,8 @@ def readNumericComputationAtomWith
       | .error cause => pure (.poison cause)
       | .ok (leftOperand, rightOperand) =>
           match CalendarDayDifferenceOperand.evaluate profile leftOperand rightOperand with
-          | .error _ => throw .unsupportedDateCalendar
+          | .error .constantHasNoInstant => throw (.temporalExpression .dateTimeLabelUnresolved)
+          | .error .unsupportedCalendar => throw .unsupportedDateCalendar
           | .ok operand => pure operand.toComputationResult
   | .aggregate op source => readAggregate op source
   | .filledGroupCount groups => readGroupCount groups

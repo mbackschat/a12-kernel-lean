@@ -94,10 +94,10 @@ example :
       verdict? 1 2 "01/06" "06/09" = some (.fired .value) := by
   native_decide
 
-/- The halved spelling behaves exactly like its slash sibling on the same components. -/
+/- A field declaring an empty separator reads it as `/` (spec/05 §8.1), so it behaves exactly like its slash sibling on the same components. -/
 example :
-    verdict? 1 4 "01/06" "0409" = some (.fired .value) ∧
-      verdict? 1 4 "01/03" "0609" = some .notFired := by
+    verdict? 1 4 "01/06" "04/09" = some (.fired .value) ∧
+      verdict? 1 4 "01/03" "06/09" = some .notFired := by
   native_decide
 
 /- A month-only operand compares against a day-bearing operand of a different component set, reaching inside its month and stopping at the month's edges. -/

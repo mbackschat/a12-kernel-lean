@@ -56,7 +56,7 @@ private def partialRaw (declaration : FlatFieldDecl) (text : String) : RawCell :
   match certifyPartialDateInputField declaration with
   | .error _ => .rejected .dateFormat
   | .ok checked =>
-      match checked.classifyStored text with
+      match checked.classifyStored .utc text with
       | .presentEmpty => .presentEmpty
       | .rejected cause => .rejected cause
       | .admitted value =>

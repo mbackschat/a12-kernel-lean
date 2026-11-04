@@ -12,12 +12,15 @@ namespace A12Kernel.Conformance.DateFormalMessageKey
 
 open A12Kernel
 
-private def date (mode : TemporalPartialMode) (check : Bool) (format : FullDateInputFormat)
-    (text : String) : Option String :=
-  (format.dateMessageKey? mode check text).map (·.bundleKey)
+private def dateIn (profile : ModelZone.ConcreteProfile) (mode : TemporalPartialMode) (check : Bool)
+    (format : FullDateInputFormat) (text : String) : Option String :=
+  (format.dateMessageKey? profile mode check text).map (·.bundleKey)
+
+/-- The rows below hold in both concrete zones unless a row names the zone-dependent Julian leap day. -/
+private def date := dateIn .utc
 
 private def range (text : String) : Option String :=
-  (FullDateInputFormat.yearMonthDayDashes.dateRangeMessageKey? "/" false text).map (·.bundleKey)
+  (FullDateInputFormat.yearMonthDayDashes.dateRangeMessageKey? .utc "/" false text).map (·.bundleKey)
 
 /- `D1`, a full `yyyy-MM-dd`: every syntactically sound unreal date selects a component key, the
    cutover gap day the day's, and only a zero part, a short part or a non-digit the format key. -/
@@ -26,8 +29,19 @@ example :
       ("2025-02-29", "DATUM_FEBRUAR_29_FEHLER"), ("2024-02-30", "DATUM_TAG_FEHLER"),
       ("2026-04-31", "DATUM_TAG_FEHLER"), ("abc", "DATUM_FORMAT"), ("2026-1-01", "DATUM_FORMAT"),
       ("2026-00-10", "DATUM_FORMAT"), ("2026-03-00", "DATUM_FORMAT"), ("0000-03-10", "DATUM_FORMAT"),
-      ("0999-01-01", "DATUM"), ("1582-10-10", "DATUM_TAG_FEHLER")].all
+      ("0999-01-01", "DATUM")].all
       (fun (text, key) => date .full false .yearMonthDayDashes text == some key) := by
+  native_decide
+
+/- A cutover label is an ordinary proleptic day on 31.1.1 (spec/05 §4), so it fails as a date below the
+   floor and no longer as the day's component. Which key 31.1.1 selects is unmeasured (spec/05 §4.2). -/
+example : date .full false .yearMonthDayDashes "1582-10-10" = some "DATUM" := by native_decide
+
+/- Reality decides the class of a Julian leap day (spec/05 §4): real under UTC, so the floor's key, and
+   unreal under Europe/Berlin, so the 29 February component key, which is unmeasured on 31.1.1. -/
+example :
+    dateIn .utc .full false .yearMonthDayDashes "1500-02-29" = some "DATUM" ∧
+      dateIn .europeBerlin .full false .yearMonthDayDashes "1500-02-29" = some "DATUM_FEBRUAR_29_FEHLER" := by
   native_decide
 
 /- `D2`, `dd.MM.yyyy` with the pre-1900 check: the check answers a real early date, and an unreal one

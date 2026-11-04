@@ -502,14 +502,15 @@ private def dateRangeField (body : String) : Json :=
 private def dateRangeSeparator (body : String) : Option String :=
   ((readFieldType 0 ["Form"] "R" [] (dateRangeField body)).toOption.bind (·.dateRangePolicy)).map (·.separator)
 
-/- An absent range separator reads as `/`, as an explicit one does, so `yyyy-MM-dd` without one is on
-   the allowlist while `dd.MM.yyyy` without one is read and left to the pair allowlist; an absent format
-   is still refused (tb-range-fmtonly, tb-range-fmtonly-de, tb-range-sepnly). -/
+/- An absent or empty range separator reads as `/`, as an explicit one does (spec/05 §8.1, which states
+   the empty case for kernel 31.1.1, where 30.8.1 kept it), so `yyyy-MM-dd` without one is on the
+   allowlist while `dd.MM.yyyy` without one is read and left to the pair allowlist; an absent format is
+   still refused (tb-range-fmtonly, tb-range-fmtonly-de, tb-range-sepnly). -/
 example :
     dateRangeSeparator "{\"format\":\"yyyy-MM-dd\"}" = some "/" ∧
     dateRangeSeparator "{\"format\":\"yyyy-MM-dd\",\"rangeSeparator\":null}" = some "/" ∧
     dateRangeSeparator "{\"format\":\"dd.MM.yyyy\"}" = some "/" ∧
-    dateRangeSeparator "{\"format\":\"MM\",\"rangeSeparator\":\"\"}" = some "" ∧
+    dateRangeSeparator "{\"format\":\"MM\",\"rangeSeparator\":\"\"}" = some "/" ∧
     dateRangeSeparator "{\"rangeSeparator\":\"/\"}" = none ∧
     dateRangeSeparator "{\"format\":\"yyyy-MM-dd\",\"rangeSeparator\":1}" = none := by
   native_decide

@@ -1,6 +1,7 @@
 import A12Kernel.Semantics.RuntimeFormalMessageKey
 import A12Kernel.Semantics.FullDateInputFormat
 import A12Kernel.Semantics.ConstructedDateShift
+import A12Kernel.Semantics.ModelZone
 
 /-! # Runtime formal-error message keys of the date families
 
@@ -101,8 +102,8 @@ known declaration first meets its omission check, then reads an unknown day or m
 unknown year as `2000` for the remaining checks. Past the syntax gate a calendar-unreal date selects
 its component key; a real one fails only as a date, under the pre-1900 check when enabled and
 otherwise below the universal floor, and these two keys carry the code `datum`. -/
-def dateMessageKey? (format : FullDateInputFormat) (mode : TemporalPartialMode)
-    (youngerThan1900 : Bool) (text : String) : Option RuntimeFormalMessageKey :=
+def dateMessageKey? (format : FullDateInputFormat) (profile : ModelZone.ConcreteProfile)
+    (mode : TemporalPartialMode) (youngerThan1900 : Bool) (text : String) : Option RuntimeFormalMessageKey :=
   match format.parseComponents? text with
   | none => some .textDatumFormat
   | some written =>
@@ -115,7 +116,7 @@ def dateMessageKey? (format : FullDateInputFormat) (mode : TemporalPartialMode)
               year := if written.year == 0 then 2000 else written.year
               month := if written.month == 0 then 1 else written.month
               day := if written.day == 0 then 1 else written.day }
-          if !DateParts.LegacyHybrid.isReal parts then
+          if !profile.storedLabelReal parts then
             some (parts.componentDefect youngerThan1900).dateKey
           else if youngerThan1900 && decide (parts.Before FullDate.year1900Start.civil.parts) then
             some .textDatumAdditionalCheck
@@ -126,17 +127,17 @@ def dateMessageKey? (format : FullDateInputFormat) (mode : TemporalPartialMode)
 order. A missing separator and a split that is not two nonempty endpoints select the range's format
 key; the start endpoint is read before the end. An inverted range answers before the date checks,
 which read the start alone: with the pre-1900 check enabled it alone decides, otherwise the floor. -/
-def dateRangeMessageKey? (format : FullDateInputFormat) (separator : String)
-    (youngerThan1900 : Bool) (text : String) : Option RuntimeFormalMessageKey :=
+def dateRangeMessageKey? (format : FullDateInputFormat) (profile : ModelZone.ConcreteProfile)
+    (separator : String) (youngerThan1900 : Bool) (text : String) : Option RuntimeFormalMessageKey :=
   match text.splitOn separator with
   | [start, finish] =>
       if start.isEmpty || finish.isEmpty then some .textDatumBereichFormat
       else
         match format.parseComponents? start, format.parseComponents? finish with
         | some first, some last =>
-            if !DateParts.LegacyHybrid.isReal first then
+            if !profile.storedLabelReal first then
               some ((first.componentDefect youngerThan1900).rangeKey .start)
-            else if !DateParts.LegacyHybrid.isReal last then
+            else if !profile.storedLabelReal last then
               some ((last.componentDefect youngerThan1900).rangeKey .finish)
             else if decide (last.Before first) then some .textDatumBereichNichtGueltig
             else if youngerThan1900 then

@@ -446,11 +446,11 @@ private def readScalarTemporalAtom (model : FlatModel) (phase : Phase) (context 
         context.row context.read context.storedText).mapError (fun _ => .calendarUnavailable)
       pure (projectScalarTemporalObservation model field observation)
   | .dateTimeLiteral profile value =>
-      match profile.resolveCalendarLabel? value with
+      match profile.resolveStoredLabel? value with
       | some instant => pure (.value (.instant instant) true)
       | none => throw .dateTimeLabelUnresolved
   | .dateLiteral profile value yearPresent =>
-      match profile.resolveCompletedDateParts? value with
+      match profile.resolveConstantDateParts? value with
       | some value => pure (.value (if yearPresent || model.hasBaseYear then .date value else
           .yearless value { month := value.parts.month, day := value.parts.day } 0) true)
       | none => throw .dateTimeLabelUnresolved

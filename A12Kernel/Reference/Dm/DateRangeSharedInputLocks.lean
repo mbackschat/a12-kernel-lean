@@ -67,6 +67,24 @@ example : read "MM" "/" "dd.MM" "-" "01.11-01.02" (some 2024) .anchorStart =
 example : read "dd.MM" "-" "MM" "" "bad" none .anchorFinish =
     some ("bad", .rejected .dateRangeSeparator) := by native_decide
 
+/-- A stored `MM` range read through the DM-JSON reader, whose declaration carries the empty separator. -/
+private def emptySeparatorRead (text : String) : Option RawCell := do
+  let declaration ← (readFieldType 0 ["Form"] "Range" [] (Json.mkObj [("fieldType", Json.mkObj [
+    ("type", "DateRangeType"), ("DateRangeType", Json.mkObj [
+      ("format", "MM"), ("rangeSeparator", "")])])])).toOption
+  let model : FlatModel := { fields := [declaration], timeZoneId := "UTC" }
+  ((classifyStored model declaration { field := 0, path := [] } text).toOption).map (·.raw)
+
+/- An empty declared separator reads as `/` wherever the model is expanded before checking or evaluating
+   (spec/05 §8.1; kernel 30.8.1 split such a token at its midpoint instead): a token without that
+   separator is the missing-separator failure, `06/09` is admitted, and the ordering and endpoint
+   failures follow. -/
+example : ["0609", "061", "06109", "6"].map emptySeparatorRead =
+      List.replicate 4 (some (.rejected .dateRangeSeparator)) ∧
+    emptySeparatorRead "06/09" = some (.parsed (.dateRange (.yearlessMonth 6 9))) ∧
+    emptySeparatorRead "09/06" = some (.rejected .dateRangeInvalid) ∧
+    emptySeparatorRead "13/09" = some (.rejected .dateRangeFormat) := by native_decide
+
 private def flagProfiles : List (String × String × DateRangeYearInterpretation × Bool) := [
   ("dd.MM", "-", .anchorStart, false), ("MM", "/", .anchorStart, true),
   ("MM", "/", .anchorStart, false)]
@@ -118,7 +136,7 @@ private def profiles : List (String × String × String) := [
   ("yyyy-MM-dd", "/", "2023-03-01/2024-10-31"), ("dd.MM.yyyy", "-", "01.03.2023-31.10.2024"),
   ("yyyy", "/", "2023/2024"), ("yyyy-MM", "/", "2023-03/2024-10"),
   ("MM", "/", "03/10"), ("MM-dd", "/", "03-01/10-31"),
-  ("MM", "", "0310"), ("dd.MM", "-", "01.03-31.10")]
+  ("MM", "", "03/10"), ("dd.MM", "-", "01.03-31.10")]
 
 private def bounds : List String := ["StartOfDateRange", "EndOfDateRange"]
 private def parts : List String := ["YearFromDate", "MonthFromDate", "QuarterFromDate", "DayFromDate"]

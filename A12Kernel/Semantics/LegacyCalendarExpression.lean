@@ -11,6 +11,12 @@ def resolveCompletedDateParts? (profile : ConcreteProfile) (parts : DateParts) :
   let instant ← profile.resolveCalendarLabel? (LegacyCalendarLabel.midnight parts)
   pure { instant, parts }
 
+/-- A date constant's completed value when it is reached (spec/05 §1). The label resolves as a stored label does, so under UTC a Julian leap day the proleptic calendar lacks keeps its Julian instant, and under Europe/Berlin it has no instant at all. Date parts are those of the label decoded at the resolved instant, the day the constant actually names. -/
+def resolveConstantDateParts? (profile : ConcreteProfile) (parts : DateParts) : Option DateValue := do
+  let instant ← profile.resolveStoredLabel? (LegacyCalendarLabel.midnight parts)
+  let label ← profile.calendarLabel? instant
+  pure { instant, parts := label.parts }
+
 private def isFebruary28 (parts : DateParts) : Bool :=
   parts.month == 2 && parts.day == 28
 

@@ -276,7 +276,7 @@ def omittingDateText (model : FlatModel) (target : FieldId) (text : String) :
     (throw .targetNotReadable)
   -- As in `CheckedDocument.canonicalTemporalCell?`, a classified text failure is a cell,
   -- not a plan fault: a leap literal may lose its year under a common Base Year.
-  match field.classifyStoredForModel model.baseYear text with
+  match field.classifyStoredForModel profile model.baseYear text with
   | .presentEmpty => pure (checkAdmittedRawCell .presentEmpty)
   | .rejected cause => pure (checkAdmittedRawCell (.rejected cause))
   | .admitted stored =>
@@ -540,9 +540,11 @@ def ofDateLiteral? (operation : CheckedDateLiteralComputation model) :
       operationReferencesWith _ _ := false
       excludesTarget := rfl
       runSelected _ _ _ := do
-        let outcome := operation.outcome
-        let cell ← DocumentComputationReadBack.dateConstant operation.dateTarget outcome
-        pure (.fullDate outcome, cell) }
+        match operation.outcome? with
+        | none => pure (.valueError .fullDate, DocumentComputationReadBack.poison)
+        | some outcome =>
+            let cell ← DocumentComputationReadBack.dateConstant operation.dateTarget outcome
+            pure (.fullDate outcome, cell) }
   else none
 
 /-- A full-Date computation over a field, `Today`, or the Base Year. -/

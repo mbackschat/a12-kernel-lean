@@ -25,7 +25,7 @@ def CheckedAddressedNumericTarget.admitsDateDifferenceEndpoint
     ResolvedDateDifferenceOperand FlatTemporalField clock → Bool
   | .field source =>
       target.admitsSourceField source.id fun owned => owned.toTemporalField? == some source
-  | .literal source year => source.admittedIn model year
+  | .literal source year profile => source.admittedIn model year profile
   | .baseYear year _ => model.baseYear == some year
   | .today _ | .now _ _ => false
 
@@ -165,8 +165,11 @@ private def resolveDateDifferenceEndpoint (target : CheckedAddressedNumericTarge
       | some field => pure (.field field)
       | none => throw .unsupportedExpression
   | .literal source =>
-      if source.valid then pure (.literal source model.baseYearOrDefault)
-      else throw .unsupportedExpression
+      match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+      | some profile =>
+          if source.valid then pure (.literal source model.baseYearOrDefault profile)
+          else throw .unsupportedExpression
+      | none => throw .unsupportedExpression
   | .baseYear source =>
       match model.baseYear with
       | some year => pure (.baseYear year source)
@@ -336,7 +339,7 @@ private def readAddressedAtom (model : FlatModel) (atom : NumericComputationAtom
 private def ResolvedDateDifferenceOperand.endpointField? :
     ResolvedDateDifferenceOperand FlatTemporalField clock → Option FieldId
   | .field source => some source.id
-  | .baseYear _ _ | .literal _ _ | .today _ | .now _ _ => none
+  | .baseYear _ _ | .literal _ _ _ | .today _ | .now _ _ => none
 
 /-- The same projection for a sub-day endpoint. Only the field form is admitted here, so every other
     shape reports no field and would read nothing even if one were reachable. -/

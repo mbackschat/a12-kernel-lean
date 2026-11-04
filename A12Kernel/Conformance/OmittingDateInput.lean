@@ -43,7 +43,7 @@ private def classifyUnder? (baseYear : Option Int) (format text : String) :
   match certifyOmittingDateInputField (declaration format) with
   | .error _ => .unowned
   | .ok checked =>
-      match checked.classifyStoredForModel baseYear text with
+      match checked.classifyStoredForModel .utc baseYear text with
       | .presentEmpty => .presentEmpty
       | .rejected cause => .rejected cause
       | .admitted (.yearless value) => .yearless value.month value.day
@@ -65,7 +65,7 @@ private def classifyAsKind (kind : TemporalKind) (format text : String) :
           policy := { kind := .temporal kind TemporalComponents.fullDate } } with
   | .error _ => .unowned
   | .ok checked =>
-      match checked.classifyStoredForModel none text with
+      match checked.classifyStoredForModel .utc none text with
       | .presentEmpty => .presentEmpty
       | .rejected cause => .rejected cause
       | .admitted (.yearless value) => .yearless value.month value.day
@@ -145,6 +145,19 @@ example :
       classify? "yyyy" "10000" = .rejected .dateFormat := by
   native_decide
 
+/- A computed five-digit year renders with a leading sign in every year-carrying target, and that
+attempt still fails the year target's format check (spec/05 §3.1; a12-dmkits
+`CalendarTargetCompletionDiffTest` at `1124b523f`). Year 9999 keeps the unsigned run. -/
+example :
+    FullDateTargetFormat.yearMonthDayDashes.renderPartsText { year := 10000, month := 12, day := 15 } =
+      "+10000-12-15" ∧
+    OmittingDateFormat.yearMonthDashed.renderPartsText { year := 10000, month := 1, day := 15 } =
+      "+10000-01" ∧
+    OmittingDateFormat.year.renderPartsText { year := 10000, month := 1, day := 15 } = "+10000" ∧
+    OmittingDateFormat.year.renderPartsText { year := 9999, month := 1, day := 15 } = "9999" ∧
+    classify? "yyyy" "+10000" = .rejected .dateFormat := by
+  native_decide
+
 /-! ## Yearless formats -/
 
 /- A yearless month and month-day are admitted and keep their authored components. `MM` carries no day,
@@ -203,7 +216,7 @@ example :
     (match certifyOmittingDateInputField (declaration "MM-dd") with
       | .error _ => none
       | .ok checked =>
-          match checked.classifyStoredForModel none "02-29" with
+          match checked.classifyStoredForModel .utc none "02-29" with
           | .admitted (.yearless _) => some true
           | .admitted (.yearBearing _) => some false
           | _ => none) = some true := by
@@ -215,7 +228,7 @@ example :
     (match certifyOmittingDateInputField (declaration "yyyy") with
       | .error _ => none
       | .ok checked =>
-          match checked.classifyStoredForModel none "2020" with
+          match checked.classifyStoredForModel .utc none "2020" with
           | .admitted (.yearBearing (.omittedMonth date)) =>
               some (date.resolve .firstDay).civil.parts.month
           | _ => none) = some 1 := by

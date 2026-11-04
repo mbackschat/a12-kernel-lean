@@ -7,24 +7,24 @@ namespace A12Kernel
 inductive DateLiteralComputationElabError where
   | target (cause : ResolveError)
   | placement (cause : AddressedRepeatableTargetElabError)
+  /-- The literal is no date on the hybrid calendar that static admission uses. -/
   | calendar
   | rendering (cause : DateConstantTargetElabError)
   | incoherentTarget
   deriving Repr, DecidableEq
 
-/-- One date assignment retaining written year presence separately from its model-dependent civil
-completion. The target renderer certifies the literal/format pair; the source uses the same calendar
-classification as date arithmetic, including the common-year check for an omitted year. -/
+/-- One date assignment retaining written year presence separately from its model-dependent
+completion. The target renderer certifies the literal/format pair; the source uses the same static
+classification as date arithmetic, including the common-year check for an omitted year. What the
+literal denotes is decided when it is reached, in the model zone (spec/05 §1), so a Julian leap day the
+proleptic calendar lacks is admitted here. -/
 structure CheckedDateLiteralComputation (model : FlatModel) where
   private mk ::
   declaringGroup : GroupPath
   target : FlatFieldDecl
   source : AuthoredDateLiteral
-  constant : CivilDate
   dateTarget : CheckedDateConstantTarget model source.year.isSome
   sourceValid : source.valid = true
-  completed : CivilDate.ofYmd? (source.parts model.baseYearOrDefault).year
-    source.month source.day = some constant
   sameTarget : dateTarget.field = target.id
 
 /-- Classify source validity before completing its absent year, and retain the existing fixed/row
@@ -39,19 +39,22 @@ def checkDateLiteralComputation (model : FlatModel) (declaringGroup : GroupPath)
   if hValid : source.valid = true then
     let dateTarget ← (elaborateDateConstantTargetIn model target.repeatableScope targetField
       source.year.isSome).mapError .rendering
-    match hDate : CivilDate.ofYmd? (source.parts model.baseYearOrDefault).year source.month source.day with
-    | none => throw .calendar
-    | some constant =>
-        if hTarget : dateTarget.field = target.id then
-          pure {
-            declaringGroup, target, source, constant, dateTarget
-            sourceValid := hValid, completed := hDate, sameTarget := hTarget }
-        else throw .incoherentTarget
+    if hTarget : dateTarget.field = target.id then
+      pure {
+        declaringGroup, target, source, dateTarget
+        sourceValid := hValid, sameTarget := hTarget }
+    else throw .incoherentTarget
   else throw .calendar
 
-/-- Store the completed literal through the declaration's existing render-and-check operation. -/
-def CheckedDateLiteralComputation.outcome (operation : CheckedDateLiteralComputation model) :
-    FullDateTargetOutcome :=
-  operation.dateTarget.evaluateCivil operation.constant
+/-- Store the literal through the declaration's existing render-and-check operation, after the model
+zone resolves it as a stored label (spec/05 §1). Under UTC a Julian leap day keeps its Julian instant,
+so it renders as the proleptic day of that instant and the target's own floor check judges it. Under
+Europe/Berlin it has no instant: there is no outcome, and the carrier raises the value failure the
+DateTime constant carrier raises. -/
+def CheckedDateLiteralComputation.outcome? (operation : CheckedDateLiteralComputation model) :
+    Option FullDateTargetOutcome :=
+  (operation.dateTarget.profile.resolveConstantDateParts?
+    (operation.source.parts model.baseYearOrDefault)).map fun value =>
+      operation.dateTarget.evaluateParts value.parts
 
 end A12Kernel

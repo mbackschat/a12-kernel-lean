@@ -69,7 +69,7 @@ example : [false, true].all (fun repeated =>
     let pointer := if repeated then "Form/Rows/Window" else "Form/Window"
     [("yyyy", "yyyy", "/", "2023", "2024", "2023/2024"),
      ("yyyy-MM", "yyyy-MM", "/", "2023-03", "2024-04", "2023-03/2024-04"),
-     ("MM", "MM", "", "03", "04", "0304"),
+     ("MM", "MM", "", "03", "04", "03/04"),
      ("MM-dd", "MM-dd", "/", "03-05", "04-06", "03-05/04-06"),
      ("dd.MM.yyyy", "yyyy-MM-dd", "/", "05.03.2024", "06.04.2024", "2024-03-05/2024-04-06")].all
       (fun (sourceFormat, targetFormat, separator, start, finish, expected) =>

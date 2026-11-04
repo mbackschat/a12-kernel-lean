@@ -23,7 +23,6 @@ inductive TemporalFirstFilledStarCarrier where
   | dateRangeYearMonthFragment
   | dateRangeMonthFragment
   | dateRangeMonthDayFragment
-  | dateRangeMonthConcatenated
   | dateRangeDayMonthDotted
   deriving Repr, DecidableEq
 
@@ -75,7 +74,6 @@ def FlatFieldDecl.temporalFirstFilledStarCarrier?
       | some .yearMonthFragment => some .dateRangeYearMonthFragment
       | some .yearlessMonth => some .dateRangeMonthFragment
       | some .yearlessMonthDay => some .dateRangeMonthDayFragment
-      | some .yearlessMonthConcatenated => some .dateRangeMonthConcatenated
       | some .yearlessDayMonthDotted => some .dateRangeDayMonthDotted
       | none => none
   | _, _, _ => none
@@ -95,7 +93,7 @@ def TemporalFirstFilledStarCarrier.dateRangeComponents? :
   | .dateRangeIsoSlash | .dateRangeDayMonthYearDash => some .yearMonthDay
   | .dateRangeYearFragment => some .year
   | .dateRangeYearMonthFragment => some .yearMonth
-  | .dateRangeMonthFragment | .dateRangeMonthConcatenated => some .month
+  | .dateRangeMonthFragment => some .month
   | .dateRangeMonthDayFragment | .dateRangeDayMonthDotted => some .monthDay
   | _ => none
 

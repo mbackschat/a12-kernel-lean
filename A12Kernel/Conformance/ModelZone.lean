@@ -57,4 +57,25 @@ example : (do
       ModelZone.europeBerlinToday? now ≠ some wrongCurrentOffsetProjection)) = some true := by
   native_decide
 
+/- Stored-text reality is proleptic with one zone-dependent exception (spec/05 §4, a12-dmkits `StoredDateCalendarDiffTest`): a Julian-only leap day is real under UTC and unreal under Berlin, while a proleptic common-year leap day after the cutover and the former cutover labels behave alike in both zones. -/
+example :
+    let parts (year : Int) (month day : Nat) : DateParts := { year, month, day }
+    [ModelZone.ConcreteProfile.utc, .europeBerlin].map (fun profile =>
+      [parts 1500 2 29, parts 1300 2 29, parts 1700 2 29, parts 1582 10 4, parts 1582 10 5,
+        parts 1582 10 14].map profile.storedLabelReal) =
+      [[true, true, false, true, true, true], [false, false, false, true, true, true]] := by
+  native_decide
+
+/- A Julian-only label resolves under UTC to its Julian instant, proleptic 1500-03-10 (spec/05 §1); under Berlin it names no instant. A proleptic label resolves as a fresh label in both. -/
+example :
+    let label (year : Int) (month day : Nat) : LegacyCalendarLabel := LegacyCalendarLabel.midnight { year, month, day }
+    (ModelZone.ConcreteProfile.utc.resolveStoredLabel? (label 1500 2 29),
+      ModelZone.ConcreteProfile.utc.resolveCalendarLabel? (label 1500 3 10),
+      ModelZone.ConcreteProfile.europeBerlin.resolveStoredLabel? (label 1500 2 29),
+      ModelZone.ConcreteProfile.europeBerlin.resolveStoredLabel? (label 1500 3 10) ==
+        ModelZone.ConcreteProfile.europeBerlin.resolveCalendarLabel? (label 1500 3 10)) =
+    (ModelZone.ConcreteProfile.utc.resolveCalendarLabel? (label 1500 3 10),
+      some { epochMillis := -14825894400000 }, none, true) := by
+  native_decide
+
 end A12Kernel.Conformance.ModelZone

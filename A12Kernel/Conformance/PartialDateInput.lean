@@ -41,7 +41,7 @@ private def classify? (mode : TemporalPartialMode) (text : String)
     Option Outcome := do
   let checked ←
     (certifyPartialDateInputField (declaration mode before1900 format)).toOption
-  pure <| match checked.classifyStored text with
+  pure <| match checked.classifyStored .utc text with
     | .presentEmpty => .empty
     | .rejected cause => .rejected cause
     | .admitted _ => .admitted
@@ -182,7 +182,7 @@ consumer reads rather than a kernel correspondence. -/
 private def admittedValue? (mode : TemporalPartialMode) (text : String) :
     Option PartiallyKnownDateValue := do
   let checked ← (certifyPartialDateInputField (declaration mode)).toOption
-  match checked.classifyStored text with
+  match checked.classifyStored .utc text with
   | .admitted value => some value.value
   | _ => none
 

@@ -86,22 +86,21 @@ def FlatModel.admitsFieldValueAsNumberSource (model : FlatModel)
 
 namespace AuthoredDateLiteral
 
-/-- Certify both the authored calendar and the model's completion year at checked entry points. -/
-def admittedIn (literal : AuthoredDateLiteral) (model : FlatModel) (anchorYear : Int) : Bool :=
-  literal.valid && anchorYear == model.baseYearOrDefault
+/-- Certify the authored calendar, the model's completion year and the model zone's profile at checked entry points. -/
+def admittedIn (literal : AuthoredDateLiteral) (model : FlatModel) (anchorYear : Int)
+    (profile : ModelZone.ConcreteProfile) : Bool :=
+  literal.valid && anchorYear == model.baseYearOrDefault &&
+    ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
 
-/-- Literal validity uses the authored calendar rule; runtime completion uses the model's shared anchor (spec/05 §1). Year agreement remains an admission question for the consuming operator. A completed label must be real on the hybrid calendar, which a common-year label in a 1582 Base Year can fail. -/
-def completedParts? (literal : AuthoredDateLiteral) (model : FlatModel) : Option DateParts := do
-  if !literal.valid then none
-  let parts := literal.parts model.baseYearOrDefault
-  if DateParts.LegacyHybrid.isReal parts then some parts else none
+/-- Literal validity uses the authored calendar rule, which is hybrid (spec/05 §1); runtime completion uses the model's shared anchor. Year agreement remains an admission question for the consuming operator. The completed label is the authored one: a yearless label names a real day of a common year and so of every proleptic year, and a written year's runtime reading is the consumer's resolution of the label, which gives a Julian leap day its Julian instant under UTC and none under Europe/Berlin. -/
+def completedParts? (literal : AuthoredDateLiteral) (model : FlatModel) : Option DateParts :=
+  if literal.valid then some (literal.parts model.baseYearOrDefault) else none
 
-/-- A date constant is the hybrid-calendar instant of its completed label's model-zone midnight, a Julian one before the 1582 cutover (2026-10-21 letter §1.12, KF588). -/
+/-- A date constant is the instant of its completed label's model-zone midnight as a stored label resolves (spec/05 §1): the proleptic instant, except that under UTC a Julian leap day keeps its Julian instant and under Europe/Berlin it has none. -/
 def comparisonInstant? (literal : AuthoredDateLiteral) (model : FlatModel) : Option Instant := do
   let parts ← literal.completedParts? model
   let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
-  let value ← profile.resolveCompletedDateParts? parts
-  pure value.instant
+  (profile.resolveConstantDateParts? parts).map (·.instant)
 
 end AuthoredDateLiteral
 
@@ -120,7 +119,7 @@ def SurfaceDateDifferenceOperand.fields : SurfaceDateDifferenceOperand Field →
 namespace ResolvedDateDifferenceOperand
 
 def isField : ResolvedDateDifferenceOperand FlatTemporalField clock → Bool
-  | .literal _ _ => false
+  | .literal _ _ _ => false
   | .field _ => true
   | .baseYear _ _ | .today _ | .now _ _ => false
 
@@ -128,13 +127,13 @@ def components : ResolvedDateDifferenceOperand FlatTemporalField clock → Tempo
   componentsWith (·.components)
 
 def references (field : FieldId) : ResolvedDateDifferenceOperand FlatTemporalField clock → Bool
-  | .literal _ _ => false
+  | .literal _ _ _ => false
   | .field source => source.id == field
   | .baseYear _ _ | .today _ | .now _ _ => false
 
 def validationOperand (context : FlatContext) :
     ResolvedDateDifferenceOperand → DateDifferenceOperand
-  | .literal source year => .value (source.parts year)
+  | .literal source year profile => DateDifferenceOperand.ofConstant profile (source.parts year)
   | .field source => DateDifferenceOperand.ofObservation
       (context.observeValidationAt source.id)
   | .baseYear year source => .value (source.parts year)
@@ -146,7 +145,7 @@ def validationOperand (context : FlatContext) :
 def calendarDayValidationOperand (profile : ModelZone.ConcreteProfile)
     (context : FlatContext) :
     ResolvedDateDifferenceOperand FlatTemporalField true → CalendarDayDifferenceOperand
-  | .literal source year => CalendarDayDifferenceOperand.ofParts profile (source.parts year)
+  | .literal source year sourceProfile => CalendarDayDifferenceOperand.ofConstant sourceProfile (source.parts year)
   | .field source => CalendarDayDifferenceOperand.ofObservation
       (context.observeValidationAt source.id)
   | .baseYear year source =>

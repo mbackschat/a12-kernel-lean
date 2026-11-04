@@ -645,7 +645,7 @@ private def executeUnconfiguredDayMonthDash? :=
     monthDayFinish
 
 private def expectedMonthEmptyStored : StoredDateRange := {
-  text := "0102"
+  text := "01/02"
   nonempty := by decide
 }
 
@@ -683,7 +683,7 @@ example :
     (executeUnconfiguredMonthEmpty? "03" "02"
         (.parsed (.temporal (.date (dateValue 0 2000 3 1))))
         (.parsed (.temporal (.date (dateValue 0 2000 2 1))))).map (·.outcome) =
-      some (.errored { text := "0302", nonempty := by decide } .inverted) := by
+      some (.errored { text := "03/02", nonempty := by decide } .inverted) := by
   native_decide
 
 /- Equal fragment endpoints form a valid one-unit range under either year-bearing profile, so

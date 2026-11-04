@@ -103,16 +103,16 @@ def certifyPartialDateInputField (declaration : FlatFieldDecl) :
 /-- Classify stored text of a certified partial-Date declaration, reading the deciding facts off its
 certificate. -/
 def CheckedPartialDateInputField.classifyStored
-    (checked : CheckedPartialDateInputField) (text : String) :
+    (checked : CheckedPartialDateInputField) (profile : ModelZone.ConcreteProfile) (text : String) :
     PartialDateInputCell checked.mode :=
-  classifyPartialDateStored checked.format checked.mode
+  classifyPartialDateStored checked.format profile checked.mode
     checked.policy.youngerThan1900Check text
 
 /-- Whether the declaration admits `text` as a **partially** known value, the one a cell places as
 `Value.partialDate`; a fully known value places as a temporal value instead. -/
 def CheckedPartialDateInputField.admitsPartiallyKnownText
-    (checked : CheckedPartialDateInputField) (text : String) : Bool :=
-  match checked.classifyStored text with
+    (checked : CheckedPartialDateInputField) (profile : ModelZone.ConcreteProfile) (text : String) : Bool :=
+  match checked.classifyStored profile text with
   | .admitted value =>
       match value.value with
       | .full _ => false

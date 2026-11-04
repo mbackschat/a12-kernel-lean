@@ -21,6 +21,17 @@ def FlatContext.resolveDateTimeDifferenceOperand
     (fun source => pure (context.observeValidationAt source.id)) context.world () ()).toOption.getD
       (.unavailable .malformed)
 
+/-- Whether a date difference reaches a date constant the model zone gives no instant, a Julian leap day under Europe/Berlin, which fails the rule's evaluation (spec/05 §1). Only the addressed route can raise that failure; the flat entry point below has no failure channel and reads such an atom as malformed. -/
+def ValidationEvaluationContext.differenceConstantFails
+    (context : ValidationEvaluationContext) : NumericValidationAtom → Bool
+  | .dateDifference _ left right =>
+      left.validationOperand context.fields == .noInstantConstant ||
+        right.validationOperand context.fields == .noInstantConstant
+  | .dayDifference profile left right =>
+      left.calendarDayValidationOperand profile context.fields == .noInstantConstant ||
+        right.calendarDayValidationOperand profile context.fields == .noInstantConstant
+  | _ => false
+
 def ValidationEvaluationContext.resolveNumericValidationAtom
     (context : ValidationEvaluationContext) :
     NumericValidationAtom →
@@ -42,9 +53,11 @@ def ValidationEvaluationContext.resolveNumericValidationAtom
   | .fieldValueAsNumber source =>
       (source.observeOperand (context.fields.observeValidationAt source.fieldId)).toValidationArithmetic
   | .dateDifference unit left right =>
-      (DateDifferenceOperand.evaluate unit
+      match DateDifferenceOperand.evaluate unit
           (left.validationOperand context.fields)
-          (right.validationOperand context.fields)).toValidationArithmetic
+          (right.validationOperand context.fields) with
+      | .ok operand => operand.toValidationArithmetic
+      | .error _ => .error (.formal .malformed)
   | .dateTimeDifference unit left right =>
       (DateTimeDifferenceOperand.evaluate unit
         (context.fields.resolveDateTimeDifferenceOperand left)
@@ -259,6 +272,7 @@ private def resolveAddressedOrdinary
         world := context.scalar.fields.world }
       let scalar : ValidationEvaluationContext := {
         context.scalar with fields }
+      if scalar.differenceConstantFails source then throw .temporalValueFailure
       pure (scalar.resolveNumericValidationAtom source)
 
 /-- Read every operand of a mixed filled-group count in authored order. Checked fixed members derive

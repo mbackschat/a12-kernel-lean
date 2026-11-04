@@ -199,7 +199,8 @@ example :
    a shift past year 9999 renders a five-digit year its own target rejects. The Kernel reports that
    attempt as an errored outcome, so the view lists it among the computed errors rather than the
    clears, its application empties the target as an errored full Date's does, and the run reports an
-   error. -/
+   error. The attempt carries the signed year of the Date targets' 31.1.1 rendering (spec/05 §3.1),
+   unmeasured on 31.1.1 for a DateTime target. -/
 example : (do
     let operation ← (elaborateDateTimeDayShiftComputation
       model source.id (.literal 2) target.id).toOption
@@ -211,7 +212,7 @@ example : (do
       (destinationWith (.presentValue ⟨"2000-01-01T00:00:00", by decide⟩)) |>.toOption
     pure (view.withErrors.map (fun error => (error.targetField, error.attempted.text)),
       view.cleared, view.noErrorOccurred, applied target.id)) =
-    some ([(target.id, "10000-01-02T00:00:00")], [], false, .presentEmpty) := by
+    some ([(target.id, "+10000-01-02T00:00:00")], [], false, .presentEmpty) := by
   native_decide
 
 /- A DateTime day shift cannot read the field that it computes. -/

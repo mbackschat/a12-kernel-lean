@@ -35,9 +35,6 @@ inductive RowComputationStepFault where
   | dateConstant (cause : RepeatableDateConstantComputationFault)
   | timeConstant (cause : RepeatableTimeConstantComputationFault)
   | dateTimeConstant (cause : RepeatableDateTimeConstantComputationFault)
-  /-- A DateTime constant whose label the model zone cannot resolve, which the carrier reports as a
-  residual finding rather than an outcome; the lowering refuses it before any row is run. -/
-  | dateTimeLabelUnresolved
   | booleanConstant (cause : RepeatableBooleanConstantComputationFault)
   | fieldValueAsString (cause : AddressedFieldValueAsStringFault)
   | stringFirstFilled (cause : StringFirstFilledComputationFault)
@@ -144,14 +141,20 @@ def ofDateLiteral? (operation : CheckedDateLiteralComputation model) :
       excludesTarget := rfl
       run _ _ document := do
         let scope := operation.target.repeatableScope
-        let atRow := fun outcome environment => do
+        let atRow := fun (outcome : Option FullDateTargetOutcome) environment => do
           let path ← (environment.pathForScope scope).mapError
             (RowComputationStepFault.dateConstant ∘ RepeatableDateConstantComputationFault.targetEnvironment)
-          let cell ← (DocumentComputationReadBack.dateConstant operation.dateTarget outcome).mapError .readBack
-          pure ({ field := operation.target.id, path }, DocumentTargetOutcome.fullDate outcome, cell)
+          match outcome with
+          -- A literal the model zone gives no instant is a value failure at each in-capacity row.
+          | none =>
+              pure ({ field := operation.target.id, path }, DocumentTargetOutcome.valueError .fullDate,
+                DocumentComputationReadBack.poison)
+          | some outcome =>
+              let cell ← (DocumentComputationReadBack.dateConstant operation.dateTarget outcome).mapError .readBack
+              pure ({ field := operation.target.id, path }, DocumentTargetOutcome.fullDate outcome, cell)
         document.computationRowOutcomes scope
           (RowComputationStepFault.dateConstant ∘ RepeatableDateConstantComputationFault.targetRows)
-          (atRow .noValue) (atRow operation.outcome) }
+          (atRow (some .noValue)) (atRow operation.outcome?) }
 
 /-- A Time constant written into every row of a repeatable Time target. -/
 def ofRepeatableTimeConstant (operation : CheckedRepeatableTimeConstantComputation model) :
@@ -176,11 +179,14 @@ def ofRepeatableDateTimeConstant (operation : CheckedRepeatableDateTimeConstantC
   excludesTarget := rfl
   run _ _ document := do
     let result ← (operation.execute document).mapError .dateTimeConstant
-    if !result.formalErrorsInOperands.isEmpty then throw .dateTimeLabelUnresolved
-    result.outcomes.mapM fun entry => do
+    let stored ← result.outcomes.mapM fun entry => do
       let cell ← (DocumentComputationReadBack.dateTime model entry.targetField.field entry.outcome).mapError
         .readBack
       pure (entry.targetField, .dateTime entry.outcome, cell)
+    -- A label the model zone gives no instant is a value failure at each in-capacity row, which the
+    -- carrier reports as a finding and no outcome.
+    pure (stored ++ result.formalErrorsInOperands.map fun finding =>
+      (finding.targetField, .valueError .dateTime, DocumentComputationReadBack.poison))
 
 /-- A Boolean or Confirm constant written into every row of a repeatable target of that kind. -/
 def ofRepeatableBooleanConstant (operation : CheckedRepeatableBooleanConstantComputation model) :

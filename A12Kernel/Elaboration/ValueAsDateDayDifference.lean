@@ -47,7 +47,8 @@ private def evaluateAvailable
               checked.profile other sourceOperand
       match evaluated with
       | .ok operand => pure (.operand operand)
-      | .error () => throw .unsupportedCalendar
+      | .error .constantHasNoInstant => pure .constantFailure
+      | .error .unsupportedCalendar => throw .unsupportedCalendar
 
 /-- Evaluate both authored reads before helper-level non-relevance or empty substitution, then delegate the concrete case to the existing calendar-day core. -/
 def evaluate (checked : CheckedValueAsDateDayDifference model)

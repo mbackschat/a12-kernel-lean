@@ -165,10 +165,11 @@ private def dateConstantParts? (text : String) : Option (Nat × Nat × Nat) := d
   if year.length != 4 || !year.all Char.isDigit then none
   pure (← year.toNat?, month, day)
 
-/-- The parts of a `DD.MM.YYYY` literal that names a real date on the legacy hybrid calendar; any other
-text is not a date (spec/05 §1: zero padding and a real date are part of the shape). Before the 1582
-cutover the year is Julian, so `29.02.1500` is a date and the ten cutover labels are text (2026-10-21
-§2.15). -/
+/-- The parts of a `DD.MM.YYYY` literal that names a real date on the hybrid Julian–Gregorian calendar,
+which static admission keeps on kernel 31.1.1 (spec/05 §1: zero padding and a real date are part of the
+shape); any other text is not a date. Before the 1582 cutover the year is Julian, so `29.02.1500` is
+admitted and the ten cutover labels are text. What an admitted label denotes is decided when it is reached,
+by `ConcreteProfile.resolveStoredLabel?` in the model zone, not here (2026-10-21 §2.15). -/
 def hybridDateConstant? (text : String) : Option DateParts := do
   let (year, month, day) ← dateConstantParts? text
   let parts : DateParts := { year, month, day }
@@ -180,13 +181,14 @@ def timeConstant? (text : String) : Option TimeOfDay := do
   let [hour, minute, second] := text.splitOn ":" | none
   TimeOfDay.ofHms? (← twoDigits? hour) (← twoDigits? minute) (← twoDigits? second)
 
-/-- The hybrid-calendar wall label a date literal joined by `T` to a clock literal names; before the
-cutover it is a Julian label, so `"04.10.1582T23:00:00"` is a date-time instant (2026-10-21 §1.12). -/
+/-- The wall label a date literal joined by `T` to a clock literal names, admitted on the hybrid calendar:
+before the cutover it is a Julian label, so `"04.10.1582T23:00:00"` is admitted. The instant it denotes is
+resolved at runtime by `ConcreteProfile.resolveStoredLabel?` (2026-10-21 §1.12). -/
 def dateTimeConstant? (text : String) : Option LegacyCalendarLabel := do
   let [date, clock] := text.splitOn "T" | none
   pure { parts := ← hybridDateConstant? date, time := ← timeConstant? clock }
 
-/-- Whether a literal is a date joined by `T` to a clock, its date judged on the hybrid calendar. -/
+/-- Whether a literal is a date joined by `T` to a clock, its date admitted on the hybrid calendar. -/
 def isDateTimeConstant (text : String) : Bool :=
   (dateTimeConstant? text).isSome
 

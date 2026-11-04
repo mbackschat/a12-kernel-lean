@@ -5,9 +5,9 @@ import A12Kernel.Semantics.NumericComparison
 
 /-! # Checked calendar differences
 
-This capsule computes signed calendar differences through one phase-observed numeric operand boundary. Date-only month/year differences use decoded date parts; day differences preserve both the decoded hybrid-calendar Date/DateTime label and its already-resolved exact instant for a selected model-zone profile. A date constant, `Today` or a Base Year before the 1582 cutover enters a day difference as a Julian value (2026-10-21 letter §1.12, KF588). Stored/full Dates, admitted date literals and direct or range-selected Base-Year sources share the boundary.
+This capsule computes signed calendar differences through one phase-observed numeric operand boundary. Date-only month/year differences use decoded date parts; day differences preserve both the decoded proleptic Date/DateTime label and its already-resolved exact instant for a selected model-zone profile. A date constant enters a day difference through its stored-label resolution, which gives a Julian leap day its Julian instant under UTC and none under Europe/Berlin, and `Today` and a Base Year enter on the proleptic calendar (spec/05 §1, §2.7). Stored/full Dates, admitted date literals and direct or range-selected Base-Year sources share the boundary.
 
-The shared decoded-parts mechanism does not itself accept arbitrary authored dates. Its consumers retain their own boundaries: `FullDate` preserves the stored-value floor, while configured Base Year remains floor-free. The observed operand boundary preserves formal-cause precedence and symmetric empty-to-zero provenance while refusing legacy-hybrid values. Checked field/literal/Base-Year lowering, per-operation kind/component gates, concrete profile selection, scale 0, validation polarity, and computation poison are supplied by the shared numeric-expression consumers; constructed `Date(...)` legacy-hybrid execution, wider authored temporal operands, and temporal targets remain outside.
+The shared decoded-parts mechanism does not itself accept arbitrary authored dates. Its consumers retain their own boundaries: `FullDate` preserves the stored-value floor, while configured Base Year remains floor-free. The observed operand boundary preserves formal-cause precedence and symmetric empty-to-zero provenance, and it fails the evaluation for a date constant the model zone gives no instant, a Julian leap day under Europe/Berlin (spec/05 §1). Checked field/literal/Base-Year lowering, per-operation kind/component gates, concrete profile selection, scale 0, validation polarity, and computation poison are supplied by the shared numeric-expression consumers; constructed `Date(...)` execution, wider authored temporal operands, and temporal targets remain outside.
 -/
 
 namespace A12Kernel
@@ -152,6 +152,16 @@ inductive DateDifferenceOperand where
   | empty
   | value (parts : DateParts)
   | unavailable (cause : FormalCause)
+  /-- A date constant the model zone gives no instant, a Julian leap day under Europe/Berlin (spec/05 §1). Reaching it fails the evaluation, which is a value failure and no formal cause. -/
+  | noInstantConstant
+  deriving Repr, DecidableEq
+
+/-- Why a difference evaluation fails instead of yielding a number. -/
+inductive DifferenceEvaluationFault where
+  /-- An operand constant has no instant in the model zone. -/
+  | constantHasNoInstant
+  /-- An operand has no label or instant in the selected calendar profile. -/
+  | unsupportedCalendar
   deriving Repr, DecidableEq
 
 namespace DateDifferenceOperand
@@ -163,14 +173,23 @@ def ofObservation : CellObservation Value → DateDifferenceOperand
   | .value _ => .unavailable .malformed
   | .unknown cause | .poison cause => .unavailable cause
 
-/-- Formal unavailability dominates emptiness; emptiness then yields the kernel's symmetric zero. -/
+/-- A date constant as a completed-period difference reads it when reached (spec/05 §1). A label real on the proleptic calendar is its own date. A Julian leap day the proleptic calendar lacks reads as the date of the label decoded at its Julian instant under UTC, and has no instant under Europe/Berlin. -/
+def ofConstant (profile : ModelZone.ConcreteProfile) (parts : DateParts) : DateDifferenceOperand :=
+  if parts.isJulianOnly then
+    match (profile.resolveStoredLabel? (LegacyCalendarLabel.midnight parts)).bind profile.calendarLabel? with
+    | some label => .value label.parts
+    | none => .noInstantConstant
+  else .value parts
+
+/-- A constant without an instant fails the evaluation ahead of every other operand state, because the constant is reached whatever the other operand holds. Formal unavailability then dominates emptiness; emptiness yields the kernel's symmetric zero. The ordering of the failure against the other states is unmeasured on 31.1.1. -/
 def evaluate (unit : DateDifferenceUnit)
-    (left right : DateDifferenceOperand) : NumericOperand :=
+    (left right : DateDifferenceOperand) : Except DifferenceEvaluationFault NumericOperand :=
   match left, right with
-  | .unavailable cause, _ => .unknown cause
-  | _, .unavailable cause => .unknown cause
-  | .empty, _ | _, .empty => .value 0 .both
-  | .value first, .value second => .value (unit.between first second) .fixed
+  | .noInstantConstant, _ | _, .noInstantConstant => throw .constantHasNoInstant
+  | .unavailable cause, _ => pure (.unknown cause)
+  | _, .unavailable cause => pure (.unknown cause)
+  | .empty, _ | _, .empty => pure (.value 0 .both)
+  | .value first, .value second => pure (.value (unit.between first second) .fixed)
 
 end DateDifferenceOperand
 
@@ -180,6 +199,8 @@ inductive CalendarDayDifferenceOperand where
   | value (label : LegacyCalendarLabel) (instant : Instant)
   | unavailable (cause : FormalCause)
   | unsupportedCalendar
+  /-- A date constant the model zone gives no instant, a Julian leap day under Europe/Berlin (spec/05 §1). Reaching it fails the evaluation as a value failure, which `unsupportedCalendar`, the answer for an operand outside the selected profile, does not. -/
+  | noInstantConstant
   deriving Repr, DecidableEq
 
 namespace CalendarDayDifferenceOperand
@@ -202,6 +223,16 @@ def ofParts (profile : ModelZone.ConcreteProfile)
   | some instant => .value label instant
   | none => .unsupportedCalendar
 
+/-- Resolve an authored date constant as a stored label resolves (spec/05 §1): under UTC a Julian leap day the proleptic calendar lacks keeps its Julian instant, and the label then decodes to the day that instant names. Under Europe/Berlin such a constant has no instant and the difference fails when reached. -/
+def ofConstant (profile : ModelZone.ConcreteProfile)
+    (parts : DateParts) : CalendarDayDifferenceOperand :=
+  match profile.resolveStoredLabel? (LegacyCalendarLabel.midnight parts) with
+  | some instant =>
+      match profile.calendarLabel? instant with
+      | some label => .value label instant
+      | none => .unsupportedCalendar
+  | none => if parts.isJulianOnly then .noInstantConstant else .unsupportedCalendar
+
 /-- One exact instant at its local wall label in the model zone, as `Now` enters a day difference.
 The instant keeps its millisecond remainder (spec/05 §7). -/
 def ofInstant (profile : ModelZone.ConcreteProfile) (instant : Instant) : CalendarDayDifferenceOperand :=
@@ -214,19 +245,20 @@ def ofBaseYear (profile : ModelZone.ConcreteProfile) (year : Int)
     (source : BaseYearDateSource) : CalendarDayDifferenceOperand :=
   ofParts profile (source.parts year)
 
-/-- Formal unavailability dominates empty substitution. Empty then yields symmetric numeric zero; present values delegate to the selected exact-instant calendar-step profile. -/
+/-- A constant without an instant fails the evaluation ahead of every other operand state, because the constant is reached whatever the other operand holds; the ordering is unmeasured on 31.1.1. Formal unavailability then dominates empty substitution. Empty then yields symmetric numeric zero; present values delegate to the selected exact-instant calendar-step profile. -/
 def evaluate (profile : ModelZone.ConcreteProfile)
     (left right : CalendarDayDifferenceOperand) :
-    Except Unit NumericOperand :=
+    Except DifferenceEvaluationFault NumericOperand :=
   match left, right with
+  | .noInstantConstant, _ | _, .noInstantConstant => throw .constantHasNoInstant
   | .unavailable cause, _ => pure (.unknown cause)
   | _, .unavailable cause => pure (.unknown cause)
   | .empty, _ | _, .empty => pure (.value 0 .both)
-  | .unsupportedCalendar, _ | _, .unsupportedCalendar => throw ()
+  | .unsupportedCalendar, _ | _, .unsupportedCalendar => throw .unsupportedCalendar
   | .value _ firstInstant, .value _ secondInstant =>
       match profile.differenceResolvedInDays? firstInstant secondInstant with
       | some days => pure (.value days .fixed)
-      | none => throw ()
+      | none => throw .unsupportedCalendar
 
 end CalendarDayDifferenceOperand
 

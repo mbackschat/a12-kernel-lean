@@ -226,9 +226,11 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
       let context := document.indexedComputationContextAt environment
       (operation.run (context.withWorld world)).mapError .readBack
   | .dateLiteral operation =>
-      let outcome := operation.outcome
-      let cell ← (DocumentComputationReadBack.dateConstant operation.dateTarget outcome).mapError .readBack
-      pure (.fullDate outcome, cell)
+      match operation.outcome? with
+      | none => pure (.valueError .fullDate, DocumentComputationReadBack.poison)
+      | some outcome =>
+          let cell ← (DocumentComputationReadBack.dateConstant operation.dateTarget outcome).mapError .readBack
+          pure (.fullDate outcome, cell)
   | .dateRangeConstruction operation =>
       let outcome ← (operation.evaluateWith (document.indexedComputationContextAt environment)).mapError .dateRangeConstruction
       pure (.dateRange outcome, ← (DocumentComputationReadBack.dateRange model operation.target.policy outcome).mapError .readBack)

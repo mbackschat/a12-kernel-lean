@@ -142,9 +142,9 @@ private def certifiedSource (source : ResolvedDateDifferenceOperand HavingTempor
       id := 3, kind := .date, components := TemporalComponents.fullDate } }) source)
     right := .literal { value := 0, authoredScale := 0 } })
 
-example : certifiedSource (.literal { year := none, month := 3, day := 1 } 2024) = true ∧
-    certifiedSource (.literal { year := none, month := 3, day := 1 } 2023) = false ∧
-    certifiedSource (.literal { year := none, month := 2, day := 29 } 2024) = false ∧
+example : certifiedSource (.literal { year := none, month := 3, day := 1 } 2024 .utc) = true ∧
+    certifiedSource (.literal { year := none, month := 3, day := 1 } 2023 .utc) = false ∧
+    certifiedSource (.literal { year := none, month := 2, day := 29 } 2024 .utc) = false ∧
     certifiedSource (.baseYear 2024 .direct) = true ∧
     certifiedSource (.baseYear 2025 .direct) = false ∧
     certifiedSource (.today .utc) = true ∧

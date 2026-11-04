@@ -141,35 +141,53 @@ theorem baseYearDateDifference_finish_boundary (year : Int) :
     DateParts.Shift.monthLandingDay, before]
   omega
 
-/-- A left formal cause wins before any empty/default branch is considered. -/
+/-- A left formal cause wins before any empty/default branch is considered, unless the other operand is a constant without an instant, which fails first. -/
 theorem dateDifferenceOperand_unavailable_left
     (unit : DateDifferenceUnit) (cause : FormalCause)
-    (right : DateDifferenceOperand) :
+    (right : DateDifferenceOperand) (reached : right ≠ .noInstantConstant) :
     DateDifferenceOperand.evaluate unit (.unavailable cause) right =
-      .unknown cause := by
-  rfl
+      .ok (.unknown cause) := by
+  cases right <;> first | exact absurd rfl reached | rfl
 
 /-- Empty supplies symmetric numeric zero without consulting the other present operand. -/
 theorem dateDifferenceOperand_empty_zero
     (unit : DateDifferenceUnit) (parts : DateParts) :
     DateDifferenceOperand.evaluate unit .empty (.value parts) =
-      .value 0 .both := by
+      .ok (.value 0 .both) := by
   rfl
 
 /-- Two supported decoded values delegate exactly to the selected completed-period counter. -/
 theorem dateDifferenceOperand_values_delegate
     (unit : DateDifferenceUnit) (first second : DateParts) :
     DateDifferenceOperand.evaluate unit (.value first) (.value second) =
-      .value (unit.between first second) .fixed := by
+      .ok (.value (unit.between first second) .fixed) := by
   rfl
 
-/-- A left formal cause wins before day-difference empty substitution or calendar support is consulted. -/
+/-- A date constant the model zone gives no instant fails the evaluation in either operand position, whatever the other operand holds (spec/05 §1). -/
+theorem dateDifferenceOperand_noInstantConstant_fails
+    (unit : DateDifferenceUnit) (other : DateDifferenceOperand) :
+    DateDifferenceOperand.evaluate unit .noInstantConstant other =
+        .error .constantHasNoInstant ∧
+      DateDifferenceOperand.evaluate unit other .noInstantConstant =
+        .error .constantHasNoInstant := by
+  cases other <;> exact ⟨rfl, rfl⟩
+
+/-- A left formal cause wins before day-difference empty substitution or calendar support is consulted, unless the other operand is a constant without an instant, which fails first. -/
 theorem calendarDayDifferenceOperand_unavailable_left
     (profile : ModelZone.ConcreteProfile) (cause : FormalCause)
-    (right : CalendarDayDifferenceOperand) :
+    (right : CalendarDayDifferenceOperand) (reached : right ≠ .noInstantConstant) :
     CalendarDayDifferenceOperand.evaluate profile (.unavailable cause) right =
       .ok (.unknown cause) := by
-  rfl
+  cases right <;> first | exact absurd rfl reached | rfl
+
+/-- A date constant the model zone gives no instant fails the day difference in either operand position, whatever the other operand holds (spec/05 §1). -/
+theorem calendarDayDifferenceOperand_noInstantConstant_fails
+    (profile : ModelZone.ConcreteProfile) (other : CalendarDayDifferenceOperand) :
+    CalendarDayDifferenceOperand.evaluate profile .noInstantConstant other =
+        .error .constantHasNoInstant ∧
+      CalendarDayDifferenceOperand.evaluate profile other .noInstantConstant =
+        .error .constantHasNoInstant := by
+  cases other <;> exact ⟨rfl, rfl⟩
 
 /-- Empty supplies symmetric zero even when the other day operand lies outside the current concrete calendar fragment. -/
 theorem calendarDayDifferenceOperand_empty_unsupported_zero

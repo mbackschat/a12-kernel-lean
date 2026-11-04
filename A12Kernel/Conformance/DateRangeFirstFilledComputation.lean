@@ -450,16 +450,16 @@ example :
       (checked? otherSeparatorTarget.id "DayMonthDottedSource").isNone = true := by
   native_decide
 
-/- On a crossing the target's declared spelling decides the stored text, which a source-keyed renderer would get wrong on every row: the same component pair stores `0609` under the empty separator and `06/09` under slash, and one full-Date instant pair stores both lexical forms. -/
+/- On a crossing the target's declared spelling decides the stored text, which a source-keyed renderer would get wrong on every row: one full-Date instant pair stores both lexical forms. A month pair has a single spelling since an empty declared separator reads as `/` (spec/05 §8.1), where kernel 30.8.1 concatenated the two months. -/
 example :
     signatureFor? otherSeparatorTarget monthSource [{
       row := 1
       stored := "06/09"
       raw := .parsed (.dateRange (.yearlessMonth 6 9))
-    }] = some "VALUE|0609" ∧
+    }] = some "VALUE|06/09" ∧
       signatureFor? monthTarget otherSeparatorSource [{
         row := 1
-        stored := "0609"
+        stored := "06/09"
         raw := .parsed (.dateRange (.yearlessMonth 6 9))
       }] = some "VALUE|06/09" ∧
       signatureFor? target dottedSource [{
@@ -476,15 +476,15 @@ example :
       }] = some "VALUE|01.06.2024-30.06.2024" := by
   native_decide
 
-/- Each lexical presentation stores its target's own spelling: the empty separator concatenates the two months and the dotted pair spells day before month. A shared-component sibling would have stored `06/09` and `06-01/09-30`. -/
+/- Each lexical presentation stores its target's own spelling: the dotted pair spells day before month, where a shared-component sibling would have stored `06-01/09-30`; an empty-separator month target stores the slash spelling. -/
 example :
     signatureFor? otherSeparatorTarget otherSeparatorSource [{
       row := 1, stored := "", raw := .presentEmpty
     }, {
       row := 2
-      stored := "0609"
+      stored := "06/09"
       raw := .parsed (.dateRange (.yearlessMonth 6 9))
-    }] = some "VALUE|0609" ∧
+    }] = some "VALUE|06/09" ∧
       signatureFor? dayMonthDottedTarget dayMonthDottedSource [{
         row := 1
         stored := "01.06-30.09"

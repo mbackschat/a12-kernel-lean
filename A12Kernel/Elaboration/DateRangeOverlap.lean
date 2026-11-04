@@ -137,7 +137,7 @@ def accepts (profile : DirectDateRangeOverlapFragmentProfile)
   -- A profile is a component set, so both declared spellings of one set qualify once the
   -- Base Year has completed the value.
   | .month baseYear =>
-      (format == .yearlessMonth || format == .yearlessMonthConcatenated) &&
+      format == .yearlessMonth &&
         model.baseYear == some baseYear
   | .monthDay baseYear =>
       (format == .yearlessMonthDay || format == .yearlessDayMonthDotted) &&
@@ -280,7 +280,7 @@ def certifyDirectDateRangeOverlapFragmentField (model : FlatModel)
         profile := .yearMonth
         profileOwned := by
           simp [DirectDateRangeOverlapFragmentProfile.accepts, hFormat] }
-  | .yearlessMonth | .yearlessMonthConcatenated =>
+  | .yearlessMonth =>
       match hBaseYear : model.baseYear with
       | some baseYear => pure {
           source with

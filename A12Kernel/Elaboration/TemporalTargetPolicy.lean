@@ -264,7 +264,7 @@ def evaluateParts (target : CheckedDateFormatTarget model)
     .errored stored .before1900
   else if parts.Before CivilDate.gregorianFloor.parts then
     .errored stored .beforeGregorianFloor
-  else if target.format.parseLegacyParts? stored.text == none then
+  else if target.format.parseParts? target.profile stored.text == none then
     .errored stored (.renderingRejected .dateFormat)
   else
     .accepted stored
@@ -299,6 +299,9 @@ inductive OmittedComponentDateTargetElabError where
   declared. -/
   | yearlessWithoutBaseYear (target : FieldId) (source : String)
   | yearBearingWithoutBaseYear (target : FieldId) (source : String)
+  /-- The rendering is read back under the model zone's stored-label reality, which only a concrete
+  profile decides. -/
+  | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
 
 /-- One checked Date target whose declared format names fewer components than a calendar date has.
@@ -313,8 +316,11 @@ inductive OmittedComponentDateTargetElabError where
 structure CheckedOmittedComponentDateTarget (model : FlatModel) (sourceCarriesYear : Bool := true) where
   checked : CheckedTemporalTargetPolicy model
   format : OmittingDateFormat
+  profile : ModelZone.ConcreteProfile
   formatMatches :
     OmittingDateFormat.ofSource? checked.policy.format = some format
+  profileMatches :
+    ModelZone.ConcreteProfile.ofId? checked.timeZoneId = some profile
   /-- Year agreement belongs to the authored literal/target pair. The default retains the
   year-bearing source contract of existing carriers; a yearless literal may instead pair with a
   yearless target without a Base Year (the format-gate checkpoint in spec/05). -/
@@ -336,8 +342,11 @@ def toOmittedComponentDateTarget
       throw (.unsupportedFormat checked.target.id checked.policy.format)
   | some format =>
       if hBase : (sourceCarriesYear != format.carriesYear && !model.hasBaseYear) = false then
-        pure { checked, format, formatMatches := hFormat,
-               yearAgreement := hBase }
+        match hProfile : ModelZone.ConcreteProfile.ofId? checked.timeZoneId with
+        | none => throw (.unsupportedZone checked.timeZoneId)
+        | some profile =>
+            pure { checked, format, profile, formatMatches := hFormat,
+                   profileMatches := hProfile, yearAgreement := hBase }
       else if sourceCarriesYear then
         throw (.yearlessWithoutBaseYear checked.target.id checked.policy.format)
       else
@@ -364,7 +373,7 @@ from the expression's intermediate date (calendar-expression fragment-limit grid
 def evaluateParts (target : CheckedOmittedComponentDateTarget model sourceCarriesYear)
     (parts : DateParts) : FullDateTargetOutcome :=
   let stored := target.format.renderParts parts
-  match target.format.classifyStored model.baseYear target.checked.policy.youngerThan1900Check stored.text with
+  match target.format.classifyStored target.profile model.baseYear target.checked.policy.youngerThan1900Check stored.text with
   | .ok _ => .accepted stored
   | .error cause => .errored stored cause
 

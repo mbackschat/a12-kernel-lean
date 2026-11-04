@@ -62,22 +62,28 @@ private def rows (count : Nat) : Option (CheckedDocument model) :=
     cells := [] }).toOption
 
 /-- The measured admitted literal `"05.03.2024T12:30:00"`, already classified. -/
-private def marchFifth : LocalDateTime :=
-  (LocalDateTime.ofYmdHms? 2024 3 5 12 30 0).get (by native_decide)
+private def marchFifth : LegacyCalendarLabel :=
+  .ofLocal ((LocalDateTime.ofYmdHms? 2024 3 5 12 30 0).get (by native_decide))
 
 /-- 02:30 on the Berlin spring-forward night: a wall label inside the gap, resolved one gap later. -/
-private def gapLabel : LocalDateTime :=
-  (LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide)
+private def gapLabel : LegacyCalendarLabel :=
+  .ofLocal ((LocalDateTime.ofYmdHms? 2024 3 31 2 30 0).get (by native_decide))
+
+/-- The admitted literal `"29.02.1500T10:00:00"`: a Julian leap day, a label of the hybrid calendar that
+the proleptic calendar lacks and that lies before the stored-value floor. -/
+private def julianLeapDay : LegacyCalendarLabel :=
+  { parts := { year := 1500, month := 2, day := 29 }
+    time := (TimeOfDay.ofHms? 10 0 0).get (by native_decide) }
 
 private def run? (declaringGroup : GroupPath) (target : FieldId) (count : Nat)
-    (constant : LocalDateTime := marchFifth) :
+    (constant : LegacyCalendarLabel := marchFifth) :
     Option RepeatableDateTimeConstantComputationRun :=
   (checkRepeatableDateTimeConstantComputation model declaringGroup target
     constant).toOption.bind fun operation =>
       (rows count).bind fun input => (operation.execute input).toOption
 
 private def outcome? (declaringGroup : GroupPath) (target : FieldId)
-    (constant : LocalDateTime := marchFifth) : Option DateTimeTargetOutcome :=
+    (constant : LegacyCalendarLabel := marchFifth) : Option DateTimeTargetOutcome :=
   (run? declaringGroup target 1 constant).bind fun run =>
     run.outcomes.head?.map fun entry => entry.outcome
 
@@ -131,8 +137,37 @@ example : (run? ["Probe"] stamp.id 4).map (fun run =>
 
 /- A spring-forward gap label resolves one gap later: the constant stores `03:30` in the target row, a value and no failure (spec/05 §5, §11 §4.1; a12-dmkits `DateTimeConstantZoneSplitDiffTest`). -/
 example : (outcome? ["Probe"] stamp.id gapLabel,
-    (ModelZone.ConcreteProfile.resolveLocal? .europeBerlin gapLabel).isSome) =
+    (ModelZone.ConcreteProfile.europeBerlin.resolveStoredLabel? gapLabel).isSome) =
     (some (.accepted (stored "2024-03-31T03:30:00")), true) := by
+  native_decide
+
+/- A label with no instant at all is a Julian leap day under Europe/Berlin (spec/05 §5): the constant has
+   no outcome, and each in-capacity target row, here the first three, carries one value-failure finding
+   while the over-limit row only clears. -/
+example : (run? ["Probe"] stamp.id 4 julianLeapDay).map (fun run =>
+    (run.outcomes, run.formalErrorsInOperands.map (·.errorCode), run.formalErrorsInOperands.map (·.targetField))) =
+    some ([{ targetField := { field := stamp.id, path := [4] }, outcome := .noValue }],
+      [berechnungsWertFehler, berechnungsWertFehler, berechnungsWertFehler],
+      [{ field := stamp.id, path := [1] }, { field := stamp.id, path := [2] },
+        { field := stamp.id, path := [3] }]) := by
+  native_decide
+
+/- Under UTC the same label keeps its Julian instant, the proleptic 10 March 1500 at 10:00 (spec/05 §1), so
+   the target stores nothing it accepts: its own check refuses that rendering below the value floor. The
+   value is derived from the settled resolution and unmeasured on 31.1.1. -/
+private def utcModel : FlatModel := { model with timeZoneId := "UTC" }
+
+private def utcPrepared : PreparedFlatStringContext utcModel builtinStringPatternCompiler :=
+  (prepareFlatStringContext { now := { epochMillis := 0 } }
+    builtinStringPatternCompiler utcModel).toOption.get (by native_decide)
+
+example : ((checkRepeatableDateTimeConstantComputation utcModel ["Probe"] stamp.id
+      julianLeapDay).toOption.bind fun operation =>
+    (checkDocument utcPrepared "en_US" {
+      instantiatedRows := [{ group := 10, path := [1] }], cells := [] }).toOption.bind fun input =>
+        (operation.execute input).toOption).map (fun run =>
+    (run.outcomes.map (·.outcome), run.formalErrorsInOperands.length)) =
+    some ([.errored (stored "1500-03-10T10:00:00") (.renderingRejected .dateInvalid)], 0) := by
   native_decide
 
 /- Placement is containment: the target's own group and every ancestor admit it, and only a group the

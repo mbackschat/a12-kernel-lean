@@ -66,16 +66,16 @@ inductive FullDateInputError where
   | unresolvableDate (parts : DateParts)
   deriving Repr, DecidableEq
 
-/-- Decode one fixed-width ASCII full Date under the default-cutover legacy calendar used by non-lenient stored-value parsing. -/
-def FullDateInputFormat.parseLegacyParts? (format : FullDateInputFormat)
-    (text : String) : Option DateParts := do
+/-- Decode one fixed-width ASCII full Date under the model zone's stored-label reality: the proleptic calendar, except that outside Europe/Berlin a Julian leap day the proleptic calendar lacks is still real (spec/05 §4, measured for UTC and Berlin only). -/
+def FullDateInputFormat.parseParts? (format : FullDateInputFormat)
+    (profile : ModelZone.ConcreteProfile) (text : String) : Option DateParts := do
   let parts ← format.parseComponents? text
-  if DateParts.LegacyHybrid.isReal parts then some parts else none
+  if profile.storedLabelReal parts then some parts else none
 
 /-- Decode a computed-target format through the shared stored-input parser. -/
-def FullDateTargetFormat.parseLegacyParts? (format : FullDateTargetFormat)
-    (text : String) : Option DateParts :=
-  (FullDateInputFormat.ofTarget format).parseLegacyParts? text
+def FullDateTargetFormat.parseParts? (format : FullDateTargetFormat)
+    (profile : ModelZone.ConcreteProfile) (text : String) : Option DateParts :=
+  (FullDateInputFormat.ofTarget format).parseParts? profile text
 
 /-- Resolve one admitted stored Date label at local midnight while retaining its decoded components and stored-Gregorian origin. -/
 def ModelZone.ConcreteProfile.resolveStoredDate? (profile : ModelZone.ConcreteProfile)
@@ -95,7 +95,7 @@ def CheckedFullDateInputField.classifyStoredForModel
   if text.isEmpty then
     pure .presentEmpty
   else
-    match checked.format.parseLegacyParts? text with
+    match checked.format.parseParts? profile text with
     | none => pure (.rejected .dateFormat)
     | some parts =>
         if decide (parts.Before CivilDate.gregorianFloor.parts) ||

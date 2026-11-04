@@ -53,9 +53,9 @@ def writtenDayMonth? : OmittingDateFormat → String → Option (Nat × Nat)
 A real date before 1900 under the check and before the universal floor take the date keys. A refused
 day-bearing text is completed with the Base Year, `2000` when none is declared, before its component
 reading, so `02-29` takes the leap-day key only under a common Base Year. -/
-def messageKey? (format : OmittingDateFormat) (baseYear : Option Int) (youngerThan1900Check : Bool)
-    (text : String) : Option RuntimeFormalMessageKey :=
-  match format.classifyStored baseYear youngerThan1900Check text with
+def messageKey? (format : OmittingDateFormat) (profile : ModelZone.ConcreteProfile)
+    (baseYear : Option Int) (youngerThan1900Check : Bool) (text : String) : Option RuntimeFormalMessageKey :=
+  match format.classifyStored profile baseYear youngerThan1900Check text with
   | .ok _ => none
   | .error .before1900 => some .textDatumAdditionalCheck
   | .error .beforeGregorianFloor => some .textDatum

@@ -110,7 +110,7 @@ private def pairVerdict? (left : FieldId) (leftBound : DateRangeBound)
     | .yearless _ _ verdict => verdict
 
 private def juneToSeptember : List ClassifiedCellInput :=
-  [storedCell 1 "06/09", storedCell 2 "0609", storedCell 3 "06-01/09-30"]
+  [storedCell 1 "06/09", storedCell 2 "06/09", storedCell 3 "06-01/09-30"]
 
 private def juneSecondToSeptemberTwentyNinth : List ClassifiedCellInput :=
   [storedCell 1 "06/09", storedCell 3 "06-02/09-29"]

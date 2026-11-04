@@ -247,6 +247,29 @@ structure MixedComputationCheckedResult where
   formalErrorsInOperands : List ComputationFormalInputFinding
   deriving Repr, DecidableEq
 
+/-- Whether an errored Date target with a day and a month but no year draws a second diagnostic at its
+pointer. The target check refuses the Base-Year re-completion as no real date, and the store then re-parses
+that completion and fails again, so the call cannot assemble its result (spec/05 §3.1, spec/09's result
+assembly; a12-dmkits KF666 reads the mechanism from source). A five-digit year or a value below the floor
+draws one diagnostic. -/
+def DocumentTargetOutcome.drawsSecondDiagnostic (model : FlatModel) (target : FieldId) :
+    DocumentTargetOutcome → Bool
+  | .fullDate (.errored attempted _) => reCompletionFails attempted.text
+  | .dateFragment (.errored attempted _) => reCompletionFails attempted.text
+  | _ => false
+where
+  reCompletionFails (text : String) : Bool :=
+    match model.lookupUniqueId target, ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+    | .ok declaration, some profile =>
+        match declaration.policy.kind, certifyOmittingDateInputField declaration with
+        | .temporal _ components, .ok field =>
+            components.day && components.month && !components.year &&
+              match field.classifyStoredForModel profile model.baseYear text with
+              | .rejected .dateFormat => true
+              | _ => false
+        | _, _ => false
+    | _, _ => false
+
 namespace CheckedMixedComputationPlan
 
 def targetFields (plan : CheckedMixedComputationPlan model compilePattern) : List FieldId :=
@@ -348,10 +371,19 @@ def executeResultWithFormalInputs (plan : CheckedMixedComputationPlan model comp
   let prepared ← inputPlan.prepare input |>.mapError .preliminary
   let outcomes ← (plan.execute world patterns prepared.preliminary.computationInput)
     |>.mapError (.execution prepared.formalErrorsInOperands)
-  ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands {
+  let result ← ComputationFormalInputFinding.assembleResult prepared.formalErrorsInOperands {
     outcomes
     formalErrorsInOperands := prepared.formalErrorsInOperands }
     |>.mapError (.assembly prepared.formalErrorsInOperands)
+  -- A target that draws two diagnostics collides with itself, as two operand findings at one pointer do.
+  let collided := outcomes.findSome? fun
+    | .document target outcome =>
+        if outcome.drawsSecondDiagnostic model target.field then some target else none
+    | _ => none
+  match collided with
+  | some target =>
+      throw (.assembly prepared.formalErrorsInOperands (.duplicatePointer (MessagePointer.ofCellAddr target)))
+  | none => pure result
 
 end CheckedMixedComputationPlan
 

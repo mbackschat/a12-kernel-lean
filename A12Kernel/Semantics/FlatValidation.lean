@@ -534,7 +534,7 @@ def FlatTemporalOperand.resolve (context : FlatContext) : FlatTemporalOperand â†
   | .literalValue instant _ => .value instant true
   | .timeValue value => .value (Instant.ofEpochSecond value.secondsSinceMidnight) true
   | .localDateTimeValue profile label =>
-      match profile.resolveCalendarLabel? label with
+      match profile.resolveStoredLabel? label with
       | some instant => .value instant true
       | none => .unknown .malformed
   | .grouped source => source.resolve context
@@ -564,7 +564,7 @@ projection above cannot report a runtime exception; effectful consumers use this
 def FlatTemporalOperand.resolveResultAt (context : FlatContext) (phase : Phase) :
     FlatTemporalOperand â†’ Except Unit (SimpleComparisonOperand Instant)
   | .localDateTimeValue profile label =>
-      match profile.resolveCalendarLabel? label with
+      match profile.resolveStoredLabel? label with
       | some instant => pure (.value instant true)
       | none => throw ()
   | .grouped source => source.resolveResultAt context phase

@@ -133,7 +133,7 @@ example :
     componentResult? 1 .start .quarter [storedCell 1 "06/09"] = some {
       selected := .value (.month 6)
       component := .value 2 .fixed } ∧
-    componentResult? 2 .start .month [storedCell 2 "0609"] = some {
+    componentResult? 2 .start .month [storedCell 2 "06/09"] = some {
       selected := .value (.month 6)
       component := .value 6 .fixed } := by
   native_decide

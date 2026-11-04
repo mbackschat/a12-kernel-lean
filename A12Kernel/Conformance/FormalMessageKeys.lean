@@ -16,7 +16,7 @@ open A12Kernel
 
 private def omitting (format : OmittingDateFormat) (baseYear : Option Int) (check : Bool)
     (text : String) : Option String :=
-  (format.messageKey? baseYear check text).map (·.bundleKey)
+  (format.messageKey? ModelZone.ConcreteProfile.utc baseYear check text).map (·.bundleKey)
 
 private def dateTime (text : String) : Option String :=
   match DateTimeTargetFormat.yearMonthDayTime.messageKey? ModelZone.ConcreteProfile.europeBerlin text with
@@ -24,7 +24,7 @@ private def dateTime (text : String) : Option String :=
   | .error _ => some "error"
 
 private def full (check : Bool) (format : FullDateInputFormat) (text : String) : Option String :=
-  (format.dateMessageKey? .full check text).map (·.bundleKey)
+  (format.dateMessageKey? ModelZone.ConcreteProfile.utc .full check text).map (·.bundleKey)
 
 /- `Y`, `YM`, `YMc`, `Mo` and `YC`: a format without a day takes the format key for every refusal,
    month `13` included, and the date keys only for a real date before 1900 or the floor. -/

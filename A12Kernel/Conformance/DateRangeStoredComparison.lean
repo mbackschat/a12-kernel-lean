@@ -142,7 +142,7 @@ example :
         [storedCell 1 "2020-11-01/2021-02-28",
           storedCell 3 "01.11.2020-28.02.2021"] = some (.fired .value) ∧
     verdict? 8 9 .equal
-        [storedCell 8 "06/09", storedCell 9 "0609"] = some (.fired .value) ∧
+        [storedCell 8 "06/09", storedCell 9 "06/09"] = some (.fired .value) ∧
     verdict? 10 11 .equal
         [storedCell 10 "06-01/09-30",
           storedCell 11 "01.06-30.09"] = some (.fired .value) := by
@@ -158,7 +158,7 @@ example :
         [storedCell 1 "2020-11-01/2021-02-28",
           storedCell 3 "02.11.2020-28.02.2021"] = some (.fired .value) ∧
     verdict? 8 9 .equal
-        [storedCell 8 "06/09", storedCell 9 "0610"] = some .notFired ∧
+        [storedCell 8 "06/09", storedCell 9 "06/10"] = some .notFired ∧
     verdict? 10 11 .equal
         [storedCell 10 "06-01/09-30",
           storedCell 11 "02.06-30.09"] = some .notFired := by
@@ -208,7 +208,7 @@ example :
       some .invalidCompareToDateRange ∧
     verdictIn? unconfigured 8 9 .equal
         [storedCellIn unconfigured 8 "06/09",
-          storedCellIn unconfigured 9 "0609"] = some (.fired .value) ∧
+          storedCellIn unconfigured 9 "06/09"] = some (.fired .value) ∧
     verdictIn? unconfigured 10 11 .equal
         [storedCellIn unconfigured 10 "06-01/09-30",
           storedCellIn unconfigured 11 "01.06-30.09"] = some (.fired .value) ∧
@@ -217,7 +217,7 @@ example :
           storedCellIn unconfigured 11 "01.02-29.02"] = some (.fired .value) ∧
     verdictIn? unconfigured 8 9 .notEqual
         [storedCellIn unconfigured 8 "06/09",
-          storedCellIn unconfigured 9 "0610"] = some (.fired .value) ∧
+          storedCellIn unconfigured 9 "06/10"] = some (.fired .value) ∧
     verdictIn? unconfigured 8 9 .equal
         [storedCellIn unconfigured 8 "06/09"] = some .notFired := by
   native_decide

@@ -151,7 +151,7 @@ private def placedRaw (stored : String) : RawCell :=
   match certifyPartialDateInputField rowSource with
   | .error _ => .rejected .dateFormat
   | .ok checked =>
-      match checked.classifyStored stored with
+      match checked.classifyStored .utc stored with
       | .presentEmpty => .presentEmpty
       | .rejected cause => .rejected cause
       | .admitted _ => .parsed (.partialDate stored)

@@ -86,7 +86,7 @@ def evaluateCalendarDayDifference?
     | .second =>
         CalendarDayDifferenceOperand.evaluate profile other shiftOperand
   match evaluated with
-  | .error () => none
+  | .error _ => none
   | .ok (.unknown cause) => some (.unknown cause)
   | .ok (.value amount fillability) =>
       some (.value amount

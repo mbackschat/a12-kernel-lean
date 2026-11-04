@@ -44,8 +44,11 @@ private def resolveDateDifferenceOperandWith
     SurfaceDateDifferenceOperand →
       Except NumericValidationElabError (ResolvedDateDifferenceOperand FlatTemporalField clock)
   | .literal source =>
-      if source.valid then pure (.literal source model.baseYearOrDefault)
-      else throw .incompatibleDateDifference
+      match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+      | some profile =>
+          if source.valid then pure (.literal source model.baseYearOrDefault profile)
+          else throw .incompatibleDateDifference
+      | none => throw (.unsupportedCalendarProfile model.timeZoneId)
   | .field reference => return .field (← resolveField reference)
   | .baseYear source =>
       match model.baseYear with

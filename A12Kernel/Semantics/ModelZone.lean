@@ -10,6 +10,10 @@ Stored-value decoding through `localDateTime?` keeps the positive-era proleptic 
 
 namespace A12Kernel
 
+/-- A label real only on the hybrid calendar: a Julian leap day before the 1582 cutover in a year the proleptic calendar makes common. -/
+def DateParts.isJulianOnly (parts : DateParts) : Bool :=
+  DateParts.LegacyHybrid.isReal parts && !parts.isReal
+
 /-- A proleptic calendar label before storage restrictions. Expression arithmetic may cross the stored-Date
 floor or the four-digit year boundary (calendar-expression grid, 2026-10-04). -/
 structure LegacyCalendarLabel where
@@ -81,6 +85,20 @@ def resolveLabel? (profile : ConcreteProfile) (label : LegacyCalendarLabel) (mil
 /-- A fresh label at a whole second, with no preferred offset. -/
 def resolveCalendarLabel? (profile : ConcreteProfile) (label : LegacyCalendarLabel) : Option Instant :=
   profile.resolveLabel? label 0 none
+
+/-- Stored-text reality (spec/05 §4): the proleptic calendar, except that outside Europe/Berlin a Julian leap day the proleptic calendar lacks, such as 1500-02-29, is still real. Measured for UTC and Berlin only. -/
+def storedLabelReal (profile : ConcreteProfile) (parts : DateParts) : Bool :=
+  parts.isReal || (profile == .utc && parts.isJulianOnly)
+
+/-- Resolve a stored or constant label (spec/05 §1, §4) as a fresh label, except that a Julian leap day the proleptic calendar lacks resolves outside Europe/Berlin to its Julian instant, ten days later on the proleptic calendar. Under Europe/Berlin that label names no instant. -/
+def resolveStoredLabel? (profile : ConcreteProfile) (label : LegacyCalendarLabel) : Option Instant :=
+  match profile.resolveCalendarLabel? label with
+  | some instant => some instant
+  | none =>
+      if profile == .utc && label.parts.isJulianOnly then
+        (DateParts.LegacyHybrid.epochDay? label.parts).map fun day =>
+          { epochMillis := (day * 86400 + label.time.secondsSinceMidnight) * 1000 }
+      else none
 
 /-- `Today` as its calendar date and that date's resolved midnight. The date is read at the evaluation instant's offset, the midnight under its own offset. -/
 def todayLabel? (profile : ConcreteProfile) (instant : Instant) : Option (DateParts × Instant) := do

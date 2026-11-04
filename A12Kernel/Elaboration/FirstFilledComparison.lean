@@ -250,10 +250,10 @@ def projectFirstFilledValue (model : FlatModel) (declaration : FlatFieldDecl) :
       let completed := do
         let policy ← declaration.toTemporalTargetPolicy?
         let format ← FullDateTargetFormat.ofSource? policy.format
-        match ← firstFilledPartialDateResolution format text with
+        let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
+        match ← firstFilledPartialDateResolution format profile text with
         | .nonRelevant => pure ScalarTemporalValue.nonRelevant
         | .date date =>
-            let profile ← ModelZone.ConcreteProfile.ofId? model.timeZoneId
             ScalarTemporalValue.date <$> profile.resolveCompletedDateParts? date.civil.parts
       match completed with
       | some value => .value (.temporal value) given

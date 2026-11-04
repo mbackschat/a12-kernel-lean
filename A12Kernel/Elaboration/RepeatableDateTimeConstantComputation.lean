@@ -16,14 +16,15 @@ sibling constant families ([checkpoint](../../docs/sources/computation-placement
 declared format is `yyyy-MM-dd'T'HH:mm:ss`, which is the only DateTime declaration format this
 project's renderer admits ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-temporal-constant-literal-composition)).
 Admission is static and the literal is upstream of this carrier, which takes an already-classified
-`LocalDateTime`; `spec/12` owns the lexical rule.
+`LegacyCalendarLabel`, a label admitted on the hybrid calendar that may lie before the stored-value
+floor; `spec/12` owns the lexical rule.
 
 The constant remains a wall label for storage, but the model zone still validates that label at
-runtime. A resolvable label renders the label of the instant it lands on, so a spring-gap label stores
-the label one gap later. A label naming no instant produces no computed outcome and one
-`berechnungsWertFehler` residual at each in-capacity target row; this carrier's `LocalDateTime` constant
-cannot express such a label, so that branch has no witness here. The static
-model verdict has a separate host-zone dependency upstream of this carrier
+runtime (spec/05 §5). A resolvable label renders the label of the instant it lands on, so a spring-gap
+label stores the label one gap later, and the target's own stored-text check then judges that rendering,
+refusing one below the value floor. A label naming no instant, a Julian leap day under `Europe/Berlin`,
+produces no computed outcome and one `berechnungsWertFehler` residual at each in-capacity target row. The
+static model verdict has a separate host-zone dependency upstream of this carrier
 ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-datetime-constant-zone-split)).
 
 Like the Time sibling this carrier takes `CheckedDateTimeFormatTarget`, the certificate that reads the
@@ -66,13 +67,13 @@ structure CheckedRepeatableDateTimeConstantComputation (model : FlatModel) where
   dateTimeTarget : CheckedDateTimeFormatTarget model
   /-- The two certificates describe one field. Without this they could drift to different targets. -/
   sameTarget : dateTimeTarget.checked.target.id = checkedTarget.targetField
-  constant : LocalDateTime
+  constant : LegacyCalendarLabel
 
 /-- Check carrier-neutral repeatable placement, then refine the target to the renderable complete
 DateTime subset. Runtime model-zone validation remains in execution rather than this static gate. -/
 def checkRepeatableDateTimeConstantComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
-    (constant : LocalDateTime) :
+    (constant : LegacyCalendarLabel) :
     Except RepeatableDateTimeConstantComputationElabError
       (CheckedRepeatableDateTimeConstantComputation model) := do
   let checkedTarget ←
@@ -124,14 +125,14 @@ structure RepeatableDateTimeConstantComputationRun where
 
 namespace CheckedRepeatableDateTimeConstantComputation
 
-/-- Resolve the literal label in the model zone and store the label of the instant it lands on, so a
-spring-gap label stores the label one gap later (spec/05 §5). A label naming no instant has no computed
-outcome and is reported separately by `execute`. -/
+/-- Resolve the literal label in the model zone as a stored label resolves and store the label of the
+instant it lands on, so a spring-gap label stores the label one gap later (spec/05 §5). The target's
+own check judges that rendering. A label naming no instant, or one whose landing the target cannot
+render, has no computed outcome and is reported separately by `execute`. -/
 def outcome? (operation : CheckedRepeatableDateTimeConstantComputation model) :
     Option DateTimeTargetOutcome := do
-  let profile := operation.dateTimeTarget.profile
-  let landed ← profile.localDateTime? (← profile.resolveLocal? operation.constant)
-  pure (.accepted (DateTimeTargetFormat.render operation.dateTimeTarget.format landed))
+  let instant ← operation.dateTimeTarget.profile.resolveStoredLabel? operation.constant
+  (operation.dateTimeTarget.evaluate (.value instant)).toOption
 
 /-- Attempt the constant once per **in-capacity** target row, in document order, and emit only a clear
 at each over-limit row. A group with no instantiated row yields neither outcome nor residual. -/

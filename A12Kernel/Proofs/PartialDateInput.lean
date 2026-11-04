@@ -50,8 +50,8 @@ theorem checkedPartialDateInputField_mode_declared
 /-- Present-empty text is never a formal rejection: emptiness is not invalidity, and the classifier
 preserves that distinction before any component is read. -/
 @[simp] theorem classifyStored_empty
-    (checked : CheckedPartialDateInputField) :
-    checked.classifyStored "" = .presentEmpty := by
+    (checked : CheckedPartialDateInputField) (profile : ModelZone.ConcreteProfile) :
+    checked.classifyStored profile "" = .presentEmpty := by
   simp [CheckedPartialDateInputField.classifyStored, classifyPartialDateStored]
 
 end A12Kernel

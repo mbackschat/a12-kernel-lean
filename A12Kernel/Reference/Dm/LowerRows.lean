@@ -31,7 +31,7 @@ def rowConstant (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
   | .constant "True" => boolean true
   | .constant "False" => boolean false
   | .string literal =>
-      match authoredDateLiteral? literal, timeConstant? literal, (dateTimeConstant? literal).bind (·.toLocal?) with
+      match authoredDateLiteral? literal, timeConstant? literal, dateTimeConstant? literal with
       | some date, _, _ => do
           let operation ← elaborated "DateComputation"
             (checkDateLiteralComputation model group target.id date)
@@ -44,11 +44,8 @@ def rowConstant (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
       | _, _, some label => do
           let operation ← elaborated "DateTimeComputation"
             (checkRepeatableDateTimeConstantComputation model group target.id label)
-          -- The label is the same at every row, so one the model zone cannot resolve is known here.
-          if operation.outcome?.isNone then refuse "DateTimeComputation" "label in a zone gap"
           pure fun _ => .ofRepeatableDateTimeConstant operation
       | none, none, none => do
-          if isDateTimeConstant literal then refuse "DateTimeComputation" "label before the value floor"
           let operation ← elaborated "StringComputation"
             (checkRepeatableStringConstantComputation model group target.id literal)
           pure fun _ => .ofRepeatableStringConstant operation

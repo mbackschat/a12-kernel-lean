@@ -17,10 +17,13 @@ def twoDigits (value : Nat) : String :=
   if value < 10 then "0" ++ toString value else toString value
 
 /-- Year patterns have a minimum of four digits, without truncating overflow (calendar-expression
-short-year and upper-year boundary probes, 2026-10-04). -/
+short-year and upper-year boundary probes, 2026-10-04). Kernel 31.1.1 renders a year wider than the
+four-digit run with a leading `+` (spec/05 §3.1; a12-dmkits `CalendarTargetCompletionDiffTest` at
+`1124b523f` measures the Date, year-month and year targets). -/
 def year (value : Int) : String :=
   let text := toString value
-  String.ofList (List.replicate (4 - text.length) '0') ++ text
+  if 9999 < value then "+" ++ text
+  else String.ofList (List.replicate (4 - text.length) '0') ++ text
 
 end TemporalTargetText
 
@@ -191,6 +194,10 @@ private theorem intRepr_ne_empty (i : Int) : Int.repr i ≠ "" := by
       simp [Nat.repr] at this
   | negSucc n => simp [Int.repr]
 
+private theorem TemporalTargetText.year_ne_empty (value : Int) : TemporalTargetText.year value ≠ "" := by
+  unfold TemporalTargetText.year
+  split <;> simp [intRepr_ne_empty]
+
 /-- Render one real civil Date, keeping exactly the components the format names and its own
 separator. Measured: `2024`, `2024-03`, `202403`, `03`, and `03-05` for the same 5 March 2024, with
 the omitted components discarded and nothing reported. A yearless format writes **no year** even
@@ -245,8 +252,7 @@ def renderParts (format : OmittingDateFormat) (parts : DateParts) : StoredDate :
         exact absurd (String.append_eq_empty_iff.mp contra).1
           (TemporalTargetText.twoDigits_ne_empty parts.day)
       all_goals
-        simp [renderPartsText, TemporalTargetText.twoDigits,
-          TemporalTargetText.year, intRepr_ne_empty parts.year]
+        simp [renderPartsText, TemporalTargetText.twoDigits, TemporalTargetText.year_ne_empty]
   }
 
 def renderCivil (format : OmittingDateFormat) (date : CivilDate) : StoredDate :=

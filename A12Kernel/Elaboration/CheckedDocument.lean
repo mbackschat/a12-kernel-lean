@@ -299,7 +299,9 @@ private def ClassifiedCellInput.canonicalScalarCoherent
       | .ok checked =>
           match input.raw with
           | .parsed (.temporal _) => true
-          | .parsed (.partialDate text) => text == input.stored && checked.admitsPartiallyKnownText text
+          | .parsed (.partialDate text) =>
+              text == input.stored && (ModelZone.ConcreteProfile.ofId? model.timeZoneId).any fun profile =>
+                checked.admitsPartiallyKnownText profile text
           | .parsed _ => false
           | .empty | .presentEmpty | .rejected _ => true
   | .dateRange =>
@@ -743,18 +745,26 @@ def canonicalTemporalCell? (model : FlatModel) (declaration : FlatFieldDecl) (st
   | .temporal _ components =>
       match certifyPartialDateInputField declaration, certifyOmittingDateInputField declaration with
       | .ok owner, _ =>
-          some <| match owner.classifyStored stored with
-            | .presentEmpty => some .presentEmpty
-            | .rejected cause => some (.rejected cause)
-            | .admitted value => match value.value with
-              | .full date => canonicalDateCell? model date.civil
-              | .omittedDay _ | .omittedMonth _ | .omittedYear => some (.parsed (.partialDate stored))
+          -- Calendar reality is zone-dependent (spec/05 §4), so a model zone outside the concrete
+          -- profiles classifies nothing and the text resolves to no instant.
+          some <| match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+            | none => none
+            | some profile =>
+                match owner.classifyStored profile stored with
+                | .presentEmpty => some .presentEmpty
+                | .rejected cause => some (.rejected cause)
+                | .admitted value => match value.value with
+                  | .full date => canonicalDateCell? model date.civil
+                  | .omittedDay _ | .omittedMonth _ | .omittedYear => some (.parsed (.partialDate stored))
       | .error _, .ok owner =>
-          some <| match owner.classifyStoredForModel model.baseYear stored with
-            | .presentEmpty => some .presentEmpty
-            | .rejected cause => some (.rejected cause)
-            | .admitted value =>
-                (value.earliestCivil? model.baseYearOrDefault).bind (canonicalDateCell? model)
+          some <| match ModelZone.ConcreteProfile.ofId? model.timeZoneId with
+            | none => none
+            | some profile =>
+                match owner.classifyStoredForModel profile model.baseYear stored with
+                | .presentEmpty => some .presentEmpty
+                | .rejected cause => some (.rejected cause)
+                | .admitted value =>
+                    (value.earliestCivil? model.baseYearOrDefault).bind (canonicalDateCell? model)
       | .error _, .error _ =>
           if components == TemporalComponents.fullDate then
             (certifyFullDateInputField declaration).toOption.map fun owner =>

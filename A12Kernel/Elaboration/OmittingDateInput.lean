@@ -208,9 +208,11 @@ inductive OmittingDateInputCell where
 
 /-- Classify the rendered or authored text, including the format-specific formal completion before
 position checks. Kernel `DateUtil.completeDateAndFormat` appends the Base Year only when both day and
-month are present; the fragment-limit grid (2026-10-04) separates that from runtime completion. -/
-def OmittingDateFormat.classifyStored (format : OmittingDateFormat) (baseYear : Option Int)
-    (youngerThan1900Check : Bool) (text : String) : Except FullDateTargetError OmittingDateStoredValue := do
+month are present; the fragment-limit grid (2026-10-04) separates that from runtime completion. The
+model zone's profile decides calendar reality, which is zone-dependent for a Julian leap day (spec/05 §4). -/
+def OmittingDateFormat.classifyStored (format : OmittingDateFormat) (profile : ModelZone.ConcreteProfile)
+    (baseYear : Option Int) (youngerThan1900Check : Bool) (text : String) :
+    Except FullDateTargetError OmittingDateStoredValue := do
   let formatError := FullDateTargetError.renderingRejected .dateFormat
   let (parts, value) ← if format.carriesYear then do
       let (parsedYear, parsedMonth) ← (format.parseYearComponents? text).getDM (throw formatError)
@@ -219,7 +221,7 @@ def OmittingDateFormat.classifyStored (format : OmittingDateFormat) (baseYear : 
       let value ← (format.parseYearlessComponents? baseYear text).getDM (throw formatError)
       let year := if format == .month then 1970 else baseYear.getD 2000
       pure (({ year, month := value.month, day := value.day } : DateParts), some value)
-  if !DateParts.LegacyHybrid.isReal parts then throw formatError
+  if !profile.storedLabelReal parts then throw formatError
   if youngerThan1900Check && parts.Before FullDate.year1900Start.civil.parts then
     throw .before1900
   if parts.Before CivilDate.gregorianFloor.parts then throw .beforeGregorianFloor
@@ -236,10 +238,10 @@ def OmittingDateFormat.classifyStored (format : OmittingDateFormat) (baseYear : 
 /-- Stored input and computed rendering use the same format-owned classifier. Empty input is handled
 before formal checking, and position failures retain the distinct `dateInvalid` observation. -/
 def CheckedOmittingDateInputField.classifyStoredForModel
-    (checked : CheckedOmittingDateInputField) (baseYear : Option Int)
-    (text : String) : OmittingDateInputCell :=
+    (checked : CheckedOmittingDateInputField) (profile : ModelZone.ConcreteProfile)
+    (baseYear : Option Int) (text : String) : OmittingDateInputCell :=
   if text.isEmpty then .presentEmpty
-  else match checked.format.classifyStored baseYear checked.policy.youngerThan1900Check text with
+  else match checked.format.classifyStored profile baseYear checked.policy.youngerThan1900Check text with
     | .ok value => .admitted value
     | .error (.renderingRejected cause) => .rejected cause
     | .error .before1900 | .error .beforeGregorianFloor => .rejected .dateInvalid

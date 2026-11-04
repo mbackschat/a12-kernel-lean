@@ -28,7 +28,6 @@ def TemporalFirstFilledStarCarrier.dateRangeFormat? :
   | .dateRangeYearMonthFragment => some .yearMonthFragment
   | .dateRangeMonthFragment => some .yearlessMonth
   | .dateRangeMonthDayFragment => some .yearlessMonthDay
-  | .dateRangeMonthConcatenated => some .yearlessMonthConcatenated
   | .dateRangeDayMonthDotted => some .yearlessDayMonthDotted
   | _ => none
 

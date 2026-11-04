@@ -385,7 +385,7 @@ def NumericValidationAtom.admitted
                 model.admitsAddressedTemporal rowGroup source
             | .modelWideNonrepeatable | .modelWideCheckedComputation =>
                 model.admitsTemporalModelWide source
-        | .literal source year => source.admittedIn model year
+        | .literal source year profile => source.admittedIn model year profile
         | .baseYear year _ => model.baseYear == some year
         | .today profile => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
       admitted left && admitted right &&
@@ -418,7 +418,7 @@ def NumericValidationAtom.admitted
               | .modelWideNonrepeatable | .modelWideCheckedComputation =>
                   model.admitsTemporalModelWide source) &&
               CalendarDayDifference.admittedBy source.components
-        | .literal source year => source.admittedIn model year
+        | .literal source year profile => source.admittedIn model year profile
         | .baseYear year _ => model.baseYear == some year
         | .today profile | .now profile _ => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
       ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile &&
@@ -532,7 +532,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .dateDifference _ left right =>
       let operandRelevant : ResolvedDateDifferenceOperand → Bool
         | .field source => isRelevant source.id
-        | .baseYear _ _ | .literal _ _ | .today _ => true
+        | .baseYear _ _ | .literal _ _ _ | .today _ => true
       operandRelevant left && operandRelevant right
   | .dateTimeDifference _ left right =>
       left.fields.all (isRelevant ∘ FlatField.id) &&
@@ -540,7 +540,7 @@ def NumericValidationAtom.allRelevant (atom : NumericValidationAtom)
   | .dayDifference _ left right =>
       let operandRelevant : ResolvedDateDifferenceOperand FlatTemporalField true → Bool
         | .field source => isRelevant source.id
-        | .baseYear _ _ | .literal _ _ | .today _ | .now _ _ => true
+        | .baseYear _ _ | .literal _ _ _ | .today _ | .now _ _ => true
       operandRelevant left && operandRelevant right
   | .aggregate _ source => source.allRelevant isRelevant
   | .filledGroupCount _ => true

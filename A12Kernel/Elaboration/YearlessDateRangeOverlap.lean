@@ -28,7 +28,7 @@ namespace YearlessOverlapShape
 
 /-- Recognize a yearless stored-input profile under either of its declared spellings. -/
 def ofInputFormat? : DateRangeInputFormat → Option YearlessOverlapShape
-  | .yearlessMonth | .yearlessMonthConcatenated => some .month
+  | .yearlessMonth => some .month
   | .yearlessMonthDay | .yearlessDayMonthDotted => some .monthDay
   | _ => none
 

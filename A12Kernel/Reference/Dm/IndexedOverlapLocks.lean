@@ -200,12 +200,12 @@ example : selectedProfile "MM" none "01/02" "02/03" = true ∧
     selectedProfile "MM" (some 2024) "01/02" "02/03" = true ∧
     selectedProfile "MM-dd" (some 2024) "02-01/02-29" "02-29/03-01" = true := by native_decide
 
-example : profileControl "MM" none "0102" "0203" "" = true ∧
-    selectedProfile "MM" none "0102" "0203" "" = true ∧
+example : profileControl "MM" none "01/02" "02/03" "" = true ∧
+    selectedProfile "MM" none "01/02" "02/03" "" = true ∧
     profileControl "dd.MM" none "01.02-29.02" "29.02-01.03" "-" = true ∧
     selectedProfile "dd.MM" none "01.02-29.02" "29.02-01.03" "-" = true ∧
-    profileControl "MM" (some 2024) "0102" "0203" "" = true ∧
-    selectedProfile "MM" (some 2024) "0102" "0203" "" = true ∧
+    profileControl "MM" (some 2024) "01/02" "02/03" "" = true ∧
+    selectedProfile "MM" (some 2024) "01/02" "02/03" "" = true ∧
     profileControl "dd.MM" (some 2024) "01.02-29.02" "29.02-01.03" "-" = true ∧
     selectedProfile "dd.MM" (some 2024) "01.02-29.02" "29.02-01.03" "-" = true := by native_decide
 

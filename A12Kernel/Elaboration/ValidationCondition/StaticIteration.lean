@@ -146,8 +146,8 @@ private def temporalDifferenceOperandDeclarations?
             some [declaration]
           else none
       | .error _ => none
-  | .literal source year =>
-      if source.admittedIn model year then some [] else none
+  | .literal source year profile =>
+      if source.admittedIn model year profile then some [] else none
   | .baseYear year _ =>
       if model.baseYear == some year then some [] else none
   | .today profile | .now profile _ =>

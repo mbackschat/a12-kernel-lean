@@ -415,16 +415,15 @@ theorem readDateDifference_evaluated
     (leftOperand rightOperand : DateDifferenceOperand)
     (leftResolved : context.readDateDifferenceOperand left = .ok leftOperand)
     (rightResolved : context.readDateDifferenceOperand right = .ok rightOperand)
-    (evaluated : DateDifferenceOperand.evaluate unit leftOperand rightOperand = operand) :
+    (evaluated : DateDifferenceOperand.evaluate unit leftOperand rightOperand = .ok operand) :
     context.readNumericComputationAtom (.dateDifference unit left right) =
       .ok operand.toComputationResult := by
-  cases leftOperand <;>
+  cases leftOperand <;> cases rightOperand <;>
     simp_all [ScalarComputationContext.readNumericComputationAtom,
       ScalarComputationContext.readNumericComputationAtomWith,
       readTemporalPair, readTemporalPairWith, bind, Except.bind, pure, Except.pure,
-      DateDifferenceOperand.evaluate, NumericOperand.toComputationResult]
-  subst operand
-  rfl
+      DateDifferenceOperand.evaluate, NumericOperand.toComputationResult] <;>
+    (subst evaluated; rfl)
 
 /-- A checked sub-day source resolves each admitted field/`Now` operand once and maps their exact instant difference into computation outcome space. -/
 theorem readDateTimeDifference_evaluated
@@ -458,13 +457,12 @@ theorem readCalendarDayDifference_evaluated
     (evaluated : CalendarDayDifferenceOperand.evaluate profile leftOperand rightOperand = .ok operand) :
     context.readNumericComputationAtom (.dayDifference profile left right) =
       .ok operand.toComputationResult := by
-  cases leftOperand <;>
+  cases leftOperand <;> cases rightOperand <;>
     simp_all [ScalarComputationContext.readNumericComputationAtom,
       ScalarComputationContext.readNumericComputationAtomWith,
       readTemporalPair, readTemporalPairWith, bind, Except.bind, pure, Except.pure,
-      CalendarDayDifferenceOperand.evaluate, NumericOperand.toComputationResult]
-  subst operand
-  rfl
+      CalendarDayDifferenceOperand.evaluate, NumericOperand.toComputationResult] <;>
+    (subst evaluated; rfl)
 
 /-- A computation-phase empty Number atom evaluates to the real numeric value zero. -/
 theorem emptyNumericField_evaluates_zero

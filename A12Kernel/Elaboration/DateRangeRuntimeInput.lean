@@ -11,7 +11,7 @@ def DateRangeDeclarationPolicy.sharesRuntimeFormat
   left.youngerThan1900Check == right.youngerThan1900Check &&
     match left.interpretationOfYear, right.interpretationOfYear with
     | some a, some b => a == b
-    | none, none => left.format == right.format && left.separator == right.separator
+    | none, none => left.format == right.format && left.runtimeSeparator == right.runtimeSeparator
     | _, _ => false
 
 /-- The first model declaration in the field's shared format class supplies runtime policy.
@@ -35,7 +35,8 @@ def FlatModel.dateRangeRuntimeText (model : FlatModel)
     | some format => pure format
     | none => throw (.unsupportedPolicy effective.format effective.separator)
   if text.isEmpty then return text
-  match input.parseBasicEndpoints declared (model.baseYear.getD 2000) text with
+  match input.parseBasicEndpoints declared (model.baseYear.getD 2000)
+      (ModelZone.ConcreteProfile.ofId? model.timeZoneId) text with
   | .error _ => pure text
   | .ok (start, finish) => pure (output.renderParts start finish).text
 
@@ -52,14 +53,14 @@ def FlatModel.classifyRuntimeDateRange (model : FlatModel)
   let runtimeYear := if effective.interpretationOfYear.isSome then
       some (model.baseYear.getD 2000) else model.baseYear
   let checkingPolicy := match format with
-    | .yearlessMonth | .yearlessMonthConcatenated =>
+    | .yearlessMonth =>
         { effective with interpretationOfYear := none }
     | _ => effective
   let raw ← classifyStoredDateRangeForModel model.timeZoneId runtimeYear checkingPolicy text
   match format, raw with
   -- KF276 and DateUtil.completeDateAndFormat: month-only formal parsing does
   -- not take the year subsequently supplied to an endpoint consumer.
-  | .yearlessMonth, _ | .yearlessMonthConcatenated, _ => pure raw
+  | .yearlessMonth, _ => pure raw
   | _, .parsed (.dateRange (.exact range)) =>
       if effective.youngerThan1900Check && range.start.parts.year < 1900 then
         pure (.rejected .dateRangeTooEarly)

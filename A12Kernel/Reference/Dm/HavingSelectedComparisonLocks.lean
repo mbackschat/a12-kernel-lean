@@ -92,7 +92,7 @@ private def rangeProfiles : List (String × String × String × String) := [
   ("yyyy-MM", "/", "2024-01/2024-02", "2024-01/2024-03"),
   ("MM", "/", "01/02", "01/03"),
   ("MM-dd", "/", "01-01/02-01", "01-01/03-01"),
-  ("MM", "", "0102", "0103"),
+  ("MM", "", "01/02", "01/03"),
   ("dd.MM", "-", "01.01-01.02", "01.01-01.03")]
 example : rangeProfiles.all (fun (format, separator, first, second) =>
     let fixture := { rangeModel with fields := rangeModel.fields.map fun field =>

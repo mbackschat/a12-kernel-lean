@@ -53,10 +53,27 @@ example :
       some (.inr (.rejected .dateFormat)) ∧
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1583-02-30" =
       some (.inr (.rejected .dateFormat)) ∧
-    classifyResult? (dateField "yyyy-MM-dd") "UTC" "1582-10-10" =
-      some (.inr (.rejected .dateFormat)) ∧
     classifyResult? (dateField "yyyyMMdd") "UTC" "2024-06-15" =
       some (.inr (.rejected .dateFormat)) := by native_decide
+
+/- Stored-label reality is proleptic with one zone-dependent exception (spec/05 §4; a12-dmkits
+   `StoredDateCalendarDiffTest`): a Julian leap day is real under UTC, so the floor judges it, and unreal
+   under Europe/Berlin. The former cutover labels are ordinary proleptic days under both zones, so the
+   floor judges them too; the UTC cutover rows are unmeasured on 31.1.1, the kernel 30.8.1 having read
+   them as unreal. -/
+example :
+    let draws (zone date : String) : Option (FullDateInputError ⊕ RawCell) :=
+      classifyResult? (dateField "yyyy-MM-dd") zone date
+    let floorCause := some (.inr (.rejected .dateInvalid))
+    let spellingCause := some (.inr (.rejected .dateFormat))
+    ["1582-10-04", "1582-10-05", "1582-10-14"].map (draws "Europe/Berlin") =
+        [floorCause, floorCause, floorCause] ∧
+      ["1500-02-29", "1300-02-29", "1700-02-29"].map (draws "Europe/Berlin") =
+        [spellingCause, spellingCause, spellingCause] ∧
+      ["1582-10-04", "1500-02-29", "1300-02-29", "1700-02-29"].map (draws "UTC") =
+        [floorCause, floorCause, floorCause, spellingCause] ∧
+      ["1582-10-05", "1582-10-14"].map (draws "UTC") = [floorCause, floorCause] := by
+  native_decide
 
 /- Calendar reality precedes the floor: year zero is a format failure, while a real pre-floor date
 reaches the position-in-time cause. -/

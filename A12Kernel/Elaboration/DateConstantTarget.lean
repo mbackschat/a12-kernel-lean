@@ -15,6 +15,11 @@ def field : CheckedDateConstantTarget model sourceCarriesYear → FieldId
   | .complete target _ => target.checked.target.id
   | .omittedComponent target => target.checked.target.id
 
+/-- The model-zone profile the target was admitted under. -/
+def profile : CheckedDateConstantTarget model sourceCarriesYear → ModelZone.ConcreteProfile
+  | .complete target _ => target.profile
+  | .omittedComponent target => target.profile
+
 /-- The year presence of the stored format, independent of the source literal's completion. -/
 def carriesYear : CheckedDateConstantTarget model sourceCarriesYear → Bool
   | .complete _ _ => true

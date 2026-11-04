@@ -99,6 +99,10 @@ structure DateRangeDeclarationPolicy where
   youngerThan1900Check : Bool := false
   deriving Repr, DecidableEq
 
+/-- The separator the runtime splits a stored range at: an empty declared separator reads as `/` wherever the Kernel copies the model before checking or evaluating it (spec/05 §8.1). Static admission keeps the literal member, so a pair admitted only with its empty spelling stays distinguishable there. -/
+def DateRangeDeclarationPolicy.runtimeSeparator (policy : DateRangeDeclarationPolicy) : String :=
+  if policy.separator.isEmpty then "/" else policy.separator
+
 /-- The bounded classifier cannot guess a value when the declaration or model-zone profile is outside its exact executable fragment. Local-midnight resolution failure remains separate from stored-value formal invalidity. -/
 inductive DateRangeInputError where
   | unsupportedPolicy (format separator : String)
@@ -146,9 +150,9 @@ namespace DateRangeFormat
 
 /-- Recognize only the two externally established declaration pairs used by the current checked input and target fragments. -/
 def ofPolicy? (policy : DateRangeDeclarationPolicy) : Option DateRangeFormat :=
-  if policy.format == "yyyy-MM-dd" && policy.separator == "/" then
+  if policy.format == "yyyy-MM-dd" && policy.runtimeSeparator == "/" then
     some .isoSlash
-  else if policy.format == "dd.MM.yyyy" && policy.separator == "-" then
+  else if policy.format == "dd.MM.yyyy" && policy.runtimeSeparator == "-" then
     some .dayMonthYearDash
   else
     none

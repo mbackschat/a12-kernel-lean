@@ -85,6 +85,9 @@ inductive ValueAsDateElabError where
   | sourceKind (source : FieldId) (actual : TemporalKind)
   | unsupportedPartialMode (source : FieldId) (actual : TemporalPartialMode)
   | unsupportedFormat (source : FieldId) (format : String)
+  /-- The source's stored text is judged under the model zone's calendar reality (spec/05 §4), which
+  only a concrete profile decides. -/
+  | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
 
 /-- Project only the full-precision source refusal established by the [partial-Date operand checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-partial-date-precision-operand-gate). Other local boundary errors carry no inferred Kernel class. -/
@@ -98,11 +101,14 @@ structure CheckedValueAsDateSource (model : FlatModel) where
   source : CheckedTemporalTargetPolicy model
   endpoint : ValueAsDateEndpoint
   format : FullDateTargetFormat
+  profile : ModelZone.ConcreteProfile
   /-- The admission's own kind rule; `elaborateValueAsDateSourceIn` states why it reads the kind. -/
   sourceIsDate : source.target.kind = .date
   sourceIsPartial : source.policy.partialMode ≠ .full
   formatMatches :
     FullDateTargetFormat.ofSource? source.policy.format = some format
+  profileMatches :
+    ModelZone.ConcreteProfile.ofId? source.timeZoneId = some profile
 
 /-- Structural failure while reading a bound partial-Date source. Neither arm is reachable for a source
 read at the document root: the environment arm needs a level to be unbound, and the document arm needs an
@@ -119,7 +125,7 @@ def checkSourceRaw (checked : CheckedValueAsDateSource model)
     (raw : RawCell String) :
     CheckedCell (AdmittedPartiallyKnownDate checked.source.policy.partialMode) :=
   checkRawCellWith (fun text =>
-    match classifyPartialDateStored checked.format
+    match classifyPartialDateStored checked.format checked.profile
         checked.source.policy.partialMode
         checked.source.policy.youngerThan1900Check text with
     | .presentEmpty => .ok none
@@ -194,13 +200,18 @@ def elaborateValueAsDateSourceIn
           FullDateTargetFormat.ofSource? source.policy.format with
       | none => throw (.unsupportedFormat sourceField source.policy.format)
       | some format =>
-          pure {
-            source
-            endpoint
-            format
-            sourceIsDate := hKind
-            sourceIsPartial := hMode
-            formatMatches := hFormat }
+          match hProfile : ModelZone.ConcreteProfile.ofId? source.timeZoneId with
+          | none => throw (.unsupportedZone source.timeZoneId)
+          | some profile =>
+              pure {
+                source
+                endpoint
+                format
+                profile
+                sourceIsDate := hKind
+                sourceIsPartial := hMode
+                formatMatches := hFormat
+                profileMatches := hProfile }
     else
       throw (.unsupportedPartialMode sourceField source.policy.partialMode)
   else
@@ -370,6 +381,8 @@ inductive ValueAsDateDifferencePlacement where
 inductive ValueAsDateDifferenceResult where
   | operand (value : NumericOperand)
   | nonRelevant
+  /-- The ordinary operand is a date constant the model zone gives no instant, a Julian leap day under Europe/Berlin (spec/05 §1). Reaching it is a value failure, ahead of every other state of the pair; the ordering is unmeasured on 31.1.1. -/
+  | constantFailure
   deriving Repr, DecidableEq
 
 namespace ValueAsDateDifferenceResult
@@ -380,6 +393,7 @@ def evalFixedRight (result : ValueAsDateDifferenceResult)
   match result with
   | .operand value => op.evalFixedRight value expected
   | .nonRelevant => .unknown
+  | .constantFailure => .fired .value
 
 end ValueAsDateDifferenceResult
 
@@ -401,6 +415,7 @@ private def evaluateAvailable (checked : CheckedValueAsDateDifference model)
     (other : DateDifferenceOperand) :
     ValueAsDateDifferenceResult :=
   match sourceObservation, other with
+  | _, .noInstantConstant => .constantFailure
   | .nonRelevant, _ => .nonRelevant
   | .empty, _ | .date _, .empty =>
       .operand (.value 0 .both)
@@ -424,6 +439,9 @@ def evaluate (checked : CheckedValueAsDateDifference model)
     ValueAsDateDifferenceResult :=
   let sourceObservation :=
     checked.toCheckedValueAsDateSource.observe phase cell
+  match other with
+  | .noInstantConstant => .constantFailure
+  | _ =>
   match checked.placement with
   | .left =>
       match sourceObservation with
@@ -465,12 +483,9 @@ inductive ValueAsDateZonedElabError where
   | unsupportedZone (zoneId : String)
   deriving Repr, DecidableEq
 
-/-- The checked partial-Date source plus its model-owned concrete zone profile. DateTime construction and calendar-day difference share this exact capability; neither may substitute a caller-selected zone. -/
+/-- The checked partial-Date source whose model-owned concrete zone profile DateTime construction and calendar-day difference share; neither may substitute a caller-selected zone. The source itself already carries that profile, because its stored text is judged under the zone's calendar reality (spec/05 §4). -/
 structure CheckedZonedValueAsDateSource (model : FlatModel)
-    extends CheckedValueAsDateSource model where
-  profile : ModelZone.ConcreteProfile
-  profileMatches :
-    ModelZone.ConcreteProfile.ofId? source.timeZoneId = some profile
+    extends CheckedValueAsDateSource model
 
 /-- Resolve one partial-Date endpoint and its model-owned concrete profile. -/
 def elaborateZonedValueAsDateSource
@@ -479,12 +494,10 @@ def elaborateZonedValueAsDateSource
     Except ValueAsDateZonedElabError
       (CheckedZonedValueAsDateSource model) := do
   let source ←
-    elaborateValueAsDateSourceIn model scope sourceField endpoint |>.mapError .source
-  match hProfile :
-      ModelZone.ConcreteProfile.ofId? source.source.timeZoneId with
-  | none => throw (.unsupportedZone source.source.timeZoneId)
-  | some profile =>
-      pure { source with profile, profileMatches := hProfile }
+    elaborateValueAsDateSourceIn model scope sourceField endpoint |>.mapError fun
+      | .unsupportedZone zoneId => .unsupportedZone zoneId
+      | error => .source error
+  pure { source with }
 
 /-- Result of combining one resolved partial-Date endpoint with an already checked Time observation. A real value retains whether an input was missing, because the kernel may construct a value that still produces omission polarity. A missing input and a present wall label rejected by the model zone both have no value, but only the former is not-given. -/
 inductive ValueAsDateTimeResult where

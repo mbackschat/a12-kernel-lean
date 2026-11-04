@@ -115,7 +115,7 @@ private def prepared :
 private def fragmentRaw (text : String) : RawCell :=
   match certifyOmittingDateInputField source with
   | .ok checked =>
-      match checked.classifyStoredForModel model.baseYear text with
+      match checked.classifyStoredForModel .utc model.baseYear text with
       | .admitted value =>
           match (value.earliestCivil? model.baseYearOrDefault).bind
               ModelZone.ConcreteProfile.utc.resolveStoredDate? with

@@ -15,7 +15,8 @@ theorem dateRangeInputFormat_ofPolicy_isSome_of_admitted
     (DateRangeInputFormat.ofPolicy? policy).isSome = true := by
   unfold DateRangeDeclarationPolicy.admitted at admitted
   split at admitted <;>
-    simp_all [DateRangeInputFormat.ofPolicy?, DateRangeFormat.ofPolicy?]
+    simp_all [DateRangeInputFormat.ofPolicy?, DateRangeFormat.ofPolicy?,
+      DateRangeDeclarationPolicy.runtimeSeparator]
 
 /-- Both wrapping placements span exactly one calendar-year boundary: the anchored endpoint keeps the Base Year and its counterpart lands in the immediately adjacent year, so no interpretation can stretch a yearless pair across two boundaries. -/
 theorem dateRangeYearInterpretation_wrappingYears_span_one_boundary

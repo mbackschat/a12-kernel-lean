@@ -474,6 +474,8 @@ run_cmd do
 #print axioms A12Kernel.baseYearDateDifference_finish_boundary
 #print axioms A12Kernel.dateDifferenceOperand_unavailable_left
 #print axioms A12Kernel.dateDifferenceOperand_empty_zero
+#print axioms A12Kernel.dateDifferenceOperand_noInstantConstant_fails
+#print axioms A12Kernel.calendarDayDifferenceOperand_noInstantConstant_fails
 #print axioms A12Kernel.dateDifferenceOperand_values_delegate
 #print axioms A12Kernel.calendarDayDifferenceOperand_unavailable_left
 #print axioms A12Kernel.calendarDayDifferenceOperand_empty_unsupported_zero

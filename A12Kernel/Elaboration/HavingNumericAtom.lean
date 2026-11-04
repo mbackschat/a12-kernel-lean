@@ -118,7 +118,7 @@ private def FlatModel.admitsHavingNumberInEnvironment (model : FlatModel)
 private def calendarSourceAdmitted (model : FlatModel)
     (candidateLevels outerLevels : List RepeatableLevel) :
     ResolvedDateDifferenceOperand HavingTemporalRef clock → Bool
-  | .literal source anchorYear => source.admittedIn model anchorYear
+  | .literal source anchorYear profile => source.admittedIn model anchorYear profile
   | .baseYear year _ => model.baseYear == some year
   | .today profile | .now profile _ => ModelZone.ConcreteProfile.ofId? model.timeZoneId == some profile
   | .field reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>

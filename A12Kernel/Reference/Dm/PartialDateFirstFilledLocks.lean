@@ -255,8 +255,9 @@ example : [false, true].all (fun repeated =>
       (clean := "08.07.") == expectedProfiles repeated "value 2023-06-11" "value 2023-07-08" &&
     (profileRun "dd.MM." "yyyy-MM-dd" "11.06." "12.12." none repeated
       (clean := "08.07.")).isNone &&
-    profileRun "yyyy-MM-dd" "ddMM" "2024-02-29" "2024-06-11" (some 2023) repeated ==
-      expectedProfiles repeated "errored 2902" "value 0807" &&
+    -- The leap day reaches a day-month target under a common Base Year, so the call fails assembly as
+    -- the literal case does (spec/05 §3.1); the first-filled carrier is unmeasured on 31.1.1.
+    (profileRun "yyyy-MM-dd" "ddMM" "2024-02-29" "2024-06-11" (some 2023) repeated).isNone &&
     profileRun "dd.MM." "yyyy-MM-dd" "29.02." "11.06." (some 2023) repeated
       (clean := "08.07.") == expectedProfiles repeated "cleared" "value 2023-07-08") := by native_decide
 

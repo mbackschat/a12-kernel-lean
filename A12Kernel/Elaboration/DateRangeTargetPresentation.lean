@@ -21,15 +21,6 @@ def renderYearlessMonthDay (start finish : MonthDayValue) : StoredDateRange := {
   nonempty := by simp
 }
 
-/-- Render an ordered yearless month range whose declaration carries no separator, concatenating the two months. -/
-def renderYearlessMonthConcatenated (start finish : Nat) : StoredDateRange := {
-  text := TemporalTargetText.twoDigits start ++ TemporalTargetText.twoDigits finish
-  -- No literal separator anchors this text, so nonemptiness comes from both rendered components.
-  nonempty := by
-    simp only [TemporalTargetText.twoDigits]
-    split <;> split <;> simp
-}
-
 /-- Render an ordered yearless day-and-month range under the dotted endpoint spelling and dash separator. -/
 def renderYearlessDayMonthDotted (start finish : MonthDayValue) : StoredDateRange := {
   text := TemporalTargetText.twoDigits start.day ++ "." ++
@@ -70,9 +61,6 @@ def renderParts : DateRangeInputFormat → DateParts → DateParts → StoredDat
           day := start.day }
         { month := finish.month
           day := finish.day }
-  | .yearlessMonthConcatenated, start, finish =>
-      renderYearlessMonthConcatenated start.month
-        finish.month
   | .yearlessDayMonthDotted, start, finish =>
       renderYearlessDayMonthDotted
         { month := start.month
@@ -102,7 +90,6 @@ def evaluateExactValue (format : DateRangeInputFormat) (range : DateRangeValue) 
 def monthSpelling? :
     DateRangeInputFormat → Option (Nat → Nat → StoredDateRange)
   | .yearlessMonth => some renderYearlessMonth
-  | .yearlessMonthConcatenated => some renderYearlessMonthConcatenated
   | _ => none
 
 /-- Select the stored spelling of a month/day pair under the same rule. -/
