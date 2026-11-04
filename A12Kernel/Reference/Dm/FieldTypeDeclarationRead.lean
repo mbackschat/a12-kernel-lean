@@ -24,8 +24,8 @@ The result is a list of `(label, element path)` pairs, headed by the converter's
 Kernel states for each declaration it drops and which make that declaration's own defects, and the rules
 beneath a dropped group, draw nothing. A model the Kernel cannot build, by a conversion that builds no
 validation model, a repeated hint-list locale, an Enumeration declaring no values, a repeated
-type-definition id, a declared locale with no language or declared twice, a row-key nomination that binds
-to no field, or a frame shape that costs only the check (`FrameCheckFailure`), yields the one unbuilt-model
+type-definition id, a declared locale with no language or declared twice, a row-key nomination whose spelling
+leaves no model (`NominationFailure`, a sort name written empty included), or a frame shape that costs only the check (`FrameCheckFailure`), yields the one unbuilt-model
 label and no path. The report is a multiset, so the walk order is not an observation.
 
 It is an input adapter, differentially tested by the field-declaration capture rather than proved. A
@@ -34,7 +34,7 @@ localized-text member that does not bind (`bindLocalizedTextMembers`), a header 
 refuses (`headerLocales`), a
 type definition that is itself a type reference, a repeatability past a signed 32-bit count (which the Kernel does not
 read) and a row-key nomination in a model the flat validation refuses are read errors, never an empty
-report. A row-key nomination that binds to no declared field is not an error: the Kernel builds no
+report. A row-key nomination whose spelling leaves no model is not an error: the Kernel builds no
 model, so it yields the unbuilt-model label.
 -/
 
@@ -190,11 +190,13 @@ private def annotationsRepertoire (element : Json) : Except String Bool := do
 private def repertoireIf (condition : Bool) : List String :=
   if condition then [ElementNameKind.supplementaryCharacter.label] else []
 
-/-- The state a nomination binder is collected in: every field in depth-first order and the repeatable
-groups numbered in the order reached. -/
+/-- The state a nomination binder is collected in: every field in depth-first order, the repeatable
+groups numbered in the order reached, and the nonrepeatable groups holding no field, which a spelling may
+land on as on any group. -/
 private structure BindingState where
   fields : Array FlatFieldDecl := #[]
   groups : Array RepeatableGroupDecl := #[]
+  emptyNonrepeatableGroups : Array GroupPath := #[]
 
 /-- Collect one element of the model as authored into the binder: a group keeps its repeatability, a
 field becomes a String stub carrying only what the binder reads, its path, its repeatable scope and
@@ -218,8 +220,12 @@ private partial def collectBinding (environment : WalkEnvironment) (scope : List
               pure (scope ++ [level])
             else pure scope
         | none => pure scope
+      let fieldsBefore := (← get).fields.size
       for child in ← StateT.lift (groupElements body) do
         collectBinding environment scope groupPath child
+      if !(repeatability.any (1 < ·)) && (← get).fields.size == fieldsBefore then
+        modify fun state => { state with
+          emptyNonrepeatableGroups := state.emptyNonrepeatableGroups.push groupPath }
   | "Field" =>
       let skipsValidation ← StateT.lift (do
         match ← readDeclaration (← resolveTypeDefinition environment.definitions body) with
@@ -237,49 +243,53 @@ private partial def collectBinding (environment : WalkEnvironment) (scope : List
 private def bindingModel (environment : WalkEnvironment) : Except String FlatModel := do
   let ((), state) ← (environment.roots.forM (collectBinding environment [] [])).run {}
   pure { fields := state.fields.toList, repeatableGroups := state.groups.toList
+         emptyNonrepeatableGroups := state.emptyNonrepeatableGroups.toList
          fieldRefByShortNameAllowed := environment.shortNamesAllowed }
 
 /-- A group's row-key refusals as reports. Each nomination is judged by the declaration owner,
-`FlatModel.nominatedTarget`: written as a name or a path, it must bind to a declared field, else the
-Kernel builds no model and reports no class, and it is then judged on the group's own direct child of
-its last segment's name. A disqualified field carries its refusal itself, the list-level classes and the
-unresolved ones the group; the owner's list-level classes are asked of the same names made neutral. A
-nomination in a model the flat validation refuses is not judged, as in the model reader, and refuses
-the report. -/
+`FlatModel.nominatedTarget`: its spelling is read against the group's own path, a spelling that leaves no
+model reporting no class, and the group's own direct child of the short name it keeps is then judged. A
+disqualified field carries its refusal itself, the list-level classes and the unresolved ones the group; the
+owner's list-level classes are asked of the same names made neutral. A nomination in a model the flat
+validation refuses is not judged, as in the model reader, and refuses the report. -/
 private def rowKeyReports (environment : WalkEnvironment) (path : List String) (body : Json) :
     Except String (List ElementReport) := do
-  let index := (body.getObjValAs? String "indexFieldName").toOption
-  let sorts ← (← arrayMembers body "sortFields").mapM fun entry => entry.getObjValAs? String "name"
+  let index ← frameText body "indexFieldName"
+  let sorts ← (← arrayMembers body "sortFields").mapM fun entry => do pure ((← frameText entry "name").getD "")
   let nominations := (index.toList.map (RowFieldRole.indexField, ·)) ++ sorts.map (RowFieldRole.sortField, ·)
   if nominations.isEmpty then return []
   let model ← bindingModel environment
   let mut judged : List (RowFieldRole × String × NominatedTarget) := []
   for (role, nomination) in nominations do
-    match model.nominatedTarget path (nominationPath nomination) with
+    match model.nominatedTarget role path nomination with
     | .ok target => judged := judged ++ [(role, nomination, target)]
-    | .error (.unbound _) => return [{ path, unbuilt := true }]
     | .error (.invalidModel cause) =>
         let reason := s!"nomination {nomination} is not judged on a model the flat validation refuses: {repr cause}"
         return [{ path, refusal := some reason }]
+    | .error _ => return [{ path, unbuilt := true }]
   let distinct := judged.foldl (init := ([] : List (RowFieldRole × String × NominatedTarget)))
     fun kept entry => if kept.any (fun k => k.1 == entry.1 && k.2.1 == entry.2.1) then kept
       else kept ++ [entry]
+  let shortName := nominationShortName path
   let perName := distinct.filterMap fun (role, nomination, target) =>
     (rowFieldRefusal role target).map fun refusal =>
       match refusal with
-      | .valueValidationOff _ => (path ++ [(nominationPath nomination).field], refusal)
+      | .valueValidationOff _ => (path ++ [shortName nomination], refusal)
       | _ => (path, refusal)
-  let shortName := fun nomination => (nominationPath nomination).field
+  -- The Kernel judges the short name trimmed, and a blank one is an unfilled entry of its metamodel that no
+  -- name law judges (a12-dmkits `CheckerOrderingNameSentenceAgreementTest` at `1124b523f`).
+  let sentenceRefused := fun nomination =>
+    !ExecutableDeclaration.blank (shortName nomination) && fieldNameShapeRefused (javaTrim (shortName nomination))
   -- The metamodel holds the index and the first three sort entries, and only their kept short names
   -- draw the member sentence, once per group (2026-10-21 §2.16).
-  let shapes := ((index.toList ++ sorts.take 3).map shortName).filter fieldNameShapeRefused
+  let shapes := (index.toList ++ sorts.take 3).filter sentenceRefused
   let memberSentence : List String :=
     if shapes.isEmpty then []
-    else [(if shapes.any hasSupplementaryScalar then ElementNameKind.supplementaryCharacter
+    else [(if shapes.any (hasSupplementaryScalar ∘ shortName) then ElementNameKind.supplementaryCharacter
       else .fieldNameShape).label]
   let neutral : RowFieldDeclarations :=
     { sort := sorts.map fun name => (name, NominatedTarget.field false false)
-      refusedNames := sorts.filter (fieldNameShapeRefused ∘ shortName) }
+      refusedNames := sorts.filter sentenceRefused }
   pure ((perName ++ (rowFieldDeclarationRefusals neutral).map (path, ·)).map
       (fun (at_, refusal) => { path := at_, labels := [refusal.label], orderingGate := refusal.isOrderingGate }) ++
     if memberSentence.isEmpty then [] else [{ path, labels := memberSentence }])
@@ -449,10 +459,10 @@ private def nominationModel (shortNames : Bool) (elements : List String) : Json 
 private def reported (model : Json) : Option (List (String × String)) :=
   (fieldTypeDeclarationNotifications model fun _ => .compiled fun _ => true).toOption
 
-/- A nomination written as a path binds against the model as authored but is judged on the group's own
-   direct child of the last segment's name: `../Key` binds to the parent's field while the local `Key`
-   decides, and a local namesake that does not skip value validation leaves it admitted whatever the
-   parent's does ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)). -/
+/- A nomination written as a path is judged on the group's own direct child of its last segment's name:
+   `../Key` lands on the parent's field while the local `Key` decides, and a local namesake that does not skip
+   value validation leaves it admitted whatever the parent's does
+   ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)). -/
 example :
     reported (nominationModel false [fieldElement "Key",
       groupElement "Rows" 3 ["../Key"] [fieldElement "Key" (skipsValidation := true)]]) =
@@ -461,10 +471,10 @@ example :
       groupElement "Rows" 3 ["../Key"] [fieldElement "Key"]]) = some [] := by
   native_decide
 
-/- A path that binds to a field the group does not itself declare leaves the nomination unresolved, and
-   when the group's own child of the last segment's name is a group the class is the same at the group:
-   the group arm is reached through a path binding elsewhere. A plain name equal to a group the declaring
-   group declares binds to no field at all, which is the next lock's case. -/
+/- A path whose short name is a field the group does not itself declare leaves the nomination unresolved, and
+   when the group's own child of that name is a group the class is the same at the group: the group arm is
+   reached through a spelling that lands elsewhere. A plain name equal to a group the declaring group
+   declares lands on that group, which is the next lock's case. -/
 example :
     reported (nominationModel false [fieldElement "Key",
       groupElement "Rows" 3 ["../Key"] [fieldElement "Other"]]) =
@@ -474,14 +484,17 @@ example :
       some [("MVK_INVALID_SORT_FIELD", "/Form/Rows")] := by
   native_decide
 
-/- A nomination that binds to no field builds no model, so the whole model reports the one unbuilt
-   label and no class, whether it is an undeclared plain name or path, or a plain name that is a group
-   of the declaring group even though the short-name flag could bind a field of that name elsewhere. -/
+/- A spelling landing on nothing is only a name: the group has no direct child of it, so the model builds and
+   the nomination draws the role's unresolved class, whether the spelling is a plain name or a path
+   (Locked: a12-dmkits GroupIndexAndSortReferenceLawsTest at 1124b523f, kernel 31.1.1, where 30.8.1 built no
+   model). A spelling landing on a group, here a plain name that is a group of the declaring group even though
+   the short-name flag could bind a field of that name elsewhere, still builds none, and the whole model
+   reports the one unbuilt label and no class. -/
 example :
     reported (nominationModel false [groupElement "Rows" 3 ["Nope"] [fieldElement "Key"]]) =
-      some [("codeless:model-not-built", "")] ∧
+      some [("MVK_INVALID_SORT_FIELD", "/Form/Rows")] ∧
     reported (nominationModel false [groupElement "Rows" 3 ["../Nope"] [fieldElement "Key"]]) =
-      some [("codeless:model-not-built", "")] ∧
+      some [("MVK_INVALID_SORT_FIELD", "/Form/Rows")] ∧
     reported (nominationModel true [fieldElement "Sub",
       groupElement "Rows" 3 ["Sub"] [groupElement "Sub" 1 [] [fieldElement "X"]]]) =
       some [("codeless:model-not-built", "")] := by

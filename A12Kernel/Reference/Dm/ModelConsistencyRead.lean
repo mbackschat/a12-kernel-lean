@@ -70,10 +70,12 @@ private partial def readElement (definitions : List (String × Json))
       let count := match ← primitiveIntMember? body "repeatability" with
         | some count => if 0 ≤ count then count.toNat else 1
         | none => 1
+      -- An index or sort name binds as its text whatever scalar is written, an array or object leaving no model.
+      let sortNames ← (← members body "sortFields").mapM fun entry => do pure ((← frameText entry "name").getD "")
       pure (.group id name count
         (body.getObjValAs? String "usageType").toOption
-        (body.getObjValAs? String "indexFieldName").toOption
-        ((← members body "sortFields").map (text · "name"))
+        (← frameText body "indexFieldName")
+        sortNames
         (← (← groupElements body).mapM (readElement definitions)))
   | "Field" => .field <$> readField definitions id name body
   | "Rule" => pure (.rule id name (text body "errorCondition") (text body "errorEntityRelPath"))

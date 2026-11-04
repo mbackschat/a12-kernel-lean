@@ -81,9 +81,12 @@ private def nominating (members : String) (kField : String := field "K" string) 
 private def nominationCodes (json : Option Json) : Option (List String) :=
   (read json).map (·.refusals.map (·.2))
 
-/- The reader judges nominations by the shared row-key cascade: the raw String's class, a name bound
-   in the parent but absent here, and the duplicate and capacity judgements. A name binding nowhere is
-   codeless. -/
+/- The reader judges nominations by the shared row-key cascade: the raw String's class, a name carried only
+   by the parent, a name carried by no group, and the duplicate and capacity judgements. A name no direct
+   child field carries draws the role's class whatever it lands on, where kernel 30.8.1 built no model for
+   one landing nowhere; the spellings that still leave none are
+   [the ordering locks](OrderingMemberLocks.lean)' (Locked: a12-dmkits GroupIndexAndSortReferenceLawsTest at
+   1124b523f, kernel 31.1.1). -/
 example :
     nominationCodes (nominating "\"sortFields\":[{\"name\":\"K\"}],") = some [] ∧
       nominationCodes (nominating "\"sortFields\":[{\"name\":\"NVV\"}],") =
@@ -94,7 +97,10 @@ example :
       nominationCodes (nominating
           "\"sortFields\":[{\"name\":\"K\"},{\"name\":\"K\"},{\"name\":\"K\"},{\"name\":\"K\"}],") =
         some ["MVK_SORT_FIELD_DUPLICATE", "codeless:sort-list-capacity"] ∧
-      nominationCodes (nominating "\"indexFieldName\":\"Nope\",") = some ["nomination Nope names no field"] := by
+      nominationCodes (nominating "\"indexFieldName\":\"Nope\",") = some ["MVK_INVALID_INDEX_FIELD"] ∧
+      nominationCodes (nominating "\"indexFieldName\":\"/Form/Items/K\",") =
+        some ["nomination /Form/Items/K leaves no model"] ∧
+      nominationCodes (nominating "\"sortFields\":[{\"name\":\"\"}],") = some ["nomination  leaves no model"] := by
   native_decide
 
 /-! ## Retired variant members

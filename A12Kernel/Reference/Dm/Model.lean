@@ -20,7 +20,7 @@ computations. This reader expands it into the `FlatModel` the elaborators take, 
 condition and each computation's alternatives as authored text for the DSL reader.
 
 It is an input adapter, differentially tested by the replay rather than proved. Every declaration it
-cannot map, a bound it cannot read and an index naming no field included, is kept with its reason in
+cannot map, a bound it cannot read and an index spelling that leaves no model included, is kept with its reason in
 `DmModel.refusals` and its field left out of the model, and the replay refuses such a model whole
 rather than evaluating any rule against a guess. The elements are those of the converted model
 (`convertModel`), whose sentences for the declarations it drops are refusals too, so the replay still
@@ -408,20 +408,22 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
       if invalid then
         modify fun state => { state with refusals := state.refusals.push (groupPath, "MVK_MAX_VALUES_INVALID") }
       let repeatability : Nat := if invalid then 1 else (count?.map Int.toNat).getD 1
+      -- An index name binds as its text whatever scalar is written, an array or object leaving no model.
+      let index? ← StateT.lift (frameText body "indexFieldName")
       let scope ← if repeatability > 1 then do
           let level := (← get).groups.size + 1
           modify fun state => { state with
             groups := state.groups.push { level, path := groupPath, repeatability := some repeatability } }
-          if let some index := str? body "indexFieldName" then
+          if let some index := index? then
             modify fun state => { state with indexFields := state.indexFields.push (level, groupPath, index) }
           pure (scope ++ [level])
         else do
-          if let some index := str? body "indexFieldName" then
+          if let some index := index? then
             modify fun state => { state with
               nonrepeatableIndexFields := state.nonrepeatableIndexFields.push (groupPath, index) }
           pure scope
       if let .ok (sorts : Array Json) := body.getObjValAs? (Array Json) "sortFields" then
-        let names ← StateT.lift (sorts.toList.mapM (·.getObjValAs? String "name"))
+        let names ← StateT.lift (sorts.toList.mapM fun entry => do pure ((← frameText entry "name").getD ""))
         modify fun state => { state with sortNominations := state.sortNominations.push (groupPath, names) }
       let fieldsBefore := (← get).fieldsSeen
       for child in (← StateT.lift (groupElements body)) do
@@ -494,19 +496,10 @@ private def readSupportedCharacters (entries : List String)
   (admitSupportedCharacters clustersOf entries).mapError
     (fun error => s!"supportedCharacters definition: {repr error}")
 
-/-- A written index or sort nomination as a path: leading `../` steps count parents, a leading `/`
-makes it absolute, and the last segment names the field. -/
-def nominationPath (nomination : String) : SurfaceFieldPath :=
-  let absolute := nomination.startsWith "/"
-  let segments := (nomination.splitOn "/").filter (!·.isEmpty)
-  let parents := (segments.takeWhile (· == "..")).length
-  let named := segments.drop parents
-  { base := if absolute then .absolute else .relative parents
-    groups := named.dropLast, field := named.getLast?.getD "" }
-
 /-- The row-key refusals of every nominating group, each labelled by its Kernel code or, for the
-codeless list-capacity notice, its observed label. A name binding nowhere fails the build without a
-class (spec/03 §B4). -/
+codeless list-capacity notice, its observed label. A spelling that leaves no model is a refusal
+with its reason, which is how this reader reports a model the Kernel does not build; a nomination on a
+model the flat validation refuses is not judged (spec/03 §B4). -/
 private def nominationRefusals (flat : FlatModel) (state : ReadState) : List (List String × String) :=
   let indexOf (path : GroupPath) : Option String :=
     match state.groups.toList.find? (·.path == path) with
@@ -516,18 +509,19 @@ private def nominationRefusals (flat : FlatModel) (state : ReadState) : List (Li
       (state.groups.toList.find? (·.level == level)).map (·.path)) ++
     state.nonrepeatableIndexFields.toList.map (·.1) ++ state.sortNominations.toList.map (·.1)).eraseDups
   paths.flatMap fun path =>
-    let judged (written : String) : Except String NominatedTarget :=
-      match flat.nominatedTarget path (nominationPath written) with
+    let judged (role : RowFieldRole) (written : String) : Except String NominatedTarget :=
+      match flat.nominatedTarget role path written with
       | .ok target => .ok target
-      | .error (.unbound _) => .error s!"nomination {written} names no field"
       | .error (.invalidModel _) => .error s!"nomination {written} is not judged on an invalid model"
+      | .error _ => .error s!"nomination {written} leaves no model"
     let sorts := ((state.sortNominations.find? (·.1 == path)).map (·.2)).getD []
-    let failures := ((indexOf path).toList ++ sorts).filterMap fun written =>
-      match judged written with | .error reason => some (path, reason) | .ok _ => none
+    let failures := ((indexOf path).toList.map (RowFieldRole.indexField, ·) ++
+        sorts.map (RowFieldRole.sortField, ·)).filterMap fun (role, written) =>
+      match judged role written with | .error reason => some (path, reason) | .ok _ => none
     if !failures.isEmpty then failures else
     let declarations : RowFieldDeclarations := {
-      index := (indexOf path).bind fun written => (judged written).toOption
-      sort := sorts.filterMap fun written => ((judged written).toOption.map (written, ·)) }
+      index := (indexOf path).bind fun written => (judged .indexField written).toOption
+      sort := sorts.filterMap fun written => ((judged .sortField written).toOption.map (written, ·)) }
     (rowFieldDeclarationRefusals declarations).map fun refusal =>
       (path, refusal.kernelCode?.getD "codeless:sort-list-capacity")
 
@@ -564,10 +558,10 @@ private def readModelCore (json : Json)
     state.refusals.toList
   let groups := state.groups.toList.map fun group =>
     let index := (state.indexFields.find? (·.1 == group.level)).bind fun (_, path, nomination) =>
-      fieldId path (nominationPath nomination).field
+      fieldId path (nominationShortName path nomination)
     { group with indexField := index }
   let nonrepeatableIndexFields := state.nonrepeatableIndexFields.toList.filterMap fun (path, nomination) =>
-    (fieldId path (nominationPath nomination).field).map (path, ·)
+    (fieldId path (nominationShortName path nomination)).map (path, ·)
   let flat : FlatModel := {
     fields := state.fields.toList
     repeatableGroups := groups

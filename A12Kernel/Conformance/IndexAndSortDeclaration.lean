@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.IndexAndSortDeclaration
 
 /-! # Locks on the index- and sort-field declaration cascade
 
-The cases pin the cascade's order, the one arm on which the two roles differ, and the four catalog keys a consumer switches on. The two value-validation classes and their accepted controls are measured; the unresolved arm is reached by a relative nomination whose local namesake is absent, measured by the peer, while the group arm has no known witness ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)), while a name resolving nowhere in the authored model fails the build first, which the [checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration) records.
+The cases pin the cascade's order, the one arm on which the two roles differ, the catalog keys a consumer switches on, and how a written spelling is read against the group's own path. The two value-validation classes and their accepted controls are measured; the unresolved arm is reached by a relative nomination whose local namesake is absent, measured by the peer ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)), and on kernel 31.1.1 by any spelling whose short name no direct child field carries (a12-dmkits `GroupIndexAndSortReferenceLawsTest` at `1124b523f`). The group arm has no known witness.
 -/
 
 namespace A12Kernel.Conformance.IndexAndSortDeclaration
@@ -102,12 +102,13 @@ example :
       [some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", none, none] := by
   native_decide
 
-/- Six distinct keys across two roles and the list, beside the codeless capacity class. The index and sort
+/- Seven distinct keys across two roles and the list, beside the codeless capacity class. The index and sort
    spellings differ by more than a prefix, so a consumer deriving one from the other by substitution gets a
    key the Kernel never emits. -/
 example :
-    (RowFieldRefusal.all.filterMap (·.kernelCode?)).eraseDups.length = 6 ∧
-      RowFieldRefusal.all.length = 7 ∧
+    (RowFieldRefusal.all.filterMap (·.kernelCode?)).eraseDups.length = 7 ∧
+      RowFieldRefusal.all.length = 8 ∧
+      RowFieldRefusal.sortInfoMissing.kernelCode? = some "MVK_SORT_INFO_MISSING" ∧
       (RowFieldRefusal.valueValidationOff .indexField).kernelCode? =
         some "MVK_INDEX_FIELD_NO_VALUE_VALIDATION" ∧
       (RowFieldRefusal.valueValidationOff .sortField).kernelCode? =
@@ -132,13 +133,10 @@ private def lookupModel (parent own : Option Bool) : FlatModel :=
       (own.map (stringField 2 items "Key" ·)).toList ++ [stringField 3 items "Spare"]
     repeatableGroups := [{ level := 10, path := items, repeatability := some 2 }] }
 
-private def direct : SurfaceFieldPath := { base := .relative 0, groups := [], field := "Key" }
-private def remote : SurfaceFieldPath := { base := .relative 1, groups := [], field := "Key" }
-
 /-- A nomination's outcome. The build failure is kept apart from a model that fails validation, so a
-fixture that stopped validating cannot pass as a nomination binding nowhere. -/
+fixture that stopped validating cannot pass as a spelling that leaves no model. -/
 private inductive Lookup where
-  | buildFailure
+  | noModel
   | invalidModel
   | cascade (refusal : Option RowFieldRefusal)
   deriving Repr, DecidableEq
@@ -146,33 +144,89 @@ private inductive Lookup where
 private def Lookup.of (role : RowFieldRole) :
     Except NominationBuildFailure NominatedTarget → Lookup
   | .ok target => .cascade (rowFieldRefusal role target)
-  | .error (.unbound _) => .buildFailure
   | .error (.invalidModel _) => .invalidModel
+  | .error _ => .noModel
 
-private def lookup (role : RowFieldRole) (nomination : SurfaceFieldPath)
+private def lookup (role : RowFieldRole) (written : String)
     (parent own : Option Bool := some false) : Lookup :=
-  .of role ((lookupModel parent own).nominatedTarget items nomination)
+  .of role ((lookupModel parent own).nominatedTarget role items written)
 
 /- One row per branch of the peer's scenarios, in both roles. The local namesake decides: removing it
-   draws the invalid class and switching its value validation off the switch's class, while the same
-   change to the parent's `Key` that `../Key` binds to changes nothing. A name binding nowhere in the
-   authored model fails the build. The peer's two same-named siblings told apart only by their variant
-   filters are outside this model, which refuses two fields with one path. -/
+   draws the unresolved class and switching its value validation off the switch's class, while the same
+   change to the parent's `Key` that `../Key` lands on changes nothing. A spelling landing on nothing is
+   only a name, so `../Key` with no parent `Key` is admitted by the local one and a plain `Key` with no
+   local one is unresolved, where kernel 30.8.1 left no model for both (a12-dmkits
+   `GroupIndexAndSortReferenceLawsTest` at `1124b523f`, kernel 31.1.1). The peer's two same-named siblings
+   told apart only by their variant filters are outside this model, which refuses two fields with one
+   path. -/
 example : [RowFieldRole.indexField, .sortField].all (fun role =>
-    [lookup role direct,
-      lookup role direct (own := none),
-      lookup role remote,
-      lookup role remote (parent := none),
-      lookup role remote (own := none),
-      lookup role remote (parent := some true),
-      lookup role remote (own := some true)] ==
+    [lookup role "Key",
+      lookup role "Key" (own := none),
+      lookup role "../Key",
+      lookup role "../Key" (parent := none),
+      lookup role "../Key" (own := none),
+      lookup role "../Key" (parent := some true),
+      lookup role "../Key" (own := some true)] ==
     [.cascade none,
-      .buildFailure,
+      .cascade (some (.nameUnresolved role)),
       .cascade none,
-      .buildFailure,
+      .cascade none,
       .cascade (some (.nameUnresolved role)),
       .cascade none,
       .cascade (some (.valueValidationOff role))]) = true := by
+  native_decide
+
+/- A written spelling is read against the group's own path: `..` steps up one level from the group itself,
+   every other segment descends, and the last segment of the result is the short name judged. The empty
+   spelling keeps the group's own name; a spelling climbing one level past the root keeps no landing. The
+   group's depth is the number of `..` it may take, so two reach the root from `Order/Items` and a third is
+   above it. -/
+example :
+    nominationLanding items "Key" = some ["Order", "Items", "Key"] ∧
+      nominationLanding items "../Key" = some ["Order", "Key"] ∧
+      nominationLanding items "../../Key" = some ["Key"] ∧
+      nominationLanding items "../../../Key" = none ∧
+      nominationLanding items "Items/Key" = some ["Order", "Items", "Items", "Key"] ∧
+      nominationLanding items "" = some items ∧
+      nominationShortName items "" = "Items" ∧
+      nominationShortName items "../../Key" = "Key" ∧
+      nominationShortName ["Order"] ".." = "" := by
+  native_decide
+
+/- Only an absolute spelling, a climb above the root and a non-empty spelling landing on a group leave no
+   model; the group is whatever `isGroup` names, and the empty spelling lands on the group itself without
+   that being a failure. -/
+example :
+    let isGroup := fun path => path == ["Order"] || path == items
+    nominationFailure? isGroup items "/Order/Items/Key" = some .absolute ∧
+      nominationFailure? isGroup items "../../../Key" = some .climbsAboveRoot ∧
+      nominationFailure? isGroup items ".." = some .landsOnGroup ∧
+      nominationFailure? isGroup ["Order"] "Items" = some .landsOnGroup ∧
+      nominationFailure? isGroup items "" = none ∧
+      nominationFailure? isGroup items "../../Key" = none ∧
+      nominationFailure? isGroup items "../Key" = none := by
+  native_decide
+
+/- A sort name written empty binds no reference and leaves no model, where an index written empty keeps the
+   group's own name and is unresolved; a spelling landing on a group is no model in either role. -/
+example :
+    lookup .sortField "" = .noModel ∧
+      lookup .indexField "" = .cascade (some (.nameUnresolved .indexField)) ∧
+      lookup .indexField ".." = .noModel ∧
+      lookup .sortField "/Order/Items/Key" = .noModel := by
+  native_decide
+
+/- The list's unfilled-entry class is drawn once however many of the first three names are blank but not
+   empty, and an empty name is no entry: it is a judgement of the list, kept apart from each name's own. A
+   blank name at the fourth entry draws only its own class and the capacity notification, which is a12-dmkits'
+   reading of the three entries the metamodel holds and no measurement. -/
+example :
+    (rowFieldDeclarationRefusals { sort := [("   ", .unresolved), ("\t", .unresolved)] }).map (·.kernelCode?) =
+      [some "MVK_INVALID_SORT_FIELD", some "MVK_INVALID_SORT_FIELD", some "MVK_SORT_INFO_MISSING"] ∧
+    unfilledSortName "" = false ∧ unfilledSortName "\u2003" = true ∧ unfilledSortName "\u00A0" = false ∧
+    (rowFieldDeclarationRefusals { sort := [("K", .field false false), ("V", .field false false),
+        ("W", .field false false), ("   ", .unresolved)] }).map (·.kernelCode?) =
+      [some "MVK_INVALID_SORT_FIELD", none] := by
   native_decide
 
 end A12Kernel.Conformance.IndexAndSortDeclaration

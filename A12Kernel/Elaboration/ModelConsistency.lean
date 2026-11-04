@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.CharsetSpec
 import A12Kernel.Elaboration.DeclaredLocale
+import A12Kernel.Elaboration.IndexAndSortDeclaration
 import A12Kernel.Semantics.NumberBound
 
 /-! # A12Kernel.Elaboration.ModelConsistency — the notifications a model's consistency check raises
@@ -13,7 +14,10 @@ class labels only, so a notification's path is the model's own element path and 
 quantity.
 
 A model that cannot be built yields no notification at all: a conversion that builds no validation model, or
-the first element, in walk order, with one of the other `ModelBuildFailure` defects, stops the check. An
+the first element, in walk order, with one of the other `ModelBuildFailure` defects, stops the check. A
+group's index or sort spelling is one of them when it leaves no model (`NominationFailure`, a sort name
+written empty included); an index written empty is not, and draws a class of its own in check 6 (peer
+KF653, a12-dmkits `1124b523f`, kernel 31.1.1). An
 empty or blank name, a type-definition reference with no id and a computation with no computed-field path
 are not such defects on kernel 31.1.1: its converter states a sentence and goes on without the declaration
 (the validation-model converter, `Reference/Dm/ModelConversion.lean`), while this basic check still walks
@@ -29,8 +33,8 @@ in it, so a class is never interleaved with another check's:
 4. Multi-select groups: repeatability, the single Enumeration or String field and its requiredness, and
    the absence of nested groups and computations.
 5. The formal check of each printed bound (`NumberBound.printed?`), maximum first.
-6. Emptiness of identifiers, element names, type-definition references, computed-field paths, rule
-   conditions, rule error entities, computation operations and type definition names.
+6. Emptiness of identifiers, element names, type-definition references, computed-field paths, group index
+   fields, rule conditions, rule error entities, computation operations and type definition names.
 
 A declaration's `variantFilter` and a rule's `variantErrorMessages` are retired (DM 29.1) and read past
 as an unknown member is, so no element is deleted and every check walks every element.
@@ -146,6 +150,9 @@ inductive ModelConsistencyClass where
   | typeDefinitionReferenceEmpty
   /-- A computation whose computed-field path is empty. -/
   | computedFieldEmpty
+  /-- A group whose index field is written empty, which keeps the group's own name where a field is
+  expected. A blank spelling that is not empty draws none. -/
+  | indexFieldNameEmpty
   /-- A header declaring no locale (spec/01 §1.1). -/
   | supportedLanguagesMissing
   /-- Two distinct declared locales sharing one JDK language tag (`ParsedLocale.languageTag`). -/
@@ -161,7 +168,8 @@ def all : List ModelConsistencyClass :=
     multiSelectRequiredField, multiSelectRequiredFlag, multiSelectIndexField, multiSelectFieldType,
     multiSelectOtherElements, boundTotalDigitsTooLong, boundSignedZero, idEmpty, errorConditionEmpty,
     errorEntityEmpty, computationOperationEmpty, typeDefinitionNameEmpty, elementNameEmpty,
-    typeDefinitionReferenceEmpty, computedFieldEmpty, supportedLanguagesMissing, supportedLanguagesDuplicate]
+    typeDefinitionReferenceEmpty, computedFieldEmpty, indexFieldNameEmpty, supportedLanguagesMissing,
+    supportedLanguagesDuplicate]
 
 /-- The label the captures give the class. The two supported-language classes carry their Kernel code;
 every other class is codeless and named by itself. -/
@@ -188,6 +196,7 @@ def observedLabel : ModelConsistencyClass → String
   | elementNameEmpty => "codeless:element-name-empty"
   | typeDefinitionReferenceEmpty => "codeless:typedef-reference-empty"
   | computedFieldEmpty => "codeless:computed-field-empty"
+  | indexFieldNameEmpty => "codeless:index-field-name-empty"
   | supportedLanguagesMissing => "MVK_SUPP_LANGUAGES_MISSING"
   | supportedLanguagesDuplicate => "MVK_SUPP_LANGUAGES_DUPLICATE"
 
@@ -199,7 +208,8 @@ inductive ModelBuildFailure where
   /-- The validation-model converter builds no model (`convertModel`'s `unbuilt`). -/
   | validationModelUnbuilt
   | enumerationCategoryNameDuplicated
-  | indexFieldNameEmpty
+  /-- A group's index or sort spelling that leaves no model, the empty sort name apart. -/
+  | nomination (failure : NominationFailure)
   | sortFieldNameEmpty
   /-- Two type definitions carry one id, the empty id included. -/
   | typeDefinitionIdRepeated
@@ -301,12 +311,13 @@ private def raiseIf (condition : Bool) (path : List String) (kind : ModelConsist
     List ModelConsistencyNotification :=
   if condition then [notification path kind] else []
 
-/-- The defect of one element that stops the Kernel building the model. -/
-def buildFailure? : ConsistencyElement → Option ModelBuildFailure
+/-- The defect of one element that stops the Kernel building the model. A group's spellings are read from
+its own path against the authored groups, which `isGroup` names. -/
+def buildFailure? (isGroup : List String → Bool) (path : List String) : ConsistencyElement →
+    Option ModelBuildFailure
   | .group _ _ _ _ indexFieldName sortFieldNames _ =>
-      if indexFieldName == some "" then some .indexFieldNameEmpty
-      else if sortFieldNames.any (·.isEmpty) then some .sortFieldNameEmpty
-      else none
+      if sortFieldNames.any (·.isEmpty) then some .sortFieldNameEmpty
+      else ((indexFieldName.toList ++ sortFieldNames).findSome? (nominationFailure? isGroup path)).map .nomination
   | element@(.field _) | element@(.rule ..) | element@(.computation ..) => element.conversionFailure?
 
 /-- The first id two type definitions share, which every model reader refuses before building. -/
@@ -329,7 +340,11 @@ def firstBuildFailure? (model : ConsistencyModel) : Option (List String × Model
   | some id => some ([id], .typeDefinitionIdRepeated)
   | none =>
       if model.validationModelUnbuilt then some ([], .validationModelUnbuilt)
-      else model.entries.findSome? fun (path, element) => (buildFailure? element).map (path, ·)
+      else
+        let groupPaths := model.entries.filterMap fun (path, element) =>
+          match element with | .group .. => some path | _ => none
+        model.entries.findSome? fun (path, element) =>
+          (buildFailure? groupPaths.contains path element).map (path, ·)
 
 /-- The type definitions in the order the checks walk them: by id, compared by UTF-16 code unit (a
 local probe of 2026-10-29 and peer KF647's Latin-1 row). Supplementary-plane ids are unmeasured. -/
@@ -471,7 +486,8 @@ def boundFormalNotifications (model : ConsistencyModel) :
 /-- Check 6: type definitions first, in id order, then each element's empty identifier and empty name followed
 by the class its kind adds. A rule's missing error code and an Enumeration's duplicated values belong to
 other owners. Emptiness is `isEmpty`, so a one-space name draws nothing, while the converter states its own
-sentence for every blank name. The order of one element's classes is unmeasured. -/
+sentence for every blank name; a group's index field is judged alike, a blank spelling that is not empty
+drawing no class here (peer KF653). The order of one element's classes is unmeasured. -/
 def emptinessNotifications (model : ConsistencyModel) : List ModelConsistencyNotification :=
   (orderedTypeDefinitions model).flatMap (fun definition =>
     raiseIf definition.id.isEmpty (typeDefinitionPath definition) .idEmpty ++
@@ -480,6 +496,7 @@ def emptinessNotifications (model : ConsistencyModel) : List ModelConsistencyNot
       raiseIf element.id.isEmpty path .idEmpty ++ raiseIf element.name.isEmpty path .elementNameEmpty ++
         match element with
         | .field { declared := .typeDefinition "", .. } => [notification path .typeDefinitionReferenceEmpty]
+        | .group _ _ _ _ indexFieldName .. => raiseIf (indexFieldName == some "") path .indexFieldNameEmpty
         | .rule _ _ errorCondition errorEntityRelPath =>
             raiseIf errorCondition.isEmpty path .errorConditionEmpty ++
               raiseIf errorEntityRelPath.isEmpty path .errorEntityEmpty

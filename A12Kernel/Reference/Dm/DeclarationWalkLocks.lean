@@ -156,7 +156,11 @@ private def F : String := "codeless:field-name-shape"
 
 /- The member draws the field-name sentence once at the group for the short name it keeps, judged by
    the field-name shape and not by its digit or colon classes; the ordering gates wait on a walk that
-   refused nothing, while the duplicate class skips only a refused name. -/
+   refused nothing, while the duplicate class skips only a refused name. A padded spelling keeps its padding
+   in the name it looks for, so it finds no field and draws the unresolved class, and the sentence judges the
+   name trimmed, so it draws none (Locked: a12-dmkits CheckerOrderingNameSentenceAgreementTest at 1124b523f,
+   kernel 31.1.1, where 30.8.1 built no model for a padded spelling; the full rows are
+   [the ordering locks](OrderingMemberLocks.lean)). -/
 example :
     report "/Order/" (order (index "../Items/Sku")) = [] ∧
     report "/Order/" (order (index "Sk-u") [field "Sk-u"]) =
@@ -178,7 +182,7 @@ example :
       ["codeless:sort-list-capacity@Items", "MVK_PATH_INVALID@Items/Sk-u", s!"{F}@Items/Sk-u"] ∧
     report "/Order/" (order (sorts ["Sku", "Sku", "Sk-u"]) [field "Sku", field "Sk-u"]) =
       ["MVK_SORT_FIELD_DUPLICATE@Items", s!"{F}@Items", "MVK_PATH_INVALID@Items/Sk-u", s!"{F}@Items/Sk-u"] ∧
-    report "" (order (index " Sku")) = unbuilt := by
+    report "/Order/" (order (index " Sku")) = ["MVK_INVALID_INDEX_FIELD@Items"] := by
   native_decide
 
 /-- An Enumeration field `Kind` whose invalid-value message is `text`. -/

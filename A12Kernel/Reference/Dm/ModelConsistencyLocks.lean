@@ -13,7 +13,9 @@ reports, or the one unbuilt-model label. A capture also records codes other owne
 (`MVK_*`, rule and Enumeration declarations); only the labels of `ModelConsistencyClass` are compared, and
 the unbuilt-model label. Row `b-localized-null` is not replayed: the capture recorded an instrument
 fault (`admitted: null`), not an observation of the Kernel. Peer KF646 has since measured that shape,
-which the [text-binding locks](LocalizedTextBindingLocks.lean) fix for this reader too.
+which the [text-binding locks](LocalizedTextBindingLocks.lean) fix for this reader too. Row `b-index-name-empty`
+is not replayed either: the capture saw no model, where kernel 31.1.1 builds one and draws a class
+(see the paths section).
 
 Two parts replay other measurements: `conversionFailureRows`, a peer measurement of kernel 31.1.1 on the
 declarations its validation-model converter drops or repairs, and the type-definition section at the end,
@@ -309,7 +311,6 @@ private def emptinessRows : List (String × Row) := [
   ("b-error-condition-empty", { append := [ruleEl "/Form/R" "R" "../Value" ""], observed := ["MVK_CONDITION_MISSING", "MVK_INCOMPLETE_INPUT", conditionEmpty] }),
   ("b-operation-empty", { append := [computationEl "/Form/C" "C" "../Total" [""]], observed := ["MVK_INCOMPLETE_INPUT", operationEmpty] }),
   ("b-enum-dup-categories", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["b"])])], observed := [notBuilt] }),
-  ("b-index-name-empty", { append := [groupEl "/Form/G" "G" 3 [fieldEl "/Form/G/K" "K" (stringType)] (indexFieldName := "")], observed := [notBuilt] }),
   ("b-sort-name-empty", { append := [groupEl "/Form/G" "G" 3 [fieldEl "/Form/G/K" "K" (stringType)] (sortFieldNames := [""])], observed := [notBuilt] }),
   ("b-typedef-id-empty", { typeDefinitions := [typedefEl "" "Td" (stringType)], observed := [idEmpty] }),
   ("b-typedef-name-empty", { typeDefinitions := [typedefEl "Td" "" (stringType)], observed := [typedefNameEmpty] })]
@@ -401,7 +402,34 @@ example : outcomeOf "i-root-id" = some (.checked [
     { path := ["Form"], kind := .idNotUnique }, { path := ["Form", "A1"], kind := .idNotUnique }]) := by
   native_decide
 
-example : outcomeOf "b-index-name-empty" = some (.notBuilt ["Form", "G"] .indexFieldNameEmpty) := by
+/-- `G`, a repeatable group holding the field `K` and the group `Sub`, whose index field is written as given. -/
+private def indexed (spelled : String) : Row :=
+  { append := [groupEl "/Form/G" "G" 3 [fieldEl "/Form/G/K" "K" (stringType), groupEl "/Form/G/Sub" "Sub" 1 [fieldEl "/Form/G/Sub/X" "X" (stringType)]] (indexFieldName := spelled)], observed := [] }
+
+private def indexedOutcome (spelled : String) : Option ModelConsistencyOutcome :=
+  (checkModelConsistency (modelOf (indexed spelled))).toOption
+
+/-- Kernel 30.8.1 built no model for a group whose index field was written empty (capture row
+`b-index-name-empty`, not replayed). Kernel 31.1.1 keeps the group's own name, builds the model and draws
+a class of its own at the group in check 6 (Locked: a12-dmkits CheckerOrderingNameSentenceAgreementTest at
+1124b523f, kernel 31.1.1; [the ordering locks](OrderingMemberLocks.lean) hold the whole class set of the
+three readers). A blank index spelling that is not empty draws none. -/
+example :
+    indexedOutcome "" = some (.checked [{ path := ["Form", "G"], kind := .indexFieldNameEmpty }]) ∧
+      indexedOutcome "  " = some (.checked []) := by
+  native_decide
+
+/-- The spellings that leave no model stop the check ahead of every class, at the group naming them: an
+absolute one, one climbing past the root and one landing on a group, the parent, a child or a sibling of the
+base model. A spelling landing on nothing builds. -/
+example :
+    (["/Form/G/K", "../../../K", "..", "Sub", "../Items", "../Missing", "../../K"].map indexedOutcome) =
+      [some (.notBuilt ["Form", "G"] (.nomination .absolute)),
+        some (.notBuilt ["Form", "G"] (.nomination .climbsAboveRoot)),
+        some (.notBuilt ["Form", "G"] (.nomination .landsOnGroup)),
+        some (.notBuilt ["Form", "G"] (.nomination .landsOnGroup)),
+        some (.notBuilt ["Form", "G"] (.nomination .landsOnGroup)),
+        some (.checked []), some (.checked [])] := by
   native_decide
 
 example : outcomeOf "d3-min-long-max-negzero" = some (.checked [
