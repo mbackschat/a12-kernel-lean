@@ -269,7 +269,7 @@ private def orderedNumericClassificationSource : OrderedNumericValidationAtom mo
   | .temporalExpression source => !source.fieldIds.isEmpty
   | .ordinary source => numericClassificationSource source
   | .firstFilled _ | .valueCount _ _ | .tokenValueCount _ | .booleanValueCount _
-  | .aggregate _ _ | .sumOfProducts _ | .filledGroupCountMixed _ | .filledFieldCount _
+  | .aggregate _ _ | .sumOfProducts _ | .sumOfTerms _ | .filledGroupCountMixed _ | .filledFieldCount _
   | .tokenDistinctCount _ | .temporalDistinctCount _ => true
 
 /-- Preserve the generator's static distinction even for a leaf that happens to fire only value
@@ -512,6 +512,7 @@ def liftsEmptyGate : ValidationConditionLeaf model → Bool
       | .ordinary atom => NumericValidationAtom.isEmptyGateCount atom
       | .filledGroupCountMixed _ | .filledFieldCount _ | .aggregate .distinctCount _
       | .tokenDistinctCount _ | .temporalDistinctCount _ => true
+      | .sumOfTerms source => source.holdsCount
       | _ => false
   | _ => false
 

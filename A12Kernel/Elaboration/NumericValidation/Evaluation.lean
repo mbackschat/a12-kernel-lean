@@ -3,6 +3,7 @@ import A12Kernel.Elaboration.NumericValidation.Resolution
 import A12Kernel.Elaboration.NumericValidation.Expression
 import A12Kernel.Elaboration.PartialGroupCount
 import A12Kernel.Elaboration.PartialSemanticIndex
+import A12Kernel.Elaboration.SumOfTerms.Evaluation
 
 /-! # Checked numeric-validation evaluation -/
 
@@ -178,7 +179,7 @@ def resolve (atom : OrderedNumericValidationAtom model)
           else
             .error .nonRelevant
       | none => .error .groupState
-  | .aggregate _ _ | .sumOfProducts _ => .error .groupState
+  | .aggregate _ _ | .sumOfProducts _ | .sumOfTerms _ => .error .groupState
   -- A starred member's contribution is an instantiated row count, which this scalar context
   -- carries no document to read. The addressed resolver owns the arm.
   | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
@@ -428,6 +429,10 @@ private def resolveAddressedWith (filtered : FilteredShiftAmountReader model)
           (source.evaluateCheckedDocumentAt
             .validation document context.outer).map
               NumericOperand.toValidationArithmetic
+  | .sumOfTerms source =>
+      match context.input with
+      | .checked document => source.evaluateValidation document context.outer context.scalar.fields.world
+      | .legacy _ _ | .partialView _ _ => throw (.checkedDocumentRequired source.source.group.path)
   | .filledGroupCountMixed operands =>
       -- Reopened capacities multiply for each starred operand; fixed groups contribute one slot.
       -- This preserves nested-count growth (spec/10 §4.1); an unknown capacity stays unavailable.
@@ -713,7 +718,7 @@ private def OrderedNumericValidationAtom.resolveAddressedPartialUnchecked
   | .sumOfProducts source =>
       resolvePartialValueCount context fun document =>
         source.evaluatePartialDocument document context.outer scope context.readPartialCell
-  | .temporalExpression _ =>
+  | .temporalExpression _ | .sumOfTerms _ =>
       pure (.error .groupState)
 
 /-- Evaluate a partial addressed numeric comparison. `none` means the atom family or filter shape is structurally unsupported; a reached relevance failure is numeric UNKNOWN. The caller must apply the rule-wide `Having` skip first. -/

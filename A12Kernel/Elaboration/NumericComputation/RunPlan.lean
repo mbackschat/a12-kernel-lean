@@ -22,7 +22,7 @@ def supportsScalarEvaluation :
   | .temporalDistinctCount run => run.source.isDirectOnly
   | .tokenValueCount source => source.source.directFields?.isSome
   | .booleanValueCount source => source.directFields?.isSome
-  | .sumOfProducts _ => false
+  | .sumOfProducts _ | .sumOfTerms _ => false
   -- Never scalar-evaluable: the contribution is a row count and this plan's context has no
   -- row topology, so the operation routes to the addressed evaluator like every other
   -- repeatable-reading atom.

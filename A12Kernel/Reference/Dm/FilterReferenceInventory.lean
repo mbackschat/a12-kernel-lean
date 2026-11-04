@@ -51,58 +51,62 @@ private def referenceLevels (model : FlatModel) (declaringGroup : GroupPath)
 
 mutual
 private partial def expressionInventory (model : FlatModel) (group : GroupPath)
-    (candidate reopened : List RepeatableLevel) : Expr → Lowering Inventory
-  | .entity reference | .value reference => referenceInventory model group candidate reopened reference
-  | .constant "RuleGroup" => referenceInventory model group candidate reopened {
+    (candidate reopened : List RepeatableLevel) (nested : Bool) : Expr → Lowering Inventory
+  | .entity reference | .value reference => referenceInventory model group candidate reopened nested reference
+  | .constant "RuleGroup" => referenceInventory model group candidate reopened nested {
       path := { absolute := true, segments := group.map fun name => { name, star := false } } }
   | .custom .. => pure ([], true)
   | .arith _ left right | .compare _ left right => do
-      pure (joinInventory (← expressionInventory model group candidate reopened left)
-        (← expressionInventory model group candidate reopened right))
-  | .parens body | .braces body => expressionInventory model group candidate reopened body
+      pure (joinInventory (← expressionInventory model group candidate reopened nested left)
+        (← expressionInventory model group candidate reopened nested right))
+  | .parens body | .braces body => expressionInventory model group candidate reopened nested body
   | .logic _ parts => do
-      let inventories ← parts.mapM (expressionInventory model group candidate reopened)
+      let inventories ← parts.mapM (expressionInventory model group candidate reopened nested)
       pure (inventories.foldl joinInventory ([], false))
   | .call name arguments listed scope => do
-      let main ← argumentsInventory model group candidate reopened arguments
-      let members ← argumentsInventory model group candidate reopened (listed.getD [])
+      let main ← argumentsInventory model group candidate reopened nested arguments
+      let members ← argumentsInventory model group candidate reopened nested (listed.getD [])
       let scope ← match scope with
         | none => pure ([], false)
-        | some reference => referenceInventory model group candidate reopened reference
+        | some reference => referenceInventory model group candidate reopened nested reference
       let combined := joinInventory (joinInventory main members) scope
       pure (combined.1, combined.2 || name == "RepetitionNotUnique")
   | _ => pure ([], false)
 
 private partial def referenceInventory (model : FlatModel) (group : GroupPath)
-    (candidate reopened : List RepeatableLevel) (reference : Reference) : Lowering Inventory := do
+    (candidate reopened : List RepeatableLevel) (nested : Bool) (reference : Reference) : Lowering Inventory := do
   let own ← referenceLevels model group candidate reopened reference
   let key ← match reference.index with
-    | some (.reference child) => referenceInventory model group candidate reopened child
+    | some (.reference child) => referenceInventory model group candidate reopened nested child
     | _ => pure ([], false)
   let body ← match reference.filter with
     | none => pure ([], false)
-    | some expression => expressionInventory model group candidate reopened expression
+    | some expression =>
+        -- A nested body answers to its own filter gates when its reference is read, so a caller that
+        -- forbids the construct altogether keeps its references out of the enclosing walk.
+        if nested then expressionInventory model group candidate reopened nested expression
+        else pure ([], false)
   let children := joinInventory key body
   pure (own :: children.1, reference.filter.isSome || children.2)
 
 private partial def argumentsInventory (model : FlatModel) (group : GroupPath)
-    (candidate reopened : List RepeatableLevel) : List Argument → Lowering Inventory
+    (candidate reopened : List RepeatableLevel) (nested : Bool) : List Argument → Lowering Inventory
   | [] => pure ([], false)
   | .mk first rangeEnd :: rest => do
-      let first ← expressionInventory model group candidate reopened first
+      let first ← expressionInventory model group candidate reopened nested first
       let last ← match rangeEnd with
         | none => pure ([], false)
-        | some expression => expressionInventory model group candidate reopened expression
+        | some expression => expressionInventory model group candidate reopened nested expression
       pure (joinInventory (joinInventory first last)
-        (← argumentsInventory model group candidate reopened rest))
+        (← argumentsInventory model group candidate reopened nested rest))
 end
 
 /-- Inventory a body's references before certifying its base star; key-filter body errors can
 precede that base's star requirement (spec/07 §3). Own-read checks remain a precondition. -/
 def filterBodyInventoryAtLevels (model : FlatModel) (declaringGroup : GroupPath)
-    (candidate reopened : List RepeatableLevel) (expression : Expr) :
+    (candidate reopened : List RepeatableLevel) (expression : Expr) (nested : Bool := true) :
     Lowering (List FilterIndexedReference × Bool) :=
-  expressionInventory model declaringGroup candidate reopened expression
+  expressionInventory model declaringGroup candidate reopened nested expression
 
 /-- Recover the filter walk's authored reference order, including keys, scopes and nested bodies.
 This is the post-read walk input, not whole-condition admission: own read/operator checks precede

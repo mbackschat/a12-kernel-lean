@@ -1,4 +1,5 @@
 import A12Kernel.Reference.Dm.HavingListAdmission
+import A12Kernel.Reference.Dm.HavingTermAdmission
 import A12Kernel.Reference.Dm.OrderedAdmissionActivation
 import A12Kernel.Reference.Dm.HavingOperationShape
 import A12Kernel.Reference.Dm.FilterReferenceInventory
@@ -8,7 +9,7 @@ import A12Kernel.Elaboration.TableEnumeration
 namespace A12Kernel.Dm
 open HavingListAdmission
 
-private def checkedHaving (result : Except CorrelationElabError α)
+def checkedHaving (result : Except CorrelationElabError α)
     (insideSemanticIndexKey : Bool := false) : Lowering α :=
   result.mapError fun error =>
     let capturedRead := match error with
@@ -25,19 +26,24 @@ private def checkedHaving (result : Except CorrelationElabError α)
 
 
 
-private structure RawAdmissionContext where
+structure RawAdmissionContext where
   compilePattern : StringPatternCompiler := builtinStringPatternCompiler
   suppressExactScaleWarning : Bool := false
   inFilterSyntax : Bool := false
   /-- The levels a key join iterates in parallel, empty outside a parallel rule. -/
   joinedLevels : List RepeatableLevel := []
+  /-- The entity of `SumOfTerms`, the one slot that takes a filtered group. -/
+  groupFilterAllowed : Bool := false
+  /-- A `SumOfTerms` term, read as a set expression: a `$`-marked read is refused at its read and a
+  nested `SumOfTerms` at its construct (spec/07 §3.10). -/
+  termSyntax : Bool := false
 
-private abbrev RawAdmissionM := StateT FilterRuleFacts Lowering
+abbrev RawAdmissionM := StateT FilterRuleFacts Lowering
 
 /-- Read and check one ordinary filter leaf under the text's scale-warning suppression. The authored
 leaf is returned unscoped: the filter's root carries the suppression once
 (`docs/sources/having-filter-probes.md#src-having-scale-warning-suppression`). -/
-private def admitFilterLeaf (model : FlatModel) (group bindingGroup : GroupPath)
+def admitFilterLeaf (model : FlatModel) (group bindingGroup : GroupPath)
     (candidateLevels reopenedLevels : List RepeatableLevel) (admission : RawAdmissionContext)
     (insideSemanticIndexKey : Bool) (expression : Expr) :
     Lowering (SurfaceCorrelatedHaving × HavingBodyAdmission) := do
@@ -52,7 +58,7 @@ mutual
 Inside an unmarked filter read, index and scope restrictions belong to the later body walk;
 key applicability still precedes that walk. A reference's category follows its own index
 cascade, so a nested index can refuse before that category (spec/07 §3, spec/08 §4). -/
-private partial def admitEntityRead (model : FlatModel) (group bindingGroup : GroupPath)
+partial def admitEntityRead (model : FlatModel) (group bindingGroup : GroupPath)
     (reference : Reference) (inFilter insideSemanticIndexKey : Bool)
     (admission : RawAdmissionContext) : RawAdmissionM ((Sum FlatFieldDecl GroupPath) × Bool) := do
   let mut inFilter := inFilter
@@ -146,12 +152,13 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
     let candidate := model.repeatableScopeForGroupPath containingGroup
     let reopened := candidate.dropWhile fun level =>
       !(model.repeatableGroupAtLevel? level).any fun repeated => starredAt (repeated.path.length - 1)
-    discard <| admitBody model group bindingGroup candidate reopened { admission with inFilterSyntax := true } insideSemanticIndexKey true expression
+    discard <| admitBody model group bindingGroup candidate reopened
+      { admission with inFilterSyntax := true, groupFilterAllowed := false, termSyntax := false } insideSemanticIndexKey true expression
     pure (expression, candidate, reopened)
   -- Leaving a nested filter resets to ordinary rule reads, rather than restoring the enclosing
   -- filter mode (Lenient_ConditionParser.resetFilterCondition; spec/07 §3).
   let postReadInFilter := inFilter && filteredBody.isNone
-  if reference.path.correlated && !postReadInFilter then
+  if reference.path.correlated && (!postReadInFilter || admission.termSyntax) then
     refuse "Having" KernelStaticDiagnostic.invalidOuterIteration.kernelCode
   if reference.path.correlated || !postReadInFilter then
     let mut outerWildcard := false
@@ -185,7 +192,8 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
   -- A filtered entity's kind is asked after its body and its repetition walk, so a refused comparison,
   -- an unknown name or an unbound repeatable level in front of a group draws its own class
   -- (a12-dmkits `FilteredOperandGateOrderLawsTest` at `1124b523f`, kernel 31.1.1).
-  if filteredBody.isSome && entity.isRight then refuse "Having" KernelStaticDiagnostic.noGroupsAllowed.kernelCode
+  if filteredBody.isSome && entity.isRight && !admission.groupFilterAllowed then
+    refuse "Having" KernelStaticDiagnostic.noGroupsAllowed.kernelCode
   match entity with
   | .inl _ => pure ()
   | .inr path =>
@@ -207,7 +215,7 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
 
 /-- Lower and check each leaf in parse order before walking the complete body (spec/07 §3).
 In particular, a later unsupported reader form cannot hide an earlier checked comparison error. -/
-private partial def admitBody (model : FlatModel) (group bindingGroup : GroupPath)
+partial def admitBody (model : FlatModel) (group bindingGroup : GroupPath)
     (candidateLevels reopenedLevels : List RepeatableLevel) (admission : RawAdmissionContext)
     (insideSemanticIndexKey inFilter : Bool) :
     Expr → RawAdmissionM (Option (SurfaceCorrelatedHaving × HavingBodyAdmission) × Bool)
@@ -563,7 +571,7 @@ private partial def admitConstructorComponents (model : FlatModel) (group bindin
     state := nextState
   pure (components, state)
 
-private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : GroupPath)
+partial def admitNumericAtom (model : FlatModel) (group bindingGroup : GroupPath)
     (inFilter insideSemanticIndexKey : Bool) (admission : RawAdmissionContext) :
     Expr → RawAdmissionM (NumericOperandType × Bool)
   | .entity reference | .value reference => do
@@ -591,6 +599,18 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
       let (reads, state) ← admitFieldList model group bindingGroup inFilter insideSemanticIndexKey admission arguments
       checkRawValueCount model reads expected
       pure (.number (.field 0), state)
+  -- The entity answers before the term; the term is read as a set expression over the entity's
+  -- levels, the entity's lowest level being the one it must iterate (spec/07 §3.10).
+  | .call "SumOfTerms" arguments none none => do
+      if admission.termSyntax then refuse "Having" KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
+      let [.mk (.entity entity) none, .mk term none] := arguments | refuse "SumOfTerms" "operands"
+      let (reads, _) ← admitFieldList model group bindingGroup inFilter insideSemanticIndexKey
+        { admission with groupFilterAllowed := true } [.mk (.entity entity) none]
+      let [read] := reads | refuse "SumOfTerms" "entity"
+      let levels ← sumOfTermsEntityLevels model entity read
+      let (tree, _) ← admitNumericExpression model group bindingGroup true insideSemanticIndexKey
+        { admission with termSyntax := true } term
+      pure (← sumOfTermsTermType model group levels term tree, inFilter)
   | .call id arguments none none => do
       -- A condition call is no operation, so here it is the token defect at its own position, its
       -- reads unchecked (`Abs(FieldFilled(NoSuch)) > 0` draws the token class; spec/12 §3.1).
@@ -721,94 +741,5 @@ private partial def admitNumericAtom (model : FlatModel) (group bindingGroup : G
   | _ => do refuse "Having" "raw numeric atom"
 
 end
-
-/-- The class a completed operation call's own production raises when the parse fails after it, as the
-Kernel checks each production as it completes (spec/12 §3.1): `none` for a condition call, a call that
-passes, or a refusal with no Kernel class. The call is read at `group`, bound at `bindingGroup`, outside
-any filter. -/
-def operationCallClass? (model : FlatModel) (group : GroupPath) (call : Expr) (bindingGroup : GroupPath := group) :
-    Option KernelStaticDiagnostic :=
-  if call.isConditionCall then none else
-  match (admitNumericAtom model group bindingGroup false false {} call).run' {} with
-  | .ok _ => none
-  | .error refusal => KernelStaticDiagnostic.all.find? (·.kernelCode == refusal.detail)
-
-/-- Admit constructor/filter children before lowering and whole-rule gates. Their authored
-read order precedes enclosing checks (KF532; ParserService.checkNormalRule; spec/07 §3). -/
-def checkOrderedAdmission (model : FlatModel) (group bindingGroup : GroupPath)
-    (expression : Expr) (suppressExactScaleWarning : Bool := false) : Lowering Unit := do
-  if !expression.needsOrderedAdmission then return
-  let (_, facts) ← (admitBody model group bindingGroup [] [] { suppressExactScaleWarning } false false expression).run {}
-  -- Having requires a star while Length forbids stars, so this is not the standalone limiter exception (CheckFeldOpImpl; AnalyseService).
-  if expression.hasHaving then
-    if let some diagnostic := facts.beforeIterationRefusal? then refuse "Having" diagnostic.kernelCode
-
-/-- Admit one fragment and retain its contribution to the generated rule's global checks.
-`joinedLevels` are the levels a parallel rule's key join iterates. -/
-def checkRawConditionBeforeGlobals (model : FlatModel) (group bindingGroup : GroupPath)
-    (expression : Expr) (suppressExactScaleWarning : Bool) (joinedLevels : List RepeatableLevel := []) :
-    Lowering FilterRuleFacts := do
-  let (_, facts) ← (admitBody model group bindingGroup [] [] { suppressExactScaleWarning, joinedLevels }
-    false false expression).run {}
-  pure facts
-
-/-- The generated target bracket is read before the authored operation (spec/09 §6). -/
-def rawComputationTarget (target : FlatFieldDecl) : Expr :=
-  .value { path := { absolute := true, segments := target.path.map fun name => { name, star := false } } }
-
-/-- Check only the generated bracket before parsing the operation it will compare. -/
-def checkRawComputationTargetRead (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl) : Lowering Unit := do
-  discard <| (admitNumericAtom model group target.groupPath false false {} (rawComputationTarget target)).run' {}
-
-/-- Finish one ordinary authored reference read before advancing to another operand. The original
-reference remains available to the caller's kind/shape and executable lowering stages (spec/07 §3). -/
-def checkReferenceRead (model : FlatModel) (group bindingGroup : GroupPath) (reference : Reference) :
-    Lowering Unit := do
-  discard <| checkedHaving (model.validate.mapError .resolve)
-  discard <| (admitEntityRead model group bindingGroup reference false false {}).run' {}
-
-/-- Admit a parsed body at an already checked filtered field. This entry preserves the raw
-reference walk after ordered own-leaf checks, then certifies the executable body. Parser exit
-state is carried independently of executable-body availability (spec/07 §3). -/
-private def admitRawStarHaving (model : FlatModel) (declaringGroup : GroupPath)
-    (source : CheckedStarFieldPath model) (expression : Expr)
-    (bindingGroup : GroupPath := declaringGroup)
-    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) (suppress : Bool := false) :
-    Lowering (SurfaceCorrelatedHaving × CheckedStarHaving model source bindingGroup) := do
-  let candidate := source.path.axes.map (·.level)
-  let admission : RawAdmissionContext := { compilePattern, suppressExactScaleWarning := suppress, inFilterSyntax := true }
-  let (body, _) ← (admitBody model declaringGroup bindingGroup candidate (candidate.drop source.path.firstStar)
-    admission false true expression).run' {}
-  let (references, forbidden) ← filterBodyInventory model declaringGroup source expression
-  if let some diagnostic := filterBodyRefusal references forbidden then
-    refuse "Having" diagnostic.kernelCode
-  let (authored, body) ← match body with
-    | some checked => pure checked
-    | none => do
-        if expression.hasIndex || expression.hasHaving then refuse "Having" "indexed body escaped its filter walk"
-        -- Certify the unchanged ordinary tree only after its complete own-read pass and filter walk.
-        -- This keeps late typed restrictions behind later parse-time failures (spec/07 §3).
-        admitFilterLeaf model declaringGroup bindingGroup candidate (candidate.drop source.path.firstStar)
-          admission false expression
-  let checked ← checkedHaving (finishStarHavingBody model declaringGroup source body bindingGroup)
-  pure (if suppress then .scaleWarningSuppressed authored else authored, checked)
-
-def elaborateRawStarHaving (model : FlatModel) (declaringGroup : GroupPath)
-    (source : CheckedStarFieldPath model) (expression : Expr)
-    (bindingGroup : GroupPath := declaringGroup)
-    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
-    Lowering (CheckedStarHaving model source bindingGroup) :=
-  Prod.snd <$> admitRawStarHaving model declaringGroup source expression bindingGroup compilePattern
-
-/-- A reader with a known caller binding checks the raw body before returning the existing
-surface tree. Callers without that context retain their deferred typed admission. -/
-def lowerAdmittedHaving (model : FlatModel) (group : GroupPath) (path : SurfaceStarFieldPath)
-    (expression : Expr) (bindingGroup? : Option GroupPath) (suppress : Bool := false) :
-    Lowering SurfaceCorrelatedHaving := do
-  match bindingGroup? with
-  | none => lowerFilter expression (some (model, group)) suppress
-  | some bindingGroup =>
-      let source ← checkedHaving ((elaborateStarFieldPath model group path).mapError (CorrelationElabError.fieldFill ∘ FieldEntityShapeElabError.starPath))
-      Prod.fst <$> admitRawStarHaving model group source expression bindingGroup (suppress := suppress)
 
 end A12Kernel.Dm

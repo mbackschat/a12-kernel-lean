@@ -84,6 +84,15 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `assurance`: E/P closed for admitted shapes; upstream L is exact for the complete bounded `SumOfProducts` admission/refusal matrix at its [static checkpoint](../sources/inbound-group-operand-batches.md#src-sum-of-products-owning-group) and for the represented normalized direct one-level count extent at the [count partial-extent checkpoint](../sources/inbound-group-operand-batches.md#src-count-partial-extent), otherwise partial; C none
 - `remains`: Group-scope admission, checked-document runtime extent, carrier-specific Kernel calibration of the internally admitted nested lowest-star path whose outer repeatable ancestor is already bound by the declaring scope, and family limits: [Number group aggregates](../IMPLEMENTATION-MAP.md#cap-number-group-aggregates). Wider aggregate/path shapes: [SG5](../SEMANTICS-GAPS.md#sg5--numeric-authoring-and-target-completion) and [SG9](../SEMANTICS-GAPS.md#sg9--paths-indices-and-static-legality-completion)
 
+<a id="cap-sum-of-terms"></a>
+#### `SumOfTerms`
+
+- `boundary`: kernel 31.1.1's [`SumOfTerms`](../../spec/07-repetition-and-iteration.md#310-sumofterms) on the validation and computation routes. Its term is a Number-valued set expression in the `Having` atom family, elaborated at the entity's candidate levels and read per kept row with that row as the candidate environment and the rule's row as the captured one, so the ordinary atom trees gain one non-recursive constructor each and a nested `SumOfTerms` or filtered aggregate has no representation.
+- `owner`: [Core](../../A12Kernel/Elaboration/SumOfTerms/Core.lean) (checked entity, filter and term, class projection), [Evaluation](../../A12Kernel/Elaboration/SumOfTerms/Evaluation.lean) (row stream, fillability fold, computation scan), the raw walk's arm in [HavingAdmission](../../A12Kernel/Reference/Dm/HavingAdmission.lean) with its [term gates](../../A12Kernel/Reference/Dm/HavingTermAdmission.lean), and the group-bound filter certificate `CheckedPathHaving` in [Correlation](../../A12Kernel/Elaboration/Correlation.lean).
+- `assurance`: E: [admission locks](../../A12Kernel/Reference/Dm/SumOfTermsLocks.lean) hold every kernel row of a12-dmkits `SumOfTermsIterationEntityLawsTest` and `SumOfTermsTermLawsTest` through the rule check and computation lowering, and [runtime locks](../../A12Kernel/Reference/Dm/SumOfTermsRuntimeLocks.lean) the firings, message types and computed values of `SumOfTermsRuntimeLawsTest` and `SumOfTermsShapesRuntimeLawsTest`, at 1124b523f. P/C/X/Q none.
+- `derived`: the relative order of the term's own gates, the iteration-guard classification as an entity-list operation, the term's scale and the filtered traversal mode are unmeasured choices.
+- `remains`: message references, fill-to-fix pointers, error-field selection and partial validation are batch `SumOfTerms` step S2 in the [migration milestone](../PLAN.md#kernel-31-migration): the reference projection refuses the atom and partial validation leaves it unsupported.
+
 <a id="cap-stored-number-formal-read"></a>
 #### Stored Number formal read
 

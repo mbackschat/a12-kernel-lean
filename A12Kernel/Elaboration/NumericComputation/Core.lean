@@ -65,6 +65,7 @@ def FlatModel.admitsNumericComputationOperand
   | .tokenValueCount source => source.source.bindingScopes.all (·.isPrefixOf scope)
   | .booleanValueCount source => source.bindingScopes.all (·.isPrefixOf scope)
   | .sumOfProducts source => source.bindingScopes.all (·.isPrefixOf scope)
+  | .sumOfTerms source => source.bindingScope.isPrefixOf scope
   -- Every operand carries its own model certificate, so admission is settled at elaboration.
   | .filledGroupCountMixed _ => true
   | .numeric (.field declaration) =>
@@ -164,6 +165,7 @@ def CheckedNumericComputationAtom.numericScaleSummary
   | .tokenValueCount source => source.scaleSummary
   | .booleanValueCount source => source.scaleSummary
   | .sumOfProducts source => source.scaleSummary
+  | .sumOfTerms source => source.scaleSummary
   -- A count is integral, exactly like the fixed-only form's `filledGroupCount` summary.
   | .filledGroupCountMixed _ => NumericScaleSummary.field 0
 
@@ -215,6 +217,7 @@ def CheckedNumericComputationAtom.referencesWith
   | .booleanValueCount source => source.referencesField field (fun having _ => filterReads having)
   | .sumOfProducts source =>
       source.referencesField field
+  | .sumOfTerms source => source.referencesWith field filterReads
   | .filledGroupCountMixed operands =>
       operands.any fun operand => operand.referencesField model field
   | .numeric atom => atom.referencesFieldWith model field (·.referencesField field (fun having _ => filterReads having))
@@ -400,6 +403,11 @@ def FlatModel.elaborateNumericComputationAtom
               [source.left.source.bindingScope, source.right.source.bindingScope]
         | .selected _ => pure ()
         pure (.sumOfProducts checked)
+    | .sumOfTerms source => do
+        let checked ← (elaborateSumOfTerms model declaringGroup source targetGroup).mapError
+          NumericComputationElabError.sumOfTerms
+        model.requireOperandLevelsBound declaringGroup targetGroup [checked.bindingScope]
+        pure (.sumOfTerms checked)
     | .numeric (.field reference) => do
         let declaration ←
           (model.resolveComputationFieldValueRead declaringGroup targetGroup reference).mapError .resolve

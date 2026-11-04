@@ -156,6 +156,9 @@ private def atomProfile : OrderedNumericValidationAtom model → ComparisonOpera
   -- A product sum meets the mixed-read refusal like every other aggregate
   -- (a12-dmkits `SelectedIterationGuardLawsTest` at `1124b523f`, kernel 31.1.1).
   | .sumOfProducts source => entityListProfile (productReferenceScopes source) false true true
+  -- Derived, not measured: a term sum is classified as the entity-list operation over the scope its
+  -- entity binds, zero-sensitive and subject to the mixed-read refusal like `Sum`.
+  | .sumOfTerms source => entityListProfile [source.bindingScope] false true true
   | .filledGroupCountMixed operands => entityListProfile (operands.map (·.bindingScope)) true false true
   | .filledFieldCount source => entityListProfile (source.operands.map (·.bindingScope)) true false true
   | .tokenDistinctCount source => entityListProfile (tokenEntityReferenceScopes source) true false true

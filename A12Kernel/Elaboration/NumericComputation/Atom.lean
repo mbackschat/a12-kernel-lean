@@ -9,6 +9,7 @@ import A12Kernel.Elaboration.LiteralComparisonDiagnostic
 import A12Kernel.Elaboration.NumericComputation.OperationTyping
 import A12Kernel.Elaboration.TokenValueCount
 import A12Kernel.Elaboration.DistinctCountSource
+import A12Kernel.Elaboration.SumOfTerms.Core
 import A12Kernel.Semantics.ComputationCondition
 import A12Kernel.Semantics.NumericTarget
 
@@ -39,6 +40,7 @@ inductive SurfaceNumericComputationAtom where
   | booleanValueCount (expected : Bool)
       (source : SurfaceBooleanValueCountSource)
   | sumOfProducts (source : SurfaceNumericProductAggregate)
+  | sumOfTerms (source : SurfaceSumOfTerms)
 
 /-- One checked numeric computation atom. Ordinary scalar/entity-list sources retain the shared resolved atom, `FirstFilledValue` and value count retain their distinct scans over that same entity-list source, and `SumOfProducts` retains its certified common-row or independently selected plan. -/
 inductive CheckedNumericComputationAtom (model : FlatModel) where
@@ -56,6 +58,7 @@ inductive CheckedNumericComputationAtom (model : FlatModel) where
   | tokenValueCount (source : CheckedTokenValueCountSource model)
   | booleanValueCount (source : CheckedBooleanValueCountSource model)
   | sumOfProducts (source : CheckedNumericProductAggregate model)
+  | sumOfTerms (source : CheckedSumOfTerms model)
   /-- A filled-group count whose operand list carries at least one star. The fixed-only list
   keeps the established `numeric` atom untouched, so widening this operator costs the
   already-measured form nothing. -/
@@ -146,6 +149,7 @@ inductive NumericComputationElabError where
   | tokenValueCount (error : TokenValueCountElabError)
   | booleanValueCount (error : BooleanValueCountElabError)
   | productAggregate (error : NumericProductAggregateElabError)
+  | sumOfTerms (error : SumOfTermsElabError)
   | groupReference (error : FixedGroupReferenceError)
   | currentRepetitionSource (error : FixedGroupReferenceError)
   | groupCountNeedsMultipleOperands
@@ -235,6 +239,7 @@ def diagnostic? (error : NumericComputationElabError) : Option KernelStaticDiagn
     match error with
     | .resolve cause => cause.diagnostic?
     | .productAggregate cause => cause.diagnostic?
+    | .sumOfTerms cause => cause.diagnostic?
     -- A `CurrentRepetition` naming no group, measured at a row target
     -- ([checkpoint](../../../docs/sources/computation-scheduling-probes.md#src-row-target-boundary)).
     | .currentRepetitionSource (.unknownGroup _) => some .invalidEntity

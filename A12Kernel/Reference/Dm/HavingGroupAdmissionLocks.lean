@@ -1,5 +1,5 @@
 import A12Kernel.Reference.Dm.HavingFixture
-import A12Kernel.Reference.Dm.HavingAdmission
+import A12Kernel.Reference.Dm.HavingAdmissionEntry
 
 namespace A12Kernel.Dm.HavingGroupAdmissionLocks
 open A12Kernel

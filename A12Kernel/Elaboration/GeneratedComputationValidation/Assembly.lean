@@ -453,6 +453,7 @@ def CheckedNumericComputationAtom.toValidationAtom :
       pure (.booleanValueCount source)
   | .sumOfProducts source =>
       pure (.sumOfProducts source)
+  | .sumOfTerms source => pure (.sumOfTerms source)
   -- Same arm-crossing boundary the fixed filled-group count already has below, and for a sharper
   -- reason: this project's validation carrier owns the starred group count in its own operator,
   -- so narrowing one into a validation atom here would mint a second representation of it.

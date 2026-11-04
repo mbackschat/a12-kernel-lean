@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.NumericComputation.Core
 import A12Kernel.Elaboration.NumericComputation.Preflight
+import A12Kernel.Elaboration.SumOfTerms.Evaluation
 import A12Kernel.Semantics.ComputationSelfValidation
 
 /-! # Checked numeric-computation evaluation and fault projection -/
@@ -347,7 +348,7 @@ def readCheckedNumericComputationAtom (context : ScalarComputationContext) :
       match source.evaluateDirectAt? .computation context.read with
       | some result => pure result.toComputationResult
       | none => throw .repeatableContextRequired
-  | .sumOfProducts _ => throw .repeatableContextRequired
+  | .sumOfProducts _ | .sumOfTerms _ => throw .repeatableContextRequired
   -- A starred operand contributes an in-capacity row count, which this context cannot read:
   -- its whole input is `FieldId → CheckedCell`. The refusal is the same one a repeatable
   -- aggregate gets here, for the same reason, and it is correct rather than incomplete.
@@ -589,6 +590,25 @@ def scalarContext
       storedText := context.starStoredText
       numberText := context.filterNumberText } }
 
+/-- The correlation reads of one computation context through a chosen cell view: the filter reads
+through `filterRead` and a term's atoms through `starRead`, as a filtered entity operand's two
+channels do. Every fault lands in the fault type's addressing arm. -/
+def correlation (context : NumericComputationEvaluationContext) (model : FlatModel)
+    (read : Env → FieldId → CheckedCell) : ResolvingCorrelationContext NumericComputationFault :=
+  ({ world := context.scalar.world
+     read := fun row field => pure (model.filterRead context.document read row field)
+     storedText := context.filterStoredText
+     numberText := context.filterNumberText
+     bindingError := fun error => .repeatableAddressing error.toStarAddressingError
+     stringExpressionUnavailable := .repeatableAddressing .stringExpressionUnavailable
+     unsupportedDateCalendar := .unsupportedDateCalendar
+     temporalValueFailure := .repeatableAddressing .temporalValueFailure
+     worldUnavailable := .worldRequired
+     typeValidityValueFailure := .repeatableAddressing .typeValidityValueFailure
+     groupUnavailable := fun path => .repeatableAddressing (.unsupportedGroupOperand path)
+     storedTextUnavailable := fun field => .repeatableAddressing (.storedTextUnavailable field)
+     } : ResolvingCorrelationContext NumericComputationFault).withModelComputationGroups model context.document
+
 /-- `filtered` evaluates a temporal operand's filtered shift amounts; `readCheckedNumericComputationAtom`
 supplies it. -/
 def readCheckedNumericComputationAtomWith (filtered : FilteredShiftAmountReader model)
@@ -650,6 +670,10 @@ def readCheckedNumericComputationAtomWith (filtered : FilteredShiftAmountReader 
   | .sumOfProducts source =>
       (source.evaluateComputation context.document context.outer
         context.starRead context.selectedProductSide).mapError NumericComputationFault.repeatableAddressing
+  | .sumOfTerms source =>
+      source.evaluateComputation context.document context.outer
+        (context.correlation model context.filterRead) (context.correlation model context.starRead)
+        NumericComputationFault.repeatableAddressing
   | .filledGroupCountMixed operands => do
       let readings ← operands.mapM (context.readGroupCountOperand model)
       pure (.value (numberOfFilledGroupsForComputationOperands readings))

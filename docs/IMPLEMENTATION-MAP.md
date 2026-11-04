@@ -177,6 +177,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [Number source conversions](implementation/numeric.md#cap-number-source-conversions)
 <a id="cap-number-aggregates"></a>
 - [Number aggregates](implementation/numeric.md#cap-number-aggregates)
+<a id="cap-sum-of-terms"></a>
+- [`SumOfTerms`](implementation/numeric.md#cap-sum-of-terms)
 <a id="cap-stored-number-formal-read"></a>
 - [Stored Number formal read](implementation/numeric.md#cap-stored-number-formal-read)
 <a id="cap-stored-decimal-identity"></a>

@@ -66,6 +66,11 @@ private def lowerHavingNumericField (source : Expr) : Lowering SurfaceHavingNume
   let reference ← numericFieldFormReference source
   lowerHavingNumericAtom (.value reference)
 
+/-- One numeric expression read by the set-expression parser, a `SumOfTerms` term, over the filter
+body's atoms. -/
+def lowerHavingNumericTerm (expression : Expr) : Lowering (AuthoredNumericExpr SurfaceHavingNumericAtom) :=
+  lowerNumericExpr lowerHavingNumericAtom lowerHavingNumericField expression
+
 
 private inductive HavingOperandClass where
   | number | temporal | text | boolean | dateRange | unsupported

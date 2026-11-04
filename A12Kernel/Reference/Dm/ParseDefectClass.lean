@@ -1,5 +1,5 @@
 import A12Kernel.Reference.Dm.Parser
-import A12Kernel.Reference.Dm.HavingAdmission
+import A12Kernel.Reference.Dm.HavingAdmissionEntry
 
 /-! # The first class a text with a parse defect raises
 

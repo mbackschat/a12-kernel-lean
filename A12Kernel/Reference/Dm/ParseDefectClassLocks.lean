@@ -1,5 +1,5 @@
 import A12Kernel.Reference.Dm.ParseDefectClass
-import A12Kernel.Reference.Dm.HavingAdmission
+import A12Kernel.Reference.Dm.HavingAdmissionEntry
 
 /-! # Locks for the first class beside a parse defect
 

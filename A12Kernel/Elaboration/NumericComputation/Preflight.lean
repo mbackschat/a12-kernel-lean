@@ -99,7 +99,7 @@ def CheckedNumericComputationAtom.numericComputationFault? :
       groups.findSome? (fixedGroupCountOperandFault? model)
   | .numeric source =>
       NumericComputationAtom.numericComputationFault? source
-  | .sumOfProducts _ => none
+  | .sumOfProducts _ | .sumOfTerms _ => none
   -- The same gate, because this atom holds the same `fixed` operand form. Only the fixed operands
   -- are pre-decided: a starred operand's refusal is a `StarAddressingError` over the document's
   -- own row topology, which no model-structural pass can answer.

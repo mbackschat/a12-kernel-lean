@@ -56,7 +56,7 @@ def ResolvedGroupListOperands.iterationScope
     | operand => pure operand.iterationScope)
 
 private def checkedHavingOuterIterationScope
-    (checked : CheckedStarHaving model source declaringGroup) :
+    (checked : CheckedPathHaving model path declaringGroup) :
     Except RuleIterationScopeError (Option (List RepeatableLevel)) :=
   mergeIterationScopeList
     (CorrelatedHaving.outerIterationScopes model checked.condition)
@@ -296,6 +296,14 @@ private def orderedNumericAtomIterationScope :
       mergeIterationScopes
         (checkedStarBindingScope source.left.source)
         (checkedStarBindingScope source.right.source)
+  -- A starred entity binds no level, and an unstarred upper level the rule binds is a reference to
+  -- it, as a starred field's binding prefix is.
+  | .sumOfTerms source => do
+      let scope := source.bindingScope
+      mergeIterationScopes (if scope.isEmpty then none else some scope)
+        (← match source.filter with
+          | none => pure none
+          | some filter => checkedHavingOuterIterationScope filter)
   -- A starred member reopens its own axis inside the count, but a level it leaves unstarred above
   -- its first star is read per row, on the rule every other star follows: bound from inside that
   -- level and refused from outside it

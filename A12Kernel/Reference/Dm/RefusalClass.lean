@@ -54,6 +54,7 @@ instance : StaticClassified EntityNumericComparisonElabError := ⟨fun
   | .fieldFillSource (.shape error) => error.diagnostic?
   | .fieldFillSource (.group (.shape error)) => error.diagnostic?
   | .productSource error => error.diagnostic?
+  | .sumOfTermsSource error => error.diagnostic?
   | _ => none⟩
 
 /-- A Number computation's refusal, through the table's own projection, which classes only causes

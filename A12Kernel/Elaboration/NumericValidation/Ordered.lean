@@ -4,6 +4,7 @@ import A12Kernel.Elaboration.TemporalNumericExpression
 import A12Kernel.Elaboration.FieldFillList
 import A12Kernel.Elaboration.TokenDistinctCount
 import A12Kernel.Elaboration.TemporalDistinctCount
+import A12Kernel.Elaboration.SumOfTerms.Core
 
 /-! # Checked ordered numeric validation
 
@@ -25,6 +26,9 @@ inductive OrderedNumericValidationAtom (model : FlatModel) where
   | aggregate (op : NumericAggregateOp)
       (source : CheckedNumberEntitySource model)
   | sumOfProducts (source : CheckedNumericProductAggregate model)
+  /-- `SumOfTerms` over a starred group: a Number term evaluated at each kept row. Like the other
+  entity-list sources it reads the document's row topology, so it resolves on the addressed route. -/
+  | sumOfTerms (source : CheckedSumOfTerms model)
   /-- A filled-group count whose operand list carries at least one star. The fixed-only list stays
   on the established scalar atom, so widening this operator costs the already-measured form nothing.
   A starred member contributes its in-capacity instantiated row count, which needs document row
@@ -107,6 +111,7 @@ def summary : OrderedNumericValidationAtom model → NumericScaleSummary
   | .booleanValueCount source => source.scaleSummary
   | .aggregate op source => source.aggregateScaleSummary op
   | .sumOfProducts source => source.scaleSummary
+  | .sumOfTerms source => source.scaleSummary
   | .filledGroupCountMixed _ | .filledFieldCount _ => NumericScaleSummary.field 0
   | .tokenDistinctCount source => source.distinctScaleSummary
   | .temporalDistinctCount _ => NumericScaleSummary.field 0
@@ -129,7 +134,7 @@ def requiresAddressedValidation : OrderedNumericValidationAtom model → Bool
   | .valueCount _ source => source.directResolvedFields?.isNone || source.bindingScopes.any (!·.isEmpty)
   | .tokenValueCount source => source.source.directFields?.isNone || source.source.bindingScopes.any (!·.isEmpty)
   | .booleanValueCount source => source.directFields?.isNone || source.bindingScopes.any (!·.isEmpty)
-  | .aggregate _ _ | .sumOfProducts _ => true
+  | .aggregate _ _ | .sumOfProducts _ | .sumOfTerms _ => true
   | .filledGroupCountMixed _ | .filledFieldCount _ | .tokenDistinctCount _
   | .temporalDistinctCount _ => true
 
@@ -178,6 +183,8 @@ def admitted (atom : OrderedNumericValidationAtom model)
         (source.directAggregateFields?.isNone || source.bindingScopes.any (!·.isEmpty))
   | .sumOfProducts source => bound source.bindingScopes &&
       (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed)
+  | .sumOfTerms source => bound [source.bindingScope] &&
+      (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed)
   | .filledGroupCountMixed operands =>
       (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed) &&
         CheckedGroupCountOperand.admittedArity operands &&
@@ -204,6 +211,7 @@ def referencesField (atom : OrderedNumericValidationAtom model)
   | .aggregate _ source => source.referencesField field
   | .sumOfProducts source =>
       source.referencesField field
+  | .sumOfTerms source => source.referencesField field
   | .filledGroupCountMixed operands =>
       operands.any fun operand => operand.referencesField model field
   | .filledFieldCount source => source.referencesField field
@@ -227,6 +235,7 @@ def referencesErrorField (atom : OrderedNumericValidationAtom model)
       run.source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
   | .filledFieldCount source => source.referencesField field (CorrelatedHaving.referencesMarkedEntityField model)
   | .temporalExpression source => source.referencesWith field (fun condition => CorrelatedHaving.referencesMarkedEntityField model condition field)
+  | .sumOfTerms source => source.referencesErrorField field
   | .indexed _ | .indexedString _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ =>
       atom.referencesField field
 
@@ -240,6 +249,7 @@ def hasHaving : OrderedNumericValidationAtom model → Bool
   | .temporalDistinctCount run => run.source.hasHaving
   | .filledFieldCount source => source.hasHaving
   | .temporalExpression source => source.hasHaving
+  | .sumOfTerms source => source.hasHaving
   | .indexed _ | .indexedString _ | .ordinary _ | .sumOfProducts _ | .filledGroupCountMixed _ => false
 
 /-- Each filtered shift amount is exactly one ordered atom, so the ordinary carriers' evaluation,
@@ -314,6 +324,9 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .filledFieldCount source => source.supportsPartialCount
   | .indexed _ | .indexedString _ | .valueCount _ _ | .tokenValueCount _ | .booleanValueCount _ | .tokenDistinctCount _ | .temporalDistinctCount _ => true
   | .sumOfProducts _ => true
+  -- Partial validation of a term sum decides it only when every row of the capacity is relevant as a
+  -- whole, a rule this carrier does not yet implement, so the rule stays structurally unsupported.
+  | .sumOfTerms _ => false
   | .temporalExpression source => !source.hasHaving
 
 def OrderedNumericComparison.supportsAddressedPartial

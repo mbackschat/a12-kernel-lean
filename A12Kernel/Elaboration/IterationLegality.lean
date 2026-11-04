@@ -242,12 +242,14 @@ def filterReferenceWalk : List FilterIndexedReference → Except KernelStaticDia
 
 /-- The body's reference walk finishes before its iteration demand or forbidden-construct gate.
 Own read, key, comparison and operand checks must already have passed. This gate excludes the
-post-parse marked-index refusal, whose later timing is part of spec/07 §3. -/
-def filterBodyRefusal (references : List FilterIndexedReference) (forbiddenConstruct : Bool) :
+post-parse marked-index refusal, whose later timing is part of spec/07 §3. A numeric term read by
+the same walk, `SumOfTerms`' term, differs only in the class of a body iterating nothing it should. -/
+def filterBodyRefusal (references : List FilterIndexedReference) (forbiddenConstruct : Bool)
+    (missingIteration : KernelStaticDiagnostic := .noIterationForWildcard) :
     Option KernelStaticDiagnostic :=
   match filterReferenceWalk references with
   | .error diagnostic => some diagnostic
-  | .ok false => some .noIterationForWildcard
+  | .ok false => some missingIteration
   | .ok true => if forbiddenConstruct then some .disallowedConstructInSetExpression else none
 
 end A12Kernel

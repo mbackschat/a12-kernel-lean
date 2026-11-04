@@ -679,6 +679,9 @@ def OrderedNumericValidationAtom.referencePointers (environment : Env)
       (·.flatten) <$> run.source.operands.mapM (fun operand => operand.referencePointers environment inputs)
   | .booleanValueCount source => source.referencePointers environment inputs
   | .sumOfProducts source => source.referencePointers environment inputs
+  -- A term sum's pointers sit at the entity's any-row index, which no carrier here projects yet, so a
+  -- firing message of this operand is refused rather than named wrongly.
+  | .sumOfTerms _ => throw .unclassifiedAtom
   | .filledFieldCount source => source.referencePointers environment inputs
   | .filledGroupCountMixed operands =>
       (·.flatten) <$> operands.mapM fun operand =>

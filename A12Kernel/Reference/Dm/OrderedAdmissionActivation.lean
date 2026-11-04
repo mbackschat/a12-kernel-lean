@@ -40,6 +40,13 @@ def Expr.hasHaving : Expr → Bool := Expr.anyReference (·.filter.isSome)
 def Reference.hasHaving : Reference → Bool := Reference.anyReference (·.filter.isSome)
 def Argument.hasHaving : Argument → Bool := Argument.anyReference (·.filter.isSome)
 
+/-- Whether an expression reads through the `$` marker anywhere, keys and filters included. -/
+def Expr.hasCorrelatedReference : Expr → Bool := Expr.anyReference (·.path.correlated)
+
+/-- Whether an expression calls the operator `name` anywhere. -/
+def Expr.callsOperator (name : String) : Expr → Bool :=
+  Expr.anyReference (fun _ => false) (· == name)
+
 def Expr.isConditionCall : Expr → Bool
   | .call id .. => conditionCallIds.contains id
   | _ => false
@@ -72,7 +79,7 @@ lowering loses their shape (spec/07 §5–6, spec/08 CurrentRepetition cascade; 
 def Expr.needsOrderedAdmission (expression : Expr) : Bool :=
   expression.hasHaving || expression.hasConditionAsOperationOperand || expression.anyReference (fun _ => false)
     (fun name => name == "Date" || name == "Time" || name == "CurrentRepetition" ||
-      name == "RepetitionNotUnique" || name == "FirstFilledValue" ||
+      name == "RepetitionNotUnique" || name == "FirstFilledValue" || name == "SumOfTerms" ||
       (rawScalarOperator? name).isSome)
 
 /-- Retain projected target identity across all authored fragments before alternative lowering

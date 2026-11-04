@@ -87,7 +87,7 @@ private def orderedNumericErrorSelections (field : FieldId)
   | .sumOfProducts (.selected source) =>
       selectedErrorReference field (.inr source.left.source) ++
       selectedErrorReference field (.inr source.right.source)
-  | .sumOfProducts (.row _) | .filledGroupCountMixed _ | .ordinary _ => []
+  | .sumOfProducts (.row _) | .sumOfTerms _ | .filledGroupCountMixed _ | .ordinary _ => []
 
 private def filteredAmountErrorSelections (field : FieldId) (amount : CheckedFilteredShiftAmount model) :
     List SelectedErrorReference :=

@@ -130,7 +130,10 @@ def HavingNumberRef.resolve (reference : HavingNumberRef)
     CorrelatedNumberOperand :=
   reference.resolveIn context.asCorrelationContext (frame.toCorrelationFrame context)
 
-private def HavingNumericAtom.readArithmetic (phase : Phase)
+/-- One numeric atom read with its omission and formal identity kept, as `SumOfTerms` evaluates its
+term at a row. A filter's field read flattens the fillability its consumer ignores, in
+`readValidationResolving`. -/
+def HavingNumericAtom.readArithmetic (phase : Phase)
     (context : ResolvingCorrelationContext Error) (frame : CorrelationFrame) :
     HavingNumericAtom → Except Error (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
   fun atom => HavingNumericAtomOf.readArithmetic phase context frame atom

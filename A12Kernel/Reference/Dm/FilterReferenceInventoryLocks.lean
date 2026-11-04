@@ -1,6 +1,6 @@
 import A12Kernel.Reference.Dm.HavingFixture
 import A12Kernel.Reference.Dm.FilterReferenceInventory
-import A12Kernel.Reference.Dm.HavingAdmission
+import A12Kernel.Reference.Dm.HavingAdmissionEntry
 
 /- The matrices separate the post-read walk, ordered body admission and the wired validation/
 computation readers. Nested-filter exit and the late indexed-read gate retain separate failure boundaries. -/

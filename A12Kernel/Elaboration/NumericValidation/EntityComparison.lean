@@ -39,6 +39,7 @@ inductive EntityNumericComparisonElabError where
   | tokenSource (error : TokenValueCountElabError)
   | booleanSource (error : BooleanValueCountElabError)
   | productSource (error : NumericProductAggregateElabError)
+  | sumOfTermsSource (error : SumOfTermsElabError)
   | fieldFillSource (error : FieldFillListElabError)
   /-- A comparison reading no entity list, which the scalar carriers own. -/
   | readsNoList
@@ -121,6 +122,8 @@ private def resolveEntityAtom (model : FlatModel) (rowGroup bindingGroup : Group
   | .sumOfProducts source =>
       (elaborateNumericProductAggregate model rowGroup source bindingGroup).map .sumOfProducts
         |>.mapError .productSource
+  | .sumOfTerms source =>
+      (elaborateSumOfTerms model rowGroup source bindingGroup).map .sumOfTerms |>.mapError .sumOfTermsSource
 
 /-- Elaborate a rule comparison whose operations read entity lists, at the rule group. -/
 def elaborateEntityNumericComparison (model : FlatModel) (rowGroup : GroupPath)

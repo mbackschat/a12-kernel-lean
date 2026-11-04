@@ -75,7 +75,8 @@ def keywordPairs : List (String × String) := [
   ("ValueAsDate", "WertAlsDatum"), ("FirstDay", "ErsterTag"), ("LastDay", "LetzterTag"),
   ("Date", "Datum"), ("Time", "Zeit"), ("DateTime", "DateTime"), ("Now", "Jetzt"),
   ("BaseYear", "Referenzjahr"), ("Valid", "Gueltig"), ("Invalid", "Ungueltig"),
-  ("SumOfProducts", "SummeVonProdukten"), ("FirstFilledValue", "ErsterAngegebenerWert"),
+  ("SumOfProducts", "SummeVonProdukten"), ("SumOfTerms", "SummeVonTermen"),
+  ("FirstFilledValue", "ErsterAngegebenerWert"),
   ("DateRange", "DatumBereich"),
   ("RuleGroup", "RegelKontext"), ("@SuppressWarning", "@UnterdrueckeWarnung"),
   ("ValueNotConsistent", "WertNichtKonsistent"), ("To", "Zu")]

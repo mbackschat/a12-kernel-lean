@@ -10,7 +10,7 @@ import A12Kernel.Elaboration.TokenEntityList
 import A12Kernel.Elaboration.NumericAggregate.Products
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 
-import A12Kernel.Reference.Dm.HavingAdmission
+import A12Kernel.Reference.Dm.HavingAdmissionEntry
 import A12Kernel.Reference.Dm.RefusalClass
 
 namespace A12Kernel.Dm
@@ -228,6 +228,27 @@ def lowerProductAggregate (model : FlatModel) (group : GroupPath) (arguments : L
          rightHaving := ← rightFilter.mapM (fun body => lowerFilter body (some (model, group)) suppress)
          leftKey := ← leftIndex.mapM (fun key => (·.key) <$> lowerKeyedExtent model group leftPath key)
          rightKey := ← rightIndex.mapM (fun key => (·.key) <$> lowerKeyedExtent model group rightPath key) }
+
+/-- `SumOfTerms(G*, term)` retains the entity's authored stars, its optional filter and the term, which
+the set-expression reader takes over the filter body's atoms. The entity's own read finishes before
+the term is read, and the filter takes the deferred typed admission rather than the raw reference walk
+(`lowerAdmittedHaving` is field-bound). -/
+def lowerSumOfTerms (model : FlatModel) (group : GroupPath) (arguments : List Argument)
+    (bindingGroup? : Option GroupPath := none) (suppress : Bool := false) : Lowering SurfaceSumOfTerms := do
+  let [.mk (.entity entity@{ path, index := none, category := none, filter }) none, .mk term none] := arguments
+    | refuse "SumOfTerms" "operands"
+  if let some bindingGroup := bindingGroup? then
+    checkReferenceRead model group bindingGroup { entity with filter := none }
+  if path.correlated then refuse "SumOfTerms" "correlated entity"
+  -- A set expression holds no `SumOfTerms` and iterates nothing a `$` marks (spec/07 §3.10); the
+  -- ordered walk raises both in read order, and this is the same refusal for a text read without it.
+  if term.callsOperator "SumOfTerms" then
+    refuse "SumOfTerms" KernelStaticDiagnostic.disallowedConstructInSetExpression.kernelCode
+  if term.hasCorrelatedReference then
+    refuse "SumOfTerms" KernelStaticDiagnostic.invalidOuterIteration.kernelCode
+  pure { group := { base := path.base, groups := path.starGroups }
+         having := ← filter.mapM (fun body => lowerFilter body (some (model, group)) suppress)
+         term := ← lowerHavingNumericTerm term }
 
 /-- A filled-group count operand: a starred group keeps its stars, anything else is a fixed group. -/
 def lowerGroupCountOperand : Argument → Lowering SurfaceGroupCountOperand

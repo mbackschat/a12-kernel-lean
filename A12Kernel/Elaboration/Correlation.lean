@@ -16,6 +16,7 @@ import A12Kernel.Elaboration.Flat.FieldValueRead
 import A12Kernel.Elaboration.SingleGroup
 import A12Kernel.Elaboration.StarPath
 import A12Kernel.Elaboration.CorrelationWellFormed
+import A12Kernel.Elaboration.CandidateEnvironment
 import A12Kernel.Semantics.Correlation
 
 /-! # A12Kernel.Elaboration.Correlation — checked lowering for repeatable filters
@@ -562,93 +563,31 @@ def CorrelatedHaving.outerIterationScopes
       CorrelatedHaving.outerIterationScopes model left ++
         CorrelatedHaving.outerIterationScopes model right
 
-/-- One filter certified against the candidate path and captured binding group. Lexical resolution
-uses the separate declaring group passed to `elaborateStarHavingCore`. -/
-structure CheckedStarHaving (model : FlatModel)
-    (source : CheckedStarFieldPath model) (bindingGroup : GroupPath) where
+/-- One filter certified against a candidate star path and a captured binding group. Lexical
+resolution uses the separate declaring group passed to `elaborateStarHavingCore`. The certificate
+reads only the path, so a starred field's filter and a starred group's (`SumOfTerms`' iteration
+entity) are one structure. -/
+structure CheckedPathHaving (model : FlatModel) (path : StarPath) (bindingGroup : GroupPath) where
   authored : CorrelatedHaving
   wellFormed : authored.wellFormedForEnvironments model
-    (source.path.axes.map (·.level))
+    (path.axes.map (·.level))
     (model.repeatableScopeForGroupPath bindingGroup) = true
   reachesReopenedLevel : authored.reachesReopenedLevel model
-    ((source.path.axes.map (·.level)).drop source.path.firstStar) = true
+    ((path.axes.map (·.level)).drop path.firstStar) = true
+
+/-- One filter certified against a checked starred field's candidate path. -/
+abbrev CheckedStarHaving (model : FlatModel)
+    (source : CheckedStarFieldPath model) (bindingGroup : GroupPath) :=
+  CheckedPathHaving model source.path bindingGroup
+
+def CheckedPathHaving.condition (checked : CheckedPathHaving model path bindingGroup) :
+    CorrelatedHaving :=
+  checked.authored
 
 def CheckedStarHaving.condition
     (checked : CheckedStarHaving model source declaringGroup) :
     CorrelatedHaving :=
   checked.authored
-
-/-- The first **unmarked** reference of an authored filter, in authored order, whose level its
-    candidate environment does not hold. The star route asks it once every leaf has resolved and
-    passed its comparison's kind and scale gates, because the Kernel names a body's refused
-    comparison ahead of the filter's iteration class, on a repetition the filter does not iterate
-    too ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-25c-filter-body)). -/
-def SurfaceCorrelatedHaving.candidateEnvironmentRefusal? (model : FlatModel)
-    (declaringGroup : GroupPath) (candidateLevels : List RepeatableLevel) :
-    SurfaceCorrelatedHaving → Option CorrelationElabError
-  | .customCondition _ => none
-  | .repetitionNotUnique keys scope => (keys.first :: keys.rest ++ scope.toList).findSome? entity
-  | .numeric _ left right | .tolerance _ left right =>
-      (left.atoms ++ right.atoms).findSome? fun
-        | .collectionCount count => (count.source.first :: count.source.rest).findSome? entity
-        | .firstFilled source | .groupCount source | .product source | .aggregate _ source => (source.first :: source.rest).findSome? entity
-        | .dateDifference _ left right | .dayDifference left right =>
-            (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
-        | .dateTimeDifference _ left right =>
-            (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
-        | .temporalDifference _ left right => (left.fields ++ right.fields).findSome? fun ref => field ref.origin ref.field
-        | .temporalExpressionPart _ source =>
-            ((source.entitySources.flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
-              source.fields.findSome? fun ref => field ref.origin ref.field
-        | .baseYear | .baseYearDatePart _ _ | .clockPart _ _ => none
-        | .fieldValueAsNumber reference => field reference.origin reference.field
-        | .field reference => field reference.origin reference.field
-        | .dateRangeBoundPart origin reference _ _ | .stringLength origin reference | .stringRange origin reference _ _ | .temporalPart origin reference _ => field origin reference
-        | .repetition reference => group reference.origin reference.group
-  | .compareFields _ left right =>
-      (field left.origin left.field).orElse fun _ => field right.origin right.field
-  | .compareBoolean _ reference _ | .compareStrings _ reference _ => field reference.origin reference.field
-  | .dateRange source => source.entities.findSome? entity
-  | .compareStringExpression _ left right =>
-      ((left.fields ++ right.fields).flatMap SurfaceHavingSelectedOperand.entities).findSome? entity
-  | .compareSelected _ left right => (left.entities ++ right.entities).findSome? entity
-  | .compareTemporalExpression _ left right =>
-      (((left.entitySources ++ right.entitySources).flatMap fun source => source.first :: source.rest).findSome? entity).orElse fun _ =>
-        (left.fields ++ right.fields).findSome? fun ref => field ref.origin ref.field
-  | .compareTemporal _ left right =>
-      (left.fields ++ right.fields).findSome? fun reference => field reference.origin reference.field
-  | .literalMembership _ reference _ => field reference.origin reference.field
-  | .fieldMembership _ subjects members =>
-      (subjects.first :: subjects.rest ++ members.first :: members.rest).findSome? entity
-  | .dateValidity _ source => source.references.findSome? fun ref => field ref.origin ref.field
-  | .uniqueness source | .fieldFill _ source | .literalList _ source _ =>
-      (source.first :: source.rest).findSome? entity
-  | .presence _ reference | .typeValidity _ reference _ | .stringPattern _ reference _ => field reference.origin reference.field
-  | .groupPresence _ origin reference => group origin reference
-  | .groupFill _ first rest => (first :: rest).findSome? entity
-  | .and left right | .or left right =>
-      (left.candidateEnvironmentRefusal? model declaringGroup candidateLevels).orElse fun _ =>
-        right.candidateEnvironmentRefusal? model declaringGroup candidateLevels
-  | .scaleWarningSuppressed body => body.candidateEnvironmentRefusal? model declaringGroup candidateLevels
-where
-  entity (ref : SurfaceHavingEntityOperand) : Option CorrelationElabError := do
-    guard (ref.origin == .inner)
-    let (path, scope) ← ref.bindingRead? model declaringGroup
-    guard !(repeatableScopeAvailable scope candidateLevels)
-    pure (.fieldOutsideEnvironment .inner path candidateLevels scope)
-  field (origin : HavingOrigin) (reference : SurfaceFieldPath) : Option CorrelationElabError := do
-    guard (origin == .inner)
-    let declaration ← (model.resolveFieldDeclarationUnchecked declaringGroup reference).toOption
-    guard !(repeatableScopeAvailable declaration.repeatableScope candidateLevels)
-    pure (.fieldOutsideEnvironment .inner declaration.path candidateLevels
-      declaration.repeatableScope)
-  group (origin : HavingOrigin) (reference : SurfaceGroupReference) :
-      Option CorrelationElabError := do
-    guard (origin == .inner)
-    let resolved ← (reference.resolveAgainst declaringGroup).toOption
-    let missing ← (model.repeatableScopeForGroupPath resolved.path).find? fun level =>
-      !candidateLevels.contains level
-    pure (.repetitionOutsideEnvironment .inner resolved.path candidateLevels missing)
 
 /-- Resolve the shared numeric leaves at explicit candidate and captured scopes. Ordinary
 consumers use one scope and reject capture origins before accepting the resulting atom. -/
@@ -746,18 +685,17 @@ def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : Group
     number := model.resolveHavingNumberInEnvironment declaringGroup outerLevels
     repetition := model.resolveHavingRepetitionInEnvironment declaringGroup outerLevels }
 
-/-- Resolve and check every body leaf before the enclosing filter walk and construct gates.
-The staged result retains forbidden constructs without manufacturing an executable body (spec/07 §3). -/
-def elaborateHavingBodyAtLevels (model : FlatModel) (declaringGroup : GroupPath)
-    (candidateLevels reopenedLevels : List RepeatableLevel) (authored : SurfaceCorrelatedHaving)
+/-- The reference resolvers of one candidate/captured environment pair, shared by a filter body and
+by any other expression the Kernel reads with the same set-expression parser (`SumOfTerms`' term). -/
+def havingLeafResolversAtLevels (model : FlatModel) (declaringGroup : GroupPath)
+    (candidateLevels reopenedLevels : List RepeatableLevel)
     (bindingGroup : GroupPath := declaringGroup)
-    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
-    Except CorrelationElabError HavingBodyAdmission := do
+    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) : HavingLeafResolvers :=
   let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let resolveTemporalEntity (reference : SurfaceHavingPresenceRef) :=
     model.resolveHavingEntityRead declaringGroup outerLevels { origin := reference.origin, field := reference.field }
   let numeric := model.havingNumericResolvers declaringGroup candidateLevels outerLevels
-  elaborateHavingBodyWith {
+  {
     repetitionNotUnique := elaborateHavingRepetitionAdmission model declaringGroup candidateLevels outerLevels reopenedLevels
     toHavingNumericResolvers := numeric
     boolean := model.resolveHavingBooleanInEnvironment declaringGroup outerLevels
@@ -812,26 +750,26 @@ def elaborateHavingBodyAtLevels (model : FlatModel) (declaringGroup : GroupPath)
     typeValidity := model.resolveHavingTypeValidity declaringGroup outerLevels
     groupPresence := model.resolveHavingGroupPresence declaringGroup outerLevels
     groupFill := model.resolveHavingGroupFill declaringGroup outerLevels
-    presence := model.resolveHavingPresenceInEnvironment declaringGroup outerLevels } authored
+    presence := model.resolveHavingPresenceInEnvironment declaringGroup outerLevels }
 
-/-- A checked star supplies the candidate and reopened levels for ordinary filter bodies. -/
-def elaborateStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
-    (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
+/-- Resolve and check every body leaf before the enclosing filter walk and construct gates.
+The staged result retains forbidden constructs without manufacturing an executable body (spec/07 §3). -/
+def elaborateHavingBodyAtLevels (model : FlatModel) (declaringGroup : GroupPath)
+    (candidateLevels reopenedLevels : List RepeatableLevel) (authored : SurfaceCorrelatedHaving)
     (bindingGroup : GroupPath := declaringGroup)
     (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
     Except CorrelationElabError HavingBodyAdmission :=
-  let candidate := source.path.axes.map (·.level)
-  elaborateHavingBodyAtLevels model declaringGroup candidate (candidate.drop source.path.firstStar)
-    authored bindingGroup compilePattern
+  elaborateHavingBodyWith
+    (havingLeafResolversAtLevels model declaringGroup candidateLevels reopenedLevels bindingGroup compilePattern)
+    authored
 
 /-- Certify a body after its own checks and the enclosing filter walk have passed.
 Both typed and parsed admission routes use the same environment and iteration witnesses. -/
-def finishStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
-    (source : CheckedStarFieldPath model) (body : HavingBodyAdmission)
-    (bindingGroup : GroupPath := declaringGroup) :
-    Except CorrelationElabError (CheckedStarHaving model source bindingGroup) := do
-  let candidateLevels := source.path.axes.map (·.level)
-  let reopenedLevels := candidateLevels.drop source.path.firstStar
+def finishPathHavingBody (model : FlatModel) (path : StarPath) (body : HavingBodyAdmission)
+    (bindingGroup : GroupPath) :
+    Except CorrelationElabError (CheckedPathHaving model path bindingGroup) := do
+  let candidateLevels := path.axes.map (·.level)
+  let reopenedLevels := candidateLevels.drop path.firstStar
   let outerLevels := model.repeatableScopeForGroupPath bindingGroup
   let condition ← body.toCore (·.reachesReopenedLevel model reopenedLevels)
   if hReopened : condition.reachesReopenedLevel model reopenedLevels = true then
@@ -846,17 +784,31 @@ def finishStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
   else
     throw .missingInner
 
-/-- Lower the supported filter tree against one validated star plan. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
+def finishStarHavingBody (model : FlatModel) (declaringGroup : GroupPath)
+    (source : CheckedStarFieldPath model) (body : HavingBodyAdmission)
+    (bindingGroup : GroupPath := declaringGroup) :
+    Except CorrelationElabError (CheckedStarHaving model source bindingGroup) :=
+  finishPathHavingBody model source.path body bindingGroup
+
+/-- Lower the supported filter tree against one validated star path, a field's or a group's. The result retains the authored connectives and exact candidate/captured environment split established by the checked references. -/
+def elaboratePathHavingCore (model : FlatModel) (declaringGroup : GroupPath)
+    (path : StarPath) (authored : SurfaceCorrelatedHaving)
+    (bindingGroup : GroupPath := declaringGroup)
+    (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
+    Except CorrelationElabError (CheckedPathHaving model path bindingGroup) := do
+  let candidateLevels := path.axes.map (·.level)
+  let body ← elaborateHavingBodyAtLevels model declaringGroup candidateLevels
+    (candidateLevels.drop path.firstStar) authored bindingGroup compilePattern
+  if let some refusal := authored.candidateEnvironmentRefusal? model declaringGroup candidateLevels then
+    throw refusal
+  finishPathHavingBody model path body bindingGroup
+
 def elaborateStarHavingCore (model : FlatModel) (declaringGroup : GroupPath)
     (source : CheckedStarFieldPath model) (authored : SurfaceCorrelatedHaving)
     (bindingGroup : GroupPath := declaringGroup)
     (compilePattern : StringPatternCompiler := builtinStringPatternCompiler) :
-    Except CorrelationElabError (CheckedStarHaving model source bindingGroup) := do
-  let candidateLevels := source.path.axes.map (·.level)
-  let body ← elaborateStarHavingBody model declaringGroup source authored bindingGroup compilePattern
-  if let some refusal := authored.candidateEnvironmentRefusal? model declaringGroup candidateLevels then
-    throw refusal
-  finishStarHavingBody model declaringGroup source body bindingGroup
+    Except CorrelationElabError (CheckedStarHaving model source bindingGroup) :=
+  elaboratePathHavingCore model declaringGroup source.path authored bindingGroup compilePattern
 
 namespace CheckedStarFieldPath
 

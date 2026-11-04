@@ -75,14 +75,25 @@ private def orderingSides (left right : Except CorrelationElabError ResolvedHavi
       throw (.orderingFieldNotNumber path actual .number)
   | .ok _, .error error => throw error
 
+/-- Resolve one authored numeric atom of a set expression, a filter's or a `SumOfTerms` term. -/
+def HavingLeafResolvers.resolveNumericAtom (resolvers : HavingLeafResolvers)
+    (atom : SurfaceHavingNumericAtom) : Except CorrelationElabError HavingNumericAtom :=
+  resolvers.toHavingNumericResolvers.resolveWith atom
+    (fun unit left right _ _ => resolvers.temporalDifference unit left right)
+    (fun part source _ => resolvers.temporalExpressionPart part source)
+
+/-- Resolve every atom of one authored numeric expression read by the set-expression parser, keeping
+its shape; admission of the whole operation belongs to the consumer. -/
+def elaborateHavingNumericTermWith (resolvers : HavingLeafResolvers)
+    (term : AuthoredNumericExpr SurfaceHavingNumericAtom) :
+    Except CorrelationElabError (AuthoredNumericExpr HavingNumericAtom) :=
+  term.mapM resolvers.resolveNumericAtom
+
 private def elaborateHavingNumericExpression (resolvers : HavingLeafResolvers)
     (op : NumericValidationOp) (left right : AuthoredNumericExpr SurfaceHavingNumericAtom) :
     Except CorrelationElabError CorrelatedHaving := do
-  let resolve := fun atom => resolvers.toHavingNumericResolvers.resolveWith atom
-    (fun unit left right _ _ => resolvers.temporalDifference unit left right)
-    (fun part source _ => resolvers.temporalExpressionPart part source)
-  let leftCore ← left.mapM resolve
-  let rightCore ← right.mapM resolve
+  let leftCore ← elaborateHavingNumericTermWith resolvers left
+  let rightCore ← elaborateHavingNumericTermWith resolvers right
   if leftCore.isImmediateLiteral && rightCore.isImmediateLiteral then
     throw .constantNumericComparison
   let comparison : NumericComparisonOf HavingNumericAtom :=
