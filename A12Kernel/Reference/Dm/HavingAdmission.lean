@@ -143,8 +143,7 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
       refuse "Having" diagnostic.kernelCode
     indexedLevel := selected.level?
   let filteredBody ← reference.filter.mapM fun expression => do
-    let .inl declaration := entity | refuse "Having" KernelStaticDiagnostic.noGroupsAllowed.kernelCode
-    let candidate := model.repeatableScopeForGroupPath declaration.groupPath
+    let candidate := model.repeatableScopeForGroupPath containingGroup
     let reopened := candidate.dropWhile fun level =>
       !(model.repeatableGroupAtLevel? level).any fun repeated => starredAt (repeated.path.length - 1)
     discard <| admitBody model group bindingGroup candidate reopened { admission with inFilterSyntax := true } insideSemanticIndexKey true expression
@@ -183,6 +182,10 @@ private partial def admitEntityRead (model : FlatModel) (group bindingGroup : Gr
             parallelIteration := true
             parallelFilteredEntity := facts.parallelFilteredEntity || reference.filter.isSome
             parallelFilterBody := facts.parallelFilterBody || admission.inFilterSyntax }
+  -- A filtered entity's kind is asked after its body and its repetition walk, so a refused comparison,
+  -- an unknown name or an unbound repeatable level in front of a group draws its own class
+  -- (a12-dmkits `FilteredOperandGateOrderLawsTest` at `1124b523f`, kernel 31.1.1).
+  if filteredBody.isSome && entity.isRight then refuse "Having" KernelStaticDiagnostic.noGroupsAllowed.kernelCode
   match entity with
   | .inl _ => pure ()
   | .inr path =>

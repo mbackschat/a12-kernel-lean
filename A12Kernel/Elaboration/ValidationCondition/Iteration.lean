@@ -109,8 +109,10 @@ private structure ComparisonOperandProfile where
   belowPositive : Bool := false
   equalsZero : Bool := false
   mixedAgainstConstant : Bool := false
-  /-- The scope of each `CurrentRepetition` read, which refuses at every level it iterates. -/
-  currentRepetitions : List (List RepeatableLevel) := []
+  /-- Whether a `CurrentRepetition` read sits in the operand. It refuses at every level the rule
+  iterates that the comparison references, whichever level the repetition itself iterates
+  (a12-dmkits `CurrentRepetitionIterationGuardLawsTest` at `1124b523f`, kernel 31.1.1). -/
+  readsCurrentRepetition : Bool := false
   /-- The host-converted value when the operand is a number constant, and `some none` for a
   constant outside the checked decimal shape, whose conversion is not modelled. -/
   constant? : Option (Option Int) := none
@@ -118,11 +120,11 @@ private structure ComparisonOperandProfile where
 private def ComparisonOperandProfile.combine (profiles : List ComparisonOperandProfile) :
     ComparisonOperandProfile :=
   { references := profiles.foldr (fun profile all => do pure ((← profile.references) ++ (← all))) (some [])
-    currentRepetitions := profiles.flatMap (·.currentRepetitions) }
+    readsCurrentRepetition := profiles.any (·.readsCurrentRepetition) }
 
 private def ordinaryAtomProfile (model : FlatModel) : NumericValidationAtom → ComparisonOperandProfile
   | .boundCurrentRepetition repetition =>
-      { references := some [repetition.scope], currentRepetitions := [repetition.scope] }
+      { references := some [repetition.scope], readsCurrentRepetition := true }
   | .filledGroupCount groups =>
       { references := some (groups.map (·.boundRepeatableScope)), belowPositive := true,
         mixedAgainstConstant := true }
@@ -151,8 +153,9 @@ private def atomProfile : OrderedNumericValidationAtom model → ComparisonOpera
   | .aggregate op source =>
       entityListProfile (numberEntityReferenceScopes source)
         (op == .distinctCount) (op != .distinctCount) true
-  -- The Kernel exempts `SumOfProducts` from the mixed-read refusal and keeps its zero refusal.
-  | .sumOfProducts source => entityListProfile (productReferenceScopes source) false true false
+  -- A product sum meets the mixed-read refusal like every other aggregate
+  -- (a12-dmkits `SelectedIterationGuardLawsTest` at `1124b523f`, kernel 31.1.1).
+  | .sumOfProducts source => entityListProfile (productReferenceScopes source) false true true
   | .filledGroupCountMixed operands => entityListProfile (operands.map (·.bindingScope)) true false true
   | .filledFieldCount source => entityListProfile (source.operands.map (·.bindingScope)) true false true
   | .tokenDistinctCount source => entityListProfile (tokenEntityReferenceScopes source) true false true
@@ -232,7 +235,7 @@ private def orderedNumericGuardAt (level : RepeatableLevel)
         | some scopes => scopes.any (·.contains level)
         | none => scope.contains level
       if !references then .noReference else
-        if (left.currentRepetitions ++ right.currentRepetitions).any (·.contains level) then .unguarded
+        if left.readsCurrentRepetition || right.readsCurrentRepetition then .unguarded
         else match comparisonFiresUnfilled level comparison.op left right with
           | some true => .unguarded
           | some false => .guarded
@@ -353,8 +356,10 @@ private def fieldFillIterationGuardAt (level : RepeatableLevel) (operator : Fiel
     | some extents =>
         let independent := independentIterationSlots level extents
         let violatesGuard : Bool := match operator with
-          | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled =>
-              extents.any fun (scope, _) => scope.contains level
+          -- A negative refuses wherever the rule iterates a level its list references, whether or not an
+          -- operand iterates it: the `$`-marked read of a filter binds the rule's row, which is enough
+          -- (a12-dmkits `IterationBindingLawsTest` at `1124b523f`, kernel 31.1.1).
+          | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled => true
           | .atLeastOneFieldFilled | .fieldsNotCollectivelyFilled => 0 < independent
           | .moreThanOneFieldFilled => 1 < independent
           | .allFieldsFilled =>

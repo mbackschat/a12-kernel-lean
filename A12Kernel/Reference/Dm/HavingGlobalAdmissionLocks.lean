@@ -318,6 +318,9 @@ private def referenceCases : List (String × String × String × String × Strin
   ("GroupRangemarked", "Rows/Sub/Leaf", "DateRangesOverlap(Rows*/Ranges Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "MVK_NO_GROUPS_ALLOWED", "MVK_NO_GROUPS_ALLOWED"),
   ("GroupRangeguard", "Rows/Sub/Leaf", "FieldFilled(Rows/Sub/Leaf) And DateRangesOverlap(Rows*/Ranges Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "MVK_NO_GROUPS_ALLOWED", "MVK_NO_GROUPS_ALLOWED"),
   ("GroupRangeunrelated", "SkuText", "DateRangesOverlap(Rows*/Ranges Having (CurrentRepetition(Rows) > 0))", "MVK_NO_GROUPS_ALLOWED", "MVK_NO_GROUPS_ALLOWED"),
+  -- Derived, `external evidence pending`: the filtered entity's kind precedes the body's iteration demand in
+  -- the filter's own chain, so a group whose body reads only `$` keeps the kind class where its field twin
+  -- draws the iteration class; no peer row measures a group filter of this shape.
   ("GroupRangeallmarked", "Rows/Sub/Leaf", "DateRangesOverlap(Rows*/Ranges Having (FieldFilled($Rows/Sub/Leaf)))", "MVK_NO_GROUPS_ALLOWED", "MVK_NO_GROUPS_ALLOWED"),
   ("GroupSumplain", "Rows/Sub/Leaf", "Sum(Rows*/Sub) > 0", "admitted", "admitted"),
   ("GroupSumpayload", "Rows/Sub/Leaf", "Sum(Rows*/Sub Having (CurrentRepetition(Rows) > 0)) > 0", "MVK_NO_GROUPS_ALLOWED", "MVK_NO_GROUPS_ALLOWED"),
@@ -325,6 +328,7 @@ private def referenceCases : List (String × String × String × String × Strin
   ("GroupSummarked", "Rows/Sub/Leaf", "Sum(Rows*/Sub Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0", "MVK_NO_GROUPS_ALLOWED", "MVK_NO_GROUPS_ALLOWED"),
   ("GroupSumguard", "Rows/Sub/Leaf", "FieldFilled(Rows/Sub/Leaf) And Sum(Rows*/Sub Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0)) > 0", "MVK_NO_GROUPS_ALLOWED", "MVK_NO_GROUPS_ALLOWED"),
   ("GroupSumunrelated", "SkuText", "Sum(Rows*/Sub Having (CurrentRepetition(Rows) > 0)) > 0", "MVK_NO_GROUPS_ALLOWED", "MVK_NO_GROUPS_ALLOWED"),
+  -- Derived like `GroupRangeallmarked` above.
   ("GroupSumallmarked", "Rows/Sub/Leaf", "Sum(Rows*/Sub Having (FieldFilled($Rows/Sub/Leaf))) > 0", "MVK_NO_GROUPS_ALLOWED", "MVK_NO_GROUPS_ALLOWED"),
   ("Fillplain", "Rows/RowText", "AtLeastOneFieldFilled(Rows*/RowText)", "admitted", "admitted"),
   ("Fillpayload", "Rows/RowText", "AtLeastOneFieldFilled(Rows*/RowText Having (CurrentRepetition(Rows) > 0))", "admitted", "admitted"),
@@ -362,6 +366,10 @@ private def referenceMismatches : List (String × String × String) :=
 example : referenceModel.validate.isOk = true := by native_decide
 example : referenceMismatches = [] := by native_decide
 
+-- Every row of the peer's slot-counting grid. The `marked` shape refuses under the three negatives: its
+-- `$`-marked read binds the rule's row, and a negative refuses wherever the rule iterates. Locked:
+-- a12-dmkits IterationBindingLawsTest (`theIterationGuardCountsIndependentSlots`) at 1124b523f, kernel
+-- 31.1.1; the computation twin admits every row, as the second component of each check says.
 private def iterationGuardCases : List (String × String × String × String) := [
   ("AllFieldsFilledrowPair", "Rows/RowVal", "AllFieldsFilled(Rows/RowVal, Rows/RowScaled)", "admitted"),
   ("AllFieldsFilledmixedPair", "Rows/RowVal", "AllFieldsFilled(Rows/RowVal, Amount)", "admitted"),
@@ -373,7 +381,7 @@ private def iterationGuardCases : List (String × String × String × String) :=
   ("NoFieldFilledrowPair", "Rows/RowVal", "NoFieldFilled(Rows/RowVal, Rows/RowScaled)", "MVK_NEG_CONDITION_IN_ITERATION"),
   ("NoFieldFilledmixedPair", "Rows/RowVal", "NoFieldFilled(Rows/RowVal, Amount)", "MVK_NEG_CONDITION_IN_ITERATION"),
   ("NoFieldFilledstarAndRow", "Rows/RowScaled", "NoFieldFilled(Rows*/RowVal, Rows/RowScaled)", "MVK_NEG_CONDITION_IN_ITERATION"),
-  ("NoFieldFilledmarked", "Rows/Sub/Leaf", "NoFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "admitted"),
+  ("NoFieldFilledmarked", "Rows/Sub/Leaf", "NoFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "MVK_NEG_CONDITION_IN_ITERATION"),
   ("NoFieldFilledguard", "Rows/Sub/Leaf", "FieldFilled(Rows/Sub/Leaf) And NoFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "admitted"),
   ("NoFieldFilledcandidate", "Rows/RowVal", "NoFieldFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "admitted"),
   ("NoFieldFilledplain", "Rows/RowVal", "NoFieldFilled(Rows*/RowVal)", "admitted"),
@@ -394,14 +402,14 @@ private def iterationGuardCases : List (String × String × String × String) :=
   ("NotAllFieldsFilledrowPair", "Rows/RowVal", "NotAllFieldsFilled(Rows/RowVal, Rows/RowScaled)", "MVK_NEG_CONDITION_IN_ITERATION"),
   ("NotAllFieldsFilledmixedPair", "Rows/RowVal", "NotAllFieldsFilled(Rows/RowVal, Amount)", "MVK_NEG_CONDITION_IN_ITERATION"),
   ("NotAllFieldsFilledstarAndRow", "Rows/RowScaled", "NotAllFieldsFilled(Rows*/RowVal, Rows/RowScaled)", "MVK_NEG_CONDITION_IN_ITERATION"),
-  ("NotAllFieldsFilledmarked", "Rows/Sub/Leaf", "NotAllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "admitted"),
+  ("NotAllFieldsFilledmarked", "Rows/Sub/Leaf", "NotAllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "MVK_NEG_CONDITION_IN_ITERATION"),
   ("NotAllFieldsFilledguard", "Rows/Sub/Leaf", "FieldFilled(Rows/Sub/Leaf) And NotAllFieldsFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "admitted"),
   ("NotAllFieldsFilledcandidate", "Rows/RowVal", "NotAllFieldsFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "admitted"),
   ("NotAllFieldsFilledplain", "Rows/RowVal", "NotAllFieldsFilled(Rows*/RowVal)", "admitted"),
   ("NotExactlyOneFieldFilledrowPair", "Rows/RowVal", "NotExactlyOneFieldFilled(Rows/RowVal, Rows/RowScaled)", "MVK_NEG_CONDITION_IN_ITERATION"),
   ("NotExactlyOneFieldFilledmixedPair", "Rows/RowVal", "NotExactlyOneFieldFilled(Rows/RowVal, Amount)", "MVK_NEG_CONDITION_IN_ITERATION"),
   ("NotExactlyOneFieldFilledstarAndRow", "Rows/RowScaled", "NotExactlyOneFieldFilled(Rows*/RowVal, Rows/RowScaled)", "MVK_NEG_CONDITION_IN_ITERATION"),
-  ("NotExactlyOneFieldFilledmarked", "Rows/Sub/Leaf", "NotExactlyOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "admitted"),
+  ("NotExactlyOneFieldFilledmarked", "Rows/Sub/Leaf", "NotExactlyOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "MVK_NEG_CONDITION_IN_ITERATION"),
   ("NotExactlyOneFieldFilledguard", "Rows/Sub/Leaf", "FieldFilled(Rows/Sub/Leaf) And NotExactlyOneFieldFilled(Rows*/RowVal Having (FieldFilled($Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "admitted"),
   ("NotExactlyOneFieldFilledcandidate", "Rows/RowVal", "NotExactlyOneFieldFilled(Rows*/RowVal Having (FieldFilled(Rows/Sub/Leaf) And CurrentRepetition(Rows) > 0))", "admitted"),
   ("NotExactlyOneFieldFilledplain", "Rows/RowVal", "NotExactlyOneFieldFilled(Rows*/RowVal)", "admitted"),

@@ -80,11 +80,15 @@ example : unguarded.all (fun text =>
 private def nested (text : String) (expected : IterationGuardStatus) (allowed : Bool) : Bool :=
   classifies ("FieldFilled(Case) Or " ++ text) expected allowed ["Form", "Parents", "Lookup"] 17 30
 
+-- A product sum mixing the key's iterating selection with a fixed one is refused at the key's level like
+-- any aggregate, and at the parent level, where both selections iterate, only the zero rule applies.
+-- The peer rows of this mechanism are locked in `IterationGuard31Locks`; the compositions here, on this
+-- model, are derived from it (`external evidence pending`).
 example : nested "Sum(/Form/Parents/Rows/Body For LookupKey) > 0" .guarded true ∧
     nested "Sum(/Form/Parents/Rows/N For LookupKey,/Form/Parents/Rows/N For \"b\") > 0" .unguarded false ∧
-    nested "SumOfProducts(/Form/Parents/Rows/Items*/N For LookupKey,/Form/Parents/Rows/Items*/M For \"b\") > 0" .guarded true ∧
+    nested "SumOfProducts(/Form/Parents/Rows/Items*/N For LookupKey,/Form/Parents/Rows/Items*/M For \"b\") > 0" .unguarded false ∧
     classifies "FieldFilled(/Form/Parents/Anchor) And (FieldFilled(Case) Or SumOfProducts(/Form/Parents/Rows/Items*/N For LookupKey,/Form/Parents/Rows/Items*/M For \"b\") == 0)"
-      .guarded true ["Form", "Parents", "Lookup"] 17 30 ∧
+      .unguarded false ["Form", "Parents", "Lookup"] 17 30 ∧
     classifies "FieldFilled(Case) Or SumOfProducts(/Form/Parents/Rows/Items*/N For LookupKey,/Form/Parents/Rows/Items*/M For \"b\") == 0"
       .unguarded false ["Form", "Parents", "Lookup"] 17 1 := by native_decide
 

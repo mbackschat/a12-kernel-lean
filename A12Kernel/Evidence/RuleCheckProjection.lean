@@ -313,7 +313,14 @@ def deferred : List (String × String) :=
     "k22-static-s4-2026-10-24/obs.json#va12",
     "k22-static-s4-2026-10-24/obs.json#va18",
     "parser-index-and-iteration-classes/obs4.json#D17",
-    "parser-index-and-iteration-classes/obsc.json#F04"].map (·, "kernel 31.1.1 display-label retirement"))
+    "parser-index-and-iteration-classes/obsc.json#F04"].map (·, "kernel 31.1.1 display-label retirement")) ++
+  -- Kernel 30.8.1 rows of the two iteration changes of kernel 31.1.1 (Letter B §5e): a negative refuses wherever
+  -- the rule iterates, a marked filter's bound row included, and a filtered group's kind is asked after its walk.
+  (["having-iteration-guards-2026-10-09/observations.json#vNoFieldFilledmarked",
+    "having-iteration-guards-2026-10-09/observations.json#vNotAllFieldsFilledmarked",
+    "having-iteration-guards-2026-10-09/observations.json#vNotExactlyOneFieldFilledmarked"].map
+      (·, "kernel 31.1.1 negative-iteration guard")) ++
+  [("filtered-star-leading-kind/obs3.json#ctl-filtered-group-unstarred", "kernel 31.1.1 filtered-group kind after the walk")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with

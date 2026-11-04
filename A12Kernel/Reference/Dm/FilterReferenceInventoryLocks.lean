@@ -422,7 +422,10 @@ private def filteredKeyCases : List (String × KernelStaticDiagnostic) := [
   ("Rows*/Lines/Qty Having FieldFilled(Rows/Lines/Qty)", .semanticIndexKeyInvalidIteration),
   ("Rows*/Tag Having FieldFilled($Expected)", .noIterationForWildcard),
   ("$Rows*/Tag Having FieldFilled(Rows/Tag)", .invalidOuterIteration),
-  ("Rows Having [Missing] > 0", .noGroupsAllowed),
+  -- A group key's filter body is walked before the key's kind is asked, so a name resolving to nothing
+  -- draws the entity class. Locked: a12-dmkits FilterBodyComparisonLawsTest
+  -- (`whereTheFilterChainRaisesAroundItsBody`) at 1124b523f, kernel 31.1.1.
+  ("Rows Having [Missing] > 0", .invalidEntity),
   ("Rows*/Tag->Missing Having FieldFilled(Rows/Tag)", .noEnumeration),
   ("Rows*/Tag->Missing Having FieldFilled(Parties/Tag)", .invalidIterationInSetExpression),
   ("Missing*/Tag Having [Expected] > \"keep\"", .invalidEntity)]
@@ -556,10 +559,12 @@ example : nestedFillOperators.all (fun operator => [false, true].all fun row =>
     nestedFillResults (nested ++ " And FieldFilled($Rows/Tag)") row == (invalid, invalid) &&
     nestedFillResults (operator ++ "(Rows*/N Having FieldFilled(Rows/N), $Rows/Tag)") row == (invalid, invalid)) = true := by native_decide
 
+-- A name resolving to nothing in a filter body draws the entity class whether the filtered operand is a
+-- group or a field: the kind is asked after the body. Locked: a12-dmkits FilterBodyComparisonLawsTest
+-- (`whereTheFilterChainRaisesAroundItsBody`) at 1124b523f, kernel 31.1.1.
 example : nestedFillOperators.all (fun operator => [false, true].all fun row =>
     let missing := KernelStaticDiagnostic.invalidEntity.kernelCode
-    let groups := KernelStaticDiagnostic.noGroupsAllowed.kernelCode
-    nestedFillResults (operator ++ "(Rows* Having FieldFilled(Missing))") row == (groups, groups) &&
+    nestedFillResults (operator ++ "(Rows* Having FieldFilled(Missing))") row == (missing, missing) &&
     nestedFillResults (operator ++ "(Rows*/N Having FieldFilled(Missing))") row == (missing, missing)) = true := by native_decide
 
 private def nestedAggregateOperators : List String := ["Sum", "MinValue", "MaxValue"]
