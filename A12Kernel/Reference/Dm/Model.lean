@@ -10,6 +10,7 @@ import A12Kernel.Semantics.NumberBound
 import A12Kernel.Reference.Dm.MemberBinding
 import A12Kernel.Reference.Dm.LocalizedTextBinding
 import A12Kernel.Reference.Dm.ModelFrame
+import A12Kernel.Reference.Dm.ElementBinding
 
 /-! # Reading a DM-JSON document model
 
@@ -93,8 +94,9 @@ def DmModel.declarations (model : DmModel) : List ExecutableDeclaration :=
 private def str? (json : Json) (key : String) : Option String :=
   (json.getObjValAs? String key).toOption
 
-private def nat? (json : Json) (key : String) : Option Nat :=
-  (json.getObjValAs? Nat key).toOption
+/-- A length or digit count as a boxed `Integer` member binds it; a negative one is no length. -/
+private def length? (json : Json) (key : String) : Except String (Option Nat) := do
+  pure ((← intMember? json key).bind fun value => if 0 ≤ value then some value.toNat else none)
 
 /-- A Number bound written as text, read by the decimal grammar the Kernel's DM-JSON binding applies:
 surrounding spaces trimmed, an optional sign, digits with an optional point and an optional exponent
@@ -208,8 +210,8 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
       let noValueValidation ← booleanMember? body "noValueValidation"
       pure { base with
         stringPolicy := { lineBreaksPermitted
-                          minLength := nat? body "minLength", maxLength := nat? body "maxLength" }
-        stringSignedMaxLength := (body.getObjValAs? Int "maxLength").toOption.filter (· < -1)
+                          minLength := ← length? body "minLength", maxLength := ← length? body "maxLength" }
+        stringSignedMaxLength := (← intMember? body "maxLength").filter (· < -1)
         stringPatternSource := str? body "pattern"
         stringValueMode := if noValueValidation then .raw else .evaluated }
   | "NumberType" =>
@@ -218,9 +220,10 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
       -- text's separator and fractional count unchecked. Both written `-1` is a declaration refusal.
       -- A `-1` maximum also leaves the static scale unknown, which only static scale checks read
       -- (`NumField.staticScaleUnknown`); the stored values' scale stays the minimum computed below.
-      let fractional (key : String) : Except String Int := match body.getObjValAs? Int key with
-        | .ok value => if value < -1 then throw s!"NumberType {key} {value}" else pure value
-        | .error _ => pure 0
+      let fractional (key : String) : Except String Int := do
+        match ← primitiveIntMember? body key with
+        | some value => if value < -1 then throw s!"NumberType {key} {value}" else pure value
+        | none => pure 0
       let minimumDigits ← fractional "minFractionalDigits"
       let maximumDigits ← fractional "maxFractionalDigits"
       if minimumDigits = -1 && maximumDigits = -1 then throw "MVK_FRACT_DIGITS_MISSING"
@@ -246,11 +249,11 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
                                       staticScaleUnknown := maximumDigits == -1 } }
         numericTargetConstraints := {
           minFractionalDigits
-          maxIntegerDigits := (nat? body "maxIntegerDigits").orElse fun _ => traitCap
+          maxIntegerDigits := (← length? body "maxIntegerDigits").orElse fun _ => traitCap
           zeroAllowed := !(← booleanMember? body "zeroNotAllowed")
           leadingZerosAllowed := ← booleanMember? body "leadingZerosAllowed"
           amount := traitCap.isSome
-          minStoredLength := nat? body "minLength", maxStoredLength := nat? body "maxLength"
+          minStoredLength := ← length? body "minLength", maxStoredLength := ← length? body "maxLength"
           minimum := ← printedBound "minValue", maximum := ← printedBound "maxValue"
           fractionalDigitsChecked := !(minimumDigits = -1 && maximumDigits = 0) } }
   | "BooleanType" => pure { base with policy := { kind := .boolean } }
@@ -262,8 +265,9 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         policy := { kind := .enumeration }
         enumeration := some enumeration }
   | "DateType" | "TimeType" | "DateTimeType" | "DateFragmentType" =>
-      let body ← fieldType.getObjVal? typeName
-      let _ ← body.getObj?
+      -- A body that is missing is the empty body, as on every type (kernel 31.1.1); one that is present
+      -- and no object stays refused.
+      if (fieldType.getObjVal? typeName).isOk then discard body.getObj?
       let format ← if typeName == "DateFragmentType" then
           body.getObjValAs? String "formatOfFragment"
         else match body.getObjVal? "format" with
@@ -311,7 +315,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
   | "CustomFieldType" =>
       let customName ← body.getObjValAs? String "name"
       pure { base with customType := some {
-        name := customName, minLength := nat? body "minLength", maxLength := nat? body "maxLength" } }
+        name := customName, minLength := ← length? body "minLength", maxLength := ← length? body "maxLength" } }
   | other => throw s!"field type {other}"
 
 private structure ReadState where
@@ -354,15 +358,14 @@ private def readAlternative (json : Json) : Except String DmAlternative := do
     operation := ← json.getObjValAs? String "operation"
     toleranceRangeOp := ← computationString? json "toleranceRangeOp" }
 
-/-- A rule's error code as the file writes it: an absent member is the empty text, a string, number or
-Boolean its text, and anything else unreadable. -/
+/-- A rule's error code as the file writes it: a string, number or Boolean its text, and anything else
+unreadable. An absent or `null` code has left no model by then (`bindModelMembers`). -/
 def ruleCode (body : Json) : DeclarationStringValue :=
   match (body.getObjVal? "errorCode").toOption with
-  | none => .text ""
   | some (.str value) => .text value
   | some (.num value) => .text value.toString
   | some (.bool value) => .text (if value then "true" else "false")
-  | some .null | some (.arr _) | some (.obj _) => .unreadable
+  | none | some .null | some (.arr _) | some (.obj _) => .unreadable
 
 /-- A field's body with a `TypeDefType` replaced by the inline definition it names, so every check
 reads the base kind, as the Kernel's effective type does (typedef base-kind checkpoint). A definition
@@ -386,7 +389,7 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
     StateT ReadState (Except String) Unit := do
   let kind ← element.getObjValAs? String "type"
   let name ← element.getObjValAs? String "name"
-  let body ← element.getObjVal? kind
+  let body ← StateT.lift (elementBody element kind)
   match kind with
   | "Group" =>
       let groupPath := path ++ [name]
@@ -394,12 +397,12 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
       if ExecutableDeclaration.blank name then
         modify fun state => { state with refusals := state.refusals.push (groupPath, "blank group name") }
         return
-      -- An absent count is a single group; a `null` count or one below one is
-      -- `MVK_MAX_VALUES_INVALID`, read on as a single group (2026-10-21 §2.17, §2.19).
-      let count? ← StateT.lift (intMember? body "repeatability")
+      -- An absent count is a single group, and one below one is `MVK_MAX_VALUES_INVALID`, read on as a
+      -- single group (2026-10-21 §2.17); a `null` count binds no value and leaves no model on kernel 31.1.1.
+      let count? ← StateT.lift (primitiveIntMember? body "repeatability")
       let invalid : Bool := match count? with
         | some count => decide (count < 1)
-        | none => (body.getObjVal? "repeatability").isOk
+        | none => false
       if invalid then
         modify fun state => { state with refusals := state.refusals.push (groupPath, "MVK_MAX_VALUES_INVALID") }
       let repeatability : Nat := if invalid then 1 else (count?.map Int.toNat).getD 1
@@ -419,16 +422,13 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         let names ← StateT.lift (sorts.toList.mapM (·.getObjValAs? String "name"))
         modify fun state => { state with sortNominations := state.sortNominations.push (groupPath, names) }
       let fieldsBefore := (← get).fieldsSeen
-      for child in (← body.getObjValAs? (Array Json) "elements") do
+      for child in (← StateT.lift (groupElements body)) do
         readElement groupPath scope child
       if repeatability ≤ 1 && (← get).fieldsSeen == fieldsBefore then
         modify fun state => { state with
           emptyNonrepeatableGroups := state.emptyNonrepeatableGroups.push groupPath }
   | "Field" =>
       let state ← get
-      if let some reason := fieldBindingRefusal? body then
-        modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
-        return
       if ExecutableDeclaration.blank name then
         modify fun state => { state with refusals := state.refusals.push (path ++ [name], "blank field name") }
         return
@@ -540,6 +540,7 @@ private def readModelCore (json : Json)
   let frame ← bindModelFrame json
   let content := frame.content
   bindLocalizedTextMembers content
+  bindModelMembers frame
   discard <| builtHeaderLocales json
   -- A check-only frame shape builds a model whose check fails, and the runtime route refuses such a
   -- model before evaluating it (model frame check route checkpoint, 2026-10-29; for an unsupported
@@ -557,14 +558,7 @@ private def readModelCore (json : Json)
   let ((), state) ← (roots.toList.forM (readElement [] [])).run { legalCharset, typeDefinitions }
   let fieldId (group : GroupPath) (name : String) : Option FieldId :=
     (state.fields.find? fun field => field.groupPath == group && field.name == name).map (·.id)
-  -- An unbindable Base Year fails the read rather than leave the model without the year its partial
-  -- dates are supplemented by.
   let baseYear ← intMember? info "baseYear"
-  discard <| booleanMember? info "immutable"
-  discard <| booleanMember? info "metaData"
-  for (_, definition) in typeDefinitions do
-    if let some reason := (definition.getObjVal? "fieldType").toOption.bind fieldTypeBindingRefusal? then
-      throw reason
   let mut refusals := state.refusals.toList
   let groups := state.groups.toList.map fun group =>
     let index := (state.indexFields.find? (·.1 == group.level)).bind fun (_, path, nomination) =>

@@ -104,13 +104,15 @@ private def coverageRules : List Json :=
 private def M : String := "MVK_MAX_VALUES_INVALID"
 
 /- The class falls at the group and once at every group and field beneath it, never outside; the group
-   alone draws the sentence of the count's sign, a present `null` counting as not positive. -/
+   alone draws the sentence of the count's sign. A count written `null` binds no value, which leaves no
+   model on kernel 31.1.1 where 30.8.1 counted it as not positive (Locked: a12-dmkits
+   RepeatabilityTextReadingDiffTest at 1124b523f). -/
 example :
     report "/Policy/" (policy none (some (toJson (0 : Int))) (some (toJson (3 : Int)))) =
       [s!"{M}@Coverages", "codeless:count-not-positive@Coverages", s!"{M}@Coverages/Amount",
         s!"{M}@Coverages/Riders", s!"{M}@Coverages/Riders/Code"] ∧
-    report "/Policy/" (policy none (some .null) (some (toJson (3 : Int)))) =
-      report "/Policy/" (policy none (some (toJson (0 : Int))) (some (toJson (3 : Int)))) ∧
+    (report "/Policy/" (policy none (some .null) (some (toJson (3 : Int))))).head?.any
+      (·.startsWith "unreadable") ∧
     report "/Policy/" (policy none (some (toJson (4 : Int))) (some (toJson (-7 : Int)))) =
       [s!"{M}@Coverages/Riders", "codeless:count-signed@Coverages/Riders", s!"{M}@Coverages/Riders/Code"] ∧
     report "/Policy/" (policy none (some (toJson (0 : Int))) (some (toJson (0 : Int)))) =

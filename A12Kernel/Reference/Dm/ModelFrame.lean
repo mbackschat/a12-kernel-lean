@@ -15,11 +15,16 @@ checkpoint). A member it cannot bind leaves no model, a read failure here:
   the member is non-null.
 * An object member binds an object, and its absence where the member is optional.
 
-Five shapes cost only the entry's consistency check: no `modelVersion`, no `modelInfo`, `locales`
-absent or `null`, a `null` supported character, and a condition language naming a parsed locale other
-than the two supported, measured for the codes `supportedConditionLanguages` lists.
-The model builds and its check fails without a class, so they are a `FrameCheckFailure`, never a read
-failure.
+Five shapes cost only the entry's consistency check: no `modelInfo`, a `modelVersion` or `locales`
+written `null`, a `null` supported character, and a condition language naming a parsed locale other
+than the two supported, measured for the codes `supportedConditionLanguages` lists. The model builds and
+its check fails without a class, so they are a `FrameCheckFailure`, never a read failure. The `null`
+version and `null` locales are kernel 30.8.1's rows, unmeasured on 31.1.1 and kept.
+
+Kernel 31.1.1 reads a header with no `id`, no `modelVersion` or no `locales`, and one whose `id` is
+`null`, into a model it then cannot build (peer KF654, a12-dmkits `1124b523f`, `ModelHeaderSlotLawsTest`
+and `WorkspaceBlankTextDiffTest`, 2026-11-02): each leaves no model here. Kernel 30.8.1 admitted the
+`id` absent or `null` and built the other two to fail their check.
 
 An integer number binds as its value's decimal text, measured for `5`; a token with a fraction or an
 exponent is outside the represented profile, since the Kernel keeps the token as written and Lean's
@@ -66,6 +71,12 @@ def frameText (parent : Json) (key : String) (nonNull : Bool := false) : Except 
       let some text ← scalarText? value | throw s!"model member {key} is no text"
       pure (some text)
 
+/-- A member the Kernel never defaults: its absence leaves no model. -/
+def requireMember (parent : Json) (key : String) : Except String Unit :=
+  match parent.getObjVal? key with
+  | .error _ => throw s!"model member {key} is absent"
+  | .ok _ => pure ()
+
 /-- A list member: `none` when absent, or `null` on a nullable member. -/
 def frameList (parent : Json) (key : String) (nonNull : Bool := false) : Except String (Option (Array Json)) :=
   match parent.getObjVal? key with
@@ -109,7 +120,9 @@ private def supportedConditionLanguages : List String := ["en_US", "de_DE"]
 def bindModelFrame (json : Json) : Except String ModelFrame := do
   let some header ← frameObject json "header" | throw "model has no header"
   let some content ← frameObject json "content" | throw "model has no content"
-  for key in ["id", "modelType", "description"] do discard <| frameText header key
+  for key in ["modelType", "description"] do discard <| frameText header key
+  discard <| frameText header "id" (nonNull := true)
+  for key in ["id", "modelVersion", "locales"] do requireMember header key
   let version ← frameText header "modelVersion"
   let locales ← frameList header "locales"
   for key in ["labels", "annotations", "modelReferences"] do discard <| frameList header key

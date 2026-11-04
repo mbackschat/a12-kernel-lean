@@ -53,7 +53,6 @@ inductive FieldTypeNotificationKind where
   | customNameContent
   | optionalDateTypeInvalid
   | additionalCheckInvalid
-  | unspecifiedTypeNoCodegen
   | countOfValuesInvalid
   | internalValuesAndDisplayValues
   | displayValuesDuplicate
@@ -78,7 +77,7 @@ def all : List FieldTypeNotificationKind :=
     patternInvalid, valueTooLong, valueTooShort, valuesDuplicate, supplementaryCharacter,
     fractDigitsMissing, fractDigitsInvalid, maxLengthTooBig, minLengthTooBig, maxLengthTooSmall,
     arityTooBig, minValueBiggerThanMaxValue, customNameMissing, customNameContent,
-    optionalDateTypeInvalid, additionalCheckInvalid, unspecifiedTypeNoCodegen, countOfValuesInvalid,
+    optionalDateTypeInvalid, additionalCheckInvalid, countOfValuesInvalid,
     internalValuesAndDisplayValues, displayValuesDuplicate, internalValueInvalid,
     displayValueInvalid, categoryValueInvalid, lineBreak, sValueInvalid, dateFormatInvalid,
     dateRangeFormatInvalid, dateRangeFormatMissing, dateRangeSeparatorInvalid]
@@ -112,7 +111,6 @@ def label : FieldTypeNotificationKind → String
   | customNameContent => "codeless:custom-name-content"
   | optionalDateTypeInvalid => "MVK_OPTIONAL_DATE_TYPE_INVALID"
   | additionalCheckInvalid => "MVK_ADDITIONAL_CHECK_INVALID"
-  | unspecifiedTypeNoCodegen => "MVK_UNSPECIFIED_TYPE_NO_CODEGEN"
   | countOfValuesInvalid => "MVK_COUNT_OF_VALUES_INVALID"
   | internalValuesAndDisplayValues => "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES"
   | displayValuesDuplicate => "MVK_DISPLAY_VALUES_DUPLICATE"
@@ -237,7 +235,6 @@ inductive FieldTypeDeclaration where
   | dateFragment (declaration : DateFragmentTypeDeclaration)
   | dateRange (declaration : DateRangeTypeDeclaration)
   | enumeration (declaration : EnumerationTypeDeclaration)
-  | unspecified
   /-- A field type none of these classes concerns. -/
   | other
   deriving Repr, DecidableEq
@@ -476,7 +473,7 @@ private def numberNotifications (declaration : NumberTypeDeclaration) : List Fie
       | _, _ => []) ++
     raiseIf (boundsMisordered declaration) .minValueBiggerThanMaxValue
 
-/-! ## Custom, Date, unspecified -/
+/-! ## Custom and Date -/
 
 private def customNameCharacter (character : Char) : Bool :=
   character.isAlphanum || character == '_'
@@ -634,7 +631,6 @@ def FieldTypeDeclaration.judge (compilePattern : StringPatternCompiler) (context
   | .enumeration declaration =>
       if declaration.values.isEmpty then .modelNotBuilt
       else .notifications (enumerationNotifications context declaration).eraseDups
-  | .unspecified => .notifications [.declared .unspecifiedTypeNoCodegen]
   | .other => .notifications []
 
 end A12Kernel

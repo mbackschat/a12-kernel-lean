@@ -20,7 +20,8 @@ inductive DeclarationStringValue where
   deriving Repr, BEq, DecidableEq
 
 inductive ExecutableDeclarationKind where
-  /-- Absence is decoded as an empty string; explicit null or a container is unreadable. -/
+  /-- A container is unreadable. An absent or `null` code leaves no model on kernel 31.1.1 before this stage,
+  where 30.8.1 decoded absence as the empty string and `null` as unreadable. -/
   | rule (errorCode : DeclarationStringValue)
   | computation
   deriving Repr, BEq, DecidableEq

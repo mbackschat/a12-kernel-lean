@@ -37,7 +37,13 @@ private def failure (name : String) (code : Option Json) : Option ModelReadFailu
 private def findings (name : String) (kinds : List DeclarationNotificationKind) : ModelReadFailure :=
   .declaration (.notifications (kinds.map fun kind => { declaration := ["Form", name], kind }))
 
-example : failure "Ordinary" none = some (findings "Ordinary" [.missingCode, .emptyCode]) := by native_decide
+/- An absent or `null` code is a member the Kernel reads without a default, so it leaves no model, a read
+   failure before any class is drawn; kernel 30.8.1 drew `MVK_ERROR_CODE_MISSING` and the empty-code
+   sentence for the absent member and the unreadable class for `null`. Locked: a12-dmkits
+   RuleCodeAndSeverityLawsTest at 1124b523f, kernel 31.1.1. -/
+example : (match failure "Ordinary" none with | some (.input _) => true | _ => false) = true := by native_decide
+example : (match failure "Ordinary" (some .null) with | some (.input _) => true | _ => false) = true := by
+  native_decide
 example : failure "Ordinary" (some (.str "")) =
     some (findings "Ordinary" [.missingCode, .emptyCode]) := by native_decide
 example : failure "Ordinary" (some (.str "   ")) =
@@ -61,8 +67,8 @@ example : failure "vk_vk.Bad" (some (.str "CODE")) =
     some (findings "vk_vk.Bad" [.nameContent]) := by native_decide
 example : failure "" (some (.str "")) =
     some (.declaration (.buildFailure ["Form", ""])) := by native_decide
-example : failure "Vk_VkRule" (some .null) =
-    some (.declaration (.unreadable ["Form", "Vk_VkRule"] "errorCode")) := by native_decide
+example : (match failure "Vk_VkRule" (some .null) with | some (.input _) => true | _ => false) = true := by
+  native_decide
 example : failure "Ordinary" (some (Json.mkObj [])) =
     some (.declaration (.unreadable ["Form", "Ordinary"] "errorCode")) := by native_decide
 

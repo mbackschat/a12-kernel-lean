@@ -271,18 +271,17 @@ def GroupNameJudgement.below (judgement : GroupNameJudgement) (above : PathAbove
 def PathAbove.forRule (above : PathAbove) : List ElementNameKind :=
   groupPathCodeless above.groups
 
-/-- A group's count classes. A count below one, or a present member read as no value such as JSON
-`null`, is `MVK_MAX_VALUES_INVALID` with the codeless sentence of its sign: not positive for zero or no
-value, signed below zero. The class falls once more at every group and field beneath the group,
-whose own sentence it does not repeat ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21),
-§2.17); which sentence present text read as no value draws is unmeasured. -/
-def groupCountKinds (repeatability : Option Int) (present : Bool) : List ElementNameKind :=
-  match repeatability with
+/-- A group's count classes. A count below one is `MVK_MAX_VALUES_INVALID` with the codeless sentence of
+its sign: not positive for zero, signed below zero. The class falls once more at every group and field
+beneath the group, whose own sentence it does not repeat ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21),
+§2.17). A present count that binds no value leaves no model on kernel 31.1.1 before this is asked
+(`primitiveIntMember?`). -/
+def groupCountKinds : Option Int → List ElementNameKind
   | some count =>
       if count < 0 then [.maxValuesInvalid, .countSigned]
       else if count == 0 then [.maxValuesInvalid, .countNotPositive]
       else []
-  | none => if present then [.maxValuesInvalid, .countNotPositive] else []
+  | none => []
 
 /-- A repeatability beyond its carrier's ceiling and a non-repeatable group with sort fields. A group
 declaring no repeatability, or one, is non-repeatable. A repeatability past a signed 32-bit count is not

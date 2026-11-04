@@ -356,8 +356,10 @@ example :
       ["MVK_ADDITIONAL_CHECK_INVALID"] := by
   native_decide
 
-/- Law 6, an unspecified type is one notification per field (u-1, u-body). -/
-example : labels .unspecified = ["MVK_UNSPECIFIED_TYPE_NO_CODEGEN"] ∧ labels .other = [] := by
+/- Law 6, a type none of the classes concerns raises none. Kernel 30.8.1's one notification per
+   unspecified-type field (u-1, u-body) is deleted: 31.1.1 reads no `UnspecifiedType`, so no model carries
+   one (a12-dmkits FieldTypeBindingLawsTest at 1124b523f; locked in the reader binding locks). -/
+example : labels .other = [] := by
   native_decide
 
 /- Law 7, the count of labelled values: once one value carries a label and another does not, every

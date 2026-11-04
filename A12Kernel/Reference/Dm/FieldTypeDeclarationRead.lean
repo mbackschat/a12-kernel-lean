@@ -12,8 +12,9 @@ after its type definition is resolved per referencing field (a definition no fie
 nothing, and one that two fields reference draws its notifications at both), a group's name,
 repeatability, sort fields and row-key nominations, a rule's or computation's name and error code, and
 the supplementary scalars of an element's annotations. It reads only the members those laws consume, keeps
-integer members raw so a refused one stays visible, and binds every boolean member as the Kernel
-does (`booleanMember?`).
+integer members raw so a refused one stays visible, and binds every integer and boolean member as the
+Kernel does (`intMember?`, `primitiveIntMember?`, `booleanMember?`), after the one pass that binds every
+element and type body for all three DM readers (`bindModelMembers`).
 
 The names above an element decide what it may report: a path class on a group or field name hands the
 group-path codeless notification to everything below it and withholds the path class, the `xml` group
@@ -36,11 +37,6 @@ namespace A12Kernel.Dm
 
 open Lean A12Kernel
 
-private def optionalInt (json : Json) (key : String) : Except String (Option Int) :=
-  match json.getObjVal? key with
-  | .error _ | .ok .null => pure none
-  | .ok value => some <$> fromJson? value
-
 private def optionalString (json : Json) (key : String) : Except String (Option String) :=
   match json.getObjVal? key with
   | .error _ | .ok .null => pure none
@@ -58,8 +54,8 @@ private def readMessages (json : Json) : Except String (List FieldMessageEntry) 
 
 private def readString (body : Json) : Except String StringTypeDeclaration := do
   pure {
-    minLength := ← optionalInt body "minLength"
-    maxLength := ← optionalInt body "maxLength"
+    minLength := ← intMember? body "minLength"
+    maxLength := ← intMember? body "maxLength"
     noValueValidation := ← booleanMember? body "noValueValidation"
     lineBreaksPermitted := ← booleanMember? body "lineBreaksPermitted"
     pattern := ← optionalString body "pattern"
@@ -74,11 +70,11 @@ private def readNumber (body : Json) : Except String NumberTypeDeclaration := do
     | some "amount" => pure true
     | some other => throw s!"NumberType trait {other}"
   pure {
-    minLength := ← optionalInt body "minLength"
-    maxLength := ← optionalInt body "maxLength"
-    maxIntegerDigits := ← optionalInt body "maxIntegerDigits"
-    minFractionalDigits := ← optionalInt body "minFractionalDigits"
-    maxFractionalDigits := ← optionalInt body "maxFractionalDigits"
+    minLength := ← intMember? body "minLength"
+    maxLength := ← intMember? body "maxLength"
+    maxIntegerDigits := ← intMember? body "maxIntegerDigits"
+    minFractionalDigits := ← primitiveIntMember? body "minFractionalDigits"
+    maxFractionalDigits := ← primitiveIntMember? body "maxFractionalDigits"
     positivesOnly := ← booleanMember? body "positivesOnly"
     amount
     minValue := ← decimalMember? body "minValue"
@@ -108,17 +104,19 @@ private def readDeclaration (fieldJson : Json) : Except String FieldTypeDeclarat
   let some fieldType := (fieldJson.getObjVal? "fieldType").toOption | pure .other
   let some typeName := (fieldType.getObjValAs? String "type").toOption | pure .other
   let body := (fieldType.getObjVal? typeName).toOption.getD (Json.mkObj [])
-  -- A temporal kind without its body object is unreadable (rows `tb-time-nobody`, `tb-dt-nobody`,
-  -- `tb-frag-nobody`; spec/01 §3 for Date), while a String or a Boolean without one is read.
-  if ["DateType", "TimeType", "DateTimeType", "DateFragmentType"].contains typeName then
-    discard <| (fieldType.getObjVal? typeName).bind Json.getObj?
+  -- A body that is missing is the empty body on every type, the four temporal kinds included (kernel
+  -- 31.1.1, peer KF654; 30.8.1 refused them, rows `tb-time-nobody`, `tb-dt-nobody`, `tb-frag-nobody`). A
+  -- temporal body that is present and no object stays unreadable.
+  if ["DateType", "TimeType", "DateTimeType", "DateFragmentType"].contains typeName &&
+      (fieldType.getObjVal? typeName).isOk then
+    discard body.getObj?
   match typeName with
   | "StringType" => .string <$> readString body
   | "NumberType" => .number <$> readNumber body
   | "CustomFieldType" =>
       pure (.custom { name := ← optionalString body "name"
-                      minLength := ← optionalInt body "minLength"
-                      maxLength := ← optionalInt body "maxLength" })
+                      minLength := ← intMember? body "minLength"
+                      maxLength := ← intMember? body "maxLength" })
   | "DateType" =>
       pure (.date { format := ← optionalString body "format"
                     partialMode := ← partialMode? (← optionalString body "datePrecision")
@@ -131,7 +129,6 @@ private def readDeclaration (fieldJson : Json) : Except String FieldTypeDeclarat
       pure (.dateRange { format := ← optionalString body "format"
                          separator := ← optionalString body "rangeSeparator" })
   | "EnumerationType" => .enumeration <$> readEnumeration body
-  | "UnspecifiedType" => pure .unspecified
   | _ => pure .other
 
 /-- What the model's condition language fixes: the two tokens a field's own message may name and the
@@ -202,11 +199,11 @@ private partial def collectBinding (environment : WalkEnvironment) (scope : List
     (path : GroupPath) (element : Json) : StateT BindingState (Except String) Unit := do
   let kind ← StateT.lift (element.getObjValAs? String "type")
   let name := (element.getObjValAs? String "name").toOption.getD ""
-  let body := (element.getObjVal? kind).toOption.getD (Json.mkObj [])
+  let body ← StateT.lift (elementBody element kind)
   match kind with
   | "Group" =>
       let groupPath := path ++ [name]
-      let repeatability ← StateT.lift (optionalInt body "repeatability")
+      let repeatability ← StateT.lift (primitiveIntMember? body "repeatability")
       let scope ← match repeatability with
         | some declared =>
             if 1 < declared then do
@@ -216,7 +213,7 @@ private partial def collectBinding (environment : WalkEnvironment) (scope : List
               pure (scope ++ [level])
             else pure scope
         | none => pure scope
-      for child in ← StateT.lift (arrayMembers body "elements") do
+      for child in ← StateT.lift (groupElements body) do
         collectBinding environment scope groupPath child
   | "Field" =>
       let skipsValidation ← StateT.lift (do
@@ -287,7 +284,7 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
     (parent : List String) (element : Json) : Except String (List ElementReport) := do
   let kind ← element.getObjValAs? String "type"
   let name := (element.getObjValAs? String "name").toOption.getD ""
-  let body := (element.getObjVal? kind).toOption.getD (Json.mkObj [])
+  let body ← elementBody element kind
   let path := parent ++ [name]
   let annotated ← annotationsRepertoire element
   match kind with
@@ -295,12 +292,12 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
       if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
       let isRoot := parent.isEmpty
       let judgement := groupName isRoot name
-      let repeatability ← intMember? body "repeatability"
+      let repeatability ← primitiveIntMember? body "repeatability"
       if repeatability.any (2147483647 < ·) then
         throw s!"group {name} declares a repeatability the Kernel does not read"
-      let children ← arrayMembers body "elements"
+      let children ← groupElements body
       let sorts ← arrayMembers body "sortFields"
-      let counted := groupCountKinds repeatability (body.getObjVal? "repeatability").isOk
+      let counted := groupCountKinds repeatability
       let own := ((judgement.reported above ++ groupDeclarationKinds isRoot repeatability sorts.length ++
           (if above.countInvalid then [ElementNameKind.maxValuesInvalid] else []) ++ counted).eraseDups).map (·.label)
       let rowKeys ← rowKeyReports environment path body
@@ -346,6 +343,7 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
   let frame ← bindModelFrame json
   let content := frame.content
   bindLocalizedTextMembers content
+  bindModelMembers frame
   let locales ← headerLocales json
   let (messageTokens, valueWord) ← languageProfile (frame.conditionLanguage.getD "en_US")
   let roots := frame.rootGroups.toList
@@ -400,16 +398,18 @@ example :
       (fun text => (decimalMember? (member (.str text)) "k").toOption.isNone) = true := by
   native_decide
 
-/- A boolean member binds: a JSON number written without a fraction is true unless zero, `null` and
-   absence are false, and a fraction, another text or another shape is unreadable (`fc-*`). The text
-   law is locked in [the binding locks](MemberBindingLocks.lean). -/
+/- A boolean member binds: a JSON number written without a fraction is true unless zero, absence is
+   false, and `null`, a fraction, another text or another shape is unreadable (`fc-*`; kernel 31.1.1's
+   Jackson 3 refuses a `null` for a primitive, where 30.8.1 read it as false, a12-dmkits
+   `BooleanMemberBindingDiffTest` at `1124b523f`). The text law is locked in
+   [the binding locks](MemberBindingLocks.lean). -/
 example :
     (booleanMember? (member (.bool true)) "k").toOption = some true ∧
     (booleanMember? (member (.num 1)) "k").toOption = some true ∧
     (booleanMember? (member (.num 0)) "k").toOption = some false ∧
     (booleanMember? (member (.str "true")) "k").toOption = some true ∧
     (booleanMember? (member (.str "false")) "k").toOption = some false ∧
-    (booleanMember? (member .null) "k").toOption = some false ∧
+    (booleanMember? (member .null) "k").toOption = none ∧
     (booleanMember? (Json.mkObj []) "k").toOption = some false ∧
     (booleanMember? (member (.num (-1))) "k").toOption = some true ∧
     (booleanMember? (member (.str "TRUE")) "k").toOption = some true ∧
@@ -438,7 +438,7 @@ private def groupElement (name : String) (repeatability : Nat) (sorts : List Str
 
 /-- A model with one root group `Form`, the short-name reference flag as given. -/
 private def nominationModel (shortNames : Bool) (elements : List String) : Json :=
-  (Json.parse ("{\"header\":{\"modelVersion\":\"28.4.0\",\"locales\":[{\"code\":\"en_US\"}]}," ++
+  (Json.parse ("{\"header\":{\"id\":\"Nominations\",\"modelVersion\":\"28.4.0\",\"locales\":[{\"code\":\"en_US\"}]}," ++
     "\"content\":{\"modelInfo\":{\"name\":\"Form\"},\"modelConfig\":" ++
     "{\"fieldRefByShortNameAllowed\":" ++ (if shortNames then "true" else "false") ++
     "},\"modelRoot\":{\"rootGroups\":[" ++ groupElement "Form" 1 [] elements ++ "]}}}")).toOption.getD .null

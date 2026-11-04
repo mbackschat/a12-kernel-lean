@@ -31,7 +31,13 @@ def captureDirectory : System.FilePath := "captures/field-declaration-notificati
 only when it disagrees for that reason alone; no other row disagrees. -/
 def deferred : List (String × String) :=
   ["pp-time", "pp-datetime", "pp-datetime-twin", "pp-fragment", "pp-range"].map (fun id =>
-    (id, "the Kernel's binding refuses a member its type does not declare; the reader ignores it")) ++
+    (id, "kernel 30.8.1's binding refused a member its type does not declare, which kernel 31.1.1 reads past (spec/01 §1.1)")) ++
+  ["u-1", "u-body", "u-two", "u-nested", "u-td2", "u-td0", "u-cond", "u-cond2", "u-cond3", "u-cond4",
+    "pa-desc-content", "pa-f-content", "rid-co", "ps-61-content", "mt-co", "o-1", "o-1r", "o-3", "o-4"].map (fun id =>
+    (id, "the row's model carries an UnspecifiedType, which kernel 31.1.1 no longer reads (spec/01 §1.1)")) ++
+  ["tb-time-nobody", "tb-dt-nobody", "tb-frag-nobody"].map (fun id =>
+    (id, "kernel 30.8.1 refused a temporal type without its body, which kernel 31.1.1 reads as an empty body (spec/01 §1.1)")) ++
+  [("fc-nv-null", "kernel 30.8.1 read a null boolean member as false, which kernel 31.1.1 refuses (spec/01 §1.1)")] ++
   ["r-filtered", "nv-filtered", "pi-filtered", "lb1-filtered", "mm-n-filtered", "p-only", "h-only",
     "ml-only", "ar-only", "mv-only", "ec-only", "ed-only", "dd-only", "ev-tab-only", "nl-only",
     "sv-only", "u-only", "cn-only", "od-only", "pa-f-only", "pa-g-only", "dg-only", "xf-only", "dc-only",

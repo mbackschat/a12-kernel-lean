@@ -90,6 +90,7 @@ example :
 private def readMetadata (mode band : Option Lean.Json) : Option (String × Option String) := do
   let computation := Lean.Json.mkObj [("type", "Computation"), ("name", "C"),
     ("Computation", Lean.Json.mkObj (mode.toList.map ("roundingMode", ·) ++ [
+      ("computedFieldRelPath", Lean.Json.str "../Target"),
       ("computationAlternatives", Lean.Json.arr #[Lean.Json.mkObj
         ([("operation", Lean.Json.str "1")] ++ band.toList.map ("toleranceRangeOp", ·))])]))]
   let json := checkedEntryFrame <| Lean.Json.mkObj [("content", Lean.Json.mkObj [("modelRoot", Lean.Json.mkObj [

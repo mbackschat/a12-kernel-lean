@@ -41,14 +41,19 @@ private def rawString (written : String) : Option Bool :=
     (·.stringValueMode == .raw)
 
 /-- The boolean law, measured on `noValueValidation` and `fieldRefByShortNameAllowed`: Java's `trim`,
-then six spellings; the text `null` and a blank text are the default; an integer is set unless zero. -/
+then six spellings; an integer is set unless zero. A blank text, the text `null` and JSON `null` bind no
+value, which kernel 31.1.1's Jackson 3 refuses for a primitive and 30.8.1 read as `false`; the other
+carriers are in [the reader binding locks](ReaderBindingLocks.lean).
+
+Locked: a12-dmkits ShortNameFlagSpellingLawsTest and CheckerDeclarationAdmissionAgreementTest at 1124b523f,
+kernel 31.1.1 (the unbindable rows). -/
 example :
     ["true", "\"true\"", "\"True\"", "\"TRUE\"", "\" true\"", "\"\\ttrue\"", "\"true\\n\"", "\" TRUE\"",
       "1", "2", "-1", "12345678901234567890123456"].all (rawString · == some true) ∧
-    ["false", "\"false\"", "\"False\"", "\"FALSE\"", "\"\"", "\" \"", "\"null\"", "\" null\"", "0", "null"].all
+    ["false", "\"false\"", "\"False\"", "\"FALSE\"", "0"].all
       (rawString · == some false) ∧
-    ["\"tRUE\"", "\"FaLsE\"", "\"NULL\"", "\"yes\"", "\"1\"", "\"\\u00A0true\"", "\"\\u2003true\"", "0.5",
-      "1.5", "1.0", "{}", "[]"].all (rawString · == none) := by
+    ["\"\"", "\" \"", "\"null\"", "\" null\"", "null", "\"tRUE\"", "\"FaLsE\"", "\"NULL\"", "\"yes\"", "\"1\"",
+      "\"\\u00A0true\"", "\"\\u2003true\"", "0.5", "1.5", "1.0", "{}", "[]"].all (rawString · == none) := by
   native_decide
 
 /-- A boolean member reads a number token by its kind: an integer is set unless zero, `-0` clearing, and
@@ -99,14 +104,20 @@ private def count? (written : String) : Option (Option Nat) :=
     read.flat.repeatableGroups.head?.bind (·.repeatability)
 
 /-- A count binds through `Integer.parseInt` after `trim`, a JSON number truncated toward zero inside
-the `int` range; a count below one, `null` and its text are `MVK_MAX_VALUES_INVALID`. -/
+the `int` range; a count below one is `MVK_MAX_VALUES_INVALID`. The count is a primitive `int`, so `null`,
+the empty and blank texts and the text `null` bind no value and leave no model on kernel 31.1.1, where
+30.8.1 drew `MVK_MAX_VALUES_INVALID` for each (the other carriers are in
+[the reader binding locks](ReaderBindingLocks.lean)).
+
+Locked: a12-dmkits RepeatabilityTextReadingDiffTest at 1124b523f, kernel 31.1.1 (the unbindable rows). -/
 example :
     ["3", "\"3\"", "\" 3 \"", "\"\\t3\\n\"", "\"+3\"", "\"03\"", "\"\\u0663\"", "\"\\uFF13\"", "3.7"].all
       (count? · == some (some 3)) ∧
     count? "1e1" = some (some 10) ∧
     ["\"3.7\"", "\"1e1\"", "\"0x3\"", "\"\\u00A03\"", "\"3\\u00A0\"", "\"99999999999\"", "2147483648",
-      "3e10", "true", "{}", "[]", "\"NULL\"", "2147483647.5"].all (count? · == none) ∧
-    ["0", "-1", "\"-1\"", "-3.7", "\"\"", "null", "\"null\"", "\" null \""].all fun written =>
+      "3e10", "true", "{}", "[]", "\"NULL\"", "2147483647.5", "\"\"", "\" \"", "null", "\"null\"",
+      "\" null \""].all (count? · == none) ∧
+    ["0", "-1", "\"-1\"", "-3.7"].all fun written =>
       refusalCodes (model "" "{}" (groupMembers := s!"\"repeatability\":{written},")) ==
         ["MVK_MAX_VALUES_INVALID"] := by
   native_decide

@@ -347,9 +347,18 @@ example : !(temporalPayloadField "DateFragmentType" (some (Json.mkObj []))).isOk
 example : ["DateType", "TimeType", "DateTimeType"].all (fun typeName =>
     [Json.null, .bool true, toJson (1 : Nat), .arr #[], Json.mkObj []].all
       (fun value => !(temporalField typeName (some value)).isOk) &&
-    [none, some Json.null, some (.str "yyyy-MM-dd"), some (.bool true),
+    [some Json.null, some (.str "yyyy-MM-dd"), some (.bool true),
       some (toJson (1 : Nat)), some (.arr #[])].all
       (fun payload => !(temporalPayloadField typeName payload).isOk)) := by native_decide
+
+/- A temporal body that is missing is the empty body, as on every field type: kernel 31.1.1 builds a missing
+   body from the type's defaults where 30.8.1 refused it on the four temporal kinds. A body written `null`
+   stays refused, unmeasured on 31.1.1. Locked: a12-dmkits FieldTypeBindingLawsTest at 1124b523f (the other
+   twelve-type rows are in [the reader binding locks](ReaderBindingLocks.lean)). -/
+example : ["DateType", "TimeType", "DateTimeType", "DateFragmentType"].all (fun typeName =>
+    reprStr (temporalPayloadField typeName none) == reprStr (temporalPayloadField typeName (some (Json.mkObj [])))) &&
+    ["DateType", "TimeType", "DateTimeType"].all (fun typeName => (temporalPayloadField typeName none).isOk) := by
+  native_decide
 
 example : temporalRead "DateType" none "2024-02-30" = some (.rejected .dateFormat) ∧
     temporalRead "DateType" none "1500-01-01" = some (.rejected .dateInvalid) ∧

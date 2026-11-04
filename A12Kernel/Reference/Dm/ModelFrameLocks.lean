@@ -15,6 +15,12 @@ check-only shapes build a model whose consistency check fails without a class: t
 declaration readers report the unbuilt model, and the evaluation reader refuses it as the runtime route
 does ([check route](../../../docs/sources/model-structure-and-declaration-probes.md#src-model-frame-check-route)).
 
+Kernel 31.1.1 changes four rows (peer KF654, a12-dmkits `1124b523f`, 2026-11-02; locked at
+`ModelHeaderSlotLawsTest`, `WorkspaceBlankTextDiffTest` and `CheckerEmptyMemberAgreementTest`): a header
+with no `id`, or one written `null`, and a header with no `modelVersion` or no `locales`, leave no model,
+where kernel 30.8.1 admitted the `id` and built the other two to fail their check. The `null` version and
+the `null` locales are 30.8.1 rows that stay, unmeasured on 31.1.1.
+
 Three kinds of row are deliberately absent. Rows the Kernel answers with a class of its own: an absent
 `modelInfo.name`, a time zone it does not know and a version it refuses. A `modelVersion` written as an
 object or an array, which neither source separates from a check-only shape. And a supported character
@@ -95,21 +101,22 @@ private def object (optional : Bool) (shape : String) : Verdict :=
   if shape == "{}" || (optional && shape == "absent") then .builds else .noModel
 
 private def rows : List (String × Json × Option Verdict) :=
-  (["id", "modelType", "description"].flatMap fun key => member ["header", key] (some <| text false ·)) ++
+  (["modelType", "description"].flatMap fun key => member ["header", key] (some <| text false ·)) ++
+  member ["header", "id"] (fun shape => some (if shape == "absent" then .noModel else text true shape)) ++
   (["variant", "branch", "revision", "comment", "joinedModelsInfo"].flatMap fun key =>
     member ["content", "modelInfo", key] (some <| text false ·)) ++
   member ["content", "modelInfo", "name"] (fun shape => if shape == "absent" then none else some (text true shape)) ++
   member ["content", "modelConfig", "decimalSeparator"] (some <| text true ·) ++
   member ["content", "modelConfig", "timeZone"] (fun shape => if scalar shape then none else some (text true shape)) ++
   member ["header", "modelVersion"] (fun shape =>
-    if shape == "absent" || shape == "null" then some .checkOnly else none) ++
+    if shape == "absent" then some .noModel else if shape == "null" then some .checkOnly else none) ++
   (["labels", "annotations", "modelReferences"].flatMap fun key => member ["header", key] (some <| list false ·)) ++
   member ["header", "locales"] (fun shape =>
-    some (if shape == "absent" || shape == "null" then .checkOnly else list false shape)) ++
+    some (if shape == "absent" then .noModel else if shape == "null" then .checkOnly else list false shape)) ++
   member ["content", "typeDefinitions"] (some <| list true ·) ++
   member ["content", "modelConfig", "supportedCharacters"] (some <| list true ·) ++
   member ["content", "modelRoot", "rootGroups"] (some <| list true ·) ++
-  member ["header"] (fun shape => some (if shape == "{}" then .checkOnly else object false shape)) ++
+  member ["header"] (fun shape => some (if shape == "{}" then .noModel else object false shape)) ++
   member ["content"] (fun shape => some (if shape == "{}" then .checkOnly else object false shape)) ++
   member ["content", "modelInfo"] (fun shape =>
     if shape == "{}" then none else some (if shape == "absent" then .checkOnly else object false shape)) ++
@@ -156,15 +163,16 @@ example :
   native_decide
 
 /-- Over the sixteen presence combinations of the version, the model info, the configuration and the
-model type, the check runs exactly when the version and the model info are both present; the last two
-are the control that the rows do not merely count removals. The grid's broken-rule twin is not locked:
+model type, an absent version leaves no model and otherwise the check runs exactly when the model info is
+present; the last two are the control that the rows do not merely count removals. The grid's broken-rule twin is not locked:
 these readers do not judge a rule's condition, so it draws the sound rule's verdicts. -/
 example :
     let members := [["header", "modelVersion"], ["content", "modelInfo"], ["content", "modelConfig"], ["header", "modelType"]]
     (List.range 16).all fun kept =>
       let absent := (members.zipIdx.filter fun (_, i) => kept &&& (1 <<< i) == 0).map (·.1)
       let json := absent.foldl (fun json path => edited path none json) sound
-      verdict json == some (if absent.any (members.take 2).contains then .checkOnly else .builds) := by
+      verdict json == some (if absent.contains ["header", "modelVersion"] then .noModel
+        else if absent.contains ["content", "modelInfo"] then .checkOnly else .builds) := by
   native_decide
 
 end A12Kernel.Dm.ModelFrameLocks

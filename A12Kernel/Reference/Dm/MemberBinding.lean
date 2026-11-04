@@ -7,17 +7,23 @@ import A12Kernel.Elaboration.DeclarationAdmission
 The Kernel deserializes a model into Java objects before any consistency check, so a member it cannot
 bind leaves no model at all: that is a read failure here, never a Kernel class. Two laws cover every
 non-text member measured, on every carrier the a12-dmkits handbacks of 2026-10-18 and 2026-10-21 name
-(`docs/sources/inbound-handbacks.md#src-inbound-2026-10-18`, `#src-inbound-2026-10-21`):
+(`docs/sources/inbound-handbacks.md#src-inbound-2026-10-18`, `#src-inbound-2026-10-21`), as kernel
+31.1.1's Jackson 3 binds them (a12-dmkits `BooleanMemberBindingDiffTest`, `FieldTypeIntMemberBindingDiffTest`
+and `RepeatabilityTextReadingDiffTest` at `1124b523f`, 2026-11-02):
 
 * A primitive `boolean` reads a JSON boolean, an integer token as set unless zero, and text after
-  Java's `String.trim` as exactly `true`, `True`, `TRUE`, `false`, `False` or `FALSE`. The empty text
-  and the text `null` are the member's default, as JSON `null` and absence are. A number token with a
-  fraction or an exponent is unbindable whatever its value, `1e0` and `0.0` included, while `-0`
-  clears (2026-10-22 §1.2). Any other text and a container are unbindable.
-* An `int` member, a group count or the base year, reads text after `trim` through `Integer.parseInt`,
-  whose digits are Java's BMP decimal digits, and a JSON number truncated toward zero when its value
-  lies within the `int` range, in either spelling: `1e1` reads as `10.0` does (2026-10-22 §1.3). The
-  empty text and the text `null` are no value. Anything else is unbindable.
+  Java's `String.trim` as exactly `true`, `True`, `TRUE`, `false`, `False` or `FALSE`. Absence is the
+  member's default, `false`. A JSON `null`, the empty or blank text and the text `null` reach Jackson's
+  refusal of a null for a primitive and are unbindable, where kernel 30.8.1 read each as `false`. A number
+  token with a fraction or an exponent is unbindable whatever its value, `1e0` and `0.0` included, while
+  `-0` clears (2026-10-22 §1.2). Any other text and a container are unbindable.
+* An `int` member reads text after `trim` through `Integer.parseInt`, whose digits are Java's BMP decimal
+  digits, and a JSON number truncated toward zero when its value lies within the `int` range, in either
+  spelling: `1e1` reads as `10.0` does (2026-10-22 §1.3). Absence is the member's own default. A primitive
+  `int` (a group's count, a Number's fractional digits) is unbindable for every spelling that binds no
+  value, as a primitive `boolean` is: JSON `null`, the empty or blank text and the text `null`. A boxed
+  `Integer` (the base year, every length and the integer digits) reads those spellings as no value, as
+  absence. Anything else that is no integer is unbindable on both.
 
 Lean's JSON parser folds an exponent into the value, so `1e0` and `1` parse alike. The model-file
 parser (`parseModelJson`) therefore first rewrites every exponent token as its plain decimal spelling
@@ -111,16 +117,15 @@ private def absentText (text : String) : Bool :=
   let trimmed := javaTrim text
   trimmed.isEmpty || trimmed == "null"
 
-/-- A primitive `boolean` member; absent and every default spelling are `false`, the default of every
-measured member. -/
+/-- A primitive `boolean` member; absence is `false`, the default of every measured member, and every
+spelling that binds no value is unbindable. -/
 def booleanMember? (json : Json) (key : String) : Except String Bool :=
   match json.getObjVal? key with
-  | .error _ | .ok .null => pure false
+  | .error _ => pure false
   | .ok (.bool value) => pure value
   | .ok (.num number) =>
       if number.exponent == 0 then pure (number.mantissa != 0) else throw s!"{key} {number}"
   | .ok (.str text) =>
-      if absentText text then pure false else
       match javaTrim text with
       | "true" | "True" | "TRUE" => pure true
       | "false" | "False" | "FALSE" => pure false
@@ -143,7 +148,7 @@ private def parseJavaInt? (text : String) : Option Int := do
   let value : Int := if negative then -(magnitude : Int) else magnitude
   if value < intMinimum || intMaximum < value then none else pure value
 
-/-- An `int` member: `none` for absent, `null`, a blank text and the text `null`. -/
+/-- A boxed `Integer` member: `none` for absence, `null`, a blank text and the text `null`. -/
 def intMember? (json : Json) (key : String) : Except String (Option Int) :=
   match json.getObjVal? key with
   | .error _ | .ok .null => pure none
@@ -163,6 +168,14 @@ def intMember? (json : Json) (key : String) : Except String (Option Int) :=
       | none => throw s!"{key} {text}"
   | .ok other => throw s!"{key} {other.compress}"
 
+/-- A primitive `int` member: `none` for absence only. JSON `null`, a blank text and the text `null`, which
+a boxed `Integer` reads as no value, leave no model here. -/
+def primitiveIntMember? (json : Json) (key : String) : Except String (Option Int) :=
+  match json.getObjVal? key with
+  | .ok .null => throw s!"{key} null"
+  | .ok (.str text) => if absentText text then throw s!"{key} {text}" else intMember? json key
+  | _ => intMember? json key
+
 /-- The primitive `boolean` members of a field type's body, by type name (every member the
 2026-10-18 binding rows enumerate). -/
 def fieldTypeBooleanMembers : String → List String
@@ -171,23 +184,5 @@ def fieldTypeBooleanMembers : String → List String
   | "DateType" | "DateRangeType" | "DateFragmentType" => ["youngerThan1900Check"]
   | "EnumerationType" => ["alphabeticalSorting"]
   | _ => []
-
-/-- The first boolean member of a field type that does not bind. Only the body its `type` names is
-bound: another type's object beside it is never read (2026-10-21 §1.3). -/
-def fieldTypeBindingRefusal? (fieldType : Json) : Option String := do
-  let typeName ← (fieldType.getObjValAs? String "type").toOption
-  let body ← (fieldType.getObjVal? typeName).toOption
-  (fieldTypeBooleanMembers typeName).findSome? fun key =>
-    match booleanMember? body key with
-    | .error reason => some reason
-    | .ok _ => none
-
-/-- The first member of a field element that does not bind: its own flags, then its type's. -/
-def fieldBindingRefusal? (fieldJson : Json) : Option String :=
-  (["global", "transient"].findSome? fun key =>
-    match booleanMember? fieldJson key with
-    | .error reason => some reason
-    | .ok _ => none).orElse fun _ =>
-    (fieldJson.getObjVal? "fieldType").toOption.bind fieldTypeBindingRefusal?
 
 end A12Kernel.Dm

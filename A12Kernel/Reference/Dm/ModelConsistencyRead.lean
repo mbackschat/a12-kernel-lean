@@ -26,10 +26,9 @@ private def members (json : Json) (key : String) : Except String (List Json) :=
   | .error _ | .ok .null => pure []
   | .ok value => (value.getArr?).map Array.toList
 
-private def whole (json : Json) (key : String) : Except String Int :=
-  match json.getObjVal? key with
-  | .error _ | .ok .null => pure 0
-  | .ok value => fromJson? value
+/-- A fractional-digit count, a primitive `int` member: absent reads as zero. -/
+private def whole (json : Json) (key : String) : Except String Int := do
+  pure ((← primitiveIntMember? json key).getD 0)
 
 /-- A field type from its `fieldType` object; the body sits under the type's own name. -/
 private def readConsistencyFieldType (fieldType : Json) : Except String ConsistencyFieldType := do
@@ -60,16 +59,20 @@ private def readField (definitions : List (String × Json)) (id name : String)
 private partial def readElement (definitions : List (String × Json))
     (element : Json) : Except String ConsistencyElement := do
   let kind ← element.getObjValAs? String "type"
-  let body := (element.getObjVal? kind).toOption.getD (Json.mkObj [])
+  let body ← elementBody element kind
   let id := text element "id"
   let name := text element "name"
   match kind with
   | "Group" =>
-      pure (.group id name ((body.getObjValAs? Nat "repeatability").toOption.getD 1)
+      -- A negative count reads as a single group and zero as zero, as this reader read them before.
+      let count := match ← primitiveIntMember? body "repeatability" with
+        | some count => if 0 ≤ count then count.toNat else 1
+        | none => 1
+      pure (.group id name count
         (body.getObjValAs? String "usageType").toOption
         (body.getObjValAs? String "indexFieldName").toOption
         ((← members body "sortFields").map (text · "name"))
-        (← (← members body "elements").mapM (readElement definitions)))
+        (← (← groupElements body).mapM (readElement definitions)))
   | "Field" => .field <$> readField definitions id name body
   | "Rule" => pure (.rule id name (text body "errorCondition") (text body "errorEntityRelPath"))
   | "Computation" =>
@@ -82,6 +85,7 @@ def readConsistencyModel (json : Json) : Except String ConsistencyModel := do
   let frame ← bindModelFrame json
   let content := frame.content
   bindLocalizedTextMembers content
+  bindModelMembers frame
   let definitions := frame.typeDefinitions.toList
   let rootGroups := frame.rootGroups.toList
   pure {

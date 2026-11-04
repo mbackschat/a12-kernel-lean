@@ -1,8 +1,6 @@
 import A12Kernel.Reference.Dm.Model
 import A12Kernel.Reference.Dm.EntryFrameFixture
-import A12Kernel.Reference.Dm.ModelConsistencyRead
-import A12Kernel.Reference.Dm.FieldTypeDeclarationRead
-import A12Kernel.Reference.Dm.ComputationCheck
+import A12Kernel.Reference.Dm.ModelVerdictFixture
 import A12Kernel.Reference.Dm.Replay
 
 /-! # Locks for the model reader's declaration surface
@@ -30,12 +28,14 @@ private def string : String := "{\"type\":\"StringType\"}"
 private def read (json : Option Json) : Option DmModel :=
   json.bind fun json => (readModel json).toOption
 
-/- A kept field's refusals by the model reader: an unknown type, a duplicated Enumeration value and an
-   empty Enumeration domain are refused, while an inverted fractional pair is not. -/
+/- A kept field's refusals by the model reader: a duplicated Enumeration value and an empty Enumeration
+   domain are refused, while an inverted fractional pair is not. An unknown type leaves no model at all,
+   since binding refuses it before the field is read (a12-dmkits `FieldTypeBindingLawsTest` at `1124b523f`,
+   kernel 31.1.1). -/
 example :
     let refusals (body : String) := (read (model (field "Value" string ++ "," ++ field "B" body))).map
       (·.refusals.length)
-    refusals "{\"type\":\"NoSuchType\"}" = some 1 ∧
+    refusals "{\"type\":\"NoSuchType\"}" = none ∧
       refusals "{\"type\":\"EnumerationType\",\"EnumerationType\":{\"values\":[{\"value\":\"a\"},{\"value\":\"a\"}]}}" =
         some 1 ∧
       refusals "{\"type\":\"EnumerationType\",\"EnumerationType\":{\"values\":[]}}" = some 1 ∧
@@ -144,40 +144,16 @@ private def carrierModel (carrier : Carrier) (refused : Bool) (members : List (S
     Json.mkObj [("type", "Group"), ("id", "/Form"), ("name", "Form"),
       ("Group", Json.mkObj [("elements", Json.arr elements.toArray)])]])])])]
 
-/-- Everything the readers and the static checks make of a model, rendered so that `==` compares it whole:
-the model with its declaration admission, the consistency outcome, the declaration notifications, and
-each rule's and computation's static verdict. -/
-private structure Verdict where
-  built : String
-  consistency : String
-  declarations : String
-  statics : List String
-  deriving BEq, Repr
-
-private def staticVerdict {α} : Lowering α → String
-  | .ok _ => "ok"
-  | .error refusal => s!"refused {refusal.construct} {refusal.kernelClass?.getD "-"}"
-
-private def verdict (json : Json) : Verdict :=
-  let built := readModelWithAdmission json
-  { built := reprStr built
-    consistency := reprStr (checkModelConsistency json)
-    declarations := reprStr (fieldTypeDeclarationNotifications json fun _ => .compiled fun _ => true)
-    statics := match built with
-      | .ok dm => dm.rules.map (staticVerdict <| checkValidationRule dm .english ·) ++
-          dm.computations.map (staticVerdict <| checkComputation dm .english ·)
-      | .error _ => [] }
-
 /-- Whether a model carrying `members` has the verdict of the same model without them, on both twins. -/
 private def ignored (carrier : Carrier) (members : List (String × Json)) : Bool :=
   [false, true].all fun refused =>
-    verdict (carrierModel carrier refused members) == verdict (carrierModel carrier refused [])
+    modelVerdict (carrierModel carrier refused members) == modelVerdict (carrierModel carrier refused [])
 
 /-- The twins differ, so equality with the member removed is not vacuous: the admitted twin passes its
 static check on each carrier, and the refused twin draws `MVK_INVALID_ENTITY`. -/
 example :
-    Carrier.all.map (fun carrier => ((verdict (carrierModel carrier false [])).statics,
-      (verdict (carrierModel carrier true [])).statics)) =
+    Carrier.all.map (fun carrier => ((modelVerdict (carrierModel carrier false [])).statics,
+      (modelVerdict (carrierModel carrier true [])).statics)) =
       [(["ok"], ["refused FieldFilled MVK_INVALID_ENTITY"]), (["ok"], ["refused FieldFilled MVK_INVALID_ENTITY"]),
         (["ok"], ["refused NumberComputation MVK_INVALID_ENTITY"])] := by
   native_decide
