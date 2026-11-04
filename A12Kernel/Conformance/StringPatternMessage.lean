@@ -122,7 +122,7 @@ example :
    what a pair inside the text renders is unmeasured and is given the same account. A wrong name beside a
    skipped pair is still refused. Locked: a12-dmkits FieldTypeMessageTextLawsTest
    (`whatThePatternsMessageMayCarryBeyondItsCharacters`, `howTheTextIsCutAndWhichEntryIsExamined`) at
-   1124b523f, kernel 31.1.1. -/
+   1124b523f, kernel 31.1.1. `$$$$` and `$$ $field$ $$` are derived from it, unmeasured. -/
 example :
     ["capitals only $$", "$$", "$$ capitals only", "cost $$ in capitals", "$field$$field.value$",
         "$$$$", "$$ $field$ $$"].all (fun text => stringPatternTemplateError? text == none) ∧

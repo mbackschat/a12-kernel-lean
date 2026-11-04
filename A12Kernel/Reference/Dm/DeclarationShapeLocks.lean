@@ -252,7 +252,7 @@ example : failures nameRows = [] := by native_decide
 Locked: a12-dmkits `CheckerReaderBindingAgreementTest`, `CheckerDeclarationAdmissionAgreementTest` and
 `EnumCategoryWireShapeLawsTest` at 1124b523f, kernel 31.1.1 (peer KF654, KF655). A row asserts every class the
 declaration walk and the basic check draw together, sorted and codeless ones included, and for a token-less
-body whether the model reader keeps the field. The one row the Kernel admits with a token-less entry is a model
+body whether the model reader keeps the field. The peer compares class sets, so each row's multiplicity is derived, unmeasured on 31.1.1: once per field for `MVK_INTERNAL_VALUE_MISSING` and the codeless repeated-value class. The one row the Kernel admits with a token-less entry is a model
 the reader refuses all the same: a stored token the entry does not declare has no account in a document
 (the runtime meaning of such an entry is unmeasured), so `EnumerationDeclaration.validate` leaves no checked
 declaration for it.

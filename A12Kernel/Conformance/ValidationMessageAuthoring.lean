@@ -616,7 +616,8 @@ example :
    and a line separator beside one still answers first. The stand-in is itself a `\p{C}` scalar, so
    only the order makes it the encoding class, where kernel 30.8.1 named it the control class. Every row
    of the peer's character-gate grid on a rule's message. Locked: a12-dmkits ErrorTextCharacterGateLawsTest
-   at 1124b523f, kernel 31.1.1. -/
+   at 1124b523f, kernel 31.1.1, except the tab and unknown-name rows beside a lone surrogate, which are
+   derived from that order, unmeasured. -/
 example :
     templateError? ("a" ++ String.singleton loneSurrogateStandIn ++ "b") =
       some (.unsupportedCharacterWithError loneSurrogateStandIn .wrongEncoding) ∧

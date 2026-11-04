@@ -46,7 +46,8 @@ private def lone : String := String.singleton loneSurrogateStandIn
    encoding, then `\p{C}`, each withholding the gates after it, so the lone surrogate is `WRONG_ENCODING`
    unless a line separator stands beside it. A supplementary scalar outside `\p{C}` draws no class here; its
    codeless refusal is the notification layer's. Kernel 30.8.1 asked the encoding before the line break.
-   Locked: a12-dmkits ErrorTextCharacterGateLawsTest at 1124b523f, kernel 31.1.1. -/
+   Locked: a12-dmkits ErrorTextCharacterGateLawsTest at 1124b523f, kernel 31.1.1; the tab beside a lone surrogate
+   is derived from that order, unmeasured. -/
 example :
     ([("plain", "plain", []), ("U+2028", "a" ++ cp 0x2028 ++ "b", ["INVALID_LINEBREAK"]),
       ("U+2029", "a" ++ cp 0x2029 ++ "b", ["INVALID_LINEBREAK"]), ("line feed", "a\nb", ["INVALID_LINEBREAK"]),

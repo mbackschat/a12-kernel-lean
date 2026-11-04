@@ -52,7 +52,7 @@ The four static observations establish three focused rejection code/class pairs 
 
 - all-outer `Having` is rejected as `MVK_NO_ITERATION_FOR_WILDCARD` / `missingInner`;
 - unequal-scale numeric equality is rejected as `MVK_INVALID_COMPARE_DEC_PLACES` / `equalityScaleMismatch`;
-- an inner reference from a sibling repeatable group is rejected as `MVK_INVALID_ITERATION_IN_FILTER_CONDITION` / `fieldOutsideGroup`;
+- an inner reference from a sibling repeatable group is rejected as `MVK_INVALID_ITERATION_IN_FILTER_CONDITION` (the kernel 30.8.1 name; 31.1.1 renamed it `MVK_INVALID_ITERATION_IN_SET_EXPRESSION`) / `fieldOutsideGroup`;
 - unequal-scale numeric ordering is accepted by the static checker.
 
 These observations are not a general authoring-diagnostic matrix. In particular, the accepted case establishes no runtime firing result, outer-origin `fieldOutsideGroup` and every unlisted Lean elaboration error fail closed rather than being assigned a kernel code, and all-inner `Having` belongs to the uncorrelated route rather than this rejection mapping.

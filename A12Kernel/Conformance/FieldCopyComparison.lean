@@ -103,9 +103,9 @@ private def enumCalc := "MVK_ERROR_INVALID_ENUM_CALCULATION"
 
 /-- Every retained row copying one field into another, as (target, source, verdict), in the
     capture's order ([checkpoint](../../docs/sources/static-admission-and-class-probes.md#src-field-copy-comparison-grid)).
-    Rows `Note2`/`Labelled` and `Plain2`/`Labelled` are locked: a12-dmkits `EnumIntoTextComputationLawsTest`
-    and `EnumComputationSourceLawsTest` at 1124b523f, kernel 31.1.1. Rows `Note2`/`Swapped`,
-    `Labelled2`/`Note`, `Labelled2`/`Plain`, `Labelled2`/`Swapped` and `Labelled2`/`Wide` are derived
+    Rows `Note2`/`Labelled`, `Plain2`/`Labelled` and `Labelled2`/`Note` are locked: a12-dmkits
+    `EnumIntoTextComputationLawsTest` and `EnumComputationSourceLawsTest` at 1124b523f, kernel 31.1.1, and
+    Letter B §5d. Rows `Note2`/`Swapped`, `Labelled2`/`Plain`, `Labelled2`/`Swapped` and `Labelled2`/`Wide` are derived
     from that mechanism, unmeasured on 31.1.1. -/
 private def grid : List (String × String × String) :=
   [("Note2", "Note", ok), ("Note2", "Qty", text), ("Note2", "Amount", text),
