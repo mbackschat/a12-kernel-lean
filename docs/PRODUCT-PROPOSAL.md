@@ -4,7 +4,7 @@
 
 ## Product thesis
 
-The first releasable product should be a versioned semantic compatibility kit: a Lean-built executable reference for explicitly supported A12 30.8.1 validation and computation fragments, surrounded by a stable portable protocol, retained kernel evidence, a fail-closed support boundary, and machine-readable proof and trust information. It should let independent interpreters and tools ask the same normalized semantic question, compare observable results, and identify unsupported or divergent behavior without linking to the kernel. The longer-lived product asset is the semantics factory behind that first evaluator: it should later produce task-specific shipments for checked importers, rule refactoring, analysis, and certification without making those future profiles claims of the initial release.
+The first releasable product should be a versioned semantic compatibility kit: a Lean-built executable reference for explicitly supported A12 31.1.1 validation and computation fragments, surrounded by a stable portable protocol, retained kernel evidence, a fail-closed support boundary, and machine-readable proof and trust information. It should let independent interpreters and tools ask the same normalized semantic question, compare observable results, and identify unsupported or divergent behavior without linking to the kernel. The longer-lived product asset is the semantics factory behind that first evaluator: it should later produce task-specific shipments for checked importers, rule refactoring, analysis, and certification without making those future profiles claims of the initial release.
 
 This product realizes the durable mission in [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) without turning every long-term potential into a first release. It is Cedar-like at the product and ecosystem boundary: a separately consumable executable specification, a production implementation that remains independent, and differential conformance between them. It is Radix-like only where a compact evaluator/relation or transformation-preservation proof adds an independently meaningful internal result. It is specifically A12 in its clean-room portable evidence bridge and in the richer semantics of validation, computation, document structure, absence, iteration, correlation, polarity, and phase-sensitive reads.
 
@@ -35,7 +35,7 @@ A useful first 0.x release could contain:
 
 - a Lean-built command-line reference evaluator for the explicitly supported fragment;
 - a stable JSON input/output protocol for each explicitly supported operation's normalized models, rules, runtime inputs, observable outcomes, and diagnostics, extended to documents, worlds, messages, and computation deltas only as those semantic stages land;
-- the retained A12 kernel 30.8.1 evidence bundle and a conformance runner that replays its supported projection;
+- the retained A12 kernel 31.1.1 evidence bundle and a conformance runner that replays its supported projection;
 - a machine-readable supported-fragment manifest that fails closed rather than guessing outside the implemented theory;
 - a machine-readable descriptor and conformance suite for every released capability, reproducibly projected from its retained typed evidence where that evidence is the claim source;
 - a theorem and checked-counterexample index with a report of trusted roots, dependencies, and exclusions;
@@ -45,7 +45,7 @@ A useful first 0.x release could contain:
 
 The proposed public claim is deliberately narrow:
 
-> Mechanized executable reference semantics for the named A12 30.8.1 fragment, internally proved at the documented boundaries and empirically checked against retained kernel evidence.
+> Mechanized executable reference semantics for the named A12 31.1.1 fragment, internally proved at the documented boundaries and empirically checked against retained kernel evidence.
 
 The release must not claim that it verifies the external kernel implementation, covers all A12 semantics, replaces the production runtime, or proves an independent Rust, Python, Kotlin, or TypeScript implementation correct for inputs outside a separately established conformance boundary. An unsupported construct is a structured rejection, never permission to extrapolate from a nearby supported operator.
 
@@ -66,7 +66,7 @@ expanded A12 model + resolved rule + document + world
                          |
               comparison in consumer CI
                          |
-       retained kernel 30.8.1 evidence replay
+       retained kernel 31.1.1 evidence replay
 ```
 
 The diagram is a target integration shape, not a claim that all adapters already exist. The kernel remains outside this repository and outside the released process. Existing a12-dmkits corpus and differential facilities in the sibling `a12-rulekit/` checkout may execute focused kernel probes externally when their observation shape fits; otherwise a concrete semantic family must justify the smallest purpose-specific upstream handback. This repository consumes only retained clean-room evidence and never assumes a standing generic exporter. The a12-dmkits interpreter remains a useful independent peer for triangulation and disagreement discovery, never the behavioral oracle.
@@ -92,7 +92,7 @@ Each release should ship a machine-readable manifest beside its binary and evide
 ```json
 {
   "semanticsVersion": "0.x",
-  "kernelBehaviorVersion": "30.8.1",
+  "kernelBehaviorVersion": "31.1.1",
   "protocolVersion": 1,
   "supportedFragments": ["named-fragment-identifiers"],
   "unsupportedFragments": ["explicit-exclusions"],

@@ -1,6 +1,6 @@
 # Independent implementer kit: Kernel evaluator
 
-This kit hands the A12 kernel 30.8.1 validation and computation semantics to an independent evaluator built in a fresh repository. It is the handover document of the U-series consumer experiments, each a Rust interpreter that reads the Kernel's own model and document files, validates and computes, and is compared row by row against retained observations of the real Kernel. U02 starts from an empty repository on the rewritten specification; nothing from an earlier run is carried over. The reader is the implementing session. It sees this kit, the language-neutral specification and the captures, all inside a frozen packet, and nothing else.
+This kit hands the A12 kernel 31.1.1 validation and computation semantics to an independent evaluator built in a fresh repository. It is the handover document of the U-series consumer experiments, each a Rust interpreter that reads the Kernel's own model and document files, validates and computes, and is compared row by row against retained observations of the real Kernel. U02 starts from an empty repository on the rewritten specification; nothing from an earlier run is carried over. The reader is the implementing session. It sees this kit, the language-neutral specification and the captures, all inside a frozen packet, and nothing else.
 
 The evaluator is a consumer of the specification, not a port of any implementation. Where the specification decides a case, follow it. Where it leaves a case open, record the question and your chosen reading in the questions-and-guesses log described below; the answer returns only as a later packet version. The goal is an evaluator whose every in-profile capture row matches, reached by implementing the specification, never by recognizing fixtures.
 
@@ -16,7 +16,7 @@ The packet is a directory with this layout, frozen at assembly and identified by
 | `docs/IMPLEMENTER-GUIDE.md` | An extract holding only the host-input contract section |
 | `spec/SEMANTICS-MAP.md`, `spec/01-…` to `spec/12-…`, `spec/14-operator-reference.md` | The semantics: the non-normative map as the entry point, the normative numbered chapters, and the operator reference that assigns each operator its class per mechanism |
 | `docs/sources/` | The provenance records the chapters' `Sources:` lines cite |
-| `evidence/kernel-30.8.1/captures/<capture>/` | Each retained request, its observed artifact, and the model and document files they name |
+| `evidence/kernel-31.1.1/captures/<capture>/` | Each retained request, its artifact observed on kernel 31.1.1, and the model and document files they name |
 
 Allowed reads are the packet and the implementing repository, nothing else. Do not read sibling checkouts, other repositories, the A12 Kernel or its documentation, a12-dmkits or dmtool-release, any Lean source, or web material about A12. The specification's `Sources:` links into `docs/sources/` resolve inside the packet and may be read as provenance: they record what was measured and how, never a rule the chapter does not state. Its other links leave the packet, mostly into `docs/` and Lean sources; those targets are deliberately absent. A clause's text is normative on its own. A link you cannot follow is never a reason to look elsewhere, and a clause that is unclear without its link is a question for the log.
 
@@ -160,7 +160,7 @@ Work never waits for a person or another session. Every uncertainty has a way fo
 The owner starts the first session with this prompt:
 
 ```text
-You are implementing an independent A12 kernel 30.8.1 evaluator in Rust in this repository. Read packet/docs/IMPLEMENTER-KIT-EVALUATOR.md completely first; it defines the packet, the isolation boundary, the profile, the comparison contract, the milestones, the reports and the stop conditions. Read only packet/ and this repository. Verify the packet with `shasum -a 256 -c MANIFEST.sha256` from packet/, create PLAN.md from the kit's milestones, and begin M1. This is a multi-session effort: keep PLAN.md current so the next session can resume from the repository alone.
+You are implementing an independent A12 kernel 31.1.1 evaluator in Rust in this repository. Read packet/docs/IMPLEMENTER-KIT-EVALUATOR.md completely first; it defines the packet, the isolation boundary, the profile, the comparison contract, the milestones, the reports and the stop conditions. Read only packet/ and this repository. Verify the packet with `shasum -a 256 -c MANIFEST.sha256` from packet/, create PLAN.md from the kit's milestones, and begin M1. This is a multi-session effort: keep PLAN.md current so the next session can resume from the repository alone.
 ```
 
 Later sessions start with this prompt:
