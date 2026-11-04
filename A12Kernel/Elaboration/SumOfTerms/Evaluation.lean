@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.SumOfTerms.Core
 import A12Kernel.Elaboration.CheckedStarDocument
+import A12Kernel.Elaboration.PartialGroupCount
 
 /-! # `SumOfTerms` evaluation
 
@@ -19,6 +20,11 @@ directions. A formally invalid cell the term reads makes the sum unavailable.
 **Computation** projects the same reads to the computation result: a row without a value adds nothing,
 and a formally invalid cell the term reads, or a filter verdict that poisons, is poison for the whole
 sum, which the scan reports at the first row that reaches it.
+
+**Partial validation** decides an unfiltered entity only when every row of its capacity is relevant as a
+whole and the instance at row index 1 holds no formally invalid field; otherwise the operand is
+undecided, and a filtered entity is skipped with its rule. It reads the term through the call's
+availability-aware cell view and folds the rows as full validation does.
 -/
 
 namespace A12Kernel
@@ -73,6 +79,19 @@ private def validationRows (checked : CheckedSumOfTerms model) (document : Check
         traversal.candidates traversal.occupancy
       pure (selected.filter topology.environments.contains)
 
+/-- The sum over `rows`, each read through `context`. The sum is fixed only when every declared row of
+the topology is among the kept rows and the declared tail is closed. -/
+private def foldRows (checked : CheckedSumOfTerms model)
+    (context : ResolvingCorrelationContext CheckedAddressingError) (outer : Env)
+    (topology : ResolvedStarTopology) (rows : List Env) :
+    Except CheckedAddressingError SumOfTermsRowOutcome := do
+  let outcomes ← rows.mapM fun row =>
+    sumOfTermsRowValidation checked.term context { innerEnv := row, outerEnv := outer }
+  let start : SumOfTermsFold :=
+    { fillability := if topology.domain.hasOpenTail || !topology.environments.all rows.contains
+        then .both else .fixed }
+  pure ((outcomes.foldlM SumOfTermsFold.step start).map (·.outcome))
+
 /-- The sum in full validation. Structural addressing failure stays an outer error and is never
 confused with unavailability. -/
 def evaluateValidation (checked : CheckedSumOfTerms model) (document : CheckedDocument model)
@@ -81,13 +100,48 @@ def evaluateValidation (checked : CheckedSumOfTerms model) (document : CheckedDo
   let topology ← (checked.source.path.resolveInCapacity document.source.toDocument outer).mapError
     .addressing
   let rows ← checked.validationRows document outer topology world
-  let context := document.resolvingCorrelationContextWithRead document.readDeclared world
-  let outcomes ← rows.mapM fun row =>
-    sumOfTermsRowValidation checked.term context { innerEnv := row, outerEnv := outer }
-  let start : SumOfTermsFold :=
-    { fillability := if topology.domain.hasOpenTail || !topology.environments.all rows.contains
-        then .both else .fixed }
-  pure ((outcomes.foldlM SumOfTermsFold.step start).map (·.outcome))
+  checked.foldRows (document.resolvingCorrelationContextWithRead document.readDeclared world) outer
+    topology rows
+
+/-- The environment of the entity's first declared instance: the bound levels, with every level the
+entity reopens at row index 1, whether or not the document holds that row. -/
+private def firstInstance (checked : CheckedSumOfTerms model) (outer : Env) :
+    Except CheckedAddressingError Env := do
+  let bound ← (checked.source.path.boundEnvironment outer).mapError .addressing
+  pure (bound ++ (checked.source.path.axes.drop checked.source.path.firstStar).map fun axis => (axis.level, 1))
+
+/-- The sum in partial validation, or `none` when the call leaves it undecided. It is decided only when
+every row of the entity's capacity is relevant as a whole, the wholly relevant group instances of
+`NumberOfFilledGroups` in partial validation ([`coversGroupCountExtent`](#A12Kernel.ValidationRelevanceScope.coversGroupCountExtent)),
+so relevance of only the fields the term reads is not enough. The relevant document must also hold no
+formally invalid field in the instance at row index 1, while a defect in row 2 or 3 blocks nothing: the
+gate asks of that index, not of the first row held. Validation pads a document that places no row 1 to
+an empty instantiated row 1, so this checked document never lacks one
+([spec/07 §3.10](../../../spec/07-repetition-and-iteration.md#310-sumofterms), a12-dmkits
+`SumOfTermsRuntimeLawsTest` and `SumOfTermsShapesRuntimeLawsTest` at `1124b523f`, kernel 31.1.1).
+
+The gate reads every field of the instance, term or not: a malformed field the term never reads blocks
+it too (the same peer rows). Unmeasured: a read outside the entity must be relevant at the rule's own
+row, a nested entity asks the instance at row 1 of every reopened level, and a read of a cell the call
+leaves unavailable surfaces as `partialUnavailable`. The caller has applied the rule-wide filter skip and
+[`supportsPartial`](#A12Kernel.CheckedSumOfTerms.supportsPartial). -/
+def evaluatePartial (checked : CheckedSumOfTerms model) (document : CheckedDocument model)
+    (outer : Env) (scope : ValidationRelevanceScope) (isRelevant : FlatRelevance)
+    (read : Env → FieldId → Except CheckedAddressingError CheckedCell)
+    (resolveGroup : PartialGroupResolver) (world : Option World := none) :
+    Except CheckedAddressingError (Option SumOfTermsRowOutcome) := do
+  let entityFields := model.groupSubtreeFields checked.source.group.path
+  let outside := (checked.term.atoms.flatMap (·.fieldOrigins)).map (·.2) |>.filter fun field =>
+    !entityFields.any (·.id == field)
+  if !scope.coversGroupCountExtent model checked.source.group.path checked.source.path.bindingScope
+        checked.source.path.reopenedScope outer || !outside.all isRelevant then
+    return none
+  let first ← checked.firstInstance outer
+  if (← resolveGroup checked.source.group.path first).derive.erroneous then return none
+  let topology ← (checked.source.path.resolveInCapacity document.source.toDocument outer).mapError
+    .addressing
+  let context := { document.resolvingCorrelationContextWithRead document.readDeclared world with read }
+  some <$> checked.foldRows context outer topology topology.environments
 
 /-- The sum in computation. `filterContext` and `termContext` are the caller's readers of the
 filter's cells and of the term's, the two channels a filtered computation operand reads through, and

@@ -44,6 +44,9 @@ private def orderedOmissionCount : OrderedNumericValidationAtom model → Bool
       | .storedProjection _ => false
   | .filledFieldCount _ | .filledGroupCountMixed _ | .aggregate .distinctCount _
   | .tokenDistinctCount _ | .temporalDistinctCount _ => true
+  -- A count in the term, not in the entity's filter: `UP`/`CNT` of a12-dmkits
+  -- `SumOfTermsShapesRuntimeLawsTest` at `1124b523f`, kernel 31.1.1, spec/07 §3.10.
+  | .sumOfTerms source => source.holdsCount
   | _ => false
 
 /-- The filtered amount's own count flag agrees with the ordered atom it carries. -/
@@ -111,6 +114,7 @@ private def orderedFilterPointers (atom : OrderedNumericValidationAtom model)
     | .temporalDistinctCount run => temporalDistinctFilterPointers run environment
     | .booleanValueCount source => booleanFilterPointers source environment
     | .filledFieldCount source => fieldFillFilterPointers source environment
+    | .sumOfTerms source => source.filterReferencePointers environment
     | _ => throw .filteredStarOperand
 
 private def omissionLeafPointers (leaf : ValidationConditionLeaf model)

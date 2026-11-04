@@ -155,6 +155,18 @@ def referencesErrorField (checked : CheckedSumOfTerms model) (field : FieldId) :
   (model.groupSubtreeFields checked.source.group.path).any (·.id == field) ||
     checked.filter.any (CorrelatedHaving.referencesMarkedEntityField model ·.condition field)
 
+/-- Whether partial validation can decide the term: it reads only Number fields of the entity's own
+group, or of a level the rule binds, the reads a12-dmkits `SumOfTermsRuntimeLawsTest` measures at
+`1124b523f`, kernel 31.1.1. Any other term atom, which would need group or aggregate reads from
+the partial slice, stays structurally unsupported. A filtered entity is skipped rule-wide before this
+question is asked. -/
+def supportsPartial (checked : CheckedSumOfTerms model) : Bool :=
+  checked.term.allAtoms fun
+    | .field reference => (model.groupSubtreeFields checked.source.group.path).any (·.id == reference.field.id) ||
+        ((model.lookupUniqueId reference.field.id).toOption.any
+          (·.repeatableScope.length ≤ checked.source.path.firstStar))
+    | _ => false
+
 end CheckedSumOfTerms
 
 end A12Kernel

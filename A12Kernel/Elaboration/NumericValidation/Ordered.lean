@@ -324,9 +324,8 @@ def OrderedNumericValidationAtom.supportsAddressedPartial :
   | .filledFieldCount source => source.supportsPartialCount
   | .indexed _ | .indexedString _ | .valueCount _ _ | .tokenValueCount _ | .booleanValueCount _ | .tokenDistinctCount _ | .temporalDistinctCount _ => true
   | .sumOfProducts _ => true
-  -- Partial validation of a term sum decides it only when every row of the capacity is relevant as a
-  -- whole, a rule this carrier does not yet implement, so the rule stays structurally unsupported.
-  | .sumOfTerms _ => false
+  -- A term sum is decided only where its terms are the measured field reads, and never over a filtered entity.
+  | .sumOfTerms source => source.supportsPartial
   | .temporalExpression source => !source.hasHaving
 
 def OrderedNumericComparison.supportsAddressedPartial
