@@ -51,7 +51,7 @@ Each step names the surface it changes; together they are the close commit set.
 
 ## 5. First calibration on the new kernel
 
-The re-capture of section 2 opens `evidence/kernel-<new>/`. Point [`EvidenceMain.lean`](../A12Kernel/EvidenceMain.lean)'s observed root and the population replay at it, keeping the frozen root as their input root, and delete the rename map and deferrals the frozen replay needed. The rows the batches recorded as unmeasured gap bullets, and every derived row the re-capture does not cover, form the first calibration batch; a capture that cannot be re-run unchanged (one classified from rendered message text, or a compact bundle of a retired producer) stays on the old kernel's evidence and is listed as such in [`EVIDENCE.md`](EVIDENCE.md#evolution).
+The re-capture of section 2 opens `evidence/kernel-<new>/`. Point [`EvidenceMain.lean`](../A12Kernel/EvidenceMain.lean)'s observed root and the population replay at it, keeping the frozen root as their input root, and delete the rename map and deferrals the frozen replay needed. The rows the batches recorded as unmeasured gap bullets, and every derived row the re-capture does not cover, form the first calibration batch, which authors fresh models at the new DM version and settles each row by the route the row's claim needs; a capture that cannot be re-run unchanged (one classified from rendered message text, or a compact bundle of a retired producer) stays on the old kernel's evidence and is listed as such in [`EVIDENCE.md`](EVIDENCE.md#evolution).
 
 ## Traps seen in the 31.1.1 upgrade
 
@@ -70,3 +70,9 @@ The re-capture of section 2 opens `evidence/kernel-<new>/`. Point [`EvidenceMain
 - A codeless notification is classed by pairing it with the frozen label at the same element of the same row, never by matching its text in committed code, so the classifier carries no Kernel prose. A bound written in the sentence belongs to its class.
 - A float round-trip rewrites a number token such as `1.00000000000000001`; rebuild models with their number tokens kept as written.
 - A replay fault is not always a defect: Lean models kernel 31.1.1's whole-call assembly failure for a leap-day target as a refusal, which the frozen 30.8.1 rows record as a stored value.
+- The 31.1.1 re-capture re-ran the registered rule-check batches and missed 13 frozen `static*.json` results outside them, two of which had changed. List every frozen observation file and match it to a re-run output before declaring the re-capture complete.
+- Name a rendered runtime message's key by matching its text against the new kernel's own runtime catalog, extracted to an ignored scratch location from the kernel jar in the Gradle cache and never committed, since key selection itself can change between kernels (two Date rows did on 31.1.1).
+- dmtool's version precheck (`RK_MODEL_VERSION_*`) answers before the Kernel's version verdict, so the version law is measured through `:adapter:kernelProbe`'s model check, not `dmtool model check`.
+- `dmtool batch --observations` accepts rule checks only; model checks run through the plain `batch` envelope, and an unparsable member returns the instrument's `RK_MODEL_INPUT_INVALID` with no Kernel verdict.
+- dmtool and the probe check a model after the Kernel's expand copy, which drops an empty member (peer KF658), while the spec's declaration rules describe the model as checked before it. Record which route a row was measured on before reading an empty-member result as a change.
+- A construct may change its admitted operand kinds: `AddMonths` and `AddYears` refuse a DateTime on 31.1.1, which turned two planned runtime rows into static rows with no runtime witness. Run the static check on a new probe model before spending a runtime row on it.
