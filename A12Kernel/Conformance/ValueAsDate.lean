@@ -572,19 +572,14 @@ example :
           .before1900) := by
   native_decide
 
-/- A proleptic landing before the legacy cutover is refused instead of exposing the wrong attempted label. -/
+/- A landing before the 1582 cutover is an ordinary proleptic label that the target's floor check marks
+errored, since kernel 31.1.1 computes on the proleptic calendar (spec/05 §3.1). Unmeasured on 31.1.1. -/
 example :
     let checked := (elaborateValueAsDateShiftTarget
       (modelWithTarget) 0 1 .firstDay .days).toOption.get
         (by native_decide)
-    let observed : Bool :=
-      match checked.evaluateRaw
-          (.parsed "16.10.1583") (.value (-367)) with
-      | .error (.unsupportedPreCutoverLanding date) =>
-          date.parts.year == 1582 &&
-            date.parts.month == 10 && date.parts.day == 14
-      | _ => false
-    observed = true := by
+    (checked.evaluateRaw (.parsed "16.10.1583") (.value (-367))).toOption =
+      some (.errored ⟨"14.10.1582", by decide⟩ .beforeGregorianFloor) := by
   native_decide
 
 /- A checked full-Time field supplies the second DateTime operand without a caller-injected observation. -/

@@ -3,7 +3,7 @@ import A12Kernel.Elaboration.ValueAsDate
 
 /-! # Partial-Date shift into a checked Date target
 
-This capsule composes one checked `ValueAsDate` calendar shift with the existing nonrepeatable full-Date target, five-collection result view, and application boundary. The shift keeps a real civil landing until the target renders and checks it, so an always-on floor failure retains the attempted text as an errored computed instance. The bounded route fails closed before the legacy `GregorianCalendar` cutover: a proleptic civil landing there no longer identifies the Kernel's observable attempted label. Wider hybrid-calendar execution, scheduling, repeatable targets, and message text remain separate.
+This capsule composes one checked `ValueAsDate` calendar shift with the existing nonrepeatable full-Date target, five-collection result view, and application boundary. The shift keeps a real proleptic landing until the target renders and checks it, so an always-on floor failure retains the attempted text as an errored computed instance; kernel 31.1.1 computes on the proleptic calendar, so a landing before the 1582 cutover renders its own label (spec/05 §3.1). Scheduling, repeatable targets, and message text remain separate.
 -/
 
 namespace A12Kernel
@@ -24,18 +24,11 @@ structure CheckedValueAsDateShiftTarget (model : FlatModel) where
 /-- Structural failure outside the rich target-outcome domain. -/
 inductive ValueAsDateShiftTargetFault where
   | shift (error : ValueAsDateShiftFault)
-  | unsupportedPreCutoverLanding (date : CivilDate)
   deriving Repr, DecidableEq
 
 namespace CheckedValueAsDateShiftTarget
 
-/-- First civil label on the Gregorian side of the default legacy-calendar cutover. UTC, GMT, and the pinned Berlin profile agree with the proleptic account from this label onward. -/
-private def firstSupportedLanding : CivilDate := {
-  parts := { year := 1582, month := 10, day := 15 }
-  real := by decide
-}
-
-/-- Consume one already checked source cell and numeric amount, retaining semantic no-value and poison while routing every supported real landing through the existing target policy. -/
+/-- Consume one already checked source cell and numeric amount, retaining semantic no-value and poison while routing every real landing through the existing target policy. -/
 def evaluateOutcome (checked : CheckedValueAsDateShiftTarget model)
     (cell : CheckedCell
       (AdmittedPartiallyKnownDate checked.shift.source.policy.partialMode))
@@ -45,11 +38,7 @@ def evaluateOutcome (checked : CheckedValueAsDateShiftTarget model)
   match result with
   | .noValue | .nonRelevant => pure .noValue
   | .poison cause => pure (.poison cause)
-  | .value date =>
-      if date.Before firstSupportedLanding then
-        throw (.unsupportedPreCutoverLanding date)
-      else
-        pure (checked.target.evaluateCivil date)
+  | .value date => pure (checked.target.evaluateCivil date)
 
 /-- Check the bounded raw partial-Date source before executing the checked shift and target. -/
 def evaluateRaw (checked : CheckedValueAsDateShiftTarget model)
