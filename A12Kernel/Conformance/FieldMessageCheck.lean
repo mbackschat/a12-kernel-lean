@@ -45,7 +45,7 @@ example :
   native_decide
 
 /- The Enumeration's invalid-value text meets the same gates; a required field's text meets none,
-   and a field its `ONLY` filter deletes is never reached. -/
+   and a field whose messages are withheld is never reached. -/
 example :
     check ["en_US"] .enumerationInvalidValue [("en_US", "a\tb")] = ["INVALID_CHARACTERS"] ∧
     check ["en_US"] .enumerationInvalidValue [("en_US", "$Status$ is not allowed")] =

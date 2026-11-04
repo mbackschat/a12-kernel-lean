@@ -5,9 +5,9 @@ import A12Kernel.Reference.Dm.ModelFrame
 /-! # How the Kernel's DM-JSON reader binds a localized-text member
 
 A label, helper text, description or message is a localized-text member: entries of a `locale` and a
-`text`. The Kernel binds every such member before any variant filter, so a member it cannot bind leaves
-no model, a read failure here and never a Kernel class (peer KF646, measured 2026-10-29 on twelve
-carriers, `docs/sources/inbound-handbacks.md#src-inbound-2026-10-29`):
+`text`. A member the Kernel cannot bind leaves no model, a read failure here and never a Kernel class
+(peer KF646, measured 2026-10-29 on twelve carriers, `docs/sources/inbound-handbacks.md#src-inbound-2026-10-29`;
+one of them, a rule's `variantErrorMessages`, is retired and no longer read, so eleven remain):
 
 * The member's own value is iterated as a JSON node: a list yields its elements, an object its values,
   and any other scalar nothing, so `"x"`, `5` and `[]` bind with no text. `null` is unbindable.
@@ -63,10 +63,9 @@ private def bindMembers (json : Json) (keys : List String) : Except String Unit 
 private def member (json : Json) (key : String) : Json :=
   (json.getObjVal? key).toOption.getD .null
 
-/-- Bind every localized-text member of an element and of the elements below it, whatever variant
-filter it carries: the descriptions on every element, a field's label, helper text and requiredness
-message, the message of the String or Enumeration body its type names and each Enumeration value's
-label, a group's label, and a rule's message and each value of its variant messages. -/
+/-- Bind every localized-text member of an element and of the elements below it: the descriptions on every
+element, a field's label, helper text and requiredness message, the message of the String or Enumeration
+body its type names and each Enumeration value's label, a group's label, and a rule's message. -/
 private partial def bindElement (element : Json) : Except String Unit := do
   bindMembers element ["externalDescription", "internalDescription"]
   match (element.getObjValAs? String "type").toOption with
@@ -90,9 +89,6 @@ private partial def bindElement (element : Json) : Except String Unit := do
   | some "Rule" =>
       let body := member element "Rule"
       bindMembers body ["errorMessage"]
-      if let .obj variants := member body "variantErrorMessages" then
-        for (_, value) in variants.toList do
-          discard <| localizedTextValue value
   | _ => pure ()
 
 /-- Bind every localized-text member of a model's `content` the Kernel's reader binds, failing on the

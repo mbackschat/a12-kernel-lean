@@ -19,7 +19,7 @@ The input is a small read-model of the field's body after type-definition resolu
 
 Choices no row separates, recorded where they are made: a declared but refused integer count is not replaced by the amount-derived one; two label entries for one value and locale are both counted; a repeated hint-list locale is judged whether or not the model declares it; the label texts of every declared locale are pooled for the tab, pipe and line-break classes, and a text shared by two locales is one notification.
 
-Not claimed: element-name, group, rule, computation and annotation classes ([`ElementNameNotification`](ElementNameNotification.lean) owns them), notification order, a variant-filtered field (the caller does not ask), and the Enumeration invalid-character class under a restricted charset beyond what `EnumerationDeclaration.notifications` already answers.
+Not claimed: element-name, group, rule, computation and annotation classes ([`ElementNameNotification`](ElementNameNotification.lean) owns them), notification order, and the Enumeration invalid-character class under a restricted charset beyond what `EnumerationDeclaration.notifications` already answers.
 -/
 
 namespace A12Kernel

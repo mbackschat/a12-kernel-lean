@@ -6,8 +6,8 @@ import A12Kernel.Reference.Dm.Model
 
 /-! # Reading a DM-JSON model for the declaration notifications
 
-The Kernel's consistency check judges every element the variant filter keeps, so this reader walks every
-root group and nested group in document order and judges each element: a field's name and its type body
+The Kernel's consistency check judges every element, so this reader walks every root group and nested
+group in document order and judges each element: a field's name and its type body
 after its type definition is resolved per referencing field (a definition no field references draws
 nothing, and one that two fields reference draws its notifications at both), a group's name,
 repeatability, sort fields and row-key nominations, a rule's or computation's name and error code, and
@@ -142,7 +142,6 @@ private def languageProfile : String → Except String (StringPatternMessageToke
   | other => throw s!"condition language {other} is not measured"
 
 private structure WalkEnvironment where
-  variant : Option String
   definitions : List (String × Json)
   compilePattern : StringPatternCompiler
   context : FieldTypeContext
@@ -189,18 +188,16 @@ private def annotationsRepertoire (element : Json) : Except String Bool := do
 private def repertoireIf (condition : Bool) : List String :=
   if condition then [ElementNameKind.supplementaryCharacter.label] else []
 
-/-- The state a nomination binder is collected in: every field in depth-first order, the repeatable
-groups numbered in the order reached, and the fields the variant filter removes. -/
+/-- The state a nomination binder is collected in: every field in depth-first order and the repeatable
+groups numbered in the order reached. -/
 private structure BindingState where
   fields : Array FlatFieldDecl := #[]
   groups : Array RepeatableGroupDecl := #[]
-  dropped : Array FieldId := #[]
 
 /-- Collect one element of the model as authored into the binder: a group keeps its repeatability, a
 field becomes a String stub carrying only what the binder reads, its path, its repeatable scope and
 whether it skips value validation (with the line-break permission that mode requires, so the stub is a
-legal declaration whatever the field's own defects are). A field the variant filter removes stays, as
-the Kernel binds a nomination against the model as authored. -/
+legal declaration whatever the field's own defects are). -/
 private partial def collectBinding (environment : WalkEnvironment) (scope : List RepeatableLevel)
     (path : GroupPath) (element : Json) : StateT BindingState (Except String) Unit := do
   let kind ← StateT.lift (element.getObjValAs? String "type")
@@ -222,8 +219,7 @@ private partial def collectBinding (environment : WalkEnvironment) (scope : List
       for child in ← StateT.lift (arrayMembers body "elements") do
         collectBinding environment scope groupPath child
   | "Field" =>
-      let kept ← StateT.lift (acceptedByVariant environment.variant body)
-      let skipsValidation ← StateT.lift (if !kept then pure false else do
+      let skipsValidation ← StateT.lift (do
         match ← readDeclaration (← resolveTypeDefinition environment.definitions body) with
         | .string declaration => pure declaration.noValueValidation
         | _ => pure false)
@@ -232,15 +228,14 @@ private partial def collectBinding (environment : WalkEnvironment) (scope : List
         fields := state.fields.push {
           id, groupPath := path, name, policy := { kind := .string }, repeatableScope := scope
           stringValueMode := if skipsValidation then .raw else .evaluated
-          stringPolicy := { lineBreaksPermitted := true } }
-        dropped := if kept then state.dropped else state.dropped.push id }
+          stringPolicy := { lineBreaksPermitted := true } } }
   | _ => pure ()
 
-/-- The model as the nomination binder reads it, with the ids of the fields the variant filter removes. -/
-private def bindingModel (environment : WalkEnvironment) : Except String (FlatModel × List FieldId) := do
+/-- The model as the nomination binder reads it. -/
+private def bindingModel (environment : WalkEnvironment) : Except String FlatModel := do
   let ((), state) ← (environment.roots.forM (collectBinding environment [] [])).run {}
-  pure ({ fields := state.fields.toList, repeatableGroups := state.groups.toList
-          fieldRefByShortNameAllowed := environment.shortNamesAllowed }, state.dropped.toList)
+  pure { fields := state.fields.toList, repeatableGroups := state.groups.toList
+         fieldRefByShortNameAllowed := environment.shortNamesAllowed }
 
 /-- A group's row-key refusals as reports. Each nomination is judged by the declaration owner,
 `FlatModel.nominatedTarget`: written as a name or a path, it must bind to a declared field, else the
@@ -255,10 +250,10 @@ private def rowKeyReports (environment : WalkEnvironment) (path : List String) (
   let sorts ← (← arrayMembers body "sortFields").mapM fun entry => entry.getObjValAs? String "name"
   let nominations := (index.toList.map (RowFieldRole.indexField, ·)) ++ sorts.map (RowFieldRole.sortField, ·)
   if nominations.isEmpty then return []
-  let (model, dropped) ← bindingModel environment
+  let model ← bindingModel environment
   let mut judged : List (RowFieldRole × String × NominatedTarget) := []
   for (role, nomination) in nominations do
-    match model.nominatedTarget dropped path (nominationPath nomination) with
+    match model.nominatedTarget path (nominationPath nomination) with
     | .ok target => judged := judged ++ [(role, nomination, target)]
     | .error (.unbound _) => return [{ path, unbuilt := true }]
     | .error (.invalidModel cause) =>
@@ -287,8 +282,7 @@ private def rowKeyReports (environment : WalkEnvironment) (path : List String) (
       (fun (at_, refusal) => { path := at_, labels := [refusal.label], orderingGate := refusal.isOrderingGate }) ++
     if memberSentence.isEmpty then [] else [{ path, labels := memberSentence }])
 
-/-- Judge each element in document order below the groups above it. A field the variant filter removes
-draws nothing, its name and annotations included. -/
+/-- Judge each element in document order below the groups above it. -/
 private partial def judgeElement (environment : WalkEnvironment) (above : PathAbove)
     (parent : List String) (element : Json) : Except String (List ElementReport) := do
   let kind ← element.getObjValAs? String "type"
@@ -315,7 +309,6 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
       pure ({ path, labels := collapseRepertoire (own ++ repertoireIf annotated) } :: rowKeys ++
         below.flatten)
   | "Field" =>
-      if !(← acceptedByVariant environment.variant body) then return []
       if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
       let judgement := fieldName environment.valueWord name
       let named := (judgement.reported above ++
@@ -333,7 +326,6 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
           let walkRefused := raised.any fun notification => walkTextLabels.contains notification.label
           pure [{ path, labels := collapseRepertoire labels, walkRefused }]
   | "Rule" | "Computation" =>
-      if !(← acceptedByVariant environment.variant body) then return []
       if ExecutableDeclaration.blank name then return [{ path, unbuilt := true }]
       let declaration : ExecutableDeclaration :=
         { group := parent, name, kind := if kind == "Rule" then .rule (ruleCode body) else .computation }
@@ -343,14 +335,13 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
       pure [{ path, labels := collapseRepertoire labels }]
   | _ => pure []
 
-/-- The notifications every kept element's declaration raises, each as its capture label and the
+/-- The notifications every element's declaration raises, each as its capture label and the
 element path, or the one unbuilt-model label with an empty path: field types and bodies, element and
 group names, group declarations, rule and computation names, and the repertoire of element annotations
 and field messages. The Java pattern compilation is the host's and has no default: the closed ASCII
 profiles of `builtinStringPatternCompiler` refuse Java-valid sources they cannot execute, which this
 check would report as invalid patterns. -/
 def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatternCompiler)
-    (variant : Option String := none)
     (charset : LegalCharset := .defaultBmp) : Except String (List (String × String)) := do
   let frame ← bindModelFrame json
   let content := frame.content
@@ -359,7 +350,6 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
   let (messageTokens, valueWord) ← languageProfile (frame.conditionLanguage.getD "en_US")
   let roots := frame.rootGroups.toList
   let environment : WalkEnvironment := {
-    variant
     definitions := frame.typeDefinitions.toList.map fun definition =>
       ((definition.getObjValAs? String "id").toOption.getD "", definition)
     compilePattern

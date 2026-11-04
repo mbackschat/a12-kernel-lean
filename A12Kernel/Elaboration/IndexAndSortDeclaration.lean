@@ -6,7 +6,7 @@ A repeatable group may nominate one **index field** — the row key that arms `R
 
 **The disqualifying property is the one [`ValueFormalCheck.lean`](../Semantics/ValueFormalCheck.lean) already owns.** A String declaration that switches value validation off ends the stored-value pipeline before the technical length cap, storing whatever was authored; a field the Kernel never inspects cannot serve as a row key or a sort key, because both need a comparable value. This is that switch's second consumer, and the first one outside the value pipeline.
 
-**The unresolved arm is live; the group arm has no known witness.** A nomination is bound against the model as authored, where a name resolving nowhere fails the build with no class, measured on both roles. It is then judged by the group's direct child field of that short name in the default variant, so a nominated field filtered `ONLY`, or a relative `../Key` that binds to the parent's field while its local namesake is filtered or physically absent, reaches `MVK_INVALID_INDEX_FIELD` and `MVK_INVALID_SORT_FIELD`, filter or no filter ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)); this module's earlier reading of those classes as unreachable was defeated by those two carriers. No row reaches the class through a namesake that is a group, so `NominatedTarget.group` is the source-read arm, not a measured one. The table-enumeration arm inherits [`TableEnumeration.lean`](TableEnumeration.lean)'s constant: no A12 enumeration is a table enumeration, so an index field can never be one.
+**The unresolved arm is live; the group arm has no known witness.** A nomination is bound against the model as authored, where a name resolving nowhere fails the build with no class, measured on both roles. It is then judged by the group's direct child field of that short name, so a relative `../Key` that binds to the parent's field while its local namesake is physically absent reaches `MVK_INVALID_INDEX_FIELD` and `MVK_INVALID_SORT_FIELD` ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)); this module's earlier reading of those classes as unreachable was defeated by that carrier. The variant filter, which once removed a local namesake, is retired, so it supplies no second carrier. No row reaches the class through a namesake that is a group, so `NominatedTarget.group` is the source-read arm, not a measured one. The table-enumeration arm inherits [`TableEnumeration.lean`](TableEnumeration.lean)'s constant: no A12 enumeration is a table enumeration, so an index field can never be one.
 
 **The asymmetry worth keeping.** A group carries at most one index field and any number of sort fields, so the index cascade runs once and the sort cascade once per nominated field — but the classes stay distinct per role, which is what lets a consumer say *which* nomination is at fault when a group carries both.
 
@@ -66,8 +66,8 @@ def all : List RowFieldRefusal :=
 
 end RowFieldRefusal
 
-/-- What a nomination resolves to: the group's direct child of the nominated short name in the
-default variant, which `FlatModel.nominatedTarget` derives. Absence and a non-field both fail the
+/-- What a nomination resolves to: the group's direct child of the nominated short name, which
+`FlatModel.nominatedTarget` derives. Absence and a non-field both fail the
 first arm, and they are kept apart because only one of them is what an author usually wrote. -/
 inductive NominatedTarget where
   /-- No direct child of that name. -/
@@ -98,24 +98,21 @@ inductive NominationBuildFailure where
   | unbound (cause : ResolveError)
   deriving Repr, DecidableEq
 
-/-- Derive a nomination's target the way the Kernel does: bind the authored path against the model
-as authored, then ask the group's direct child of that short name in the default variant.
+/-- Derive a nomination's target the way the Kernel does: bind the authored path against the model,
+then ask the group's direct child of that short name.
 
 The two steps can read different fields. `../Key` binds to the parent's `Key`, but the local `Key`
-is judged, so the parent's variant filter or value-validation switch changes nothing while the local
-one's decides ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)).
-`dropped` lists the fields a variant filter `ONLY` removes from the default variant; `ALL_EXCEPT`
-keeps the field, so it is simply not listed. The model must validate, which excludes the peer's two
-same-named siblings told apart only by their filters: this model cannot declare two fields at one
-path. -/
-def FlatModel.nominatedTarget (model : FlatModel) (dropped : List FieldId)
+is judged, so the parent's value-validation switch changes nothing while the local one's decides
+([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)). The
+model must validate, which excludes the peer's two same-named siblings told apart only by their
+variant filters: this model cannot declare two fields at one path. -/
+def FlatModel.nominatedTarget (model : FlatModel)
     (group : GroupPath) (nomination : SurfaceFieldPath) :
     Except NominationBuildFailure NominatedTarget := do
   if let .error cause := model.validate then throw (.invalidModel cause)
   let _ ← model.resolveFieldDeclarationUnchecked group nomination |>.mapError .unbound
   let name := nomination.field
-  match model.fields.find? fun field =>
-      field.groupPath == group && field.name == name && !dropped.contains field.id with
+  match model.fields.find? fun field => field.groupPath == group && field.name == name with
   -- No A12 enumeration is a table enumeration (`TableEnumeration.lean`), so the arm stays false.
   | some field => pure (.field field.isRawString false)
   | none => pure (if model.hasGroupPath (group ++ [name]) then .group else .unresolved)

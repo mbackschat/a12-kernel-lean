@@ -330,14 +330,10 @@ private structure ReadState where
   enumerationNotifications : Array (List String × List EnumerationDeclarationNotification) := #[]
   /-- The model's inline type definitions, by id. -/
   typeDefinitions : List (String × Json) := []
-  /-- The variant the model is read for; `none` is the default variant. -/
-  variant : Option String := none
-  /-- Each field the variant filter removes, by group, name and repeatable scope. -/
-  filteredFields : Array (GroupPath × String × List RepeatableLevel) := #[]
   /-- Each group's sort nominations as written. -/
   sortNominations : Array (GroupPath × List String) := #[]
-  /-- How many field elements the walk has met, counting a field whose type is refused but not one the
-  variant filter removes: a group has no field in its subtree exactly when this did not move across it. -/
+  /-- How many field elements the walk has met, counting a field whose type is refused: a group has no
+  field in its subtree exactly when this did not move across it. -/
   fieldsSeen : Nat := 0
   /-- Each nonrepeatable group the walk left without meeting a field in its subtree. -/
   emptyNonrepeatableGroups : Array GroupPath := #[]
@@ -368,28 +364,6 @@ def ruleCode (body : Json) : DeclarationStringValue :=
   | some (.bool value) => .text (if value then "true" else "false")
   | some .null | some (.arr _) | some (.obj _) => .unreadable
 
-/-- Whether a field, rule or computation survives the variant the model is read for. An absent or
-`null` filter keeps it; `ONLY` keeps it when the variant is named and `ALL_EXCEPT` when it is not, so
-at the default variant, which names nothing, the filter type alone decides. Any other filter shape
-fails the whole model, as the Kernel's build does (spec/01 §3). A `variants` member that is neither
-absent, `null` nor a list of names is refused too, which no measurement covers. -/
-def acceptedByVariant (variant : Option String) (body : Json) : Except String Bool := do
-  match body.getObjVal? "variantFilter" with
-  | .error _ | .ok .null => pure true
-  | .ok filter@(.obj _) =>
-      let names ← match filter.getObjVal? "variants" with
-        | .error _ | .ok .null => pure []
-        | .ok (.arr values) => values.toList.mapM fun
-            | .str name => pure name
-            | other => throw s!"variantFilter variant {other.compress}"
-        | .ok other => throw s!"variantFilter variants {other.compress}"
-      let named := variant.any names.contains
-      match filter.getObjVal? "filterType" with
-      | .ok (.str "ONLY") => pure named
-      | .ok (.str "ALL_EXCEPT") => pure !named
-      | _ => throw s!"variantFilter {filter.compress}"
-  | .ok other => throw s!"variantFilter {other.compress}"
-
 /-- A field's body with a `TypeDefType` replaced by the inline definition it names, so every check
 reads the base kind, as the Kernel's effective type does (typedef base-kind checkpoint). A definition
 imported from another model is not in this one and is refused with an unknown id. -/
@@ -406,38 +380,6 @@ def resolveTypeDefinition (definitions : List (String × Json)) (fieldJson : Jso
   if (base.getObjValAs? String "type").toOption == some "TypeDefType" then
     throw s!"type definition {id} is itself a TypeDefType"
   pure (fieldJson.setObjVal! "fieldType" base)
-
-/-- The field types the Kernel's model reader knows. -/
-private def knownFieldTypes : List String :=
-  ["StringType", "NumberType", "BooleanType", "ConfirmType", "EnumerationType", "DateType",
-    "TimeType", "DateTimeType", "DateFragmentType", "DateRangeType", "CustomFieldType",
-    "TypeDefType", "UnspecifiedType"]
-
-/-- The refusal a variant-filtered field keeps, which is the Kernel's authored-model stage: an
-unknown, absent or `null` field type, a temporal type without its body, a duplicated Enumeration
-value and a type definition reference without its id (spec/01 §3). Every check the default variant
-makes is lost with the field. -/
-private def filteredFieldRefusal? (definitions : List (String × Json)) (fieldJson : Json) :
-    Option String :=
-  match resolveTypeDefinition definitions fieldJson with
-  | .error reason => some reason
-  | .ok resolved =>
-      match resolved.getObjVal? "fieldType" >>= (·.getObjValAs? String "type") with
-      | .error _ => some "field type absent"
-      | .ok typeName =>
-          let body? := (resolved.getObjVal? "fieldType").toOption.bind fun fieldType =>
-            (fieldType.getObjVal? typeName).toOption
-          if !knownFieldTypes.contains typeName then some s!"field type {typeName}"
-          else if ["DateType", "TimeType", "DateTimeType", "DateFragmentType"].contains typeName &&
-              !(body?.any fun body => (body.getObj?).isOk) then
-            some s!"{typeName} without its body"
-          else if typeName == "EnumerationType" then
-            match readEnumerationDeclaration (body?.getD (Json.mkObj [])) with
-            | .error reason => some reason
-            | .ok declaration =>
-                if declaration.storedTokens.Nodup then none
-                else some "EnumerationType duplicated value"
-          else none
 
 /-- Walk one group element and its descendants depth-first. -/
 private partial def readElement (path : GroupPath) (scope : List RepeatableLevel) (element : Json) :
@@ -484,16 +426,8 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
           emptyNonrepeatableGroups := state.emptyNonrepeatableGroups.push groupPath }
   | "Field" =>
       let state ← get
-      -- Binding precedes the variant filter, so a deleted field's unbindable member still leaves no
-      -- model (2026-10-18 binding rows).
       if let some reason := fieldBindingRefusal? body then
         modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
-        return
-      if !(← StateT.lift (acceptedByVariant state.variant body)) then
-        match filteredFieldRefusal? state.typeDefinitions body with
-        | some reason => modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
-        | none => modify fun state => { state with
-            filteredFields := state.filteredFields.push (path, name, scope) }
         return
       if ExecutableDeclaration.blank name then
         modify fun state => { state with refusals := state.refusals.push (path ++ [name], "blank field name") }
@@ -518,10 +452,6 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
           enumerationNotifications := state.enumerationNotifications.push (path ++ [name], notifications) }
   | "Rule" =>
       let code := ruleCode body
-      if !(← StateT.lift (acceptedByVariant (← get).variant body)) then
-        modify fun state => { state with
-          declarations := state.declarations.push { group := path, name, kind := .rule code, deleted := true } }
-        return
       let messages ← StateT.lift (localizedTextMember body "errorMessage")
       modify fun state => { state with
         declarations := state.declarations.push { group := path, name, kind := .rule code }
@@ -533,7 +463,6 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         severity := (str? body "severity").getD "ERROR"
         messages } }
   | "Computation" =>
-      if !(← StateT.lift (acceptedByVariant (← get).variant body)) then return
       let roundingMode ← StateT.lift (computationString? body "roundingMode")
       let alternatives ← StateT.lift do
         (← body.getObjValAs? (Array Json) "computationAlternatives").toList.mapM readAlternative
@@ -577,16 +506,9 @@ def nominationPath (nomination : String) : SurfaceFieldPath :=
     groups := named.dropLast, field := named.getLast?.getD "" }
 
 /-- The row-key refusals of every nominating group, each labelled by its Kernel code or, for the
-codeless list-capacity notice, its observed label. A nomination is bound against the model as authored,
-so a field the variant filter removed is bound through a stub and then judged absent, while a name
-binding nowhere fails the build without a class (spec/03 §B4). -/
+codeless list-capacity notice, its observed label. A name binding nowhere fails the build without a
+class (spec/03 §B4). -/
 private def nominationRefusals (flat : FlatModel) (state : ReadState) : List (List String × String) :=
-  let stubs := state.filteredFields.toList.filter (fun (group, name, _) =>
-      !flat.fields.any fun field => field.groupPath == group && field.name == name) |>.zipIdx flat.fields.length
-    |>.map fun ((group, name, scope), id) =>
-      ({ id, groupPath := group, name, policy := { kind := .string }, repeatableScope := scope } : FlatFieldDecl)
-  let binding : FlatModel := { flat with fields := flat.fields ++ stubs }
-  let dropped := stubs.map (·.id)
   let indexOf (path : GroupPath) : Option String :=
     match state.groups.toList.find? (·.path == path) with
     | some group => (state.indexFields.find? (·.1 == group.level)).map (·.2.2)
@@ -596,7 +518,7 @@ private def nominationRefusals (flat : FlatModel) (state : ReadState) : List (Li
     state.nonrepeatableIndexFields.toList.map (·.1) ++ state.sortNominations.toList.map (·.1)).eraseDups
   paths.flatMap fun path =>
     let judged (written : String) : Except String NominatedTarget :=
-      match binding.nominatedTarget dropped path (nominationPath written) with
+      match flat.nominatedTarget path (nominationPath written) with
       | .ok target => .ok target
       | .error (.unbound _) => .error s!"nomination {written} names no field"
       | .error (.invalidModel _) => .error s!"nomination {written} is not judged on an invalid model"
@@ -613,7 +535,7 @@ private def nominationRefusals (flat : FlatModel) (state : ReadState) : List (Li
 /-- Read a DM-JSON model. A structural fault in the file fails the whole read; an unmappable
 declaration is refused alone. -/
 private def readModelCore (json : Json)
-    (graphemeClusters? : Option (String → List String)) (variant : Option String) :
+    (graphemeClusters? : Option (String → List String)) :
     Except String (DmModel × List ExecutableDeclaration) := do
   let frame ← bindModelFrame json
   let content := frame.content
@@ -632,7 +554,7 @@ private def readModelCore (json : Json)
   -- The Kernel refuses a repeated type-definition id while expanding the definitions (peer KF647).
   if let some id := ModelConsistency.repeatedTypeDefinitionId? (typeDefinitions.map (·.1)) then
     throw s!"type definition id {id} is repeated"
-  let ((), state) ← (roots.toList.forM (readElement [] [])).run { legalCharset, typeDefinitions, variant }
+  let ((), state) ← (roots.toList.forM (readElement [] [])).run { legalCharset, typeDefinitions }
   let fieldId (group : GroupPath) (name : String) : Option FieldId :=
     (state.fields.find? fun field => field.groupPath == group && field.name == name).map (·.id)
   -- An unbindable Base Year fails the read rather than leave the model without the year its partial
@@ -681,17 +603,17 @@ responsibility of their checked carriers; success is not a complete consistency 
 Combined supported-character entries require a caller-supplied Java-compatible grapheme classifier;
 its absence is a host-preparation failure rather than a malformed-definition verdict. -/
 def readModelWithAdmission (json : Json)
-    (graphemeClusters? : Option (String → List String) := none) (variant : Option String := none) :
+    (graphemeClusters? : Option (String → List String) := none) :
     Except ModelReadFailure DmModel := do
-  let (model, declarations) ← (readModelCore json graphemeClusters? variant).mapError .input
+  let (model, declarations) ← (readModelCore json graphemeClusters?).mapError .input
   (ExecutableDeclaration.admitAll declarations).mapError .declaration
   pure model
 
 /-- Compatibility projection for replay callers. Consumers explaining a refusal use
 `readModelWithAdmission` to retain its phase and codeless notifications. -/
-def readModel (json : Json) (graphemeClusters? : Option (String → List String) := none)
-    (variant : Option String := none) : Except String DmModel :=
-  (readModelWithAdmission json graphemeClusters? variant).mapError fun
+def readModel (json : Json) (graphemeClusters? : Option (String → List String) := none) :
+    Except String DmModel :=
+  (readModelWithAdmission json graphemeClusters?).mapError fun
     | .input reason => reason
     | .declaration failure => s!"declaration admission: {repr failure}"
 

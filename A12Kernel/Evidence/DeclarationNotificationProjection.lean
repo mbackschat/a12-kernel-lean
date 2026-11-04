@@ -30,8 +30,13 @@ def captureDirectory : System.FilePath := "captures/field-declaration-notificati
 /-- Rows the reader disagrees with for a reason outside the laws, each with the reason. A row stays out
 only when it disagrees for that reason alone; no other row disagrees. -/
 def deferred : List (String × String) :=
-  ["pp-time", "pp-datetime", "pp-datetime-twin", "pp-fragment", "pp-range"].map fun id =>
-    (id, "the Kernel's binding refuses a member its type does not declare; the reader ignores it")
+  ["pp-time", "pp-datetime", "pp-datetime-twin", "pp-fragment", "pp-range"].map (fun id =>
+    (id, "the Kernel's binding refuses a member its type does not declare; the reader ignores it")) ++
+  ["r-filtered", "nv-filtered", "pi-filtered", "lb1-filtered", "mm-n-filtered", "p-only", "h-only",
+    "ml-only", "ar-only", "mv-only", "ec-only", "ed-only", "dd-only", "ev-tab-only", "nl-only",
+    "sv-only", "u-only", "cn-only", "od-only", "pa-f-only", "pa-g-only", "dg-only", "xf-only", "dc-only",
+    "tb-frag-only", "tb-range-only"].map fun id =>
+    (id, "kernel 30.8.1 deleted the declaration by its variant filter, which kernel 31.1.1 reads past (spec/01 §1.4)")
 
 private def readJson (path : System.FilePath) : IO Json := do
   match parseModelJson (← IO.FS.readFile path) with

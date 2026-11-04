@@ -74,8 +74,7 @@ private def signed? (written : String) : Option Bool :=
   | some { policy := { kind := .number info }, .. } => some info.signed
   | _ => none
 
-/-- Every primitive boolean member binds by the same law, a field the variant filter deletes included,
-and a type definition no field references too. -/
+/-- Every primitive boolean member binds by the same law, and a type definition no field references too. -/
 example :
     signed? "\" TRUE\"" = some false ∧ signed? "\"tRUE\"" = none ∧ signed? "1.5" = none ∧
     (field? (model "\"global\":\" TRUE\"," "{}")).map (·.isGlobal) = some true ∧
@@ -85,8 +84,7 @@ example :
     field? (model "" "{\"zeroNotAllowed\":\"tRUE\"}" "NumberType") = none ∧
     field? (model "" "{\"leadingZerosAllowed\":\"tRUE\"}" "NumberType") = none ∧
     field? (model "" "{\"youngerThan1900Check\":\"tRUE\"}" "DateType") = none ∧
-    field? (model "\"variantFilter\":{\"filterType\":\"ONLY\",\"variants\":[\"other\"]},"
-      "{\"lineBreaksPermitted\":\"tRUE\"}") = none ∧
+    field? (model "" "{\"lineBreaksPermitted\":\"tRUE\"}") = none ∧
     built? (model "" "{}" (definitions :=
       "[{\"id\":\"T\",\"fieldType\":{\"type\":\"NumberType\",\"NumberType\":{\"positivesOnly\":\"tRUE\"}}}]")) = none ∧
     built? (model "" "{}" (info := "{\"immutable\":1.5}")) = none ∧

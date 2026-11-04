@@ -29,8 +29,6 @@ structure ExecutableDeclaration where
   group : List String
   name : String
   kind : ExecutableDeclarationKind
-  /-- The variant filter deletes it, which leaves only the empty-code notification (spec/01 §1.3). -/
-  deleted : Bool := false
   deriving Repr, BEq, DecidableEq
 
 inductive DeclarationNotificationKind where
@@ -90,18 +88,14 @@ def path (declaration : ExecutableDeclaration) : List String := declaration.grou
 content law as well as the name law: `C-x` draws both classes, `Cä` and `1C` the name class alone
 (capture rows `cpn-dash`, `cpn-umlaut`, `cpn-digit`), while a rule's name meets the name law only.
 Both alphabets judge the text after Java's `trim`, and a slot holding a supplementary scalar draws the
-repertoire notification instead of its own classes, once per declaration. A declaration the variant
-filter deletes draws only the empty-code notification, which survives the filter (spec/01 §1.3).
-The sequence is a stable local projection, not a claim about Kernel notification order or unrelated
-consistency checks. -/
+repertoire notification instead of its own classes, once per declaration. The sequence is a stable
+local projection, not a claim about Kernel notification order or unrelated consistency checks. -/
 def notifications (declaration : ExecutableDeclaration) : List DeclarationNotification := Id.run do
   let mut findings := []
   let add := fun kind => ({ declaration := declaration.path, kind } : DeclarationNotification)
   let code? := match declaration.kind with
     | .rule (.text code) => some code
     | _ => none
-  if declaration.deleted then
-    return if code?.any (·.isEmpty) then [add .emptyCode] else []
   let name := javaTrim declaration.name
   let nameSupplementary := hasSupplementaryScalar name
   if !nameSupplementary then
@@ -124,10 +118,10 @@ def notifications (declaration : ExecutableDeclaration) : List DeclarationNotifi
 batch before projecting any notifications, so a later unreadable declaration cannot leave an
 earlier declaration's apparent verdict behind (peer KF420 and rule-slot competing-defect laws). -/
 def admitAll (declarations : List ExecutableDeclaration) : Except DeclarationAdmissionFailure Unit := do
-  if let some declaration := declarations.find? (fun d => !d.deleted && match d.kind with
+  if let some declaration := declarations.find? (fun d => match d.kind with
       | .rule .unreadable => true | _ => false) then
     throw (.unreadable declaration.path "errorCode")
-  if let some declaration := declarations.find? (fun d => !d.deleted && blank d.name) then
+  if let some declaration := declarations.find? (fun d => blank d.name) then
     throw (.buildFailure declaration.path)
   let findings := declarations.flatMap notifications
   if !findings.isEmpty then throw (.notifications findings)

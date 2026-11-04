@@ -15,8 +15,10 @@ the unbuilt-model label. Row `b-localized-null` is not replayed: the capture rec
 fault (`admitted: null`), not an observation of the Kernel. Peer KF646 has since measured that shape,
 which the [text-binding locks](LocalizedTextBindingLocks.lean) fix for this reader too.
 
-Two parts replay other measurements: `liftedBuildFailureRows`, a peer measurement of the build failures
-a variant filter lifts, and the type-definition section at the end, peer and local rows of 2026-10-29.
+Two parts replay other measurements: `conversionFailureRows`, a peer measurement of the declaration
+build failures, and the type-definition section at the end, peer and local rows of 2026-10-29. The captures'
+own rows that carried a `variantFilter` are not replayed, since that member is retired (DM 29.1) and read
+past.
 
 The captures record labels, not payloads, so the paths the check attaches are checked only by the
 examples at the end. Those pin this module's choice and no observation, except in the type-definition
@@ -78,9 +80,6 @@ private def typedefTypeWithoutId : Json := typeOf "TypeDefType" (some [])
 private def required : String × Json :=
   ("requirednessConfig", Json.mkObj [("mode", "relativeToParent")])
 
-private def onlyV1 : String × Json :=
-  ("variantFilter", Json.mkObj [("filterType", "ONLY"), ("variants", toJson ["V1"])])
-
 private def element (kind id name : String) (body : List (String × Json)) : Json :=
   Json.mkObj [("type", .str kind), ("id", .str id), ("name", .str name), (kind, Json.mkObj body)]
 
@@ -132,9 +131,9 @@ private def attachmentEntities : List String :=
   ["../attachment_id", "../size", "../internal_filename", "../mime_type"]
 
 /-- The capture's attachment group `Att`: the eight fields in the order `a-ok` authors them, minus
-`without`, the named ones carrying a variant filter, then one rule per condition, then any extras. -/
+`without`, then one rule per condition, then any extras. -/
 private def attachmentGroup (without : List String := [])
-    (content : Json := stringType bothFlags) (filtered : List String := [])
+    (content : Json := stringType bothFlags)
     (conditions : List String := english) (extraElements : List Json := []) : Json :=
   let fields : List (String × Json) := [("original_filename", stringType), ("internal_filename", stringType),
     ("content", content), ("attachment_id", stringType), ("size", numberType (maxFractional := "0")),
@@ -143,7 +142,7 @@ private def attachmentGroup (without : List String := [])
     ruleEl s!"/Form/Att/AttRule{index}" s!"AttRule{index}" entity condition
   groupEl "/Form/Att" "Att" 3
     ((fields.filter (fun (name, _) => !without.contains name)).map (fun (name, fieldType) =>
-      fieldEl s!"/Form/Att/{name}" name fieldType (if filtered.contains name then [onlyV1] else [])) ++
+      fieldEl s!"/Form/Att/{name}" name fieldType) ++
       rules ++ extraElements)
     (usageType := "attachment")
 
@@ -199,10 +198,6 @@ private def conditionEmpty : String := "codeless:error-condition-empty"
 private def entityNotSet : String := "codeless:error-entity-not-set"
 private def operationEmpty : String := "codeless:computation-operation-empty"
 private def typedefNameEmpty : String := "codeless:typedef-name-empty"
-private def elementNameEmpty : String := "codeless:element-name-empty"
-private def typedefRefEmpty : String := "codeless:typedef-reference-empty"
-private def computedFieldEmpty : String := "codeless:computed-field-empty"
-private def enumCategoryDuplicate : String := "codeless:enum-category-duplicate"
 
 /-- The capture's labels this check owns: codes other owners carry are dropped. -/
 private def projected (observed : List String) : List String :=
@@ -222,9 +217,8 @@ example (kind : ModelConsistencyClass) : kind ∈ ModelConsistencyClass.all := b
   cases kind <;> simp [ModelConsistencyClass.all]
 
 /-- A bound past the limit its declared fraction digits allow raises a value-limit class, and one that
-also prints past the stored digit limit raises a formal class after it. A field the variant filter
-removes still draws the limit class but never the formal one, and a type definition's bounds are judged
-through the field that uses it, not on their own. -/
+also prints past the stored digit limit raises a formal class after it. A type definition's bounds are
+judged through the field that uses it, not on their own. -/
 private def numberLimitRows : List (String × Row) := [
   ("v0-ok", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (maxValue := "999999999999999"))], observed := [] }),
   ("v0-max", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (maxValue := "1000000000000000"))], observed := [maxExceeded, tooLong] }),
@@ -238,7 +232,6 @@ private def numberLimitRows : List (String × Row) := [
   ("v14-ok", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "9.99999999999999"))], observed := [] }),
   ("v14-fine-over", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "9.999999999999991"))], observed := [maxExceeded, tooLong] }),
   ("v14-over", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "10"))], observed := [maxExceeded] }),
-  ("v-filtered", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "0") (maxValue := "1000000000000000")) [onlyV1]], observed := [maxExceeded] }),
   ("v-typedef", { append := [fieldEl "/Form/N" "N" (typedefType "BigTd")], typeDefinitions := [typedefEl "BigTd" "BigTd" (numberType (maxFractional := "0") (maxValue := "1000000000000000"))], observed := [maxExceeded, tooLong] }),
   ("v-typedef-unused", { typeDefinitions := [typedefEl "BigTd" "BigTd" (numberType (maxFractional := "0") (maxValue := "1000000000000000"))], observed := [] }),
   ("v-neg-fine", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (minValue := "-9999999999999.991"))], observed := [] })]
@@ -259,8 +252,7 @@ private def printedBoundRows : List (String × Row) := [
   ("bp-negzero-var", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "2") (minValue := "-0.0001"))], observed := [] }),
   ("bp-frac14", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "0.00000000000001"))], observed := [] }),
   ("bp-frac15", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "0.000000000000001"))], observed := [tooLong] }),
-  ("bp-tiny", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "0.0000000000000000001"))], observed := [tooLong] }),
-  ("bp-filtered", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "1.000000000000001")) [onlyV1]], observed := [] })]
+  ("bp-tiny", { append := [fieldEl "/Form/N" "N" (numberType (maxFractional := "14") (maxValue := "0.0000000000000000001"))], observed := [tooLong] })]
 
 example : disagreeing printedBoundRows = [] := by native_decide
 
@@ -289,8 +281,8 @@ private def boundOrderRows : List (String × Row) := [
 
 example : disagreeing boundOrderRows = [] := by native_decide
 
-/-- Each occurrence of a shared identifier is reported, the empty identifier included; a filtered field,
-a rule, a group and a computation share the namespace, the root group's identifier too. -/
+/-- Each occurrence of a shared identifier is reported, the empty identifier included; a field, a rule, a
+group and a computation share the namespace, the root group's identifier too. -/
 private def identifierRows : List (String × Row) := [
   ("i-empty-id2", { append := [fieldEl "" "A1" (stringType), fieldEl "" "A2" (stringType)], observed := [idNotUnique, idNotUnique, idEmpty, idEmpty] }),
   ("i-empty-id1", { append := [fieldEl "" "A1" (stringType)], observed := [idEmpty] }),
@@ -299,7 +291,6 @@ private def identifierRows : List (String × Row) := [
   ("i-dup3", { append := [fieldEl "/Form/Value" "N" (stringType), fieldEl "/Form/Value" "M" (stringType)], observed := [idNotUnique, idNotUnique, idNotUnique] }),
   ("i-dup-rule", { append := [ruleEl "/Form/Value" "R" "../Value" "FieldFilled(Value)"], observed := [idNotUnique, idNotUnique] }),
   ("i-dup-group", { append := [groupEl "/Form/Value" "G" 1 [fieldEl "/Form/G/X" "X" (stringType)]], observed := [idNotUnique, idNotUnique] }),
-  ("i-dup-filtered", { append := [fieldEl "/Form/Value" "N" (stringType) [onlyV1]], observed := [idNotUnique, idNotUnique] }),
   ("i-dup-comp", { append := [computationEl "/Form/Value" "C" "../Total" ["1"]], observed := [idNotUnique, idNotUnique] }),
   ("i-dup-two-ids", { append := [fieldEl "/Form/Value" "N" (stringType), fieldEl "/Form/Other" "M" (stringType)], observed := [idNotUnique, idNotUnique, idNotUnique, idNotUnique] })]
 
@@ -322,51 +313,30 @@ private def emptinessRows : List (String × Row) := [
 
 example : disagreeing emptinessRows = [] := by native_decide
 
-/-- A declaration the default variant's `ONLY` filter deletes is never converted, so the conversion
-failures of its kept twin are lifted: the model builds and the deleted declaration draws one codeless
-notification for its defect (an empty or absent type-definition reference, an empty computed-field path,
-two categories of one name whether their values are equal or differ). Each kept twin still leaves no
-model. The sentences of an empty operation survive the filter as before, so the deletion lifts build
-failures only. The rows are not capture rows: they replay the peer measurement of a12-dmkits `fecf8552`,
-`CheckerBasicSentenceAgreementTest` (BoundModel oracle, kernel 30.8.1), recorded at
-`docs/sources/inbound-handbacks.md#src-inbound-2026-10-27`. That measurement compares sets of classes,
-so no row here carries two lifted notifications and their order is not claimed. -/
-private def liftedBuildFailureRows : List (String × Row) := [
-  ("o-computed-field-empty-kept", { append := [computationEl "/Form/C" "C" "" ["1"]], observed := [notBuilt] }),
-  ("o-computed-field-empty-only", { append := [computationEl "/Form/C" "C" "" ["1"] [onlyV1]], observed := [computedFieldEmpty] }),
-  ("o-computed-field-set-only", { append := [computationEl "/Form/C" "C" "../Total" ["1"] [onlyV1]], observed := [] }),
-  ("o-operation-empty-only", { append := [computationEl "/Form/C" "C" "../Total" [""] [onlyV1]], observed := ["MVK_INCOMPLETE_INPUT", operationEmpty] }),
-  ("o-enum-dup-different-kept", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["b"])])], observed := [notBuilt] }),
-  ("o-enum-dup-different-only", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["b"])]) [onlyV1]], observed := [enumCategoryDuplicate] }),
-  ("o-enum-dup-equal-kept", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["a"])])], observed := [notBuilt] }),
-  ("o-enum-dup-equal-only", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["a"])]) [onlyV1]], observed := [enumCategoryDuplicate] }),
-  ("o-enum-distinct-only", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("L", ["b"])]) [onlyV1]], observed := [] }),
-  ("o-typedef-ref-empty-kept", { append := [fieldEl "/Form/T" "T" (typedefType "")], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [notBuilt] }),
-  ("o-typedef-ref-empty-only", { append := [fieldEl "/Form/T" "T" (typedefType "") [onlyV1]], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [typedefRefEmpty] }),
-  ("o-typedef-ref-absent-kept", { append := [fieldEl "/Form/T" "T" typedefTypeWithoutId], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [notBuilt] }),
-  ("o-typedef-ref-absent-only", { append := [fieldEl "/Form/T" "T" typedefTypeWithoutId [onlyV1]], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [typedefRefEmpty] }),
-  ("o-typedef-ref-resolved-only", { append := [fieldEl "/Form/T" "T" (typedefType "Td") [onlyV1]], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [] }),
-  -- An empty name is `isEmpty`, a one-space name only blank: a deleted declaration with an empty name
-  -- draws one codeless notification, one with a one-space name draws nothing, and either name on a
-  -- kept declaration leaves the model unbuilt (KF626).
-  ("o-field-name-empty-kept", { append := [fieldEl "/Form/N" "" (stringType)], observed := [notBuilt] }),
-  ("o-field-name-empty-only", { append := [fieldEl "/Form/N" "" (stringType) [onlyV1]], observed := [elementNameEmpty] }),
-  ("o-field-name-blank-kept", { append := [fieldEl "/Form/N" " " (stringType)], observed := [notBuilt] }),
-  ("o-field-name-blank-only", { append := [fieldEl "/Form/N" " " (stringType) [onlyV1]], observed := [] }),
-  ("o-rule-name-empty-kept", { append := [ruleEl "/Form/R" "" "../Value" "FieldFilled(Value)"], observed := [notBuilt] }),
-  ("o-rule-name-empty-only", { append := [ruleEl "/Form/R" "" "../Value" "FieldFilled(Value)" [onlyV1]], observed := [elementNameEmpty] }),
-  ("o-rule-name-blank-kept", { append := [ruleEl "/Form/R" " " "../Value" "FieldFilled(Value)"], observed := [notBuilt] }),
-  ("o-rule-name-blank-only", { append := [ruleEl "/Form/R" " " "../Value" "FieldFilled(Value)" [onlyV1]], observed := [] }),
-  ("o-computation-name-empty-kept", { append := [computationEl "/Form/C" "" "../Total" ["1"]], observed := [notBuilt] }),
-  ("o-computation-name-empty-only", { append := [computationEl "/Form/C" "" "../Total" ["1"] [onlyV1]], observed := [elementNameEmpty] }),
-  ("o-computation-name-blank-kept", { append := [computationEl "/Form/C" " " "../Total" ["1"]], observed := [notBuilt] }),
-  ("o-computation-name-blank-only", { append := [computationEl "/Form/C" " " "../Total" ["1"] [onlyV1]], observed := [] })]
+/-- A declaration whose conversion fails leaves no model: an Enumeration declaring two categories of one
+name whether their values are equal or differ, a type-definition reference whose id is absent, and a
+rule, computation or field named empty or with one space, a blank name failing the build as an empty one
+does (KF626). The distinct categories, the resolved reference and a computed-field path that is set build
+and draw nothing. The rows are not capture rows: they replay the peer measurement of a12-dmkits
+`fecf8552`, `CheckerBasicSentenceAgreementTest` (BoundModel oracle, kernel 30.8.1), recorded at
+`docs/sources/inbound-handbacks.md#src-inbound-2026-10-27`; the rows that vary a declaration's
+`variantFilter` are not replayed, since that member is retired. -/
+private def conversionFailureRows : List (String × Row) := [
+  ("cf-computed-field-set", { append := [computationEl "/Form/C" "C" "../Total" ["1"]], observed := [] }),
+  ("cf-enum-dup-equal", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["a"])])], observed := [notBuilt] }),
+  ("cf-enum-distinct", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("L", ["b"])])], observed := [] }),
+  ("cf-typedef-ref-absent", { append := [fieldEl "/Form/T" "T" typedefTypeWithoutId], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [notBuilt] }),
+  ("cf-typedef-ref-resolved", { append := [fieldEl "/Form/T" "T" (typedefType "Td")], typeDefinitions := [typedefEl "Td" "Td" (stringType)], observed := [] }),
+  ("cf-field-name-blank", { append := [fieldEl "/Form/N" " " (stringType)], observed := [notBuilt] }),
+  ("cf-rule-name-empty", { append := [ruleEl "/Form/R" "" "../Value" "FieldFilled(Value)"], observed := [notBuilt] }),
+  ("cf-rule-name-blank", { append := [ruleEl "/Form/R" " " "../Value" "FieldFilled(Value)"], observed := [notBuilt] }),
+  ("cf-computation-name-empty", { append := [computationEl "/Form/C" "" "../Total" ["1"]], observed := [notBuilt] }),
+  ("cf-computation-name-blank", { append := [computationEl "/Form/C" " " "../Total" ["1"]], observed := [notBuilt] })]
 
-example : disagreeing liftedBuildFailureRows = [] := by native_decide
+example : disagreeing conversionFailureRows = [] := by native_decide
 
 /-- A multi-select group needs repeatability above one, exactly one direct field that is an Enumeration
-or String, is required and is not the group's index field, and no nested group; a field the variant
-filter removes still counts. -/
+or String, is required and is not the group's index field, and no nested group. -/
 private def multiSelectRows : List (String × Row) := [
   ("ms-ok", { append := [groupEl "/Form/MS" "MS" 3 [fieldEl "/Form/MS/Choice" "Choice" (enumerationType ["a", "b"]) [required]] (usageType := "multi-select")], observed := [] }),
   ("ms-string", { append := [groupEl "/Form/MS" "MS" 3 [fieldEl "/Form/MS/Choice" "Choice" (stringType) [required]] (usageType := "multi-select")], observed := [] }),
@@ -378,7 +348,6 @@ private def multiSelectRows : List (String × Row) := [
   ("ms-no-req", { append := [groupEl "/Form/MS" "MS" 3 [fieldEl "/Form/MS/Choice" "Choice" (enumerationType ["a", "b"])] (usageType := "multi-select")], observed := [requiredFlag] }),
   ("ms-index", { append := [groupEl "/Form/MS" "MS" 3 [fieldEl "/Form/MS/Choice" "Choice" (enumerationType ["a", "b"]) [required]] (usageType := "multi-select") (indexFieldName := "Choice")], observed := [indexField] }),
   ("ms-subgroup", { append := [groupEl "/Form/MS" "MS" 3 [fieldEl "/Form/MS/Choice" "Choice" (enumerationType ["a", "b"]) [required], groupEl "/Form/MS/Sub" "Sub" 1 [fieldEl "/Form/MS/Sub/Y" "Y" (stringType)]] (usageType := "multi-select")], observed := [otherElements] }),
-  ("ms-filtered-second", { append := [groupEl "/Form/MS" "MS" 3 [fieldEl "/Form/MS/Choice" "Choice" (enumerationType ["a", "b"]) [required], fieldEl "/Form/MS/Other2" "Other2" (enumerationType ["a", "b"]) [required, onlyV1]] (usageType := "multi-select")], observed := [requiredField] }),
   ("ms-all", { append := [groupEl "/Form/MS" "MS" 1 [fieldEl "/Form/MS/Choice" "Choice" (numberType (maxFractional := "0")), groupEl "/Form/MS/Sub" "Sub" 1 [fieldEl "/Form/MS/Sub/Y" "Y" (stringType)]] (usageType := "multi-select")], observed := [repeatableGroup, requiredFlag, wrongFieldType, otherElements] }),
   ("ms-typedef-enum", { append := [groupEl "/Form/MS" "MS" 3 [fieldEl "/Form/MS/Choice" "Choice" (typedefType "EnTd") [required]] (usageType := "multi-select")], typeDefinitions := [typedefEl "EnTd" "EnTd" (enumerationType ["a", "b"])], observed := [] })]
 
@@ -398,7 +367,6 @@ private def attachmentRows : List (String × Row) := [
   ("a-content-number", { append := [attachmentGroup (content := numberType (maxFractional := "0"))], observed := [] }),
   ("a-rule-case", { append := [attachmentGroup (conditions := (english.set 3 "GroupFilled(RuleGroup) And FieldNotFilled(mime_type)"))], observed := [requiredRules] }),
   ("a-extra", { append := [attachmentGroup (extraElements := [fieldEl "/Form/Att/extra" "extra" (stringType)])], observed := [] }),
-  ("a-filtered-field", { append := [attachmentGroup (filtered := ["description"])], observed := [] }),
   ("a-de-ok", { append := [attachmentGroup (conditions := german)], language := "de_DE", observed := [] }),
   ("a-de-en-order", { append := [attachmentGroup (conditions := (german.take 3))], language := "de_DE", observed := [requiredRules] }),
   ("a-all", { append := [attachmentGroup (without := ["description"]) (content := stringType) (conditions := (english.take 3))], observed := [missingField, requiredRules, contentConfig] })]
@@ -410,7 +378,7 @@ example : disagreeing attachmentRows = [] := by native_decide
 The captures observe no paths; these pin the element paths the check attaches. -/
 
 private def rowNamed (id : String) : Option Row :=
-  ((numberLimitRows ++ boundOrderRows ++ identifierRows ++ emptinessRows ++ liftedBuildFailureRows ++
+  ((numberLimitRows ++ boundOrderRows ++ identifierRows ++ emptinessRows ++ conversionFailureRows ++
       multiSelectRows).find?
     (·.1 == id)).map (·.2)
 
@@ -434,10 +402,6 @@ example : outcomeOf "b-typedef-id-empty" = some (.checked [
     { path := ["Td"], kind := .idEmpty }]) := by
   native_decide
 
-example : outcomeOf "o-computed-field-empty-only" = some (.checked [
-    { path := ["Form", "C"], kind := .computedFieldEmpty }]) := by
-  native_decide
-
 /-! ## Type definitions in id order, and a repeated id
 
 Peer KF647 (a12-dmkits `ceabf655`, `CheckerBasicSentenceOrderAgreementTest`) and a local `model check`
@@ -451,16 +415,16 @@ private def namedDefinitions (ids : List String) : Option (List String) :=
             if notification.kind == .typeDefinitionNameEmpty then notification.path.head? else none)
         | .notBuilt _ _ => none
 
-/-- Declared `Beta`, `""` named `Alpha` and `Gamma`, beside a deleted field with an empty name: the
-id-empty sentence of `Alpha` first, then the two name sentences, then the field's (peer row). -/
+/-- Declared `Beta`, `""` named `Alpha` and `Gamma`: the id-empty sentence of `Alpha` first, then the two
+name sentences (peer row, whose model also held a field with an empty name that the retired variant filter
+deleted). -/
 private def peerDefinitionRow : Row where
-  append := [fieldEl "/Form/X" "" stringType [onlyV1]]
   typeDefinitions := [typedefEl "Beta" "" stringType, typedefEl "" "Alpha" stringType, typedefEl "Gamma" "" stringType]
   observed := []
 
 example : (checkModelConsistency (modelOf peerDefinitionRow)).toOption = some (.checked [
       { path := ["Alpha"], kind := .idEmpty }, { path := ["Beta"], kind := .typeDefinitionNameEmpty },
-      { path := ["Gamma"], kind := .typeDefinitionNameEmpty }, { path := ["Form", ""], kind := .elementNameEmpty }]) := by
+      { path := ["Gamma"], kind := .typeDefinitionNameEmpty }]) := by
   native_decide
 
 /-- The walk sorts the ids by UTF-16 code unit (local probe: `Beta`, `Zeta`, `alpha` from `Zeta`,

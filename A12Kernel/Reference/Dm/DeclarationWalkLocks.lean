@@ -15,22 +15,18 @@ namespace A12Kernel.Dm.DeclarationWalkLocks
 
 open Lean A12Kernel
 
-private def only : Json := Json.mkObj [("filterType", "ONLY"), ("variants", Json.arr #["Other"])]
-
-private def field (name : String) (typeName := "StringType") (body : List (String × Json) := [])
-    (deleted := false) : Json :=
-  Json.mkObj [("type", "Field"), ("name", Json.str name), ("Field", Json.mkObj ([("fieldType",
-    Json.mkObj ([("type", Json.str typeName)] ++ if body.isEmpty then [] else [(typeName, Json.mkObj body)]))] ++
-    if deleted then [("variantFilter", only)] else []))]
+private def field (name : String) (typeName := "StringType") (body : List (String × Json) := []) : Json :=
+  Json.mkObj [("type", "Field"), ("name", Json.str name), ("Field", Json.mkObj [("fieldType",
+    Json.mkObj ([("type", Json.str typeName)] ++ if body.isEmpty then [] else [(typeName, Json.mkObj body)]))])]
 
 private def group (name : String) (elements : List Json) (body : List (String × Json) := []) : Json :=
   Json.mkObj [("type", "Group"), ("name", Json.str name),
     ("Group", Json.mkObj (body ++ [("elements", Json.arr elements.toArray)]))]
 
-private def rule (name : String) (deleted := false) : Json :=
-  Json.mkObj [("type", "Rule"), ("name", Json.str name), ("Rule", Json.mkObj (([
+private def rule (name : String) : Json :=
+  Json.mkObj [("type", "Rule"), ("name", Json.str name), ("Rule", Json.mkObj [
     ("errorEntityRelPath", "../Slot"), ("errorCode", "C"), ("errorCondition", "FieldFilled(Slot)"),
-    ("severity", "ERROR")] : List (String × Json)) ++ if deleted then [("variantFilter", only)] else []))]
+    ("severity", "ERROR")])]
 
 private def model (roots : List Json) : Json :=
   checkedEntryFrame <| Json.mkObj [("header", Json.mkObj [("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
@@ -75,22 +71,18 @@ example :
     report "/Order/" (host (part := "Coäde")) = [] := by
   native_decide
 
-/- A refused path still reaches no element the variant filter deletes, and a supplementary scalar
-   draws the repertoire notification in place of the path's. -/
+/- A supplementary scalar draws the repertoire notification in place of the path's. -/
 example :
-    report "/Order/" (host (part := "Codeé") (binElements := [field "Slot", rule "Check" true])) =
-      ["MVK_PATH_INVALID@Codeé", s!"{G}@Codeé", s!"{G}@Codeé/Code", s!"{G}@Codeé/Bin", s!"{G}@Codeé/Bin/Slot"] ∧
     (report "/Order/" (host (part := "Gr😀"))).all (fun entry => entry == "MVK_PATH_INVALID@Gr😀" ||
       entry.startsWith "codeless:supplementary-character@") := by
   native_decide
 
-/- A Java-blank group, field or rule name fails the build, a deleted field or rule only after the
-   variant filter, while a no-break space is an ordinary refused name. -/
+/- A Java-blank group, field or rule name fails the build, while a no-break space is an ordinary refused
+   name. -/
 example :
     report "" (host (bin := " ")) = unbuilt ∧ report "" (host (bin := "\u2003")) = unbuilt ∧
     report "" (host (code := "\t")) = unbuilt ∧
     report "" (host (binElements := [field "Slot", rule "\n"])) = unbuilt ∧
-    report "" (host (binElements := [field "Slot", rule "\n" true, field " " (deleted := true)])) = [] ∧
     (report "/Order/Part/" (host (bin := "\u00A0"))).head? = some "MVK_PATH_INVALID@\u00A0" := by
   native_decide
 
@@ -164,8 +156,6 @@ example :
       [s!"{F}@Items", "MVK_PATH_INVALID@Items/Sk-u", s!"{F}@Items/Sk-u"] ∧
     report "/Order/" (order (index "1Sku") [field "1Sku"]) =
       ["MVK_PATH_INVALID@Items/1Sku", "MVK_NAME_STARTS_WITH_DIGIT_A12_DV@Items/1Sku"] ∧
-    report "/Order/" (order (index "Sk-u") [field "Sku", field "Sk-u" (deleted := true)]) =
-      ["MVK_INVALID_INDEX_FIELD@Items", s!"{F}@Items"] ∧
     report "/Order/" (order (index "Sku") [skipsValidation "Sku"]) =
       ["MVK_INDEX_FIELD_NO_VALUE_VALIDATION@Items/Sku"] ∧
     report "/Order/" (order (index "Sku") [skipsValidation "Sku", field "No-te"]) =
@@ -213,8 +203,8 @@ example :
 /-! ## §2.1, §2.3, §2.4, §2.8, §2.12: field types -/
 
 /-- The labels one field `/Policy/F` of `typeName` and `body` draws, or the unbuilt label. -/
-private def typed (typeName : String) (body : List (String × Json)) (deleted := false) : List String :=
-  (report "/Policy/F" (model [group "Policy" [field "F" typeName body deleted]])).map fun entry =>
+private def typed (typeName : String) (body : List (String × Json)) : List String :=
+  (report "/Policy/F" (model [group "Policy" [field "F" typeName body]])).map fun entry =>
     if unbuilt.contains entry then entry else (entry.dropEnd 1).copy
 
 private def range (format separator : Option String) : List String :=
@@ -237,12 +227,11 @@ example :
   native_decide
 
 /- A Java-blank format fails the Date constructor the three kinds share, an empty fragment format the
-   build too, unless the variant filter deletes the field; a no-break space is an invalid format. -/
+   build too; a no-break space is an invalid format. -/
 example :
     ["DateType", "TimeType", "DateTimeType"].all (fun kind =>
       ["", " ", "\t", "\n", "\u2003"].all (fun format => typed kind [("format", Json.str format)] == unbuilt) &&
-      typed kind [("format", "\u00A0")] == ["codeless:date-format-invalid"] &&
-      typed kind [("format", "")] (deleted := true) == []) ∧
+      typed kind [("format", "\u00A0")] == ["codeless:date-format-invalid"]) ∧
     typed "DateFragmentType" [("formatOfFragment", "")] = unbuilt := by
   native_decide
 
@@ -383,31 +372,27 @@ private def timeDefinition (id : String) : Json :=
   Json.mkObj [("id", Json.str id), ("name", Json.str id), ("fieldType", Json.mkObj [("type", "TimeType"),
     ("TimeType", Json.mkObj [("format", "HH:mm")])])]
 
-private def definedField (deleted : Bool) : Json :=
-  Json.mkObj [("type", "Field"), ("name", "F"), ("Field", Json.mkObj ([("fieldType", Json.mkObj [
-    ("type", "TypeDefType"), ("TypeDefType", Json.mkObj [("typeDefinitionId", "T")])])] ++
-    if deleted then [("variantFilter", only)] else []))]
+private def definedField : Json :=
+  Json.mkObj [("type", "Field"), ("name", "F"), ("Field", Json.mkObj [("fieldType", Json.mkObj [
+    ("type", "TypeDefType"), ("TypeDefType", Json.mkObj [("typeDefinitionId", "T")])])])]
 
 private def defined (fields definitions : List Json) : List String :=
   let json := model [group "Policy" fields]
   report "/Policy/" (json.setObjVal! "content"
     ((json.getObjValD "content").setObjVal! "typeDefinitions" (Json.arr definitions.toArray)))
 
-/- A refused format draws the codeless date-format class on a kept Date, Time, DateTime or fragment
-   field and nothing on a deleted one, `QQQ` included; an admitted format draws nothing either way. A type definition is judged only through a kept field that
+/- A refused format draws the codeless date-format class on a Date, Time, DateTime or fragment field, `QQQ`
+   included, and an admitted format draws nothing. A type definition is judged only through a field that
    uses it, and two definitions sharing an id leave no model (peer KF648 and KF647,
    [inbound 2026-10-29](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-29)). -/
 example :
     ["DateType", "TimeType", "DateTimeType", "DateFragmentType"].all (fun kind =>
       refusedFormats.all (fun format =>
-        typed kind [(formatMember kind, Json.str format)] == ["codeless:date-format-invalid"] &&
-        typed kind [(formatMember kind, Json.str format)] (deleted := true) == []) &&
+        typed kind [(formatMember kind, Json.str format)] == ["codeless:date-format-invalid"]) &&
       admittedFormats.all fun format =>
-        typed kind [(formatMember kind, Json.str format)] == [] &&
-        typed kind [(formatMember kind, Json.str format)] (deleted := true) == []) ∧
+        typed kind [(formatMember kind, Json.str format)] == []) ∧
     defined [field "Other"] [timeDefinition "T"] = [] ∧
-    defined [definedField false] [timeDefinition "T"] = ["codeless:date-format-invalid@F"] ∧
-    defined [definedField true] [timeDefinition "T"] = [] ∧
+    defined [definedField] [timeDefinition "T"] = ["codeless:date-format-invalid@F"] ∧
     defined [field "Other"] [timeDefinition "T", timeDefinition "T"] = unbuilt ∧
     defined [field "Other"] [timeDefinition "", timeDefinition ""] = unbuilt := by
   native_decide

@@ -5,7 +5,7 @@ namespace A12Kernel.Dm.DeclarationAdmissionLocks
 
 open Lean
 
-private def input (name : String) (code : Option Json) (extra : List (String × Json) := []) : Json :=
+private def input (name : String) (code : Option Json) : Json :=
   checkedEntryFrame <| Json.mkObj [("content", Json.mkObj [
     ("modelRoot", Json.mkObj [("rootGroups", toJson #[Json.mkObj [
       ("type", toJson "Group"), ("name", toJson "Form"),
@@ -16,7 +16,7 @@ private def input (name : String) (code : Option Json) (extra : List (String × 
         ("type", toJson "Rule"), ("name", toJson name),
         ("Rule", Json.mkObj ([("errorCondition", toJson "FieldFilled(Value)"),
           ("errorEntityRelPath", toJson "../Value")] ++
-          code.toList.map (fun value => ("errorCode", value)) ++ extra))]])])]] )])])]
+          code.toList.map (fun value => ("errorCode", value))))]])])]] )])])]
 
 example : (readModel (input "Ordinary" (some (.str "CODE")))).isOk = true := by native_decide
 example : (readModel (input "Ordinary" none)).isOk = false := by native_decide
@@ -29,9 +29,8 @@ example : (readModel (input "Vk_VkRule" (some (.str "CODE")))).isOk = false := b
 example : ((readModel (input "Ordinary" (some (toJson (7 : Nat))))).toOption.bind
     (·.rules.head?)).map (·.errorCode) = some "7" := by native_decide
 
-private def failure (name : String) (code : Option Json) (extra : List (String × Json) := []) :
-    Option ModelReadFailure :=
-  match readModelWithAdmission (input name code extra) with
+private def failure (name : String) (code : Option Json) : Option ModelReadFailure :=
+  match readModelWithAdmission (input name code) with
   | .ok _ => none
   | .error error => some error
 
@@ -78,19 +77,8 @@ example :
     failure "Ordinary" (some (toJson (-7 : Int))) = some (findings "Ordinary" [.codeContent]) := by
   native_decide
 
-private def deleted : List (String × Json) :=
-  [("variantFilter", Json.mkObj [("filterType", "ONLY"), ("variants", Json.arr #["Other"])])]
-
-/- A rule the variant filter deletes keeps only the empty-code notification, which reads emptiness and
-   not blankness, so neither its name nor a blank code is judged and a deleted blank name builds
-   (October 21 letter §2.6, §2.11). -/
-example :
-    failure "Ordinary" (some (.str "")) deleted = some (findings "Ordinary" [.emptyCode]) ∧
-    failure "Ordinary" none deleted = some (findings "Ordinary" [.emptyCode]) ∧
-    failure "Ordinary" (some (.str " ")) deleted = none ∧
-    failure "\t" (some (.str "CODE")) deleted = none ∧
-    failure "1Rule" (some (.str "A-B")) deleted = none ∧
-    failure "\t" (some (.str "CODE")) = some (.declaration (.buildFailure ["Form", "\t"])) := by
+/- A blank rule name that is not empty fails the build like an empty one (October 21 letter §2.11). -/
+example : failure "\t" (some (.str "CODE")) = some (.declaration (.buildFailure ["Form", "\t"])) := by
   native_decide
 
 private def checkedRule (name code : String) : Option (Bool × Option DeclarationAdmissionFailure) := do

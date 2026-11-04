@@ -15,8 +15,8 @@ The model check reads them as one field, not one text at a time
 - of two entries for one locale the **later** is asked;
 - the texts meet the pattern message's lexical and parameter gates, and only the **first** failing
   locale reports;
-- a required field's own text meets no gate, and a field its own `ONLY` filter deletes is never
-  reached;
+- a required field's own text meets no gate, and a field whose messages the declaration walk withholds
+  is never reached;
 - a String's pattern and its message require each other, and a message counts only as non-blank
   text for a declared locale: with none, a pattern draws `MVK_ERROR_MESSAGE_AND_PATTERN_INVALID`, and
   with one, a String with no pattern draws `MVK_ERROR_MESSAGE_AND_NO_PATTERN`, beside whatever gate
@@ -73,7 +73,7 @@ are unmeasured. -/
 private def blankFieldMessage (text : String) : Bool := text.all Char.isWhitespace
 
 /-- Every class one field's messages draw, in the order text, locale, pairing. `reached` is false for
-a field the default variant deletes. The presence and locale rules are measured on a String alone;
+a field whose messages the declaration walk withholds. The presence and locale rules are measured on a String alone;
 an Enumeration's or a required field's message meets neither here, which no row measures, and no
 row orders a text class against the locale class. -/
 def fieldMessageDiagnostics (tokens : StringPatternMessageTokens)

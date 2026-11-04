@@ -5,9 +5,8 @@ import A12Kernel.Reference.Dm.Model
 
 /-! # Reading a DM-JSON model for the consistency check
 
-The consistency check judges the authored model, so this reader keeps every field, those removed by the
-variant filter included, and marks each by `inVariant` instead of dropping it as `readModel` does. It
-reads only the facts `ModelConsistency` consumes. An absent identifier, name or text member reads as the
+The consistency check judges the authored model, so this reader keeps every element. It reads only the
+facts `ModelConsistency` consumes. An absent identifier, name or text member reads as the
 empty text, which the check then reports; a field whose type is absent is a read error, since no capture
 measures it.
 
@@ -46,7 +45,7 @@ private def readConsistencyFieldType (fieldType : Json) : Except String Consiste
   | "TypeDefType" => pure (.typeDefinition (text body "typeDefinitionId"))
   | other => pure (.other other)
 
-private def readField (variant : Option String) (definitions : List (String × Json)) (id name : String)
+private def readField (definitions : List (String × Json)) (id name : String)
     (body : Json) : Except String ConsistencyField := do
   let declared ← readConsistencyFieldType (← body.getObjVal? "fieldType")
   let effective ← match declared with
@@ -56,10 +55,9 @@ private def readField (variant : Option String) (definitions : List (String × J
         | .ok resolved => some <$> readConsistencyFieldType (← resolved.getObjVal? "fieldType")
     | other => pure (some other)
   pure { id, name, declared, effective
-         requirednessDeclared := (body.getObjVal? "requirednessConfig").toOption.any (· != .null)
-         inVariant := ← acceptedByVariant variant body }
+         requirednessDeclared := (body.getObjVal? "requirednessConfig").toOption.any (· != .null) }
 
-private partial def readElement (variant : Option String) (definitions : List (String × Json))
+private partial def readElement (definitions : List (String × Json))
     (element : Json) : Except String ConsistencyElement := do
   let kind ← element.getObjValAs? String "type"
   let body := (element.getObjVal? kind).toOption.getD (Json.mkObj [])
@@ -71,20 +69,16 @@ private partial def readElement (variant : Option String) (definitions : List (S
         (body.getObjValAs? String "usageType").toOption
         (body.getObjValAs? String "indexFieldName").toOption
         ((← members body "sortFields").map (text · "name"))
-        (← (← members body "elements").mapM (readElement variant definitions)))
-  | "Field" => .field <$> readField variant definitions id name body
-  | "Rule" => pure (.rule id name (text body "errorCondition") (text body "errorEntityRelPath")
-      (← acceptedByVariant variant body))
+        (← (← members body "elements").mapM (readElement definitions)))
+  | "Field" => .field <$> readField definitions id name body
+  | "Rule" => pure (.rule id name (text body "errorCondition") (text body "errorEntityRelPath"))
   | "Computation" =>
       pure (.computation id name (text body "computedFieldRelPath")
-        ((← members body "computationAlternatives").map (text · "operation"))
-        (← acceptedByVariant variant body))
+        ((← members body "computationAlternatives").map (text · "operation")))
   | other => throw s!"element {other}"
 
-/-- Read the model the consistency check judges, for the variant a field survives the filter of. An
-absent condition language is en_US. -/
-def readConsistencyModel (json : Json) (variant : Option String := none) :
-    Except String ConsistencyModel := do
+/-- Read the model the consistency check judges. An absent condition language is en_US. -/
+def readConsistencyModel (json : Json) : Except String ConsistencyModel := do
   let frame ← bindModelFrame json
   let content := frame.content
   bindLocalizedTextMembers content
@@ -93,15 +87,14 @@ def readConsistencyModel (json : Json) (variant : Option String := none) :
   pure {
     typeDefinitions := definitions.map fun definition =>
       { id := text definition "id", name := text definition "name" }
-    rootGroups := ← rootGroups.mapM (readElement variant (definitions.map fun definition =>
+    rootGroups := ← rootGroups.mapM (readElement (definitions.map fun definition =>
       (text definition "id", definition)))
     conditionLanguage := frame.conditionLanguage.getD "en_US"
     declaredLocales := ← headerLocales json
     frameCheckFailure? := frame.checkFailure? }
 
-/-- Read the model for `variant` and run the consistency check. -/
-def checkModelConsistency (json : Json) (variant : Option String := none) :
-    Except String ModelConsistencyOutcome := do
-  ModelConsistency.check (← readConsistencyModel json variant)
+/-- Read the model and run the consistency check. -/
+def checkModelConsistency (json : Json) : Except String ModelConsistencyOutcome := do
+  ModelConsistency.check (← readConsistencyModel json)
 
 end A12Kernel.Dm

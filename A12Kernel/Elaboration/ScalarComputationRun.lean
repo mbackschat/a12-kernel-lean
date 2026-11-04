@@ -223,7 +223,7 @@ generates anything and refuses a cycle among them as `MVK_ERROR_CALC_CYCLE`
 ([`spec/09`](../../spec/09-computations.md) §1). The same clause lists classes measured beside a
 cycle that withhold it, among them another computation's text defect or member class, a rule's text
 defect, a structural path class, and a missing error text, so the class holds only for a model free
-of them. A plan sees none of them, and a variant-filtered declaration is not one of its steps. The
+of them. A plan sees none of them. The
 structural gates claim no class. -/
 def ScalarComputationPlanError.calculationRefusal? :
     ScalarComputationPlanError → Option CalculationRefusal

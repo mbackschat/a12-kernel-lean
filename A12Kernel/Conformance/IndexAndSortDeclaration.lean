@@ -2,7 +2,7 @@ import A12Kernel.Elaboration.IndexAndSortDeclaration
 
 /-! # Locks on the index- and sort-field declaration cascade
 
-The cases pin the cascade's order, the one arm on which the two roles differ, and the four catalog keys a consumer switches on. The two value-validation classes and their accepted controls are measured; the unresolved arm is reached by a nominated field the default variant drops and by a relative nomination whose local namesake is absent, measured by the peer, while the group arm has no known witness ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)), while a name resolving nowhere in the authored model fails the build first, which the [checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration) records.
+The cases pin the cascade's order, the one arm on which the two roles differ, and the four catalog keys a consumer switches on. The two value-validation classes and their accepted controls are measured; the unresolved arm is reached by a relative nomination whose local namesake is absent, measured by the peer, while the group arm has no known witness ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-27a-index-and-sort-lookup)), while a name resolving nowhere in the authored model fails the build first, which the [checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-index-and-sort-field-declaration) records.
 -/
 
 namespace A12Kernel.Conformance.IndexAndSortDeclaration
@@ -150,46 +150,29 @@ private def Lookup.of (role : RowFieldRole) :
   | .error (.invalidModel _) => .invalidModel
 
 private def lookup (role : RowFieldRole) (nomination : SurfaceFieldPath)
-    (parent own : Option Bool := some false) (dropped : List FieldId := []) : Lookup :=
-  .of role ((lookupModel parent own).nominatedTarget dropped items nomination)
+    (parent own : Option Bool := some false) : Lookup :=
+  .of role ((lookupModel parent own).nominatedTarget items nomination)
 
-/- One row per branch of the peer's scenarios, in both roles. The local namesake decides: dropping
-   or removing it draws the invalid class and switching its value validation off the switch's class,
-   while the same change to the parent's `Key` that `../Key` binds to changes nothing. A name binding
-   nowhere in the authored model fails the build, whichever field the default variant keeps. The
-   peer's two same-named siblings told apart only by their variant filters are outside this model,
-   which refuses two fields with one path. -/
+/- One row per branch of the peer's scenarios, in both roles. The local namesake decides: removing it
+   draws the invalid class and switching its value validation off the switch's class, while the same
+   change to the parent's `Key` that `../Key` binds to changes nothing. A name binding nowhere in the
+   authored model fails the build. The peer's two same-named siblings told apart only by their variant
+   filters are outside this model, which refuses two fields with one path. -/
 example : [RowFieldRole.indexField, .sortField].all (fun role =>
     [lookup role direct,
-      lookup role direct (dropped := [2]),
       lookup role direct (own := none),
       lookup role remote,
-      lookup role remote (dropped := [1]),
       lookup role remote (parent := none),
-      lookup role remote (dropped := [2]),
-      lookup role remote (dropped := [1, 2]),
       lookup role remote (own := none),
       lookup role remote (parent := some true),
       lookup role remote (own := some true)] ==
     [.cascade none,
-      .cascade (some (.nameUnresolved role)),
       .buildFailure,
       .cascade none,
-      .cascade none,
       .buildFailure,
-      .cascade (some (.nameUnresolved role)),
-      .cascade (some (.nameUnresolved role)),
       .cascade (some (.nameUnresolved role)),
       .cascade none,
       .cascade (some (.valueValidationOff role))]) = true := by
-  native_decide
-
-/- The index nomination of a root-group field the default variant drops draws the invalid class too;
-   the peer measures no sort nomination there. -/
-example :
-    let root : FlatModel := { fields := [stringField 1 ["Order"] "Key"] }
-    Lookup.of .indexField (root.nominatedTarget [1] ["Order"] direct) =
-      .cascade (some (.nameUnresolved .indexField)) := by
   native_decide
 
 end A12Kernel.Conformance.IndexAndSortDeclaration

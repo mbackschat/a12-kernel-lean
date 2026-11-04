@@ -14,11 +14,7 @@ class labels only, so a notification's path is the model's own element path and 
 quantity.
 
 A model that cannot be built yields no notification at all: the first element, in walk order, with one
-of the `ModelBuildFailure` defects stops the check. Three of those defects (an empty or absent
-type-definition reference, an empty computed-field path, an Enumeration with two categories of one
-name) do not stop the build when the variant filter deletes the field or computation carrying them:
-the model builds and the defect is one codeless notification of check 6 instead. A deleted field's,
-rule's or computation's empty name is likewise check 6's sentence and its one-space name nothing. Otherwise six checks run in this registration
+of the `ModelBuildFailure` defects stops the check. Otherwise six checks run in this registration
 order and their notifications concatenate in it, so a class is never interleaved with another check's:
 
 1. Element identifier uniqueness, over every group, field, rule and computation; a type definition is
@@ -29,12 +25,12 @@ order and their notifications concatenate in it, so a class is never interleaved
    configuration.
 4. Multi-select groups: repeatability, the single Enumeration or String field and its requiredness, and
    the absence of nested groups and computations.
-5. The formal check of each printed bound (`NumberBound.printed?`), maximum first, over fields that
-   survive the variant filter only.
-6. Emptiness of identifiers, element names, rule conditions, rule error entities, computation operations and type
-   definition names, and the lifted conversion defects of deleted declarations.
+5. The formal check of each printed bound (`NumberBound.printed?`), maximum first.
+6. Emptiness of identifiers, rule conditions, rule error entities, computation operations and type
+   definition names.
 
-Every check except the fifth walks the authored model, fields removed by the variant filter included.
+A declaration's `variantFilter` and a rule's `variantErrorMessages` are retired (DM 29.1) and read past
+as an unknown member is, so no element is deleted and every check walks every element.
 The walk visits type definitions first, sorted by id case-sensitively, then elements depth-first, a
 group before its children. Within one check the notifications follow the walk. Two type definitions
 sharing an id leave the model unbuilt before any element is judged (peer KF647 and a local probe,
@@ -46,14 +42,11 @@ remaining registration order, the raw (possibly `-1`) maximum fraction digits as
 the first child named `content` of any kind are read from the Kernel's consistency rule sources at
 kernel 30.8.1, not separately measured ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-model-consistency-k17)).
 Two build failures in one model and the order across distinct duplicated identifiers are unmeasured;
-a label-only capture cannot separate the latter. The lifted conversion defects rest on a peer
-measurement of a12-dmkits `fecf8552` (`CheckerBasicSentenceAgreementTest`, `docs/sources/inbound-handbacks.md#src-inbound-2026-10-27`),
-which compares sets of classes: their order against another class of the same element is unmeasured.
+a label-only capture cannot separate the latter.
 
 Not claimed: type definitions' own bodies, a bound outside the normal double range (an error, not a
 class), attachment condition texts under a language the captures do not cover, the combination of
-an invalid multi-select field count with nested groups, the resolution of a computed field's path, and
-the admission of an empty element name for a declaration the filter deletes.
+an invalid multi-select field count with nested groups, and the resolution of a computed field's path.
 -/
 
 namespace A12Kernel
@@ -78,8 +71,6 @@ structure ConsistencyField where
   effective : Option ConsistencyFieldType
   /-- Whether a requiredness configuration is authored. -/
   requirednessDeclared : Bool
-  /-- Whether the field survives the variant filter. -/
-  inVariant : Bool
   deriving Repr, DecidableEq
 
 /-- One authored element. A group lists its children in authored order. -/
@@ -88,9 +79,8 @@ inductive ConsistencyElement where
       (indexFieldName : Option String) (sortFieldNames : List String)
       (elements : List ConsistencyElement)
   | field (field : ConsistencyField)
-  /-- `inVariant` is whether the rule or computation survives the variant filter, as for a field. -/
-  | rule (id name errorCondition errorEntityRelPath : String) (inVariant : Bool)
-  | computation (id name computedFieldRelPath : String) (operations : List String) (inVariant : Bool)
+  | rule (id name errorCondition errorEntityRelPath : String)
+  | computation (id name computedFieldRelPath : String) (operations : List String)
 
 structure ConsistencyTypeDefinition where
   id : String
@@ -143,18 +133,6 @@ inductive ModelConsistencyClass where
   | errorEntityEmpty
   | computationOperationEmpty
   | typeDefinitionNameEmpty
-  /-- An empty field, rule or computation name, the type definition's sentence on an element. Only a
-  declaration the variant filter deletes reaches the check with it; a kept one leaves the model unbuilt. -/
-  | elementNameEmpty
-  /-- A deleted declaration's lifted build failure: a type-definition reference with an empty or absent
-  id (`ModelBuildFailure.typeDefinitionReferenceEmpty`). -/
-  | typeDefinitionReferenceEmpty
-  /-- A deleted computation's lifted empty computed-field path
-  (`ModelBuildFailure.computedFieldPathEmpty`). -/
-  | computedFieldEmpty
-  /-- A deleted field's lifted Enumeration with two categories of one name
-  (`ModelBuildFailure.enumerationCategoryNameDuplicated`). -/
-  | enumerationCategoryDuplicate
   /-- A header declaring no locale (spec/01 §1.1). -/
   | supportedLanguagesMissing
   /-- Two distinct declared locales sharing one JDK language tag (`ParsedLocale.languageTag`). -/
@@ -169,11 +147,11 @@ def all : List ModelConsistencyClass :=
     attachmentRequiredRules, attachmentContentConfig, multiSelectRepeatableGroup,
     multiSelectRequiredField, multiSelectRequiredFlag, multiSelectIndexField, multiSelectFieldType,
     multiSelectOtherElements, boundTotalDigitsTooLong, boundSignedZero, idEmpty, errorConditionEmpty,
-    errorEntityEmpty, computationOperationEmpty, typeDefinitionNameEmpty, elementNameEmpty, typeDefinitionReferenceEmpty,
-    computedFieldEmpty, enumerationCategoryDuplicate, supportedLanguagesMissing, supportedLanguagesDuplicate]
+    errorEntityEmpty, computationOperationEmpty, typeDefinitionNameEmpty, supportedLanguagesMissing,
+    supportedLanguagesDuplicate]
 
-/-- The label the captures give the class, or for the three lifted classes the label the locks give it. The
-two supported-language classes carry their Kernel code; every other class is codeless and named by itself. -/
+/-- The label the captures give the class. The two supported-language classes carry their Kernel code;
+every other class is codeless and named by itself. -/
 def observedLabel : ModelConsistencyClass → String
   | idNotUnique => "codeless:id-not-unique"
   | numberMaxValueExceeded => "codeless:number-max-value-exceeded"
@@ -194,10 +172,6 @@ def observedLabel : ModelConsistencyClass → String
   | errorEntityEmpty => "codeless:error-entity-not-set"
   | computationOperationEmpty => "codeless:computation-operation-empty"
   | typeDefinitionNameEmpty => "codeless:typedef-name-empty"
-  | elementNameEmpty => "codeless:element-name-empty"
-  | typeDefinitionReferenceEmpty => "codeless:typedef-reference-empty"
-  | computedFieldEmpty => "codeless:computed-field-empty"
-  | enumerationCategoryDuplicate => "codeless:enum-category-duplicate"
   | supportedLanguagesMissing => "MVK_SUPP_LANGUAGES_MISSING"
   | supportedLanguagesDuplicate => "MVK_SUPP_LANGUAGES_DUPLICATE"
 
@@ -218,19 +192,6 @@ inductive ModelBuildFailure where
   | declaredLocale (failure : DeclaredLocaleFailure)
   | frameCheck (failure : FrameCheckFailure)
   deriving Repr, DecidableEq
-
-namespace ModelBuildFailure
-
-/-- The notification class that replaces a build failure for a declaration the variant filter deletes,
-for the three failures a deleting filter is measured to lift. -/
-def liftedClass? : ModelBuildFailure → Option ModelConsistencyClass
-  | .typeDefinitionReferenceEmpty => some .typeDefinitionReferenceEmpty
-  | .computedFieldPathEmpty => some .computedFieldEmpty
-  | .enumerationCategoryNameDuplicated => some .enumerationCategoryDuplicate
-  | .elementNameEmpty | .indexFieldNameEmpty | .sortFieldNameEmpty | .typeDefinitionIdRepeated
-    | .declaredLocale _ | .frameCheck _ => none
-
-end ModelBuildFailure
 
 structure ModelConsistencyNotification where
   /-- Names from the root group to the element the class concerns. A type definition is named by its id,
@@ -271,15 +232,10 @@ def asField? : ConsistencyElement → Option ConsistencyField
   | field f => some f
   | _ => none
 
-/-- Whether the variant filter deletes the declaration; a group is never deleted. -/
-def deletedByFilter : ConsistencyElement → Bool
-  | field f => !f.inVariant
-  | rule _ _ _ _ inVariant | computation _ _ _ _ inVariant => !inVariant
-  | group .. => false
-
-/-- The three declaration defects a deleting variant filter lifts from a build failure to a
-notification, judged whether or not the declaration survives the filter. The Enumeration duplicate is judged on the declared type, so a type definition's own
-categories are outside it. -/
+/-- The declaration defects that stop the Kernel building the model: an Enumeration declaring two
+categories of one name, a type-definition reference with an empty or absent id, and a computation with an
+empty computed-field path. The Enumeration duplicate is judged on the declared type, so a type
+definition's own categories are outside it. -/
 def conversionFailure? : ConsistencyElement → Option ModelBuildFailure
   | .field f =>
       match f.declared with
@@ -289,7 +245,7 @@ def conversionFailure? : ConsistencyElement → Option ModelBuildFailure
           else none
       | .typeDefinition "" => some .typeDefinitionReferenceEmpty
       | _ => none
-  | .computation _ _ computedFieldRelPath _ _ =>
+  | .computation _ _ computedFieldRelPath _ =>
       if computedFieldRelPath.isEmpty then some .computedFieldPathEmpty else none
   | _ => none
 
@@ -336,9 +292,7 @@ private def raiseIf (condition : Bool) (path : List String) (kind : ModelConsist
   if condition then [notification path kind] else []
 
 /-- The defect of one element that stops the Kernel building the model, an empty name first. A
-declaration the variant filter deletes fails nothing: its empty name and the failures of
-`conversionFailure?` are reported by `emptinessNotifications` instead, and its blank name by nothing.
-A kept declaration's blank name fails like an empty one, measured for one space (KF626). -/
+declaration's blank name fails like an empty one, measured for one space (KF626). -/
 def buildFailure? : ConsistencyElement → Option ModelBuildFailure
   | element@(.group _ _ _ _ indexFieldName sortFieldNames _) =>
       if element.name.isEmpty then some .elementNameEmpty
@@ -346,8 +300,7 @@ def buildFailure? : ConsistencyElement → Option ModelBuildFailure
       else if sortFieldNames.any (·.isEmpty) then some .sortFieldNameEmpty
       else none
   | element@(.field _) | element@(.rule ..) | element@(.computation ..) =>
-      if element.deletedByFilter then none
-      else if ExecutableDeclaration.blank element.name then some .elementNameEmpty
+      if ExecutableDeclaration.blank element.name then some .elementNameEmpty
       else element.conversionFailure?
 
 /-- The first id two type definitions share, which every model reader refuses before building. -/
@@ -424,7 +377,7 @@ def attachmentNotifications (language : String) (path : List String)
     | throw s!"attachment rule texts of condition language {language} are not measured"
   let fieldNames := children.filterMap fun child => child.asField?.map (·.name)
   let conditions := children.filterMap fun
-    | .rule _ _ errorCondition _ _ => some errorCondition
+    | .rule _ _ errorCondition _ => some errorCondition
     | _ => none
   let contentConfigured :=
     match children.find? (·.name == "content") with
@@ -494,43 +447,32 @@ private def boundClass? (bound : Option Rat) (minFractionalDigits maxFractionalD
       | none => throw "bound outside the normal double range"
       | some printed => pure (boundFormalClass? printed)
 
-/-- Check 5 over the fields that survive the variant filter: the maximum's class, then the minimum's,
-the second dropped when it equals the first at the same field. -/
+/-- Check 5: the maximum's class, then the minimum's, the second dropped when it equals the first at the
+same field. -/
 def boundFormalNotifications (model : ConsistencyModel) :
     Except String (List ModelConsistencyNotification) :=
   model.fieldEntries.foldlM (init := []) fun notifications (path, field) =>
     match field.effective with
-    | some (.number minFractionalDigits maxFractionalDigits minValue maxValue) =>
-        if !field.inVariant then pure notifications else do
-          let classes := [← boundClass? maxValue minFractionalDigits maxFractionalDigits,
-            ← boundClass? minValue minFractionalDigits maxFractionalDigits].filterMap id
-          pure (notifications ++ classes.eraseDups.map (notification path))
+    | some (.number minFractionalDigits maxFractionalDigits minValue maxValue) => do
+        let classes := [← boundClass? maxValue minFractionalDigits maxFractionalDigits,
+          ← boundClass? minValue minFractionalDigits maxFractionalDigits].filterMap id
+        pure (notifications ++ classes.eraseDups.map (notification path))
     | _ => pure notifications
 
-/-- The lifted build failure of a deleted declaration, as its class. A kept declaration draws none: its
-failure leaves no model before any notification is collected. -/
-def liftedNotifications (path : List String) (element : ConsistencyElement) :
-    List ModelConsistencyNotification :=
-  match element.conversionFailure?.bind (·.liftedClass?) with
-  | some kind => raiseIf element.deletedByFilter path kind
-  | none => []
-
-/-- Check 6: type definitions first, in id order, then each element's empty identifier and empty name followed by
-the class its kind adds. A rule's missing error code and an Enumeration's duplicated values belong to
-other owners. Emptiness is `isEmpty`, so a one-space name draws nothing (KF626). A deleted
-declaration's lifted build failure follows the name; the order of one element's classes is not measured. -/
+/-- Check 6: type definitions first, in id order, then each element's empty identifier followed by the
+class its kind adds. A rule's missing error code and an Enumeration's duplicated values belong to other
+owners. An element's empty name is a build failure, so no class stands for it. -/
 def emptinessNotifications (model : ConsistencyModel) : List ModelConsistencyNotification :=
   (orderedTypeDefinitions model).flatMap (fun definition =>
     raiseIf definition.id.isEmpty (typeDefinitionPath definition) .idEmpty ++
       raiseIf definition.name.isEmpty (typeDefinitionPath definition) .typeDefinitionNameEmpty) ++
     model.entries.flatMap fun (path, element) =>
-      raiseIf element.id.isEmpty path .idEmpty ++ raiseIf element.name.isEmpty path .elementNameEmpty ++
-        liftedNotifications path element ++
+      raiseIf element.id.isEmpty path .idEmpty ++
         match element with
-        | .rule _ _ errorCondition errorEntityRelPath _ =>
+        | .rule _ _ errorCondition errorEntityRelPath =>
             raiseIf errorCondition.isEmpty path .errorConditionEmpty ++
               raiseIf errorEntityRelPath.isEmpty path .errorEntityEmpty
-        | .computation _ _ _ operations _ =>
+        | .computation _ _ _ operations =>
             raiseIf (operations.any (·.isEmpty)) path .computationOperationEmpty
         | _ => []
 
